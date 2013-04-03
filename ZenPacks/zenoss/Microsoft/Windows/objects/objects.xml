@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<objects>
+<!-- ('', 'zport', 'dmd', 'Devices', 'Server', 'Microsoft') -->
+<object id='/zport/dmd/Devices/Server/Microsoft' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property id='zendoc' type='string'>
+Microsoft Software
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Software
+</property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+['zenoss.winrm.WinOS']
+</property>
+<object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property id='zendoc' type='string'>
+Windows Operating System
+</property>
+<property type="string" id="description" mode="w" >
+Windows Operating System
+</property>
+</object>
+</object>
+</objects>

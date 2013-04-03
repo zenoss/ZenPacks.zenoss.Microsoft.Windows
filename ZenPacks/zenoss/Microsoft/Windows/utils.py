@@ -7,10 +7,12 @@
 #
 ##############################################################################
 
-__doc__ = "Microsoft Windows ZenPack"
 
-import logging
+def addLocalLibPath():
+    """
+    Helper to add the ZenPack's lib directory to PYTHONPATH.
+    """
+    import os
+    import site
 
-log = logging.getLogger("zen.microsoft.windows")
-
-
+    site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
