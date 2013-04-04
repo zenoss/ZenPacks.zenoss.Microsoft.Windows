@@ -15,6 +15,7 @@ import os
 import base64
 
 from twisted.web.http_headers import Headers
+from twisted.internet import  defer
 
 import contstants as const
 
@@ -29,6 +30,10 @@ class StringProducer(object):
     def __init__(self, body):
         self.body = body
         self.length = len(body)
+
+    def startProducing(self, consumer):
+        consumer.write(self.body)
+        return defer.succeed(None)
 
 
 class WinrmClient(object):
@@ -49,6 +54,7 @@ class WinrmClient(object):
         cim_class = wql.split()[-1]
 
         resource_uri = self._uri_prefix + '/' + cim_class
+
         enumeration_context = None
 
         enum_template_file = open(self._requestTemplate)
