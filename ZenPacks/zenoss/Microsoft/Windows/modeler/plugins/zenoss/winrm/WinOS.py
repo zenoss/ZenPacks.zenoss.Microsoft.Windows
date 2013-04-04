@@ -12,11 +12,7 @@ Windows Operating System Collection
 
 """
 import logging
-
-from twisted.internet import reactor
-from twisted.web.client import Agent
-from twisted.internet.defer import DeferredList
-from twisted.internet.protocol import Protocol
+import re
 
 from Products.DataCollector.plugins.DataMaps \
     import MultiArgs, ObjectMap, RelationshipMap
@@ -38,6 +34,7 @@ class WinOS(PythonPlugin):
     WinRMQueries = [
         'select * from Win32_ComputerSystem',
         'select * from Win32_SystemEnclosure',
+        'select * from Win32_OperatingSystem',
         ]
 
     def collect(self, device, log):
@@ -64,6 +61,7 @@ class WinOS(PythonPlugin):
 
         sysEnclosure = results['select * from Win32_SystemEnclosure'][0]
         computerSystem = results['select * from Win32_ComputerSystem'][0]
+        operatingSystem = results['select * from Win32_OperatingSystem'][0]
 
         maps = []
 
@@ -76,8 +74,17 @@ class WinOS(PythonPlugin):
         maps.append(hw_om)
 
         #Computer System Map
+
+        operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
+                                    operatingSystem.Caption)
+
         cs_om = ObjectMap()
         cs_om.title = computerSystem.DNSHostName
+        cs_om.setHWProductKey = MultiArgs(computerSystem.Model,
+                                        computerSystem.Manufacturer)
+
+        cs_om.setOSProductKey = MultiArgs(operatingSystem.Caption,
+                                        operatingSystem.Manufacturer)
         cs_om.snmpSysName = computerSystem.Name
         cs_om.snmpContact = computerSystem.PrimaryOwnerName
         cs_om.snmpDescr = computerSystem.Caption
