@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/browser">
+
+    <resourceDirectory
+        name="microsoft"
+        directory="resources"
+        />
+    
+    <viewlet
+        name="js-windevice"
+        paths="/++resource++microsoft/js/WinDevice.js"
+        weight="10"
+        for="..Device.Device"
+        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+        permission="zope2.Public"
+        />
+
+</configure>

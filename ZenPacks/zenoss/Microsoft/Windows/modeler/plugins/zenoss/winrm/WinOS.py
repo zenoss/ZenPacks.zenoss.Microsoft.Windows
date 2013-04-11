@@ -17,7 +17,12 @@ import re
 from Products.DataCollector.plugins.DataMaps \
     import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
+
+from Products.ZenUtils.Utils import prepId
+from ZenPacks.zenoss.Microsoft.Windows.utils import (
+        addLocalLibPath,
+        lookup_architecture,
+        )
 
 addLocalLibPath()
 
@@ -35,6 +40,8 @@ class WinOS(PythonPlugin):
         'select * from Win32_ComputerSystem',
         'select * from Win32_SystemEnclosure',
         'select * from Win32_OperatingSystem',
+        'select * from Win32_Processor',
+        'select * from Win32_CacheMemory',
         ]
 
     def collect(self, device, log):
@@ -62,6 +69,8 @@ class WinOS(PythonPlugin):
         sysEnclosure = results['select * from Win32_SystemEnclosure'][0]
         computerSystem = results['select * from Win32_ComputerSystem'][0]
         operatingSystem = results['select * from Win32_OperatingSystem'][0]
+        sysProcessor = results['select * from Win32_Processor']
+        sysCache = results['select * from Win32_CacheMemory']
 
         maps = []
 
@@ -70,11 +79,28 @@ class WinOS(PythonPlugin):
         hw_om.serialNumber = sysEnclosure.SerialNumber
         hw_om.tag = sysEnclosure.Tag
         hw_om.totalMemory = computerSystem.TotalPhysicalMemory
-
         maps.append(hw_om)
 
-        #Computer System Map
+        #Processor Map
+        mapProc = []
+        for proc in sysProcessor:
+            proc_om = ObjectMap()
+            proc_om.id = prepId(proc.DeviceID)
+            proc_om.caption = proc.Caption
+            proc_om.title = proc.Name
+            proc_om.numbercore = proc.NumberOfCores
+            proc_om.status = proc.Status
+            proc_om.architecture = lookup_architecture(int(proc.Architecture))
+            proc_om.clockspeed = proc.MaxClockSpeed  # MHz
+            mapProc.append(proc_om)
 
+        maps.append(RelationshipMap(
+            relname="winrmproc",
+            compname="hw",
+            modname="ZenPacks.zenoss.Microsoft.Windows.WinProc",
+            objmaps=mapProc))
+
+        #Computer System Map
         operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
                                     operatingSystem.Caption)
 
@@ -85,6 +111,7 @@ class WinOS(PythonPlugin):
 
         cs_om.setOSProductKey = MultiArgs(operatingSystem.Caption,
                                         operatingSystem.Manufacturer)
+
         cs_om.snmpSysName = computerSystem.Name
         cs_om.snmpContact = computerSystem.PrimaryOwnerName
         cs_om.snmpDescr = computerSystem.Caption

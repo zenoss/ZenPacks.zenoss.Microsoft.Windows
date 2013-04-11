@@ -59,3 +59,14 @@ def lookup_powerstate(value):
         6: 'Power Off',
         7: 'Power Save - Warning',
         }.get(value, 'unknown')
+
+def lookup_architecture(value):
+    return {
+        0: 'x86',
+        1: 'MIPS',
+        2: 'Alpha',
+        3: 'PowerPC',
+        5: 'ARM',
+        6: 'Itanium-based systems',
+        9: 'x64',
+        }.get(value, 'unknown')
