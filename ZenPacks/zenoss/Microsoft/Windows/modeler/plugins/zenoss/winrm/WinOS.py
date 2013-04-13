@@ -17,11 +17,14 @@ import re
 from Products.DataCollector.plugins.DataMaps \
     import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
+from Products.ZenUtils.IpUtil import checkip, IpAddressError
 
 from Products.ZenUtils.Utils import prepId
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
         addLocalLibPath,
         lookup_architecture,
+        lookup_routetype,
+        lookup_protocol,
         )
 
 addLocalLibPath()
@@ -42,6 +45,8 @@ class WinOS(PythonPlugin):
         'select * from Win32_OperatingSystem',
         'select * from Win32_Processor',
         'select * from Win32_CacheMemory',
+        'select * from Win32_IP4RouteTable',
+        'select * from Win32_NetworkAdapterConfiguration',
         ]
 
     def collect(self, device, log):
@@ -64,24 +69,29 @@ class WinOS(PythonPlugin):
 
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
-        #import pdb; pdb.set_trace()
 
         sysEnclosure = results['select * from Win32_SystemEnclosure'][0]
         computerSystem = results['select * from Win32_ComputerSystem'][0]
         operatingSystem = results['select * from Win32_OperatingSystem'][0]
         sysProcessor = results['select * from Win32_Processor']
-        sysCache = results['select * from Win32_CacheMemory']
+        netRoute = results['select * from Win32_IP4RouteTable']
+        netInt = results['select * from Win32_NetworkAdapterConfiguration']
 
         maps = []
 
-        #Hardware Map
+        # Hardware Map
         hw_om = ObjectMap(compname='hw')
         hw_om.serialNumber = sysEnclosure.SerialNumber
         hw_om.tag = sysEnclosure.Tag
-        hw_om.totalMemory = computerSystem.TotalPhysicalMemory
+        hw_om.totalMemory = int(operatingSystem.TotalVisibleMemorySize) * 1024
         maps.append(hw_om)
 
-        #Processor Map
+        # OS Map
+        os_om = ObjectMap(compname='os')
+        os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
+        maps.append(os_om)
+
+        # Processor Map
         mapProc = []
         for proc in sysProcessor:
             proc_om = ObjectMap()
@@ -100,7 +110,9 @@ class WinOS(PythonPlugin):
             modname="ZenPacks.zenoss.Microsoft.Windows.WinProc",
             objmaps=mapProc))
 
-        #Computer System Map
+        # OS Map
+
+        # Operating System Map
         operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
                                     operatingSystem.Caption)
 
@@ -117,5 +129,83 @@ class WinOS(PythonPlugin):
         cs_om.snmpDescr = computerSystem.Caption
 
         maps.append(cs_om)
+
+        # Interface Map
+        mapInter = []
+
+        skipifregex = getattr(device, 'zInterfaceMapIgnoreNames', None)
+
+        for inter in netInt:
+            ips = []
+
+            if inter.Description is not None:
+                if skipifregex and re.match(skipifregex, inter.Description):
+                    log.debug("Interface {intname} matched regex -- skipping".format(
+                        intname=inter.Description))
+                    continue
+
+            if getattr(inter, 'IPAddress', None) != None:
+                for ipRecord, ipMask in zip([inter.IPAddress], [inter.IPSubnet]):
+                    try:
+                        checkip(ipRecord)
+                        if not ipMask:
+                            raise IpAddressError()
+
+                        ipEntry = "{ipaddress}/{ipsubnet}".format(ipaddress=ipRecord,
+                                ipsubnet=ipMask)
+                        ips.append(ipEntry)
+                    except IpAddressError:
+                        log.debug("Invalid IP Address {ipaddress} encountered "
+                                "skipped".format(ipaddress=ipRecord))
+
+            #import pdb; pdb.set_trace()
+            int_om = ObjectMap()
+            int_om.id = prepId(inter.Description)
+            int_om.setIpAddresses = ips
+            int_om.interfaceName = int_om.description = inter.Description
+            int_om.macaddress = inter.MACAddress
+            int_om.mtu = inter.MTU
+            int_om.monitor = int_om.operStatus = bool(inter.IPEnabled)
+            try:
+                int_om.ifindex = int(inter.InterfaceIndex)
+            except AttributeError:
+                int_om.ifindex = int(inter.Index)
+
+            mapInter.append(int_om)
+
+        maps.append(RelationshipMap(
+            relname="interfaces",
+            compname="os",
+            modname="Products.ZenModel.IpInterface",
+            objmaps=mapInter))
+
+        # Network Route Map
+        mapRoute = []
+        for route in netRoute:
+            route_om = ObjectMap()
+            route_om.id = prepId(route.Destination)
+            route_om.routemask = self.maskToBits(route.Mask)
+            route_om.setInterfaceIndex = int(route.InterfaceIndex)
+            route_om.setNextHopIp = route.NextHop
+            route_om.routeproto = lookup_protocol(int(route.Protocol))
+            route_om.routetype = lookup_routetype(int(route.Type))
+            route_om.metric1 = route.Metric1
+            route_om.metric2 = route.Metric2
+            route_om.metric3 = route.Metric3
+            route_om.metric4 = route.Metric4
+            route_om.metric5 = route.Metric5
+            route_om.routemask = self.maskToBits(route.Mask)
+            route_om.setTarget = route_om.id + "/" + str(route_om.routemask)
+            route_om.id += "_" + str(route_om.routemask)
+
+            if route_om.routemask == 32: continue
+
+            mapRoute.append(route_om)
+
+        maps.append(RelationshipMap(
+            relname="routes",
+            compname="os",
+            modname="Products.ZenModel.IpRouteEntry",
+            objmaps=mapRoute))
 
         return maps
