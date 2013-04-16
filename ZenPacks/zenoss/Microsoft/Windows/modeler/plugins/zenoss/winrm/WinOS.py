@@ -25,6 +25,9 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import (
         lookup_architecture,
         lookup_routetype,
         lookup_protocol,
+        lookup_drivetype,
+        lookup_zendrivetype,
+        guessBlockSize,
         )
 
 addLocalLibPath()
@@ -47,6 +50,9 @@ class WinOS(PythonPlugin):
         'select * from Win32_CacheMemory',
         'select * from Win32_IP4RouteTable',
         'select * from Win32_NetworkAdapterConfiguration',
+        'select * from Win32_logicaldisk',
+        'select * from Win32_Volume',
+        'select * from Win32_MappedLogicalDisk'
         ]
 
     def collect(self, device, log):
@@ -76,7 +82,11 @@ class WinOS(PythonPlugin):
         sysProcessor = results['select * from Win32_Processor']
         netRoute = results['select * from Win32_IP4RouteTable']
         netInt = results['select * from Win32_NetworkAdapterConfiguration']
+        fsDisk = results['select * from Win32_logicaldisk']
+        #fsVol = results['select * from Win32_Volume']
+        #fsMap = results['select * from Win32_MappedLogicalDisk']
 
+        #import pdb; pdb.set_trace()
         maps = []
 
         # Hardware Map
@@ -198,7 +208,8 @@ class WinOS(PythonPlugin):
             route_om.setTarget = route_om.id + "/" + str(route_om.routemask)
             route_om.id += "_" + str(route_om.routemask)
 
-            if route_om.routemask == 32: continue
+            if route_om.routemask == 32:
+                continue
 
             mapRoute.append(route_om)
 
@@ -207,5 +218,54 @@ class WinOS(PythonPlugin):
             compname="os",
             modname="Products.ZenModel.IpRouteEntry",
             objmaps=mapRoute))
+
+        # File System Map
+        skipfsnames = getattr(device, 'zFileSystemMapIgnoreNames', None)
+        skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
+
+        mapDisk = []
+        for disk in fsDisk:
+            disk_om = ObjectMap()
+            disk_om.mount = "{driveletter} (Serial Number: {serialnumber}) - {name}".format(
+                driveletter=disk.Name,
+                serialnumber=disk.VolumeSerialNumber,
+                name=disk.VolumeName)
+
+            #Check if drive description matches skip names
+            if skipfsnames and re.search(skipfsnames, disk_om.mount):
+                continue
+
+            disk_om.drivetype = int(disk.DriveType)
+
+            #Check for excluded drives
+            if skipfstypes:
+                #Get mapping of Windows Drive types to Zenoss types for exclusion
+                zentype = lookup_zendrivetype(disk_om.drivetype)
+                for mapdisktype in zentype:
+                    if mapdisktype in skipfstypes:
+                        log.info("{drivename} drive's filesystem {filesystem}"
+                                " has been excluded").format(
+                            drivename=disk.Name,
+                            filesystem=lookup_drivetype(disk_om.drivetype))
+                        break
+
+            disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
+            disk_om.storageDevice = disk.Name
+            disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
+            disk_om.type = disk.FileSystem
+            if disk.Size:
+                if not disk.BlockSize:
+                    disk.BlockSize = guessBlockSize(disk.Size)
+                disk_om.blockSize = int(disk.BlockSize)
+                disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
+            disk_om.maxNameLen = disk.MaximumComponentLength
+            disk_om.id = self.prepId(disk.DeviceID)
+            mapDisk.append(disk_om)
+
+        maps.append(RelationshipMap(
+            relname="filesystems",
+            compname="os",
+            modname="Products.ZenModel.FileSystem",
+            objmaps=mapDisk))
 
         return maps
