@@ -11,19 +11,14 @@
 Windows Services Collection
 
 """
-import logging
-import re
 
 from Products.DataCollector.plugins.DataMaps \
-    import MultiArgs, ObjectMap, RelationshipMap
+    import ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
-
-addLocalLibPath()
-
-from txwinrm.collect import WinrmCollectClient
+from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect \
+    import ConnectionInfo, WinrmCollectClient
 
 
 class WinServices(PythonPlugin):
@@ -38,19 +33,16 @@ class WinServices(PythonPlugin):
         ]
 
     def collect(self, device, log):
-
-        username = device.zWinUser
-        password = device.zWinPassword
         hostname = device.manageIp
-
-        winrm = WinrmCollectClient(logging.getLogger())
-
-        results = winrm.do_collect(
-                    hostname,
-                    username,
-                    password,
-                    self.WinRMQueries)
-
+        username = device.zWinUser
+        auth_type = 'kerberos' if '@' in username else 'basic'
+        password = device.zWinPassword
+        scheme = 'http'
+        port = 5985
+        winrm = WinrmCollectClient()
+        conn_info = ConnectionInfo(
+            hostname, auth_type, username, password, scheme, port)
+        results = winrm.do_collect(conn_info, self.WinRMQueries)
         return results
 
     def process(self, device, results, log):

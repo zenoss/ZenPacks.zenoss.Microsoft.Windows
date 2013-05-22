@@ -8,16 +8,6 @@
 ##############################################################################
 
 
-def addLocalLibPath():
-    """
-    Helper to add the ZenPack's lib directory to PYTHONPATH.
-    """
-    import os
-    import site
-
-    site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
-
-
 def lookup_adminpasswordstatus(value):
     return {
         1: 'Disabled',

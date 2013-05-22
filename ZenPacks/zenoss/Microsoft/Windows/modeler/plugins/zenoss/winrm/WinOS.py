@@ -11,7 +11,6 @@
 Windows Operating System Collection
 
 """
-import logging
 import re
 
 from Products.DataCollector.plugins.DataMaps \
@@ -21,7 +20,6 @@ from Products.ZenUtils.IpUtil import checkip, IpAddressError
 
 from Products.ZenUtils.Utils import prepId
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
-        addLocalLibPath,
         lookup_architecture,
         lookup_routetype,
         lookup_protocol,
@@ -30,9 +28,10 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import (
         guessBlockSize,
         )
 
-addLocalLibPath()
-
-from txwinrm.collect import WinrmCollectClient
+from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect import (
+        ConnectionInfo,
+        WinrmCollectClient,
+        )
 
 
 class WinOS(PythonPlugin):
@@ -56,19 +55,16 @@ class WinOS(PythonPlugin):
         ]
 
     def collect(self, device, log):
-
-        username = device.zWinUser
-        password = device.zWinPassword
         hostname = device.manageIp
-
-        winrm = WinrmCollectClient(logging.getLogger())
-
-        results = winrm.do_collect(
-                    hostname,
-                    username,
-                    password,
-                    self.WinRMQueries)
-
+        username = device.zWinUser
+        auth_type = 'kerberos' if '@' in username else 'basic'
+        password = device.zWinPassword
+        scheme = 'http'
+        port = 5985
+        winrm = WinrmCollectClient()
+        conn_info = ConnectionInfo(
+            hostname, auth_type, username, password, scheme, port)
+        results = winrm.do_collect(conn_info, self.WinRMQueries)
         return results
 
     def process(self, device, results, log):
