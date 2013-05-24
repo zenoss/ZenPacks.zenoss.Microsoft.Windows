@@ -37,7 +37,7 @@ class SingleCounterDataSource(PythonDataSource):
     cycletime = 300
     counter = ''
     _properties = PythonDataSource._properties + (
-        {'id': 'counter', 'type': 'string'})
+        {'id': 'counter', 'type': 'string'},)
 
 
 class TypeperfSc1DataSource(SingleCounterDataSource):
