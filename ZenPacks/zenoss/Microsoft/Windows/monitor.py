@@ -21,7 +21,9 @@ from .txwinrm.util import ConnectionInfo
 from .txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
-_ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
+ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
+TYPEPERFSC1_SOURCETYPE = 'WinRS typeperf -sc1'
+POWERSHELLGETCOUNTER_SOURCETYPE = 'WinRS powershell Get-Counter'
 
 
 class SingleCounterDataSource(PythonDataSource):
@@ -32,32 +34,12 @@ class SingleCounterDataSource(PythonDataSource):
     PowershellGetCounterDataSource
     """
 
-    ZENPACKID = _ZENPACKID
+    ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
     counter = ''
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},)
-
-
-class TypeperfSc1DataSource(SingleCounterDataSource):
-    """
-    Datasource used to capture datapoints from winrs typeperf -sc1.
-    """
-
-    sourcetypes = ('WinRS typeperf -sc1',)
-    sourcetype = sourcetypes[0]
-    plugin_classname = _ZENPACKID + '.datasources.TypeperfSc1Plugin'
-
-
-class PowershellGetCounterDataSource(SingleCounterDataSource):
-    """
-    Datasource used to capture datapoints from winrs powershell get-counter.
-    """
-
-    sourcetypes = ('WinRS powershell Get-Counter',)
-    sourcetype = sourcetypes[0]
-    plugin_classname = _ZENPACKID + '.datasources.PowershellGetCounterPlugin'
 
 
 class ITypeperfSc1Info(IRRDDataSourceInfo):
@@ -66,7 +48,7 @@ class ITypeperfSc1Info(IRRDDataSourceInfo):
     """
 
     namespace = schema.TextLine(
-        group=_t(TypeperfSc1DataSource.sourcetype),
+        group=_t(TYPEPERFSC1_SOURCETYPE),
         title=_t('Counter'))
 
 
@@ -76,7 +58,7 @@ class IPowershellGetCounterInfo(IRRDDataSourceInfo):
     """
 
     namespace = schema.TextLine(
-        group=_t(PowershellGetCounterDataSource.sourcetype),
+        group=_t(POWERSHELLGETCOUNTER_SOURCETYPE),
         title=_t('Counter'))
 
 
