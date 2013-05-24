@@ -7,45 +7,19 @@
 #
 ##############################################################################
 
-from pprint import pformat
 from twisted.internet import defer
-from .client import WinrmClientFactory
-
-
-class Result(object):
-
-    def __repr__(self):
-        return '\n' + pformat(vars(self), indent=4)
-
-
-class ResultsAccumulator(object):
-
-    def __init__(self):
-        self.results = []
-
-    def new_instance(self):
-        self.results.append(Result())
-
-    def append_element(self, uri, localname, text):
-        setattr(self.results[-1], localname, text)
+from .enumerate import create_winrm_client
 
 
 class WinrmCollectClient(object):
 
-    def __init__(self, logger):
-        self._logger = logger
-        self._client_factory = WinrmClientFactory(logger)
-
     @defer.inlineCallbacks
     def do_collect(self, hostname, username, password, wqls):
-        client = self._client_factory.create_winrm_client()
-        results = {}
+        client = create_winrm_client(hostname, username, password)
+        items = {}
         for wql in wqls:
-            accumulator = ResultsAccumulator()
-            yield client.enumerate(hostname, username, password, wql,
-                                   accumulator)
-            results[wql] = accumulator.results
-        defer.returnValue(results)
+            items[wql] = yield client.enumerate(wql)
+        defer.returnValue(items)
 
 
 # ----- An example of useage...
@@ -55,15 +29,15 @@ if __name__ == '__main__':
     import logging
     from twisted.internet import reactor
     logging.basicConfig()
-    winrm = WinrmCollectClient(logging.getLogger())
+    winrm = WinrmCollectClient()
 
     @defer.inlineCallbacks
     def do_example_collect():
-        results = yield winrm.do_collect(
-            "10.30.40.115", "Administrator", "Z3n0ss",
+        items = yield winrm.do_collect(
+            "gilroy", "Administrator", "Z3n0ss",
             ['Select Caption, DeviceID, Name From Win32_Processor',
              'select Name, Label, Capacity from Win32_Volume'])
-        pprint(results)
+        pprint(items)
         reactor.stop()
 
     reactor.callWhenRunning(do_example_collect)

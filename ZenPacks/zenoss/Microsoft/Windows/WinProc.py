@@ -24,6 +24,7 @@ class WinProc(HWComponent):
     status = None
     architecture = None
     clockspeed = None
+    voltage = None
 
     _properties = HWComponent._properties + (
         {'id': 'caption', 'type': 'string'},
