@@ -47,7 +47,7 @@ class ITypeperfSc1Info(IRRDDataSourceInfo):
     Provide the UI information for the WinRS typeperf -sc1 datasource.
     """
 
-    namespace = schema.TextLine(
+    counter = schema.TextLine(
         group=_t(TYPEPERFSC1_SOURCETYPE),
         title=_t('Counter'))
 
@@ -57,7 +57,7 @@ class IPowershellGetCounterInfo(IRRDDataSourceInfo):
     Provide the UI information for the WinRS powershell Get-Counter datasource.
     """
 
-    namespace = schema.TextLine(
+    counter = schema.TextLine(
         group=_t(POWERSHELLGETCOUNTER_SOURCETYPE),
         title=_t('Counter'))
 
