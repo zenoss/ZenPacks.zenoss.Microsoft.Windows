@@ -86,6 +86,10 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
                 datasource.getCycleTime(context),
                 datasource.counter)
 
+    @classmethod
+    def params(cls, datasource, context):
+        return dict(counter=datasource.talesEval(datasource.counter, context))
+
     @defer.inlineCallbacks
     def collect(self, config):
         log.warn('BME- SingleCounterPlugin collect {0}'.format(config))
@@ -104,7 +108,8 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
                 scheme,
                 port)
             cmd = create_single_shot_command(conn_info)
-            command_line = self._build_command_line(datasource.counter)
+            command_line = self._build_command_line(
+                datasource.params['counter'])
             result = yield cmd.run_command(command_line)
             results.append((datasource, result))
         defer.returnValue(results)
