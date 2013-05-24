@@ -17,6 +17,18 @@
         provides=".interfaces.IWinProcInfo"
         />
 
+    <adapter
+        provides=".datasources.ITypeperfSc1Info"
+        for=".datasources.TypeperfSc1DataSource"
+        factory=".datasources.SingleCounterInfo"
+        />
+
+    <adapter
+        provides=".datasources.IPowershellGetCounterInfo"
+        for=".datasources.PowershellGetCounterDataSource"
+        factory=".datasources.SingleCounterInfo"
+        />
+
     <!-- Browser -->
     <include package=".browser"/>
 
