@@ -18,15 +18,9 @@
         />
 
     <adapter
-        provides=".monitor.ITypeperfSc1Info"
+        provides=".datasources.TypeperfSc1DataSource.ITypeperfSc1Info"
         for=".datasources.TypeperfSc1DataSource.TypeperfSc1DataSource"
-        factory=".monitor.SingleCounterInfo"
-        />
-
-    <adapter
-        provides=".monitor.IPowershellGetCounterInfo"
-        for=".datasources.PowershellGetCounterDataSource.PowershellGetCounterDataSource"
-        factory=".monitor.SingleCounterInfo"
+        factory=".datasources.TypeperfSc1DataSource.SingleCounterInfo"
         />
 
     <!-- Browser -->
