@@ -45,7 +45,7 @@ from .util import RequestSender, get_datetime
 
 log = logging.getLogger('zen.winrm')
 _MAX_REQUESTS_PER_ENUMERATION = 9999
-_DEFAULT_RESOURCE_URI = '{0}/*'.format(c.WMICIMV2)
+DEFAULT_RESOURCE_URI = '{0}/*'.format(c.WMICIMV2)
 _MARKER = object()
 
 
@@ -61,7 +61,7 @@ class WinrmClient(object):
         self._hostname = sender.hostname
 
     @defer.inlineCallbacks
-    def enumerate(self, wql, resource_uri=_DEFAULT_RESOURCE_URI):
+    def enumerate(self, wql, resource_uri=DEFAULT_RESOURCE_URI):
         """
         Runs a remote WQL query.
         """
