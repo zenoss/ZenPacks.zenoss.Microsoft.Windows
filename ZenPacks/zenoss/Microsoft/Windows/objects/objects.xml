@@ -18,6 +18,733 @@ Windows Operating System
 <property type="string" id="description" mode="w" >
 Windows Operating System
 </property>
+<tomanycont id='rrdTemplates'>
+<object id='Device' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property type="text" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Memory\Available bytes
+</property>
+<tomanycont id='datapoints'>
+<object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<tomanycont id='aliases'>
+<object id='memoryAvailable__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Memory\Committed Bytes
+</property>
+<tomanycont id='datapoints'>
+<object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Memory\Pages Input/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Memory\Pages Output/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Paging File(_Total)\% Usage
+</property>
+<tomanycont id='datapoints'>
+<object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Processor(_Total)\% Privileged Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Processor(_Total)\% Processor Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<tomanycont id='aliases'>
+<object id='cpu__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\Processor(_Total)\% User Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS typeperf -sc1
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+</property>
+<property type="string" id="counter" >
+\System\System Up Time
+</property>
+<tomanycont id='datapoints'>
+<object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='graphDefs'>
+<object id='CPU Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property id='zendoc' type='string'>
+ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
+</property>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+percent
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='ProcessorTotalProcessorTime' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Memory Paging' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property id='zendoc' type='string'>
+MemoryPagesOutputSec_MemoryPagesOutputSec
+</property>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+pages/sec
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+2
+</property>
+<tomanycont id='graphPoints'>
+<object id='MemoryPagesInputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+MemoryPagesInputSec_MemoryPagesInputSec
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='MemoryPagesOutputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+MemoryPagesOutputSec_MemoryPagesOutputSec
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Memory Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property id='zendoc' type='string'>
+MemoryCommittedBytes_MemoryCommittedBytes
+</property>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+bytes
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<tomanycont id='graphPoints'>
+<object id='MemoryAvailableBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+MemoryAvailableBytes_MemoryAvailableBytes
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='MemoryCommittedBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+MemoryCommittedBytes_MemoryCommittedBytes
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Paging File Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property id='zendoc' type='string'>
+PagingFileTotalUsage_PagingFileTotalUsage
+</property>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+percent
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+3
+</property>
+<tomanycont id='graphPoints'>
+<object id='PagingFileTotalUsage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%5.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+PagingFileTotalUsage_PagingFileTotalUsage
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+Administrator
+</property>
+</object>
+<object id='kerberos' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+bedwards@solutions.loc
+</property>
+</object>
 </object>
 </object>
 </objects>

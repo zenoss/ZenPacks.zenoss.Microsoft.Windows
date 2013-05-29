@@ -21,6 +21,13 @@
         factory=".info.WinIISInfo"
         for=".WinIIS.WinIIS"
         provides=".interfaces.IWinIISInfo"
+
+        />
+
+    <adapter
+        provides=".datasources.TypeperfSc1DataSource.ITypeperfSc1Info"
+        for=".datasources.TypeperfSc1DataSource.TypeperfSc1DataSource"
+        factory=".datasources.TypeperfSc1DataSource.SingleCounterInfo"
         />
 
     <!-- Browser -->

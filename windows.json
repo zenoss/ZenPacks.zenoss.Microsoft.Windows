@@ -1,0 +1,2412 @@
+{
+ "/zport/dmd/Devices/Server/Windows/WMI/Active Directory/2008R2|Active Directory": {
+  "datasources": {
+   "dsClientBindsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Client Binds/sec",
+    "datapoints": {
+     "dsClientBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryReadsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Directory Reads/sec",
+    "datapoints": {
+     "dsDirectoryReadsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectorySearchesSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Directory Searches/sec",
+    "datapoints": {
+     "dsDirectorySearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryWritesSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Directory Writes/sec",
+    "datapoints": {
+     "dsDirectoryWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsMonitorListSize": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Monitor List Size",
+    "datapoints": {
+     "dsMonitorListSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNameCacheHitRate": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Name Cache hit rate",
+    "datapoints": {
+     "dsNameCacheHitRate": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNotifyQueueSize": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Notify Queue Size",
+    "datapoints": {
+     "dsNotifyQueueSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsSearchSuboperationsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Search sub-operations/sec",
+    "datapoints": {
+     "dsSearchSuboperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerBindsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Server Binds/sec",
+    "datapoints": {
+     "dsServerBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerNameTranslationsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Server Name Translations/sec",
+    "datapoints": {
+     "dsServerNameTranslationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsThreadsInUse": {
+    "counter": "\\DirectoryServices(NTDS)\\DS Threads in Use",
+    "datapoints": {
+     "dsThreadsInUse": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapActiveThreads": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Active Threads",
+    "datapoints": {
+     "ldapActiveThreads": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapBindTime": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Bind Time",
+    "datapoints": {
+     "ldapBindTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClientSessions": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Client Sessions",
+    "datapoints": {
+     "ldapClientSessions": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClosedConnectionsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Closed Connections/sec",
+    "datapoints": {
+     "ldapClosedConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewConnectionsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP New Connections/sec",
+    "datapoints": {
+     "ldapNewConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewSSLConnectionsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP New SSL Connections/sec",
+    "datapoints": {
+     "ldapNewSSLConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSearchesSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Searches/sec",
+    "datapoints": {
+     "ldapSearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSuccessfulBinds": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Successful Binds/sec",
+    "datapoints": {
+     "ldapSuccessfulBinds": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapUdpOperationsSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP UDP operations/sec",
+    "datapoints": {
+     "ldapUdpOperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapWritesSec": {
+    "counter": "\\DirectoryServices(NTDS)\\LDAP Writes/sec",
+    "datapoints": {
+     "ldapWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Performance monitoring for Microsoft Active Directory.",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI/Active Directory/2008|Active Directory": {
+  "datasources": {
+   "dsClientBindsSec": {
+    "counter": "\\NTDS\\DS Client Binds/sec",
+    "datapoints": {
+     "dsClientBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryReadsSec": {
+    "counter": "\\NTDS\\DS Directory Reads/sec",
+    "datapoints": {
+     "dsDirectoryReadsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectorySearchesSec": {
+    "counter": "\\NTDS\\DS Directory Searches/sec",
+    "datapoints": {
+     "dsDirectorySearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryWritesSec": {
+    "counter": "\\NTDS\\DS Directory Writes/sec",
+    "datapoints": {
+     "dsDirectoryWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsMonitorListSize": {
+    "counter": "\\NTDS\\DS Monitor List Size",
+    "datapoints": {
+     "dsMonitorListSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNameCacheHitRate": {
+    "counter": "\\NTDS\\DS Name Cache hit rate",
+    "datapoints": {
+     "dsNameCacheHitRate": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNotifyQueueSize": {
+    "counter": "\\NTDS\\DS Notify Queue Size",
+    "datapoints": {
+     "dsNotifyQueueSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsSearchSuboperationsSec": {
+    "counter": "\\NTDS\\DS Search sub-operations/sec",
+    "datapoints": {
+     "dsSearchSuboperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerBindsSec": {
+    "counter": "\\NTDS\\DS Server Binds/sec",
+    "datapoints": {
+     "dsServerBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerNameTranslationsSec": {
+    "counter": "\\NTDS\\DS Server Name Translations/sec",
+    "datapoints": {
+     "dsServerNameTranslationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsThreadsInUse": {
+    "counter": "\\NTDS\\DS Threads in Use",
+    "datapoints": {
+     "dsThreadsInUse": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapActiveThreads": {
+    "counter": "\\NTDS\\LDAP Active Threads",
+    "datapoints": {
+     "ldapActiveThreads": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapBindTime": {
+    "counter": "\\NTDS\\LDAP Bind Time",
+    "datapoints": {
+     "ldapBindTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClientSessions": {
+    "counter": "\\NTDS\\LDAP Client Sessions",
+    "datapoints": {
+     "ldapClientSessions": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClosedConnectionsSec": {
+    "counter": "\\NTDS\\LDAP Closed Connections/sec",
+    "datapoints": {
+     "ldapClosedConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewConnectionsSec": {
+    "counter": "\\NTDS\\LDAP New Connections/sec",
+    "datapoints": {
+     "ldapNewConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewSSLConnectionsSec": {
+    "counter": "\\NTDS\\LDAP New SSL Connections/sec",
+    "datapoints": {
+     "ldapNewSSLConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSearchesSec": {
+    "counter": "\\NTDS\\LDAP Searches/sec",
+    "datapoints": {
+     "ldapSearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSuccessfulBinds": {
+    "counter": "\\NTDS\\LDAP Successful Binds/sec",
+    "datapoints": {
+     "ldapSuccessfulBinds": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapUdpOperationsSec": {
+    "counter": "\\NTDS\\LDAP UDP operations/sec",
+    "datapoints": {
+     "ldapUdpOperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapWritesSec": {
+    "counter": "\\NTDS\\LDAP Writes/sec",
+    "datapoints": {
+     "ldapWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Performance monitoring for Microsoft Active Directory.",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI/Active Directory|Active Directory": {
+  "datasources": {
+   "dsClientBindsSec": {
+    "counter": "\\NTDS\\DS Client Binds/sec",
+    "datapoints": {
+     "dsClientBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryReadsSec": {
+    "counter": "\\NTDS\\DS Directory Reads/sec",
+    "datapoints": {
+     "dsDirectoryReadsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectorySearchesSec": {
+    "counter": "\\NTDS\\DS Directory Searches/sec",
+    "datapoints": {
+     "dsDirectorySearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsDirectoryWritesSec": {
+    "counter": "\\NTDS\\DS Directory Writes/sec",
+    "datapoints": {
+     "dsDirectoryWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsMonitorListSize": {
+    "counter": "\\NTDS\\DS Monitor List Size",
+    "datapoints": {
+     "dsMonitorListSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNameCacheHitRate": {
+    "counter": "\\NTDS\\DS Name Cache hit rate",
+    "datapoints": {
+     "dsNameCacheHitRate": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsNotifyQueueSize": {
+    "counter": "\\NTDS\\DS Notify Queue Size",
+    "datapoints": {
+     "dsNotifyQueueSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsSearchSuboperationsSec": {
+    "counter": "\\NTDS\\DS Search sub-operations/sec",
+    "datapoints": {
+     "dsSearchSuboperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerBindsSec": {
+    "counter": "\\NTDS\\DS Server Binds/sec",
+    "datapoints": {
+     "dsServerBindsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsServerNameTranslationsSec": {
+    "counter": "\\NTDS\\DS Server Name Translations/sec",
+    "datapoints": {
+     "dsServerNameTranslationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "dsThreadsInUse": {
+    "counter": "\\NTDS\\DS Threads in Use",
+    "datapoints": {
+     "dsThreadsInUse": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "kdcAsRequests": {
+    "counter": "\\NTDS\\KDC AS Requests",
+    "datapoints": {
+     "kdcAsRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "kdcTgsRequests": {
+    "counter": "\\NTDS\\KDC TGS Requests",
+    "datapoints": {
+     "kdcTgsRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "kerberosAuthentications": {
+    "counter": "\\NTDS\\Kerberos Authentications",
+    "datapoints": {
+     "kerberosAuthentications": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapActiveThreads": {
+    "counter": "\\NTDS\\LDAP Active Threads",
+    "datapoints": {
+     "ldapActiveThreads": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapBindTime": {
+    "counter": "\\NTDS\\LDAP Bind Time",
+    "datapoints": {
+     "ldapBindTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClientSessions": {
+    "counter": "\\NTDS\\LDAP Client Sessions",
+    "datapoints": {
+     "ldapClientSessions": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapClosedConnectionsSec": {
+    "counter": "\\NTDS\\LDAP Closed Connections/sec",
+    "datapoints": {
+     "ldapClosedConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewConnectionsSec": {
+    "counter": "\\NTDS\\LDAP New Connections/sec",
+    "datapoints": {
+     "ldapNewConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapNewSSLConnectionsSec": {
+    "counter": "\\NTDS\\LDAP New SSL Connections/sec",
+    "datapoints": {
+     "ldapNewSSLConnectionsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSearchesSec": {
+    "counter": "\\NTDS\\LDAP Searches/sec",
+    "datapoints": {
+     "ldapSearchesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapSuccessfulBinds": {
+    "counter": "\\NTDS\\LDAP Successful Binds/sec",
+    "datapoints": {
+     "ldapSuccessfulBinds": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapUdpOperationsSec": {
+    "counter": "\\NTDS\\LDAP UDP operations/sec",
+    "datapoints": {
+     "ldapUdpOperationsSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ldapWritesSec": {
+    "counter": "\\NTDS\\LDAP Writes/sec",
+    "datapoints": {
+     "ldapWritesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ntlmAuthentications": {
+    "counter": "\\NTDS\\NTLM Authentications",
+    "datapoints": {
+     "ntlmAuthentications": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Performance monitoring for Microsoft Active Directory.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Performance monitoring for Microsoft Active Directory.",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Performance monitoring for Microsoft Active Directory.",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI/MSExchange/2007|MSExchangeIS": {
+  "datasources": {
+   "activeMailboxDeliveryQueueLength": {
+    "counter": "\\MSExchangeTransport Queues(_Total)\\Active Mailbox Delivery Queue Length",
+    "datapoints": {
+     "activeMailboxDeliveryQueueLength": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "messagesCompletedDeliveryPerSecond": {
+    "counter": "\\MSExchangeTransport Queues(_Total)\\Messages Completed Delivery Per Second",
+    "datapoints": {
+     "messagesCompletedDeliveryPerSecond": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisMailboxFolderOpensPerSec": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Folder opens/sec",
+    "datapoints": {
+     "mseisMailboxFolderOpensPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisMailboxLocalDeliveryRate": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Local delivery rate",
+    "datapoints": {
+     "mseisMailboxLocalDeliveryRate": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisMailboxMessageOpensPerSec": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Message Opens/sec",
+    "datapoints": {
+     "mseisMailboxMessageOpensPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCAveragedLatency": {
+    "counter": "\\MSExchangeIS\\RPC Averaged Latency",
+    "datapoints": {
+     "mseisRPCAveragedLatency": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCOperationsPerSec": {
+    "counter": "\\MSExchangeIS\\RPC Operations/sec",
+    "datapoints": {
+     "mseisRPCOperationsPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCRequests": {
+    "counter": "\\MSExchangeIS\\RPC Requests",
+    "datapoints": {
+     "mseisRPCRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Microsoft Exchange Information Store",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI/MSExchange|MSExchangeIS": {
+  "datasources": {
+   "mseisMailboxFolderOpensPerSec": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Folder opens/sec",
+    "datapoints": {
+     "mseisMailboxFolderOpensPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisMailboxLocalDeliveryRate": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Local delivery rate",
+    "datapoints": {
+     "mseisMailboxLocalDeliveryRate": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisMailboxMessageOpensPerSec": {
+    "counter": "\\MSExchangeIS Mailbox(_Total)\\Message Opens/sec",
+    "datapoints": {
+     "mseisMailboxMessageOpensPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCAveragedLatency": {
+    "counter": "\\MSExchangeIS\\RPC Averaged Latency",
+    "datapoints": {
+     "mseisRPCAveragedLatency": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCOperationsPerSec": {
+    "counter": "\\MSExchangeIS\\RPC Operations/sec",
+    "datapoints": {
+     "mseisRPCOperationsPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "mseisRPCRequests": {
+    "counter": "\\MSExchangeIS\\RPC Requests",
+    "datapoints": {
+     "mseisRPCRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "smtpServerLocalQueueLength": {
+    "counter": "\\SMTP Server(_Total)\\Local Queue Length",
+    "datapoints": {
+     "smtpServerLocalQueueLength": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "smtpServerMessagesDeliveredPerSec": {
+    "counter": "\\SMTP Server(_Total)\\Messages Delivered/sec",
+    "datapoints": {
+     "smtpServerMessagesDeliveredPerSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft Exchange Information Store",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft Exchange Information Store",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Microsoft Exchange Information Store",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI/MSSQLServer|MSSQLServer": {
+  "datasources": {
+   "AccessMethodsFullScans": {
+    "counter": "\\SQLServer:Access Methods\\Full Scans/sec",
+    "datapoints": {
+     "AccessMethodsFullScans": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "BufferManagerBufferCacheHitRatio": {
+    "counter": "\\SQLServer:Buffer Manager\\Buffer cache hit ratio",
+    "datapoints": {
+     "BufferManagerBufferCacheHitRatio": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "BufferManagerFreePages": {
+    "counter": "\\SQLServer:Buffer Manager\\Free pages",
+    "datapoints": {
+     "BufferManagerFreePages": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "DatabasesTotalDataFileSize": {
+    "counter": "\\SQLServer:Databases(_Total)\\Data File(s) Size (KB)",
+    "datapoints": {
+     "DatabasesTotalDataFileSize": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "GeneralStatisticsUserConnections": {
+    "counter": "\\SQLServer:General Statistics\\User Connections",
+    "datapoints": {
+     "GeneralStatisticsUserConnections": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "LatchesLatchWaits": {
+    "counter": "\\SQLServer:Latches\\Latch Waits/sec",
+    "datapoints": {
+     "LatchesLatchWaits": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "LocksTotalAverageWaitTime": {
+    "counter": "\\SQLServer:Locks(_Total)\\Average Wait Time (ms)",
+    "datapoints": {
+     "LocksTotalAverageWaitTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "LocksTotalLockRequests": {
+    "counter": "\\SQLServer:Locks(_Total)\\Lock Requests/sec",
+    "datapoints": {
+     "LocksTotalLockRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "LocksTotalNumberDeadlocks": {
+    "counter": "\\SQLServer:Locks(_Total)\\Number of Deadlocks/sec",
+    "datapoints": {
+     "LocksTotalNumberDeadlocks": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "SQLStatisticsBatchRequests": {
+    "counter": "\\SQLServer:SQL Statistics\\Batch Requests/sec",
+    "datapoints": {
+     "SQLStatisticsBatchRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Microsoft SQL Server",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Microsoft SQL Server",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Microsoft SQL Server",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI|FileSystem": {
+  "datasources": {
+   "DiskReadBytesSec": {
+    "counter": "\\Disk Read Bytes/sec",
+    "datapoints": {
+     "DiskReadBytesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "DiskReadTime": {
+    "counter": "\\% Disk Read Time",
+    "datapoints": {
+     "DiskReadTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "DiskWriteBytesSec": {
+    "counter": "\\Disk Write Bytes/sec",
+    "datapoints": {
+     "DiskWriteBytesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "DiskWriteTime": {
+    "counter": "\\% Disk Write Time",
+    "datapoints": {
+     "DiskWriteTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "FreeMegabytes": {
+    "counter": "\\Free Megabytes",
+    "datapoints": {
+     "FreeMegabytes": {
+      "aliases": {
+       "usedFilesystemSpace__bytes": {
+        "formula": "1024,*,1024,*,${here/totalBytes},EXC,-"
+       }
+      },
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "FileSystem template that uses Windows WMI.",
+  "targetPythonClass": "Products.ZenModel.FileSystem"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI|IIS": {
+  "datasources": {
+   "iisBytesReceived": {
+    "counter": "\\Web Service(_Total)\\Bytes Received/sec",
+    "datapoints": {
+     "iisBytesReceived": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisBytesSent": {
+    "counter": "\\Web Service(_Total)\\Bytes Sent/sec",
+    "datapoints": {
+     "iisBytesSent": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisCGIRequests": {
+    "counter": "\\Web Service(_Total)\\CGI Requests/sec",
+    "datapoints": {
+     "iisCGIRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisConnectionAttempts": {
+    "counter": "\\Web Service(_Total)\\Connection Attempts/sec",
+    "datapoints": {
+     "iisConnectionAttempts": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisCopyRequests": {
+    "counter": "\\Web Service(_Total)\\Copy Requests/sec",
+    "datapoints": {
+     "iisCopyRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisDeleteRequests": {
+    "counter": "\\Web Service(_Total)\\Delete Requests/sec",
+    "datapoints": {
+     "iisDeleteRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisFilesReceived": {
+    "counter": "\\Web Service(_Total)\\Files Received/sec",
+    "datapoints": {
+     "iisFilesReceived": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisFilesSent": {
+    "counter": "\\Web Service(_Total)\\Files Sent/sec",
+    "datapoints": {
+     "iisFilesSent": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisGetRequests": {
+    "counter": "\\Web Service(_Total)\\Get Requests/sec",
+    "datapoints": {
+     "iisGetRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisHeadRequests": {
+    "counter": "\\Web Service(_Total)\\Head Requests/sec",
+    "datapoints": {
+     "iisHeadRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisISAPIExtensionRequests": {
+    "counter": "\\Web Service(_Total)\\ISAPI Extension Requests/sec",
+    "datapoints": {
+     "iisISAPIExtensionRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisLockRequests": {
+    "counter": "\\Web Service(_Total)\\Lock Requests/sec",
+    "datapoints": {
+     "iisLockRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisMkcolRequests": {
+    "counter": "\\Web Service(_Total)\\Mkcol Requests/sec",
+    "datapoints": {
+     "iisMkcolRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisMoveRequests": {
+    "counter": "\\Web Service(_Total)\\Move Requests/sec",
+    "datapoints": {
+     "iisMoveRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisOptionsRequests": {
+    "counter": "\\Web Service(_Total)\\Options Requests/sec",
+    "datapoints": {
+     "iisOptionsRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisOtherRequestMethods": {
+    "counter": "\\Web Service(_Total)\\Other Request Methods/sec",
+    "datapoints": {
+     "iisOtherRequestMethods": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisPostRequests": {
+    "counter": "\\Web Service(_Total)\\Post Requests/sec",
+    "datapoints": {
+     "iisPostRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisPropfindRequests": {
+    "counter": "\\Web Service(_Total)\\Propfind Requests/sec",
+    "datapoints": {
+     "iisPropfindRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisProppatchRequests": {
+    "counter": "\\Web Service(_Total)\\Proppatch Requests/sec",
+    "datapoints": {
+     "iisProppatchRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisPutRequests": {
+    "counter": "\\Web Service(_Total)\\Put Requests/sec",
+    "datapoints": {
+     "iisPutRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisSearchRequests": {
+    "counter": "\\Web Service(_Total)\\Search Requests/sec",
+    "datapoints": {
+     "iisSearchRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisTraceRequests": {
+    "counter": "\\Web Service(_Total)\\Trace Requests/sec",
+    "datapoints": {
+     "iisTraceRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "iisUnlockRequests": {
+    "counter": "\\Web Service(_Total)\\Unlock Requests/sec",
+    "datapoints": {
+     "iisUnlockRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Metrics for Microsoft IIS",
+  "targetPythonClass": "Products.ZenModel.Device"
+ },
+ "/zport/dmd/Devices/Server/Windows/WMI|ethernetCsmacd": {
+  "datasources": {
+   "bytesReceivedSec": {
+    "counter": "\\Bytes Received/sec",
+    "datapoints": {
+     "bytesReceivedSec": {
+      "aliases": {
+       "inputOctets__bytes": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "bytesSentSec": {
+    "counter": "\\Bytes Sent/sec",
+    "datapoints": {
+     "bytesSentSec": {
+      "aliases": {
+       "outputOctets__bytes": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "packetsReceivedErrors": {
+    "counter": "\\Packets Received Errors",
+    "datapoints": {
+     "packetsReceivedErrors": {
+      "aliases": {
+       "ifInErrors": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "packetsReceivedSec": {
+    "counter": "\\Packets Received/sec",
+    "datapoints": {
+     "packetsReceivedSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "packetsSentErrors": {
+    "counter": "\\Packets Outbound Errors",
+    "datapoints": {
+     "packetsSentErrors": {
+      "aliases": {
+       "ifOutErrors": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "packetsSentSec": {
+    "counter": "\\Packets Sent/sec",
+    "datapoints": {
+     "packetsSentSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "Ethernet interface template that uses Windows WMI.",
+  "targetPythonClass": "Products.ZenModel.IpInterface"
+ },
+ "/zport/dmd/Devices/Server/Windows|Device_WMI": {
+  "datasources": {
+   "MemoryAvailableBytes": {
+    "counter": "\\Memory\\Available bytes",
+    "datapoints": {
+     "MemoryAvailableBytes": {
+      "aliases": {
+       "memoryAvailable__bytes": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "MemoryCommittedBytes": {
+    "counter": "\\Memory\\Committed Bytes",
+    "datapoints": {
+     "MemoryCommittedBytes": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "MemoryPagesInputSec": {
+    "counter": "\\Memory\\Pages Input/sec",
+    "datapoints": {
+     "MemoryPagesInputSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "MemoryPagesOutputSec": {
+    "counter": "\\Memory\\Pages Output/sec",
+    "datapoints": {
+     "MemoryPagesOutputSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "PagingFileTotalUsage": {
+    "counter": "\\Paging File(_Total)\\% Usage",
+    "datapoints": {
+     "PagingFileTotalUsage": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ProcessorTotalPrivilegedTime": {
+    "counter": "\\Processor(_Total)\\% Privileged Time",
+    "datapoints": {
+     "ProcessorTotalPrivilegedTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ProcessorTotalProcessorTime": {
+    "counter": "\\Processor(_Total)\\% Processor Time",
+    "datapoints": {
+     "ProcessorTotalProcessorTime": {
+      "aliases": {
+       "cpu__pct": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "ProcessorTotalUserTime": {
+    "counter": "\\Processor(_Total)\\% User Time",
+    "datapoints": {
+     "ProcessorTotalUserTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   },
+   "sysUpTime": {
+    "counter": "\\System\\System Up Time",
+    "datapoints": {
+     "sysUpTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "enabled": true,
+    "type": "WinPerf"
+   }
+  },
+  "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+  "graphs": {
+   "CPU Utilization": {
+    "base": false,
+    "custom": "",
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "graphpoints": {
+     "ProcessorTotalProcessorTime": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "ProcessorTotalProcessorTime_ProcessorTotalProcessorTime",
+      "dpName": "ProcessorTotalProcessorTime_ProcessorTotalProcessorTime",
+      "format": "%5.1lf%%",
+      "legend": "Processor Time",
+      "limit": -1,
+      "lineType": "AREA",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     }
+    },
+    "hasSummary": true,
+    "height": 100,
+    "log": false,
+    "maxy": -1,
+    "miny": 0,
+    "sequence": 0,
+    "units": "percent",
+    "width": 500
+   },
+   "Memory Paging": {
+    "base": false,
+    "custom": "",
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "graphpoints": {
+     "MemoryPagesInputSec": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "MemoryPagesInputSec_MemoryPagesInputSec",
+      "dpName": "MemoryPagesInputSec_MemoryPagesInputSec",
+      "format": "%5.2lf%s",
+      "legend": "Pages In",
+      "limit": -1,
+      "lineType": "LINE",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     },
+     "MemoryPagesOutputSec": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "MemoryPagesOutputSec_MemoryPagesOutputSec",
+      "dpName": "MemoryPagesOutputSec_MemoryPagesOutputSec",
+      "format": "%5.2lf%s",
+      "legend": "Pages Out",
+      "limit": -1,
+      "lineType": "LINE",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     }
+    },
+    "hasSummary": true,
+    "height": 100,
+    "log": false,
+    "maxy": -1,
+    "miny": 0,
+    "sequence": 2,
+    "units": "pages/sec",
+    "width": 500
+   },
+   "Memory Utilization": {
+    "base": false,
+    "custom": "",
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "graphpoints": {
+     "MemoryAvailableBytes": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "MemoryAvailableBytes_MemoryAvailableBytes",
+      "dpName": "MemoryAvailableBytes_MemoryAvailableBytes",
+      "format": "%5.2lf%s",
+      "legend": "Available Bytes",
+      "limit": -1,
+      "lineType": "LINE",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     },
+     "MemoryCommittedBytes": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "MemoryCommittedBytes_MemoryCommittedBytes",
+      "dpName": "MemoryCommittedBytes_MemoryCommittedBytes",
+      "format": "%5.2lf%s",
+      "legend": "Committed Bytes",
+      "limit": -1,
+      "lineType": "LINE",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     }
+    },
+    "hasSummary": true,
+    "height": 100,
+    "log": false,
+    "maxy": -1,
+    "miny": 0,
+    "sequence": 1,
+    "units": "bytes",
+    "width": 500
+   },
+   "Paging File Usage": {
+    "base": false,
+    "custom": "",
+    "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+    "graphpoints": {
+     "PagingFileTotalUsage": {
+      "cFunc": "AVERAGE",
+      "color": "",
+      "description": "PagingFileTotalUsage_PagingFileTotalUsage",
+      "dpName": "PagingFileTotalUsage_PagingFileTotalUsage",
+      "format": "%5.1lf%%",
+      "legend": "Total File Usage",
+      "limit": -1,
+      "lineType": "AREA",
+      "lineWidth": 1,
+      "rpn": "",
+      "stacked": false,
+      "type": "DataPoint"
+     }
+    },
+    "hasSummary": true,
+    "height": 100,
+    "log": false,
+    "maxy": -1,
+    "miny": 0,
+    "sequence": 3,
+    "units": "percent",
+    "width": 500
+   }
+  },
+  "targetPythonClass": "Products.ZenModel.Device"
+ }
+}
