@@ -14,8 +14,10 @@ See Products.ZenModel.ZenPack._getClassesByPath() to understand how this class
 gets discovered as a datasource type in Zenoss.
 """
 
+import csv
+import time
 import logging
-from pprint import pformat
+import calendar
 from zope.component import adapts
 from zope.interface import implements
 from twisted.internet import defer
@@ -32,7 +34,6 @@ from ..txwinrm.shell import create_single_shot_command
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 TYPEPERFSC1_SOURCETYPE = 'WinRS typeperf -sc1'
-POWERSHELLGETCOUNTER_SOURCETYPE = 'WinRS powershell Get-Counter'
 
 
 class SingleCounterDataSource(PythonDataSource):
@@ -58,7 +59,8 @@ class TypeperfSc1DataSource(SingleCounterDataSource):
 
     sourcetypes = (TYPEPERFSC1_SOURCETYPE,)
     sourcetype = sourcetypes[0]
-    plugin_classname = ZENPACKID + '.monitor.TypeperfSc1Plugin'
+    plugin_classname = ZENPACKID + \
+        '.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin'
 
 
 class ITypeperfSc1Info(IRRDDataSourceInfo):
@@ -103,7 +105,6 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        log.warn('BME- SingleCounterPlugin collect {0}'.format(config))
         scheme = 'http'
         port = 5985
         results = []
@@ -126,8 +127,6 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
         defer.returnValue(results)
 
     def onSuccess(self, results, config):
-        log.warn('BME- SingleCounterPlugin onSuccess {0} {1}'
-                 .format(results, config))
         data = self.new_data()
         self._parse_results(results, data)
         data['events'].append(dict(
@@ -152,15 +151,18 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
 class TypeperfSc1Plugin(SingleCounterPlugin):
 
     def _build_command_line(self, counter):
-        log.warn('BME- TypeperfSc1Plugin _build_command_line {0}'
-                 .format(counter))
         return 'typeperf "{0}" -sc 1'.format(counter)
 
     def _parse_results(self, results, data):
-        log.warn('BME- TypeperfSc1Plugin _parse_results {0} {1}'
-                 .format(pformat(results), pformat(data)))
         for ds, result in results:
-            timestamp, value = result.split(',')
+            if result.exit_code != 0:
+                log.info('Non-zero exit code ({0}) for counter, {1}, on {2}'
+                         .format(
+                         result.exit_code, ds.params['counter'], ds.device))
+                continue
+            rows = list(csv.reader(result.stdout))
+            timestamp_str, value_str = rows[1]
+            format = '%m/%d/%Y %H:%M:%S.%f'
+            timestamp = calendar.timegm(time.strptime(timestamp_str, format))
+            value = float(value_str)
             data['values'][ds.component][ds.datasource] = (value, timestamp)
-            pass
-

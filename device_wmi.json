@@ -1,0 +1,306 @@
+{
+    "/zport/dmd/Devices/Server/Microsoft/Windows|Device": {
+        "datasources": {
+            "MemoryAvailableBytes": {
+                "counter": "\\Memory\\Available bytes",
+                "datapoints": {
+                    "MemoryAvailableBytes": {
+                        "aliases": {
+                            "memoryAvailable__bytes": {
+                                "formula": ""
+                            }
+                        },
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "MemoryCommittedBytes": {
+                "counter": "\\Memory\\Committed Bytes",
+                "datapoints": {
+                    "MemoryCommittedBytes": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "MemoryPagesInputSec": {
+                "counter": "\\Memory\\Pages Input/sec",
+                "datapoints": {
+                    "MemoryPagesInputSec": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "MemoryPagesOutputSec": {
+                "counter": "\\Memory\\Pages Output/sec",
+                "datapoints": {
+                    "MemoryPagesOutputSec": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "PagingFileTotalUsage": {
+                "counter": "\\Paging File(_Total)\\% Usage",
+                "datapoints": {
+                    "PagingFileTotalUsage": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "ProcessorTotalPrivilegedTime": {
+                "counter": "\\Processor(_Total)\\% Privileged Time",
+                "datapoints": {
+                    "ProcessorTotalPrivilegedTime": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "ProcessorTotalProcessorTime": {
+                "counter": "\\Processor(_Total)\\% Processor Time",
+                "datapoints": {
+                    "ProcessorTotalProcessorTime": {
+                        "aliases": {
+                            "cpu__pct": {
+                                "formula": ""
+                            }
+                        },
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "ProcessorTotalUserTime": {
+                "counter": "\\Processor(_Total)\\% User Time",
+                "datapoints": {
+                    "ProcessorTotalUserTime": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            },
+            "sysUpTime": {
+                "counter": "\\System\\System Up Time",
+                "datapoints": {
+                    "sysUpTime": {
+                        "aliases": {},
+                        "createCmd": "",
+                        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                        "rrdmax": null,
+                        "rrdmin": null,
+                        "rrdtype": "GAUGE"
+                    }
+                },
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "enabled": true,
+                "type": "WinRS typeperf -sc1"
+            }
+        },
+        "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+        "graphs": {
+            "CPU Utilization": {
+                "base": false,
+                "custom": "",
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "graphpoints": {
+                    "ProcessorTotalProcessorTime": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "ProcessorTotalProcessorTime_ProcessorTotalProcessorTime",
+                        "dpName": "ProcessorTotalProcessorTime_ProcessorTotalProcessorTime",
+                        "format": "%5.1lf%%",
+                        "legend": "Processor Time",
+                        "limit": -1,
+                        "lineType": "AREA",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    }
+                },
+                "hasSummary": true,
+                "height": 100,
+                "log": false,
+                "maxy": -1,
+                "miny": 0,
+                "sequence": 0,
+                "units": "percent",
+                "width": 500
+            },
+            "Memory Paging": {
+                "base": false,
+                "custom": "",
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "graphpoints": {
+                    "MemoryPagesInputSec": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "MemoryPagesInputSec_MemoryPagesInputSec",
+                        "dpName": "MemoryPagesInputSec_MemoryPagesInputSec",
+                        "format": "%5.2lf%s",
+                        "legend": "Pages In",
+                        "limit": -1,
+                        "lineType": "LINE",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    },
+                    "MemoryPagesOutputSec": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "MemoryPagesOutputSec_MemoryPagesOutputSec",
+                        "dpName": "MemoryPagesOutputSec_MemoryPagesOutputSec",
+                        "format": "%5.2lf%s",
+                        "legend": "Pages Out",
+                        "limit": -1,
+                        "lineType": "LINE",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    }
+                },
+                "hasSummary": true,
+                "height": 100,
+                "log": false,
+                "maxy": -1,
+                "miny": 0,
+                "sequence": 2,
+                "units": "pages/sec",
+                "width": 500
+            },
+            "Memory Utilization": {
+                "base": false,
+                "custom": "",
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "graphpoints": {
+                    "MemoryAvailableBytes": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "MemoryAvailableBytes_MemoryAvailableBytes",
+                        "dpName": "MemoryAvailableBytes_MemoryAvailableBytes",
+                        "format": "%5.2lf%s",
+                        "legend": "Available Bytes",
+                        "limit": -1,
+                        "lineType": "LINE",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    },
+                    "MemoryCommittedBytes": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "MemoryCommittedBytes_MemoryCommittedBytes",
+                        "dpName": "MemoryCommittedBytes_MemoryCommittedBytes",
+                        "format": "%5.2lf%s",
+                        "legend": "Committed Bytes",
+                        "limit": -1,
+                        "lineType": "LINE",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    }
+                },
+                "hasSummary": true,
+                "height": 100,
+                "log": false,
+                "maxy": -1,
+                "miny": 0,
+                "sequence": 1,
+                "units": "bytes",
+                "width": 500
+            },
+            "Paging File Usage": {
+                "base": false,
+                "custom": "",
+                "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
+                "graphpoints": {
+                    "PagingFileTotalUsage": {
+                        "cFunc": "AVERAGE",
+                        "color": "",
+                        "description": "PagingFileTotalUsage_PagingFileTotalUsage",
+                        "dpName": "PagingFileTotalUsage_PagingFileTotalUsage",
+                        "format": "%5.1lf%%",
+                        "legend": "Total File Usage",
+                        "limit": -1,
+                        "lineType": "AREA",
+                        "lineWidth": 1,
+                        "rpn": "",
+                        "stacked": false,
+                        "type": "DataPoint"
+                    }
+                },
+                "hasSummary": true,
+                "height": 100,
+                "log": false,
+                "maxy": -1,
+                "miny": 0,
+                "sequence": 3,
+                "units": "percent",
+                "width": 500
+            }
+        },
+        "targetPythonClass": "Products.ZenModel.Device"
+    }
+}
