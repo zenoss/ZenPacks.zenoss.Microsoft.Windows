@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-Windows Services Collection
+Windows Internet Information Services Collection
 
 """
 
@@ -17,16 +17,11 @@ from Products.DataCollector.plugins.DataMaps \
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
-
-addLocalLibPath()
-
-from txwinrm.collect \
+from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect \
     import ConnectionInfo, WinrmCollectClient
 
 
-class WinServices(PythonPlugin):
+class WinIIS(PythonPlugin):
 
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
@@ -34,7 +29,7 @@ class WinServices(PythonPlugin):
         )
 
     WinRMQueries = [
-        'select * from Win32_Service',
+        'select * from IIsWebServerSetting',
         ]
 
     def collect(self, device, log):
@@ -55,26 +50,23 @@ class WinServices(PythonPlugin):
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
 
-        osServices = results['select * from Win32_Service']
+        iisSites = results['select * from IIsWebServerSetting']
         maps = []
-        serviceMap = []
-        for service in osServices:
+        siteMap = []
+        for site in iisSites:
             om = ObjectMap()
-            om.id = prepId(service.Name)
-            om.title = service.Name
-            om.servicename = service.Name
-            om.caption = service.Caption
-            om.description = service.Description
-            om.startmode = service.StartMode
-            om.account = service.StartName
-            om.state = service.State
+            om.id = prepId(site.Name)
+            om.title = site.ServerComment
+            om.sitename = site.ServerComment
+            om.caption = site.Caption
+            om.apppool = site.AppPoolId
 
-            serviceMap.append(om)
+            siteMap.append(om)
 
         maps.append(RelationshipMap(
-            relname="winrmservices",
+            relname="winrmiis",
             compname="os",
-            modname="ZenPacks.zenoss.Microsoft.Windows.WinService",
-            objmaps=serviceMap))
+            modname="ZenPacks.zenoss.Microsoft.Windows.WinIIS",
+            objmaps=siteMap))
 
         return maps

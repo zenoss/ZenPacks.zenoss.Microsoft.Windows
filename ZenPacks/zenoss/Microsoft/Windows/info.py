@@ -38,3 +38,11 @@ class WinProcInfo(WinComponentInfo):
     status = ProxyProperty('status')
     architecture = ProxyProperty('architecture')
     clockspeed = ProxyProperty('clockspeed')
+
+
+class WinIISInfo(WinComponentInfo):
+    implements(IWinIISInfo)
+
+    sitename = ProxyProperty('sitename')
+    apppool = ProxyProperty('apppool')
+    caption = ProxyProperty('caption')

@@ -26,9 +26,12 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import (
         lookup_drivetype,
         lookup_zendrivetype,
         guessBlockSize,
+        addLocalLibPath,
         )
 
-from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect import (
+addLocalLibPath()
+
+from txwinrm.collect import (
         ConnectionInfo,
         WinrmCollectClient,
         )

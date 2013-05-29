@@ -17,6 +17,12 @@
         provides=".interfaces.IWinProcInfo"
         />
 
+    <adapter
+        factory=".info.WinIISInfo"
+        for=".WinIIS.WinIIS"
+        provides=".interfaces.IWinIISInfo"
+        />
+
     <!-- Browser -->
     <include package=".browser"/>
 

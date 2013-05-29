@@ -20,6 +20,9 @@ class OperatingSystem(BaseOS):
         ("winrmservices", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.WinService",
           "os")),
+        ("winrmiis", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinIIS",
+          "os")),
     )
 
 InitializeClass(OperatingSystem)
