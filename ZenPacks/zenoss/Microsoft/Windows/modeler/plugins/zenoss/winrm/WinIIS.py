@@ -16,9 +16,11 @@ from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
-from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient
+addLocalLibPath()
+
+from txwinrm.collect import ConnectionInfo, WinrmCollectClient
 
 
 class WinIIS(PythonPlugin):
