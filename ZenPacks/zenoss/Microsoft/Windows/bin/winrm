@@ -9,4 +9,4 @@
 #
 ##############################################################################
 
-python -m ZenPacks.zenoss.Microsoft.Windows.txwinrm.winrm "$@"
+python -m ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.winrm "$@"

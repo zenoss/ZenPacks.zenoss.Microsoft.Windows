@@ -15,7 +15,6 @@ PYTHON=$(shell which python)
 HERE=$(PWD)
 TXWINRM_DIR=$(HERE)/src/txwinrm/txwinrm
 ZP_DIR=$(HERE)/ZenPacks/zenoss/Microsoft/Windows
-BIN_DIR=$(ZP_DIR)/bin
 LIB_DIR=$(ZP_DIR)/lib
 
 default: egg
@@ -25,8 +24,8 @@ egg:
 	python setup.py bdist_egg
 
 build:
-	mkdir -p $(LIB_DIR)	$(BIN_DIR)
+	mkdir -p $(LIB_DIR)
 	cp -r $(TXWINRM_DIR)	$(LIB_DIR)
 
 clean:
-	rm -rf lib build dist *.egg-info $(BIN_DIR) $(LIB_DIR)
+	rm -rf lib build dist *.egg-info $(LIB_DIR)

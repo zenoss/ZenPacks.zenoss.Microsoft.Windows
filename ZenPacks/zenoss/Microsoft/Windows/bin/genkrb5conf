@@ -9,5 +9,5 @@
 #
 ##############################################################################
 
-python -m ZenPacks.zenoss.Microsoft.Windows.txwinrm.genkrb5conf "$@"
+python -m ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.genkrb5conf "$@"
 

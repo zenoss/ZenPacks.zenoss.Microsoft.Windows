@@ -9,4 +9,4 @@
 #
 ##############################################################################
 
-python -m ZenPacks.zenoss.Microsoft.Windows.txwinrm.typeperf "$@"
+python -m ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.typeperf "$@"
