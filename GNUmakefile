@@ -24,8 +24,7 @@ egg:
 	python setup.py bdist_egg
 
 build:
-	mkdir -p $(LIB_DIR)
-	cp -r $(TXWINRM_DIR)	$(LIB_DIR)
+	cp -r $(TXWINRM_DIR) $(LIB_DIR)
 
 clean:
-	rm -rf lib build dist *.egg-info $(LIB_DIR)
+	rm -rf lib build dist *.egg-info
