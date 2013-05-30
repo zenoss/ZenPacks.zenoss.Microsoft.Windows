@@ -23,7 +23,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient
+    import ConnectionInfo, WinrmCollectClient, create_enum_info
 
 
 class WinServices(PythonPlugin):
