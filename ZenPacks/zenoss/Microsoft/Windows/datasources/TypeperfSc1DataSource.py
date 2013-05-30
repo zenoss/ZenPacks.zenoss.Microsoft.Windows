@@ -28,8 +28,14 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
-from ..txwinrm.util import ConnectionInfo
-from ..txwinrm.shell import create_single_shot_command
+
+from ZenPacks.zenoss.Microsoft.Windows.utils \
+    import addLocalLibPath
+
+addLocalLibPath()
+
+from txwinrm.util import ConnectionInfo
+from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
