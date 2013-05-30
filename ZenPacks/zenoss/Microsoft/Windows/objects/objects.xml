@@ -50,7 +50,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Memory\Available bytes
@@ -96,7 +96,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Memory\Committed Bytes
@@ -138,7 +138,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Input/sec
@@ -180,7 +180,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Output/sec
@@ -222,7 +222,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Paging File(_Total)\% Usage
@@ -264,7 +264,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Privileged Time
@@ -306,7 +306,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Processor Time
@@ -352,7 +352,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% User Time
@@ -394,7 +394,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.monitor.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
 </property>
 <property type="string" id="counter" >
 \System\System Up Time
@@ -731,20 +731,5 @@ AVERAGE
 </tomanycont>
 </object>
 </tomanycont>
-<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="password" id="zWinPassword" >
-</property>
-<property visible="True" type="string" id="zWinUser" >
-Administrator
-</property>
-</object>
-<object id='kerberos' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="password" id="zWinPassword" >
-</property>
-<property visible="True" type="string" id="zWinUser" >
-bedwards@solutions.loc
-</property>
-</object>
-</object>
 </object>
 </objects>

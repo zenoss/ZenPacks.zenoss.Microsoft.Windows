@@ -33,9 +33,7 @@ class WinServices(PythonPlugin):
         'zWinPassword',
         )
 
-    WinRMQueries = [
-        'select * from Win32_Service',
-        ]
+    WinRMQueries = [create_enum_info('select * from Win32_Service')]
 
     def collect(self, device, log):
         hostname = device.manageIp
@@ -55,7 +53,7 @@ class WinServices(PythonPlugin):
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
 
-        osServices = results['select * from Win32_Service']
+        osServices = results[self.WinRMQueries[0]]
         maps = []
         serviceMap = []
         for service in osServices:
