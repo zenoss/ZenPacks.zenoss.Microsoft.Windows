@@ -27,4 +27,4 @@ build:
 	cp -r $(TXWINRM_DIR) $(LIB_DIR)
 
 clean:
-	rm -rf lib build dist *.egg-info
+	rm -rf lib build dist *.egg-info $(LIB_DIR)/txwinrm
