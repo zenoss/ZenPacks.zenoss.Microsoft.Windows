@@ -31,7 +31,26 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import (
 from ZenPacks.zenoss.Microsoft.Windows.txwinrm.collect import (
         ConnectionInfo,
         WinrmCollectClient,
+        create_enum_info,
         )
+
+ENUM_INFOS = dict(
+    sysEnclosure=create_enum_info('select * from Win32_SystemEnclosure'),
+    computerSystem=create_enum_info('select * from Win32_ComputerSystem'),
+    operatingSystem=create_enum_info('select * from Win32_OperatingSystem'),
+    sysProcessor=create_enum_info('select * from Win32_Processor'),
+    cacheMemory=create_enum_info('select * from Win32_CacheMemory'),
+    netRoute=create_enum_info('select * from Win32_IP4RouteTable'),
+    netInt=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
+    fsDisk=create_enum_info('select * from Win32_logicaldisk'),
+    fsVol=create_enum_info('select * from Win32_Volume'),
+    fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'))
+
+SINGLETON_KEYS = ["sysEnclosure", "computerSystem", "operatingSystem"]
+
+
+class WinOSResult(object):
+    pass
 
 
 class WinOS(PythonPlugin):
@@ -40,19 +59,6 @@ class WinOS(PythonPlugin):
         'zWinUser',
         'zWinPassword',
         )
-
-    WinRMQueries = [
-        'select * from Win32_ComputerSystem',
-        'select * from Win32_SystemEnclosure',
-        'select * from Win32_OperatingSystem',
-        'select * from Win32_Processor',
-        'select * from Win32_CacheMemory',
-        'select * from Win32_IP4RouteTable',
-        'select * from Win32_NetworkAdapterConfiguration',
-        'select * from Win32_logicaldisk',
-        'select * from Win32_Volume',
-        'select * from Win32_MappedLogicalDisk'
-        ]
 
     def collect(self, device, log):
         hostname = device.manageIp
@@ -64,42 +70,39 @@ class WinOS(PythonPlugin):
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
             hostname, auth_type, username, password, scheme, port)
-        results = winrm.do_collect(conn_info, self.WinRMQueries)
+        results = winrm.do_collect(conn_info, ENUM_INFOS.values())
         return results
 
     def process(self, device, results, log):
-
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
 
-        sysEnclosure = results['select * from Win32_SystemEnclosure'][0]
-        computerSystem = results['select * from Win32_ComputerSystem'][0]
-        operatingSystem = results['select * from Win32_OperatingSystem'][0]
-        sysProcessor = results['select * from Win32_Processor']
-        netRoute = results['select * from Win32_IP4RouteTable']
-        netInt = results['select * from Win32_NetworkAdapterConfiguration']
-        fsDisk = results['select * from Win32_logicaldisk']
-        #fsVol = results['select * from Win32_Volume']
-        #fsMap = results['select * from Win32_MappedLogicalDisk']
+        res = WinOSResult()
+        for key, enum_info in ENUM_INFOS.iteritems():
+            value = results[enum_info]
+            if key in SINGLETON_KEYS:
+                value = value[0]
+            setattr(res, key, value)
 
-        #import pdb; pdb.set_trace()
         maps = []
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
-        hw_om.serialNumber = sysEnclosure.SerialNumber
-        hw_om.tag = sysEnclosure.Tag
-        hw_om.totalMemory = int(operatingSystem.TotalVisibleMemorySize) * 1024
+        hw_om.serialNumber = res.sysEnclosure.SerialNumber
+        hw_om.tag = res.sysEnclosure.Tag
+        hw_om.totalMemory = \
+            int(res.operatingSystem.TotalVisibleMemorySize) * 1024
         maps.append(hw_om)
 
         # OS Map
         os_om = ObjectMap(compname='os')
-        os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
+        os_om.totalSwap = \
+            int(res.operatingSystem.TotalVirtualMemorySize) * 1024
         maps.append(os_om)
 
         # Processor Map
         mapProc = []
-        for proc in sysProcessor:
+        for proc in res.sysProcessor:
             proc_om = ObjectMap()
             proc_om.id = prepId(proc.DeviceID)
             proc_om.caption = proc.Caption
@@ -119,20 +122,20 @@ class WinOS(PythonPlugin):
         # OS Map
 
         # Operating System Map
-        operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
-                                    operatingSystem.Caption)
+        res.operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
+                                    res.operatingSystem.Caption)
 
         cs_om = ObjectMap()
-        cs_om.title = computerSystem.DNSHostName
-        cs_om.setHWProductKey = MultiArgs(computerSystem.Model,
-                                        computerSystem.Manufacturer)
+        cs_om.title = res.computerSystem.DNSHostName
+        cs_om.setHWProductKey = MultiArgs(res.computerSystem.Model,
+                                          res.computerSystem.Manufacturer)
 
-        cs_om.setOSProductKey = MultiArgs(operatingSystem.Caption,
-                                        operatingSystem.Manufacturer)
+        cs_om.setOSProductKey = MultiArgs(res.operatingSystem.Caption,
+                                          res.operatingSystem.Manufacturer)
 
-        cs_om.snmpSysName = computerSystem.Name
-        cs_om.snmpContact = computerSystem.PrimaryOwnerName
-        cs_om.snmpDescr = computerSystem.Caption
+        cs_om.snmpSysName = res.computerSystem.Name
+        cs_om.snmpContact = res.computerSystem.PrimaryOwnerName
+        cs_om.snmpDescr = res.computerSystem.Caption
 
         maps.append(cs_om)
 
@@ -141,24 +144,25 @@ class WinOS(PythonPlugin):
 
         skipifregex = getattr(device, 'zInterfaceMapIgnoreNames', None)
 
-        for inter in netInt:
+        for inter in res.netInt:
             ips = []
 
             if inter.Description is not None:
                 if skipifregex and re.match(skipifregex, inter.Description):
-                    log.debug("Interface {intname} matched regex -- skipping".format(
-                        intname=inter.Description))
+                    log.debug("Interface {intname} matched regex -- skipping"
+                              .format(intname=inter.Description))
                     continue
 
-            if getattr(inter, 'IPAddress', None) != None:
-                for ipRecord, ipMask in zip([inter.IPAddress], [inter.IPSubnet]):
+            if getattr(inter, 'IPAddress', None) is not None:
+                for ipRecord, ipMask in \
+                        zip([inter.IPAddress], [inter.IPSubnet]):
                     try:
                         checkip(ipRecord)
                         if not ipMask:
                             raise IpAddressError()
 
-                        ipEntry = "{ipaddress}/{ipsubnet}".format(ipaddress=ipRecord,
-                                ipsubnet=ipMask)
+                        ipEntry = "{ipaddress}/{ipsubnet}".format(
+                                  ipaddress=ipRecord, ipsubnet=ipMask)
                         ips.append(ipEntry)
                     except IpAddressError:
                         log.debug("Invalid IP Address {ipaddress} encountered "
@@ -187,7 +191,7 @@ class WinOS(PythonPlugin):
 
         # Network Route Map
         mapRoute = []
-        for route in netRoute:
+        for route in res.netRoute:
             route_om = ObjectMap()
             route_om.id = prepId(route.Destination)
             route_om.routemask = self.maskToBits(route.Mask)
@@ -220,12 +224,14 @@ class WinOS(PythonPlugin):
         skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
 
         mapDisk = []
-        for disk in fsDisk:
+        for disk in res.fsDisk:
             disk_om = ObjectMap()
-            disk_om.mount = "{driveletter} (Serial Number: {serialnumber}) - {name}".format(
-                driveletter=disk.Name,
-                serialnumber=disk.VolumeSerialNumber,
-                name=disk.VolumeName)
+            disk_om.mount = \
+                "{driveletter} (Serial Number: {serialnumber}) - {name}" \
+                .format(
+                    driveletter=disk.Name,
+                    serialnumber=disk.VolumeSerialNumber,
+                    name=disk.VolumeName)
 
             #Check if drive description matches skip names
             if skipfsnames and re.search(skipfsnames, disk_om.mount):
@@ -235,14 +241,18 @@ class WinOS(PythonPlugin):
 
             #Check for excluded drives
             if skipfstypes:
-                #Get mapping of Windows Drive types to Zenoss types for exclusion
+                # Get mapping of Windows Drive types to
+                # Zenoss types for exclusion
                 zentype = lookup_zendrivetype(disk_om.drivetype)
                 for mapdisktype in zentype:
                     if mapdisktype in skipfstypes:
-                        log.info("{drivename} drive's filesystem {filesystem}"
-                                " has been excluded").format(
-                            drivename=disk.Name,
-                            filesystem=lookup_drivetype(disk_om.drivetype))
+                        log.info(
+                            "{drivename} drive's filesystem {filesystem}"
+                            " has been excluded"
+                            .format(
+                                drivename=disk.Name,
+                                filesystem=
+                                    lookup_drivetype(disk_om.drivetype)))
                         break
 
             disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
