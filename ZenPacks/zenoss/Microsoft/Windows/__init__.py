@@ -9,8 +9,23 @@
 
 __doc__ = "Microsoft Windows ZenPack"
 
-import logging
-
-log = logging.getLogger("zen.microsoft.windows")
+from Products.ZenModel.ZenPack import ZenPackBase
 
 
+class ZenPack(ZenPackBase):
+
+    binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
+
+    def install(self, *args):
+        super(ZenPack, self).install(*args)
+
+        # add symlinks for command line utilities
+        for utilname in self.binUtilities:
+            self.installBinFile(utilname)
+
+    def remove(self, *args):
+        super(ZenPack, self).remove(*args)
+
+        # remove symlinks for command line utilities
+        for utilname in self.binUtilities:
+            self.removeFile(utilname)
