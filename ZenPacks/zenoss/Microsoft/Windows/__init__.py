@@ -28,4 +28,4 @@ class ZenPack(ZenPackBase):
 
         # remove symlinks for command line utilities
         for utilname in self.binUtilities:
-            self.removeFile(utilname)
+            self.removeBinFile(utilname)
