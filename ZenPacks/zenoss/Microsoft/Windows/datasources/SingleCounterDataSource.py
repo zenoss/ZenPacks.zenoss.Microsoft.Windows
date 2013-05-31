@@ -18,6 +18,7 @@ import csv
 import time
 import logging
 import calendar
+from xml.etree import cElementTree as ET
 from zope.component import adapts
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
@@ -101,19 +102,19 @@ class TypeperfSc1Strategy(object):
     def build_command_line(self, counter):
         return 'typeperf "{0}" -sc 1'.format(counter)
 
-    def parse_results(self, results, data):
-        for ds, result in results:
-            if result.exit_code != 0:
-                log.info('Non-zero exit code ({0}) for counter, {1}, on {2}'
-                         .format(
-                         result.exit_code, ds.params['counter'], ds.device))
-                continue
-            rows = list(csv.reader(result.stdout))
-            timestamp_str, value_str = rows[1]
-            format = '%m/%d/%Y %H:%M:%S.%f'
-            timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-            value = float(value_str)
-            data['values'][ds.component][ds.datasource] = (value, timestamp)
+    def parse_result(self, dsconf, result):
+        if result.exit_code != 0:
+            log.info(
+                'Non-zero exit code ({0}) for counter, {1}, on {2}'
+                .format(
+                    result.exit_code, dsconf.params['counter'], dsconf.device))
+            return None, None
+        rows = list(csv.reader(result.stdout))
+        timestamp_str, value_str = rows[1]
+        format = '%m/%d/%Y %H:%M:%S.%f'
+        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
+        value = float(value_str)
+        return value, timestamp
 
 
 typeperf_strategy = TypeperfSc1Strategy()
@@ -125,15 +126,20 @@ class PowershellGetCounterStrategy(object):
         return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
                "XML -Command \"get-counter -counter '{0}'\"".format(counter)
 
-    def parse_results(self, results, data):
-        for ds, result in results:
-            if result.exit_code != 0:
-                log.info('Non-zero exit code ({0}) for counter, {1}, on {2}'
-                         .format(
-                         result.exit_code, ds.params['counter'], ds.device))
-                continue
-            log.warn("BME- {0}".format(result.stdout))
-            # data['values'][ds.component][ds.datasource] = (value, timestamp)
+    def parse_result(self, dsconf, result):
+        if result.exit_code != 0:
+            log.info(
+                'Non-zero exit code ({0}) for counter, {1}, on {2}'
+                .format(
+                    result.exit_code, dsconf.params['counter'], dsconf.device))
+            return None, None
+        root_elem = ET.fromstring(result.stdout[1])
+        value = float(root_elem.findtext('.//*[@N="RawValue"]'))
+        # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
+        timestamp_str = root_elem.findtext('.//*[@N="Timestamp"]')[:-7]
+        format = '%Y-%m-%dT%H:%M:%S.%f'
+        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
+        return value, timestamp
 
 
 powershell_strategy = PowershellGetCounterStrategy()
@@ -163,30 +169,33 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
         scheme = 'http'
         port = 5985
         results = []
-        for datasource in config.datasources:
+        for dsconf in config.datasources:
             auth_type = 'basic'
-            if '@' in datasource.zWinUser:
+            if '@' in dsconf.zWinUser:
                 auth_type = 'kerberos'
             conn_info = ConnectionInfo(
-                datasource.manageIp,
+                dsconf.manageIp,
                 auth_type,
-                datasource.zWinUser,
-                datasource.zWinPassword,
+                dsconf.zWinUser,
+                dsconf.zWinPassword,
                 scheme,
                 port)
             cmd = create_single_shot_command(conn_info)
-            strategy = typeperf_strategy
-            if datasource.strategy == POWERSHELL_STRATEGY:
-                strategy = powershell_strategy
-            command_line = strategy.build_command_line(
-                datasource.params['counter'])
+            command_line = self._get_strategy(dsconf).build_command_line(
+                dsconf.params['counter'])
             result = yield cmd.run_command(command_line)
-            results.append((datasource, result))
+            results.append((dsconf, result))
         defer.returnValue(results)
 
     def onSuccess(self, results, config):
         data = self.new_data()
-        self._parse_results(results, data)
+        for dsconf, result in results:
+            strategy = self._get_strategy(dsconf)
+            value, timestamp = strategy.parse_result(dsconf, result)
+            if value is None:
+                continue
+            data['values'][dsconf.component][dsconf.datasource] = \
+                value, timestamp
         data['events'].append(dict(
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
@@ -204,3 +213,8 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
             summary=msg,
             device=config.id))
         return data
+
+    def _get_strategy(self, dsconf):
+        if dsconf.params['strategy'] == POWERSHELL_STRATEGY:
+            return powershell_strategy
+        return typeperf_strategy
