@@ -30,7 +30,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -50,10 +50,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Available bytes
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -76,7 +79,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -96,10 +99,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Committed Bytes
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -118,7 +124,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -138,10 +144,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Input/sec
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -160,7 +169,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -180,10 +189,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Output/sec
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -202,7 +214,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -222,10 +234,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Paging File(_Total)\% Usage
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -244,7 +259,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -264,10 +279,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Privileged Time
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -286,7 +304,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -306,10 +324,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Processor Time
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -332,7 +353,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -352,10 +373,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% User Time
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -374,7 +398,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 </tomanycont>
 </object>
-<object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource' class='TypeperfSc1DataSource'>
+<object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
@@ -394,10 +418,13 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.TypeperfSc1DataSource.TypeperfSc1Plugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
 </property>
 <property type="string" id="counter" >
 \System\System Up Time
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -731,6 +758,13 @@ AVERAGE
 </tomanycont>
 </object>
 </tomanycont>
+<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+Administrator
+</property>
+</object>
 </object>
 </object>
 </objects>
