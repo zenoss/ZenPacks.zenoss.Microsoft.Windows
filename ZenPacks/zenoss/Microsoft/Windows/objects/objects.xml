@@ -35,7 +35,7 @@ Products.ZenModel.Device
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -81,7 +81,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -123,7 +123,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -165,7 +165,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -207,7 +207,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -249,7 +249,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -291,7 +291,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -337,7 +337,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -379,7 +379,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS typeperf -sc1
+WinRS Single Counter
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
