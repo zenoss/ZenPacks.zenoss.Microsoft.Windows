@@ -758,13 +758,6 @@ AVERAGE
 </tomanycont>
 </object>
 </tomanycont>
-<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="password" id="zWinPassword" >
-</property>
-<property visible="True" type="string" id="zWinUser" >
-Administrator
-</property>
-</object>
 </object>
 </object>
 </objects>
