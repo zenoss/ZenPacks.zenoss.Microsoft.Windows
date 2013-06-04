@@ -88,6 +88,21 @@ installed on top of an RM install with the msmonitor RPM
 
     http://artifacts.zenoss.loc/releases/4.2.3/ga/msmonitor/
 
+For the new Windows zenpack you can install PythonCollector from...
+
+    http://wiki.zenoss.org/ZenPack:PythonCollector
+
+You can use git to fetch the latest stable version of the new Microsoft.Windows
+ZenPack from github.
+
+Install git if it is not already installed.
+
+    $ sudo yum -y install git
+
+Download the repo
+
+    $ git clone https://github.com/zenoss/ZenPacks.zenoss.Microsoft.Windows.git
+
 Set up two machines running Zenoss for each version being tested. One machine
 will run the old Windows zenpacks. The second machine will run the new Windows
 ZenPack. This will allow you to compare the results of modeling, the graphs,
