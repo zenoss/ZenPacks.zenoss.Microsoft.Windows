@@ -40,27 +40,21 @@ Vagrantfile
     end
 
 There is no vagrant box for RM 4.1.1. You could use the cent6 base box and
-install the 4.1.1 RPM from artifacts on top of it.
-
-    http://artifacts.zenoss.loc/releases/4.1.1/ga/resmgr/
+install the 4.1.1 RPM from artifacts on top of it. The 4.1.1 RPM is available
+at http://artifacts.zenoss.loc/releases/4.1.1/ga/resmgr/
 
 You should apply the Recommended Patch Set on top of RM 4.1.1 and 4.2.3. You
 should use 4.2.4 instead of 4.2.3 once it comes out. Information on applying
 the RPS is at...
 
-RM 4.1.1
-
-    https://intranet.zenoss.com/docs/DOC-4619
-
-RM 4.2.3
-
-    https://docs.google.com/a/zenossinc.com/document/d/11jq1zRkJY5Cql4nvVAtzl3qtLHQqHaKo_KdgFRlmeoQ/edit?usp=sharing
+* RM 4.1.1 - https://intranet.zenoss.com/docs/DOC-4619
+* RM 4.2.3 - https://docs.google.com/a/zenossinc.com/document/d/11jq1zRkJY5Cql4nvVAtzl3qtLHQqHaKo_KdgFRlmeoQ/edit?usp=sharing
 
 If for some reason the 4.2.x vagrant boxes don't work for you, then you can get
 the RPMs on artifacts.
 
-    http://artifacts.zenoss.loc/releases/4.2.3/ga/zenoss_core/
-    http://artifacts.zenoss.loc/releases/4.2.3/ga/resmgr/
+* Core 4.2.3 RPM - http://artifacts.zenoss.loc/releases/4.2.3/ga/zenoss_core/
+* RM 4.2.3 RPM - http://artifacts.zenoss.loc/releases/4.2.3/ga/resmgr/
 
 Old and New Windows ZenPacks
 ----------------------------
@@ -70,27 +64,25 @@ to that of the new one.
 
 Old Windows ZenPacks:
 
-    * PySamba
-    * WindowsMonitor
-    * ActiveDirectory
-    * IISMonitor
-    * MSExchange
-    * MSMQMonitor
-    * MSSQLServer
+* PySamba
+* WindowsMonitor
+* ActiveDirectory
+* IISMonitor
+* MSExchange
+* MSMQMonitor
+* MSSQLServer
 
 New Windows ZenPacks:
 
-    * PythonCollector
-    * Microsoft.Windows
+* PythonCollector
+* Microsoft.Windows
 
 The old ZenPacks come as part of the Zenoss Core 4.2.x RPM. They can be
-installed on top of an RM install with the msmonitor RPM
+installed on top of an RM install with the msmonitor RPM which is available at
+http://artifacts.zenoss.loc/releases/4.2.3/ga/msmonitor/
 
-    http://artifacts.zenoss.loc/releases/4.2.3/ga/msmonitor/
-
-For the new Windows zenpack you can install PythonCollector from...
-
-    http://wiki.zenoss.org/ZenPack:PythonCollector
+For the new Windows zenpack you can install PythonCollector from 
+http://wiki.zenoss.org/ZenPack:PythonCollector
 
 You can use git to fetch the latest stable version of the new Microsoft.Windows
 ZenPack from github.
@@ -117,4 +109,3 @@ the system does not allow for duplicate management IP addresses without the
 MultiRealmIP ZenPack installed. You will be able to test that various devices
 can be monitored and modeled with both ZenPacks and a device can be moved from
 the device class of one ZenPack to the other.
-
