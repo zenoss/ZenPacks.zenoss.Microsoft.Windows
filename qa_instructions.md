@@ -95,6 +95,16 @@ Download the repo
 
     $ git clone https://github.com/zenoss/ZenPacks.zenoss.Microsoft.Windows.git
 
+Download the txwinrm repo
+
+    $ cd ZenPacks.zenoss.Microsoft.Windows/src
+    $ git clone https://github.com/zenoss/txwinrm.git
+
+Install the zenpack
+
+    $ cd ..
+    $ zenpack --link --install .
+
 Set up two machines running Zenoss for each version being tested. One machine
 will run the old Windows zenpacks. The second machine will run the new Windows
 ZenPack. This will allow you to compare the results of modeling, the graphs,
