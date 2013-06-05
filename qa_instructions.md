@@ -120,6 +120,9 @@ bound to it, and no zenoss.wmi.* plugins bound to it.
 Devices/Server/Windows/WMI will have zenoss.wmi.* plugins bound to it (but not
 all), and it should not have any zenoss.winrm.* plugins bound to it.
 
+The type of all the datasources in the new ZenPack should be "WinRS Single
+Counter". The type of the datasources in the old ZenPack should be "WinPerf".
+
 Both ZenPacks use the same Configuration Properties (aka zProps) for setting
 the username and password. These are zWinUser and zWinPassword. The old ZenPack
 supports NTLM authentication for local Windows accounts. The new ZenPack
@@ -150,8 +153,6 @@ be part of the ZenPack install):
 * Move the krb5.conf file to /etc
 
     $ sudo mv /tmp/krb5.conf /etc/krb5.conf
-
-* 
 
 Both ZenPacks on one Zenoss Instance
 ------------------------------------
