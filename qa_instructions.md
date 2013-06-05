@@ -87,9 +87,9 @@ http://wiki.zenoss.org/ZenPack:PythonCollector
 You can use git to fetch the latest stable version of the new Microsoft.Windows
 ZenPack from github.
 
-Install git if it is not already installed.
+Install git and make.
 
-    $ sudo yum -y install git
+    $ sudo yum -y install git make
 
 Download the repo
 
