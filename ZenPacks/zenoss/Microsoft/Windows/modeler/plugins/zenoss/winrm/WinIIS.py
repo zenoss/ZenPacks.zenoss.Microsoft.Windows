@@ -20,7 +20,8 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.collect import ConnectionInfo, WinrmCollectClient
+from txwinrm.collect \
+    import ConnectionInfo, WinrmCollectClient, create_enum_info
 
 
 class WinIIS(PythonPlugin):
@@ -30,9 +31,7 @@ class WinIIS(PythonPlugin):
         'zWinPassword',
         )
 
-    WinRMQueries = [
-        'select * from IIsWebServerSetting',
-        ]
+    enum_info = create_enum_info('select * from IIsWebServerSetting')
 
     def collect(self, device, log):
         hostname = device.manageIp
@@ -44,15 +43,15 @@ class WinIIS(PythonPlugin):
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
             hostname, auth_type, username, password, scheme, port)
-        results = winrm.do_collect(conn_info, self.WinRMQueries)
+        results = winrm.do_collect(conn_info, self.enum_info)
         return results
 
     def process(self, device, results, log):
 
         log.info('Modeler %s processing data for device %s',
-            self.name(), device.id)
+                 self.name(), device.id)
 
-        iisSites = results['select * from IIsWebServerSetting']
+        iisSites = results[self.enum_info]
         maps = []
         siteMap = []
         for site in iisSites:

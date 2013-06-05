@@ -24,7 +24,11 @@ egg:
 	python setup.py bdist_egg
 
 build:
-	cp -r $(TXWINRM_DIR) $(LIB_DIR)
+	rm -rf $(LIB_DIR)/txwinrm
+	mkdir $(LIB_DIR)/txwinrm
+	cp -r $(TXWINRM_DIR)/*.py $(LIB_DIR)/txwinrm/
+	mkdir $(LIB_DIR)/txwinrm/request
+	cp -r $(TXWINRM_DIR)/request/*.xml $(LIB_DIR)/txwinrm/request/
 
 clean:
 	rm -rf lib build dist *.egg-info $(LIB_DIR)/txwinrm

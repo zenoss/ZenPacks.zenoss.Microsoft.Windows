@@ -51,7 +51,7 @@ class WinServices(PythonPlugin):
     def process(self, device, results, log):
 
         log.info('Modeler %s processing data for device %s',
-            self.name(), device.id)
+                 self.name(), device.id)
 
         osServices = results[self.WinRMQueries[0]]
         maps = []

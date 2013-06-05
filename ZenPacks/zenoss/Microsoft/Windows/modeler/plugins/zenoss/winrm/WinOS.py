@@ -17,25 +17,16 @@ from Products.DataCollector.plugins.DataMaps \
     import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.IpUtil import checkip, IpAddressError
-
 from Products.ZenUtils.Utils import prepId
-from ZenPacks.zenoss.Microsoft.Windows.utils import (
-        lookup_architecture,
-        lookup_routetype,
-        lookup_protocol,
-        lookup_drivetype,
-        lookup_zendrivetype,
-        guessBlockSize,
-        addLocalLibPath,
-        )
+from Products.Zuul.utils import safe_hasattr
+from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, \
+    lookup_routetype, lookup_protocol, lookup_drivetype, lookup_zendrivetype, \
+    guessBlockSize, addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.collect import (
-        ConnectionInfo,
-        WinrmCollectClient,
-        create_enum_info,
-        )
+from txwinrm.collect import ConnectionInfo, WinrmCollectClient, \
+    create_enum_info
 
 ENUM_INFOS = dict(
     sysEnclosure=create_enum_info('select * from Win32_SystemEnclosure'),
@@ -78,7 +69,7 @@ class WinOS(PythonPlugin):
 
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
-            self.name(), device.id)
+                 self.name(), device.id)
 
         res = WinOSResult()
         for key, enum_info in ENUM_INFOS.iteritems():
@@ -110,7 +101,8 @@ class WinOS(PythonPlugin):
             proc_om.id = prepId(proc.DeviceID)
             proc_om.caption = proc.Caption
             proc_om.title = proc.Name
-            proc_om.numbercore = proc.NumberOfCores
+            if safe_hasattr(proc, 'NumberOfCores'):
+                proc_om.numbercore = proc.NumberOfCores
             proc_om.status = proc.Status
             proc_om.architecture = lookup_architecture(int(proc.Architecture))
             proc_om.clockspeed = proc.MaxClockSpeed  # MHz
@@ -126,7 +118,7 @@ class WinOS(PythonPlugin):
 
         # Operating System Map
         res.operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',
-                                    res.operatingSystem.Caption)
+                                             res.operatingSystem.Caption)
 
         cs_om = ObjectMap()
         cs_om.title = res.computerSystem.DNSHostName
@@ -169,9 +161,8 @@ class WinOS(PythonPlugin):
                         ips.append(ipEntry)
                     except IpAddressError:
                         log.debug("Invalid IP Address {ipaddress} encountered "
-                                "skipped".format(ipaddress=ipRecord))
+                                  "skipped".format(ipaddress=ipRecord))
 
-            #import pdb; pdb.set_trace()
             int_om = ObjectMap()
             int_om.id = prepId(inter.Description)
             int_om.setIpAddresses = ips
@@ -252,10 +243,9 @@ class WinOS(PythonPlugin):
                         log.info(
                             "{drivename} drive's filesystem {filesystem}"
                             " has been excluded"
-                            .format(
-                                drivename=disk.Name,
-                                filesystem=
-                                    lookup_drivetype(disk_om.drivetype)))
+                            .format(drivename=disk.Name,
+                                    filesystem=lookup_drivetype(
+                                        disk_om.drivetype)))
                         break
 
             disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
