@@ -110,6 +110,50 @@ will run the old Windows zenpacks. The second machine will run the new Windows
 ZenPack. This will allow you to compare the results of modeling, the graphs,
 and events for both the old and new ZPs.
 
+The old and new ZenPacks use different Device Classes.
+
+* Old - Devices/Server/Windows/WMI
+* New - Devices/Server/Microsoft/Windows
+
+Devices/Server/Microsoft/Windows should have all zenoss.winrm.* modeler plugins
+bound to it, and no zenoss.wmi.* plugins bound to it.
+Devices/Server/Windows/WMI will have zenoss.wmi.* plugins bound to it (but not
+all), and it should not have any zenoss.winrm.* plugins bound to it.
+
+The type of all the datasources in the new ZenPack should be "WinRS Single
+Counter". The type of the datasources in the old ZenPack should be "WinPerf".
+
+Both ZenPacks use the same Configuration Properties (aka zProps) for setting
+the username and password. These are zWinUser and zWinPassword. The old ZenPack
+supports NTLM authentication for local Windows accounts. The new ZenPack
+supports Basic authentication for local accounts and Kerberos authentication
+for domain accounts. Support for NTLMv2 is planned before for the initial
+release. If you have multiple target Windows machines that share the same
+credentials you can create sub-DeviceClasses and configure zWinUser and
+zWinPassword on the device class. For kerberos authentication zWinUser should
+be in the form username@domain (e.g. bedwards@solutions.loc). The software will
+key off the fact that zWinUser has an '@' character in it and automatically
+use kerberos authentication.
+
+For kerberos to work you need to do the following steps (eventually this will
+be part of the ZenPack install):
+
+* Install the kerberos C libraries
+
+    $ sudo yum -y install gcc krb5-devel krb5-workstation
+
+* Install the kerberos python library
+
+    $ easy_install kerberos
+
+* Generate a krb5.conf file
+
+    $ genkrb5conf --output /tmp/krb5.conf solutions.loc 10.30.1.10
+
+* Move the krb5.conf file to /etc
+
+    $ sudo mv /tmp/krb5.conf /etc/krb5.conf
+
 Both ZenPacks on one Zenoss Instance
 ------------------------------------
 
