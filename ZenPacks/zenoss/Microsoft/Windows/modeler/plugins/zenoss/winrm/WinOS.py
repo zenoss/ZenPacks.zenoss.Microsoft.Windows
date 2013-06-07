@@ -12,7 +12,7 @@ Windows Operating System Collection
 
 """
 import re
-
+from pprint import pformat
 from Products.DataCollector.plugins.DataMaps \
     import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
@@ -84,8 +84,12 @@ class WinOS(PythonPlugin):
         hw_om = ObjectMap(compname='hw')
         hw_om.serialNumber = res.sysEnclosure.SerialNumber
         hw_om.tag = res.sysEnclosure.Tag
-        hw_om.totalMemory = \
-            int(res.operatingSystem.TotalVisibleMemorySize) * 1024
+
+        if safe_hasattr(res.operatingSystem, "TotalVisibleMemorySize"):
+            hw_om.totalMemory = 1024 * int(res.operatingSystem.TotalVisibleMemorySize)
+        else:
+            log.warn("Win32_OperatingSystem query did not respond with TotalVisibleMemorySize.\n{0}"
+                     .format(pformat(sorted(vars(res.operatingSystem).keys()))))
         maps.append(hw_om)
 
         # OS Map
