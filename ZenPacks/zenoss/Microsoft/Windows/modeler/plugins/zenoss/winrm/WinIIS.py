@@ -20,8 +20,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient, create_enum_info
+from txwinrm.collect import ConnectionInfo, WinrmCollectClient, create_enum_info
 
 
 class WinIIS(PythonPlugin):
@@ -43,7 +42,7 @@ class WinIIS(PythonPlugin):
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
             hostname, auth_type, username, password, scheme, port)
-        results = winrm.do_collect(conn_info, self.enum_info)
+        results = winrm.do_collect(conn_info, [self.enum_info])
         return results
 
     def process(self, device, results, log):

@@ -8,10 +8,13 @@ Microsoft Software
 <property type="string" id="description" mode="w" >
 Microsoft Software
 </property>
-<property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS']
-</property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.Microsoft.Windows.Device
+</property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
+</property>
 <property id='zendoc' type='string'>
 Windows Operating System
 </property>

@@ -176,7 +176,7 @@ class WinOS(PythonPlugin):
             int_om.monitor = int_om.operStatus = bool(inter.IPEnabled)
             try:
                 int_om.ifindex = int(inter.InterfaceIndex)
-            except AttributeError:
+            except (AttributeError, TypeError):
                 int_om.ifindex = int(inter.Index)
 
             mapInter.append(int_om)
