@@ -23,7 +23,9 @@ egg:
 	#setup.py will call 'make build' before creating the egg
 	python setup.py bdist_egg
 
-build:
+# pipe operator means src/txwinrm must exist (as opposed to being more recent)
+build: | src/txwinrm
+	cd src/txwinrm; git pull
 	rm -rf $(LIB_DIR)/txwinrm
 	mkdir $(LIB_DIR)/txwinrm
 	cp -r $(TXWINRM_DIR)/*.py $(LIB_DIR)/txwinrm/
@@ -32,3 +34,6 @@ build:
 
 clean:
 	rm -rf lib build dist *.egg-info $(LIB_DIR)/txwinrm
+
+src/txwinrm:
+	cd src; git clone https://github.com/zenoss/txwinrm.git
