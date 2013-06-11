@@ -24,7 +24,7 @@ egg:
 	python setup.py bdist_egg
 
 # pipe operator means src/txwinrm must exist (as opposed to being more recent)
-build: | src/txwinrm
+build: | src src/txwinrm
 	cd src/txwinrm; git pull
 	rm -rf $(LIB_DIR)/txwinrm
 	mkdir $(LIB_DIR)/txwinrm
@@ -34,6 +34,9 @@ build: | src/txwinrm
 
 clean:
 	rm -rf lib build dist *.egg-info $(LIB_DIR)/txwinrm
+
+src:
+	mkdir src
 
 src/txwinrm:
 	cd src; git clone https://github.com/zenoss/txwinrm.git
