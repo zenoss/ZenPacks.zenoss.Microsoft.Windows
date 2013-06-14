@@ -19,7 +19,7 @@ Windows Operating System
 Windows Operating System
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Active Directory']
+['Device', 'Active Directory', 'MSExchangeIS']
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
@@ -3613,7 +3613,719 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='MSExchangeIS' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Folder opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
 </tomanycont>
+</object>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Local delivery rate
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Message Opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Averaged Latency
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SMTP Server(_Total)\Local Queue Length
+</property>
+<tomanycont id='datapoints'>
+<object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SMTP Server(_Total)\Messages Delivered/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='MSExchangeIS_2007' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='activeMailboxDeliveryQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+</property>
+<tomanycont id='datapoints'>
+<object id='activeMailboxDeliveryQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='messagesCompletedDeliveryPerSecond' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
+</property>
+<tomanycont id='datapoints'>
+<object id='messagesCompletedDeliveryPerSecond' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Folder opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Local delivery rate
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Message Opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Averaged Latency
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+Administrator
+</property>
+</object>
+<object id='kerberos' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+bedwards@solutions.loc
+</property>
+</object>
 </object>
 </object>
 </objects>

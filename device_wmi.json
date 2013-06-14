@@ -19,7 +19,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "MemoryCommittedBytes": {
                 "counter": "\\Memory\\Committed Bytes",
@@ -35,7 +35,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "MemoryPagesInputSec": {
                 "counter": "\\Memory\\Pages Input/sec",
@@ -51,7 +51,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "MemoryPagesOutputSec": {
                 "counter": "\\Memory\\Pages Output/sec",
@@ -67,7 +67,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "PagingFileTotalUsage": {
                 "counter": "\\Paging File(_Total)\\% Usage",
@@ -83,7 +83,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "ProcessorTotalPrivilegedTime": {
                 "counter": "\\Processor(_Total)\\% Privileged Time",
@@ -99,7 +99,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "ProcessorTotalProcessorTime": {
                 "counter": "\\Processor(_Total)\\% Processor Time",
@@ -119,7 +119,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "ProcessorTotalUserTime": {
                 "counter": "\\Processor(_Total)\\% User Time",
@@ -135,7 +135,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             },
             "sysUpTime": {
                 "counter": "\\System\\System Up Time",
@@ -151,7 +151,7 @@
                 },
                 "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
                 "enabled": true,
-                "type": "WinRS typeperf -sc1"
+                "type": "WinRS Single Counter"
             }
         },
         "description": "This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)",
