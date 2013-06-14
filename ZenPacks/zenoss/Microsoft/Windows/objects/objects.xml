@@ -8,20 +8,2873 @@ Microsoft Software
 <property type="string" id="description" mode="w" >
 Microsoft Software
 </property>
-<object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="string" id="zPythonClass" >
-ZenPacks.zenoss.Microsoft.Windows.Device
-</property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
+['zenoss.winrm.WinOS']
 </property>
+<object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
 Windows Operating System
 </property>
 <property type="string" id="description" mode="w" >
 Windows Operating System
 </property>
+<property visible="True" type="lines" id="zDeviceTemplates" >
+['Device', 'Active Directory']
+</property>
 <tomanycont id='rrdTemplates'>
+<object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="text" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Client Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsClientBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Reads/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryReadsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectorySearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Monitor List Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsMonitorListSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Name Cache hit rate
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNameCacheHitRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Notify Queue Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNotifyQueueSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Search sub-operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsSearchSuboperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Server Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Server Name Translations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerNameTranslationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Threads in Use
+</property>
+<tomanycont id='datapoints'>
+<object id='dsThreadsInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='kdcAsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\KDC AS Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='kdcAsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='kdcTgsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\KDC TGS Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='kdcTgsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='kerberosAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\Kerberos Authentications
+</property>
+<tomanycont id='datapoints'>
+<object id='kerberosAuthentications' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Active Threads
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapActiveThreads' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Bind Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapBindTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Client Sessions
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClientSessions' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Closed Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClosedConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP New Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP New SSL Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewSSLConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Successful Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSuccessfulBinds' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP UDP operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapUdpOperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ntlmAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\NTLM Authentications
+</property>
+<tomanycont id='datapoints'>
+<object id='ntlmAuthentications' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='Active Directory 2008' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="text" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Client Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsClientBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Reads/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryReadsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectorySearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Directory Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Monitor List Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsMonitorListSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Name Cache hit rate
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNameCacheHitRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Notify Queue Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNotifyQueueSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Search sub-operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsSearchSuboperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Server Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Server Name Translations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerNameTranslationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\DS Threads in Use
+</property>
+<tomanycont id='datapoints'>
+<object id='dsThreadsInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Active Threads
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapActiveThreads' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Bind Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapBindTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Client Sessions
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClientSessions' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Closed Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClosedConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP New Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP New SSL Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewSSLConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Successful Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSuccessfulBinds' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP UDP operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapUdpOperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\NTDS\LDAP Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='Active Directory 2008R2' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="text" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Client Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsClientBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Directory Reads/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryReadsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Directory Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectorySearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Directory Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDirectoryWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Monitor List Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsMonitorListSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Name Cache hit rate
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNameCacheHitRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Notify Queue Size
+</property>
+<tomanycont id='datapoints'>
+<object id='dsNotifyQueueSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Search sub-operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsSearchSuboperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Server Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Server Name Translations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='dsServerNameTranslationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\DS Threads in Use
+</property>
+<tomanycont id='datapoints'>
+<object id='dsThreadsInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Active Threads
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapActiveThreads' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Bind Time
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapBindTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Client Sessions
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClientSessions' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Closed Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapClosedConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP New Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP New SSL Connections/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapNewSSLConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Searches/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Successful Binds/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapSuccessfulBinds' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP UDP operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapUdpOperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\DirectoryServices(NTDS)\LDAP Writes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='ldapWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Performance monitoring for Microsoft Active Directory.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Performance monitoring for Microsoft Active Directory.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
 <object id='Device' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)

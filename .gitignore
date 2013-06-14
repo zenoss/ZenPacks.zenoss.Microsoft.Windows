@@ -8,3 +8,5 @@ build
 eggs
 txwinrm
 
+.DS_Store
+
