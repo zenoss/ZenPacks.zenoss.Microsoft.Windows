@@ -1,0 +1,376 @@
+{
+ "/zport/dmd/Devices/Server/Microsoft/Windows|IIS": {
+  "datasources": {
+   "iisBytesReceived": {
+    "counter": "\\Web Service(_Total)\\Bytes Received/sec",
+    "datapoints": {
+     "iisBytesReceived": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisBytesSent": {
+    "counter": "\\Web Service(_Total)\\Bytes Sent/sec",
+    "datapoints": {
+     "iisBytesSent": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisCGIRequests": {
+    "counter": "\\Web Service(_Total)\\CGI Requests/sec",
+    "datapoints": {
+     "iisCGIRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisConnectionAttempts": {
+    "counter": "\\Web Service(_Total)\\Connection Attempts/sec",
+    "datapoints": {
+     "iisConnectionAttempts": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisCopyRequests": {
+    "counter": "\\Web Service(_Total)\\Copy Requests/sec",
+    "datapoints": {
+     "iisCopyRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisDeleteRequests": {
+    "counter": "\\Web Service(_Total)\\Delete Requests/sec",
+    "datapoints": {
+     "iisDeleteRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisFilesReceived": {
+    "counter": "\\Web Service(_Total)\\Files Received/sec",
+    "datapoints": {
+     "iisFilesReceived": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisFilesSent": {
+    "counter": "\\Web Service(_Total)\\Files Sent/sec",
+    "datapoints": {
+     "iisFilesSent": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisGetRequests": {
+    "counter": "\\Web Service(_Total)\\Get Requests/sec",
+    "datapoints": {
+     "iisGetRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisHeadRequests": {
+    "counter": "\\Web Service(_Total)\\Head Requests/sec",
+    "datapoints": {
+     "iisHeadRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisISAPIExtensionRequests": {
+    "counter": "\\Web Service(_Total)\\ISAPI Extension Requests/sec",
+    "datapoints": {
+     "iisISAPIExtensionRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisLockRequests": {
+    "counter": "\\Web Service(_Total)\\Lock Requests/sec",
+    "datapoints": {
+     "iisLockRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisMkcolRequests": {
+    "counter": "\\Web Service(_Total)\\Mkcol Requests/sec",
+    "datapoints": {
+     "iisMkcolRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisMoveRequests": {
+    "counter": "\\Web Service(_Total)\\Move Requests/sec",
+    "datapoints": {
+     "iisMoveRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisOptionsRequests": {
+    "counter": "\\Web Service(_Total)\\Options Requests/sec",
+    "datapoints": {
+     "iisOptionsRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisOtherRequestMethods": {
+    "counter": "\\Web Service(_Total)\\Other Request Methods/sec",
+    "datapoints": {
+     "iisOtherRequestMethods": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisPostRequests": {
+    "counter": "\\Web Service(_Total)\\Post Requests/sec",
+    "datapoints": {
+     "iisPostRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisPropfindRequests": {
+    "counter": "\\Web Service(_Total)\\Propfind Requests/sec",
+    "datapoints": {
+     "iisPropfindRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisProppatchRequests": {
+    "counter": "\\Web Service(_Total)\\Proppatch Requests/sec",
+    "datapoints": {
+     "iisProppatchRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisPutRequests": {
+    "counter": "\\Web Service(_Total)\\Put Requests/sec",
+    "datapoints": {
+     "iisPutRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisSearchRequests": {
+    "counter": "\\Web Service(_Total)\\Search Requests/sec",
+    "datapoints": {
+     "iisSearchRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisTraceRequests": {
+    "counter": "\\Web Service(_Total)\\Trace Requests/sec",
+    "datapoints": {
+     "iisTraceRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "iisUnlockRequests": {
+    "counter": "\\Web Service(_Total)\\Unlock Requests/sec",
+    "datapoints": {
+     "iisUnlockRequests": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Metrics for Microsoft IIS",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Metrics for Microsoft IIS",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   }
+  },
+  "description": "Metrics for Microsoft IIS",
+  "targetPythonClass": "Products.ZenModel.Device"
+ }
+}
