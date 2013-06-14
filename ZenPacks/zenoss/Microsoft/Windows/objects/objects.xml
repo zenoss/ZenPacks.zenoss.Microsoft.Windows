@@ -9,7 +9,7 @@ Microsoft Software
 Microsoft Software
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS']
+['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
 </property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
