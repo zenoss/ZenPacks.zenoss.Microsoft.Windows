@@ -1,0 +1,210 @@
+{
+ "/zport/dmd/Devices/Server/Microsoft/Windows|FileSystem": {
+  "datasources": {
+   "DiskReadBytesSec": {
+    "counter": "\\Disk Read Bytes/sec",
+    "datapoints": {
+     "DiskReadBytesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "DiskReadTime": {
+    "counter": "\\% Disk Read Time",
+    "datapoints": {
+     "DiskReadTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "DiskWriteBytesSec": {
+    "counter": "\\Disk Write Bytes/sec",
+    "datapoints": {
+     "DiskWriteBytesSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "DiskWriteTime": {
+    "counter": "\\% Disk Write Time",
+    "datapoints": {
+     "DiskWriteTime": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "FreeMegabytes": {
+    "counter": "\\Free Megabytes",
+    "datapoints": {
+     "FreeMegabytes": {
+      "aliases": {
+       "usedFilesystemSpace__bytes": {
+        "formula": "1024,*,1024,*,${here/totalBytes},EXC,-"
+       }
+      },
+      "createCmd": "",
+      "description": "FileSystem template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "FileSystem template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   }
+  },
+  "description": "FileSystem template that uses Windows WMI.",
+  "targetPythonClass": "Products.ZenModel.FileSystem"
+ },
+ "/zport/dmd/Devices/Server/Microsoft/Windows|ethernetCsmacd": {
+  "datasources": {
+   "bytesReceivedSec": {
+    "counter": "\\Bytes Received/sec",
+    "datapoints": {
+     "bytesReceivedSec": {
+      "aliases": {
+       "inputOctets__bytes": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "bytesSentSec": {
+    "counter": "\\Bytes Sent/sec",
+    "datapoints": {
+     "bytesSentSec": {
+      "aliases": {
+       "outputOctets__bytes": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "packetsReceivedErrors": {
+    "counter": "\\Packets Received Errors",
+    "datapoints": {
+     "packetsReceivedErrors": {
+      "aliases": {
+       "ifInErrors": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "packetsReceivedSec": {
+    "counter": "\\Packets Received/sec",
+    "datapoints": {
+     "packetsReceivedSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "packetsSentErrors": {
+    "counter": "\\Packets Outbound Errors",
+    "datapoints": {
+     "packetsSentErrors": {
+      "aliases": {
+       "ifOutErrors": {
+        "formula": ""
+       }
+      },
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   },
+   "packetsSentSec": {
+    "counter": "\\Packets Sent/sec",
+    "datapoints": {
+     "packetsSentSec": {
+      "aliases": {},
+      "createCmd": "",
+      "description": "Ethernet interface template that uses Windows WMI.",
+      "rrdmax": null,
+      "rrdmin": null,
+      "rrdtype": "GAUGE"
+     }
+    },
+    "description": "Ethernet interface template that uses Windows WMI.",
+    "enabled": true,
+    "type": "WinRS Single Counter"
+   }
+  },
+  "description": "Ethernet interface template that uses Windows WMI.",
+  "targetPythonClass": "Products.ZenModel.IpInterface"
+ }
+}

@@ -8,9 +8,6 @@ Microsoft Software
 <property type="string" id="description" mode="w" >
 Microsoft Software
 </property>
-<property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
-</property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
 Windows Operating System
@@ -19,7 +16,10 @@ Windows Operating System
 Windows Operating System
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Active Directory']
+['Device', 'Active Directory', 'MSExchangeIS', 'IIS', 'MSSQLServer']
+</property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
@@ -3613,7 +3613,2642 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='FileSystem' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property type="text" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.FileSystem
+</property>
+<tomanycont id='datasources'>
+<object id='DiskReadBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Disk Read Bytes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='DiskReadBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+</object>
 </tomanycont>
+</object>
+<object id='DiskReadTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\% Disk Read Time
+</property>
+<tomanycont id='datapoints'>
+<object id='DiskReadTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='DiskWriteBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Disk Write Bytes/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='DiskWriteBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='DiskWriteTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\% Disk Write Time
+</property>
+<tomanycont id='datapoints'>
+<object id='DiskWriteTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='FreeMegabytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Free Megabytes
+</property>
+<tomanycont id='datapoints'>
+<object id='FreeMegabytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+FileSystem template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+FileSystem template that uses Windows WMI.
+</property>
+<tomanycont id='aliases'>
+<object id='usedFilesystemSpace__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+<property type="string" id="formula" mode="w" >
+1024,*,1024,*,${here/totalBytes},EXC,-
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='IIS' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property type="text" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='iisBytesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Bytes Received/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisBytesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisBytesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Bytes Sent/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisBytesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisCGIRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\CGI Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisCGIRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisConnectionAttempts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Connection Attempts/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisConnectionAttempts' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisCopyRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Copy Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisCopyRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisDeleteRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Delete Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisDeleteRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisFilesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Files Received/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisFilesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisFilesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Files Sent/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisFilesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisGetRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Get Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisGetRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisHeadRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Head Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisHeadRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisISAPIExtensionRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\ISAPI Extension Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisISAPIExtensionRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Lock Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisLockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisMkcolRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Mkcol Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisMkcolRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisMoveRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Move Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisMoveRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisOptionsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Options Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisOptionsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisOtherRequestMethods' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Other Request Methods/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisOtherRequestMethods' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisPostRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Post Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisPostRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisPropfindRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Propfind Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisPropfindRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisProppatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Proppatch Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisProppatchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisPutRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Put Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisPutRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisSearchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Search Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisSearchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisTraceRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Trace Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisTraceRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='iisUnlockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Web Service(_Total)\Unlock Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='iisUnlockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Metrics for Microsoft IIS
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Metrics for Microsoft IIS
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='MSExchangeIS' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Folder opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Local delivery rate
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Message Opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Averaged Latency
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SMTP Server(_Total)\Local Queue Length
+</property>
+<tomanycont id='datapoints'>
+<object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SMTP Server(_Total)\Messages Delivered/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='MSExchangeIS_2007' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='activeMailboxDeliveryQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+</property>
+<tomanycont id='datapoints'>
+<object id='activeMailboxDeliveryQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='messagesCompletedDeliveryPerSecond' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
+</property>
+<tomanycont id='datapoints'>
+<object id='messagesCompletedDeliveryPerSecond' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Folder opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Local delivery rate
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS Mailbox(_Total)\Message Opens/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Averaged Latency
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Operations/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\MSExchangeIS\RPC Requests
+</property>
+<tomanycont id='datapoints'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft Exchange Information Store
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft Exchange Information Store
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='MSSQLServer' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='AccessMethodsFullScans' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Access Methods\Full Scans/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='AccessMethodsFullScans' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='BufferManagerBufferCacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Buffer Manager\Buffer cache hit ratio
+</property>
+<tomanycont id='datapoints'>
+<object id='BufferManagerBufferCacheHitRatio' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='BufferManagerFreePages' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Buffer Manager\Free pages
+</property>
+<tomanycont id='datapoints'>
+<object id='BufferManagerFreePages' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='DatabasesTotalDataFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Databases(_Total)\Data File(s) Size (KB)
+</property>
+<tomanycont id='datapoints'>
+<object id='DatabasesTotalDataFileSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='GeneralStatisticsUserConnections' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:General Statistics\User Connections
+</property>
+<tomanycont id='datapoints'>
+<object id='GeneralStatisticsUserConnections' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='LatchesLatchWaits' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Latches\Latch Waits/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='LatchesLatchWaits' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='LocksTotalAverageWaitTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Locks(_Total)\Average Wait Time (ms)
+</property>
+<tomanycont id='datapoints'>
+<object id='LocksTotalAverageWaitTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='LocksTotalLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Locks(_Total)\Lock Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='LocksTotalLockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='LocksTotalNumberDeadlocks' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:Locks(_Total)\Number of Deadlocks/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='LocksTotalNumberDeadlocks' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='SQLStatisticsBatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\SQLServer:SQL Statistics\Batch Requests/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='SQLStatisticsBatchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Microsoft SQL Server
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ethernetCsmacd' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property type="text" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.IpInterface
+</property>
+<tomanycont id='datasources'>
+<object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Bytes Received/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='bytesReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+<tomanycont id='aliases'>
+<object id='inputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Bytes Sent/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='bytesSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+<tomanycont id='aliases'>
+<object id='outputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Packets Received Errors
+</property>
+<tomanycont id='datapoints'>
+<object id='packetsReceivedErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+<tomanycont id='aliases'>
+<object id='ifInErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Packets Received/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='packetsReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Packets Outbound Errors
+</property>
+<tomanycont id='datapoints'>
+<object id='packetsSentErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+<tomanycont id='aliases'>
+<object id='ifOutErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS Single Counter
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+</property>
+<property type="string" id="counter" >
+\Packets Sent/sec
+</property>
+<tomanycont id='datapoints'>
+<object id='packetsSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Ethernet interface template that uses Windows WMI.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Ethernet interface template that uses Windows WMI.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+Administrator
+</property>
+</object>
+<object id='kerberos' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+bedwards@solutions.loc
+</property>
+</object>
 </object>
 </object>
 </objects>
