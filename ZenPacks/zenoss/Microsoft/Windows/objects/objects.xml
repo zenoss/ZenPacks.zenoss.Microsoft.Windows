@@ -9,6 +9,9 @@ Microsoft Software
 Microsoft Software
 </property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.Microsoft.Windows.Device
+</property>
 <property id='zendoc' type='string'>
 Windows Operating System
 </property>
