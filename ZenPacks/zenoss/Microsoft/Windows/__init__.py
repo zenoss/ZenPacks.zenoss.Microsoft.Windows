@@ -11,14 +11,21 @@ __doc__ = "Microsoft Windows ZenPack"
 
 import Globals
 from Products.ZenModel.ZenPack import ZenPackBase
+from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 
 # unused
 Globals
+
+_PACK_Z_PROPS = [('zWinUser', '', 'string'), ('zWinPassword', '', 'password')]
+
+for name, default_value, type_ in _PACK_Z_PROPS:
+    setzPropertyCategory(name, 'Windows')
 
 
 class ZenPack(ZenPackBase):
 
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
+    packZProperties = _PACK_Z_PROPS
 
     def install(self, *args):
         super(ZenPack, self).install(*args)
