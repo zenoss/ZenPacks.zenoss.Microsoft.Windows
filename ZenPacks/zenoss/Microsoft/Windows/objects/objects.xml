@@ -6238,20 +6238,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 </tomanycont>
-<object id='basic' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="password" id="zWinPassword" >
-</property>
-<property visible="True" type="string" id="zWinUser" >
-Administrator
-</property>
-</object>
-<object id='kerberos' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="password" id="zWinPassword" >
-</property>
-<property visible="True" type="string" id="zWinUser" >
-bedwards@solutions.loc
-</property>
-</object>
 </object>
 </object>
 </objects>
