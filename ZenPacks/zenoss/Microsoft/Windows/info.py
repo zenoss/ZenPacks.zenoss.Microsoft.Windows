@@ -8,11 +8,10 @@
 ##############################################################################
 
 from zope.interface import implements
-
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
-
-from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
+from Products.Zuul.decorators import info
+from ZenPacks.zenoss.Microsoft.Windows.interfaces import IWinIISInfo, IWinServiceInfo, IWinProcInfo
 
 
 class WinComponentInfo(ComponentInfo):
@@ -38,6 +37,18 @@ class WinProcInfo(WinComponentInfo):
     status = ProxyProperty('status')
     architecture = ProxyProperty('architecture')
     clockspeed = ProxyProperty('clockspeed')
+
+    @property
+    @info
+    def manufacturer(self):
+        pc = self._object.productClass()
+        if (pc):
+            return pc.manufacturer()
+
+    @property
+    @info
+    def product(self):
+        return self._object.productClass()
 
 
 class WinIISInfo(WinComponentInfo):

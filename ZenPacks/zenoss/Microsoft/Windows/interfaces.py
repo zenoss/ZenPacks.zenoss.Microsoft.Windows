@@ -32,6 +32,8 @@ class IWinProcInfo(IWinComponentInfo):
     status = schema.TextLine(title=_t(u'Status'), readonly=True)
     architecture = schema.TextLine(title=_t(u'Architecture'), readonly=True)
     clockspeed = schema.TextLine(title=_t(u'Clock Speed'), readonly=True)
+    product = schema.Entity(title=u"Model", readonly=True)
+    manufacturer = schema.Entity(title=u"Manufacturer", readonly=True)
 
 
 class IWinIISInfo(IWinComponentInfo):

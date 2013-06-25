@@ -13,7 +13,6 @@ log = logging.getLogger("zen.MicrosoftWindows")
 
 from Globals import InitializeClass
 
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.ZenModel.Device import Device as BaseDevice
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
