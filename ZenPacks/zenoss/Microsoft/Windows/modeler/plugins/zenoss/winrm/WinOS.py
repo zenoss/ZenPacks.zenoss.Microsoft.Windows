@@ -51,6 +51,8 @@ class WinOS(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
         'zWinPassword',
+        'zFileSystemMapIgnoreNames',
+        'zFileSystemMapIgnoreTypes',
         )
 
     def collect(self, device, log):
@@ -217,12 +219,23 @@ class WinOS(PythonPlugin):
             modname="Products.ZenModel.IpRouteEntry",
             objmaps=mapRoute))
 
+        mapDisk = self.process_filesystems(device, res.fsDisk, log)
+
+        maps.append(RelationshipMap(
+            relname="filesystems",
+            compname="os",
+            modname="Products.ZenModel.FileSystem",
+            objmaps=mapDisk))
+
+        return maps
+
+    def process_filesystems(self, device, fsDisk, log):
         # File System Map
         skipfsnames = getattr(device, 'zFileSystemMapIgnoreNames', None)
         skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
 
         mapDisk = []
-        for disk in res.fsDisk:
+        for disk in fsDisk:
             disk_om = ObjectMap()
             disk_om.mount = \
                 "{driveletter} (Serial Number: {serialnumber}) - {name}" \
@@ -251,24 +264,17 @@ class WinOS(PythonPlugin):
                                     filesystem=lookup_drivetype(
                                         disk_om.drivetype)))
                         break
-
-            disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
-            disk_om.storageDevice = disk.Name
-            disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
-            disk_om.type = disk.FileSystem
-            if disk.Size:
-                if not disk.BlockSize:
-                    disk.BlockSize = guessBlockSize(disk.Size)
-                disk_om.blockSize = int(disk.BlockSize)
-                disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
-            disk_om.maxNameLen = disk.MaximumComponentLength
-            disk_om.id = self.prepId(disk.DeviceID)
-            mapDisk.append(disk_om)
-
-        maps.append(RelationshipMap(
-            relname="filesystems",
-            compname="os",
-            modname="Products.ZenModel.FileSystem",
-            objmaps=mapDisk))
-
-        return maps
+                else:
+                    disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
+                    disk_om.storageDevice = disk.Name
+                    disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
+                    disk_om.type = disk.FileSystem
+                    if disk.Size:
+                        if not disk.BlockSize:
+                            disk.BlockSize = guessBlockSize(disk.Size)
+                        disk_om.blockSize = int(disk.BlockSize)
+                        disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
+                    disk_om.maxNameLen = disk.MaximumComponentLength
+                    disk_om.id = self.prepId(disk.DeviceID)
+                    mapDisk.append(disk_om)
+        return mapDisk
