@@ -180,7 +180,9 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'status'},
                 {name: 'architecture'},
                 {name: 'clockspeed'},
-                {name: 'monitored'}
+                {name: 'monitored'},
+                {name: 'product'},
+                {name: 'manufacturer'}
             ],
             columns: [{
                 id: 'severity',
