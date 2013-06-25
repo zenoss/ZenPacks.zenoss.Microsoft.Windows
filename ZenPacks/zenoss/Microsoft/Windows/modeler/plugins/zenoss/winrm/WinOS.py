@@ -13,15 +13,14 @@ Windows Operating System Collection
 """
 import re
 from pprint import pformat
-from Products.DataCollector.plugins.DataMaps \
-    import MultiArgs, ObjectMap, RelationshipMap
+from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
+from Products.DataCollector.plugins.zenoss.snmp.CpuMap import getManufacturerAndModel
 from Products.ZenUtils.IpUtil import checkip, IpAddressError
 from Products.ZenUtils.Utils import prepId
 from Products.Zuul.utils import safe_hasattr
-from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, \
-    lookup_routetype, lookup_protocol, lookup_drivetype, lookup_zendrivetype, \
-    guessBlockSize, addLocalLibPath
+from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_routetype, lookup_protocol, \
+    lookup_drivetype, lookup_zendrivetype, guessBlockSize, addLocalLibPath
 
 addLocalLibPath()
 
@@ -110,6 +109,7 @@ class WinOS(PythonPlugin):
             proc_om.status = proc.Status
             proc_om.architecture = lookup_architecture(int(proc.Architecture))
             proc_om.clockspeed = proc.MaxClockSpeed  # MHz
+            proc_om.setProductKey = getManufacturerAndModel(' '.join([proc.Manufacturer, proc.Description]))
             mapProc.append(proc_om)
 
         maps.append(RelationshipMap(

@@ -12,6 +12,14 @@
 
 var ZC = Ext.ns('Zenoss.component');
 
+function render_link(ob) {
+    if (ob && ob.uid) {
+        return Zenoss.render.link(ob.uid);
+    } else {
+        return ob;
+    }
+}
+
 Ext.apply(Zenoss.render, {
     win_entityLinkFromGrid: function(obj, col, record) {
         if (!obj)
@@ -172,7 +180,9 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'status'},
                 {name: 'architecture'},
                 {name: 'clockspeed'},
-                {name: 'monitored'}
+                {name: 'monitored'},
+                {name: 'product'},
+                {name: 'manufacturer'}
             ],
             columns: [{
                 id: 'severity',
@@ -182,9 +192,15 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 sortable: true,
                 width: 50
             },{
-                id: 'name',
-                dataIndex: 'title',
-                header: _t('Name')
+                id: 'manufacturer',
+                dataIndex: 'manufacturer',
+                header: _t('Manufacturer'),
+                renderer: render_link
+            },{
+                id: 'product',
+                dataIndex: 'product',
+                header: _t('Model'),
+                renderer: render_link
             },{
                 id: 'numbercore',
                 dataIndex: 'numbercore',
