@@ -218,7 +218,8 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'clockspeed',
                 header: _t('Clock Speed'),
                 sortable: true,
-                width: 110
+                width: 110,
+                renderer: function(x){ return x + ' MHz';}
             },{
                 id: 'status',
                 dataIndex: 'status',
