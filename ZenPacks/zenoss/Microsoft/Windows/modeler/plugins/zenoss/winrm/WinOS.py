@@ -276,5 +276,6 @@ class WinOS(PythonPlugin):
                         disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
                     disk_om.maxNameLen = disk.MaximumComponentLength
                     disk_om.id = self.prepId(disk.DeviceID)
+                    disk_om.perfmonInstance = '\\LogicalDisk({0})'.format(disk.Name.rstrip('\\'))
                     mapDisk.append(disk_om)
         return mapDisk

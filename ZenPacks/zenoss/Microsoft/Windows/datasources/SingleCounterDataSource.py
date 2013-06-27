@@ -27,6 +27,7 @@ from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.Zuul.utils import safe_hasattr
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -161,8 +162,12 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
 
     @classmethod
     def params(cls, datasource, context):
-        return dict(counter=datasource.talesEval(datasource.counter, context),
-                    strategy=datasource.strategy)
+        counter = datasource.talesEval(datasource.counter, context)
+        if not counter.startswith('\\'):
+            counter = '\\' + counter
+        if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
+            counter = context.perfmonInstance + counter
+        return dict(counter=counter, strategy=datasource.strategy)
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -181,8 +186,9 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
                 scheme,
                 port)
             cmd = create_single_shot_command(conn_info)
-            command_line = self._get_strategy(dsconf).build_command_line(
-                dsconf.params['counter'])
+            strategy = self._get_strategy(dsconf)
+            counter = dsconf.params['counter']
+            command_line = strategy.build_command_line(counter)
             result = yield cmd.run_command(command_line)
             results.append((dsconf, result))
         defer.returnValue(results)
