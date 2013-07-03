@@ -25,9 +25,9 @@
         />
 
     <adapter
-        provides=".datasources.SingleCounterDataSource.ISingleCounterInfo"
-        for=".datasources.SingleCounterDataSource.SingleCounterDataSource"
-        factory=".datasources.SingleCounterDataSource.SingleCounterInfo"
+        provides=".datasources.WinRSDataSource.IWinRSInfo"
+        for=".datasources.WinRSDataSource.WinRSDataSource"
+        factory=".datasources.WinRSDataSource.WinRSInfo"
         />
 
     <!-- Browser -->
