@@ -64,6 +64,7 @@ class WinOS(PythonPlugin):
         'zWinPassword',
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
+        'zInterfaceMapIgnoreNames',
         )
 
     def collect(self, device, log):
