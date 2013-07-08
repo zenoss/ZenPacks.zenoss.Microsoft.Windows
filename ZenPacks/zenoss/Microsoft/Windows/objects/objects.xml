@@ -2880,10 +2880,10 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 <object id='Device' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property type="text" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
@@ -2891,7 +2891,7 @@ Products.ZenModel.Device
 <tomanycont id='datasources'>
 <object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -2920,7 +2920,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -2929,7 +2929,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='memoryAvailable__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -2940,7 +2940,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 <object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -2969,7 +2969,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -2978,14 +2978,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3014,7 +3014,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3023,14 +3023,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3059,7 +3059,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3068,14 +3068,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3104,7 +3104,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3113,14 +3113,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3149,7 +3149,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3158,14 +3158,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3194,7 +3194,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3203,7 +3203,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='cpu__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -3214,7 +3214,7 @@ This template uses Windows WMI to collect standard Windows metrics (cpu, memory,
 </object>
 <object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3243,7 +3243,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3252,14 +3252,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3288,7 +3288,7 @@ typeperf -sc1
 <tomanycont id='datapoints'>
 <object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3297,7 +3297,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-This template uses Windows WMI to collect standard Windows metrics (cpu, memory, paging, etc.)
+This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 </object>
 </tomanycont>
@@ -3618,10 +3618,10 @@ AVERAGE
 </object>
 <object id='FileSystem' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property type="text" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.FileSystem
@@ -3629,7 +3629,7 @@ Products.ZenModel.FileSystem
 <tomanycont id='datasources'>
 <object id='DiskReadBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3655,7 +3655,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='DiskReadBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3664,14 +3664,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='DiskReadTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3697,7 +3697,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='DiskReadTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3706,14 +3706,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='DiskWriteBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3739,7 +3739,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='DiskWriteBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3748,14 +3748,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='DiskWriteTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3781,7 +3781,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='DiskWriteTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3790,14 +3790,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='FreeMegabytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -3823,7 +3823,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='FreeMegabytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -3832,7 +3832,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses WinRS.
 </property>
 <tomanycont id='aliases'>
 <object id='usedFilesystemSpace__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -5958,10 +5958,10 @@ Microsoft SQL Server
 </object>
 <object id='ethernetCsmacd' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property type="text" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.IpInterface
@@ -5969,7 +5969,7 @@ Products.ZenModel.IpInterface
 <tomanycont id='datasources'>
 <object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -5995,7 +5995,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='bytesReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6004,7 +6004,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <tomanycont id='aliases'>
 <object id='inputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -6015,7 +6015,7 @@ Ethernet interface template that uses Windows WMI.
 </object>
 <object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -6041,7 +6041,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='bytesSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6050,7 +6050,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <tomanycont id='aliases'>
 <object id='outputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -6061,7 +6061,7 @@ Ethernet interface template that uses Windows WMI.
 </object>
 <object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -6087,7 +6087,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='packetsReceivedErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6096,7 +6096,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <tomanycont id='aliases'>
 <object id='ifInErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -6107,7 +6107,7 @@ Ethernet interface template that uses Windows WMI.
 </object>
 <object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -6133,7 +6133,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='packetsReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6142,14 +6142,14 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -6175,7 +6175,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='packetsSentErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6184,7 +6184,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <tomanycont id='aliases'>
 <object id='ifOutErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -6195,7 +6195,7 @@ Ethernet interface template that uses Windows WMI.
 </object>
 <object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS Single Counter
@@ -6221,7 +6221,7 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCoun
 <tomanycont id='datapoints'>
 <object id='packetsSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
@@ -6230,7 +6230,7 @@ GAUGE
 True
 </property>
 <property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+Ethernet interface template that uses WinRS.
 </property>
 </object>
 </tomanycont>

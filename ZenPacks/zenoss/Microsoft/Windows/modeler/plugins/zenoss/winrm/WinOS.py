@@ -12,6 +12,7 @@ Windows Operating System Collection
 
 """
 import re
+import string
 from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
@@ -41,6 +42,16 @@ ENUM_INFOS = dict(
 
 SINGLETON_KEYS = ["sysEnclosure", "computerSystem", "operatingSystem"]
 
+_transTable = string.maketrans("#()/", "_[]_")
+
+
+def standardizeInstance(rawInstance):
+    """
+    Convert a raw perfmon instance name into a standardized one by replacing
+    unfriendly characters with one that Windows expects.
+    """
+    return rawInstance.translate(_transTable)
+
 
 class WinOSResult(object):
     pass
@@ -51,6 +62,8 @@ class WinOS(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
         'zWinPassword',
+        'zFileSystemMapIgnoreNames',
+        'zFileSystemMapIgnoreTypes',
         )
 
     def collect(self, device, log):
@@ -142,7 +155,7 @@ class WinOS(PythonPlugin):
         mapInter = []
 
         skipifregex = getattr(device, 'zInterfaceMapIgnoreNames', None)
-
+        perfmonInstanceMap = self.buildPerfmonInstances(res.netInt, log)
         for inter in res.netInt:
             ips = []
 
@@ -178,7 +191,13 @@ class WinOS(PythonPlugin):
                 int_om.ifindex = int(inter.InterfaceIndex)
             except (AttributeError, TypeError):
                 int_om.ifindex = int(inter.Index)
-
+            if inter.Index in perfmonInstanceMap:
+                int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
+            else:
+                log.warning("Adapter '%s':%d does not have a perfmon "
+                            "instance name and will not be monitored for "
+                            "performance data", inter.Description,
+                            inter.Index)
             mapInter.append(int_om)
 
         maps.append(RelationshipMap(
@@ -217,12 +236,23 @@ class WinOS(PythonPlugin):
             modname="Products.ZenModel.IpRouteEntry",
             objmaps=mapRoute))
 
+        mapDisk = self.process_filesystems(device, res.fsDisk, log)
+
+        maps.append(RelationshipMap(
+            relname="filesystems",
+            compname="os",
+            modname="Products.ZenModel.FileSystem",
+            objmaps=mapDisk))
+
+        return maps
+
+    def process_filesystems(self, device, fsDisk, log):
         # File System Map
         skipfsnames = getattr(device, 'zFileSystemMapIgnoreNames', None)
         skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
 
         mapDisk = []
-        for disk in res.fsDisk:
+        for disk in fsDisk:
             disk_om = ObjectMap()
             disk_om.mount = \
                 "{driveletter} (Serial Number: {serialnumber}) - {name}" \
@@ -251,24 +281,78 @@ class WinOS(PythonPlugin):
                                     filesystem=lookup_drivetype(
                                         disk_om.drivetype)))
                         break
+                else:
+                    disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
+                    disk_om.storageDevice = disk.Name
+                    disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
+                    disk_om.type = disk.FileSystem
+                    if disk.Size:
+                        if not disk.BlockSize:
+                            disk.BlockSize = guessBlockSize(disk.Size)
+                        disk_om.blockSize = int(disk.BlockSize)
+                        disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
+                    disk_om.maxNameLen = disk.MaximumComponentLength
+                    disk_om.id = self.prepId(disk.DeviceID)
+                    disk_om.perfmonInstance = '\\LogicalDisk({0})'.format(disk.Name.rstrip('\\'))
+                    mapDisk.append(disk_om)
+        return mapDisk
 
-            disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
-            disk_om.storageDevice = disk.Name
-            disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
-            disk_om.type = disk.FileSystem
-            if disk.Size:
-                if not disk.BlockSize:
-                    disk.BlockSize = guessBlockSize(disk.Size)
-                disk_om.blockSize = int(disk.BlockSize)
-                disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
-            disk_om.maxNameLen = disk.MaximumComponentLength
-            disk_om.id = self.prepId(disk.DeviceID)
-            mapDisk.append(disk_om)
+    # builds a dictionary of perfmon instance paths for each network adapter
+    # found in the WMI results query, keyed by the Index attribute
+    #
+    # the performon instance path is uses the following format:
+    # \Network Interface(%instancename%#%index%)
+    #
+    # If multiple adapters are present with the same description then the #
+    # sign followed by an index number for all additional instances beyond the
+    # very first one. The index number does not correspond to the value found
+    # in the Index or InterfaceIndex attribute directly, but instead is just a
+    # simple counter for each instance of the same name found. The instances
+    # are sorted by the InterfaceIndex or Index attribute to ensure that they
+    # will receive the same calculated index value that perfmon uses.
+    #
+    # TOOD: this method can be made generic for all perfmon data that has
+    # multiple instances and should be moved into WMIPlugin or some other
+    # helper class.
+    def buildPerfmonInstances(self, adapters, log):
+        # don't bother with adapters without a description or interface index
+        adapters = [a for a in adapters
+                    if getattr(a, 'Description', None) is not None
+                    and getattr(a, 'Index', None) is not None]
 
-        maps.append(RelationshipMap(
-            relname="filesystems",
-            compname="os",
-            modname="Products.ZenModel.FileSystem",
-            objmaps=mapDisk))
+        def compareAdapters(a, b):
+            n = cmp(a.Description, b.Description)
+            if n == 0:
+                n = cmp(a.Index, b.Index)
+            return n
+        adapters.sort(compareAdapters)
 
-        return maps
+        # use the sorted interfaces to determine the perfmon unique instance
+        # path
+        instanceMap = {}
+        index = 0
+        prevDesc = None
+        for adapter in adapters:
+            # if we've encountered the same description multiple times in a row
+            # then increment the index for this description for the additional
+            # instances, otherwise build a perfmon-compatible description and
+            # reset the index
+            desc = adapter.Description
+            if desc == prevDesc:
+                index += 1
+            else:
+                index = 0
+                prevDesc = standardizeInstance(desc)
+
+            # only additional instances need the #index appended to the instance
+            # name - the first item always appears without that qualifier
+            if index > 0:
+                perfmonInstance = '\\Network Interface(%s#%d)' % (prevDesc,
+                                                                  index)
+            else:
+                perfmonInstance = '\\Network Interface(%s)' % prevDesc
+
+            log.debug("%d=%s", adapter.Index, perfmonInstance)
+            instanceMap[adapter.Index] = perfmonInstance
+
+        return instanceMap
