@@ -165,6 +165,9 @@ class WinOS(PythonPlugin):
                               .format(intname=inter.Description))
                     continue
 
+            if inter.MACAddress is None:
+                continue
+
             if getattr(inter, 'IPAddress', None) is not None:
                 for ipRecord, ipMask in \
                         zip([inter.IPAddress], [inter.IPSubnet]):
@@ -352,7 +355,7 @@ class WinOS(PythonPlugin):
             else:
                 perfmonInstance = '\\Network Interface(%s)' % prevDesc
 
-            log.debug("%d=%s", adapter.Index, perfmonInstance)
+            log.debug("%s=%s", adapter.Index, perfmonInstance)
             instanceMap[adapter.Index] = perfmonInstance
 
         return instanceMap
