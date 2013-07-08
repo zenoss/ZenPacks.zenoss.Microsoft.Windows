@@ -9,14 +9,14 @@ Microsoft Software
 Microsoft Software
 </property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="string" id="zPythonClass" >
-ZenPacks.zenoss.Microsoft.Windows.Device
-</property>
 <property id='zendoc' type='string'>
 Windows Operating System
 </property>
 <property type="string" id="description" mode="w" >
 Windows Operating System
+</property>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.Microsoft.Windows.Device
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
 ['Device', 'Active Directory', 'MSExchangeIS', 'IIS', 'MSSQLServer']
@@ -58,7 +58,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Client Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -100,7 +103,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Reads/sec
 </property>
 <tomanycont id='datapoints'>
@@ -142,7 +148,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -184,7 +193,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -226,7 +238,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Monitor List Size
 </property>
 <tomanycont id='datapoints'>
@@ -268,7 +283,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Name Cache hit rate
 </property>
 <tomanycont id='datapoints'>
@@ -310,7 +328,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Notify Queue Size
 </property>
 <tomanycont id='datapoints'>
@@ -352,7 +373,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Search sub-operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -394,7 +418,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Server Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -436,7 +463,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Server Name Translations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -478,7 +508,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Threads in Use
 </property>
 <tomanycont id='datapoints'>
@@ -520,7 +553,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\KDC AS Requests
 </property>
 <tomanycont id='datapoints'>
@@ -562,7 +598,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\KDC TGS Requests
 </property>
 <tomanycont id='datapoints'>
@@ -604,7 +643,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\Kerberos Authentications
 </property>
 <tomanycont id='datapoints'>
@@ -646,7 +688,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Active Threads
 </property>
 <tomanycont id='datapoints'>
@@ -688,7 +733,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Bind Time
 </property>
 <tomanycont id='datapoints'>
@@ -730,7 +778,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Client Sessions
 </property>
 <tomanycont id='datapoints'>
@@ -772,7 +823,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Closed Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -814,7 +868,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP New Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -856,7 +913,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP New SSL Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -898,7 +958,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -940,7 +1003,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Successful Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -982,7 +1048,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP UDP operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1024,7 +1093,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1066,7 +1138,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\NTLM Authentications
 </property>
 <tomanycont id='datapoints'>
@@ -1121,7 +1196,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Client Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1163,7 +1241,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Reads/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1205,7 +1286,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1247,7 +1331,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Directory Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1289,7 +1376,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Monitor List Size
 </property>
 <tomanycont id='datapoints'>
@@ -1331,7 +1421,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Name Cache hit rate
 </property>
 <tomanycont id='datapoints'>
@@ -1373,7 +1466,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Notify Queue Size
 </property>
 <tomanycont id='datapoints'>
@@ -1415,7 +1511,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Search sub-operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1457,7 +1556,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Server Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1499,7 +1601,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Server Name Translations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1541,7 +1646,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\DS Threads in Use
 </property>
 <tomanycont id='datapoints'>
@@ -1583,7 +1691,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Active Threads
 </property>
 <tomanycont id='datapoints'>
@@ -1625,7 +1736,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Bind Time
 </property>
 <tomanycont id='datapoints'>
@@ -1667,7 +1781,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Client Sessions
 </property>
 <tomanycont id='datapoints'>
@@ -1709,7 +1826,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Closed Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1751,7 +1871,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP New Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1793,7 +1916,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP New SSL Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1835,7 +1961,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1877,7 +2006,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Successful Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1919,7 +2051,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP UDP operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -1961,7 +2096,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \NTDS\LDAP Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2016,7 +2154,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Client Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2058,7 +2199,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Reads/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2100,7 +2244,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2142,7 +2289,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2184,7 +2334,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Monitor List Size
 </property>
 <tomanycont id='datapoints'>
@@ -2226,7 +2379,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Name Cache hit rate
 </property>
 <tomanycont id='datapoints'>
@@ -2268,7 +2424,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Notify Queue Size
 </property>
 <tomanycont id='datapoints'>
@@ -2310,7 +2469,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Search sub-operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2352,7 +2514,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Server Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2394,7 +2559,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Server Name Translations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2436,7 +2604,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Threads in Use
 </property>
 <tomanycont id='datapoints'>
@@ -2478,7 +2649,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Active Threads
 </property>
 <tomanycont id='datapoints'>
@@ -2520,7 +2694,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Bind Time
 </property>
 <tomanycont id='datapoints'>
@@ -2562,7 +2739,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Client Sessions
 </property>
 <tomanycont id='datapoints'>
@@ -2604,7 +2784,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Closed Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2646,7 +2829,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP New Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2688,7 +2874,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2730,7 +2919,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Searches/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2772,7 +2964,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Successful Binds/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2814,7 +3009,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP UDP operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2856,7 +3054,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Writes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -2911,11 +3112,14 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Memory\Available bytes
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Memory\Available bytes
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -2960,11 +3164,14 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Memory\Committed Bytes
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Memory\Committed Bytes
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3005,11 +3212,14 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Memory\Pages Input/sec
+<property type="string" id="strategy" >
+typeperf -sc1
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Memory\Pages Input/sec
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3050,11 +3260,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Memory\Pages Output/sec
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Memory\Pages Output/sec
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3095,11 +3305,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Paging File(_Total)\% Usage
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Paging File(_Total)\% Usage
 </property>
 <tomanycont id='datapoints'>
 <object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3140,11 +3350,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Processor(_Total)\% Privileged Time
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Processor(_Total)\% Privileged Time
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3185,11 +3395,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Processor(_Total)\% Processor Time
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Processor(_Total)\% Processor Time
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3234,11 +3444,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\Processor(_Total)\% User Time
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\Processor(_Total)\% User Time
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3279,11 +3489,11 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
-\System\System Up Time
-</property>
 <property type="string" id="strategy" >
 typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
+\System\System Up Time
 </property>
 <tomanycont id='datapoints'>
 <object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -3649,7 +3859,7 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property visible="True" type="string" id="counter" >
 \Disk Read Bytes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -3691,7 +3901,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \% Disk Read Time
 </property>
 <tomanycont id='datapoints'>
@@ -3733,7 +3946,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Disk Write Bytes/sec
 </property>
 <tomanycont id='datapoints'>
@@ -3775,7 +3991,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \% Disk Write Time
 </property>
 <tomanycont id='datapoints'>
@@ -3817,7 +4036,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Free Megabytes
 </property>
 <tomanycont id='datapoints'>
@@ -3879,7 +4101,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Bytes Received/sec
 </property>
 <tomanycont id='datapoints'>
@@ -3921,7 +4146,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Bytes Sent/sec
 </property>
 <tomanycont id='datapoints'>
@@ -3963,7 +4191,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\CGI Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4005,7 +4236,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Connection Attempts/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4047,7 +4281,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Copy Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4089,7 +4326,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Delete Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4131,7 +4371,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Files Received/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4173,7 +4416,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Files Sent/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4215,7 +4461,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Get Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4257,7 +4506,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Head Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4299,7 +4551,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\ISAPI Extension Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4341,7 +4596,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Lock Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4383,7 +4641,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Mkcol Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4425,7 +4686,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Move Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4467,7 +4731,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Options Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4509,7 +4776,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Other Request Methods/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4551,7 +4821,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Post Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4593,7 +4866,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Propfind Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4635,7 +4911,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Proppatch Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4677,7 +4956,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Put Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4719,7 +5001,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Search Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4761,7 +5046,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Trace Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4803,7 +5091,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Web Service(_Total)\Unlock Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4858,7 +5149,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4900,7 +5194,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Local delivery rate
 </property>
 <tomanycont id='datapoints'>
@@ -4942,7 +5239,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Message Opens/sec
 </property>
 <tomanycont id='datapoints'>
@@ -4984,7 +5284,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Averaged Latency
 </property>
 <tomanycont id='datapoints'>
@@ -5026,7 +5329,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5068,7 +5374,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Requests
 </property>
 <tomanycont id='datapoints'>
@@ -5110,7 +5419,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SMTP Server(_Total)\Local Queue Length
 </property>
 <tomanycont id='datapoints'>
@@ -5152,7 +5464,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SMTP Server(_Total)\Messages Delivered/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5207,7 +5522,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
 </property>
 <tomanycont id='datapoints'>
@@ -5249,7 +5567,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
 </property>
 <tomanycont id='datapoints'>
@@ -5291,7 +5612,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5333,7 +5657,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Local delivery rate
 </property>
 <tomanycont id='datapoints'>
@@ -5375,7 +5702,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Message Opens/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5417,7 +5747,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Averaged Latency
 </property>
 <tomanycont id='datapoints'>
@@ -5459,7 +5792,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Operations/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5501,7 +5837,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \MSExchangeIS\RPC Requests
 </property>
 <tomanycont id='datapoints'>
@@ -5556,7 +5895,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Access Methods\Full Scans/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5598,7 +5940,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Buffer Manager\Buffer cache hit ratio
 </property>
 <tomanycont id='datapoints'>
@@ -5640,7 +5985,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Buffer Manager\Free pages
 </property>
 <tomanycont id='datapoints'>
@@ -5682,7 +6030,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Databases(_Total)\Data File(s) Size (KB)
 </property>
 <tomanycont id='datapoints'>
@@ -5724,7 +6075,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:General Statistics\User Connections
 </property>
 <tomanycont id='datapoints'>
@@ -5766,7 +6120,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Latches\Latch Waits/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5808,7 +6165,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Locks(_Total)\Average Wait Time (ms)
 </property>
 <tomanycont id='datapoints'>
@@ -5850,7 +6210,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Locks(_Total)\Lock Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5892,7 +6255,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:Locks(_Total)\Number of Deadlocks/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5934,7 +6300,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \SQLServer:SQL Statistics\Batch Requests/sec
 </property>
 <tomanycont id='datapoints'>
@@ -5989,7 +6358,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Bytes Received/sec
 </property>
 <tomanycont id='datapoints'>
@@ -6035,7 +6407,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Bytes Sent/sec
 </property>
 <tomanycont id='datapoints'>
@@ -6081,7 +6456,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Packets Received Errors
 </property>
 <tomanycont id='datapoints'>
@@ -6127,7 +6505,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Packets Received/sec
 </property>
 <tomanycont id='datapoints'>
@@ -6169,7 +6550,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Packets Outbound Errors
 </property>
 <tomanycont id='datapoints'>
@@ -6215,7 +6599,10 @@ ${here/id}
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
-<property type="string" id="counter" >
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<property visible="True" type="string" id="counter" >
 \Packets Sent/sec
 </property>
 <tomanycont id='datapoints'>
