@@ -139,19 +139,17 @@ class PowershellGetCounterStrategy(object):
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
-
-        from xml.dom.minidom import parseString
-        doc = parseString(result.stdout[1])
-        log.error(doc.toprettyxml())
-
         root_elem = ET.fromstring(result.stdout[1])
-        value = float(root_elem.findtext('.//*[@N="RawValue"]'))
-        # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
-        timestamp_str = root_elem.findtext('.//*[@N="Timestamp"]')[:-7]
-        format = '%Y-%m-%dT%H:%M:%S.%f'
-        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        yield dsconf, value, timestamp
-
+        namespace = 'http://schemas.microsoft.com/powershell/2004/04'
+        for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
+            props_elems = lst_elem.findall('.//{%s}Props' % namespace)
+            for dsconf, props_elem in zip(dsconfs, props_elems):
+                value = float(props_elem.findtext('./*[@N="RawValue"]'))
+                # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
+                timestamp_str = props_elem.findtext('.//*[@N="Timestamp"]')[:-7]
+                format = '%Y-%m-%dT%H:%M:%S.%f'
+                timestamp = calendar.timegm(time.strptime(timestamp_str, format))
+                yield dsconf, value, timestamp
 
 powershell_strategy = PowershellGetCounterStrategy()
 
@@ -167,7 +165,6 @@ class WinRSPlugin(PythonDataSourcePlugin):
         """
         return (context.device().id,
                 datasource.getCycleTime(context),
-                datasource.counter,
                 datasource.strategy)
 
     @classmethod
@@ -194,26 +191,18 @@ class WinRSPlugin(PythonDataSourcePlugin):
             dsconf0.zWinPassword,
             scheme,
             port)
-        results = []
-        dsconfs_by_strategy = {}
-        for dsconf in config.datasources:
-            cmd = create_single_shot_command(conn_info)
-            strategy = self._get_strategy(dsconf)
-            if strategy not in dsconfs_by_strategy:
-                dsconfs_by_strategy[strategy] = []
-            dsconfs_by_strategy[strategy].append(dsconf)
-        for strategy, dsconfs in dsconfs_by_strategy.iteritems():
-            counters = [dsconf.params['counter'] for dsconf in dsconfs]
-            command_line = strategy.build_command_line(counters)
-            result = yield cmd.run_command(command_line)
-            results.append((strategy, dsconfs, result))
-        defer.returnValue(results)
+        strategy = self._get_strategy(dsconf0)
+        cmd = create_single_shot_command(conn_info)
+        counters = [dsconf.params['counter'] for dsconf in config.datasources]
+        command_line = strategy.build_command_line(counters)
+        result = yield cmd.run_command(command_line)
+        defer.returnValue((strategy, config.datasources, result))
 
     def onSuccess(self, results, config):
         data = self.new_data()
-        for strategy, dsconfs, result in results:
-            for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-                data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+        strategy, dsconfs, result = results
+        for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
         data['events'].append(dict(
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
