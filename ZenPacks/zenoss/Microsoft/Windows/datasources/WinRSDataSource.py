@@ -113,14 +113,12 @@ class TypeperfSc1Strategy(object):
                     result.exit_code, counters, dsconf.device))
             return
         rows = list(csv.reader(result.stdout))
-        from pprint import pformat
-        log.error(pformat(rows))
-        timestamp_str, value_str = rows[1]
+        timestamp_str = rows[1][0]
         format = '%m/%d/%Y %H:%M:%S.%f'
         timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        value = float(value_str)
-        yield dsconf, value, timestamp
-
+        for dsconf, value_str in zip(dsconfs, rows[1][1:]):
+            value = float(value_str)
+            yield dsconf, value, timestamp
 
 typeperf_strategy = TypeperfSc1Strategy()
 
