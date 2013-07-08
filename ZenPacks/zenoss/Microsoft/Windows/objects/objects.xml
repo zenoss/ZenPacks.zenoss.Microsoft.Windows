@@ -36,12 +36,12 @@ Performance monitoring for Microsoft Active Directory.
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -56,7 +56,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Client Binds/sec
@@ -78,12 +78,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -98,7 +98,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Reads/sec
@@ -120,12 +120,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -140,7 +140,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Searches/sec
@@ -162,12 +162,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -182,7 +182,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Writes/sec
@@ -204,12 +204,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -224,7 +224,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Monitor List Size
@@ -246,12 +246,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -266,7 +266,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Name Cache hit rate
@@ -288,12 +288,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -308,7 +308,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Notify Queue Size
@@ -330,12 +330,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -350,7 +350,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Search sub-operations/sec
@@ -372,12 +372,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -392,7 +392,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Server Binds/sec
@@ -414,12 +414,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -434,7 +434,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Server Name Translations/sec
@@ -456,12 +456,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -476,7 +476,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Threads in Use
@@ -498,12 +498,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='kdcAsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='kdcAsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -518,7 +518,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\KDC AS Requests
@@ -540,12 +540,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='kdcTgsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='kdcTgsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -560,7 +560,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\KDC TGS Requests
@@ -582,12 +582,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='kerberosAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='kerberosAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -602,7 +602,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\Kerberos Authentications
@@ -624,12 +624,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -644,7 +644,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Active Threads
@@ -666,12 +666,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -686,7 +686,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Bind Time
@@ -708,12 +708,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -728,7 +728,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Client Sessions
@@ -750,12 +750,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -770,7 +770,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Closed Connections/sec
@@ -792,12 +792,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -812,7 +812,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP New Connections/sec
@@ -834,12 +834,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -854,7 +854,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP New SSL Connections/sec
@@ -876,12 +876,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -896,7 +896,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Searches/sec
@@ -918,12 +918,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -938,7 +938,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Successful Binds/sec
@@ -960,12 +960,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -980,7 +980,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP UDP operations/sec
@@ -1002,12 +1002,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1022,7 +1022,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Writes/sec
@@ -1044,12 +1044,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ntlmAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ntlmAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1064,7 +1064,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\NTLM Authentications
@@ -1099,12 +1099,12 @@ Performance monitoring for Microsoft Active Directory.
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1119,7 +1119,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Client Binds/sec
@@ -1141,12 +1141,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1161,7 +1161,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Reads/sec
@@ -1183,12 +1183,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1203,7 +1203,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Searches/sec
@@ -1225,12 +1225,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1245,7 +1245,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Directory Writes/sec
@@ -1267,12 +1267,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1287,7 +1287,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Monitor List Size
@@ -1309,12 +1309,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1329,7 +1329,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Name Cache hit rate
@@ -1351,12 +1351,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1371,7 +1371,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Notify Queue Size
@@ -1393,12 +1393,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1413,7 +1413,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Search sub-operations/sec
@@ -1435,12 +1435,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1455,7 +1455,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Server Binds/sec
@@ -1477,12 +1477,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1497,7 +1497,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Server Name Translations/sec
@@ -1519,12 +1519,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1539,7 +1539,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\DS Threads in Use
@@ -1561,12 +1561,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1581,7 +1581,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Active Threads
@@ -1603,12 +1603,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1623,7 +1623,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Bind Time
@@ -1645,12 +1645,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1665,7 +1665,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Client Sessions
@@ -1687,12 +1687,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1707,7 +1707,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Closed Connections/sec
@@ -1729,12 +1729,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1749,7 +1749,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP New Connections/sec
@@ -1771,12 +1771,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1791,7 +1791,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP New SSL Connections/sec
@@ -1813,12 +1813,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1833,7 +1833,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Searches/sec
@@ -1855,12 +1855,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1875,7 +1875,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Successful Binds/sec
@@ -1897,12 +1897,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1917,7 +1917,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP UDP operations/sec
@@ -1939,12 +1939,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1959,7 +1959,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \NTDS\LDAP Writes/sec
@@ -1994,12 +1994,12 @@ Performance monitoring for Microsoft Active Directory.
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2014,7 +2014,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Client Binds/sec
@@ -2036,12 +2036,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2056,7 +2056,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Reads/sec
@@ -2078,12 +2078,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2098,7 +2098,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Searches/sec
@@ -2120,12 +2120,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2140,7 +2140,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Directory Writes/sec
@@ -2162,12 +2162,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsMonitorListSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2182,7 +2182,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Monitor List Size
@@ -2204,12 +2204,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2224,7 +2224,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Name Cache hit rate
@@ -2246,12 +2246,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2266,7 +2266,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Notify Queue Size
@@ -2288,12 +2288,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2308,7 +2308,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Search sub-operations/sec
@@ -2330,12 +2330,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2350,7 +2350,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Server Binds/sec
@@ -2372,12 +2372,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2392,7 +2392,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Server Name Translations/sec
@@ -2414,12 +2414,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2434,7 +2434,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\DS Threads in Use
@@ -2456,12 +2456,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2476,7 +2476,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Active Threads
@@ -2498,12 +2498,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2518,7 +2518,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Bind Time
@@ -2540,12 +2540,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2560,7 +2560,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Client Sessions
@@ -2582,12 +2582,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2602,7 +2602,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Closed Connections/sec
@@ -2624,12 +2624,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2644,7 +2644,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP New Connections/sec
@@ -2666,12 +2666,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2686,7 +2686,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
@@ -2708,12 +2708,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2728,7 +2728,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Searches/sec
@@ -2750,12 +2750,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2770,7 +2770,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Successful Binds/sec
@@ -2792,12 +2792,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2812,7 +2812,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP UDP operations/sec
@@ -2834,12 +2834,12 @@ Performance monitoring for Microsoft Active Directory.
 </object>
 </tomanycont>
 </object>
-<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Performance monitoring for Microsoft Active Directory.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2854,7 +2854,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \DirectoryServices(NTDS)\LDAP Writes/sec
@@ -2889,12 +2889,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2909,7 +2909,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Available bytes
@@ -2938,12 +2938,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -2958,7 +2958,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Committed Bytes
@@ -2983,12 +2983,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3003,7 +3003,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Input/sec
@@ -3028,12 +3028,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3048,7 +3048,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Memory\Pages Output/sec
@@ -3073,12 +3073,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3093,7 +3093,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Paging File(_Total)\% Usage
@@ -3118,12 +3118,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3138,7 +3138,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Privileged Time
@@ -3163,12 +3163,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3183,7 +3183,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% Processor Time
@@ -3212,12 +3212,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3232,7 +3232,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Processor(_Total)\% User Time
@@ -3257,12 +3257,12 @@ This template uses WinRS to collect standard Windows metrics (cpu, memory, pagin
 </object>
 </tomanycont>
 </object>
-<object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 This template uses WinRS to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3277,7 +3277,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \System\System Up Time
@@ -3627,12 +3627,12 @@ FileSystem template that uses WinRS.
 Products.ZenModel.FileSystem
 </property>
 <tomanycont id='datasources'>
-<object id='DiskReadBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='DiskReadBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3647,7 +3647,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Disk Read Bytes/sec
@@ -3669,12 +3669,12 @@ FileSystem template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='DiskReadTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='DiskReadTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3689,7 +3689,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \% Disk Read Time
@@ -3711,12 +3711,12 @@ FileSystem template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='DiskWriteBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='DiskWriteBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3731,7 +3731,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Disk Write Bytes/sec
@@ -3753,12 +3753,12 @@ FileSystem template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='DiskWriteTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='DiskWriteTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3773,7 +3773,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \% Disk Write Time
@@ -3795,12 +3795,12 @@ FileSystem template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='FreeMegabytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='FreeMegabytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 FileSystem template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3815,7 +3815,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Free Megabytes
@@ -3857,12 +3857,12 @@ Metrics for Microsoft IIS
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='iisBytesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisBytesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3877,7 +3877,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Bytes Received/sec
@@ -3899,12 +3899,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisBytesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisBytesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3919,7 +3919,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Bytes Sent/sec
@@ -3941,12 +3941,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisCGIRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisCGIRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -3961,7 +3961,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\CGI Requests/sec
@@ -3983,12 +3983,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisConnectionAttempts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisConnectionAttempts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4003,7 +4003,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Connection Attempts/sec
@@ -4025,12 +4025,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisCopyRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisCopyRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4045,7 +4045,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Copy Requests/sec
@@ -4067,12 +4067,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisDeleteRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisDeleteRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4087,7 +4087,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Delete Requests/sec
@@ -4109,12 +4109,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisFilesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisFilesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4129,7 +4129,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Files Received/sec
@@ -4151,12 +4151,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisFilesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisFilesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4171,7 +4171,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Files Sent/sec
@@ -4193,12 +4193,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisGetRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisGetRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4213,7 +4213,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Get Requests/sec
@@ -4235,12 +4235,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisHeadRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisHeadRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4255,7 +4255,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Head Requests/sec
@@ -4277,12 +4277,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisISAPIExtensionRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisISAPIExtensionRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4297,7 +4297,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\ISAPI Extension Requests/sec
@@ -4319,12 +4319,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4339,7 +4339,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Lock Requests/sec
@@ -4361,12 +4361,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisMkcolRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisMkcolRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4381,7 +4381,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Mkcol Requests/sec
@@ -4403,12 +4403,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisMoveRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisMoveRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4423,7 +4423,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Move Requests/sec
@@ -4445,12 +4445,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisOptionsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisOptionsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4465,7 +4465,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Options Requests/sec
@@ -4487,12 +4487,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisOtherRequestMethods' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisOtherRequestMethods' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4507,7 +4507,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Other Request Methods/sec
@@ -4529,12 +4529,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisPostRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisPostRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4549,7 +4549,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Post Requests/sec
@@ -4571,12 +4571,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisPropfindRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisPropfindRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4591,7 +4591,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Propfind Requests/sec
@@ -4613,12 +4613,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisProppatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisProppatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4633,7 +4633,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Proppatch Requests/sec
@@ -4655,12 +4655,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisPutRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisPutRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4675,7 +4675,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Put Requests/sec
@@ -4697,12 +4697,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisSearchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisSearchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4717,7 +4717,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Search Requests/sec
@@ -4739,12 +4739,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisTraceRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisTraceRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4759,7 +4759,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Trace Requests/sec
@@ -4781,12 +4781,12 @@ Metrics for Microsoft IIS
 </object>
 </tomanycont>
 </object>
-<object id='iisUnlockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='iisUnlockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Metrics for Microsoft IIS
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4801,7 +4801,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Web Service(_Total)\Unlock Requests/sec
@@ -4836,12 +4836,12 @@ Microsoft Exchange Information Store
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4856,7 +4856,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -4878,12 +4878,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4898,7 +4898,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Local delivery rate
@@ -4920,12 +4920,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4940,7 +4940,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Message Opens/sec
@@ -4962,12 +4962,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -4982,7 +4982,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Averaged Latency
@@ -5004,12 +5004,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5024,7 +5024,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Operations/sec
@@ -5046,12 +5046,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5066,7 +5066,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Requests
@@ -5088,12 +5088,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5108,7 +5108,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SMTP Server(_Total)\Local Queue Length
@@ -5130,12 +5130,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5150,7 +5150,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SMTP Server(_Total)\Messages Delivered/sec
@@ -5185,12 +5185,12 @@ Microsoft Exchange Information Store
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='activeMailboxDeliveryQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='activeMailboxDeliveryQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5205,7 +5205,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
@@ -5227,12 +5227,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='messagesCompletedDeliveryPerSecond' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='messagesCompletedDeliveryPerSecond' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5247,7 +5247,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
@@ -5269,12 +5269,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5289,7 +5289,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -5311,12 +5311,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5331,7 +5331,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Local delivery rate
@@ -5353,12 +5353,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5373,7 +5373,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS Mailbox(_Total)\Message Opens/sec
@@ -5395,12 +5395,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5415,7 +5415,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Averaged Latency
@@ -5437,12 +5437,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5457,7 +5457,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Operations/sec
@@ -5479,12 +5479,12 @@ Microsoft Exchange Information Store
 </object>
 </tomanycont>
 </object>
-<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5499,7 +5499,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \MSExchangeIS\RPC Requests
@@ -5534,12 +5534,12 @@ Microsoft SQL Server
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='AccessMethodsFullScans' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='AccessMethodsFullScans' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5554,7 +5554,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Access Methods\Full Scans/sec
@@ -5576,12 +5576,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='BufferManagerBufferCacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='BufferManagerBufferCacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5596,7 +5596,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Buffer Manager\Buffer cache hit ratio
@@ -5618,12 +5618,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='BufferManagerFreePages' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='BufferManagerFreePages' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5638,7 +5638,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Buffer Manager\Free pages
@@ -5660,12 +5660,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='DatabasesTotalDataFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='DatabasesTotalDataFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5680,7 +5680,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Databases(_Total)\Data File(s) Size (KB)
@@ -5702,12 +5702,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='GeneralStatisticsUserConnections' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='GeneralStatisticsUserConnections' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5722,7 +5722,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:General Statistics\User Connections
@@ -5744,12 +5744,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='LatchesLatchWaits' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='LatchesLatchWaits' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5764,7 +5764,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Latches\Latch Waits/sec
@@ -5786,12 +5786,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='LocksTotalAverageWaitTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='LocksTotalAverageWaitTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5806,7 +5806,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Locks(_Total)\Average Wait Time (ms)
@@ -5828,12 +5828,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='LocksTotalLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='LocksTotalLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5848,7 +5848,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Locks(_Total)\Lock Requests/sec
@@ -5870,12 +5870,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='LocksTotalNumberDeadlocks' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='LocksTotalNumberDeadlocks' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5890,7 +5890,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:Locks(_Total)\Number of Deadlocks/sec
@@ -5912,12 +5912,12 @@ Microsoft SQL Server
 </object>
 </tomanycont>
 </object>
-<object id='SQLStatisticsBatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='SQLStatisticsBatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5932,7 +5932,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \SQLServer:SQL Statistics\Batch Requests/sec
@@ -5967,12 +5967,12 @@ Ethernet interface template that uses WinRS.
 Products.ZenModel.IpInterface
 </property>
 <tomanycont id='datasources'>
-<object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5987,7 +5987,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Bytes Received/sec
@@ -6013,12 +6013,12 @@ Ethernet interface template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -6033,7 +6033,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Bytes Sent/sec
@@ -6059,12 +6059,12 @@ Ethernet interface template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -6079,7 +6079,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Packets Received Errors
@@ -6105,12 +6105,12 @@ Ethernet interface template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -6125,7 +6125,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Packets Received/sec
@@ -6147,12 +6147,12 @@ Ethernet interface template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -6167,7 +6167,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Packets Outbound Errors
@@ -6193,12 +6193,12 @@ Ethernet interface template that uses WinRS.
 </object>
 </tomanycont>
 </object>
-<object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource' class='SingleCounterDataSource'>
+<object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
 <property id='zendoc' type='string'>
 Ethernet interface template that uses WinRS.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS Single Counter
+WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -6213,7 +6213,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.SingleCounterDataSource.SingleCounterPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
 \Packets Sent/sec

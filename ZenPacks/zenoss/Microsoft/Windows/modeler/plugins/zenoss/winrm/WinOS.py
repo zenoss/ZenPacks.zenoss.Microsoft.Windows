@@ -64,6 +64,7 @@ class WinOS(PythonPlugin):
         'zWinPassword',
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
+        'zInterfaceMapIgnoreNames',
         )
 
     def collect(self, device, log):
@@ -186,7 +187,7 @@ class WinOS(PythonPlugin):
             int_om.interfaceName = int_om.description = inter.Description
             int_om.macaddress = inter.MACAddress
             int_om.mtu = inter.MTU
-            int_om.monitor = int_om.operStatus = bool(inter.IPEnabled)
+            int_om.monitor = int_om.operStatus = inter.IPEnabled == 'true'
             try:
                 int_om.ifindex = int(inter.InterfaceIndex)
             except (AttributeError, TypeError):
@@ -198,6 +199,12 @@ class WinOS(PythonPlugin):
                             "instance name and will not be monitored for "
                             "performance data", inter.Description,
                             inter.Index)
+
+            # These virtual adapters should not be monitored as they are
+            # like loopback, and are NOT available via perfmon
+            if 'Microsoft Failover Cluster Virtual Adapter' in int_om.description:
+                int_om.monitor = False
+
             mapInter.append(int_om)
 
         maps.append(RelationshipMap(

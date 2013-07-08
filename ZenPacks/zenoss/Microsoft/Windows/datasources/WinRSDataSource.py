@@ -42,12 +42,12 @@ from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
-SINGLE_COUNTER_SOURCETYPE = 'WinRS Single Counter'
+WINRS_SOURCETYPE = 'WinRS'
 TYPEPERF_STRATEGY = 'typeperf -sc1'
 POWERSHELL_STRATEGY = 'powershell Get-Counter'
 
 
-class SingleCounterDataSource(PythonDataSource):
+class WinRSDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -55,42 +55,41 @@ class SingleCounterDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    counter = ''
+    counters = []
     strategy = ''
     _properties = PythonDataSource._properties + (
-        {'id': 'counter', 'type': 'string'},
+        {'id': 'counters', 'type': 'lines'},
         {'id': 'strategy', 'type': 'string'},
         )
-    sourcetypes = (SINGLE_COUNTER_SOURCETYPE,)
+    sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
     plugin_classname = ZENPACKID + \
-        '.datasources.SingleCounterDataSource.SingleCounterPlugin'
+        '.datasources.WinRSDataSource.WinRSPlugin'
 
 
-class ISingleCounterInfo(IRRDDataSourceInfo):
+class IWinRSInfo(IRRDDataSourceInfo):
     """
-    Provide the UI information for the WinRS Single Counter datasource.
+    Provide the UI information for the WinRS datasource.
     """
 
     counter = schema.TextLine(
-        group=_t(SINGLE_COUNTER_SOURCETYPE),
+        group=_t(WINRS_SOURCETYPE),
         title=_t('Counter'))
 
     strategy = schema.Choice(
-        group=_t(SINGLE_COUNTER_SOURCETYPE),
+        group=_t(WINRS_SOURCETYPE),
         title=_t('Strategy'),
         default=TYPEPERF_STRATEGY,
         vocabulary=SimpleVocabulary.fromValues(
             [TYPEPERF_STRATEGY, POWERSHELL_STRATEGY]),)
 
 
-class SingleCounterInfo(RRDDataSourceInfo):
+class WinRSInfo(RRDDataSourceInfo):
     """
-    Pull in proxy values so they can be utilized within the WinRS Single
-    Counter plugin.
+    Pull in proxy values so they can be utilized within the WinRS plugin.
     """
-    implements(ISingleCounterInfo)
-    adapts(SingleCounterDataSource)
+    implements(IWinRSInfo)
+    adapts(WinRSDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
@@ -100,53 +99,62 @@ class SingleCounterInfo(RRDDataSourceInfo):
 
 class TypeperfSc1Strategy(object):
 
-    def build_command_line(self, counter):
-        return 'typeperf "{0}" -sc 1'.format(counter)
+    def build_command_line(self, counters):
+        quoted_counters = ['"{0}"'.format(c) for c in counters]
+        counters_args = ' '.join(quoted_counters)
+        return 'typeperf {0} -sc 1'.format(counters_args)
 
-    def parse_result(self, dsconf, result):
+    def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
+            counters = [dsconf.params['counter'] for dsconf in dsconfs]
             log.info(
-                'Non-zero exit code ({0}) for counter, {1}, on {2}'
+                'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
-                    result.exit_code, dsconf.params['counter'], dsconf.device))
-            return None, None
+                    result.exit_code, counters, dsconf.device))
+            return
         rows = list(csv.reader(result.stdout))
-        timestamp_str, value_str = rows[1]
+        timestamp_str = rows[1][0]
         format = '%m/%d/%Y %H:%M:%S.%f'
         timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        value = float(value_str)
-        return value, timestamp
-
+        for dsconf, value_str in zip(dsconfs, rows[1][1:]):
+            value = float(value_str)
+            yield dsconf, value, timestamp
 
 typeperf_strategy = TypeperfSc1Strategy()
 
 
 class PowershellGetCounterStrategy(object):
 
-    def build_command_line(self, counter):
+    def build_command_line(self, counters):
+        quoted_counters = ["'{0}'".format(c) for c in counters]
+        counters_args = ', '.join(quoted_counters)
         return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
-               "XML -Command \"get-counter -counter '{0}'\"".format(counter)
+               "XML -Command \"get-counter -counter @({0})\"".format(counters_args)
 
-    def parse_result(self, dsconf, result):
+    def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
+            counters = [dsconf.params['counter'] for dsconf in dsconfs]
             log.info(
-                'Non-zero exit code ({0}) for counter, {1}, on {2}'
+                'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
-                    result.exit_code, dsconf.params['counter'], dsconf.device))
-            return None, None
+                    result.exit_code, counters, dsconf.device))
+            return
         root_elem = ET.fromstring(result.stdout[1])
-        value = float(root_elem.findtext('.//*[@N="RawValue"]'))
-        # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
-        timestamp_str = root_elem.findtext('.//*[@N="Timestamp"]')[:-7]
-        format = '%Y-%m-%dT%H:%M:%S.%f'
-        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        return value, timestamp
-
+        namespace = 'http://schemas.microsoft.com/powershell/2004/04'
+        for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
+            props_elems = lst_elem.findall('.//{%s}Props' % namespace)
+            for dsconf, props_elem in zip(dsconfs, props_elems):
+                value = float(props_elem.findtext('./*[@N="RawValue"]'))
+                # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
+                timestamp_str = props_elem.findtext('.//*[@N="Timestamp"]')[:-7]
+                format = '%Y-%m-%dT%H:%M:%S.%f'
+                timestamp = calendar.timegm(time.strptime(timestamp_str, format))
+                yield dsconf, value, timestamp
 
 powershell_strategy = PowershellGetCounterStrategy()
 
 
-class SingleCounterPlugin(PythonDataSourcePlugin):
+class WinRSPlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ('zWinUser', 'zWinPassword')
 
@@ -157,7 +165,6 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
         """
         return (context.device().id,
                 datasource.getCycleTime(context),
-                datasource.counter,
                 datasource.strategy)
 
     @classmethod
@@ -173,35 +180,29 @@ class SingleCounterPlugin(PythonDataSourcePlugin):
     def collect(self, config):
         scheme = 'http'
         port = 5985
-        results = []
-        for dsconf in config.datasources:
-            auth_type = 'basic'
-            if '@' in dsconf.zWinUser:
-                auth_type = 'kerberos'
-            conn_info = ConnectionInfo(
-                dsconf.manageIp,
-                auth_type,
-                dsconf.zWinUser,
-                dsconf.zWinPassword,
-                scheme,
-                port)
-            cmd = create_single_shot_command(conn_info)
-            strategy = self._get_strategy(dsconf)
-            counter = dsconf.params['counter']
-            command_line = strategy.build_command_line(counter)
-            result = yield cmd.run_command(command_line)
-            results.append((dsconf, result))
-        defer.returnValue(results)
+        auth_type = 'basic'
+        dsconf0 = config.datasources[0]
+        if '@' in dsconf0.zWinUser:
+            auth_type = 'kerberos'
+        conn_info = ConnectionInfo(
+            dsconf0.manageIp,
+            auth_type,
+            dsconf0.zWinUser,
+            dsconf0.zWinPassword,
+            scheme,
+            port)
+        strategy = self._get_strategy(dsconf0)
+        cmd = create_single_shot_command(conn_info)
+        counters = [dsconf.params['counter'] for dsconf in config.datasources]
+        command_line = strategy.build_command_line(counters)
+        result = yield cmd.run_command(command_line)
+        defer.returnValue((strategy, config.datasources, result))
 
     def onSuccess(self, results, config):
         data = self.new_data()
-        for dsconf, result in results:
-            strategy = self._get_strategy(dsconf)
-            value, timestamp = strategy.parse_result(dsconf, result)
-            if value is None:
-                continue
-            data['values'][dsconf.component][dsconf.datasource] = \
-                value, timestamp
+        strategy, dsconfs, result = results
+        for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
         data['events'].append(dict(
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
