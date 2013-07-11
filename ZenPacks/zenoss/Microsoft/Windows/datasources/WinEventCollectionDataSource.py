@@ -22,6 +22,8 @@ from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.ZenUtils.Utils import prepId
+from Products.ZenEvents import ZenEventClasses
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -36,6 +38,8 @@ from txwinrm.subscribe import create_event_subscription
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
+
+subscriptions_dct = {}
 
 
 class WinEventCollectionDataSource(PythonDataSource):
@@ -82,10 +86,16 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
         'zEventLogs',
         )
 
+    subscriptionID = {}
+
     @defer.inlineCallbacks
     def collect(self, config):
+        data = self.new_data()
+
         log.info('Start Collection of Events')
 
+        myfile = open('/tmp/events.txt', 'a')
+        myfile.write('Start File\n')
         scheme = 'http'
         port = 5985
         auth_type = 'basic'
@@ -103,13 +113,38 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port)
 
-        subscription = create_event_subscription(conn_info)
-        yield subscription.subscribe(path, select)
+        try:
+            subscription = subscriptions_dct[(ds.manageIp, path)]
+        except:
+            subscription = create_event_subscription(conn_info)
+            yield subscription.subscribe(path, select)
+            subscriptions_dct[(ds.manageIp, path)] = subscription
 
         def log_event(event):
-            log.info(event)
+            if event.rendering_info is not None:
+                evttime = event.system.time_created
+                evtlog = event.system.channel
+                evtid = event.system.event_id
+                evtsource = event.system.provider
+                evtkeyword = event.rendering_info.keywords
+                errlevel = event.rendering_info.opcode
+                message = event.rendering_info.message
+                myfile.write(message)
+                log.info(event)
+
+                if 'Info' in errlevel:
+                    severity = ZenEventClasses.Clear
+                else:
+                    severity = ZenEventClasses.Critical
+
+                data['events'].append({
+                    'eventClassKey': 'WindowsEventCollection',
+                    'eventKey': 'WindowsEventCollection',
+                    'severity': severity,
+                    'summary': 'Collected Event: %s' % message,
+                    'device': config.id,
+                    })
+                return data
 
         yield subscription.pull(log_event)
-
-
 
