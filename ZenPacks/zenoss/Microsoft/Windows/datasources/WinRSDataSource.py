@@ -55,10 +55,10 @@ class WinRSDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    counters = []
+    counter = ''
     strategy = ''
     _properties = PythonDataSource._properties + (
-        {'id': 'counters', 'type': 'lines'},
+        {'id': 'counter', 'type': 'string'},
         {'id': 'strategy', 'type': 'string'},
         )
     sourcetypes = (WINRS_SOURCETYPE,)
