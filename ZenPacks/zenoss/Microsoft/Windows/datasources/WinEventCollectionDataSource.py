@@ -90,7 +90,7 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        data = self.new_data()
+        results = []
 
         log.info('Start Collection of Events')
 
@@ -121,30 +121,56 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             subscriptions_dct[(ds.manageIp, path)] = subscription
 
         def log_event(event):
-            if event.rendering_info is not None:
-                evttime = event.system.time_created
-                evtlog = event.system.channel
-                evtid = event.system.event_id
-                evtsource = event.system.provider
-                evtkeyword = event.rendering_info.keywords
-                errlevel = event.rendering_info.opcode
-                message = event.rendering_info.message
-                myfile.write(message)
-                log.info(event)
+            results.append(event)
+
+        yield subscription.pull(log_event)
+
+        defer.returnValue(results)
+
+    def onSuccess(self, results, config):
+        data = self.new_data()
+        #data['values'] = None
+        for evt in results:
+
+            if evt.rendering_info is not None:
+                evttime = evt.system.time_created
+                evtlog = evt.system.channel
+                evtid = evt.system.event_id
+                evtsource = evt.system.provider
+                evtkeyword = evt.rendering_info.keywords
+                errlevel = evt.rendering_info.opcode
+                message = evt.rendering_info.message
 
                 if 'Info' in errlevel:
-                    severity = ZenEventClasses.Clear
+                    severity = ZenEventClasses.Info
                 else:
                     severity = ZenEventClasses.Critical
 
                 data['events'].append({
-                    'eventClassKey': 'WindowsEventCollection',
+                    'eventClassKey': 'WindowsEventLog',
                     'eventKey': 'WindowsEventCollection',
                     'severity': severity,
                     'summary': 'Collected Event: %s' % message,
                     'device': config.id,
                     })
-                return data
 
-        yield subscription.pull(log_event)
+        data['events'].append({
+            'device': config.id,
+            'summary': 'Windows EventLog: successful event collection',
+            'severity': ZenEventClasses.Info,
+            'eventKey': 'WindowsEventCollection',
+            'eventClassKey': 'WindowsEventLogSuccess',
+            })
+        #import pdb; pdb.set_trace()
+        return data
 
+    def onError(self, result, config):
+        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
+        log.error(msg)
+        data = self.new_data()
+        data['events'].append(dict(
+            eventClassKey='WindowsEventCollectionError',
+            eventKey='WindowsEventCollection',
+            summary=msg,
+            device=config.id))
+        return data
