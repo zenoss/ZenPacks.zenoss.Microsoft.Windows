@@ -30,6 +30,13 @@
         factory=".datasources.WinRSDataSource.WinRSInfo"
         />
 
+    <adapter
+        provides=".datasources.WinEventCollectionDataSource.IWinEventCollectionInfo"
+        for=".datasources.WinEventCollectionDataSource.WinEventCollectionDataSource"
+        factory=".datasources.WinEventCollectionDataSource.WinEventCollectionInfo"
+        />
+
+
     <!-- Browser -->
     <include package=".browser"/>
 
