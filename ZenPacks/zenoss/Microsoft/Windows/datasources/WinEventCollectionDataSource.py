@@ -22,7 +22,6 @@ from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
-from Products.ZenUtils.Utils import prepId
 from Products.ZenEvents import ZenEventClasses
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
@@ -63,12 +62,14 @@ class WinEventCollectionDataSource(PythonDataSource):
     strategy = ''
     sourcetypes = ('WinEvents',)
     sourcetype = sourcetypes[0]
+    eventlog = ''
     query = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.WinEventCollectionDataSource.WinEventCollectionPlugin'
 
     _properties = PythonDataSource._properties + (
+        {'id': 'eventlog', 'type': 'string'},
         {'id': 'query', 'type': 'lines'},
         )
 
@@ -79,6 +80,10 @@ class IWinEventCollectionInfo(IRRDDataSourceInfo):
     """
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
+
+    eventlog = schema.TextLine(
+        group=_t('WindowsEventLog'),
+        title=_t('Event Log'))
 
     query = schema.Text(
         group=_t(u'WindowsEventLog'),
@@ -96,6 +101,7 @@ class WinEventCollectionInfo(RRDDataSourceInfo):
 
     testable = False
     cycletime = ProxyProperty('cycletime')
+    eventlog = ProxyProperty('eventlog')
     query = ProxyProperty('query')
 
 
@@ -115,6 +121,7 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             datasource.getCycleTime(context),
             datasource.id,
             datasource.plugin_classname,
+            params.get('eventlog'),
             params.get('query'),
             )
 
@@ -122,10 +129,12 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
     def params(cls, datasource, context):
         params = {}
 
+        params['eventlog'] = datasource.talesEval(
+            datasource.eventlog, context)
+
         params['query'] = datasource.talesEval(
             ' '.join(string_to_lines(datasource.query)), context)
 
-        params['query'] = 'test me'
         return params
 
     @defer.inlineCallbacks
@@ -138,10 +147,6 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
         port = 5985
         auth_type = 'basic'
 
-        #Temp data
-        #path = 'Application'
-        #select = 'Event[System/EventID="13"]'
-
         ds0 = config.datasources[0]
 
         conn_info = ConnectionInfo(
@@ -152,23 +157,18 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port)
 
-        for ds in config.datasources:
+        path = ds0.params['eventlog']
+        select = ds0.params['query']
+        try:
+            subscription = subscriptions_dct[(ds0.manageIp, path)]
+        except:
+            subscription = create_event_subscription(conn_info)
+            yield subscription.subscribe(path, select)
+            subscriptions_dct[(ds0.manageIp, path)] = subscription
 
-            path = ds.datasource
-            select = ds.params['query']
-
-            try:
-                subscription = subscriptions_dct[(ds.manageIp, path)]
-
-            except:
-                subscription = create_event_subscription(conn_info)
-                yield subscription.subscribe(path, select)
-                subscriptions_dct[(ds.manageIp, path)] = subscription
-
-            def log_event(event):
-                results.append(event)
-
-            yield subscription.pull_once(log_event)
+        def log_event(event):
+            results.append(event)
+        yield subscription.pull_once(log_event)
 
         defer.returnValue(results)
 
@@ -214,16 +214,17 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsEventCollection',
             'eventClassKey': 'WindowsEventLogSuccess',
             })
-        #import pdb; pdb.set_trace()
+
         return data
 
     def onError(self, result, config):
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
         log.error(msg)
         data = self.new_data()
-        data['events'].append(dict(
-            eventClassKey='WindowsEventCollectionError',
-            eventKey='WindowsEventCollection',
-            summary=msg,
-            device=config.id))
+        data['events'].append({
+            'severity': ZenEventClasses.Warning,
+            'eventClassKey': 'WindowsEventCollectionError',
+            'eventKey': 'WindowsEventCollection',
+            'summary': msg,
+            'device': config.id})
         return data
