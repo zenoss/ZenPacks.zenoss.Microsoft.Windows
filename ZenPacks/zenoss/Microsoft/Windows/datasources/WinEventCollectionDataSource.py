@@ -42,6 +42,15 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 subscriptions_dct = {}
 
 
+def string_to_lines(string):
+    if isinstance(string, (list, tuple)):
+        return string
+    elif hasattr(string, 'splitlines'):
+        return string.splitlines()
+
+    return None
+
+
 class WinEventCollectionDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
@@ -54,9 +63,14 @@ class WinEventCollectionDataSource(PythonDataSource):
     strategy = ''
     sourcetypes = ('WinEvents',)
     sourcetype = sourcetypes[0]
+    query = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.WinEventCollectionDataSource.WinEventCollectionPlugin'
+
+    _properties = PythonDataSource._properties + (
+        {'id': 'query', 'type': 'lines'},
+        )
 
 
 class IWinEventCollectionInfo(IRRDDataSourceInfo):
@@ -65,6 +79,11 @@ class IWinEventCollectionInfo(IRRDDataSourceInfo):
     """
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
+
+    query = schema.Text(
+        group=_t(u'WindowsEventLog'),
+        title=_t('Event Query'),
+        xtype='twocolumntextarea')
 
 
 class WinEventCollectionInfo(RRDDataSourceInfo):
@@ -77,16 +96,37 @@ class WinEventCollectionInfo(RRDDataSourceInfo):
 
     testable = False
     cycletime = ProxyProperty('cycletime')
+    query = ProxyProperty('query')
 
 
 class WinEventCollectionPlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
-        'zEventLogs',
         )
 
     subscriptionID = {}
+
+    @classmethod
+    def config_key(cls, datasource, context):
+        params = cls.params(datasource, context)
+        return(
+            context.device().id,
+            datasource.getCycleTime(context),
+            datasource.id,
+            datasource.plugin_classname,
+            params.get('query'),
+            )
+
+    @classmethod
+    def params(cls, datasource, context):
+        params = {}
+
+        params['query'] = datasource.talesEval(
+            ' '.join(string_to_lines(datasource.query)), context)
+
+        params['query'] = 'test me'
+        return params
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -94,63 +134,76 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
 
         log.info('Start Collection of Events')
 
-        myfile = open('/tmp/events.txt', 'a')
-        myfile.write('Start File\n')
         scheme = 'http'
         port = 5985
         auth_type = 'basic'
-        #Temp data
-        path = 'Application'
-        select = '*'
 
-        ds = config.datasources[0]
+        #Temp data
+        #path = 'Application'
+        #select = 'Event[System/EventID="13"]'
+
+        ds0 = config.datasources[0]
 
         conn_info = ConnectionInfo(
-            ds.manageIp,
+            ds0.manageIp,
             auth_type,
-            ds.zWinUser,
-            ds.zWinPassword,
+            ds0.zWinUser,
+            ds0.zWinPassword,
             scheme,
             port)
 
-        try:
-            subscription = subscriptions_dct[(ds.manageIp, path)]
-        except:
-            subscription = create_event_subscription(conn_info)
-            yield subscription.subscribe(path, select)
-            subscriptions_dct[(ds.manageIp, path)] = subscription
+        for ds in config.datasources:
 
-        def log_event(event):
-            results.append(event)
+            path = ds.datasource
+            select = ds.params['query']
 
-        yield subscription.pull(log_event)
+            try:
+                subscription = subscriptions_dct[(ds.manageIp, path)]
+
+            except:
+                subscription = create_event_subscription(conn_info)
+                yield subscription.subscribe(path, select)
+                subscriptions_dct[(ds.manageIp, path)] = subscription
+
+            def log_event(event):
+                results.append(event)
+
+            yield subscription.pull_once(log_event)
 
         defer.returnValue(results)
 
     def onSuccess(self, results, config):
         data = self.new_data()
-        #data['values'] = None
         for evt in results:
 
             if evt.rendering_info is not None:
-                evttime = evt.system.time_created
-                evtlog = evt.system.channel
-                evtid = evt.system.event_id
-                evtsource = evt.system.provider
-                evtkeyword = evt.rendering_info.keywords
-                errlevel = evt.rendering_info.opcode
-                message = evt.rendering_info.message
+                """
+                evt.system.time_created
+                evt.system.channel
+                evt.system.event_id
+                evt.system.provider
+                evt.rendering_info.keywords
+                evt.rendering_info.message
+                """
+                errlevel = evt.rendering_info.level
 
-                if 'Info' in errlevel:
-                    severity = ZenEventClasses.Info
-                else:
-                    severity = ZenEventClasses.Critical
+                evtmessage = "EventID: {evtid}\nSource: {evtsource}\nLog: {evtlog}\nMessage: {message}".format(
+                    evtid=evt.system.event_id,
+                    evtsource=evt.system.provider,
+                    evtlog=evt.system.channel,
+                    message=evt.rendering_info.message)
+
+                severity = {
+                    'Information': ZenEventClasses.Clear,
+                    'Warning': ZenEventClasses.Warning,
+                    'Error': ZenEventClasses.Critical,
+                    }.get(errlevel, ZenEventClasses.Info)
 
                 data['events'].append({
                     'eventClassKey': 'WindowsEventLog',
-                    'eventKey': 'WindowsEventCollection',
+                    'eventKey': 'WindowsEvent',
                     'severity': severity,
-                    'summary': 'Collected Event: %s' % message,
+                    'summary': 'Collected Event: %s' % evtmessage,
                     'device': config.id,
                     })
 
