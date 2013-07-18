@@ -24,7 +24,7 @@ egg:
 	python setup.py bdist_egg
 
 # pipe operator means src/txwinrm must exist (as opposed to being more recent)
-build: | src src/txwinrm
+builddependencies: | src src/txwinrm
 	cd src/txwinrm; git pull
 	rm -rf $(LIB_DIR)/txwinrm
 	mkdir $(LIB_DIR)/txwinrm
