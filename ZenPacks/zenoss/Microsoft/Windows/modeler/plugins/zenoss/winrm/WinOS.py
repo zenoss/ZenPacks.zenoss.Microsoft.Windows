@@ -142,8 +142,10 @@ class WinOS(PythonPlugin):
         cs_om.title = res.computerSystem.DNSHostName
         cs_om.setHWProductKey = MultiArgs(res.computerSystem.Model,
                                           res.computerSystem.Manufacturer)
+        osCaption = '{0} - {1}'.format(res.operatingSystem.Caption,
+                                        res.operatingSystem.CSDVersion)
 
-        cs_om.setOSProductKey = MultiArgs(res.operatingSystem.Caption,
+        cs_om.setOSProductKey = MultiArgs(osCaption,
                                           res.operatingSystem.Manufacturer)
 
         cs_om.snmpSysName = res.computerSystem.Name

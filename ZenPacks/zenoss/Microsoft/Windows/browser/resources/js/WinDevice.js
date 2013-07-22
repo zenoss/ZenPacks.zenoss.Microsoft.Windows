@@ -111,17 +111,22 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'displayname',
             componentType: 'WinRMService',
             fields: [
                 {name: 'uid'},
+                {name: 'severity'},
                 {name: 'meta_type'},
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'servicename'},
+                {name: 'caption'},
                 {name: 'startmode'},
                 {name: 'state'},
                 {name: 'account'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
                 {name: 'monitored'}
             ],
             columns: [{
@@ -134,7 +139,14 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'name',
                 dataIndex: 'servicename',
-                header: _t('Name')
+                header: _t('Name'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'displayname',
+                dataIndex: 'caption',
+                header: _t('Display Name'),
+                sortable: true
             },{
                 id: 'startmode',
                 dataIndex: 'startmode',
@@ -144,9 +156,19 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'state',
                 dataIndex: 'state',
-                header: _t('State'),
+                header: _t('Status'),
                 sortable: true,
-                width: 110
+                width: 110,
+                editor: {
+                    xtype: 'combo',
+                    store: new Ext.data.ArrayStore({
+                        fields: ['status'],
+                        data : [
+                            ['Running'],
+                            ['Stopping']
+                            ]
+                    })
+                }
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -154,6 +176,11 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.checkbox,
                 sortable: true,
                 width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
             }]
         });
         ZC.WinRMServicePanel.superclass.constructor.call(this, config);
@@ -178,11 +205,16 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'title'},
                 {name: 'numbercore'},
                 {name: 'status'},
+                {name: 'severity'},
                 {name: 'architecture'},
                 {name: 'clockspeed'},
                 {name: 'monitored'},
                 {name: 'product'},
-                {name: 'manufacturer'}
+                {name: 'manufacturer'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
             ],
             columns: [{
                 id: 'severity',
@@ -233,6 +265,11 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.checkbox,
                 sortable: true,
                 width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
             }]
         });
         ZC.WinRMProcPanel.superclass.constructor.call(this, config);
