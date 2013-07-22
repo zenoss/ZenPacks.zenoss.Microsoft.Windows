@@ -111,7 +111,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'displayname',
             componentType: 'WinRMService',
             fields: [
                 {name: 'uid'},
@@ -124,6 +124,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'startmode'},
                 {name: 'state'},
                 {name: 'account'},
+                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
                 {name: 'monitored'}
@@ -200,6 +201,7 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'monitored'},
                 {name: 'product'},
                 {name: 'manufacturer'},
+                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
                 {name: 'monitored'}

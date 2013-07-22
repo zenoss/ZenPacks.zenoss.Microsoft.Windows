@@ -25,6 +25,7 @@ class WinService(OSComponent):
     startmode = None
     account = None
     state = None
+    monitor = False
 
     _properties = OSComponent._properties + (
         {'id': 'servicename', 'type': 'string'},
