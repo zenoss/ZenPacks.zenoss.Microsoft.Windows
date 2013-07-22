@@ -60,10 +60,8 @@ class WinServiceCollectionDataSource(PythonDataSource):
     cycletime = 300
     counter = ''
     strategy = ''
-    sourcetypes = ('WinEvents',)
+    sourcetypes = ('WinServices',)
     sourcetype = sourcetypes[0]
-    eventlog = ''
-    query = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.WinEventCollectionDataSource.WinEventCollectionPlugin'
