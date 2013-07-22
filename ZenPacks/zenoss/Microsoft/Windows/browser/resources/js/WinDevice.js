@@ -115,6 +115,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
             componentType: 'WinRMService',
             fields: [
                 {name: 'uid'},
+                {name: 'severity'},
                 {name: 'meta_type'},
                 {name: 'name'},
                 {name: 'title'},
@@ -122,6 +123,8 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'startmode'},
                 {name: 'state'},
                 {name: 'account'},
+                {name: 'monitor'},
+                {name: 'locking'},
                 {name: 'monitored'}
             ],
             columns: [{
@@ -154,6 +157,11 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.checkbox,
                 sortable: true,
                 width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
             }]
         });
         ZC.WinRMServicePanel.superclass.constructor.call(this, config);
@@ -178,11 +186,15 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'title'},
                 {name: 'numbercore'},
                 {name: 'status'},
+                {name: 'severity'},
                 {name: 'architecture'},
                 {name: 'clockspeed'},
                 {name: 'monitored'},
                 {name: 'product'},
-                {name: 'manufacturer'}
+                {name: 'manufacturer'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
             ],
             columns: [{
                 id: 'severity',
@@ -233,6 +245,11 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.checkbox,
                 sortable: true,
                 width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
             }]
         });
         ZC.WinRMProcPanel.superclass.constructor.call(this, config);
