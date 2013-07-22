@@ -120,6 +120,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'servicename'},
+                {name: 'caption'},
                 {name: 'startmode'},
                 {name: 'state'},
                 {name: 'account'},
@@ -137,7 +138,14 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'name',
                 dataIndex: 'servicename',
-                header: _t('Name')
+                header: _t('Name'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'displayname',
+                dataIndex: 'caption',
+                header: _t('Display Name'),
+                sortable: true
             },{
                 id: 'startmode',
                 dataIndex: 'startmode',
@@ -147,7 +155,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'state',
                 dataIndex: 'state',
-                header: _t('State'),
+                header: _t('Status'),
                 sortable: true,
                 width: 110
             },{
