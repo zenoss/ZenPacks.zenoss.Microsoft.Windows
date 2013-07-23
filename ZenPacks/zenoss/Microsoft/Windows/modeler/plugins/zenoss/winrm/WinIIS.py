@@ -31,7 +31,7 @@ class WinIIS(PythonPlugin):
         )
 
     enum_info = create_enum_info(wql='select * from IIsWebServerSetting',
-        resource_uri='http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2')
+        resource_uri='http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/*')
 
     def collect(self, device, log):
         hostname = device.manageIp

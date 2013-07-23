@@ -36,6 +36,12 @@
         factory=".datasources.WinEventCollectionDataSource.WinEventCollectionInfo"
         />
 
+    <adapter
+        provides=".datasources.WinServiceCollectionDataSource.IWinServiceCollectionInfo"
+        for=".datasources.WinServiceCollectionDataSource.WinServiceCollectionDataSource"
+        factory=".datasources.WinServiceCollectionDataSource.WinServiceCollectionInfo"
+        />
+
 
     <!-- Browser -->
     <include package=".browser"/>
