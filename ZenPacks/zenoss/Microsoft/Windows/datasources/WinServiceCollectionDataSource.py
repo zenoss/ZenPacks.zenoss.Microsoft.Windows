@@ -136,7 +136,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
 
     def collect(self, config):
 
-        log.info('Start Collection of Services')
+        log.info('{0}:Start Collection of Services'.format(config.id))
 
         scheme = 'http'
         port = 5985
