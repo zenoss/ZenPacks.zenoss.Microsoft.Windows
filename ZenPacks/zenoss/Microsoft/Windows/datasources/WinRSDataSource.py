@@ -72,6 +72,9 @@ class IWinRSInfo(IRRDDataSourceInfo):
     Provide the UI information for the WinRS datasource.
     """
 
+    cycletime = schema.TextLine(
+        title=_t(u'Cycle Time (seconds)'))
+
     counter = schema.TextLine(
         group=_t(WINRS_SOURCETYPE),
         title=_t('Counter'))

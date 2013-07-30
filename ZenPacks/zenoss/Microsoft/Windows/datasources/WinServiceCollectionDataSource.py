@@ -15,6 +15,7 @@ import logging
 
 from zope.component import adapts
 from zope.interface import implements
+from zope.schema.vocabulary import SimpleVocabulary
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -38,7 +39,8 @@ from txwinrm.collect \
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
-subscriptions_dct = {}
+STATE_RUNNING = 'Running'
+STATE_STOPPED = 'Stopped'
 
 
 def string_to_lines(string):
@@ -85,9 +87,12 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
-    alertifnot = schema.Text(
-        group=_t(u'Service Status'),
-        title=_t('Alert if not'))
+    alertifnot = schema.Choice(
+        group=_t('Service Status'),
+        title=_t('Alert if not'),
+        default=STATE_RUNNING,
+        vocabulary=SimpleVocabulary.fromValues(
+            [STATE_RUNNING, STATE_STOPPED]),)
 
 
 class WinServiceCollectionInfo(RRDDataSourceInfo):
@@ -136,7 +141,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
 
     def collect(self, config):
 
-        log.info('Start Collection of Services')
+        log.info('{0}:Start Collection of Services'.format(config.id))
 
         scheme = 'http'
         port = 5985
