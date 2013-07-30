@@ -158,17 +158,7 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'state',
                 header: _t('Status'),
                 sortable: true,
-                width: 110,
-                editor: {
-                    xtype: 'combo',
-                    store: new Ext.data.ArrayStore({
-                        fields: ['status'],
-                        data : [
-                            ['Running'],
-                            ['Stopping']
-                            ]
-                    })
-                }
+                width: 110
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
