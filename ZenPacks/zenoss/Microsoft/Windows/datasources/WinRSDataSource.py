@@ -38,13 +38,15 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.util import ConnectionInfo
-from txwinrm.shell import create_single_shot_command
+from txwinrm.shell import create_long_subscription, retrieve_long_subscription
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 WINRS_SOURCETYPE = 'WinRS'
 TYPEPERF_STRATEGY = 'typeperf -sc1'
 POWERSHELL_STRATEGY = 'powershell Get-Counter'
+
+connections_dct = {}
 
 
 class WinRSDataSource(PythonDataSource):
@@ -195,11 +197,29 @@ class WinRSPlugin(PythonDataSourcePlugin):
             scheme,
             port)
         strategy = self._get_strategy(dsconf0)
-        cmd = create_single_shot_command(conn_info)
         counters = [dsconf.params['counter'] for dsconf in config.datasources]
         command_line = strategy.build_command_line(counters)
-        result = yield cmd.run_command(command_line)
-        defer.returnValue((strategy, config.datasources, result))
+
+        try:
+            sender = connections_dct[conn_info]['sender']
+            shell_id = connections_dct[conn_info]['shell_id']
+            command_id = connections_dct[conn_info]['command_id']
+
+        except:
+            subscription_conn = yield create_long_subscription(conn_info, command_line)
+            sender = subscription_conn['sender']
+            shell_id = subscription_conn['shell_id']
+            command_id = subscription_conn['command_id']
+
+            connections_dct[conn_info] = {
+                'sender': sender,
+                'shell_id': shell_id,
+                'command_id': command_id
+            }
+
+        results = yield retrieve_long_subscription(sender, shell_id, command_id)
+
+        defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
         data = self.new_data()
