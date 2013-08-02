@@ -38,7 +38,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.util import ConnectionInfo
-from txwinrm.shell import create_long_subscription, retrieve_long_subscription
+from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -186,6 +186,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
         scheme = 'http'
         port = 5985
         auth_type = 'basic'
+        connectiontype = 'Keep-Alive'
         dsconf0 = config.datasources[0]
         if '@' in dsconf0.zWinUser:
             auth_type = 'kerberos'
@@ -195,7 +196,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
             dsconf0.zWinUser,
             dsconf0.zWinPassword,
             scheme,
-            port)
+            port,
+            connectiontype)
         strategy = self._get_strategy(dsconf0)
         counters = [dsconf.params['counter'] for dsconf in config.datasources]
         command_line = strategy.build_command_line(counters)
@@ -203,22 +205,21 @@ class WinRSPlugin(PythonDataSourcePlugin):
         try:
             sender = connections_dct[conn_info]['sender']
             shell_id = connections_dct[conn_info]['shell_id']
-            command_id = connections_dct[conn_info]['command_id']
 
         except:
-            subscription_conn = yield create_long_subscription(conn_info, command_line)
+            subscription_conn = yield create_long_running_shell(conn_info)
             sender = subscription_conn['sender']
             shell_id = subscription_conn['shell_id']
-            command_id = subscription_conn['command_id']
 
             connections_dct[conn_info] = {
                 'sender': sender,
-                'shell_id': shell_id,
-                'command_id': command_id
+                'shell_id': shell_id
             }
 
-        results = yield retrieve_long_subscription(sender, shell_id, command_id)
-
+        results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+        log.info('Results retreived for device {0} on shell id {1}'.format(
+                dsconf0.manageIp,
+                shell_id))
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
