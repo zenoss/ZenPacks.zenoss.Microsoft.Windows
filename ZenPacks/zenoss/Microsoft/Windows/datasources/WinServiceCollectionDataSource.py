@@ -146,6 +146,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
         scheme = 'http'
         port = 5985
         auth_type = 'basic'
+        connectiontype = 'Keep-Alive'
 
         ds0 = config.datasources[0]
 
@@ -161,7 +162,8 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinUser,
             ds0.zWinPassword,
             scheme,
-            port)
+            port,
+            connectiontype)
         winrm = WinrmCollectClient()
         results = winrm.do_collect(conn_info, WinRMQueries)
 

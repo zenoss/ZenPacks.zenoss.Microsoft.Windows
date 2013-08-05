@@ -146,6 +146,7 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
         scheme = 'http'
         port = 5985
         auth_type = 'basic'
+        connectiontype = 'Keep-Alive'
 
         ds0 = config.datasources[0]
 
@@ -155,7 +156,8 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinUser,
             ds0.zWinPassword,
             scheme,
-            port)
+            port,
+            connectiontype)
 
         path = ds0.params['eventlog']
         select = ds0.params['query']
