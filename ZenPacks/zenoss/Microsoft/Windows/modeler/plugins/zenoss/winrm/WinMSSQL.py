@@ -43,9 +43,17 @@ class WinMSSQL(PythonPlugin):
         password = device.zWinPassword
         scheme = 'http'
         port = 5985
+        connectiontype = 'Keep-Alive'
+
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
-            hostname, auth_type, username, password, scheme, port)
+            hostname,
+            auth_type,
+            username,
+            password,
+            scheme,
+            port,
+            connectiontype)
         results = winrm.do_collect(conn_info, self.WinRMQueries)
         return results
 
