@@ -113,6 +113,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
+        'zWinRMPort',
         )
 
     @classmethod
@@ -142,13 +143,12 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
     def collect(self, config):
 
         log.info('{0}:Start Collection of Services'.format(config.id))
+        ds0 = config.datasources[0]
 
         scheme = 'http'
-        port = 5985
+        port = int(ds0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
-
-        ds0 = config.datasources[0]
 
         servicename = ds0.params['servicename']
 

@@ -28,6 +28,7 @@ class WinIIS(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
         'zWinPassword',
+        'zWinRMPort',
         )
 
     enum_info = create_enum_info(wql='select * from IIsWebServerSetting',
@@ -39,7 +40,7 @@ class WinIIS(PythonPlugin):
         auth_type = 'kerberos' if '@' in username else 'basic'
         password = device.zWinPassword
         scheme = 'http'
-        port = 5985
+        port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
