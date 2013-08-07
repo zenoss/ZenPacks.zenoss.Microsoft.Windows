@@ -65,6 +65,7 @@ class WinOS(PythonPlugin):
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
+        'zWinRMPort',
         )
 
     def collect(self, device, log):
@@ -73,7 +74,7 @@ class WinOS(PythonPlugin):
         auth_type = 'kerberos' if '@' in username else 'basic'
         password = device.zWinPassword
         scheme = 'http'
-        port = 5985
+        port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
 
         winrm = WinrmCollectClient()

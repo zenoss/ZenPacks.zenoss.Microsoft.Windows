@@ -109,6 +109,7 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
+        'zWinRMPort',
         )
 
     subscriptionID = {}
@@ -143,12 +144,12 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
 
         log.info('Start Collection of Events')
 
+        ds0 = config.datasources[0]
+
         scheme = 'http'
-        port = 5985
+        port = int(ds0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
-
-        ds0 = config.datasources[0]
 
         conn_info = ConnectionInfo(
             ds0.manageIp,

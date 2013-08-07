@@ -162,7 +162,10 @@ powershell_strategy = PowershellGetCounterStrategy()
 
 class WinRSPlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ('zWinUser', 'zWinPassword')
+    proxy_attributes = ('zWinUser',
+        'zWinPassword',
+        'zWinRMPort',
+        )
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -184,11 +187,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
+        dsconf0 = config.datasources[0]
+
         scheme = 'http'
-        port = 5985
+        port = int(dsconf0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
-        dsconf0 = config.datasources[0]
+
         if '@' in dsconf0.zWinUser:
             auth_type = 'kerberos'
         conn_info = ConnectionInfo(
