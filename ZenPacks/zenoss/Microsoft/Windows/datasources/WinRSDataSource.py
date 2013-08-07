@@ -117,6 +117,7 @@ class TypeperfSc1Strategy(object):
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
+        log.info('Results have been parsed')
         rows = list(csv.reader(result.stdout))
         timestamp_str = rows[1][0]
         format = '%m/%d/%Y %H:%M:%S.%f'
@@ -161,7 +162,10 @@ powershell_strategy = PowershellGetCounterStrategy()
 
 class WinRSPlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ('zWinUser', 'zWinPassword')
+    proxy_attributes = ('zWinUser',
+        'zWinPassword',
+        'zWinRMPort',
+        )
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -183,11 +187,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
+        dsconf0 = config.datasources[0]
+
         scheme = 'http'
-        port = 5985
+        port = int(dsconf0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
-        dsconf0 = config.datasources[0]
+
         if '@' in dsconf0.zWinUser:
             auth_type = 'kerberos'
         conn_info = ConnectionInfo(
@@ -207,16 +213,40 @@ class WinRSPlugin(PythonDataSourcePlugin):
             shell_id = connections_dct[conn_info]['shell_id']
 
         except:
-            subscription_conn = yield create_long_running_shell(conn_info)
-            sender = subscription_conn['sender']
-            shell_id = subscription_conn['shell_id']
+            shell_conn = yield create_long_running_shell(conn_info)
+            sender = shell_conn['sender']
+            shell_id = shell_conn['shell_id']
 
             connections_dct[conn_info] = {
                 'sender': sender,
                 'shell_id': shell_id
             }
 
-        results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+        try:
+            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+
+        except:
+            del connections_dct[conn_info]
+            # Shell could have failed for some reason
+            # Need to restart shell here
+            log.info('Shell ID {0} no longer exists another connection will be \
+                created. This could be a result of restarting the client machine \
+                or the idle timeout for WinRS is to short. If you are seeing this \
+                message freaquently you may need to adjust the idle timeout. \
+                Please refer to the FAQ section for information on how to make \
+                this adjustment'.format(shell_id))
+
+            shell_conn = yield create_long_running_shell(conn_info)
+            sender = shell_conn['sender']
+            shell_id = shell_conn['shell_id']
+
+            connections_dct[conn_info] = {
+                'sender': sender,
+                'shell_id': shell_id
+            }
+
+            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+
         log.info('Results retreived for device {0} on shell id {1}'.format(
                 dsconf0.manageIp,
                 shell_id))
