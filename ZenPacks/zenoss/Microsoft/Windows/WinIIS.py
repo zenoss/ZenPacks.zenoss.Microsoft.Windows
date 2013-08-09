@@ -22,11 +22,13 @@ class WinIIS(OSComponent):
     sitename = None
     apppool = None
     caption = None
+    status = None
 
     _properties = OSComponent._properties + (
         {'id': 'sitename', 'type': 'string'},
         {'id': 'apppool', 'type': 'string'},
         {'id': 'caption', 'type': 'string'},
+        {'id': 'status', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

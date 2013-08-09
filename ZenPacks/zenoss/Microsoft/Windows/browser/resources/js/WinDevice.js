@@ -268,4 +268,72 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinRMProcPanel', ZC.WinRMProcPanel);
 
+ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
+
+ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'displayname',
+            componentType: 'WinRMIIS',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'sitename'},
+                {name: 'caption'},
+                {name: 'apppool'},
+                {name: 'status'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'sitename',
+                header: _t('Name'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'displayname',
+                dataIndex: 'caption',
+                header: _t('Caption Name'),
+                sortable: true
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinRMIISPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinRMIISPanel', ZC.WinRMIISPanel);
+
 })();
