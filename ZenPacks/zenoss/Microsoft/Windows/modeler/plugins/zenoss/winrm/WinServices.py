@@ -76,9 +76,6 @@ class WinServices(PythonPlugin):
             om.account = service.StartName
             om.state = service.State
 
-            if om.state == 'Running':
-                om.monitor = True
-
             serviceMap.append(om)
 
         maps.append(RelationshipMap(

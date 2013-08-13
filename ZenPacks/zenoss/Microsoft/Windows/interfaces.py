@@ -40,3 +40,4 @@ class IWinIISInfo(IWinComponentInfo):
     sitename = schema.TextLine(title=_t(u'Site Name'), readonly=True)
     apppool = schema.TextLine(title=_t(u'App Pool'), readonly=True)
     caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
+    status = schema.TextLine(title=_t(u'Status'), readonly=True)
