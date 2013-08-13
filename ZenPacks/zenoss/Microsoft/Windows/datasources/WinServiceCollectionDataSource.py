@@ -86,7 +86,7 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
 
     servicename = schema.TextLine(
         group=_t('Service Status'),
-        default='${here/id}',
+        default=_t("${here/id}"),
         title=_t('Service Name'))
 
     alertifnot = schema.Choice(
