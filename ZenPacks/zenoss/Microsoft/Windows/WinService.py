@@ -42,4 +42,10 @@ class WinService(OSComponent):
          "winrmservices")),
     )
 
+    def getRRDTemplateName(self):
+        if self.getRRDTemplateByName(self.servicename):
+            return self.servicename
+        else:
+            return 'WinService'
+
 InitializeClass(WinService)
