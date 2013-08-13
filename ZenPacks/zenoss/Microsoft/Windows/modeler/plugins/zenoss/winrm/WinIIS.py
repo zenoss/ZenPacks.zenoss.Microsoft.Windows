@@ -22,6 +22,22 @@ addLocalLibPath()
 
 from txwinrm.collect import ConnectionInfo, WinrmCollectClient, create_enum_info
 
+namespace = 'microsoftiisv2'
+resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(namespace)
+
+ENUM_INFOS = dict(
+    iisVirtuals=create_enum_info(wql='select * from IIsWebVirtualDirSetting',
+        resource_uri=resource_uri),
+    iisSites=create_enum_info(wql='select * from IIsWebServerSetting',
+        resource_uri=resource_uri))
+
+
+SINGLETON_KEYS = []
+
+
+class WinIISResult(object):
+    pass
+
 
 class WinIIS(PythonPlugin):
 
@@ -30,9 +46,6 @@ class WinIIS(PythonPlugin):
         'zWinPassword',
         'zWinRMPort',
         )
-
-    enum_info = create_enum_info(wql='select * from IIsWebServerSetting',
-        resource_uri='http://schemas.microsoft.com/wbem/wsman/1/wmi/root/cimv2/*')
 
     def collect(self, device, log):
         hostname = device.manageIp
@@ -52,25 +65,37 @@ class WinIIS(PythonPlugin):
             port,
             connectiontype)
 
-        results = winrm.do_collect(conn_info, [self.enum_info])
+        results = winrm.do_collect(conn_info, ENUM_INFOS.values())
+
         return results
 
     def process(self, device, results, log):
-
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)
 
-        iisSites = results[self.enum_info]
+        res = WinIISResult()
+        for key, enum_info in ENUM_INFOS.iteritems():
+            value = results[enum_info]
+            if key in SINGLETON_KEYS:
+                value = value[0]
+            setattr(res, key, value)
+
         maps = []
         siteMap = []
-        for site in iisSites:
-            om = ObjectMap()
-            om.id = prepId(site.Name)
-            om.title = site.ServerComment
-            om.sitename = site.ServerComment
-            om.caption = site.Caption
-            om.apppool = site.AppPoolId
 
+        for iisSite in res.iisSites:
+            om = ObjectMap()
+            om.id = prepId(iisSite.Name)
+            om.title = iisSite.ServerComment
+            om.sitename = iisSite.ServerComment
+            if iisSite.ServerAutoStart == 'false':
+                om.status = 'Stopped'
+            else:
+                om.status = 'Running'
+
+            for iisVirt in res.iisVirtuals:
+                if iisVirt.Name == iisSite.Name + "/root":
+                    om.apppool = iisVirt.AppPoolId
             siteMap.append(om)
 
         maps.append(RelationshipMap(

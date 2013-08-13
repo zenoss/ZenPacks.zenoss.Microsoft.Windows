@@ -16,6 +16,7 @@ import logging
 from zope.component import adapts
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
+from twisted.internet import defer
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -85,11 +86,12 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
 
     servicename = schema.TextLine(
         group=_t('Service Status'),
+        default='${here/id}',
         title=_t('Service Name'))
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
-        title=_t('Alert if not'),
+        title=_t('Alert if service is NOT in this state'),
         default=STATE_RUNNING,
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
@@ -140,6 +142,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
 
         return params
 
+    @defer.inlineCallbacks
     def collect(self, config):
 
         log.info('{0}:Start Collection of Services'.format(config.id))
@@ -165,11 +168,13 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             port,
             connectiontype)
         winrm = WinrmCollectClient()
-        results = winrm.do_collect(conn_info, WinRMQueries)
+        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        log.debug(WinRMQueries)
 
-        return results
+        defer.returnValue(results)
 
     def onSuccess(self, results, config):
+
         data = self.new_data()
         ds0 = config.datasources[0]
         serviceinfo = results[results.keys()[0]]
@@ -183,7 +188,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             data['events'].append({
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': 'WindowsService',
-                    'severity': ZenEventClasses.Critical,
+                    'severity': ds0.severity,
                     'summary': evtmessage,
                     'component': prepId(serviceinfo[0].Name),
                     'device': config.id,
