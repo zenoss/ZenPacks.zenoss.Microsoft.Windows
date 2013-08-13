@@ -24,6 +24,11 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
 </property>
+<property visible="True" type="password" id="zWinPassword" >
+</property>
+<property visible="True" type="string" id="zWinUser" >
+administrator
+</property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
@@ -12488,6 +12493,39 @@ AVERAGE
 </property>
 </object>
 </tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='IISADMIN' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='IISAlert' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinServices
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Running
+</property>
 </object>
 </tomanycont>
 </object>
@@ -28306,6 +28344,39 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='IISADMIN' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='IISAdminCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinServices
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Stopped
+</property>
+</object>
+</tomanycont>
+</object>
 <object id='MSExchangeIS' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Microsoft Exchange Information Store
@@ -31648,6 +31719,49 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='FTPTest' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property id='zendoc' type='string'>
+Template Test
+</property>
+<property type="string" id="description" mode="w" >
+Template Test
+</property>
+<tomanycont id='rrdTemplates'>
+<object id='Spooler' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='Default' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinServices
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Running
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
 </object>
 </object>
 <!-- ('', 'zport', 'dmd', 'Devices', 'Server', 'Windows', 'rrdTemplates', 'Device') -->
@@ -33077,6 +33191,46 @@ AVERAGE
 </property>
 </object>
 </tomanycont>
+</object>
+</tomanycont>
+</object>
+<!-- ('', 'zport', 'dmd', 'Devices', 'rrdTemplates', 'WinService') -->
+<object id='/zport/dmd/Devices/rrdTemplates/WinService' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Place holder for future use.
+</property>
+<property type="text" id="description" mode="w" >
+Place holder for future use.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.WinService
+</property>
+<tomanycont id='datasources'>
+<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinServices
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Running
+</property>
 </object>
 </tomanycont>
 </object>
