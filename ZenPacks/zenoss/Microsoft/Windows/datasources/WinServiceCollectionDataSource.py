@@ -81,6 +81,7 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the WinRS Single Counter datasource.
     """
+
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
 

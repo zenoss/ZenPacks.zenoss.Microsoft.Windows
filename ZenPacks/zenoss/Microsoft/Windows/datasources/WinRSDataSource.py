@@ -135,7 +135,8 @@ class PowershellGetCounterStrategy(object):
         quoted_counters = ["'{0}'".format(c) for c in counters]
         counters_args = ', '.join(quoted_counters)
         return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
-               "XML -Command \"get-counter -counter @({0})\"".format(counters_args)
+               "XML -Command \"get-counter -ea silentlycontinue " \
+               "-counter @({0})\"".format(counters_args)
 
     def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
@@ -150,10 +151,11 @@ class PowershellGetCounterStrategy(object):
         for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
             props_elems = lst_elem.findall('.//{%s}Props' % namespace)
             for dsconf, props_elem in zip(dsconfs, props_elems):
-                value = float(props_elem.findtext('./*[@N="RawValue"]'))
+                value = float(props_elem.findtext('./*[@N="CookedValue"]'))
                 # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
-                timestamp_str = props_elem.findtext('.//*[@N="Timestamp"]')[:-7]
-                format = '%Y-%m-%dT%H:%M:%S.%f'
+                timestamp = props_elem.findtext('.//*[@N="Timestamp"]')
+                timestamp_str, milleseconds = timestamp.split(".")
+                format = '%Y-%m-%dT%H:%M:%S'
                 timestamp = calendar.timegm(time.strptime(timestamp_str, format))
                 yield dsconf, value, timestamp
 
