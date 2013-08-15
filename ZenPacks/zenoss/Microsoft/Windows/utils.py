@@ -124,6 +124,13 @@ def lookup_zendrivetype(value):
         }.get(value, 'uknown')
 
 
+def lookup_operstatus(value):
+    if value == 'true':
+        return 1
+    else:
+        return 2
+
+
 def guessBlockSize(bytes):
     """Most of the MS operating systems don't seem to return a value
     for block size.  So, let's try to guess by how the size is rounded
