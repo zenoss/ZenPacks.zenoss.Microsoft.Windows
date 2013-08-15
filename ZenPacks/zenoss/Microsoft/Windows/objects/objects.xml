@@ -33086,7 +33086,7 @@ AVERAGE
 Place holder for future use.
 </property>
 <property type="text" id="description" mode="w" >
-Place holder for future use.
+Default Windows Service monitoring template.
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.WinService

@@ -19,6 +19,12 @@ class WinService(OSComponent):
     '''
     meta_type = portal_type = 'WinRMService'
 
+    """
+    startmode [string] = The start mode for the servicename
+    account [string] = The account name the service runs as
+    state [string] = The current running state of the service
+    lastmonitorstatus [boolean] = That last update to monitor the user made.
+    """
     servicename = None
     caption = None
     description = None
@@ -26,6 +32,7 @@ class WinService(OSComponent):
     account = None
     state = None
     monitor = False
+    lastmonitorstatus = False
 
     _properties = OSComponent._properties + (
         {'id': 'servicename', 'type': 'string'},
@@ -34,6 +41,7 @@ class WinService(OSComponent):
         {'id': 'startmode', 'type': 'string'},
         {'id': 'account', 'type': 'string'},
         {'id': 'state', 'type': 'string'},
+        {'id': 'lastmonitorstatus', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
@@ -48,4 +56,9 @@ class WinService(OSComponent):
         else:
             return 'WinService'
 
+    """
+    def monitored(self):
+        return False
+        #return self.monitor
+    """
 InitializeClass(WinService)
