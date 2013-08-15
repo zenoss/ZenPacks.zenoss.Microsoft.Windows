@@ -191,7 +191,6 @@ class WinOS(PythonPlugin):
 
             if getattr(interconf, 'IPAddress', None) is not None:
                 arrIPaddress = parse_iprange(interconf.IPAddress)
-
                 for ipRecord in arrIPaddress:
                     try:
                         checkip(ipRecord)

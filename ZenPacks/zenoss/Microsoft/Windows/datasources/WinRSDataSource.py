@@ -119,12 +119,37 @@ class TypeperfSc1Strategy(object):
             return
         log.info('Results have been parsed')
         rows = list(csv.reader(result.stdout))
-        timestamp_str = rows[1][0]
-        format = '%m/%d/%Y %H:%M:%S.%f'
+        timestamp_str, milleseconds = rows[1][0].split(".")
+        format = '%m/%d/%Y %H:%M:%S'
         timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        for dsconf, value_str in zip(dsconfs, rows[1][1:]):
-            value = float(value_str)
-            yield dsconf, value, timestamp
+
+        map_props = {}
+        #Clean out negative numbers from rows returned.
+        #Typeperf returns the value as negative but does not return the counter
+
+        for perfvalue_str in rows[1][1:]:
+            perfvalue = float(perfvalue_str)
+            if perfvalue < 0:
+                rows[1].remove(perfvalue_str)
+
+        counterlist = zip(rows[0][1:], rows[1][1:])
+
+        for counter in counterlist:
+            arrCounter = counter[0].split("\\")
+            countername = "\\{0}\\{1}".format(arrCounter[3], arrCounter[4]).lower()
+            value = counter[1]
+
+            map_props.update({countername: {'value': value, 'timestamp': timestamp}})
+
+        for dsconf in dsconfs:
+            try:
+                key = dsconf.params['counter'].lower()
+                value = map_props[key]['value']
+                timestamp = map_props[key]['timestamp']
+                log.debug('Counter: {0} has value {1}'.format(key, value))
+                yield dsconf, value, timestamp
+            except (KeyError):
+                log.info("No value was returned for {0}".format(dsconf.params['counter']))
 
 typeperf_strategy = TypeperfSc1Strategy()
 
