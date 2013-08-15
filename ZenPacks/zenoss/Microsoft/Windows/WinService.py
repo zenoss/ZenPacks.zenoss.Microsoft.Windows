@@ -31,6 +31,7 @@ class WinService(OSComponent):
     startmode = None
     account = None
     state = None
+    monitor = False
     lastmonitorstatus = False
 
     _properties = OSComponent._properties + (
@@ -55,8 +56,9 @@ class WinService(OSComponent):
         else:
             return 'WinService'
 
+    """
     def monitored(self):
-
-        return self.monitor
-
+        return False
+        #return self.monitor
+    """
 InitializeClass(WinService)

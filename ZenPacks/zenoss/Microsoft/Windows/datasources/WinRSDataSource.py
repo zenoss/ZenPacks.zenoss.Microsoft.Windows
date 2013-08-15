@@ -150,14 +150,32 @@ class PowershellGetCounterStrategy(object):
         namespace = 'http://schemas.microsoft.com/powershell/2004/04'
         for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
             props_elems = lst_elem.findall('.//{%s}Props' % namespace)
-            for dsconf, props_elem in zip(dsconfs, props_elems):
+
+            map_props = {}
+
+            for props_elem in props_elems:
                 value = float(props_elem.findtext('./*[@N="CookedValue"]'))
-                # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
                 timestamp = props_elem.findtext('.//*[@N="Timestamp"]')
+                path = props_elem.findtext('.//*[@N="Path"]')
+
+                # Confirm timestamp format and convert
                 timestamp_str, milleseconds = timestamp.split(".")
                 format = '%Y-%m-%dT%H:%M:%S'
                 timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-                yield dsconf, value, timestamp
+
+                arrPath = path.split("\\")
+                indexPath = "\\{0}\\{1}".format(arrPath[3], arrPath[4])
+                map_props.update({indexPath: {'value': value, 'timestamp': timestamp}})
+
+            for dsconf in dsconfs:
+                try:
+                    key = dsconf.params['counter'].lower()
+                    value = map_props[key]['value']
+                    timestamp = map_props[key]['timestamp']
+                    yield dsconf, value, timestamp
+                except (KeyError):
+                    log.info("No value was returned for {0}".format(dsconf.params['counter']))
+
 
 powershell_strategy = PowershellGetCounterStrategy()
 

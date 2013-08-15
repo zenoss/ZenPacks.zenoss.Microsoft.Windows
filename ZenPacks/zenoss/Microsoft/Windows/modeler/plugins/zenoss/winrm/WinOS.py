@@ -21,7 +21,7 @@ from Products.ZenUtils.IpUtil import checkip, IpAddressError
 from Products.ZenUtils.Utils import prepId
 from Products.Zuul.utils import safe_hasattr
 from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_routetype, lookup_protocol, \
-    lookup_drivetype, lookup_zendrivetype, guessBlockSize, addLocalLibPath
+    lookup_drivetype, lookup_zendrivetype, guessBlockSize, addLocalLibPath, lookup_operstatus
 
 addLocalLibPath()
 
@@ -35,7 +35,8 @@ ENUM_INFOS = dict(
     sysProcessor=create_enum_info('select * from Win32_Processor'),
     cacheMemory=create_enum_info('select * from Win32_CacheMemory'),
     netRoute=create_enum_info('select * from Win32_IP4RouteTable'),
-    netInt=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
+    netInt=create_enum_info('select * from Win32_NetworkAdapter'),
+    netConf=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
     fsDisk=create_enum_info('select * from Win32_logicaldisk'),
     fsVol=create_enum_info('select * from Win32_Volume'),
     fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'))
@@ -168,8 +169,15 @@ class WinOS(PythonPlugin):
         mapInter = []
 
         skipifregex = getattr(device, 'zInterfaceMapIgnoreNames', None)
-        perfmonInstanceMap = self.buildPerfmonInstances(res.netInt, log)
+        perfmonInstanceMap = self.buildPerfmonInstances(res.netConf, log)
         for inter in res.netInt:
+            #Get the Network Configuration data for this interface
+
+            for intconf in res.netConf:
+                if intconf.Index == inter.Index:
+                    interconf = intconf
+                    continue
+
             ips = []
 
             if inter.Description is not None:
@@ -178,12 +186,12 @@ class WinOS(PythonPlugin):
                               .format(intname=inter.Description))
                     continue
 
-            if inter.MACAddress is None:
+            if interconf.MACAddress is None:
                 continue
 
-            if getattr(inter, 'IPAddress', None) is not None:
+            if getattr(interconf, 'IPAddress', None) is not None:
                 for ipRecord, ipMask in \
-                        zip([inter.IPAddress], [inter.IPSubnet]):
+                        zip([interconf.IPAddress], [interconf.IPSubnet]):
                     try:
                         checkip(ipRecord)
                         if not ipMask:
@@ -197,16 +205,40 @@ class WinOS(PythonPlugin):
                                   "skipped".format(ipaddress=ipRecord))
 
             int_om = ObjectMap()
-            int_om.id = prepId(inter.Description)
+            int_om.id = prepId(standardizeInstance(interconf.Description))
             int_om.setIpAddresses = ips
-            int_om.interfaceName = int_om.description = inter.Description
+            int_om.interfaceName = inter.Description
+            if getattr(inter, 'NetConnectionID') is not None:
+                int_om.description = inter.NetConnectionID
+            else:
+                int_om.description = interconf.Description
             int_om.macaddress = inter.MACAddress
-            int_om.mtu = inter.MTU
-            int_om.monitor = int_om.operStatus = inter.IPEnabled == 'true'
+
+            if getattr(interconf, 'MTU', 0) is not None:
+                int_om.mtu = interconf.MTU
+            else:
+                int_om.mtu = 0
+
+            if getattr(inter, 'Speed', 0) is not None:
+                int_om.speed = inter.Speed
+            else:
+                int_om.speed = 0
+
+            int_om.duplex = 0
+            int_om.type = inter.AdapterType
+
+            try:
+                int_om.adminStatus = int(lookup_operstatus(inter.NetEnabled))
+            except (AttributeError):
+                int_om.adminStatus = 0
+
+            int_om.operStatus = int(lookup_operstatus(interconf.IPEnabled))
+
             try:
                 int_om.ifindex = int(inter.InterfaceIndex)
             except (AttributeError, TypeError):
                 int_om.ifindex = int(inter.Index)
+
             if inter.Index in perfmonInstanceMap:
                 int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
             else:
@@ -373,7 +405,6 @@ class WinOS(PythonPlugin):
                                                                   index)
             else:
                 perfmonInstance = '\\Network Interface(%s)' % prevDesc
-
             log.debug("%s=%s", adapter.Index, perfmonInstance)
             instanceMap[adapter.Index] = perfmonInstance
 
