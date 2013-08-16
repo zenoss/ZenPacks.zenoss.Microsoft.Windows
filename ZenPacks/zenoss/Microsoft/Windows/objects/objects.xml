@@ -10023,7 +10023,7 @@ AVERAGE
 FileSystem template that uses Windows WMI.
 </property>
 <property type="text" id="description" mode="w" >
-FileSystem template that uses Windows WMI.
+FileSystem template that uses Windows RS.
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.FileSystem

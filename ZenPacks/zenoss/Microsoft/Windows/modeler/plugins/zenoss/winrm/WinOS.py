@@ -17,7 +17,7 @@ from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.DataCollector.plugins.zenoss.snmp.CpuMap import getManufacturerAndModel
-from Products.ZenUtils.IpUtil import checkip, IpAddressError
+from Products.ZenUtils.IpUtil import checkip, parse_iprange, IpAddressError
 from Products.ZenUtils.Utils import prepId
 from Products.Zuul.utils import safe_hasattr
 from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_routetype, lookup_protocol, \
@@ -190,19 +190,17 @@ class WinOS(PythonPlugin):
                 continue
 
             if getattr(interconf, 'IPAddress', None) is not None:
-                for ipRecord, ipMask in \
-                        zip([interconf.IPAddress], [interconf.IPSubnet]):
+                arrIPaddress = parse_iprange(interconf.IPAddress)
+                for ipRecord in arrIPaddress:
                     try:
                         checkip(ipRecord)
-                        if not ipMask:
-                            raise IpAddressError()
 
                         ipEntry = "{ipaddress}/{ipsubnet}".format(
-                                  ipaddress=ipRecord, ipsubnet=ipMask)
+                                  ipaddress=ipRecord, ipsubnet=interconf.IPSubnet)
                         ips.append(ipEntry)
                     except IpAddressError:
-                        log.debug("Invalid IP Address {ipaddress} encountered "
-                                  "skipped".format(ipaddress=ipRecord))
+                        log.debug("Invalid IP Address {0} encountered and "
+                                "skipped".format(ipRecord))
 
             int_om = ObjectMap()
             int_om.id = prepId(standardizeInstance(interconf.Description))
