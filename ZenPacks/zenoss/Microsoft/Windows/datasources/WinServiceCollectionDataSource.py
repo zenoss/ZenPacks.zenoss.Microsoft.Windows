@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to collect Windows Event Logs
+A datasource that uses WinRS to collect Windows Service Status
 
 """
 import logging
@@ -61,12 +61,11 @@ class WinServiceCollectionDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    counter = ''
-    strategy = ''
     sourcetypes = ('WinServices',)
     sourcetype = sourcetypes[0]
-    servicename = ''
-    alertifnot = ''
+    servicename = '${here/servicename}'
+    alertifnot = 'Running'
+    defaultgraph = False
 
     plugin_classname = ZENPACKID + \
         '.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin'
@@ -74,12 +73,13 @@ class WinServiceCollectionDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
+        {'id': 'defaultgraph', 'type': 'boolean', 'mode': 'w'},
         )
 
 
 class IWinServiceCollectionInfo(IRRDDataSourceInfo):
     """
-    Provide the UI information for the WinRS Single Counter datasource.
+    Provide the UI information for the WinRS Service datasource.
     """
 
     cycletime = schema.TextLine(
@@ -87,21 +87,23 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
 
     servicename = schema.TextLine(
         group=_t('Service Status'),
-        default=_t("${here/id}"),
         title=_t('Service Name'))
+
+    defaultgraph = schema.Bool(
+        group=_t('Service Status'),
+        title=_t('Default Monitor')
+        )
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
-        default=STATE_RUNNING,
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
 
 
 class WinServiceCollectionInfo(RRDDataSourceInfo):
     """
-    Pull in proxy values so they can be utilized within the WinRS Single
-    Counter plugin.
+    Pull in proxy values so they can be utilized within the WinRS Service plugin.
     """
     implements(IWinServiceCollectionInfo)
     adapts(WinServiceCollectionDataSource)
@@ -110,6 +112,7 @@ class WinServiceCollectionInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
+    defaultgraph = ProxyProperty('defaultgraph')
 
 
 class WinServiceCollectionPlugin(PythonDataSourcePlugin):
@@ -209,6 +212,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
                     'device': config.id,
                     })
 
+        # Event to provide notification that check has completed
         data['events'].append({
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',

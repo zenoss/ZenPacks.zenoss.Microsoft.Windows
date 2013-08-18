@@ -59,6 +59,7 @@ class WinRSDataSource(PythonDataSource):
     cycletime = 300
     counter = ''
     strategy = ''
+
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},
         {'id': 'strategy', 'type': 'string'},
@@ -117,7 +118,7 @@ class TypeperfSc1Strategy(object):
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
-        log.info('Results have been parsed')
+        log.debug('Results have been parsed')
         rows = list(csv.reader(result.stdout))
         timestamp_str, milleseconds = rows[1][0].split(".")
         format = '%m/%d/%Y %H:%M:%S'
@@ -149,7 +150,7 @@ class TypeperfSc1Strategy(object):
                 log.debug('Counter: {0} has value {1}'.format(key, value))
                 yield dsconf, value, timestamp
             except (KeyError):
-                log.info("No value was returned for {0}".format(dsconf.params['counter']))
+                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
 
 typeperf_strategy = TypeperfSc1Strategy()
 
@@ -199,7 +200,7 @@ class PowershellGetCounterStrategy(object):
                     timestamp = map_props[key]['timestamp']
                     yield dsconf, value, timestamp
                 except (KeyError):
-                    log.info("No value was returned for {0}".format(dsconf.params['counter']))
+                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
 
 
 powershell_strategy = PowershellGetCounterStrategy()
