@@ -86,6 +86,7 @@ class WinIIS(PythonPlugin):
         for iisSite in res.iisSites:
             om = ObjectMap()
             om.id = prepId(iisSite.Name)
+            om.statusname = iisSite.Name
             om.title = iisSite.ServerComment
             om.sitename = iisSite.ServerComment
             if iisSite.ServerAutoStart == 'false':

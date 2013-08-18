@@ -23,7 +23,7 @@ class WinService(OSComponent):
     startmode [string] = The start mode for the servicename
     account [string] = The account name the service runs as
     state [string] = The current running state of the service
-    lastmonitorstatus [boolean] = That last update to monitor the user made.
+    usermonitor [boolean] = That last update to monitor the user made.
     """
     servicename = None
     caption = None
@@ -32,7 +32,7 @@ class WinService(OSComponent):
     account = None
     state = None
     monitor = False
-    lastmonitorstatus = False
+    usermonitor = False
 
     _properties = OSComponent._properties + (
         {'id': 'servicename', 'type': 'string'},
@@ -41,7 +41,7 @@ class WinService(OSComponent):
         {'id': 'startmode', 'type': 'string'},
         {'id': 'account', 'type': 'string'},
         {'id': 'state', 'type': 'string'},
-        {'id': 'lastmonitorstatus', 'type': 'string'},
+        {'id': 'usermonitor', 'type': 'boolean'},
         )
 
     _relations = OSComponent._relations + (
@@ -56,9 +56,34 @@ class WinService(OSComponent):
         else:
             return 'WinService'
 
-    """
+    def getBest(self):
+        # Method to find template that matches this service
+        # Gets the monitor value
+        try:
+            if self.getRRDTemplateByName(self.servicename):
+                template = self.getRRDTemplateByName(self.servicename)
+                if template.datasources.DefaultService.defaultgraph == True:
+                    return True
+            return False
+        except:
+            return False
+
     def monitored(self):
+        # 1 - Check to see if the user has manually set monitor status
+        if self.usermonitor == True:
+            return self.monitor
+
+        # 2 - Check to see if a default template exists with default set
+        best_template = self.getBest()
+
+        if best_template == True:
+            self.monitor = True
+            return True
+        # 3 - Default to what the current monitor status is
+        elif self.monitor == True:
+            return True
+
+        # 4 - Nothing is setup for this service to be monitored.
         return False
-        #return self.monitor
-    """
+
 InitializeClass(WinService)

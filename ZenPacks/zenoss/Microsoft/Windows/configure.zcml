@@ -42,7 +42,11 @@
         factory=".datasources.WinServiceCollectionDataSource.WinServiceCollectionInfo"
         />
 
-
+    <adapter
+        provides=".datasources.WinIISSiteCollectionDataSource.IWinIISSiteCollectionInfo"
+        for=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionDataSource"
+        factory=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionInfo"
+        />
     <!-- Browser -->
     <include package=".browser"/>
 

@@ -27,6 +27,18 @@ class WinServiceInfo(WinComponentInfo):
     startmode = ProxyProperty('startmode')
     account = ProxyProperty('account')
     state = ProxyProperty('state')
+    usermonitor = ProxyProperty('usermonitor')
+
+    def getMonitor(self):
+        monitorstatus = self._object.getMonitor()
+        return monitorstatus
+
+    def setMonitor(self, value):
+        self._object.usermonitor = True
+        self._object.monitor = value
+        self._object.index_object()
+
+    monitor = property(getMonitor, setMonitor)
 
 
 class WinProcInfo(WinComponentInfo):
@@ -58,3 +70,4 @@ class WinIISInfo(WinComponentInfo):
     apppool = ProxyProperty('apppool')
     caption = ProxyProperty('caption')
     status = ProxyProperty('status')
+    statusname = ProxyProperty('statusname')
