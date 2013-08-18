@@ -24,6 +24,7 @@ class IWinServiceInfo(IWinComponentInfo):
     startmode = schema.TextLine(title=_t(u'Start Mode'), readonly=True)
     account = schema.TextLine(title=_t(u'Account'), readonly=True)
     state = schema.TextLine(title=_t(u'Current State'), readonly=True)
+    usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
 
 
 class IWinProcInfo(IWinComponentInfo):
@@ -41,3 +42,4 @@ class IWinIISInfo(IWinComponentInfo):
     apppool = schema.TextLine(title=_t(u'App Pool'), readonly=True)
     caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
     status = schema.TextLine(title=_t(u'Status'), readonly=True)
+    statusname = schema.TextLine(title=_t(u'Status Name'), readonly=True)

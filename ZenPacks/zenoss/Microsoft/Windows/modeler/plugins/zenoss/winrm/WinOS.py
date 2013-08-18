@@ -190,13 +190,22 @@ class WinOS(PythonPlugin):
                 continue
 
             if getattr(interconf, 'IPAddress', None) is not None:
-                arrIPaddress = parse_iprange(interconf.IPAddress)
-                for ipRecord in arrIPaddress:
+                iplist = []
+                if isinstance(interconf.IPAddress, basestring):
+                    iplist.append(interconf.IPAddress)
+                else:
+                    iplist = interconf.IPAddress
+
+                if isinstance(interconf.IPSubnet, basestring):
+                    ipsubnet = interconf.IPSubnet
+                else:
+                    ipsubnet = interconf.IPSubnet[0]
+
+                for ipRecord in iplist:
                     try:
                         checkip(ipRecord)
-
                         ipEntry = "{ipaddress}/{ipsubnet}".format(
-                                  ipaddress=ipRecord, ipsubnet=interconf.IPSubnet)
+                                  ipaddress=ipRecord, ipsubnet=ipsubnet)
                         ips.append(ipEntry)
                     except IpAddressError:
                         log.debug("Invalid IP Address {0} encountered and "
