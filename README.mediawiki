@@ -40,19 +40,19 @@ The following components will be automatically discovered through the Windows se
 : Relationships: None
 
 ;Interfaces
-: Attributes:
+: Attributes: IP Interface, IP Addresses, Description, MAC Address, Monitored, Operational Status, Admin Status
 : Relationships: None
 
 ;Processors
-: Attributes:
+: Attributes: Manufacturer, Model, Number of Cores, Architecture, Clock Speed, Status
 : Relationships: None
 
 ;Network routes
-: Attributes:
+: Attributes: Destination, Next Hop, Interface, Protocol, Type
 : Relationships: None
 
 ;Services
-: Attributes:
+: Attributes: Name, Display Name, Start Mode, Status
 : Relationships: None
 
 <br clear=all>
