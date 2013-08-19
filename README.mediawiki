@@ -55,6 +55,8 @@ The following components will be automatically discovered through the Windows se
 : Attributes:
 : Relationships: None
 
+<br clear=all>
+
 === Performance Monitoring ===
 
 Perfmon counters are collected using the typeperf command within a remote shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows perfmon counters can also be collected by adding them to the appropriate monitoring template.
@@ -215,6 +217,8 @@ Perfmon counters are collected using the typeperf command within a remote shell 
 : \Packets Received/sec
 : \Packets Outbound Errors
 : \Packets Sent/sec
+
+<br clear=all>
 
 {{note}} The zenpython daemon must be restarted after making changes to the WinService Datasource.
 
