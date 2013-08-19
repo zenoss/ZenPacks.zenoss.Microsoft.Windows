@@ -1,0 +1,310 @@
+This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data.
+
+<span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
+
+{{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
+
+This ZenPack depends on the ''ZenPacks.zenoss.PythonCollector'' ZenPack being installed.
+
+== Gallery ==
+<gallery widths=250px heights=127px>
+windows_device.png
+windows_filesystem.png
+windows_graphs.png
+windows_infrastructure.png
+windows_interfaces.png
+windows_processors.png
+windows_routes.png
+windows_services.png
+</gallery>
+
+== Features ==
+
+The features added by this ZenPack can be summarized as follows. They are each detailed further below.
+
+* Initial discovery and continual synchronization of relevant components.
+* Performance monitoring.
+* Event management.
+* Service impact and root cause analysis. (Requires Zenoss Service Dynamics)
+
+=== Discovery ===
+
+The following components will be automatically discovered through the Windows server address, username and password you provide. The properties and relationships will be continually maintained by remodeling the device.
+
+[[File:windows_device.png|thumb|320px|Device]]
+[[File:windows_services.png|thumb|320px|File systems]]
+[[File:windows_interfaces.png|thumb|320px|Interfaces]]
+
+;File systems
+: Attributes: Mount Point, Status, Storage Device, Type, Block Size, Total Bytes, Used Bytes, Available Bytes, Total Files, Available Files, Capacity Files, Maximum Name Length
+: Relationships: None
+
+;Interfaces
+: Attributes:
+: Relationships: None
+
+;Processors
+: Attributes:
+: Relationships: None
+
+;Network routes
+: Attributes:
+: Relationships: None
+
+;Services
+: Attributes:
+: Relationships: None
+
+=== Performance Monitoring ===
+
+Perfmon counters are collected using the typeperf command within a remote shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows perfmon counters can also be collected by adding them to the appropriate monitoring template.
+
+[[File:windows_graphs.png|thumb|320px|Device-level graphs]]
+[[File:windows_filesystem.png|thumb|320px|File systems]]
+
+;Active Directory
+: \NTDS\DS Client Binds/sec
+: \NTDS\DS Directory Reads/sec
+: \NTDS\DS Directory Searches/sec
+: \NTDS\DS Directory Writes/sec
+: \NTDS\DS Monitor List Size
+: \NTDS\DS Name Cache hit rate
+: \NTDS\DS Notify Queue Size
+: \NTDS\DS Search sub-operations/sec
+: \NTDS\DS Server Binds/sec
+: \NTDS\DS Server Name Translations/sec
+: \NTDS\DS Threads in Use
+: \NTDS\KDC AS Requests
+: \NTDS\KDC TGS Requests
+: \NTDS\Kerberos Authentications
+: \NTDS\LDAP Active Threads
+: \NTDS\LDAP Bind Time
+: \NTDS\LDAP Client Sessions
+: \NTDS\LDAP Closed Connections/sec
+: \NTDS\LDAP New Connections/sec
+: \NTDS\LDAP New SSL Connections/sec
+: \NTDS\LDAP Searches/sec
+: \NTDS\LDAP Successful Binds/sec
+: \NTDS\LDAP UDP operations/sec
+: \NTDS\LDAP Writes/sec
+: \NTDS\NTLM Authentications
+: \NTDS\DS Client Binds/sec
+: \NTDS\DS Directory Reads/sec
+: \NTDS\DS Directory Searches/sec
+: \NTDS\DS Directory Writes/sec
+: \NTDS\DS Monitor List Size
+: \NTDS\DS Name Cache hit rate
+: \NTDS\DS Notify Queue Size
+: \NTDS\DS Search sub-operations/sec
+: \NTDS\DS Server Binds/sec
+: \NTDS\DS Server Name Translations/sec
+: \NTDS\DS Threads in Use
+: \NTDS\LDAP Active Threads
+: \NTDS\LDAP Bind Time
+: \NTDS\LDAP Client Sessions
+: \NTDS\LDAP Closed Connections/sec
+: \NTDS\LDAP New Connections/sec
+: \NTDS\LDAP New SSL Connections/sec
+: \NTDS\LDAP Searches/sec
+: \NTDS\LDAP Successful Binds/sec
+: \NTDS\LDAP UDP operations/sec
+: \NTDS\LDAP Writes/sec
+: \DirectoryServices(NTDS)\DS Client Binds/sec
+: \DirectoryServices(NTDS)\DS Directory Reads/sec
+: \DirectoryServices(NTDS)\DS Directory Searches/sec
+: \DirectoryServices(NTDS)\DS Directory Writes/sec
+: \DirectoryServices(NTDS)\DS Monitor List Size
+: \DirectoryServices(NTDS)\DS Name Cache hit rate
+: \DirectoryServices(NTDS)\DS Notify Queue Size
+: \DirectoryServices(NTDS)\DS Search sub-operations/sec
+: \DirectoryServices(NTDS)\DS Server Binds/sec
+: \DirectoryServices(NTDS)\DS Server Name Translations/sec
+: \DirectoryServices(NTDS)\DS Threads in Use
+: \DirectoryServices(NTDS)\LDAP Active Threads
+: \DirectoryServices(NTDS)\LDAP Bind Time
+: \DirectoryServices(NTDS)\LDAP Client Sessions
+: \DirectoryServices(NTDS)\LDAP Closed Connections/sec
+: \DirectoryServices(NTDS)\LDAP New Connections/sec
+: \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
+: \DirectoryServices(NTDS)\LDAP Searches/sec
+: \DirectoryServices(NTDS)\LDAP Successful Binds/sec
+: \DirectoryServices(NTDS)\LDAP UDP operations/sec
+: \DirectoryServices(NTDS)\LDAP Writes/sec
+
+;Memory
+: \Memory\Available bytes
+: \Memory\Committed Bytes
+: \Memory\Pages Input/sec
+: \Memory\Pages Output/sec
+: \Paging File(_Total)\% Usage
+
+;Processor
+: \Processor(_Total)\% Privileged Time
+: \Processor(_Total)\% Processor Time
+: \Processor(_Total)\% User Time
+
+;System
+: \System\System Up Time
+
+;File systems
+: \Disk Read Bytes/sec
+: \% Disk Read Time
+: \Disk Write Bytes/sec
+: \% Disk Write Time
+: \Free Megabytes
+
+; IIS
+: \Web Service(_Total)\Bytes Received/sec
+: \Web Service(_Total)\Bytes Sent/sec
+: \Web Service(_Total)\CGI Requests/sec
+: \Web Service(_Total)\Connection Attempts/sec
+: \Web Service(_Total)\Copy Requests/sec
+: \Web Service(_Total)\Delete Requests/sec
+: \Web Service(_Total)\Files Received/sec
+: \Web Service(_Total)\Files Sent/sec
+: \Web Service(_Total)\Get Requests/sec
+: \Web Service(_Total)\Head Requests/sec
+: \Web Service(_Total)\ISAPI Extension Requests/sec
+: \Web Service(_Total)\Lock Requests/sec
+: \Web Service(_Total)\Mkcol Requests/sec
+: \Web Service(_Total)\Move Requests/sec
+: \Web Service(_Total)\Options Requests/sec
+: \Web Service(_Total)\Other Request Methods/sec
+: \Web Service(_Total)\Post Requests/sec
+: \Web Service(_Total)\Propfind Requests/sec
+: \Web Service(_Total)\Proppatch Requests/sec
+: \Web Service(_Total)\Put Requests/sec
+: \Web Service(_Total)\Search Requests/sec
+: \Web Service(_Total)\Trace Requests/sec
+: \Web Service(_Total)\Unlock Requests/sec
+
+;Exchange
+: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
+: \MSExchangeIS Mailbox(_Total)\Local delivery rate
+: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
+: \MSExchangeIS\RPC Averaged Latency
+: \MSExchangeIS\RPC Operations/sec
+: \MSExchangeIS\RPC Requests
+: \SMTP Server(_Total)\Local Queue Length
+: \SMTP Server(_Total)\Messages Delivered/sec
+: \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+: \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
+: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
+: \MSExchangeIS Mailbox(_Total)\Local delivery rate
+: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
+: \MSExchangeIS\RPC Averaged Latency
+: \MSExchangeIS\RPC Operations/sec
+: \MSExchangeIS\RPC Requests
+
+;SQLServer
+: \SQLServer:Access Methods\Full Scans/sec
+: \SQLServer:Buffer Manager\Buffer cache hit ratio
+: \SQLServer:Buffer Manager\Free pages
+: \SQLServer:Databases(_Total)\Data File(s) Size (KB)
+: \SQLServer:General Statistics\User Connections
+: \SQLServer:Latches\Latch Waits/sec
+: \SQLServer:Locks(_Total)\Average Wait Time (ms)
+: \SQLServer:Locks(_Total)\Lock Requests/sec
+: \SQLServer:Locks(_Total)\Number of Deadlocks/sec
+: \SQLServer:SQL Statistics\Batch Requests/sec
+
+;Interfaces
+: \Bytes Received/sec
+: \Bytes Sent/sec
+: \Packets Received Errors
+: \Packets Received/sec
+: \Packets Outbound Errors
+: \Packets Sent/sec
+
+{{note}} The zenpython daemon must be restarted after making changes to the WinService Datasource.
+
+{{note}} IIS 6 Management compatibility needs to be installed on server side in order to use the IIS Sites component.
+
+=== Event Management ===
+
+Events will be collected from the Windows event log using a WinRM subscription. Various information encoded in these event classes will be used to automatically determine as best as possible the following Zenoss event fields.
+
+;Standard Zenoss Event Fields
+* device
+* component
+* summary
+* severity
+* eventClassKey (for mapping specific event types)
+* eventKey (for de-duplication and auto-clear fingerprinting)
+
+Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
+
+== Usage ==
+
+=== Adding a Windows Device ===
+
+Use the following steps to start monitoring a Windows server using the Zenoss web interface.
+
+# Navigate to the Infrastructure page.
+# Select the Server/Microsoft/Windows device class.
+# Click Details and set the configuration properties for zWinUser and zWinPassword.
+# Click See All.
+# Choose ''Add Single Device'' from the add device button.
+# Fill out the form.
+#* ''Name or IP'' must be resolvable and accessible from the collector server chosen in the ''Collector'' field.
+# Click ''ADD''.
+
+----
+
+Alternatively you can use zenbatchload to add Windows servers from the command line. To do this, you must create a text file with hostname, username and password of all the servers you want to add. Multiple endpoints can be added under the same ''/Devices/Server/Microsoft/Windows'' section. Here is an example...
+
+<syntaxhighlight lang="text">
+/Devices/Server/Microsoft/Windows
+win7-1.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+winvista-1.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+win2003-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+win2008-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+</syntaxhighlight>
+
+You can then load the Windows servers into Zenoss Core or Resource Manager as devices with the following command.
+
+<syntaxhighlight lang="bash">
+zenbatchload <filename>
+</syntaxhighlight>
+
+== Transitioning from WindowsMonitor ==
+
+If you are installing this ZenPack on an existing Zenoss system or upgrading from an earlier Zenoss version you may have a ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' already installed on your system. You can check this by navigating to Advanced -> ZenPacks.
+
+This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM, but does not automatically migrate monitoring of your Microsoft Windows resources when installed. The ZenPacks can coexist gracefully to allow you time to manually transition monitoring to the newer ZenPack with better capabilities.
+
+Depending on how heavily loaded your Windows and Zenoss server(s) are you may wish to avoid monitoring the same Windows resources twice in parallel. If this is the case, you should use the following instructions to first remove the existing Windows monitoring before adding the new monitoring.
+
+# Navigate to the Infrastructure page.
+# Expand the Server/Windows/WMI device class.
+# Single-click to select a Windows device.
+# Click the delete (''-'') button in the bottom-left.
+# Click OK to confirm deleting the Windows device.
+# Add the device back using the [[#Adding a Windows Device]] instructions above. Be sure to select the /Server/Microsoft/Windows device class and not the /Server/Windows/WMI device class.
+# Repeat steps 3-6 for each Windows device.
+
+If you're comfortable monitoring the Windows devices twice in parallel for a time, you can simply follow the instructions under [[#Adding a Windows Device]] then delete the old devices from the ''/Server/Windows/WMI'' device class once you're satisfied with the new monitoring. Windows Server 2000 does not support WinRM. If you have Windows Server 2000 machines you can continue to monitor them with the ''ZenPacks.zenoss.WindowsMonitor'' ZenPack while moving other Windows devices to the new WinRM-based ZenPack's device class, ''/Server/Microsoft/Windows''. On Windows Server 2003, the WinRM service must be installed (it does not ship with the OS like it does with later versions of Windows server).
+
+== Installed Items ==
+
+Installing this ZenPack will add the following items to your Zenoss system.
+
+;Device Classes
+* /Server/Microsoft/Windows
+
+;Modeler Plugins
+* zenoss.winrm.WinOS
+* zenoss.winrm.WinIIS
+* zenoss.winrm.WinServices
+
+;Datasource Types
+* WinRS
+
+;Monitoring Templates
+* Device (in /Server/Microsoft/Windows)
+* Active Directory (in /Server/Microsoft/Windows)
+* IIS (in /Server/Microsoft/Windows)
+* MSExchangeIS (in /Server/Microsoft/Windows)
+* MSSQLServer (in /Server/Microsoft/Windows)
+* FileSystem (in /Server/Microsoft/Windows)
+* ethernetCsmacd (in /Server/Microsoft/Windows)
