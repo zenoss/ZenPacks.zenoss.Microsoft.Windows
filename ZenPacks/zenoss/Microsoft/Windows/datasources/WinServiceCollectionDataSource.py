@@ -91,7 +91,7 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
 
     defaultgraph = schema.Bool(
         group=_t('Service Status'),
-        title=_t('Default Monitor')
+        title=_t('Monitor by Default')
         )
 
     alertifnot = schema.Choice(

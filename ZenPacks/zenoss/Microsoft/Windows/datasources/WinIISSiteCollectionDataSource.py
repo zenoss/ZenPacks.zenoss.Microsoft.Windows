@@ -15,7 +15,6 @@ import logging
 
 from zope.component import adapts
 from zope.interface import implements
-from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
@@ -23,7 +22,6 @@ from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenEvents import ZenEventClasses
-from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -127,7 +125,7 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        log.info('{0}:Start Collection of IIS Sites'.format(config.id))
+        log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
         scheme = 'http'
         port = int(ds0.zWinRMPort)
