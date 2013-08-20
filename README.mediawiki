@@ -13,7 +13,7 @@
 |Binaries=
 |Flavor=
 }}
-This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data.
+This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
 
 <span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
 
@@ -349,6 +349,17 @@ The Beta release of the new WinRM-based Windows ZenPack does not support the fol
 * SPNEGO (encrypted payload over HTTP)
 * Clustering
 * Network Load Balancing
+
+== Troubleshooting ==
+
+Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
+
+* ZenPack will not install
+* Adding a device fails
+* Don't understand how to add a device
+* Don't understand how to model a device
+
+If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [[Zenoss Customer Support][https://support.zenoss.com]]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
 
 == Installed Items ==
 
