@@ -186,7 +186,7 @@ ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'name',
+            autoExpandColumn: 'product',
             componentType: 'WinRMProc',
             fields: [
                 {name: 'uid'},
