@@ -234,7 +234,7 @@ Perfmon counters are collected using the typeperf command within a remote shell 
 
 <br clear=all>
 
-For devices in the ''/Server/Microsoft/Windows'' device class, the above perfmon counters will be collected over WinRS using the typeperf commmand. For devices in the ''/Server/Microsoft/Windows/Powershell'' device class, the above perfmon counters will be collected over WinRS using the Get-Counter cmdlet in a Powershell shell.
+For devices in the ''/Server/Microsoft/Windows'' device class, the above perfmon counters will be collected over WinRS using the Get-Counter cmdlet in a Powershell shell.
 
 {{note}} The zenpython daemon must be restarted after making changes to the WinService Datasource.
 
