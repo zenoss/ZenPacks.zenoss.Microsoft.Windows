@@ -19401,7 +19401,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Bytes Received/sec
+\Web Service(${here/sitename})\Bytes Received/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19437,7 +19437,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Bytes Sent/sec
+\Web Service(${here/sitename})\Bytes Sent/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19473,7 +19473,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\CGI Requests/sec
+\Web Service(${here/sitename})\CGI Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19509,7 +19509,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Connection Attempts/sec
+\Web Service(${here/sitename})\Connection Attempts/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19545,7 +19545,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Copy Requests/sec
+\Web Service(${here/sitename})\Copy Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19581,7 +19581,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Connection Attempts/sec
+\Web Service(${here/sitename})\Connection Attempts/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19617,7 +19617,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Delete Requests/sec
+\Web Service(${here/sitename})\Delete Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19653,7 +19653,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Files Received/sec
+\Web Service(${here/sitename})\Files Received/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19689,7 +19689,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Files Sent/sec
+\Web Service(${here/sitename})\Files Sent/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -19725,7 +19725,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Get Requests/sec
+\Web Service(${here/sitename})\Get Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19761,7 +19761,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Head Requests/sec
+\Web Service(${here/sitename})\Head Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19797,7 +19797,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\ISAPI Extension Requests/sec
+\Web Service(${here/sitename})\ISAPI Extension Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19833,7 +19833,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Lock Requests/sec
+\Web Service(${here/sitename})\Lock Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19869,7 +19869,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Mkcol Requests/sec
+\Web Service(${here/sitename})\Mkcol Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19905,7 +19905,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Move Requests/sec
+\Web Service(${here/sitename})\Move Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19941,7 +19941,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Options Requests/sec
+\Web Service(${here/sitename})\Options Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -19977,7 +19977,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Other Request Methods/sec
+\Web Service(${here/sitename})\Other Request Methods/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20013,7 +20013,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Post Requests/sec
+\Web Service(${here/sitename})\Post Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20049,7 +20049,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Propfind Requests/sec
+\Web Service(${here/sitename})\Propfind Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20085,7 +20085,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Proppatch Requests/sec
+\Web Service(${here/sitename})\Proppatch Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20121,7 +20121,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Put Requests/sec
+\Web Service(${here/sitename})\Put Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20157,7 +20157,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Search Requests/sec
+\Web Service(${here/sitename})\Search Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20193,7 +20193,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Trace Requests/sec
+\Web Service(${here/sitename})\Trace Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -20229,7 +20229,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Unlock Requests/sec
+\Web Service(${here/sitename})\Unlock Requests/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -21123,7 +21123,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Bytes Received/sec
+\Web Service(${here/sitename})\Bytes Received/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21159,7 +21159,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Bytes Sent/sec
+\Web Service(${here/sitename})\Bytes Sent/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21195,7 +21195,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\CGI Requests/sec
+\Web Service(${here/sitename})\CGI Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21231,7 +21231,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Connection Attempts/sec
+\Web Service(${here/sitename})\Connection Attempts/sec
 </property>
 <property type="string" id="strategy" >
 powershell Get-Counter
@@ -21267,7 +21267,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Copy Requests/sec
+\Web Service(${here/sitename})\Copy Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21303,7 +21303,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Delete Requests/sec
+\Web Service(${here/sitename})\Delete Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21339,7 +21339,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Files Received/sec
+\Web Service(${here/sitename})\Files Received/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21375,7 +21375,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Files Sent/sec
+\Web Service(${here/sitename})\Files Sent/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21411,7 +21411,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Get Requests/sec
+\Web Service(${here/sitename})\Get Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21447,7 +21447,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Head Requests/sec
+\Web Service(${here/sitename})\Head Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21483,7 +21483,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\ISAPI Extension Requests/sec
+\Web Service(${here/sitename})\ISAPI Extension Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21519,7 +21519,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Lock Requests/sec
+\Web Service(${here/sitename})\Lock Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21555,7 +21555,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Mkcol Requests/sec
+\Web Service(${here/sitename})\Mkcol Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21591,7 +21591,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Move Requests/sec
+\Web Service(${here/sitename})\Move Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21627,7 +21627,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Options Requests/sec
+\Web Service(${here/sitename})\Options Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21663,7 +21663,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Other Request Methods/sec
+\Web Service(${here/sitename})\Other Request Methods/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21699,7 +21699,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Post Requests/sec
+\Web Service(${here/sitename})\Post Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21735,7 +21735,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Propfind Requests/sec
+\Web Service(${here/sitename})\Propfind Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21771,7 +21771,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Proppatch Requests/sec
+\Web Service(${here/sitename})\Proppatch Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21807,7 +21807,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Put Requests/sec
+\Web Service(${here/sitename})\Put Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21843,7 +21843,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Search Requests/sec
+\Web Service(${here/sitename})\Search Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21879,7 +21879,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Trace Requests/sec
+\Web Service(${here/sitename})\Trace Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
@@ -21915,7 +21915,7 @@ ${here/id}
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/statusname})\Unlock Requests/sec
+\Web Service(${here/sitename})\Unlock Requests/sec
 </property>
 <property type="string" id="strategy" >
 typeperf -sc1
