@@ -1,10 +1,25 @@
+{{ZenPack
+|Summary=Monitoring for Microsoft Windows servers.
+|Organization=Zenoss, Inc.
+|ZenPack name=ZenPacks.zenoss.Microsoft.Windows
+|Homepage=https://github.com/zenoss/ZenPacks.zenoss.Microsoft.Windows
+|Releases=2.0.0 (beta)
+|Devices=
+|Applications={{Application
+|Product Name=Microsoft Windows
+|Version=2012, 2008, 2003 Server
+}}
+|Integrations=
+|Binaries=
+|Flavor=
+}}
 This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data.
 
 <span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
-This ZenPack depends on the ''ZenPacks.zenoss.PythonCollector'' ZenPack being installed.
+This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
 
 == Gallery ==
 <gallery widths=250px heights=127px>
@@ -25,7 +40,6 @@ The features added by this ZenPack can be summarized as follows. They are each d
 * Initial discovery and continual synchronization of relevant components.
 * Performance monitoring.
 * Event management.
-* Service impact and root cause analysis. (Requires Zenoss Service Dynamics)
 
 === Discovery ===
 
@@ -261,10 +275,9 @@ Alternatively you can use zenbatchload to add Windows servers from the command l
 
 <syntaxhighlight lang="text">
 /Devices/Server/Microsoft/Windows
-win7-1.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
-winvista-1.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
 win2003-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
 win2008-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+Win2012-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
 </syntaxhighlight>
 
 You can then load the Windows servers into Zenoss Core or Resource Manager as devices with the following command.
@@ -272,6 +285,25 @@ You can then load the Windows servers into Zenoss Core or Resource Manager as de
 <syntaxhighlight lang="bash">
 zenbatchload <filename>
 </syntaxhighlight>
+
+== Setting up WinRM Service on Target Windows Machines ==
+
+* Disabled firewall
+* Run command prompt as Administrator
+* winrm quickconfig
+* For WinRM 2.0 and greater(Use 'winrm id' and check Stack):
+** winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperationsPerUser="4294967295"}
+* For WinRM 1.1(Use 'winrm id' and check Stack):
+** winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperations="4294967295"}
+* winrm s winrm/config/service/auth @{Basic="true"}
+* winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
+* winrm s winrm/config/winrs @{IdleTimeout="7200000"}
+* Check MaxProcessesPerShell is any number except for 25 by using
+** winrm g winrm/config/winrs
+* If the value is 25, change the value to 15 with the following command:
+** winrm s winrm/config/winrs @{MaxProcessesPerShell="15"}
+
+{{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of perfmon counters.
 
 == Transitioning from WindowsMonitor ==
 
@@ -290,6 +322,33 @@ Depending on how heavily loaded your Windows and Zenoss server(s) are you may wi
 # Repeat steps 3-6 for each Windows device.
 
 If you're comfortable monitoring the Windows devices twice in parallel for a time, you can simply follow the instructions under [[#Adding a Windows Device]] then delete the old devices from the ''/Server/Windows/WMI'' device class once you're satisfied with the new monitoring. Windows Server 2000 does not support WinRM. If you have Windows Server 2000 machines you can continue to monitor them with the ''ZenPacks.zenoss.WindowsMonitor'' ZenPack while moving other Windows devices to the new WinRM-based ZenPack's device class, ''/Server/Microsoft/Windows''. On Windows Server 2003, the WinRM service must be installed (it does not ship with the OS like it does with later versions of Windows server).
+
+Old Windows ZenPacks:
+
+* PySamba
+* WindowsMonitor
+* ActiveDirectory
+* IISMonitor
+* MSExchange
+* MSMQMonitor
+* MSSQLServer
+
+New Windows ZenPacks:
+* [[ZenPack:PythonCollector|PythonCollector]]
+* This ZenPack (all the functionality of the old Windows ZenPacks is rolled into this one ZenPack)
+
+The old ZenPacks come as part of the Zenoss Core 4.2.x RPM. They can be installed on top of an RM install with the msmonitor RPM
+
+== Limitations of Beta Release ==
+
+The Beta release of the new WinRM-based Windows ZenPack does not support the following features:
+
+* NTLMv2 (only basic authentication of local accounts is supported)
+* Kerberos (Active Directory authentication)
+* HTTPS
+* SPNEGO (encrypted payload over HTTP)
+* Clustering
+* Network Load Balancing
 
 == Installed Items ==
 
@@ -314,3 +373,4 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * MSSQLServer (in /Server/Microsoft/Windows)
 * FileSystem (in /Server/Microsoft/Windows)
 * ethernetCsmacd (in /Server/Microsoft/Windows)
+{{ZenPackFooter}}
