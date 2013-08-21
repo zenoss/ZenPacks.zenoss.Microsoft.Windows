@@ -298,12 +298,10 @@ zenbatchload <filename>
 * winrm s winrm/config/service/auth @{Basic="true"}
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
-* Check MaxProcessesPerShell is any number except for 25 by using
-** winrm g winrm/config/winrs
-* If the value is 25, change the value to 15 with the following command:
-** winrm s winrm/config/winrs @{MaxProcessesPerShell="15"}
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of perfmon counters.
+
+{{note}} WinRM 2.0 or greater is recommended (use ‘winrm id’ in command prompt and check the number after Stack). If using WinRM 1.1 or earlier, a WinRM HTTP port change to 5985 is required on the remote server side.
 
 == Transitioning from WindowsMonitor ==
 
@@ -350,6 +348,18 @@ The Beta release of the new WinRM-based Windows ZenPack does not support the fol
 * Clustering
 * Network Load Balancing
 
+Major bugs:
+
+* [http://jira.zenoss.com/jira/browse/ZEN-7867 ZEN-7867: With both Windows ZenPack installed, Windows Service from old Windows zenpack will also run on devices in Microsoft Windows class]
+* [http://jira.zenoss.com/jira/browse/ZEN-7255 ZEN-7255: On 4.2.4 RM only, moving device from old Windows ZP to new Windows ZP and selecting the device after that will bring up "A Zenoss error has occurred" page]
+* [http://jira.zenoss.com/jira/browse/ZEN-7262 ZEN-7262: Microsoft Windows ZenPack: Unable to add multiple devices to /Server/Microsoft/Windows]
+
+Minor bugs:
+
+* [http://jira.zenoss.com/jira/browse/ZEN-7264 ZEN-7264: Microsoft Windows ZenPack: Displays incorrect uptime]
+* [http://jira.zenoss.com/jira/browse/ZEN-7379 ZEN-7379: Active Directory Template - All the DS and LDAP graphs has three duplicate datapoints]
+* [http://jira.zenoss.com/jira/browse/ZEN-7259 ZEN-7259: Microsoft Windows ZenPack: For Processors component, the display dropdown shows two graph and an edit option]
+
 == Troubleshooting ==
 
 Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
@@ -359,7 +369,7 @@ Please refer the the Zenoss Service Dynamics documentation if you run into any o
 * Don't understand how to add a device
 * Don't understand how to model a device
 
-If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [[Zenoss Customer Support][https://support.zenoss.com]]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
+If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [https://support.zenoss.com Zenoss Customer Support]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
 
 == Installed Items ==
 
