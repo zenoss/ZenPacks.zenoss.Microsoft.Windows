@@ -31,6 +31,7 @@ class WinServices(PythonPlugin):
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
         'zWinPassword',
+        'zWinRMPort',
         )
 
     WinRMQueries = [create_enum_info('select * from Win32_Service')]
@@ -41,10 +42,18 @@ class WinServices(PythonPlugin):
         auth_type = 'kerberos' if '@' in username else 'basic'
         password = device.zWinPassword
         scheme = 'http'
-        port = 5985
+        port = int(device.zWinRMPort)
+        connectiontype = 'Keep-Alive'
+
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
-            hostname, auth_type, username, password, scheme, port)
+            hostname,
+            auth_type,
+            username,
+            password,
+            scheme,
+            port,
+            connectiontype)
         results = winrm.do_collect(conn_info, self.WinRMQueries)
         return results
 
@@ -66,9 +75,6 @@ class WinServices(PythonPlugin):
             om.startmode = service.StartMode
             om.account = service.StartName
             om.state = service.State
-
-            if om.state == 'Running':
-                om.monitor = True
 
             serviceMap.append(om)
 

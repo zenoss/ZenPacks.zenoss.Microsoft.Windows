@@ -19,6 +19,13 @@ class WinService(OSComponent):
     '''
     meta_type = portal_type = 'WinRMService'
 
+    """
+    startmode [string] = The start mode for the servicename
+    account [string] = The account name the service runs as
+    state [string] = The current running state of the service
+    usermonitor [boolean] = Did user manually set monitor.
+    globalset [boolean] = Has the global templates been checked
+    """
     servicename = None
     caption = None
     description = None
@@ -26,6 +33,8 @@ class WinService(OSComponent):
     account = None
     state = None
     monitor = False
+    usermonitor = False
+    globalset = False
 
     _properties = OSComponent._properties + (
         {'id': 'servicename', 'type': 'string'},
@@ -34,6 +43,8 @@ class WinService(OSComponent):
         {'id': 'startmode', 'type': 'string'},
         {'id': 'account', 'type': 'string'},
         {'id': 'state', 'type': 'string'},
+        {'id': 'usermonitor', 'type': 'boolean'},
+        {'id': 'globalset', 'type': 'boolean'},
         )
 
     _relations = OSComponent._relations + (
@@ -41,5 +52,43 @@ class WinService(OSComponent):
          "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
          "winrmservices")),
     )
+
+    def getRRDTemplateName(self):
+        if self.getRRDTemplateByName(self.servicename):
+            return self.servicename
+        else:
+            return 'WinService'
+
+    def getBest(self):
+        # Method to find template that matches this service
+        # Gets the monitor value
+        try:
+            if self.getRRDTemplateByName(self.servicename):
+                template = self.getRRDTemplateByName(self.servicename)
+                if template.datasources.DefaultService.defaultgraph == True:
+                    if self.globalset == False:
+                        self.globalset = True
+                        self.monitor = True
+                        self.index_object()
+                    return True
+            return False
+        except:
+            return False
+
+    def monitored(self):
+        # 1 - Check to see if the user has manually set monitor status
+        if self.usermonitor == True:
+            if self.globalset == True:
+                self.globalset = False
+            return self.monitor
+
+        # 2 - Check to see if a default template exists with default set
+        best_template = self.getBest()
+
+        if best_template == True:
+            return True
+        # 3 - Default to what the current monitor status is
+        else:
+            return  self.monitor
 
 InitializeClass(WinService)

@@ -38,13 +38,15 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.util import ConnectionInfo
-from txwinrm.shell import create_single_shot_command
+from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 WINRS_SOURCETYPE = 'WinRS'
 TYPEPERF_STRATEGY = 'typeperf -sc1'
 POWERSHELL_STRATEGY = 'powershell Get-Counter'
+
+connections_dct = {}
 
 
 class WinRSDataSource(PythonDataSource):
@@ -57,6 +59,7 @@ class WinRSDataSource(PythonDataSource):
     cycletime = 300
     counter = ''
     strategy = ''
+
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},
         {'id': 'strategy', 'type': 'string'},
@@ -115,13 +118,39 @@ class TypeperfSc1Strategy(object):
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
+        log.debug('Results have been parsed')
         rows = list(csv.reader(result.stdout))
-        timestamp_str = rows[1][0]
-        format = '%m/%d/%Y %H:%M:%S.%f'
+        timestamp_str, milleseconds = rows[1][0].split(".")
+        format = '%m/%d/%Y %H:%M:%S'
         timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-        for dsconf, value_str in zip(dsconfs, rows[1][1:]):
-            value = float(value_str)
-            yield dsconf, value, timestamp
+
+        map_props = {}
+        #Clean out negative numbers from rows returned.
+        #Typeperf returns the value as negative but does not return the counter
+
+        for perfvalue_str in rows[1][1:]:
+            perfvalue = float(perfvalue_str)
+            if perfvalue < 0:
+                rows[1].remove(perfvalue_str)
+
+        counterlist = zip(rows[0][1:], rows[1][1:])
+
+        for counter in counterlist:
+            arrCounter = counter[0].split("\\")
+            countername = "\\{0}\\{1}".format(arrCounter[3], arrCounter[4]).lower()
+            value = counter[1]
+
+            map_props.update({countername: {'value': value, 'timestamp': timestamp}})
+
+        for dsconf in dsconfs:
+            try:
+                key = dsconf.params['counter'].lower()
+                value = map_props[key]['value']
+                timestamp = map_props[key]['timestamp']
+                log.debug('Counter: {0} has value {1}'.format(key, value))
+                yield dsconf, value, timestamp
+            except (KeyError):
+                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
 
 typeperf_strategy = TypeperfSc1Strategy()
 
@@ -132,7 +161,8 @@ class PowershellGetCounterStrategy(object):
         quoted_counters = ["'{0}'".format(c) for c in counters]
         counters_args = ', '.join(quoted_counters)
         return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
-               "XML -Command \"get-counter -counter @({0})\"".format(counters_args)
+               "XML -Command \"get-counter -ea silentlycontinue " \
+               "-counter @({0})\"".format(counters_args)
 
     def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
@@ -146,20 +176,42 @@ class PowershellGetCounterStrategy(object):
         namespace = 'http://schemas.microsoft.com/powershell/2004/04'
         for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
             props_elems = lst_elem.findall('.//{%s}Props' % namespace)
-            for dsconf, props_elem in zip(dsconfs, props_elems):
-                value = float(props_elem.findtext('./*[@N="RawValue"]'))
-                # TODO: use timezone information, 2013-05-31T20:47:17.184+00:00
-                timestamp_str = props_elem.findtext('.//*[@N="Timestamp"]')[:-7]
-                format = '%Y-%m-%dT%H:%M:%S.%f'
+
+            map_props = {}
+
+            for props_elem in props_elems:
+                value = float(props_elem.findtext('./*[@N="CookedValue"]'))
+                timestamp = props_elem.findtext('.//*[@N="Timestamp"]')
+                path = props_elem.findtext('.//*[@N="Path"]')
+
+                # Confirm timestamp format and convert
+                timestamp_str, milleseconds = timestamp.split(".")
+                format = '%Y-%m-%dT%H:%M:%S'
                 timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-                yield dsconf, value, timestamp
+
+                arrPath = path.split("\\")
+                indexPath = "\\{0}\\{1}".format(arrPath[3], arrPath[4])
+                map_props.update({indexPath: {'value': value, 'timestamp': timestamp}})
+
+            for dsconf in dsconfs:
+                try:
+                    key = dsconf.params['counter'].lower()
+                    value = map_props[key]['value']
+                    timestamp = map_props[key]['timestamp']
+                    yield dsconf, value, timestamp
+                except (KeyError):
+                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
+
 
 powershell_strategy = PowershellGetCounterStrategy()
 
 
 class WinRSPlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ('zWinUser', 'zWinPassword')
+    proxy_attributes = ('zWinUser',
+        'zWinPassword',
+        'zWinRMPort',
+        )
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -181,10 +233,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        scheme = 'http'
-        port = 5985
-        auth_type = 'basic'
         dsconf0 = config.datasources[0]
+
+        scheme = 'http'
+        port = int(dsconf0.zWinRMPort)
+        auth_type = 'basic'
+        connectiontype = 'Keep-Alive'
+
         if '@' in dsconf0.zWinUser:
             auth_type = 'kerberos'
         conn_info = ConnectionInfo(
@@ -193,13 +248,55 @@ class WinRSPlugin(PythonDataSourcePlugin):
             dsconf0.zWinUser,
             dsconf0.zWinPassword,
             scheme,
-            port)
+            port,
+            connectiontype)
         strategy = self._get_strategy(dsconf0)
-        cmd = create_single_shot_command(conn_info)
         counters = [dsconf.params['counter'] for dsconf in config.datasources]
         command_line = strategy.build_command_line(counters)
-        result = yield cmd.run_command(command_line)
-        defer.returnValue((strategy, config.datasources, result))
+
+        try:
+            sender = connections_dct[conn_info]['sender']
+            shell_id = connections_dct[conn_info]['shell_id']
+
+        except:
+            shell_conn = yield create_long_running_shell(conn_info)
+            sender = shell_conn['sender']
+            shell_id = shell_conn['shell_id']
+
+            connections_dct[conn_info] = {
+                'sender': sender,
+                'shell_id': shell_id
+            }
+
+        try:
+            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+
+        except:
+            del connections_dct[conn_info]
+            # Shell could have failed for some reason
+            # Need to restart shell here
+            log.info('Shell ID {0} no longer exists another connection will be \
+                created. This could be a result of restarting the client machine \
+                or the idle timeout for WinRS is to short. If you are seeing this \
+                message freaquently you may need to adjust the idle timeout. \
+                Please refer to the FAQ section for information on how to make \
+                this adjustment'.format(shell_id))
+
+            shell_conn = yield create_long_running_shell(conn_info)
+            sender = shell_conn['sender']
+            shell_id = shell_conn['shell_id']
+
+            connections_dct[conn_info] = {
+                'sender': sender,
+                'shell_id': shell_id
+            }
+
+            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
+
+        log.info('Results retreived for device {0} on shell id {1}'.format(
+                dsconf0.manageIp,
+                shell_id))
+        defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
         data = self.new_data()
