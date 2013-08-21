@@ -22,17 +22,24 @@ class WinIIS(OSComponent):
     sitename = None
     apppool = None
     caption = None
+    status = None
+    statusname = None
 
     _properties = OSComponent._properties + (
         {'id': 'sitename', 'type': 'string'},
         {'id': 'apppool', 'type': 'string'},
         {'id': 'caption', 'type': 'string'},
-        )
+        {'id': 'status', 'type': 'string'},
+        {'id': 'statusname', 'type': 'string'},
+                )
 
     _relations = OSComponent._relations + (
         ("os", ToOne(ToManyCont,
          "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
          "winrmiis")),
     )
+
+    def getRRDTemplateName(self):
+        return 'IISSites'
 
 InitializeClass(WinIIS)

@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to collect Windows Event Logs
+A datasource that uses WinRS to collect Windows Service Status
 
 """
 import logging
@@ -16,6 +16,7 @@ import logging
 from zope.component import adapts
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
+from twisted.internet import defer
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -60,12 +61,11 @@ class WinServiceCollectionDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    counter = ''
-    strategy = ''
     sourcetypes = ('WinServices',)
     sourcetype = sourcetypes[0]
-    servicename = ''
-    alertifnot = ''
+    servicename = '${here/servicename}'
+    alertifnot = 'Running'
+    defaultgraph = False
 
     plugin_classname = ZENPACKID + \
         '.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin'
@@ -73,13 +73,15 @@ class WinServiceCollectionDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
+        {'id': 'defaultgraph', 'type': 'boolean', 'mode': 'w'},
         )
 
 
 class IWinServiceCollectionInfo(IRRDDataSourceInfo):
     """
-    Provide the UI information for the WinRS Single Counter datasource.
+    Provide the UI information for the WinRS Service datasource.
     """
+
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
 
@@ -87,18 +89,21 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
+    defaultgraph = schema.Bool(
+        group=_t('Service Status'),
+        title=_t('Monitor by Default')
+        )
+
     alertifnot = schema.Choice(
         group=_t('Service Status'),
-        title=_t('Alert if not'),
-        default=STATE_RUNNING,
+        title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
 
 
 class WinServiceCollectionInfo(RRDDataSourceInfo):
     """
-    Pull in proxy values so they can be utilized within the WinRS Single
-    Counter plugin.
+    Pull in proxy values so they can be utilized within the WinRS Service plugin.
     """
     implements(IWinServiceCollectionInfo)
     adapts(WinServiceCollectionDataSource)
@@ -107,12 +112,14 @@ class WinServiceCollectionInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
+    defaultgraph = ProxyProperty('defaultgraph')
 
 
 class WinServiceCollectionPlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
+        'zWinRMPort',
         )
 
     @classmethod
@@ -139,15 +146,16 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
 
         return params
 
+    @defer.inlineCallbacks
     def collect(self, config):
 
         log.info('{0}:Start Collection of Services'.format(config.id))
+        ds0 = config.datasources[0]
 
         scheme = 'http'
-        port = 5985
+        port = int(ds0.zWinRMPort)
         auth_type = 'basic'
-
-        ds0 = config.datasources[0]
+        connectiontype = 'Keep-Alive'
 
         servicename = ds0.params['servicename']
 
@@ -161,13 +169,16 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinUser,
             ds0.zWinPassword,
             scheme,
-            port)
+            port,
+            connectiontype)
         winrm = WinrmCollectClient()
-        results = winrm.do_collect(conn_info, WinRMQueries)
+        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        log.debug(WinRMQueries)
 
-        return results
+        defer.returnValue(results)
 
     def onSuccess(self, results, config):
+
         data = self.new_data()
         ds0 = config.datasources[0]
         serviceinfo = results[results.keys()[0]]
@@ -181,7 +192,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             data['events'].append({
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': 'WindowsService',
-                    'severity': ZenEventClasses.Critical,
+                    'severity': ds0.severity,
                     'summary': evtmessage,
                     'component': prepId(serviceinfo[0].Name),
                     'device': config.id,
@@ -201,6 +212,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
                     'device': config.id,
                     })
 
+        # Event to provide notification that check has completed
         data['events'].append({
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',

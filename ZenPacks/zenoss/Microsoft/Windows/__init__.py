@@ -16,7 +16,9 @@ from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 # unused
 Globals
 
-_PACK_Z_PROPS = [('zWinUser', '', 'string'), ('zWinPassword', '', 'password')]
+_PACK_Z_PROPS = [('zWinUser', '', 'string'),
+                ('zWinPassword', '', 'password'),
+                ('zWinRMPort', '5985', 'string')]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
     setzPropertyCategory(name, 'Windows')
