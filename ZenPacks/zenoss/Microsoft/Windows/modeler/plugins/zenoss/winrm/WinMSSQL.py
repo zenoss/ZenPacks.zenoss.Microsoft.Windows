@@ -45,6 +45,7 @@ class WinMSSQL(PythonPlugin):
         scheme = 'http'
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
+        keytab = ''
 
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
@@ -54,7 +55,8 @@ class WinMSSQL(PythonPlugin):
             password,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
         results = winrm.do_collect(conn_info, self.WinRMQueries)
         return results
 
