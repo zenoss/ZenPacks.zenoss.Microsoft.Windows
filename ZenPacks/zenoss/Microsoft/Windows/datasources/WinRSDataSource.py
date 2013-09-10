@@ -239,6 +239,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
         port = int(dsconf0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
+        keytab = ''
 
         if '@' in dsconf0.zWinUser:
             auth_type = 'kerberos'
@@ -249,7 +250,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
             dsconf0.zWinPassword,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
         strategy = self._get_strategy(dsconf0)
         counters = [dsconf.params['counter'] for dsconf in config.datasources]
         command_line = strategy.build_command_line(counters)

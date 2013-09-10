@@ -150,6 +150,7 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
         port = int(ds0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
+        keytab = ''
 
         conn_info = ConnectionInfo(
             ds0.manageIp,
@@ -158,7 +159,8 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinPassword,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
 
         path = ds0.params['eventlog']
         select = ds0.params['query']
