@@ -131,6 +131,7 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
         port = int(ds0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
+        keytab = ''
 
         wql = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
             ds0.params['statusname'])
@@ -145,7 +146,8 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinPassword,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)

@@ -156,6 +156,7 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
         port = int(ds0.zWinRMPort)
         auth_type = 'basic'
         connectiontype = 'Keep-Alive'
+        keytab = ''
 
         servicename = ds0.params['servicename']
 
@@ -170,7 +171,8 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             ds0.zWinPassword,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)
