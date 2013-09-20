@@ -23,6 +23,18 @@ class OperatingSystem(BaseOS):
         ("winrmiis", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.WinIIS",
           "os")),
-    )
+        ("winsqlbackup", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup",
+          "os")),
+        ("winsqldatabase", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
+          "os")),
+        ("winsqlinstance", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+          "os")),
+        ("winsqljob", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinSQLJob",
+          "os")),
+        )
 
 InitializeClass(OperatingSystem)

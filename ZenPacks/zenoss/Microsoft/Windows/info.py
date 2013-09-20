@@ -11,7 +11,8 @@ from zope.interface import implements
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.decorators import info
-from ZenPacks.zenoss.Microsoft.Windows.interfaces import IWinIISInfo, IWinServiceInfo, IWinProcInfo
+
+from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
 
 
 class WinComponentInfo(ComponentInfo):
@@ -71,3 +72,41 @@ class WinIISInfo(WinComponentInfo):
     caption = ProxyProperty('caption')
     status = ProxyProperty('status')
     statusname = ProxyProperty('statusname')
+
+
+class WinSQLBackupInfo(WinComponentInfo):
+    implements(IWinSQLBackupInfo)
+
+    devicetype = ProxyProperty('devicetype')
+    physicallocation = ProxyProperty('physicallocation')
+    status = ProxyProperty('status')
+
+
+class WinSQLDatabaseInfo(WinComponentInfo):
+    implements(IWinSQLDatabaseInfo)
+
+    instancename = ProxyProperty('instancename')
+    version = ProxyProperty('version')
+    owner = ProxyProperty('owner')
+    lastbackupdate = ProxyProperty('lastbackupdate')
+    lastlogbackupdate = ProxyProperty('lastlogbackupdate')
+    isaccessible = ProxyProperty('isaccessible')
+    collation = ProxyProperty('collation')
+    createdate = ProxyProperty('createdate')
+    defaultfilegroup = ProxyProperty('defaultfilegroup')
+    databaseguid = ProxyProperty('databaseguid')
+    primaryfilepath = ProxyProperty('primaryfilepath')
+
+
+class WinSQLInstanceInfo(WinComponentInfo):
+    implements(IWinSQLInstanceInfo)
+
+    instancename = ProxyProperty('instancename')
+    backupdevices = ProxyProperty('backupdevices')
+    roles = ProxyProperty('roles')
+
+
+class WinSQLJobInfo(WinComponentInfo):
+    implements(IWinSQLJobInfo)
+
+    sitename = ProxyProperty('sitename')

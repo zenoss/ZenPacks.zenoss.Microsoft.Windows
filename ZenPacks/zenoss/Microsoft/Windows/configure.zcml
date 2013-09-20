@@ -21,7 +21,30 @@
         factory=".info.WinIISInfo"
         for=".WinIIS.WinIIS"
         provides=".interfaces.IWinIISInfo"
+        />
 
+    <adapter
+        factory=".info.WinSQLBackupInfo"
+        for=".WinSQLBackup.WinSQLBackup"
+        provides=".interfaces.IWinSQLBackupInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLDatabaseInfo"
+        for=".WinSQLDatabase.WinSQLDatabase"
+        provides=".interfaces.IWinSQLDatabaseInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLInstanceInfo"
+        for=".WinSQLInstance.WinSQLInstance"
+        provides=".interfaces.IWinSQLInstanceInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLJobInfo"
+        for=".WinSQLJob.WinSQLJob"
+        provides=".interfaces.IWinSQLJobInfo"
         />
 
     <adapter
