@@ -51,7 +51,7 @@ Ext.apply(Zenoss.render, {
         }
     },
 
-    emc_productEntity: function(obj) {
+    win_productEntity: function(obj) {
         if (obj && obj.uid && obj.name) {
             return Zenoss.render.link(obj.uid, undefined, obj.name);
         } else {
@@ -407,6 +407,7 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'instancename'},
+                {name: 'instance'},
                 {name: 'version'},
                 {name: 'owner'},
                 {name: 'lastbackupdate'},
@@ -435,9 +436,10 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
-                id: 'instancename',
-                dataIndex: 'instancename',
+                id: 'instance',
+                dataIndex: 'instance',
                 header: _t('Instance Name'),
+                renderer: Zenoss.render.win_entityLinkFromGrid,
                 sortable: true,
                 width: 200
             },{
@@ -487,6 +489,7 @@ ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'instancename'},
+                {name: 'instance'},
                 {name: 'devicetype'},
                 {name: 'physicallocation'},
                 {name: 'status'},
@@ -508,10 +511,11 @@ ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
-                id: 'instancename',
-                dataIndex: 'instancename',
+                id: 'instance',
+                dataIndex: 'instance',
                 header: _t('Instance Name'),
                 sortable: true,
+                renderer: Zenoss.render.win_entityLinkFromGrid,
                 width: 200
             },{
                 id: 'devicetype',
@@ -561,7 +565,7 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'instancename'},
-                {name: 'winsqlinstance'},
+                {name: 'instance'},
                 {name: 'description'},
                 {name: 'enabled'},
                 {name: 'jobid'},
@@ -583,8 +587,8 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
-                id: 'winsqlinstance',
-                dataIndex: 'instancename',
+                id: 'instance',
+                dataIndex: 'instance',
                 header: _t('Instance Name'),
                 sortable: true,
                 renderer: Zenoss.render.win_entityLinkFromGrid,
@@ -616,7 +620,7 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
 Zenoss.nav.appendTo('Component', [{
-    id: 'component_jobs',
+    id: 'component_winsqljob',
     text: _t('Jobs'),
     xtype: 'WinSQLJobPanel',
     subComponentGridPanel: true,
@@ -632,5 +636,37 @@ Zenoss.nav.appendTo('Component', [{
     }
 }]);
 
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_winbackupdevice',
+    text: _t('Backup Devices'),
+    xtype: 'WinBackupDevicePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'WinDBInstance') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.WinBackupDevicePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
 
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_windatabase',
+    text: _t('Databases'),
+    xtype: 'WinDatabasePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'WinDBInstance') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.WinDatabasePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
 })();

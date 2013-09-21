@@ -82,6 +82,11 @@ class WinSQLBackupInfo(WinComponentInfo):
     status = ProxyProperty('status')
     instancename = ProxyProperty('instancename')
 
+    @property
+    @info
+    def instance(self):
+        return self._object.winsqlinstance()
+
 
 class WinSQLDatabaseInfo(WinComponentInfo):
     implements(IWinSQLDatabaseInfo)
@@ -97,6 +102,11 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     defaultfilegroup = ProxyProperty('defaultfilegroup')
     databaseguid = ProxyProperty('databaseguid')
     primaryfilepath = ProxyProperty('primaryfilepath')
+
+    @property
+    @info
+    def instance(self):
+        return self._object.winsqlinstance()
 
 
 class WinSQLInstanceInfo(WinComponentInfo):
@@ -116,3 +126,8 @@ class WinSQLJobInfo(WinComponentInfo):
     description = ProxyProperty('description')
     datecreated = ProxyProperty('datecreated')
     username = ProxyProperty('username')
+
+    @property
+    @info
+    def instance(self):
+        return self._object.winsqlinstance()
