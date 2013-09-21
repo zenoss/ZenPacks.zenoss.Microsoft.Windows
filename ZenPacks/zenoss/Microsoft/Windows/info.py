@@ -109,4 +109,9 @@ class WinSQLInstanceInfo(WinComponentInfo):
 class WinSQLJobInfo(WinComponentInfo):
     implements(IWinSQLJobInfo)
 
-    sitename = ProxyProperty('sitename')
+    instancename = ProxyProperty('instancename')
+    jobid = ProxyProperty('jobid')
+    enabled = ProxyProperty('enabled')
+    description = ProxyProperty('description')
+    datecreated = ProxyProperty('datecreated')
+    username = ProxyProperty('username')

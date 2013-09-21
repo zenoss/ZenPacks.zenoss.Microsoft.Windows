@@ -19,16 +19,26 @@ class WinSQLJob(OSComponent):
     '''
     meta_type = portal_type = 'WinSQLJob'
 
-    sitename = None
+    instancename = None
+    jobid = None
+    enabled = None
+    description = None
+    datecreated = None
+    username = None
 
     _properties = OSComponent._properties + (
-        {'id': 'sitename', 'type': 'string'},
+        {'id': 'instancename', 'type': 'string'},
+        {'id': 'jobid', 'type': 'string'},
+        {'id': 'enabled', 'type': 'string'},
+        {'id': 'description', 'type': 'string'},
+        {'id': 'datecreated', 'type': 'string'},
+        {'id': 'username', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
-        ("os", ToOne(ToManyCont,
-         "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-         "winsqljob")),
+        ("winsqlinstance", ToOne(ToManyCont,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+            "jobs")),
     )
 
     def getRRDTemplateName(self):

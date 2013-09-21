@@ -46,9 +46,9 @@ class WinSQLDatabase(OSComponent):
         )
 
     _relations = OSComponent._relations + (
-        ("os", ToOne(ToManyCont,
-         "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-         "winsqldatabase")),
+        ("winsqlinstance", ToOne(ToManyCont,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+            "databases")),
     )
 
     def getRRDTemplateName(self):

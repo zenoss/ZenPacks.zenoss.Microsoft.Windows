@@ -22,17 +22,19 @@ class WinSQLBackup(OSComponent):
     devicetype = None
     physicallocation = None
     status = None
+    instancename = None
 
     _properties = OSComponent._properties + (
         {'id': 'devicetype', 'type': 'string'},
         {'id': 'physicallocation', 'type': 'string'},
         {'id': 'status', 'type': 'string'},
+        {'id': 'instancename', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
-        ("os", ToOne(ToManyCont,
-         "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-         "winsqlbackup")),
+        ("winsqlinstance", ToOne(ToManyCont,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+            "backups")),
     )
 
     def getRRDTemplateName(self):

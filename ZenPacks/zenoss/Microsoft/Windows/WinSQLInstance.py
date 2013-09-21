@@ -31,12 +31,20 @@ class WinSQLInstance(OSComponent):
 
     _relations = OSComponent._relations + (
         ("os", ToOne(ToManyCont,
-         "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-         "winsqlinstance")),
+            "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
+            "winsqlinstances")),
+        ("backups", ToManyCont(ToOne,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup",
+            "winsqlinstance")),
+        ("jobs", ToManyCont(ToOne,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLJob",
+            "winsqlinstance")),
+        ("databases", ToManyCont(ToOne,
+            "ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
+            "winsqlinstance")),
     )
 
     def getRRDTemplateName(self):
         return 'WinDBInstance'
 
 InitializeClass(WinSQLInstance)
-

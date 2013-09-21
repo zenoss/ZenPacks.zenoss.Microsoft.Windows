@@ -72,4 +72,9 @@ class IWinSQLInstanceInfo(IWinComponentInfo):
 
 
 class IWinSQLJobInfo(IWinComponentInfo):
-    sitename = schema.TextLine(title=_t(u'Site Name'), readonly=True)
+    instancename = schema.TextLine(title=_t(u'Instance Name'), readonly=True)
+    jobid = schema.TextLine(title=_t(u'Job ID'), readonly=True)
+    enabled = schema.TextLine(title=_t(u'Enabled'), readonly=True)
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    datecreated = schema.TextLine(title=_t(u'Date Created'), readonly=True)
+    username = schema.TextLine(title=_t(u'User'), readonly=True)
