@@ -80,6 +80,7 @@ class WinSQLBackupInfo(WinComponentInfo):
     devicetype = ProxyProperty('devicetype')
     physicallocation = ProxyProperty('physicallocation')
     status = ProxyProperty('status')
+    instancename = ProxyProperty('instancename')
 
 
 class WinSQLDatabaseInfo(WinComponentInfo):

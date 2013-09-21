@@ -49,6 +49,7 @@ class IWinSQLBackupInfo(IWinComponentInfo):
     devicetype = schema.TextLine(title=_t(u'Device Type'), readonly=True)
     physicallocation = schema.TextLine(title=_t(u'Physical Location'), readonly=True)
     status = schema.TextLine(title=_t(u'Status'), readonly=True)
+    instancename = schema.TextLine(title=_t(u'Instance Name'), readonly=True)
 
 
 class IWinSQLDatabaseInfo(IWinComponentInfo):

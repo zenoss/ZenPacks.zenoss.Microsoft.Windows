@@ -335,4 +335,302 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinRMIISPanel', ZC.WinRMIISPanel);
 
+
+ZC.registerName('WinDBInstance', _t('Database Instance'), _t('DB Instances'));
+
+ZC.WinDBInstancePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'instancename',
+            componentType: 'WinDBInstance',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'instancename'},
+                {name: 'backupdevices'},
+                {name: 'roles'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'instancename',
+                dataIndex: 'instancename',
+                header: _t('Instance Name'),
+                sortable: true
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinDBInstancePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinDBInstancePanel', ZC.WinDBInstancePanel);
+
+ZC.registerName('WinDatabase', _t('Database'), _t('Databases'));
+
+ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'name',
+            componentType: 'WinDatabase',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'instancename'},
+                {name: 'version'},
+                {name: 'owner'},
+                {name: 'lastbackupdate'},
+                {name: 'lastlogbackupdate'},
+                {name: 'isaccessible'},
+                {name: 'collation'},
+                {name: 'createdate'},
+                {name: 'defaultfilegroup'},
+                {name: 'databaseguid'},
+                {name: 'primaryfilepath'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'instancename',
+                dataIndex: 'instancename',
+                header: _t('Instance Name'),
+                sortable: true,
+                width: 200
+            },{
+                id: 'owner',
+                dataIndex: 'owner',
+                header: _t('Owner'),
+                sortable: true
+            },{
+                id: 'collation',
+                dataIndex: 'collation',
+                header: _t('Collation'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinDatabasePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinDatabasePanel', ZC.WinDatabasePanel);
+
+ZC.registerName('WinBackupDevice', _t('DB Backup Device'), _t('DB Backup Devices'));
+
+ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'WinBackupDevice',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'instancename'},
+                {name: 'devicetype'},
+                {name: 'physicallocation'},
+                {name: 'status'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'instancename',
+                dataIndex: 'instancename',
+                header: _t('Instance Name'),
+                sortable: true,
+                width: 200
+            },{
+                id: 'devicetype',
+                dataIndex: 'devicetype',
+                header: _t('Device Type'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinBackupDevicePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinBackupDevicePanel', ZC.WinBackupDevicePanel);
+
+ZC.registerName('WinSQLJob', _t('DB Job'), _t('DB Jobs'));
+
+ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'WinSQLJob',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'instancename'},
+                {name: 'winsqlinstance'},
+                {name: 'description'},
+                {name: 'enabled'},
+                {name: 'jobid'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'winsqlinstance',
+                dataIndex: 'instancename',
+                header: _t('Instance Name'),
+                sortable: true,
+                renderer: Zenoss.render.win_entityLinkFromGrid,
+                width: 200
+            },{
+                id: 'enabled',
+                dataIndex: 'enabled',
+                header: _t('Enabled'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinSQLJobPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_jobs',
+    text: _t('Jobs'),
+    xtype: 'WinSQLJobPanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'WinDBInstance') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.WinSQLJobPanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
+
+
 })();

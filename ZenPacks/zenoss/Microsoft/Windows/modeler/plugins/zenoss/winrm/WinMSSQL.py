@@ -193,7 +193,7 @@ class WinMSSQL(PythonPlugin):
                     om_database = ObjectMap()
                     om_database.id = self.prepId(instance + dbdict['id'])
                     om_database.title = dbdict['name'][1:-1]
-                    om_database.instancename = instance
+                    om_database.instancename = om_instance.id
                     om_database.version = dbdict['version']
                     om_database.owner = dbdict['owner']
                     om_database.lastbackupdate = dbdict['lastbackupdate']
@@ -237,7 +237,7 @@ class WinMSSQL(PythonPlugin):
                     om_backup.devicetype = backupdict['devicetype']
                     om_backup.physicallocation = backupdict['physicallocation']
                     om_backup.status = backupdict['status']
-                    om_backup.instancename = instance
+                    om_backup.instancename = om_instance.id
 
                     backup_oms.append(om_backup)
 
@@ -264,7 +264,7 @@ class WinMSSQL(PythonPlugin):
                     if key.strip() == 'jobname':
                         #New Job Record
                         om_jobs = ObjectMap()
-                        om_jobs.instancename = instance
+                        om_jobs.instancename = om_instance.id
                         om_jobs.title = value.strip()
                     else:
                         if key.strip() == 'jobid':
