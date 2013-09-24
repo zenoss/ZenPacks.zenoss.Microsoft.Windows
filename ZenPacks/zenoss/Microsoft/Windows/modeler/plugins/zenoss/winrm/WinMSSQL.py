@@ -56,7 +56,6 @@ class WinMSSQL(PythonPlugin):
         dbinstancepassword = device.zDBInstancesPassword
 
         dblogins = {}
-
         if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
             arrInstance = dbinstance.split(';')
             arrPassword = dbinstancepassword.split(';')
@@ -97,7 +96,14 @@ class WinMSSQL(PythonPlugin):
         psInstances.append("$hostname=hostname;")
 
         # Get registry key for instances
-        psInstances.append("$instances = get-itemproperty \'HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\';")
+        # 32/64 Bit 2008
+        psInstances.append("if (get-itemproperty \'HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\')")
+        psInstances.append("{$instances = get-itemproperty \'HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\';}")
+
+        # 2003
+        psInstances.append("if (get-itemproperty \'HKLM:\Software\Microsoft\Microsoft SQL Server\')")
+        psInstances.append("{$instances = get-itemproperty \'HKLM:\Software\Microsoft\Microsoft SQL Server\';}")
+
         psInstances.append("$instances.InstalledInstances | foreach {write-host \"instances:\"$_};")
         psInstances.append("write-host \"hostname:\"$hostname;")
 
@@ -127,7 +133,6 @@ class WinMSSQL(PythonPlugin):
                 server_config[key] = serverlist
 
         sqlhostname = server_config['hostname'][0]
-
         for instance in server_config['instances']:
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
@@ -162,17 +167,17 @@ class WinMSSQL(PythonPlugin):
                 db_sqlConnection = []
                 # Get database information
                 db_sqlConnection.append('$server.Databases | foreach {' \
-                    'write-host \"Name-\" $_,' \
-                    '\"`tVersion-\" $_.Version,' \
-                    '\"`tIsAccessible-\" $_.IsAccessible,' \
-                    '\"`tID-\" $_.ID,' \
-                    '\"`tOwner-\" $_.Owner,' \
-                    '\"`tLastBackupDate-\" $_.LastBackupDate,'\
-                    '\"`tCollation-\" $_.Collation,'\
-                    '\"`tCreateDate-\" $_.CreateDate,'\
-                    '\"`tDefaultFileGroup-\" $_.DefaultFileGroup,'\
-                    '\"`tPrimaryFilePath-\" $_.PrimaryFilePath,'\
-                    '\"`tLastLogBackupDate-\" $_.LastLogBackupDate' \
+                    'write-host \"Name---\" $_,' \
+                    '\"`tVersion---\" $_.Version,' \
+                    '\"`tIsAccessible---\" $_.IsAccessible,' \
+                    '\"`tID---\" $_.ID,' \
+                    '\"`tOwner---\" $_.Owner,' \
+                    '\"`tLastBackupDate---\" $_.LastBackupDate,'\
+                    '\"`tCollation---\" $_.Collation,'\
+                    '\"`tCreateDate---\" $_.CreateDate,'\
+                    '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
+                    '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
+                    '\"`tLastLogBackupDate---\" $_.LastLogBackupDate' \
                     '};')
 
                 command = "{0} \"& {{{1}}}\"".format(
@@ -187,8 +192,12 @@ class WinMSSQL(PythonPlugin):
                     dbdict = {}
 
                     for dbitem in db:
-                        key, value = dbitem.split('-')
-                        dbdict[key.lower()] = value.strip()
+                        try:
+                            key, value = dbitem.split('---')
+                            dbdict[key.lower()] = value.strip()
+                        except:
+                            log.info('Error parsing returned values : {0}'.format(
+                                dbitem))
 
                     om_database = ObjectMap()
                     om_database.id = self.prepId(instance + dbdict['id'])
@@ -210,10 +219,10 @@ class WinMSSQL(PythonPlugin):
                 backup_sqlConnection = []
                 # Get database information
                 backup_sqlConnection.append('$server.BackupDevices | foreach {' \
-                    'write-host \"Name-\" $_.Name,' \
-                    '\"`tDeviceType-\" $_.BackupDeviceType,' \
-                    '\"`tPhysicalLocation-\" $_.PhysicalLocation,' \
-                    '\"`tStatus-\" $_.State' \
+                    'write-host \"Name---\" $_.Name,' \
+                    '\"`tDeviceType---\" $_.BackupDeviceType,' \
+                    '\"`tPhysicalLocation---\" $_.PhysicalLocation,' \
+                    '\"`tStatus---\" $_.State' \
                     '};')
 
                 command = "{0} \"& {{{1}}}\"".format(
@@ -222,13 +231,12 @@ class WinMSSQL(PythonPlugin):
 
                 backuplist = winrs.run_command(command)
                 backups = yield backuplist
-
                 for backupobj in backups.stdout:
                     backup = backupobj.split('\t')
                     backupdict = {}
 
                     for backupitem in backup:
-                        key, value = backupitem.split('-')
+                        key, value = backupitem.split('---')
                         backupdict[key.lower()] = value.strip()
 
                     om_backup = ObjectMap()
@@ -258,7 +266,6 @@ class WinMSSQL(PythonPlugin):
 
                 jobslist = winrs.run_command(command)
                 jobs = yield jobslist
-
                 for job in jobs.stdout:
                     key, value = job.split(':')
                     if key.strip() == 'jobname':
