@@ -33,7 +33,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
+    import addLocalLibPath, parseDBUserNamePass
 
 addLocalLibPath()
 
@@ -43,8 +43,11 @@ from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 WINRS_SOURCETYPE = 'WinRS'
-TYPEPERF_STRATEGY = 'typeperf -sc1'
-POWERSHELL_STRATEGY = 'powershell Get-Counter'
+AVAILABLE_STRATEGIES = [
+    'typeperf -sc1',
+    'powershell Get-Counter',
+    'powershell MSSQL',
+    ]
 
 connections_dct = {}
 
@@ -85,9 +88,8 @@ class IWinRSInfo(IRRDDataSourceInfo):
     strategy = schema.Choice(
         group=_t(WINRS_SOURCETYPE),
         title=_t('Strategy'),
-        default=TYPEPERF_STRATEGY,
         vocabulary=SimpleVocabulary.fromValues(
-            [TYPEPERF_STRATEGY, POWERSHELL_STRATEGY]),)
+            AVAILABLE_STRATEGIES),)
 
 
 class WinRSInfo(RRDDataSourceInfo):
@@ -165,13 +167,14 @@ class PowershellGetCounterStrategy(object):
                "-counter @({0})\"".format(counters_args)
 
     def parse_result(self, dsconfs, result):
-        if result.exit_code != 0:
+        if result.exit_code != 0 or len(result.stdout) == 0:
             counters = [dsconf.params['counter'] for dsconf in dsconfs]
             log.info(
                 'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
+
         root_elem = ET.fromstring(result.stdout[1])
         namespace = 'http://schemas.microsoft.com/powershell/2004/04'
         for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
@@ -203,7 +206,95 @@ class PowershellGetCounterStrategy(object):
                     log.debug("No value was returned for {0}".format(dsconf.params['counter']))
 
 
-powershell_strategy = PowershellGetCounterStrategy()
+powershellcounter_strategy = PowershellGetCounterStrategy()
+
+
+class PowershellMSSQLStrategy(object):
+
+    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database):
+        #SQL Command opening
+
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
+            "-OutputFormat TEXT -Command "
+
+        sqlConnection = []
+        sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo';")
+        sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo';")
+
+        #quoted_counters = ["'{0}'".format(c) for c in counters]
+
+        # Need to modify query where clause.
+        # Currently all counters are retrieved for each database
+
+        #counters_args = ', '.join(quoted_counters)
+
+        # DB Connection Object
+        sqlConnection.append("$con = new-object " \
+            "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
+            "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
+
+        sqlConnection.append("$con.Connect();")
+
+        # Connect to Database Server
+        sqlConnection.append("$server = new-object " \
+            "('Microsoft.SqlServer.Management.Smo.Server') $con;")
+
+        counters_sqlConnection = []
+
+        counters_sqlConnection.append("$query = 'select instance_name as databasename, " \
+        "counter_name as key, cntr_value as value from " \
+        "sys.dm_os_performance_counters where instance_name = '" \
+        " + [char]39 + '{0}' + [char]39;".format(
+            database
+            ))
+
+        """
+        # Additional work needs to be done here to limit query
+
+        ) and " \
+        "counter_name in ({1})".format(database, counters_args)
+        """
+        counters_sqlConnection.append("$db = $server.Databases[0];")
+        counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
+        counters_sqlConnection.append("$ds.Tables | Format-List;")
+
+        command = "{0} \"& {{{1}}}\"".format(
+            pscommand,
+            ''.join(sqlConnection + counters_sqlConnection))
+
+        return command
+
+    def parse_result(self, dsconfs, result):
+
+        if result.exit_code != 0:
+            counters = [dsconf.params['counter'] for dsconf in dsconfs]
+            log.info(
+                'Non-zero exit code ({0}) for counters, {1}, on {2}'
+                .format(
+                    result.exit_code, counters, dsconf.device))
+            return
+
+        # Parse values
+        valuemap = {}
+
+        for counterline in result.stdout:
+            key, value = counterline.split(':')
+            if key.strip() == 'key':
+                _counter = value.strip().lower()
+            elif key.strip() == 'value':
+                valuemap[_counter] = value.strip()
+
+        for dsconf in dsconfs:
+            try:
+                key = dsconf.params['counter'].lower()
+                value = float(valuemap[key])
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+            except:
+                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
+
+
+powershellmssql_strategy = PowershellMSSQLStrategy()
 
 
 class WinRSPlugin(PythonDataSourcePlugin):
@@ -211,6 +302,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
     proxy_attributes = ('zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zDBInstances',
+        'zDBInstancesPassword',
         )
 
     @classmethod
@@ -220,16 +313,33 @@ class WinRSPlugin(PythonDataSourcePlugin):
         """
         return (context.device().id,
                 datasource.getCycleTime(context),
-                datasource.strategy)
+                datasource.strategy,
+                context.id)
 
     @classmethod
     def params(cls, datasource, context):
         counter = datasource.talesEval(datasource.counter, context)
-        if not counter.startswith('\\'):
+        if not counter.startswith('\\') and datasource.strategy != 'powershell MSSQL':
             counter = '\\' + counter
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             counter = context.perfmonInstance + counter
-        return dict(counter=counter, strategy=datasource.strategy)
+
+        if safe_hasattr(context, 'instancename'):
+            instancename = context.instancename
+        else:
+            instancename = ''
+
+        databasename = context.title
+
+        servername = context.device().title
+        if len(servername) == 0:
+            servername = ''
+
+        return dict(counter=counter,
+            strategy=datasource.strategy,
+            instancename=instancename,
+            servername=servername,
+            databasename=databasename)
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -252,9 +362,32 @@ class WinRSPlugin(PythonDataSourcePlugin):
             port,
             connectiontype,
             keytab)
+
         strategy = self._get_strategy(dsconf0)
         counters = [dsconf.params['counter'] for dsconf in config.datasources]
-        command_line = strategy.build_command_line(counters)
+
+        if dsconf0.params['strategy'] == 'powershell MSSQL':
+            sqlhostname = dsconf0.params['servername']
+            dbinstances = dsconf0.zDBInstances
+            dbinstancespassword = dsconf0.zDBInstancesPassword
+
+            dblogins = parseDBUserNamePass(dbinstances, dbinstancespassword)
+            instance = dsconf0.params['instancename']
+            dbname = dsconf0.params['databasename']
+
+            if instance == 'MSSQLSERVER':
+                sqlserver = sqlhostname
+            else:
+                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+
+            command_line = strategy.build_command_line(
+                counters,
+                sqlserver=sqlserver,
+                sqlusername=dblogins[instance]['username'],
+                sqlpassword=dblogins[instance]['password'],
+                database=dbname)
+        else:
+            command_line = strategy.build_command_line(counters)
 
         try:
             sender = connections_dct[conn_info]['sender']
@@ -324,6 +457,9 @@ class WinRSPlugin(PythonDataSourcePlugin):
         return data
 
     def _get_strategy(self, dsconf):
-        if dsconf.params['strategy'] == POWERSHELL_STRATEGY:
-            return powershell_strategy
-        return typeperf_strategy
+        return {
+        'typeperf -sc1': typeperf_strategy,
+        'powershell Get-Counter': powershellcounter_strategy,
+        'powershell MSSQL': powershellmssql_strategy,
+        'powershell': 'powershell_strategy',
+        }.get(dsconf.params['strategy'], 'unknown')

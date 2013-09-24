@@ -34,8 +34,8 @@ class WinMSSQL(PythonPlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
-        'zDBInstanceLogin',
-        'zDBInstancePassword',
+        'zDBInstances',
+        'zDBInstancesPassword',
         )
 
     @defer.inlineCallbacks
@@ -52,8 +52,8 @@ class WinMSSQL(PythonPlugin):
         # Sample data for zDBInstancePassword
         # sa:Sup3rPa$$;sa:WRAAgf4234@#$
 
-        dbinstance = device.zDBInstanceLogin
-        dbinstancepassword = device.zDBInstancePassword
+        dbinstance = device.zDBInstances
+        dbinstancepassword = device.zDBInstancesPassword
 
         dblogins = {}
 

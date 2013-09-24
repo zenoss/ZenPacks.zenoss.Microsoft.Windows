@@ -140,3 +140,19 @@ def guessBlockSize(bytes):
         if int(bytes) / float(1 << i) % 1:
             return 1 << (i - 1)
     return 4096                 # a total fiction
+
+
+def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
+    dblogins = {}
+    if len(dbinstances) > 0 and len(dbinstancespassword) > 0:
+        arrInstance = dbinstances.split(';')
+        arrPassword = dbinstancespassword.split(';')
+        i = 0
+        for instance in arrInstance:
+            dbuser, dbpass = arrPassword[i].split(':')
+            i = i + 1
+            dblogins[instance] = {'username': dbuser, 'password': dbpass}
+    else:
+        dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
+
+    return dblogins

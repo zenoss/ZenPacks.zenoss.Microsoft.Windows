@@ -19,8 +19,8 @@ Globals
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
                 ('zWinRMPort', '5985', 'string'),
-                ('zDBInstanceLogin', 'MSSQLSERVER;', 'string'),
-                ('zDBInstancePassword', '', 'password')]
+                ('zDBInstances', 'MSSQLSERVER;', 'string'),
+                ('zDBInstancesPassword', '', 'password')]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
     setzPropertyCategory(name, 'Windows')
@@ -31,8 +31,8 @@ for name, default_value, type_ in _PACK_Z_PROPS:
 # zDBInstnacePassword = 'sa:Pzwrd;sa:i24ns3'
 
 
-setzPropertyCategory('zDBInstanceLogin', 'Misc')
-setzPropertyCategory('zDBInstancePassword', 'Misc')
+setzPropertyCategory('zDBInstances', 'Misc')
+setzPropertyCategory('zDBInstancesPassword', 'Misc')
 
 
 class ZenPack(ZenPackBase):
