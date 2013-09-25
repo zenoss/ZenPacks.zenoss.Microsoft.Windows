@@ -22,7 +22,7 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 ['Active Directory', 'Device', 'IIS', 'MSExchangeIS', 'MSSQLServer']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices']
+['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices', 'zenoss.winrm.Software']
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
