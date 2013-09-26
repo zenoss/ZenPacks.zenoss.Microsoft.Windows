@@ -69,12 +69,12 @@ class WinMSSQL(PythonPlugin):
             else:
                 dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
                 results = {'clear': eventmessage}
-        except:
-            # Error with dbinstance names or password
 
+        except (IndexError, ValueError):
+            # Error with dbinstance names or password
             results = {'error': eventmessage}
             defer.returnValue(results)
-        
+
         scheme = 'http'
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
@@ -208,7 +208,7 @@ class WinMSSQL(PythonPlugin):
                         try:
                             key, value = dbitem.split('---')
                             dbdict[key.lower()] = value.strip()
-                        except:
+                        except (ValueError):
                             log.info('Error parsing returned values : {0}'.format(
                                 dbitem))
 
@@ -313,15 +313,11 @@ class WinMSSQL(PythonPlugin):
             self.name(), device.id)
         maps = []
 
-        device_om = ObjectMap()
         try:
             eventmessage = results['error']
-            device_om.setErrorNotification = ('error', eventmessage)
-            return device_om
-        except:
-            eventmessage = results['clear']
-            device_om.setErrorNotification = ('clear', eventmessage)
-            maps.append(device_om)
+            log.error(eventmessage)
+        except (KeyError):
+            pass
 
         map_dbs_instance_oms = {}
         map_jobs_instance_oms = {}

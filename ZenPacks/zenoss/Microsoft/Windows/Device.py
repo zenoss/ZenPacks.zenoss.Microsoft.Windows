@@ -32,6 +32,12 @@ class Device(BaseDevice):
     A device class that knows about enclosures
     """
 
+    clusterdevices = ''
+
+    _properties = BaseDevice._properties + (
+        {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
+        )
+
     def __init__(self, id, buildRelations=True):
         ManagedEntity.__init__(self, id, buildRelations=buildRelations)
 
@@ -45,33 +51,6 @@ class Device(BaseDevice):
         self._snmpLastCollection = 0
         self._lastChange = 0
 
-    def setErrorNotification(self, event):
-
-        status, message = event
-        if status == 'clear':
-            self.dmd.ZenEventManager.sendEvent(dict(
-                device=self.id,
-                summary=message,
-                eventClass='/Status',
-                eventKey='ConnectionError',
-                severity=0,
-                ))
-
-        else:
-            #send event that connection failed.
-            self.dmd.ZenEventManager.sendEvent(dict(
-                device=self.id,
-                summary=message,
-                eventClass='/Status',
-                eventKey='ConnectionError',
-                severity=5,
-                ))
-
-            return
-
-    def getErrorNotification(self):
-        return
-
     def setClusterMachine(self, clusterdnsnames):
 
         for clusterdnsname in clusterdnsnames:
@@ -82,6 +61,7 @@ class Device(BaseDevice):
                 return
 
             clusterip = getHostByName(clusterdnsname)
+            cluster_om = []
 
             @transact
             def create_device():
@@ -92,17 +72,41 @@ class Device(BaseDevice):
                 cluster.manageIp = clusterip
                 cluster.title = clusterdnsname
                 cluster.setPerformanceMonitor(self.getPerformanceServerName())
-
-                #cluster.setPerformanceServer(self.getPerformanceServerName())
-
                 cluster.index_object()
                 notify(IndexingEvent(cluster))
+                cluster_om.append(cluster)
 
+            self.clusterdevices = cluster_om
             create_device()
             cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
             cluster.collectDevice(setlog=False, background=True)
 
     def getClusterMachine(self):
-        return
+        return self.clusterdevices
+
+
+class DeviceLinkProvider(object):
+    '''
+    Provides a link to this host on the overview screen of the Linux
+    server device underlying this host.
+    '''
+    def __init__(self, device):
+        self.device = device
+
+    def getExpandedLinks(self):
+        links = []
+
+        hosts = self.device.getClusterMachine()
+
+        if hosts:
+            for host in hosts:
+                links.append(
+                    'Clustered Host: <a href="{}">{}</a>'.format(
+                        #host.getPrimaryUrlPath(),
+                        #host.titleOrId()
+                        host, host)
+                    )
+
+        return links
 
 InitializeClass(Device)

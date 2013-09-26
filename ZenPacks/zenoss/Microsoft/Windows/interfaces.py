@@ -8,9 +8,14 @@
 ##############################################################################
 
 from Products.Zuul.form import schema
+from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
+
+
+class IDeviceInfo(IDeviceInfo):
+    clusterdevices = schema.TextLine(title=_t(u'Cluster Devices'), readonly=True)
 
 
 class IWinComponentInfo(IComponentInfo):

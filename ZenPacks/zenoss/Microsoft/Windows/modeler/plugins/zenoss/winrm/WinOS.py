@@ -111,7 +111,7 @@ class WinOS(PythonPlugin):
                 if key in SINGLETON_KEYS:
                     value = value[0]
                 setattr(res, key, value)
-            except:
+            except (KeyError, IndexError):
                 pass
 
         maps = []
@@ -182,7 +182,7 @@ class WinOS(PythonPlugin):
             for cluster in res.clusterInformation:
                 clusterlist.append(cluster.Name)
             cs_om.setClusterMachine = clusterlist
-        except:
+        except (AttributeError):
             pass
 
         maps.append(cs_om)
@@ -235,7 +235,7 @@ class WinOS(PythonPlugin):
                         ipEntry = "{ipaddress}/{ipsubnet}".format(
                                   ipaddress=ipRecord, ipsubnet=ipsubnet)
                         ips.append(ipEntry)
-                    except IpAddressError:
+                    except (IpAddressError):
                         log.debug("Invalid IP Address {0} encountered and "
                                 "skipped".format(ipRecord))
 
