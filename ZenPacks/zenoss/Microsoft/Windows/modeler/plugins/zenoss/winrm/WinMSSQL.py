@@ -155,8 +155,20 @@ class WinMSSQL(PythonPlugin):
             if instance in dblogins:
                 sqlConnection = []
                 # AssemblyNames required for SQL interactions
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo';")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo';")
+
+                sqlConnection.append("try{")
+                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo," \
+                    " Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop ")
+                sqlConnection.append("}")
+                sqlConnection.append("catch{")
+                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo'};")
+
+                sqlConnection.append("try{")
+                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo," \
+                    " Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop ")
+                sqlConnection.append("}")
+                sqlConnection.append("catch{")
+                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo'};")
 
                 if instance == 'MSSQLSERVER':
                     sqlserver = sqlhostname
