@@ -176,11 +176,14 @@ class WinOS(PythonPlugin):
         cs_om.snmpDescr = res.computerSystem.Caption
 
         # Cluster Information
-        if res.clusterInformation:
+
+        try:
             clusterlist = []
             for cluster in res.clusterInformation:
                 clusterlist.append(cluster.Name)
             cs_om.setClusterMachine = clusterlist
+        except:
+            pass
 
         maps.append(cs_om)
 
