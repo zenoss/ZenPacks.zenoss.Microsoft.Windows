@@ -156,3 +156,65 @@ def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
         dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
 
     return dblogins
+
+
+def getSQLAssembly():
+
+    ASSEMBLY_Connection = "add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo"
+    ASSEMBLY_Smo = "add-type -AssemblyName 'Microsoft.SqlServer.Smo"
+
+    ASSEMBLY = "Culture=neutral, PublicKeyToken=89845dcd8080cc91'"
+    ASSEMBLY_2005 = 'Version=9.0.242.0'
+    ASSEMBLY_2008 = 'Version=10.0.0.0'
+    ASSEMBLY_2012 = 'Version=11.0.0.0'
+
+    MSSQL2005_CONNECTION_INFO = '{0}, {1}, {2}'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2005,
+        ASSEMBLY)
+
+    MSSQL2008_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2008,
+        ASSEMBLY)
+
+    MSSQL2012_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2012,
+        ASSEMBLY)
+
+    MSSQL2005_SMO = '{0}, {1}, {2}'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2005,
+        ASSEMBLY)
+
+    MSSQL2008_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2008,
+        ASSEMBLY)
+
+    MSSQL2012_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2012,
+        ASSEMBLY)
+
+    sqlConnection = []
+    sqlConnection.append("try{")
+    sqlConnection.append(MSSQL2012_CONNECTION_INFO)
+    sqlConnection.append("}catch{")
+    sqlConnection.append("try{")
+    sqlConnection.append(MSSQL2008_CONNECTION_INFO)
+    sqlConnection.append("}catch{")
+    sqlConnection.append(MSSQL2005_CONNECTION_INFO)
+    sqlConnection.append("}};")
+
+    sqlConnection.append("try{")
+    sqlConnection.append(MSSQL2012_SMO)
+    sqlConnection.append("}catch{")
+    sqlConnection.append("try{")
+    sqlConnection.append(MSSQL2008_SMO)
+    sqlConnection.append("}catch{")
+    sqlConnection.append(MSSQL2005_SMO)
+    sqlConnection.append("}};")
+
+    return sqlConnection

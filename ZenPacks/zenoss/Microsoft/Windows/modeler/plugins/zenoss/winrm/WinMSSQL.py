@@ -20,7 +20,7 @@ from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, getSQLAssembly
 
 addLocalLibPath()
 
@@ -154,21 +154,6 @@ class WinMSSQL(PythonPlugin):
 
             if instance in dblogins:
                 sqlConnection = []
-                # AssemblyNames required for SQL interactions
-
-                sqlConnection.append("try{")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo," \
-                    " Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop ")
-                sqlConnection.append("}")
-                sqlConnection.append("catch{")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo'};")
-
-                sqlConnection.append("try{")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo," \
-                    " Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop ")
-                sqlConnection.append("}")
-                sqlConnection.append("catch{")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo'};")
 
                 if instance == 'MSSQLSERVER':
                     sqlserver = sqlhostname
@@ -207,8 +192,7 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + db_sqlConnection))
-
+                    ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
                 instancedatabases = winrs.run_command(command)
                 databases = yield instancedatabases
 
