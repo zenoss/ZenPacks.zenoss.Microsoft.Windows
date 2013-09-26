@@ -126,6 +126,7 @@ class WinSQLJobInfo(WinComponentInfo):
     enabled = ProxyProperty('enabled')
     description = ProxyProperty('description')
     username = ProxyProperty('username')
+    datecreated = ProxyProperty('datecreated')
 
     @property
     @info

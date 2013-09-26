@@ -63,7 +63,7 @@ class WinMSSQL(PythonPlugin):
                 arrPassword = dbinstancepassword.split(';')
                 i = 0
                 for instance in arrInstance:
-                    dbuser, dbpass = arrPassword[i].split(':')
+                    dbuser, dbpass = arrPassword[i].split(':', 1)
                     i = i + 1
                     dblogins[instance] = {'username': dbuser, 'password': dbpass}
             else:
@@ -130,7 +130,7 @@ class WinMSSQL(PythonPlugin):
         sqlhostname = ''
 
         for serverconfig in instances.stdout:
-            key, value = serverconfig.split(':')
+            key, value = serverconfig.split(':', 1)
             serverlist = []
             if key in server_config:
                 serverlist = server_config[key]
@@ -270,8 +270,8 @@ class WinMSSQL(PythonPlugin):
 
                 # Get SQL Jobs information
                 jobsquery = "select s.name as jobname, s.job_id as jobid, " \
-                "s.enabled as enabled, s.description as description, " \
-                "l.name as username from " \
+                "s.enabled as enabled, s.date_created as datecreated, " \
+                "s.description as description, l.name as username from " \
                 "msdb..sysjobs s left join master.sys.syslogins l on s.owner_sid = l.sid"
 
                 job_sqlConnection = []
@@ -286,7 +286,7 @@ class WinMSSQL(PythonPlugin):
                 jobslist = winrs.run_command(command)
                 jobs = yield jobslist
                 for job in jobs.stdout:
-                    key, value = job.split(':')
+                    key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
                         #New Job Record
                         om_jobs = ObjectMap()
@@ -300,6 +300,8 @@ class WinMSSQL(PythonPlugin):
                             om_jobs.enabled = value.strip()
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
+                        elif key.strip() == 'datecreated':
+                            om_jobs.datecreated = str(value.strip())
                         elif key.strip() == 'username':
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)

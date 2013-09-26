@@ -80,3 +80,4 @@ class IWinSQLJobInfo(IWinComponentInfo):
     enabled = schema.TextLine(title=_t(u'Enabled'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     username = schema.TextLine(title=_t(u'User'), readonly=True)
+    datecreated = schema.TextLine(title=_t(u'Date Created'), readonly=True)
