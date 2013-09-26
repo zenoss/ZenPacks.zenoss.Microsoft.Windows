@@ -236,7 +236,7 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + backup_sqlConnection))
+                    ''.join(getSQLAssembly() + sqlConnection + backup_sqlConnection))
 
                 backuplist = winrs.run_command(command)
                 backups = yield backuplist
@@ -255,7 +255,6 @@ class WinMSSQL(PythonPlugin):
                     om_backup.physicallocation = backupdict['physicallocation']
                     om_backup.status = backupdict['status']
                     om_backup.instancename = om_instance.id
-
                     backup_oms.append(om_backup)
 
                 # Get SQL Jobs information
@@ -271,7 +270,7 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + job_sqlConnection))
+                    ''.join(getSQLAssembly() + sqlConnection + job_sqlConnection))
 
                 jobslist = winrs.run_command(command)
                 jobs = yield jobslist
