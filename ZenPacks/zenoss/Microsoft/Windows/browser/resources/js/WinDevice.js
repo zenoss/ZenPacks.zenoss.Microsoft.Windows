@@ -414,7 +414,7 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'lastlogbackupdate'},
                 {name: 'isaccessible'},
                 {name: 'collation'},
-                {name: 'createdate'},
+                {name: 'dbcreatedate'},
                 {name: 'defaultfilegroup'},
                 {name: 'databaseguid'},
                 {name: 'primaryfilepath'},

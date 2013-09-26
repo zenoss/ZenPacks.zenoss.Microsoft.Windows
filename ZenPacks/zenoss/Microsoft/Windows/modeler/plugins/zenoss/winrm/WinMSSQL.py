@@ -209,16 +209,27 @@ class WinMSSQL(PythonPlugin):
                             log.info('Error parsing returned values : {0}'.format(
                                 dbitem))
 
+                    if dbdict['lastlogbackupdate'][:8] == '1/1/0001':
+                        lastlogbackupdate = 'NONE'
+                    else:
+                        lastlogbackupdate = dbdict['lastlogbackupdate']
+
+                    if dbdict['lastbackupdate'][:8] == '1/1/0001':
+                        lastbackupdate = 'NONE'
+                    else:
+                        lastbackupdate = dbdict['lastbackupdate']
+
                     om_database = ObjectMap()
                     om_database.id = self.prepId(instance + dbdict['id'])
                     om_database.title = dbdict['name'][1:-1]
                     om_database.instancename = om_instance.id
                     om_database.version = dbdict['version']
                     om_database.owner = dbdict['owner']
-                    om_database.lastbackupdate = dbdict['lastbackupdate']
-                    om_database.lastlogbackupdate = dbdict['lastlogbackupdate']
+                    om_database.lastbackupdate = lastbackupdate
+                    om_database.lastlogbackupdate = lastlogbackupdate
                     om_database.isaccessible = dbdict['isaccessible']
                     om_database.collation = dbdict['collation']
+                    om_database.dbcreatedate = str(dbdict['createdate'])
                     om_database.defaultfilegroup = dbdict['defaultfilegroup']
                     om_database.primaryfilepath = dbdict['primaryfilepath']
 
