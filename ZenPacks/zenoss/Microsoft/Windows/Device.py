@@ -40,4 +40,32 @@ class Device(BaseDevice):
         self._snmpLastCollection = 0
         self._lastChange = 0
 
+    def setErrorNotification(self, event):
+
+        status, message = event
+        if status == 'clear':
+            self.dmd.ZenEventManager.sendEvent(dict(
+                device=self.id,
+                summary=message,
+                eventClass='/Status',
+                eventKey='ConnectionError',
+                severity=0,
+                ))
+
+        else:
+            #send event that connection failed.
+            self.dmd.ZenEventManager.sendEvent(dict(
+                device=self.id,
+                summary=message,
+                eventClass='/Status',
+                eventKey='ConnectionError',
+                severity=5,
+                ))
+
+            return
+
+    def getErrorNotification(self):
+        return
+
+
 InitializeClass(Device)

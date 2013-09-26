@@ -56,16 +56,24 @@ class WinMSSQL(PythonPlugin):
         dbinstancepassword = device.zDBInstancesPassword
 
         dblogins = {}
-        if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
-            arrInstance = dbinstance.split(';')
-            arrPassword = dbinstancepassword.split(';')
-            i = 0
-            for instance in arrInstance:
-                dbuser, dbpass = arrPassword[i].split(':')
-                i = i + 1
-                dblogins[instance] = {'username': dbuser, 'password': dbpass}
-        else:
-            dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
+        eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
+        try:
+            if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
+                arrInstance = dbinstance.split(';')
+                arrPassword = dbinstancepassword.split(';')
+                i = 0
+                for instance in arrInstance:
+                    dbuser, dbpass = arrPassword[i].split(':')
+                    i = i + 1
+                    dblogins[instance] = {'username': dbuser, 'password': dbpass}
+            else:
+                dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
+                results = {'clear': eventmessage}
+        except:
+            # Error with dbinstance names or password
+
+            results = {'error': eventmessage}
+            defer.returnValue(results)
 
         scheme = 'http'
         port = int(device.zWinRMPort)
@@ -287,6 +295,7 @@ class WinMSSQL(PythonPlugin):
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)
 
+        maps['clear'] = eventmessage
         maps['databases'] = database_oms
         maps['instances'] = instance_oms
         maps['backups'] = backup_oms
@@ -297,6 +306,17 @@ class WinMSSQL(PythonPlugin):
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
+        maps = []
+
+        device_om = ObjectMap()
+        try:
+            eventmessage = results['error']
+            device_om.setErrorNotification = ('error', eventmessage)
+            return device_om
+        except:
+            eventmessage = results['clear']
+            device_om.setErrorNotification = ('clear', eventmessage)
+            maps.append(device_om)
 
         map_dbs_instance_oms = {}
         map_jobs_instance_oms = {}
@@ -330,8 +350,6 @@ class WinMSSQL(PythonPlugin):
 
             backupom.append(backup)
             map_backups_instance_oms[instance] = backupom
-
-        maps = []
 
         maps.append(RelationshipMap(
             relname="winsqlinstances",
