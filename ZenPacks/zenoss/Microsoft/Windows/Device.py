@@ -61,7 +61,6 @@ class Device(BaseDevice):
                 return
 
             clusterip = getHostByName(clusterdnsname)
-            cluster_om = []
 
             @transact
             def create_device():
@@ -74,15 +73,19 @@ class Device(BaseDevice):
                 cluster.setPerformanceMonitor(self.getPerformanceServerName())
                 cluster.index_object()
                 notify(IndexingEvent(cluster))
-                cluster_om.append(cluster)
 
-            self.clusterdevices = cluster_om
             create_device()
             cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
             cluster.collectDevice(setlog=False, background=True)
 
+        self.clusterdevices = clusterdnsnames
+
     def getClusterMachine(self):
-        return self.clusterdevices
+        clusterdevices = []
+        for clusterdnsname in self.clusterdevices:
+            deviceRoot = self.dmd.getDmdRoot("Devices")
+            clusterdevices.append(deviceRoot.findDeviceByIdExact(clusterdnsname))
+        return clusterdevices
 
 
 class DeviceLinkProvider(object):
@@ -102,9 +105,9 @@ class DeviceLinkProvider(object):
             for host in hosts:
                 links.append(
                     'Clustered Host: <a href="{}">{}</a>'.format(
-                        #host.getPrimaryUrlPath(),
-                        #host.titleOrId()
-                        host, host)
+                        host.getPrimaryUrlPath(),
+                        host.titleOrId()
+                        )
                     )
 
         return links
