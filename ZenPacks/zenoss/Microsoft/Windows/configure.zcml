@@ -6,6 +6,12 @@
     >
 
     <adapter
+        factory=".info.DeviceInfo"
+        for=".Device.Device"
+        provides=".interfaces.IDeviceInfo"
+        />
+
+    <adapter
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"
@@ -70,6 +76,17 @@
         for=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionDataSource"
         factory=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionInfo"
         />
+
+    <!-- Device Links -->
+    <configure zcml:condition="have zenoss:IExpandedLinkProvider">
+        <subscriber
+            provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
+            for='Products.ZenModel.Device.Device'
+            factory='.Device.DeviceLinkProvider'
+            />
+
+    </configure>
+
     <!-- Browser -->
     <include package=".browser"/>
 

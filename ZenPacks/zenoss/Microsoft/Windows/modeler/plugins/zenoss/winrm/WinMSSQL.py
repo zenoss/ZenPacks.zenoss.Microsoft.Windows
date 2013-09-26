@@ -56,16 +56,24 @@ class WinMSSQL(PythonPlugin):
         dbinstancepassword = device.zDBInstancesPassword
 
         dblogins = {}
-        if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
-            arrInstance = dbinstance.split(';')
-            arrPassword = dbinstancepassword.split(';')
-            i = 0
-            for instance in arrInstance:
-                dbuser, dbpass = arrPassword[i].split(':')
-                i = i + 1
-                dblogins[instance] = {'username': dbuser, 'password': dbpass}
-        else:
-            dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
+        eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
+        try:
+            if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
+                arrInstance = dbinstance.split(';')
+                arrPassword = dbinstancepassword.split(';')
+                i = 0
+                for instance in arrInstance:
+                    dbuser, dbpass = arrPassword[i].split(':')
+                    i = i + 1
+                    dblogins[instance] = {'username': dbuser, 'password': dbpass}
+            else:
+                dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
+                results = {'clear': eventmessage}
+
+        except (IndexError, ValueError):
+            # Error with dbinstance names or password
+            results = {'error': eventmessage}
+            defer.returnValue(results)
 
         scheme = 'http'
         port = int(device.zWinRMPort)
@@ -132,6 +140,11 @@ class WinMSSQL(PythonPlugin):
                 serverlist.append(value.strip())
                 server_config[key] = serverlist
 
+        if server_config['instances'][0] == '':
+            eventmessage = 'No MSSQL Servers are installed but modeler is enabled'
+            results = {'error': eventmessage}
+            defer.returnValue(results)
+
         sqlhostname = server_config['hostname'][0]
         for instance in server_config['instances']:
             om_instance = ObjectMap()
@@ -195,7 +208,7 @@ class WinMSSQL(PythonPlugin):
                         try:
                             key, value = dbitem.split('---')
                             dbdict[key.lower()] = value.strip()
-                        except:
+                        except (ValueError):
                             log.info('Error parsing returned values : {0}'.format(
                                 dbitem))
 
@@ -287,6 +300,7 @@ class WinMSSQL(PythonPlugin):
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)
 
+        maps['clear'] = eventmessage
         maps['databases'] = database_oms
         maps['instances'] = instance_oms
         maps['backups'] = backup_oms
@@ -297,6 +311,13 @@ class WinMSSQL(PythonPlugin):
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
+        maps = []
+
+        try:
+            eventmessage = results['error']
+            log.error(eventmessage)
+        except (KeyError):
+            pass
 
         map_dbs_instance_oms = {}
         map_jobs_instance_oms = {}
@@ -331,8 +352,6 @@ class WinMSSQL(PythonPlugin):
             backupom.append(backup)
             map_backups_instance_oms[instance] = backupom
 
-        maps = []
-
         maps.append(RelationshipMap(
             relname="winsqlinstances",
             compname="os",
@@ -359,5 +378,4 @@ class WinMSSQL(PythonPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
-
         return maps

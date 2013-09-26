@@ -28,6 +28,10 @@ addLocalLibPath()
 from txwinrm.collect import ConnectionInfo, WinrmCollectClient, \
     create_enum_info
 
+cluster_namespace = 'mscluster'
+resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
+    cluster_namespace)
+
 ENUM_INFOS = dict(
     sysEnclosure=create_enum_info('select * from Win32_SystemEnclosure'),
     computerSystem=create_enum_info('select * from Win32_ComputerSystem'),
@@ -39,7 +43,10 @@ ENUM_INFOS = dict(
     netConf=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
     fsDisk=create_enum_info('select * from Win32_logicaldisk'),
     fsVol=create_enum_info('select * from Win32_Volume'),
-    fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'))
+    fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'),
+    clusterInformation=create_enum_info(wql='select * from mscluster_cluster',
+        resource_uri=resource_uri)
+    )
 
 SINGLETON_KEYS = ["sysEnclosure", "computerSystem", "operatingSystem"]
 
@@ -99,10 +106,13 @@ class WinOS(PythonPlugin):
 
         res = WinOSResult()
         for key, enum_info in ENUM_INFOS.iteritems():
-            value = results[enum_info]
-            if key in SINGLETON_KEYS:
-                value = value[0]
-            setattr(res, key, value)
+            try:
+                value = results[enum_info]
+                if key in SINGLETON_KEYS:
+                    value = value[0]
+                setattr(res, key, value)
+            except (KeyError, IndexError):
+                pass
 
         maps = []
 
@@ -165,6 +175,16 @@ class WinOS(PythonPlugin):
         cs_om.snmpContact = res.computerSystem.PrimaryOwnerName
         cs_om.snmpDescr = res.computerSystem.Caption
 
+        # Cluster Information
+
+        try:
+            clusterlist = []
+            for cluster in res.clusterInformation:
+                clusterlist.append(cluster.Name)
+            cs_om.setClusterMachine = clusterlist
+        except (AttributeError):
+            pass
+
         maps.append(cs_om)
 
         # Interface Map
@@ -191,6 +211,12 @@ class WinOS(PythonPlugin):
             if interconf.MACAddress is None:
                 continue
 
+            if getattr(interconf, 'ServiceName', None) is not None:
+                if 'netft' in interconf.ServiceName.lower():
+                    # This is a Network Fault-Tolerant interface
+                    # This should not be modeled as a local interface
+                    continue
+
             if getattr(interconf, 'IPAddress', None) is not None:
                 iplist = []
                 if isinstance(interconf.IPAddress, basestring):
@@ -209,7 +235,7 @@ class WinOS(PythonPlugin):
                         ipEntry = "{ipaddress}/{ipsubnet}".format(
                                   ipaddress=ipRecord, ipsubnet=ipsubnet)
                         ips.append(ipEntry)
-                    except IpAddressError:
+                    except (IpAddressError):
                         log.debug("Invalid IP Address {0} encountered and "
                                 "skipped".format(ipRecord))
 

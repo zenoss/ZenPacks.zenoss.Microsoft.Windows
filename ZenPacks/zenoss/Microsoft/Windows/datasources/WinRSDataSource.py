@@ -242,7 +242,7 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection = []
 
         counters_sqlConnection.append("$query = 'select instance_name as databasename, " \
-        "counter_name as key, cntr_value as value from " \
+        "counter_name as ckey, cntr_value as cvalue from " \
         "sys.dm_os_performance_counters where instance_name = '" \
         " + [char]39 + '{0}' + [char]39;".format(
             database
@@ -279,9 +279,9 @@ class PowershellMSSQLStrategy(object):
 
         for counterline in result.stdout:
             key, value = counterline.split(':')
-            if key.strip() == 'key':
+            if key.strip() == 'ckey':
                 _counter = value.strip().lower()
-            elif key.strip() == 'value':
+            elif key.strip() == 'cvalue':
                 valuemap[_counter] = value.strip()
 
         for dsconf in dsconfs:
