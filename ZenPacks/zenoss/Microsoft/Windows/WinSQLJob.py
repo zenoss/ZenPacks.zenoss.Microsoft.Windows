@@ -23,7 +23,6 @@ class WinSQLJob(OSComponent):
     jobid = None
     enabled = None
     description = None
-    datecreated = None
     username = None
 
     _properties = OSComponent._properties + (
@@ -31,7 +30,6 @@ class WinSQLJob(OSComponent):
         {'id': 'jobid', 'type': 'string'},
         {'id': 'enabled', 'type': 'string'},
         {'id': 'description', 'type': 'string'},
-        {'id': 'datecreated', 'type': 'string'},
         {'id': 'username', 'type': 'string'},
         )
 

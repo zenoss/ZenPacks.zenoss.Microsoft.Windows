@@ -103,9 +103,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     lastlogbackupdate = ProxyProperty('lastlogbackupdate')
     isaccessible = ProxyProperty('isaccessible')
     collation = ProxyProperty('collation')
-    createdate = ProxyProperty('createdate')
     defaultfilegroup = ProxyProperty('defaultfilegroup')
-    databaseguid = ProxyProperty('databaseguid')
     primaryfilepath = ProxyProperty('primaryfilepath')
 
     @property
@@ -116,10 +114,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
 
 class WinSQLInstanceInfo(WinComponentInfo):
     implements(IWinSQLInstanceInfo)
-
     instancename = ProxyProperty('instancename')
-    backupdevices = ProxyProperty('backupdevices')
-    roles = ProxyProperty('roles')
 
 
 class WinSQLJobInfo(WinComponentInfo):
@@ -129,7 +124,6 @@ class WinSQLJobInfo(WinComponentInfo):
     jobid = ProxyProperty('jobid')
     enabled = ProxyProperty('enabled')
     description = ProxyProperty('description')
-    datecreated = ProxyProperty('datecreated')
     username = ProxyProperty('username')
 
     @property

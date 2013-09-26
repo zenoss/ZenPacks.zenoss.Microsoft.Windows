@@ -26,9 +26,7 @@ class WinSQLDatabase(OSComponent):
     lastlogbackupdate = None
     isaccessible = None
     collation = None
-    createdate = None
     defaultfilegroup = None
-    databaseguid = None
     primaryfilepath = None
 
     _properties = OSComponent._properties + (
@@ -39,9 +37,7 @@ class WinSQLDatabase(OSComponent):
         {'id': 'lastlogbackupdate', 'type': 'string'},
         {'id': 'isaccessible', 'type': 'string'},
         {'id': 'collation', 'type': 'string'},
-        {'id': 'createdate', 'type': 'string'},
         {'id': 'defaultfilegroup', 'type': 'string'},
-        {'id': 'databaseguid', 'type': 'string'},
         {'id': 'primaryfilepath', 'type': 'string'},
         )
 

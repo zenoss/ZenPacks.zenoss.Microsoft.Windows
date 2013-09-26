@@ -149,6 +149,7 @@ class WinMSSQL(PythonPlugin):
         for instance in server_config['instances']:
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
+            om_instance.title = instance
             om_instance.instancename = instance
             instance_oms.append(om_instance)
 
@@ -219,7 +220,6 @@ class WinMSSQL(PythonPlugin):
                     om_database.isaccessible = dbdict['isaccessible']
                     om_database.collation = dbdict['collation']
                     om_database.defaultfilegroup = dbdict['defaultfilegroup']
-                    #om_database.databaseguid = dbdict['databaseguid']
                     om_database.primaryfilepath = dbdict['primaryfilepath']
 
                     database_oms.append(om_database)
@@ -290,8 +290,6 @@ class WinMSSQL(PythonPlugin):
                             om_jobs.enabled = value.strip()
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
-                        elif key.strip() == 'datecreated':
-                            om_jobs.datecreated = value.strip()
                         elif key.strip() == 'username':
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)
