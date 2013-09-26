@@ -74,7 +74,7 @@ class WinMSSQL(PythonPlugin):
 
             results = {'error': eventmessage}
             defer.returnValue(results)
-
+        
         scheme = 'http'
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
@@ -139,6 +139,11 @@ class WinMSSQL(PythonPlugin):
             else:
                 serverlist.append(value.strip())
                 server_config[key] = serverlist
+
+        if server_config['instances'][0] == '':
+            eventmessage = 'No MSSQL Servers are installed but modeler is enabled'
+            results = {'error': eventmessage}
+            defer.returnValue(results)
 
         sqlhostname = server_config['hostname'][0]
         for instance in server_config['instances']:
@@ -377,5 +382,4 @@ class WinMSSQL(PythonPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
-
         return maps

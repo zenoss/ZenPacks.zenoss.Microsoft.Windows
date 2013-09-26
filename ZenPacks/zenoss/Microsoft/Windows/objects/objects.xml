@@ -29813,6 +29813,17 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='Cluster' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property id='zendoc' type='string'>
+Windows Cluster
+</property>
+<property type="string" id="description" mode="w" >
+Windows Cluster
+</property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+[]
+</property>
+</object>
 </object>
 <!-- ('', 'zport', 'dmd', 'Devices', 'Server', 'Windows', 'rrdTemplates', 'Device') -->
 <object id='/zport/dmd/Devices/Server/Windows/rrdTemplates/Device' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>

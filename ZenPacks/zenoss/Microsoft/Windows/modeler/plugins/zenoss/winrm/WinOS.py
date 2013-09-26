@@ -44,7 +44,7 @@ ENUM_INFOS = dict(
     fsDisk=create_enum_info('select * from Win32_logicaldisk'),
     fsVol=create_enum_info('select * from Win32_Volume'),
     fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'),
-    clusterInformation=create_enum_info(wql='select * from mscluster_network',
+    clusterInformation=create_enum_info(wql='select * from mscluster_cluster',
         resource_uri=resource_uri)
     )
 
@@ -174,6 +174,13 @@ class WinOS(PythonPlugin):
         cs_om.snmpSysName = res.computerSystem.Name
         cs_om.snmpContact = res.computerSystem.PrimaryOwnerName
         cs_om.snmpDescr = res.computerSystem.Caption
+
+        # Cluster Information
+        if res.clusterInformation:
+            clusterlist = []
+            for cluster in res.clusterInformation:
+                clusterlist.append(cluster.Name)
+            cs_om.setClusterMachine = clusterlist
 
         maps.append(cs_om)
 
