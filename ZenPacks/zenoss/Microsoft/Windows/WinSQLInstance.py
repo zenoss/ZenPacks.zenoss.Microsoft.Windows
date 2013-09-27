@@ -25,8 +25,6 @@ class WinSQLInstance(OSComponent):
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'type': 'string'},
-        {'id': 'backupdevices', 'type': 'string'},
-        {'id': 'roles', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

@@ -28,7 +28,6 @@ class WinSQLDatabase(OSComponent):
     collation = None
     createdate = None
     defaultfilegroup = None
-    databaseguid = None
     primaryfilepath = None
 
     _properties = OSComponent._properties + (
@@ -41,7 +40,6 @@ class WinSQLDatabase(OSComponent):
         {'id': 'collation', 'type': 'string'},
         {'id': 'createdate', 'type': 'string'},
         {'id': 'defaultfilegroup', 'type': 'string'},
-        {'id': 'databaseguid', 'type': 'string'},
         {'id': 'primaryfilepath', 'type': 'string'},
         )
 

@@ -20,7 +20,7 @@ from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, getSQLAssembly
 
 addLocalLibPath()
 
@@ -63,7 +63,7 @@ class WinMSSQL(PythonPlugin):
                 arrPassword = dbinstancepassword.split(';')
                 i = 0
                 for instance in arrInstance:
-                    dbuser, dbpass = arrPassword[i].split(':')
+                    dbuser, dbpass = arrPassword[i].split(':', 1)
                     i = i + 1
                     dblogins[instance] = {'username': dbuser, 'password': dbpass}
             else:
@@ -130,7 +130,7 @@ class WinMSSQL(PythonPlugin):
         sqlhostname = ''
 
         for serverconfig in instances.stdout:
-            key, value = serverconfig.split(':')
+            key, value = serverconfig.split(':', 1)
             serverlist = []
             if key in server_config:
                 serverlist = server_config[key]
@@ -149,14 +149,12 @@ class WinMSSQL(PythonPlugin):
         for instance in server_config['instances']:
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
+            om_instance.title = instance
             om_instance.instancename = instance
             instance_oms.append(om_instance)
 
             if instance in dblogins:
                 sqlConnection = []
-                # AssemblyNames required for SQL interactions
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo';")
-                sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo';")
 
                 if instance == 'MSSQLSERVER':
                     sqlserver = sqlhostname
@@ -195,8 +193,7 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + db_sqlConnection))
-
+                    ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
                 instancedatabases = winrs.run_command(command)
                 databases = yield instancedatabases
 
@@ -212,18 +209,28 @@ class WinMSSQL(PythonPlugin):
                             log.info('Error parsing returned values : {0}'.format(
                                 dbitem))
 
+                    if dbdict['lastlogbackupdate'][:8] == '1/1/0001':
+                        lastlogbackupdate = None
+                    else:
+                        lastlogbackupdate = dbdict['lastlogbackupdate']
+
+                    if dbdict['lastbackupdate'][:8] == '1/1/0001':
+                        lastbackupdate = None
+                    else:
+                        lastbackupdate = dbdict['lastbackupdate']
+
                     om_database = ObjectMap()
                     om_database.id = self.prepId(instance + dbdict['id'])
                     om_database.title = dbdict['name'][1:-1]
                     om_database.instancename = om_instance.id
                     om_database.version = dbdict['version']
                     om_database.owner = dbdict['owner']
-                    om_database.lastbackupdate = dbdict['lastbackupdate']
-                    om_database.lastlogbackupdate = dbdict['lastlogbackupdate']
+                    om_database.lastbackupdate = lastbackupdate
+                    om_database.lastlogbackupdate = lastlogbackupdate
                     om_database.isaccessible = dbdict['isaccessible']
                     om_database.collation = dbdict['collation']
+                    om_database.createdate = str(dbdict['createdate'])
                     om_database.defaultfilegroup = dbdict['defaultfilegroup']
-                    #om_database.databaseguid = dbdict['databaseguid']
                     om_database.primaryfilepath = dbdict['primaryfilepath']
 
                     database_oms.append(om_database)
@@ -240,7 +247,7 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + backup_sqlConnection))
+                    ''.join(getSQLAssembly() + sqlConnection + backup_sqlConnection))
 
                 backuplist = winrs.run_command(command)
                 backups = yield backuplist
@@ -259,13 +266,12 @@ class WinMSSQL(PythonPlugin):
                     om_backup.physicallocation = backupdict['physicallocation']
                     om_backup.status = backupdict['status']
                     om_backup.instancename = om_instance.id
-
                     backup_oms.append(om_backup)
 
                 # Get SQL Jobs information
                 jobsquery = "select s.name as jobname, s.job_id as jobid, " \
-                "s.enabled as enabled, s.description as description, " \
-                "l.name as username from " \
+                "s.enabled as enabled, s.date_created as datecreated, " \
+                "s.description as description, l.name as username from " \
                 "msdb..sysjobs s left join master.sys.syslogins l on s.owner_sid = l.sid"
 
                 job_sqlConnection = []
@@ -275,12 +281,12 @@ class WinMSSQL(PythonPlugin):
 
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
-                    ''.join(sqlConnection + job_sqlConnection))
+                    ''.join(getSQLAssembly() + sqlConnection + job_sqlConnection))
 
                 jobslist = winrs.run_command(command)
                 jobs = yield jobslist
                 for job in jobs.stdout:
-                    key, value = job.split(':')
+                    key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
                         #New Job Record
                         om_jobs = ObjectMap()
@@ -295,7 +301,7 @@ class WinMSSQL(PythonPlugin):
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
                         elif key.strip() == 'datecreated':
-                            om_jobs.datecreated = value.strip()
+                            om_jobs.datecreated = str(value)
                         elif key.strip() == 'username':
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)
