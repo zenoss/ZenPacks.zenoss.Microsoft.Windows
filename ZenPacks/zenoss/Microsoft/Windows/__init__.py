@@ -16,6 +16,8 @@ from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 # unused
 Globals
 
+ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
+
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
                 ('zWinRMPort', '5985', 'string'),
