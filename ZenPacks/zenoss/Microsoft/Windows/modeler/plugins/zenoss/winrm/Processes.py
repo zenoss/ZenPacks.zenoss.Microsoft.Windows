@@ -19,7 +19,7 @@ from Products.ZenModel.OSProcess import OSProcess, getProcessIdentifier
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-
+from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
 
 # Process monitoring changed significantly in Zenoss 4.2.4. We want to
 # support the new and old ways.
@@ -59,7 +59,7 @@ class Processes(WinRMPlugin):
             else:
                 parameters = ''
 
-            processText = item.CommandLine or item.ExecutablePath or item.Name
+            processText = get_processText(item)
 
             for matcher in device.getOSProcessMatchers:
                 if NEW_STYLE:
