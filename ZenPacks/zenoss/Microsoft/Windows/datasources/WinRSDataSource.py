@@ -33,7 +33,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath, parseDBUserNamePass
+    import addLocalLibPath, parseDBUserNamePass, getSQLAssembly
 
 addLocalLibPath()
 
@@ -218,15 +218,8 @@ class PowershellMSSQLStrategy(object):
             "-OutputFormat TEXT -Command "
 
         sqlConnection = []
-        sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo';")
-        sqlConnection.append("add-type -AssemblyName 'Microsoft.SqlServer.Smo';")
-
-        #quoted_counters = ["'{0}'".format(c) for c in counters]
-
         # Need to modify query where clause.
         # Currently all counters are retrieved for each database
-
-        #counters_args = ', '.join(quoted_counters)
 
         # DB Connection Object
         sqlConnection.append("$con = new-object " \
@@ -260,7 +253,7 @@ class PowershellMSSQLStrategy(object):
 
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
-            ''.join(sqlConnection + counters_sqlConnection))
+            ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
 
         return command
 

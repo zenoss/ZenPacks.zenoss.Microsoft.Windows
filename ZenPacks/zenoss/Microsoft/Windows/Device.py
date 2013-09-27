@@ -58,6 +58,7 @@ class Device(BaseDevice):
             device = deviceRoot.findDeviceByIdExact(clusterdnsname)
             if device:
                 # Cluster device already exists
+                self.clusterdevices = clusterdnsnames
                 return
 
             clusterip = getHostByName(clusterdnsname)
@@ -90,8 +91,7 @@ class Device(BaseDevice):
 
 class DeviceLinkProvider(object):
     '''
-    Provides a link to this host on the overview screen of the Linux
-    server device underlying this host.
+    Provides a link to the cluster server hosted on this device
     '''
     def __init__(self, device):
         self.device = device

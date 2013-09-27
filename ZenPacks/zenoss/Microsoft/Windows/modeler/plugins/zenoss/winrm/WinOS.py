@@ -241,6 +241,7 @@ class WinOS(PythonPlugin):
 
             int_om = ObjectMap()
             int_om.id = prepId(standardizeInstance(interconf.Description))
+
             int_om.setIpAddresses = ips
             int_om.interfaceName = inter.Description
             if getattr(inter, 'NetConnectionID') is not None:
