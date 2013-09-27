@@ -210,12 +210,12 @@ class WinMSSQL(PythonPlugin):
                                 dbitem))
 
                     if dbdict['lastlogbackupdate'][:8] == '1/1/0001':
-                        lastlogbackupdate = 'None'
+                        lastlogbackupdate = None
                     else:
                         lastlogbackupdate = dbdict['lastlogbackupdate']
 
                     if dbdict['lastbackupdate'][:8] == '1/1/0001':
-                        lastbackupdate = 'None'
+                        lastbackupdate = None
                     else:
                         lastbackupdate = dbdict['lastbackupdate']
 

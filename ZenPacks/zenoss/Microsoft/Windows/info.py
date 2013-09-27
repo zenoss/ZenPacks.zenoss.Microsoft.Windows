@@ -99,13 +99,29 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     instancename = ProxyProperty('instancename')
     version = ProxyProperty('version')
     owner = ProxyProperty('owner')
-    lastbackupdate = ProxyProperty('lastbackupdate')
-    lastlogbackupdate = ProxyProperty('lastlogbackupdate')
     isaccessible = ProxyProperty('isaccessible')
     collation = ProxyProperty('collation')
     createdate = ProxyProperty('createdate')
     defaultfilegroup = ProxyProperty('defaultfilegroup')
     primaryfilepath = ProxyProperty('primaryfilepath')
+
+    @property
+    def lastlogbackup(self):
+        lastlogbackupdate = self._object.lastlogbackupdate
+
+        if lastlogbackupdate == None:
+            return 'No Log Backups'
+        else:
+            return lastlogbackupdate
+
+    @property
+    def lastbackup(self):
+        lastbackupdate = self._object.lastbackupdate
+
+        if lastbackupdate == None:
+            return 'No Backups'
+        else:
+            return lastbackupdate
 
     @property
     @info

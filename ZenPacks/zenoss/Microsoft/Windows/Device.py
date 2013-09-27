@@ -58,6 +58,7 @@ class Device(BaseDevice):
             device = deviceRoot.findDeviceByIdExact(clusterdnsname)
             if device:
                 # Cluster device already exists
+                self.clusterdevices = clusterdnsnames
                 return
 
             clusterip = getHostByName(clusterdnsname)
