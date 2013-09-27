@@ -65,7 +65,7 @@ class IWinSQLDatabaseInfo(IWinComponentInfo):
     lastlogbackupdate = schema.TextLine(title=_t(u'Last Log Backup'), readonly=True)
     isaccessible = schema.TextLine(title=_t(u'Accessible'), readonly=True)
     collation = schema.TextLine(title=_t(u'Collation'), readonly=True)
-    dbcreatedate = schema.TextLine(title=_t(u'Created On'), readonly=True)
+    createdate = schema.TextLine(title=_t(u'Created On'), readonly=True)
     defaultfilegroup = schema.TextLine(title=_t(u'File Group'), readonly=True)
     primaryfilepath = schema.TextLine(title=_t(u'File Path'), readonly=True)
 

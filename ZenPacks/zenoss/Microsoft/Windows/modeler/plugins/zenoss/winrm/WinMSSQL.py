@@ -210,12 +210,12 @@ class WinMSSQL(PythonPlugin):
                                 dbitem))
 
                     if dbdict['lastlogbackupdate'][:8] == '1/1/0001':
-                        lastlogbackupdate = 'NONE'
+                        lastlogbackupdate = 'None'
                     else:
                         lastlogbackupdate = dbdict['lastlogbackupdate']
 
                     if dbdict['lastbackupdate'][:8] == '1/1/0001':
-                        lastbackupdate = 'NONE'
+                        lastbackupdate = 'None'
                     else:
                         lastbackupdate = dbdict['lastbackupdate']
 
@@ -229,7 +229,7 @@ class WinMSSQL(PythonPlugin):
                     om_database.lastlogbackupdate = lastlogbackupdate
                     om_database.isaccessible = dbdict['isaccessible']
                     om_database.collation = dbdict['collation']
-                    om_database.dbcreatedate = str(dbdict['createdate'])
+                    om_database.createdate = str(dbdict['createdate'])
                     om_database.defaultfilegroup = dbdict['defaultfilegroup']
                     om_database.primaryfilepath = dbdict['primaryfilepath']
 
@@ -301,7 +301,7 @@ class WinMSSQL(PythonPlugin):
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
                         elif key.strip() == 'datecreated':
-                            om_jobs.datecreated = str(value.strip())
+                            om_jobs.datecreated = str(value)
                         elif key.strip() == 'username':
                             om_jobs.username = value.strip()
                             jobs_oms.append(om_jobs)

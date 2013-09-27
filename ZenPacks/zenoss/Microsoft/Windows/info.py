@@ -103,7 +103,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     lastlogbackupdate = ProxyProperty('lastlogbackupdate')
     isaccessible = ProxyProperty('isaccessible')
     collation = ProxyProperty('collation')
-    dbcreatedate = ProxyProperty('dbcreatedate')
+    createdate = ProxyProperty('createdate')
     defaultfilegroup = ProxyProperty('defaultfilegroup')
     primaryfilepath = ProxyProperty('primaryfilepath')
 
