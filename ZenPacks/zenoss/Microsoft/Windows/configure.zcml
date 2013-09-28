@@ -78,9 +78,9 @@
         />
 
     <adapter
-        provides=".datasources.ProcessDataSource.IProcessDataSourceInfo"
-        for=".datasources.ProcessDataSource.ProcessDataSource"
-        factory=".datasources.ProcessDataSource.ProcessDataSourceInfo"
+        provides=".datasources.WinProcessDataSource.IWinProcessDataSourceInfo"
+        for=".datasources.WinProcessDataSource.WinProcessDataSource"
+        factory=".datasources.WinProcessDataSource.WinProcessDataSourceInfo"
         />
 
     <!-- Device Links -->

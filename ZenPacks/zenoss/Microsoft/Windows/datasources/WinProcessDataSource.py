@@ -18,11 +18,14 @@ LOG = logging.getLogger('zen.WindowsProcess')
 import collections
 import re
 
+from zope.component import adapts
+from zope.interface import implements
+
 from Products.ZenEvents import Event
 from Products.ZenEvents.ZenEventClasses import Status_OSProcess
 from Products.ZenModel.OSProcess import OSProcess
-from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.form import schema
+from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -93,7 +96,7 @@ NON_AGGREGATED_DATAPOINTS = frozenset({
 COUNT_DATAPOINT = 'count'
 
 
-class ProcessDataSource(PythonDataSource):
+class WinProcessDataSource(PythonDataSource):
     ZENPACKID = ZENPACK_NAME
 
     sourcetypes = (SOURCE_TYPE,)
@@ -108,8 +111,8 @@ class ProcessDataSource(PythonDataSource):
     plugin_classname = '.'.join((
         ZENPACK_NAME,
         'datasources',
-        'ProcessDataSource',
-        'ProcessDataSourcePlugin'))
+        'WinProcessDataSource',
+        'WinProcessDataSourcePlugin'))
 
     def getDescription(self):
         '''
@@ -127,34 +130,79 @@ class ProcessDataSource(PythonDataSource):
         return context.perfServer().processCycleInterval
 
 
-class IProcessDataSourceInfo(IInfo):
+class IWinProcessDataSourceInfo(IInfo):
     '''
-    Info interface for ProcessDataSource.
+    Info interface for WinProcessDataSource.
 
     Extends IInfo instead of IRRDDataSourceInfo because we want to
     reduce the set of options available.
     '''
 
     newId = schema.TextLine(
-        title=_t(u'Name'), xtype="idfield",
+        title=_t(u'Name'),
+        xtype='idfield',
         description=_t(u'The name of this datasource'))
 
     type = schema.TextLine(
-        title=_t(u'Type'), readonly=True)
+        title=_t(u'Type'),
+        readonly=True)
 
     enabled = schema.Bool(
         title=_t(u'Enabled'))
 
+    severity = schema.TextLine(
+        title=_t(u'Severity'),
+        group=_t(u'Event Information'),
+        readonly=True)
 
-class ProcessDataSourceInfo(RRDDataSourceInfo):
-    '''
-    Info adapter factory for ProcessDataSource.
-    '''
+    eventClass = schema.TextLine(
+        title=_t(u'Event Class'),
+        group=_t(u'Event Information'),
+        readonly=True)
+
+    component = schema.TextLine(
+        title=_t(u'Component'),
+        group=_t(u'Event Information'),
+        readonly=True)
 
 
-class ProcessDataSourcePlugin(PythonDataSourcePlugin):
+class WinProcessDataSourceInfo(InfoBase):
     '''
-    Collects Windows process information.
+    Info adapter factory for WinProcessDataSource.
+
+    Extends InfoBase instead of RRDDataSourceInfo because we want to
+    reduce the set of options available.
+    '''
+
+    implements(IWinProcessDataSourceInfo)
+    adapts(WinProcessDataSource)
+
+    enabled = ProxyProperty('enabled')
+
+    severity = 'Process fail severity setting.'
+    eventClass = Status_OSProcess
+    component = 'Process.'
+
+    @property
+    def id(self):
+        return '/'.join(self._object.getPrimaryPath())
+
+    @property
+    def newId(self):
+        return self._object.id
+
+    @property
+    def source(self):
+        return self._object.getDescription()
+
+    @property
+    def type(self):
+        return self._object.sourcetype
+
+
+class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
+    '''
+    Collects Windows process data.
     '''
 
     proxy_attributes = [
@@ -162,11 +210,6 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         'zWinPassword',
         'zWinRMPort',
         ]
-
-    @classmethod
-    def config_key(cls, datasource, context):
-        # TODO: Remove this override if it's unneeded.
-        return super(ProcessDataSourcePlugin, cls).config_key(datasource, context)
 
     @classmethod
     def params(cls, datasource, context):
