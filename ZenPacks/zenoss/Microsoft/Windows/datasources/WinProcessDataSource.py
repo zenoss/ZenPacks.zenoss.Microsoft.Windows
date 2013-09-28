@@ -419,7 +419,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             'device': config.id,
             'severity': Event.Clear,
             'eventClass': Status_OSProcess,
-            'summary': 'processes scan successful',
+            'summary': 'process scan successful',
             })
 
         return data
@@ -431,7 +431,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             'device': config.id,
             'severity': Event.Error,
             'eventClass': Status_OSProcess,
-            'summary': 'processes scan error: {}'.format(error.value),
+            'summary': 'process scan error: {}'.format(error.value),
             })
 
         return data
