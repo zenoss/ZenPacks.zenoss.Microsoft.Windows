@@ -40,7 +40,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import (
 
 addLocalLibPath()
 
-import txwinrm
+import txwinrm.collect
 
 
 SOURCE_TYPE = 'Windows Process'
@@ -94,6 +94,10 @@ NON_AGGREGATED_DATAPOINTS = frozenset({
     })
 
 COUNT_DATAPOINT = 'count'
+
+# Process monitoring changed significantly in Zenoss 4.2.4. We want to
+# support the new and old ways.
+NEW_STYLE = hasattr(OSProcess, 'processText')
 
 
 class WinProcessDataSource(PythonDataSource):
@@ -214,12 +218,19 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         process_class = context.osProcessClass()
-        return {
+        params = {
             'regex': process_class.regex,
-            'excludeRegex': process_class.excludeRegex,
             'alertOnRestart': context.alertOnRestart(),
             'severity': context.getFailSeverity(),
-        }
+            }
+
+        if NEW_STYLE:
+            params['excludeRegex'] = process_class.excludeRegex
+        else:
+            params['ignoreParameters'] = getattr(
+                process_class, 'ignoreParameters', False)
+
+        return params
 
     def collect(self, config):
         ds0 = config.datasources[0]
@@ -288,13 +299,28 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
 
             for datasource in config.datasources:
                 regex = re.compile(datasource.params['regex'])
-                excludeRegex = re.compile(datasource.params['excludeRegex'])
 
-                if not OSProcess.matchRegex(regex, excludeRegex, processText):
-                    continue
+                if NEW_STYLE:
+                    excludeRegex = re.compile(
+                        datasource.params['excludeRegex'])
 
-                if not OSProcess.matchNameCaptureGroups(regex, processText, datasource.component):
-                    continue
+                    basic_match = OSProcess.matchRegex(
+                        regex, excludeRegex, processText)
+
+                    if not basic_match:
+                        continue
+
+                    capture_match = OSProcess.matchNameCaptureGroups(
+                        regex, processText, datasource.component)
+
+                    if not capture_match:
+                        continue
+                else:
+                    if datasource.params['ignoreParameters']:
+                        processText = item.ExecutablePath or item.Name
+
+                    if not re.search(regex, processText):
+                        continue
 
                 datasource_by_pid[item.ProcessId] = datasource
                 pids_by_component[datasource.component].add(item.ProcessId)
