@@ -27352,7 +27352,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+100
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
