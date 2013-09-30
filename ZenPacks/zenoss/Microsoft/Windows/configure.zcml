@@ -77,6 +77,12 @@
         factory=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionInfo"
         />
 
+    <adapter
+        provides=".datasources.WinProcessDataSource.IWinProcessDataSourceInfo"
+        for=".datasources.WinProcessDataSource.WinProcessDataSource"
+        factory=".datasources.WinProcessDataSource.WinProcessDataSourceInfo"
+        />
+
     <!-- Device Links -->
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
         <subscriber
