@@ -218,3 +218,13 @@ def getSQLAssembly():
     sqlConnection.append("}};")
 
     return sqlConnection
+
+
+def get_processText(item):
+    '''
+    Return the OSProcess.processText given a Win32_Process item.
+    '''
+    if item.CommandLine:
+        item.CommandLine = item.CommandLine.strip('"')
+
+    return item.CommandLine or item.ExecutablePath or item.Name
