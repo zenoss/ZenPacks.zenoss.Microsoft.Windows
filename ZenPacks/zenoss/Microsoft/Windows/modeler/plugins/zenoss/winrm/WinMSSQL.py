@@ -147,6 +147,12 @@ class WinMSSQL(PythonPlugin):
 
         sqlhostname = server_config['hostname'][0]
         for instance in server_config['instances']:
+
+            if instance not in dblogins:
+                continue
+            else:
+                pass
+
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
             om_instance.title = instance
@@ -322,6 +328,7 @@ class WinMSSQL(PythonPlugin):
         try:
             eventmessage = results['error']
             log.error(eventmessage)
+            return
         except (KeyError):
             pass
 

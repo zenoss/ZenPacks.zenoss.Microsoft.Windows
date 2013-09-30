@@ -20,6 +20,10 @@ class DeviceInfo(BaseDeviceInfo):
     clusterdevices = ProxyProperty('clusterdevices')
 
 
+class ClusterDeviceInfo(BaseDeviceInfo):
+    clusterdevices = ProxyProperty('clusterdevices')
+
+
 class WinComponentInfo(ComponentInfo):
     title = ProxyProperty('title')
 

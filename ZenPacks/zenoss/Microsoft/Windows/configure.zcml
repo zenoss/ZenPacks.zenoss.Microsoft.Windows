@@ -12,6 +12,12 @@
         />
 
     <adapter
+        factory=".info.ClusterDeviceInfo"
+        for=".ClusterDevice.ClusterDevice"
+        provides=".interfaces.IClusterDeviceInfo"
+        />
+
+    <adapter
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"

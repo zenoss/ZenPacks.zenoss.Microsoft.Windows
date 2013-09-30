@@ -17,19 +17,19 @@ from zope.event import notify
 
 from ZODB.transact import transact
 
-from Products.ZenModel.Device import Device as BaseDevice
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
+from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
 from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
-class Device(BaseDevice):
+class ClusterDevice(BaseDevice):
     """
-    A device class that knows about enclosures
+    
     """
 
     clusterdevices = ''
@@ -57,7 +57,7 @@ class Device(BaseDevice):
             deviceRoot = self.dmd.getDmdRoot("Devices")
             device = deviceRoot.findDeviceByIdExact(clusterdnsname)
             if device:
-                # Cluster device already exists
+                # Server device in cluster already exists
                 self.clusterdevices = clusterdnsnames
                 return
 
@@ -65,8 +65,8 @@ class Device(BaseDevice):
 
             @transact
             def create_device():
-                # Need to create cluster device
-                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Cluster')
+                # Need to create cluster server device
+                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
 
                 cluster = dc.createInstance(clusterdnsname)
                 cluster.manageIp = clusterip
@@ -112,4 +112,4 @@ class DeviceLinkProvider(object):
 
         return links
 
-InitializeClass(Device)
+InitializeClass(ClusterDevice)

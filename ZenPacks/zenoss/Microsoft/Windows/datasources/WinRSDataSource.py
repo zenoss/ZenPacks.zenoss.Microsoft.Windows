@@ -194,6 +194,11 @@ class PowershellGetCounterStrategy(object):
 
                 arrPath = path.split("\\")
                 indexPath = "\\{0}\\{1}".format(arrPath[3], arrPath[4])
+
+                # System uptime needs to be in centiseconds format
+                if 'system up time' in indexPath:
+                    value = int(value) * 100
+
                 map_props.update({indexPath: {'value': value, 'timestamp': timestamp}})
 
             for dsconf in dsconfs:

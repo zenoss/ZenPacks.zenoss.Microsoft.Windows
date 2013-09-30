@@ -18,6 +18,10 @@ class IDeviceInfo(IDeviceInfo):
     clusterdevices = schema.TextLine(title=_t(u'Cluster Devices'), readonly=True)
 
 
+class IClusterDeviceInfo(IDeviceInfo):
+    clusterdevices = schema.TextLine(title=_t(u'Cluster Devices'), readonly=True)
+
+
 class IWinComponentInfo(IComponentInfo):
     title = schema.TextLine(title=_t(u'Title'), readonly=True)
 
