@@ -12,9 +12,12 @@ __doc__ = "Microsoft Windows ZenPack"
 import Globals
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
+from Products.ZenUtils.Utils import monkeypatch
 
 # unused
 Globals
+
+ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
 
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
@@ -53,3 +56,15 @@ class ZenPack(ZenPackBase):
         # remove symlinks for command line utilities
         for utilname in self.binUtilities:
             self.removeBinFile(utilname)
+
+
+from Products.ZenModel.OSProcess import OSProcess
+if not hasattr(OSProcess, 'getMinProcessCount'):
+    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
+    def getMinProcessCount(self):
+        return None
+
+if not hasattr(OSProcess, 'getMaxProcessCount'):
+    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
+    def getMaxProcessCount(self):
+        return None
