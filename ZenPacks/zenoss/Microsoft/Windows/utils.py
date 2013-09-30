@@ -158,7 +158,6 @@ def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
     return dblogins
 
 
-<<<<<<< HEAD
 def getSQLAssembly():
 
     ASSEMBLY_Connection = "add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo"
