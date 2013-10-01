@@ -11,18 +11,12 @@
 Windows Cluster System Collection
 
 """
-import re
-
 from twisted.internet import defer
 
-from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
+from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
-from Products.ZenUtils.IpUtil import checkip, parse_iprange, IpAddressError
-from Products.ZenUtils.Utils import prepId
-from Products.Zuul.utils import safe_hasattr
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, lookup_drivetype, \
-    guessBlockSize, lookup_zendrivetype
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
@@ -191,65 +185,4 @@ class WinCluster(PythonPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.ClusterResource",
                 objmaps=apps))
 
-        """
-        mapsdisk = self.process_filesystems(device, res.fsDisk, log)
-
-        maps.append(RelationshipMap(
-            relname="filesystems",
-            compname="os",
-            modname="Products.ZenModel.FileSystem",
-            objmaps=mapDisk))
-        """
-
         return maps
-
-    def process_filesystems(self, device, fsDisk, log):
-        # File System Map
-        skipfsnames = getattr(device, 'zFileSystemMapIgnoreNames', None)
-        skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
-
-        mapDisk = []
-        for disk in fsDisk:
-            disk_om = ObjectMap()
-            disk_om.mount = \
-                "{driveletter} (Serial Number: {serialnumber}) - {name}" \
-                .format(
-                    driveletter=disk.Name,
-                    serialnumber=disk.VolumeSerialNumber,
-                    name=disk.VolumeName)
-
-            #Check if drive description matches skip names
-            if skipfsnames and re.search(skipfsnames, disk_om.mount):
-                continue
-
-            disk_om.drivetype = int(disk.DriveType)
-
-            #Check for excluded drives
-            if skipfstypes:
-                # Get mapping of Windows Drive types to
-                # Zenoss types for exclusion
-                zentype = lookup_zendrivetype(disk_om.drivetype)
-                for mapdisktype in zentype:
-                    if mapdisktype in skipfstypes:
-                        log.info(
-                            "{drivename} drive's filesystem {filesystem}"
-                            " has been excluded"
-                            .format(drivename=disk.Name,
-                                    filesystem=lookup_drivetype(
-                                        disk_om.drivetype)))
-                        break
-                else:
-                    disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
-                    disk_om.storageDevice = disk.Name
-                    disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
-                    disk_om.type = disk.FileSystem
-                    if disk.Size:
-                        if not disk.BlockSize:
-                            disk.BlockSize = guessBlockSize(disk.Size)
-                        disk_om.blockSize = int(disk.BlockSize)
-                        disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
-                    disk_om.maxNameLen = disk.MaximumComponentLength
-                    disk_om.id = self.prepId(disk.DeviceID)
-                    disk_om.perfmonInstance = '\\LogicalDisk({0})'.format(disk.Name.rstrip('\\'))
-                    mapDisk.append(disk_om)
-        return mapDisk
