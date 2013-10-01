@@ -55,42 +55,46 @@ class ClusterDevice(BaseDevice):
         self._snmpLastCollection = 0
         self._lastChange = 0
 
-    def setClusterHostMachine(self, clusterhostdnsnames):
-
+    def setClusterHostMachines(self, clusterhostdnsnames):
+        deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames:
-            deviceRoot = self.dmd.getDmdRoot("Devices")
             clusterhostip = getHostByName(clusterhostdnsname)
+            if clusterhostip:
+                device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
+                if device:
+                    # Server device in cluster already exists
+                    self.clusterhostdevices = clusterhostdnsnames
+                    return
 
-            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
-            if device:
-                # Server device in cluster already exists
-                self.clusterhostdevices = clusterhostdnsnames
-                return
+                @transact
+                def create_device():
+                    # Need to create cluster server device
+                    dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
 
-            @transact
-            def create_device():
-                # Need to create cluster server device
-                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
+                    clusterhost = dc.createInstance(clusterhostdnsname)
+                    clusterhost.manageIp = clusterhostip
+                    clusterhost.title = clusterhostdnsname
+                    clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
+                    clusterhost.index_object()
+                    notify(IndexingEvent(clusterhost))
 
-                clusterhost = dc.createInstance(clusterhostdnsname)
-                clusterhost.manageIp = clusterhostip
-                clusterhost.title = clusterhostdnsname
-                clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
-                clusterhost.index_object()
-                notify(IndexingEvent(clusterhost))
-
-            create_device()
-            clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
-            clusterhost.collectDevice(setlog=False, background=True)
+                create_device()
+                # TODO (rbooth@zenoss.com):
+                # The collectDevice method may hit a race condition with the
+                # create_device method above. Once this has been worked out
+                # we will uncomment this code.
+                #clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+                #clusterhost.collectDevice(setlog=False, background=True)
 
         self.clusterhostdevices = clusterhostdnsnames
 
-    def getClusterHostMachine(self):
+    def getClusterHostMachines(self):
         _clusterhostdevice = []
+        deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in self.clusterhostdevices:
             clusterhostip = getHostByName(clusterhostdnsname)
-            deviceRoot = self.dmd.getDmdRoot("Devices")
-            _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
+            if clusterhostip:
+                _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
         return _clusterhostdevice
 
 

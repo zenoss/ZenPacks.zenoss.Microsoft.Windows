@@ -181,7 +181,7 @@ class WinOS(PythonPlugin):
             clusterlist = []
             for cluster in res.clusterInformation:
                 clusterlist.append(cluster.Name)
-            cs_om.setClusterMachine = clusterlist
+            cs_om.setClusterMachines = clusterlist
         except (AttributeError):
             pass
 

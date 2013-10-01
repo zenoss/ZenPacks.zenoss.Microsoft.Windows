@@ -149,7 +149,7 @@ class ClusterServiceInfo(WinComponentInfo):
 
     @property
     def clusternode(self):
-        return self._object.ownernodeip()
+        return self._object.ownernodeurl()
 
 
 class ClusterResourceInfo(WinComponentInfo):
@@ -166,7 +166,7 @@ class ClusterResourceInfo(WinComponentInfo):
 
     @property
     def clusternode(self):
-        return self._object.ownernodeip()
+        return self._object.ownernodeurl()
 
 
 class WinSQLJobInfo(WinComponentInfo):

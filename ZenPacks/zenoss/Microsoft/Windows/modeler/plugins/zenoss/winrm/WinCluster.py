@@ -128,7 +128,7 @@ class WinCluster(PythonPlugin):
 
         nodes = results['nodes']
         cs_om = ObjectMap()
-        cs_om.setClusterHostMachine = nodes
+        cs_om.setClusterHostMachines = nodes
         maps.append(cs_om)
 
         # Cluster Resource Maps

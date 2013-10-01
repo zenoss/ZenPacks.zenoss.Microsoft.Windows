@@ -619,15 +619,15 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
-ZC.registerName('ClusterService', _t('Service'), _t('Services'));
+ZC.registerName('MSClusterService', _t('Service'), _t('Services'));
 
-ZC.ClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
+ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             autoExpandColumn: 'title',
-            componentType: 'ClusterService',
+            componentType: 'MSClusterService',
             fields: [
                 {name: 'uid'},
                 {name: 'severity'},
@@ -685,21 +685,21 @@ ZC.ClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.locking_icons
             }]
         });
-        ZC.ClusterServicePanel.superclass.constructor.call(this, config);
+        ZC.MSClusterServicePanel.superclass.constructor.call(this, config);
     }
 });
 
-Ext.reg('ClusterServicePanel', ZC.ClusterServicePanel);
+Ext.reg('MSClusterServicePanel', ZC.MSClusterServicePanel);
 
-ZC.registerName('ClusterResource', _t('Resource'), _t('Resources'));
+ZC.registerName('MSClusterResource', _t('Resource'), _t('Resources'));
 
-ZC.ClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
+ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
             autoExpandColumn: 'title',
-            componentType: 'ClusterResource',
+            componentType: 'MSClusterResource',
             fields: [
                 {name: 'uid'},
                 {name: 'severity'},
@@ -765,11 +765,11 @@ ZC.ClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 renderer: Zenoss.render.locking_icons
             }]
         });
-        ZC.ClusterResourcePanel.superclass.constructor.call(this, config);
+        ZC.MSClusterResourcePanel.superclass.constructor.call(this, config);
     }
 });
 
-Ext.reg('ClusterResourcePanel', ZC.ClusterResourcePanel);
+Ext.reg('MSClusterResourcePanel', ZC.MSClusterResourcePanel);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',
@@ -806,12 +806,12 @@ Zenoss.nav.appendTo('Component', [{
 }]);
 
 Zenoss.nav.appendTo('Component', [{
-    id: 'component_clusterresource',
+    id: 'component_msclusterresource',
     text: _t('Resources'),
-    xtype: 'ClusterResourcePanel',
+    xtype: 'MSClusterResourcePanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
-        if (navpanel.refOwner.componentType == 'ClusterService') {
+        if (navpanel.refOwner.componentType == 'MSMSClusterService') {
             return true;
         } else {
             return false;

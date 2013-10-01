@@ -18,7 +18,7 @@ class ClusterService(OSComponent):
     '''
     Model class for Cluster Service.
     '''
-    meta_type = portal_type = 'ClusterService'
+    meta_type = portal_type = 'MSClusterService'
 
     ownernode = None
     description = None
@@ -41,10 +41,13 @@ class ClusterService(OSComponent):
             'clusterservice')),
     )
 
-    def ownernodeip(self):
+    def ownernodeurl(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         clusterhostip = getHostByName(self.ownernode)
         device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
         return device.getPrimaryUrlPath()
+
+    def getRRDTemplateName(self):
+        return 'ClusterService'
 
 InitializeClass(ClusterService)
