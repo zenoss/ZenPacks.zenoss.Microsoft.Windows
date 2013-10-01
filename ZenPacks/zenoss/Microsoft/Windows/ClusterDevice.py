@@ -17,14 +17,11 @@ from zope.event import notify
 
 from ZODB.transact import transact
 
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenStatus import ZenStatus
+from Products.ZenRelations.RelSchema import ToManyCont, ToOne
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
 from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
-from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
-from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
 class ClusterDevice(BaseDevice):
@@ -32,61 +29,56 @@ class ClusterDevice(BaseDevice):
     
     """
 
-    clusterdevices = ''
+    clusterhostdevices = ''
 
     _properties = BaseDevice._properties + (
-        {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
+        {'id': 'clusterhostdevices', 'type': 'string', 'mode': 'w'},
+        {'id': 'guid', 'type': 'string', 'mode': 'w'},
+        {'id': 'creatingdc', 'type': 'string', 'mode': 'w'},
         )
 
-    def __init__(self, id, buildRelations=True):
-        ManagedEntity.__init__(self, id, buildRelations=buildRelations)
+    _relations = BaseDevice._relations + (
+        ('clusterservices', ToManyCont(ToOne,
+            'ZenPacks.zenoss.Microsoft.Windows.ClusterService',
+            'cluster')),
+        )
 
-        os = OperatingSystem()
-        self._setObject(os.id, os)
+    def setClusterHostMachine(self, clusterhostdnsnames):
 
-        hw = Hardware()
-        self._setObject(hw.id, hw)
-
-        self._lastPollSnmpUpTime = ZenStatus(0)
-        self._snmpLastCollection = 0
-        self._lastChange = 0
-
-    def setClusterMachine(self, clusterdnsnames):
-
-        for clusterdnsname in clusterdnsnames:
+        for clusterhostdnsname in clusterhostdnsnames:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdExact(clusterdnsname)
+            device = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
             if device:
                 # Server device in cluster already exists
-                self.clusterdevices = clusterdnsnames
+                self.clusterhostdevices = clusterhostdnsnames
                 return
 
-            clusterip = getHostByName(clusterdnsname)
+            clusterhostip = getHostByName(clusterhostdnsname)
 
             @transact
             def create_device():
                 # Need to create cluster server device
                 dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
 
-                cluster = dc.createInstance(clusterdnsname)
-                cluster.manageIp = clusterip
-                cluster.title = clusterdnsname
-                cluster.setPerformanceMonitor(self.getPerformanceServerName())
-                cluster.index_object()
-                notify(IndexingEvent(cluster))
+                clusterhost = dc.createInstance(clusterhostdnsname)
+                clusterhost.manageIp = clusterhostip
+                clusterhost.title = clusterhostdnsname
+                clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
+                clusterhost.index_object()
+                notify(IndexingEvent(clusterhost))
 
             create_device()
-            cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
-            cluster.collectDevice(setlog=False, background=True)
+            clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+            clusterhost.collectDevice(setlog=False, background=True)
 
-        self.clusterdevices = clusterdnsnames
+        self.clusterhostdevices = clusterhostdnsnames
 
-    def getClusterMachine(self):
-        clusterdevices = []
-        for clusterdnsname in self.clusterdevices:
+    def getClusterHostMachine(self):
+        clusterhostdevices = []
+        for clusterhostdnsname in self.clusterhostdevices:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterdevices.append(deviceRoot.findDeviceByIdExact(clusterdnsname))
-        return clusterdevices
+            clusterhostdevices.append(deviceRoot.findDeviceByIdOrIp(clusterhostdnsname))
+        return clusterhostdevices
 
 
 class DeviceLinkProvider(object):
@@ -99,7 +91,7 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
 
-        hosts = self.device.getClusterMachine()
+        hosts = self.device.getClusterHostMachine()
 
         if hosts:
             for host in hosts:

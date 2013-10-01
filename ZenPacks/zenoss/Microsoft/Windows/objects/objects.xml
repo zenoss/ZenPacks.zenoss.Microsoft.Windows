@@ -29821,7 +29821,10 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-[]
+['zenoss.winrm.WinCluster']
+</property>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 </object>
 </object>

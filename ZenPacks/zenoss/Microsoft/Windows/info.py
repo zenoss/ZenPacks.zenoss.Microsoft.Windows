@@ -21,7 +21,7 @@ class DeviceInfo(BaseDeviceInfo):
 
 
 class ClusterDeviceInfo(BaseDeviceInfo):
-    clusterdevices = ProxyProperty('clusterdevices')
+    clusterhostdevices = ProxyProperty('clusterhostdevices')
 
 
 class WinComponentInfo(ComponentInfo):
@@ -136,6 +136,22 @@ class WinSQLDatabaseInfo(WinComponentInfo):
 class WinSQLInstanceInfo(WinComponentInfo):
     implements(IWinSQLInstanceInfo)
     instancename = ProxyProperty('instancename')
+
+
+class ClusterServiceInfo(WinComponentInfo):
+    implements(IClusterServiceInfo)
+    ownernode = ProxyProperty('ownernode')
+    description = ProxyProperty('description')
+    coregroup = ProxyProperty('coregroup')
+    priority = ProxyProperty('priority')
+
+
+class ClusterResourceInfo(WinComponentInfo):
+    implements(IClusterResourceInfo)
+    ownernode = ProxyProperty('ownernode')
+    description = ProxyProperty('description')
+    ownergroup = ProxyProperty('ownergroup')
+    state = ProxyProperty('state')
 
 
 class WinSQLJobInfo(WinComponentInfo):

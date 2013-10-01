@@ -18,6 +18,18 @@
         />
 
     <adapter
+        factory=".info.ClusterServiceInfo"
+        for=".ClusterService.ClusterService"
+        provides=".interfaces.IClusterServiceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterResourceInfo"
+        for=".ClusterResource.ClusterResource"
+        provides=".interfaces.IClusterResourceInfo"
+        />
+
+    <adapter
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"

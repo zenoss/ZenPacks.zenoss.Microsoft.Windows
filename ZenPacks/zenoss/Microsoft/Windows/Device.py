@@ -55,7 +55,7 @@ class Device(BaseDevice):
 
         for clusterdnsname in clusterdnsnames:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdExact(clusterdnsname)
+            device = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
@@ -76,7 +76,7 @@ class Device(BaseDevice):
                 notify(IndexingEvent(cluster))
 
             create_device()
-            cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
+            cluster = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
             cluster.collectDevice(setlog=False, background=True)
 
         self.clusterdevices = clusterdnsnames
@@ -85,7 +85,7 @@ class Device(BaseDevice):
         clusterdevices = []
         for clusterdnsname in self.clusterdevices:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterdevices.append(deviceRoot.findDeviceByIdExact(clusterdnsname))
+            clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterdnsname))
         return clusterdevices
 
 

@@ -19,7 +19,7 @@ class IDeviceInfo(IDeviceInfo):
 
 
 class IClusterDeviceInfo(IDeviceInfo):
-    clusterdevices = schema.TextLine(title=_t(u'Cluster Devices'), readonly=True)
+    clusterhostdevices = schema.TextLine(title=_t(u'Cluster Host Devices'), readonly=True)
 
 
 class IWinComponentInfo(IComponentInfo):
@@ -76,6 +76,20 @@ class IWinSQLDatabaseInfo(IWinComponentInfo):
 
 class IWinSQLInstanceInfo(IWinComponentInfo):
     instancename = schema.TextLine(title=_t(u'Instance Name'), readonly=True)
+
+
+class IClusterServiceInfo(IWinComponentInfo):
+    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    coregroup = schema.TextLine(title=_t(u'Core Group'), readonly=True)
+    priority = schema.TextLine(title=_t(u'Priority'), readonly=True)
+
+
+class IClusterResourceInfo(IWinComponentInfo):
+    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    ownergroup = schema.TextLine(title=_t(u'Owner Group'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
 
 
 class IWinSQLJobInfo(IWinComponentInfo):

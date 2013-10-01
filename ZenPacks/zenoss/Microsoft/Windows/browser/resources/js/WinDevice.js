@@ -619,6 +619,74 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
+ZC.registerName('ClusterService', _t('Service'), _t('Services'));
+
+ZC.ClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'ClusterService',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'ownernode'},
+                {name: 'coregroup'},
+                {name: 'description'},
+                {name: 'priority'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'ownernode',
+                dataIndex: 'ownernode',
+                header: _t('Owner Node'),
+                sortable: true,
+                width: 200
+            },{
+                id: 'coregroup',
+                dataIndex: 'coregroup',
+                header: _t('Core Group'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.ClusterServicePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('ClusterServicePanel', ZC.ClusterServicePanel);
+
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',
     text: _t('Jobs'),
