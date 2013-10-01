@@ -47,13 +47,13 @@ class ClusterDevice(BaseDevice):
 
         for clusterhostdnsname in clusterhostdnsnames:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+            clusterhostip = getHostByName(clusterhostdnsname)
+
+            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
             if device:
                 # Server device in cluster already exists
                 self.clusterhostdevices = clusterhostdnsnames
                 return
-
-            clusterhostip = getHostByName(clusterhostdnsname)
 
             @transact
             def create_device():
@@ -74,11 +74,11 @@ class ClusterDevice(BaseDevice):
         self.clusterhostdevices = clusterhostdnsnames
 
     def getClusterHostMachine(self):
-        clusterhostdevices = []
+        clusterhostdevice = []
         for clusterhostdnsname in self.clusterhostdevices:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterhostdevices.append(deviceRoot.findDeviceByIdOrIp(clusterhostdnsname))
-        return clusterhostdevices
+            clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostdnsname))
+        return clusterhostdevice
 
 
 class DeviceLinkProvider(object):

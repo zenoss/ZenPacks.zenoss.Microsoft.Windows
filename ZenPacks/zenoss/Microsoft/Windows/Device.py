@@ -55,13 +55,14 @@ class Device(BaseDevice):
 
         for clusterdnsname in clusterdnsnames:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+            clusterip = getHostByName(clusterdnsname)
+            device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
                 return
 
-            clusterip = getHostByName(clusterdnsname)
+
 
             @transact
             def create_device():
