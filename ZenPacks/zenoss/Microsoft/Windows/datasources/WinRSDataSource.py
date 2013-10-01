@@ -29,6 +29,8 @@ from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.Zuul.utils import safe_hasattr
 from Products.Zuul.infos.template import RRDDataSourceInfo
+from Products.ZenUtils.Utils import prepId
+from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
@@ -47,6 +49,7 @@ AVAILABLE_STRATEGIES = [
     'typeperf -sc1',
     'powershell Get-Counter',
     'powershell MSSQL',
+    'powershell Cluster Information',
     ]
 
 connections_dct = {}
@@ -295,6 +298,55 @@ class PowershellMSSQLStrategy(object):
 powershellmssql_strategy = PowershellMSSQLStrategy()
 
 
+class PowershellClusterStrategy(object):
+
+    def build_command_line(self, resource, componenttype):
+        #Clustering Command opening
+
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
+            "-OutputFormat TEXT -Command "
+
+        psClusterCommands = []
+        psClusterCommands.append("import-module failoverclusters;")
+
+        clusterappitems = ('$_.Name', '$_.State')
+
+        psClusterCommands.append("{0} -name '{1}' " \
+            " | foreach {{{2}}};".format(componenttype,
+            resource, " + '|' + ".join(clusterappitems)
+            ))
+
+        command = "{0} \"& {{{1}}}\"".format(
+            pscommand,
+            ''.join(psClusterCommands))
+        return command
+
+    def parse_result(self, dsconfs, result):
+
+        if result.exit_code != 0:
+            counters = [dsconf.params['counter'] for dsconf in dsconfs]
+            log.info(
+                'Non-zero exit code ({0}) for counters, {1}, on {2}'
+                .format(
+                    result.exit_code, counters, dsconf.device))
+            return
+
+        # Parse values
+
+        for resourceline in result.stdout:
+            name, state = resourceline.split('|')
+
+        for dsconf in dsconfs:
+            try:
+                value = (name, state)
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+            except:
+                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
+
+powershellcluster_strategy = PowershellClusterStrategy()
+
+
 class WinRSPlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ('zWinUser',
@@ -317,7 +369,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         counter = datasource.talesEval(datasource.counter, context)
-        if not counter.startswith('\\') and datasource.strategy != 'powershell MSSQL':
+        if not counter.startswith('\\') and \
+            datasource.strategy not in ('powershell MSSQL', 'powershell Cluster Information'):
             counter = '\\' + counter
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             counter = context.perfmonInstance + counter
@@ -327,7 +380,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
         else:
             instancename = ''
 
-        databasename = context.title
+        contexttitle = context.title
 
         servername = context.device().title
         if len(servername) == 0:
@@ -337,7 +390,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
             strategy=datasource.strategy,
             instancename=instancename,
             servername=servername,
-            databasename=databasename)
+            contexttitle=contexttitle)
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -371,7 +424,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
             dblogins = parseDBUserNamePass(dbinstances, dbinstancespassword)
             instance = dsconf0.params['instancename']
-            dbname = dsconf0.params['databasename']
+            dbname = dsconf0.params['contexttitle']
 
             if instance == 'MSSQLSERVER':
                 sqlserver = sqlhostname
@@ -384,6 +437,11 @@ class WinRSPlugin(PythonDataSourcePlugin):
                 sqlusername=dblogins[instance]['username'],
                 sqlpassword=dblogins[instance]['password'],
                 database=dbname)
+
+        elif dsconf0.params['strategy'] == 'powershell Cluster Information':
+            resource = dsconf0.params['contexttitle']
+            componenttype = dsconf0.params['counter']
+            command_line = strategy.build_command_line(resource, componenttype)
         else:
             command_line = strategy.build_command_line(counters)
 
@@ -435,7 +493,25 @@ class WinRSPlugin(PythonDataSourcePlugin):
         data = self.new_data()
         strategy, dsconfs, result = results
         for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+            if dsconf.datasource == 'state':
+
+                currentstate = {
+                'Online': ZenEventClasses.Clear,
+                'Offline': ZenEventClasses.Critical,
+                'PartialOnline': ZenEventClasses.Error
+                }.get(value[1], ZenEventClasses.Info)
+
+                data['events'].append(dict(
+                    eventClassKey='winrsClusterResource',
+                    eventKey='ClusterResource',
+                    severity=currentstate,
+                    summary='Last state of component was {0}'.format(value[1]),
+                    device=config.id,
+                    component=prepId(dsconf.component)
+                    ))
+            else:
+                data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+
         data['events'].append(dict(
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
@@ -459,5 +535,6 @@ class WinRSPlugin(PythonDataSourcePlugin):
         'typeperf -sc1': typeperf_strategy,
         'powershell Get-Counter': powershellcounter_strategy,
         'powershell MSSQL': powershellmssql_strategy,
+        'powershell Cluster Information': powershellcluster_strategy,
         'powershell': 'powershell_strategy',
         }.get(dsconf.params['strategy'], 'unknown')
