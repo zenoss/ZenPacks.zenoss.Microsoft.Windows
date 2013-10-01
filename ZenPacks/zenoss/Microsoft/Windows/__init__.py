@@ -16,7 +16,6 @@ from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 # unused
 Globals
 
-
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
                 ('zWinRMPort', '5985', 'string'),
@@ -41,16 +40,14 @@ class ZenPack(ZenPackBase):
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
     packZProperties = _PACK_Z_PROPS
 
-    def install(self, app):
-        super(ZenPack, self).install(app)
+    def install(self, *app):
+        super(ZenPack, self).install(*app)
 
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
 
-    def remove(self, app, leaveObjects=False):
+    def remove(self, *app):
         # remove symlinks for command line utilities
         for utilname in self.binUtilities:
             self.removeBinFile(utilname)
-
-        super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
