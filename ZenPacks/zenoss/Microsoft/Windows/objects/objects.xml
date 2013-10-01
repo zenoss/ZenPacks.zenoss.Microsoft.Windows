@@ -29826,6 +29826,94 @@ Windows Cluster
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
+<tomanycont id='rrdTemplates'>
+<object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS
+</property>
+<property type="boolean" id="enabled" mode="w" >
+False
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+</property>
+<property type="string" id="counter" >
+get-clusterresource
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Information
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ClusterService' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+</property>
+<property type="string" id="counter" >
+get-clustergroup
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Information
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
 </object>
 </object>
 <!-- ('', 'zport', 'dmd', 'Devices', 'Server', 'Windows', 'rrdTemplates', 'Device') -->
