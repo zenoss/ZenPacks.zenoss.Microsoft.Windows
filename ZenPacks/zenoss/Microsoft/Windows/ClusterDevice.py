@@ -17,11 +17,14 @@ from zope.event import notify
 
 from ZODB.transact import transact
 
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.ZenModel.ZenStatus import ZenStatus
+from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
 from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
+from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
+from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
 class ClusterDevice(BaseDevice):
@@ -30,6 +33,8 @@ class ClusterDevice(BaseDevice):
     """
 
     clusterhostdevices = ''
+    guid = None
+    creatingdc = None
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterhostdevices', 'type': 'string', 'mode': 'w'},
@@ -37,11 +42,18 @@ class ClusterDevice(BaseDevice):
         {'id': 'creatingdc', 'type': 'string', 'mode': 'w'},
         )
 
-    _relations = BaseDevice._relations + (
-        ('clusterservices', ToManyCont(ToOne,
-            'ZenPacks.zenoss.Microsoft.Windows.ClusterService',
-            'cluster')),
-        )
+    def __init__(self, id, buildRelations=True):
+        ManagedEntity.__init__(self, id, buildRelations=buildRelations)
+
+        os = OperatingSystem()
+        self._setObject(os.id, os)
+
+        hw = Hardware()
+        self._setObject(hw.id, hw)
+
+        self._lastPollSnmpUpTime = ZenStatus(0)
+        self._snmpLastCollection = 0
+        self._lastChange = 0
 
     def setClusterHostMachine(self, clusterhostdnsnames):
 
@@ -74,34 +86,12 @@ class ClusterDevice(BaseDevice):
         self.clusterhostdevices = clusterhostdnsnames
 
     def getClusterHostMachine(self):
-        clusterhostdevice = []
+        _clusterhostdevice = []
         for clusterhostdnsname in self.clusterhostdevices:
+            clusterhostip = getHostByName(clusterhostdnsname)
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostdnsname))
-        return clusterhostdevice
+            _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
+        return _clusterhostdevice
 
-
-class DeviceLinkProvider(object):
-    '''
-    Provides a link to the cluster server hosted on this device
-    '''
-    def __init__(self, device):
-        self.device = device
-
-    def getExpandedLinks(self):
-        links = []
-
-        hosts = self.device.getClusterHostMachine()
-
-        if hosts:
-            for host in hosts:
-                links.append(
-                    'Clustered Host: <a href="{}">{}</a>'.format(
-                        host.getPrimaryUrlPath(),
-                        host.titleOrId()
-                        )
-                    )
-
-        return links
 
 InitializeClass(ClusterDevice)

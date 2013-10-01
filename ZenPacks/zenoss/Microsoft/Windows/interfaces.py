@@ -20,6 +20,8 @@ class IDeviceInfo(IDeviceInfo):
 
 class IClusterDeviceInfo(IDeviceInfo):
     clusterhostdevices = schema.TextLine(title=_t(u'Cluster Host Devices'), readonly=True)
+    guid = schema.TextLine(title=_t(u'GUID'), readonly=True)
+    creatingdc = schema.TextLine(title=_t(u'Creating DC'), readonly=True)
 
 
 class IWinComponentInfo(IComponentInfo):

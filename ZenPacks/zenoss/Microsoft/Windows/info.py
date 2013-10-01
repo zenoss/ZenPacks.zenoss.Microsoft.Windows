@@ -22,6 +22,8 @@ class DeviceInfo(BaseDeviceInfo):
 
 class ClusterDeviceInfo(BaseDeviceInfo):
     clusterhostdevices = ProxyProperty('clusterhostdevices')
+    guid = ProxyProperty('guid')
+    creatingdc = ProxyProperty('creatingdc')
 
 
 class WinComponentInfo(ComponentInfo):
@@ -145,6 +147,10 @@ class ClusterServiceInfo(WinComponentInfo):
     coregroup = ProxyProperty('coregroup')
     priority = ProxyProperty('priority')
 
+    @property
+    def clusternode(self):
+        return self._object.ownernodeip()
+
 
 class ClusterResourceInfo(WinComponentInfo):
     implements(IClusterResourceInfo)
@@ -152,6 +158,15 @@ class ClusterResourceInfo(WinComponentInfo):
     description = ProxyProperty('description')
     ownergroup = ProxyProperty('ownergroup')
     state = ProxyProperty('state')
+
+    @property
+    @info
+    def servicegroup(self):
+        return self._object.clusterservice()
+
+    @property
+    def clusternode(self):
+        return self._object.ownernodeip()
 
 
 class WinSQLJobInfo(WinComponentInfo):

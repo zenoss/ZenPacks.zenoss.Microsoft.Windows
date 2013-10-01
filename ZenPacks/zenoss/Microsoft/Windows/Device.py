@@ -62,8 +62,6 @@ class Device(BaseDevice):
                 self.clusterdevices = clusterdnsnames
                 return
 
-
-
             @transact
             def create_device():
                 # Need to create cluster device
@@ -83,11 +81,12 @@ class Device(BaseDevice):
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachine(self):
-        clusterdevices = []
+        _clusterdevices = []
         for clusterdnsname in self.clusterdevices:
+            clusterip = getHostByName(clusterdnsname)
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterdnsname))
-        return clusterdevices
+            _clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterip))
+        return _clusterdevices
 
 
 class DeviceLinkProvider(object):
@@ -100,14 +99,26 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
 
-        hosts = self.device.getClusterMachine()
+        try:
+            hosts = self.device.getClusterHostMachine()
+            if hosts:
+                for host in hosts:
+                    links.append(
+                        'Clustered Host: <a href="{}">{}</a>'.format(
+                            host.getPrimaryUrlPath(),
+                            host.titleOrId()
+                            )
+                        )
+        except(AttributeError):
+            pass
 
-        if hosts:
-            for host in hosts:
+        clusters = self.device.getClusterMachine()
+        if clusters:
+            for cluster in clusters:
                 links.append(
-                    'Clustered Host: <a href="{}">{}</a>'.format(
-                        host.getPrimaryUrlPath(),
-                        host.titleOrId()
+                    'Clustered Server: <a href="{}">{}</a>'.format(
+                        cluster.getPrimaryUrlPath(),
+                        cluster.titleOrId()
                         )
                     )
 

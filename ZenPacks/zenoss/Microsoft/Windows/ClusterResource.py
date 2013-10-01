@@ -9,12 +9,12 @@
 
 from Globals import InitializeClass
 
-from Products.ZenModel.DeviceComponent import DeviceComponent
-from Products.ZenModel.ManagedEntity import ManagedEntity
+from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
+from Products.ZenUtils.IpUtil import getHostByName
 
 
-class ClusterResource(DeviceComponent, ManagedEntity):
+class ClusterResource(OSComponent):
     '''
     Model class for Cluster Resources.
     '''
@@ -25,20 +25,24 @@ class ClusterResource(DeviceComponent, ManagedEntity):
     ownergroup = None
     state = None
 
-    _properties = ManagedEntity._properties + (
+    _properties = OSComponent._properties + (
         {'id': 'ownernode', 'type': 'string'},
         {'id': 'description', 'type': 'string'},
         {'id': 'ownergroup', 'type': 'string'},
         {'id': 'state', 'type': 'string'},
         )
 
-    _relations = ManagedEntity._relations + (
-        ('clusterservice', ToOne(ToManyCont,
-            'ZenPacks.zenoss.Microsoft.Windows.ClusterService',
-            'clusterresources')),
+    _relations = OSComponent._relations + (
+        ("clusterservice", ToOne(ToManyCont,
+            "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
+            "clusterresources")),
     )
 
-    def device(self):
-        return self.clusterservice().cluster()
+    def ownernodeip(self):
+        deviceRoot = self.dmd.getDmdRoot("Devices")
+        clusterhostip = getHostByName(self.ownernode)
+        device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
+        return device.getPrimaryUrlPath()
+
 
 InitializeClass(ClusterResource)

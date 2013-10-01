@@ -179,14 +179,15 @@ class WinCluster(PythonPlugin):
             map_apps_to_resource[groupid] = appsom
 
         maps.append(RelationshipMap(
+            compname="os",
             relname="clusterservices",
             modname="ZenPacks.zenoss.Microsoft.Windows.ClusterService",
             objmaps=map_resources_oms))
 
         for resourceid, apps in map_apps_to_resource.items():
             maps.append(RelationshipMap(
-                compname="clusterservices/" + resourceid,
-                relname="clusterservice",
+                compname="os/clusterservices/" + resourceid,
+                relname="clusterresources",
                 modname="ZenPacks.zenoss.Microsoft.Windows.ClusterResource",
                 objmaps=apps))
 
