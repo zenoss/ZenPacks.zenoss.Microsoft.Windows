@@ -619,6 +619,158 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
+ZC.registerName('ClusterService', _t('Service'), _t('Services'));
+
+ZC.ClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'ClusterService',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'ownernode'},
+                {name: 'clusternode'},
+                {name: 'coregroup'},
+                {name: 'description'},
+                {name: 'priority'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'clusternode',
+                dataIndex: 'clusternode',
+                header: _t('Owner Node'),
+                renderer: function(clusternode, metadata, record) {
+                    return Zenoss.render.Device(clusternode, record.data.ownernode);
+                },
+                sortable: true,
+                width: 200
+            },{
+                id: 'coregroup',
+                dataIndex: 'coregroup',
+                header: _t('Core Group'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.ClusterServicePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('ClusterServicePanel', ZC.ClusterServicePanel);
+
+ZC.registerName('ClusterResource', _t('Resource'), _t('Resources'));
+
+ZC.ClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'ClusterResource',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'ownernode'},
+                {name: 'ownergroup'},
+                {name: 'description'},
+                {name: 'servicegroup'},
+                {name: 'state'},
+                {name: 'clusternode'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'clusternode',
+                dataIndex: 'clusternode',
+                header: _t('Owner Node'),
+                renderer: function(clusternode, metadata, record) {
+                    return Zenoss.render.Device(clusternode, record.data.ownernode);
+                },
+                sortable: true,
+                width: 200
+            },{
+                id: 'servicegroup',
+                dataIndex: 'servicegroup',
+                header: _t('Service'),
+                renderer: Zenoss.render.win_entityLinkFromGrid,
+                sortable: true,
+                width: 180
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.ClusterResourcePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('ClusterResourcePanel', ZC.ClusterResourcePanel);
+
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',
     text: _t('Jobs'),
@@ -650,6 +802,23 @@ Zenoss.nav.appendTo('Component', [{
     },
     setContext: function(uid) {
         ZC.WinBackupDevicePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_clusterresource',
+    text: _t('Resources'),
+    xtype: 'ClusterResourcePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'ClusterService') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.ClusterResourcePanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
 

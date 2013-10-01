@@ -22,8 +22,8 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
-from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 
+from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
@@ -55,13 +55,12 @@ class Device(BaseDevice):
 
         for clusterdnsname in clusterdnsnames:
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdExact(clusterdnsname)
+            clusterip = getHostByName(clusterdnsname)
+            device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
                 return
-
-            clusterip = getHostByName(clusterdnsname)
 
             @transact
             def create_device():
@@ -76,17 +75,18 @@ class Device(BaseDevice):
                 notify(IndexingEvent(cluster))
 
             create_device()
-            cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
+            cluster = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
             cluster.collectDevice(setlog=False, background=True)
 
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachine(self):
-        clusterdevices = []
+        _clusterdevices = []
         for clusterdnsname in self.clusterdevices:
+            clusterip = getHostByName(clusterdnsname)
             deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterdevices.append(deviceRoot.findDeviceByIdExact(clusterdnsname))
-        return clusterdevices
+            _clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterip))
+        return _clusterdevices
 
 
 class DeviceLinkProvider(object):
@@ -99,14 +99,26 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
 
-        hosts = self.device.getClusterMachine()
+        try:
+            hosts = self.device.getClusterHostMachine()
+            if hosts:
+                for host in hosts:
+                    links.append(
+                        'Clustered Host: <a href="{}">{}</a>'.format(
+                            host.getPrimaryUrlPath(),
+                            host.titleOrId()
+                            )
+                        )
+        except(AttributeError):
+            pass
 
-        if hosts:
-            for host in hosts:
+        clusters = self.device.getClusterMachine()
+        if clusters:
+            for cluster in clusters:
                 links.append(
-                    'Clustered Host: <a href="{}">{}</a>'.format(
-                        host.getPrimaryUrlPath(),
-                        host.titleOrId()
+                    'Clustered Server: <a href="{}">{}</a>'.format(
+                        cluster.getPrimaryUrlPath(),
+                        cluster.titleOrId()
                         )
                     )
 
