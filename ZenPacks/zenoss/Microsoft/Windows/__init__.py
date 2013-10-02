@@ -43,19 +43,20 @@ class ZenPack(ZenPackBase):
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
     packZProperties = _PACK_Z_PROPS
 
-    def install(self, *args):
-        super(ZenPack, self).install(*args)
+    def install(self, app):
+        super(ZenPack, self).install(app)
 
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
 
-    def remove(self, *args):
-        super(ZenPack, self).remove(*args)
+    def remove(self, app, leaveObjects=False):
+        if not leaveObjects:
+            # remove symlinks for command line utilities
+            for utilname in self.binUtilities:
+                self.removeBinFile(utilname)
 
-        # remove symlinks for command line utilities
-        for utilname in self.binUtilities:
-            self.removeBinFile(utilname)
+        super(ZenPack, self).remove(app, leaveObject=leaveObjects)
 
 
 from Products.ZenModel.OSProcess import OSProcess
