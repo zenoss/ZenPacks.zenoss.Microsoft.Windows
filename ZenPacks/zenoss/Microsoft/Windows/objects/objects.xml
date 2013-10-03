@@ -30101,6 +30101,9 @@ Windows Cluster
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
+<property visible="True" type="lines" id="zDeviceTemplates" >
+[]
+</property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
