@@ -151,7 +151,6 @@ class WinMSSQL(PythonPlugin):
         for instance in server_config['instances']:
 
             if instance not in dblogins:
-                import pdb; pdb.set_trace()
                 log.info("DB Instance {0} found but was not set in zDBInstances".format(
                     instance))
                 continue

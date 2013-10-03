@@ -30093,10 +30093,13 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinCluster']
+['zenoss.winrm.WinCluster', 'zenoss.winrm.ClusterOS', 'zenoss.winrm.WinServices', 'zenoss.winrm.Software', 'zenoss.winrm.Processes']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
+</property>
+<property visible="True" type="lines" id="zDeviceTemplates" >
+[]
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
@@ -30109,7 +30112,7 @@ Products.ZenModel.Device
 WinRS
 </property>
 <property type="boolean" id="enabled" mode="w" >
-False
+True
 </property>
 <property type="string" id="component" mode="w" >
 ${here/id}

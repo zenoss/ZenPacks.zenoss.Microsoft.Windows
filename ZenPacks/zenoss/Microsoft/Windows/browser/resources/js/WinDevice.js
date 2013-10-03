@@ -619,7 +619,7 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
-ZC.registerName('MSClusterService', _t('Service'), _t('Services'));
+ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 
 ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -691,7 +691,7 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterServicePanel', ZC.MSClusterServicePanel);
 
-ZC.registerName('MSClusterResource', _t('Resource'), _t('Resources'));
+ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
 
 ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,

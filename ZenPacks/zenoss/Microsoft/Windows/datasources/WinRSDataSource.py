@@ -498,7 +498,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
                 currentstate = {
                 'Online': ZenEventClasses.Clear,
                 'Offline': ZenEventClasses.Critical,
-                'PartialOnline': ZenEventClasses.Error
+                'PartialOnline': ZenEventClasses.Error,
+                'Failed': ZenEventClasses.Critical
                 }.get(value[1], ZenEventClasses.Info)
 
                 data['events'].append(dict(
