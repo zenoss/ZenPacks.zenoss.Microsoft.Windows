@@ -8,9 +8,6 @@ Microsoft Software
 <property type="string" id="description" mode="w" >
 Microsoft Software
 </property>
-<property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'IIS2']
-</property>
 <object id='Windows' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
 Windows Operating System
