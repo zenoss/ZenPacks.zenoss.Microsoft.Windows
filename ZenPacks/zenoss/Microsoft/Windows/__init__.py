@@ -56,7 +56,7 @@ class ZenPack(ZenPackBase):
             for utilname in self.binUtilities:
                 self.removeBinFile(utilname)
 
-        super(ZenPack, self).remove(app, leaveObject=leaveObjects)
+        super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
 
 
 from Products.ZenModel.OSProcess import OSProcess
