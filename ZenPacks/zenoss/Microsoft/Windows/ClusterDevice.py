@@ -55,6 +55,9 @@ class ClusterDevice(BaseDevice):
         self._snmpLastCollection = 0
         self._lastChange = 0
 
+        if hasattr(self, '_create_componentSearch'):
+            self._create_componentSearch()
+
     def setClusterHostMachines(self, clusterhostdnsnames):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames:
