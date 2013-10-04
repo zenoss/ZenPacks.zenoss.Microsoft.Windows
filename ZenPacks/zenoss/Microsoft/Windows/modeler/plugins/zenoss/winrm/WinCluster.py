@@ -99,6 +99,7 @@ class WinCluster(PythonPlugin):
         psApplications = []
         clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
             '$_.Description')
+        # For some reason if I add the $_.Id the data is returned corrupted.
 
         psApplications.append('get-clusterresource | foreach {{{0}}};'.format(
             " + '|' + ".join(clusterappitems)

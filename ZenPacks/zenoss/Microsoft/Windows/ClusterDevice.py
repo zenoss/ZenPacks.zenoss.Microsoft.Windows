@@ -84,10 +84,10 @@ class ClusterDevice(BaseDevice):
                 create_device()
                 # TODO (rbooth@zenoss.com):
                 # The collectDevice method may hit a race condition with the
-                # create_device method above. Once this has been worked out
-                # we will uncomment this code.
-                #clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
-                #clusterhost.collectDevice(setlog=False, background=True)
+                # create_device method above.
+                clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+                if clusterhost:
+                    clusterhost.collectDevice(setlog=False, background=True)
 
         self.clusterhostdevices = clusterhostdnsnames
 
