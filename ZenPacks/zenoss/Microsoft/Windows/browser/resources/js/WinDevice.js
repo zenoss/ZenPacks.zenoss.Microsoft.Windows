@@ -811,14 +811,14 @@ Zenoss.nav.appendTo('Component', [{
     xtype: 'MSClusterResourcePanel',
     subComponentGridPanel: true,
     filterNav: function(navpanel) {
-        if (navpanel.refOwner.componentType == 'MSMSClusterService') {
+        if (navpanel.refOwner.componentType == 'MSClusterService') {
             return true;
         } else {
             return false;
         }
     },
     setContext: function(uid) {
-        ZC.ClusterResourcePanel.superclass.setContext.apply(this, [uid]);
+        ZC.MSClusterResourcePanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
 

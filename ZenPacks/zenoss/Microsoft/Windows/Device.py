@@ -80,11 +80,12 @@ class Device(BaseDevice):
                     notify(IndexingEvent(cluster))
 
                 create_device()
+                # TODO (rbooth@zenoss.com):
                 # The collectDevice method may hit a race condition with the
-                # create_device method above. Once this has been worked out
-                # we will uncomment this code.
-                #cluster = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
-                #cluster.collectDevice(setlog=False, background=True)
+                # create_device method above.
+                cluster = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+                if cluster:
+                    cluster.collectDevice(setlog=False, background=True)
 
         self.clusterdevices = clusterdnsnames
 
