@@ -678,7 +678,7 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('State'),
                 sortable: true,
                 width: 100
-            }{
+            },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),

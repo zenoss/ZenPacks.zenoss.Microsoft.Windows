@@ -136,6 +136,7 @@ class WinCluster(PythonPlugin):
 
         resources = results['resources']
 
+        # This section is for ClusterService class
         for resource in resources:
             resourceline = resource.split("|")
             res_om = ObjectMap()
@@ -154,6 +155,7 @@ class WinCluster(PythonPlugin):
             map_resources_oms.append(res_om)
         # Cluster Application and Services
 
+        # This section is for ClusterResrouce class
         applications = results['apps']
 
         for app in applications:
