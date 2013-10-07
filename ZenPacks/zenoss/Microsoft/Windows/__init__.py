@@ -49,8 +49,6 @@ class ZenPack(ZenPackBase):
     def install(self, app):
         super(ZenPack, self).install(app)
 
-        self.register_devtype(app.zport.dmd)
-
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)

@@ -67,8 +67,10 @@ class WinMSSQL(PythonPlugin):
                     i = i + 1
                     dblogins[instance] = {'username': dbuser, 'password': dbpass}
             else:
-                dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': password}
-                results = {'clear': eventmessage}
+                arrInstance = dbinstance.split(';')
+                for instance in arrInstance:
+                    dblogins[instance] = {'username': 'sa', 'password': password}
+                    results = {'clear': eventmessage}
 
         except (IndexError, ValueError):
             # Error with dbinstance names or password
@@ -147,6 +149,12 @@ class WinMSSQL(PythonPlugin):
 
         sqlhostname = server_config['hostname'][0]
         for instance in server_config['instances']:
+
+            if instance not in dblogins:
+                log.info("DB Instance {0} found but was not set in zDBInstances".format(
+                    instance))
+                continue
+
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
             om_instance.title = instance
@@ -322,6 +330,7 @@ class WinMSSQL(PythonPlugin):
         try:
             eventmessage = results['error']
             log.error(eventmessage)
+            return
         except (KeyError):
             pass
 

@@ -15,7 +15,7 @@ Models running processes by querying Win32_Process via WMI.
 
 import re
 
-from Products.ZenModel.OSProcess import OSProcess, getProcessIdentifier
+from Products.ZenModel import OSProcess
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
@@ -23,7 +23,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
 
 # Process monitoring changed significantly in Zenoss 4.2.4. We want to
 # support the new and old ways.
-NEW_STYLE = hasattr(OSProcess, 'processText')
+NEW_STYLE = hasattr(OSProcess.OSProcess, 'processText')
 
 
 class Processes(WinRMPlugin):
@@ -63,7 +63,7 @@ class Processes(WinRMPlugin):
 
             for matcher in device.getOSProcessMatchers:
                 if NEW_STYLE:
-                    match = OSProcess.matchRegex(
+                    match = OSProcess.OSProcess.matchRegex(
                         matcher['regex'],
                         matcher['excludeRegex'],
                         processText)
@@ -74,12 +74,12 @@ class Processes(WinRMPlugin):
                     continue
 
                 if NEW_STYLE:
-                    process_id = OSProcess.generateId(
+                    process_id = OSProcess.OSProcess.generateId(
                         matcher['regex'],
                         matcher['getPrimaryUrlPath'],
                         processText)
                 else:
-                    process_id = prepId(getProcessIdentifier(
+                    process_id = prepId(OSProcess.getProcessIdentifier(
                         procName,
                         None if matcher['ignoreParameters'] else parameters))
 

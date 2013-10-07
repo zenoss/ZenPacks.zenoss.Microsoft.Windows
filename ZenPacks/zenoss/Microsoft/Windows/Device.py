@@ -22,8 +22,8 @@ from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
-from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 
+from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
@@ -51,42 +51,52 @@ class Device(BaseDevice):
         self._snmpLastCollection = 0
         self._lastChange = 0
 
-    def setClusterMachine(self, clusterdnsnames):
+        if hasattr(self, '_create_componentSearch'):
+            self._create_componentSearch()
 
+    def setClusterMachines(self, clusterdnsnames):
+
+        deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in clusterdnsnames:
-            deviceRoot = self.dmd.getDmdRoot("Devices")
-            device = deviceRoot.findDeviceByIdExact(clusterdnsname)
-            if device:
-                # Cluster device already exists
-                self.clusterdevices = clusterdnsnames
-                return
-
             clusterip = getHostByName(clusterdnsname)
 
-            @transact
-            def create_device():
-                # Need to create cluster device
-                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Cluster')
+            if clusterip:
+                device = deviceRoot.findDeviceByIdOrIp(clusterip)
+                if device:
+                    # Cluster device already exists
+                    self.clusterdevices = clusterdnsnames
+                    return
 
-                cluster = dc.createInstance(clusterdnsname)
-                cluster.manageIp = clusterip
-                cluster.title = clusterdnsname
-                cluster.setPerformanceMonitor(self.getPerformanceServerName())
-                cluster.index_object()
-                notify(IndexingEvent(cluster))
+                @transact
+                def create_device():
+                    # Need to create cluster device
+                    dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Cluster')
 
-            create_device()
-            cluster = deviceRoot.findDeviceByIdExact(clusterdnsname)
-            cluster.collectDevice(setlog=False, background=True)
+                    cluster = dc.createInstance(clusterdnsname)
+                    cluster.manageIp = clusterip
+                    cluster.title = clusterdnsname
+                    cluster.setPerformanceMonitor(self.getPerformanceServerName())
+                    cluster.index_object()
+                    notify(IndexingEvent(cluster))
+
+                create_device()
+                # TODO (rbooth@zenoss.com):
+                # The collectDevice method may hit a race condition with the
+                # create_device method above.
+                cluster = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+                if cluster:
+                    cluster.collectDevice(setlog=False, background=True)
 
         self.clusterdevices = clusterdnsnames
 
-    def getClusterMachine(self):
-        clusterdevices = []
+    def getClusterMachines(self):
+        _clusterdevices = []
+        deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in self.clusterdevices:
-            deviceRoot = self.dmd.getDmdRoot("Devices")
-            clusterdevices.append(deviceRoot.findDeviceByIdExact(clusterdnsname))
-        return clusterdevices
+            clusterip = getHostByName(clusterdnsname)
+            if clusterip:
+                _clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterip))
+        return _clusterdevices
 
 
 class DeviceLinkProvider(object):
@@ -99,14 +109,26 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
 
-        hosts = self.device.getClusterMachine()
+        try:
+            hosts = self.device.getClusterHostMachines()
+            if hosts:
+                for host in hosts:
+                    links.append(
+                        'Clustered Host: <a href="{}">{}</a>'.format(
+                            host.getPrimaryUrlPath(),
+                            host.titleOrId()
+                            )
+                        )
+        except(AttributeError):
+            pass
 
-        if hosts:
-            for host in hosts:
+        clusters = self.device.getClusterMachines()
+        if clusters:
+            for cluster in clusters:
                 links.append(
-                    'Clustered Host: <a href="{}">{}</a>'.format(
-                        host.getPrimaryUrlPath(),
-                        host.titleOrId()
+                    'Clustered Server: <a href="{}">{}</a>'.format(
+                        cluster.getPrimaryUrlPath(),
+                        cluster.titleOrId()
                         )
                     )
 
