@@ -42749,7 +42749,7 @@ Windows Cluster
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['ClusterResource', 'ClusterService']
+[]
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
