@@ -19,6 +19,9 @@ Globals
 
 ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
 
+DEVTYPE_NAME = 'Windows Server'
+DEVTYPE_PROTOCOL = 'WMI'
+
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
                 ('zWinRMPort', '5985', 'string'),
@@ -52,11 +55,40 @@ class ZenPack(ZenPackBase):
 
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
+            self.unregister_devtype(app.zport.dmd)
+
             # remove symlinks for command line utilities
             for utilname in self.binUtilities:
                 self.removeBinFile(utilname)
 
         super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
+
+    def register_devtype(self, dmd):
+        '''
+        Register or replace the "Windows Server (WMI)" devtype.
+        '''
+        try:
+            old_deviceclass = dmd.Devices.Server.Windows.WMI
+        except AttributeError:
+            # No old device class. That's fine.
+            pass
+        else:
+            old_deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
+
+        deviceclass = dmd.Devices.createOrganizer('/Server/Microsoft/Windows')
+        deviceclass.register_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
+
+    def unregister_devtype(self, dmd):
+        '''
+        Unregister the "Windows Server (WMI)" devtype.
+        '''
+        try:
+            deviceclass = dmd.Devices.Microsoft.Windows
+        except AttributeError:
+            # Someone removed the device class. That's fine.
+            return
+
+        deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
 
 from Products.ZenModel.OSProcess import OSProcess
