@@ -21,10 +21,6 @@ from Products.ZenUtils.Utils import prepId
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
 
-# Process monitoring changed significantly in Zenoss 4.2.4. We want to
-# support the new and old ways.
-NEW_STYLE = hasattr(OSProcess.OSProcess, 'processText')
-
 
 class Processes(WinRMPlugin):
     compname = 'os'
@@ -62,7 +58,7 @@ class Processes(WinRMPlugin):
             processText = get_processText(item)
 
             for matcher in device.getOSProcessMatchers:
-                if NEW_STYLE:
+                if hasattr(OSProcess.OSProcess, 'matchRegex'):
                     match = OSProcess.OSProcess.matchRegex(
                         matcher['regex'],
                         matcher['excludeRegex'],
@@ -73,7 +69,7 @@ class Processes(WinRMPlugin):
                 if not match:
                     continue
 
-                if NEW_STYLE:
+                if hasattr(OSProcess.OSProcess, 'generateId'):
                     process_id = OSProcess.OSProcess.generateId(
                         matcher['regex'],
                         matcher['getPrimaryUrlPath'],
@@ -95,7 +91,7 @@ class Processes(WinRMPlugin):
                     'setOSProcessClass': matcher['getPrimaryDmdId'],
                     }
 
-                if NEW_STYLE:
+                if hasattr(OSProcess.OSProcess, 'processText'):
                     data['processText'] = processText
 
                 rm.append(self.objectMap(data))
@@ -111,13 +107,12 @@ class Processes(WinRMPlugin):
                     "Invalid process regex '%s' -- ignoring",
                     matcher['regex'])
 
-            # Only NEW_STYLE matchers have the excludeRegex key.
-            if not NEW_STYLE:
-                continue
+            if 'excludeRegex' in matcher:
+                try:
+                    matcher['excludeRegex'] = re.compile(
+                        matcher['excludeRegex'])
 
-            try:
-                matcher['excludeRegex'] = re.compile(matcher['excludeRegex'])
-            except Exception:
-                log.warning(
-                    "Invalid process exclude regex '%s' -- ignoring",
-                    matcher['excludeRegex'])
+                except Exception:
+                    log.warning(
+                        "Invalid process exclude regex '%s' -- ignoring",
+                        matcher['excludeRegex'])
