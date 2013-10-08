@@ -95,10 +95,6 @@ NON_AGGREGATED_DATAPOINTS = frozenset({
 
 COUNT_DATAPOINT = 'count'
 
-# Process monitoring changed significantly in Zenoss 4.2.4. We want to
-# support the new and old ways.
-NEW_STYLE = hasattr(OSProcess, 'processText')
-
 
 class WinProcessDataSource(PythonDataSource):
     ZENPACKID = ZENPACK_NAME
@@ -224,11 +220,11 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             'severity': context.getFailSeverity(),
             }
 
-        if NEW_STYLE:
+        if hasattr(process_class, 'excludeRegex'):
             params['excludeRegex'] = process_class.excludeRegex
-        else:
-            params['ignoreParameters'] = getattr(
-                process_class, 'ignoreParameters', False)
+
+        if hasattr(process_class, 'ignoreParameters'):
+            params['ignoreParameters'] = process_class.ignoreParameters
 
         return params
 
@@ -300,7 +296,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             for datasource in config.datasources:
                 regex = re.compile(datasource.params['regex'])
 
-                if NEW_STYLE:
+                if hasattr(OSProcess, 'matchRegex'):
                     excludeRegex = re.compile(
                         datasource.params['excludeRegex'])
 
