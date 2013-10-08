@@ -24969,7 +24969,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25014,7 +25014,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25059,7 +25059,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25104,7 +25104,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25149,7 +25149,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25194,7 +25194,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25239,7 +25239,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25284,7 +25284,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25329,7 +25329,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25374,7 +25374,7 @@ powershell Get-Counter
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -25967,7 +25967,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26012,7 +26012,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26057,7 +26057,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26102,7 +26102,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26147,7 +26147,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26192,7 +26192,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26237,7 +26237,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26282,7 +26282,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26327,7 +26327,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
@@ -26372,7 +26372,7 @@ typeperf -sc1
 Microsoft SQL Server
 </property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
-GAUGE
+DERIVE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
