@@ -9,6 +9,8 @@
 
 
 import logging
+from socket import gaierror
+
 log = logging.getLogger("zen.MicrosoftWindows")
 
 from Globals import InitializeClass
@@ -61,33 +63,37 @@ class ClusterDevice(BaseDevice):
     def setClusterHostMachines(self, clusterhostdnsnames):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames:
-            clusterhostip = getHostByName(clusterhostdnsname)
-            if clusterhostip:
-                device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
-                if device:
-                    # Server device in cluster already exists
-                    self.clusterhostdevices = clusterhostdnsnames
-                    return
+            try:
+                clusterhostip = getHostByName(clusterhostdnsname)
+            except(gaierror):
+                log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
+                return
 
-                @transact
-                def create_device():
-                    # Need to create cluster server device
-                    dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
+            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
+            if device:
+                # Server device in cluster already exists
+                self.clusterhostdevices = clusterhostdnsnames
+                return
 
-                    clusterhost = dc.createInstance(clusterhostdnsname)
-                    clusterhost.manageIp = clusterhostip
-                    clusterhost.title = clusterhostdnsname
-                    clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
-                    clusterhost.index_object()
-                    notify(IndexingEvent(clusterhost))
+            @transact
+            def create_device():
+                # Need to create cluster server device
+                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
 
-                create_device()
-                # TODO (rbooth@zenoss.com):
-                # The collectDevice method may hit a race condition with the
-                # create_device method above.
-                clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
-                if clusterhost:
-                    clusterhost.collectDevice(setlog=False, background=True)
+                clusterhost = dc.createInstance(clusterhostdnsname)
+                clusterhost.manageIp = clusterhostip
+                clusterhost.title = clusterhostdnsname
+                clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
+                clusterhost.index_object()
+                notify(IndexingEvent(clusterhost))
+
+            create_device()
+            # TODO (rbooth@zenoss.com):
+            # The collectDevice method may hit a race condition with the
+            # create_device method above.
+            clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+            if clusterhost:
+                clusterhost.collectDevice(setlog=False, background=True)
 
         self.clusterhostdevices = clusterhostdnsnames
 
@@ -95,9 +101,12 @@ class ClusterDevice(BaseDevice):
         _clusterhostdevice = []
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in self.clusterhostdevices:
-            clusterhostip = getHostByName(clusterhostdnsname)
-            if clusterhostip:
+            try:
+                clusterhostip = getHostByName(clusterhostdnsname)
                 _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
+            except(gaierror):
+                _clusterhostdevice.append('Unable to resolve hostname {0}'.format(
+                    clusterhostdnsname))
         return _clusterhostdevice
 
 

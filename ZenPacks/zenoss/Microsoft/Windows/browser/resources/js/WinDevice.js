@@ -638,6 +638,7 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'clusternode'},
                 {name: 'coregroup'},
                 {name: 'description'},
+                {name: 'state'},
                 {name: 'priority'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
@@ -671,6 +672,12 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Core Group'),
                 sortable: true,
                 width: 180
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',

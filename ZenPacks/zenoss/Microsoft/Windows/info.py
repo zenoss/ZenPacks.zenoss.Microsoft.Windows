@@ -146,6 +146,7 @@ class ClusterServiceInfo(WinComponentInfo):
     description = ProxyProperty('description')
     coregroup = ProxyProperty('coregroup')
     priority = ProxyProperty('priority')
+    state = ProxyProperty('state')
 
     @property
     def clusternode(self):
