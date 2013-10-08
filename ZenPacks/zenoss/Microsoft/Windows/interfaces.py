@@ -85,6 +85,7 @@ class IClusterServiceInfo(IWinComponentInfo):
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     coregroup = schema.TextLine(title=_t(u'Core Group'), readonly=True)
     priority = schema.TextLine(title=_t(u'Priority'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
 
 
 class IClusterResourceInfo(IWinComponentInfo):

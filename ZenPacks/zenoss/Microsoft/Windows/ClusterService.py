@@ -24,12 +24,14 @@ class ClusterService(OSComponent):
     description = None
     coregroup = False
     priority = 0
+    state = None
 
     _properties = OSComponent._properties + (
         {'id': 'ownernode', 'type': 'string'},
         {'id': 'description', 'type': 'string'},
         {'id': 'coregroup', 'type': 'boolean'},
         {'id': 'priority', 'type': 'integer'},
+        {'id': 'state', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
