@@ -8,6 +8,10 @@
 ##############################################################################
 
 from Globals import InitializeClass
+from socket import gaierror
+import logging
+
+log = logging.getLogger("zen.MicrosoftWindows")
 
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
@@ -40,7 +44,11 @@ class ClusterResource(OSComponent):
 
     def ownernodeurl(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
-        clusterhostip = getHostByName(self.ownernode)
+        try:
+            clusterhostip = getHostByName(self.ownernode)
+        except(gaierror):
+            log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
+            return
         device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
         return device.getPrimaryUrlPath()
 
