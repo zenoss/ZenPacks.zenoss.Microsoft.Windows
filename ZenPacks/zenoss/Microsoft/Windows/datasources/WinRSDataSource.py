@@ -198,6 +198,7 @@ class PowershellGetCounterStrategy(object):
                 path = props_elem.findtext('.//*[@N="Path"]')
 
                 # Confirm timestamp format and convert
+                log.debug('Here is the data: {0}'.format(timestamp))
                 timestamp_str, milleseconds = timestamp.split(".")
                 format = '%Y-%m-%dT%H:%M:%S'
                 timestamp = calendar.timegm(time.strptime(timestamp_str, format))
@@ -218,7 +219,7 @@ class PowershellGetCounterStrategy(object):
                     timestamp = map_props[key]['timestamp']
                     yield dsconf, value, timestamp
                 except (KeyError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
+                    log.debug("No value was returned for {0}".format(dsconf.params['resource']))
 
 
 powershellcounter_strategy = PowershellGetCounterStrategy()

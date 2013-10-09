@@ -50,11 +50,12 @@ class ClusterService(OSComponent):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         try:
             clusterhostip = getHostByName(self.ownernode)
+            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
+            return device.getPrimaryUrlPath()
         except(gaierror):
             log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
             return
-        device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
-        return device.getPrimaryUrlPath()
+        return
 
     def getRRDTemplateName(self):
         return 'ClusterService'
