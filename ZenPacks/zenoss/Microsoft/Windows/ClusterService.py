@@ -55,7 +55,6 @@ class ClusterService(OSComponent):
         except(gaierror):
             log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
             return
-        return
 
     def getRRDTemplateName(self):
         return 'ClusterService'
