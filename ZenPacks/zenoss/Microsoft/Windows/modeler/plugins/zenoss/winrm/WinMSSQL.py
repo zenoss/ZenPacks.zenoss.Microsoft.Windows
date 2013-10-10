@@ -160,7 +160,6 @@ class WinMSSQL(PythonPlugin):
             om_instance.title = instance
             om_instance.instancename = instance
             instance_oms.append(om_instance)
-
             if instance in dblogins:
                 sqlConnection = []
 
@@ -204,7 +203,6 @@ class WinMSSQL(PythonPlugin):
                     ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
                 instancedatabases = winrs.run_command(command)
                 databases = yield instancedatabases
-
                 for dbobj in databases.stdout:
                     db = dbobj.split('\t')
                     dbdict = {}

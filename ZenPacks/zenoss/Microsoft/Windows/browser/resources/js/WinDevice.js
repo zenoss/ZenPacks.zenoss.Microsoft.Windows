@@ -662,7 +662,11 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'clusternode',
                 header: _t('Owner Node'),
                 renderer: function(clusternode, metadata, record) {
-                    return Zenoss.render.Device(clusternode, record.data.ownernode);
+                    if (clusternode.length > 0){
+                        return Zenoss.render.Device(clusternode, record.data.ownernode);
+                    } else {
+                        return record.data.ownernode;
+                    }
                 },
                 sortable: true,
                 width: 200
@@ -741,7 +745,11 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'clusternode',
                 header: _t('Owner Node'),
                 renderer: function(clusternode, metadata, record) {
-                    return Zenoss.render.Device(clusternode, record.data.ownernode);
+                    if (clusternode.length > 0){
+                        return Zenoss.render.Device(clusternode, record.data.ownernode);
+                    } else {
+                        return record.data.ownernode;
+                    }
                 },
                 sortable: true,
                 width: 200

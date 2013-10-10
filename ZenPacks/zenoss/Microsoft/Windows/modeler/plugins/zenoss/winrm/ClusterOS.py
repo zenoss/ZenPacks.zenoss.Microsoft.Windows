@@ -26,7 +26,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_
 addLocalLibPath()
 
 from txwinrm.collect import ConnectionInfo, WinrmCollectClient, \
-    create_enum_info
+    create_enum_info, RequestError
 
 cluster_namespace = 'mscluster'
 resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
@@ -97,7 +97,12 @@ class ClusterOS(PythonPlugin):
             connectiontype,
             keytab)
 
-        results = winrm.do_collect(conn_info, ENUM_INFOS.values())
+        try:
+            results = winrm.do_collect(conn_info, ENUM_INFOS.values())
+        except RequestError as e:
+            log.error(e[0])
+            raise
+
         return results
 
     def process(self, device, results, log):

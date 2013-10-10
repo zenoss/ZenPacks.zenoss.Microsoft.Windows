@@ -218,7 +218,7 @@ class PowershellGetCounterStrategy(object):
                     timestamp = map_props[key]['timestamp']
                     yield dsconf, value, timestamp
                 except (KeyError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
+                    log.debug("No value was returned for {0}".format(dsconf.params['resource']))
 
 
 powershellcounter_strategy = PowershellGetCounterStrategy()

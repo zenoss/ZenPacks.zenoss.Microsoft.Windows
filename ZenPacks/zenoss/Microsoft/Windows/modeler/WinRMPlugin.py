@@ -77,5 +77,10 @@ class WinRMPlugin(PythonPlugin):
             log.error("Modeler %s has no WQL queries defined")
             return
 
-        return client.do_collect(
-            conn_info, map(self.create_enum_info, self.wql_queries))
+        try:
+            results = client.do_collect(
+                conn_info, map(self.create_enum_info, self.wql_queries))
+        except txwinrm.collect.RequestError as e:
+            log.error(e[0])
+            raise
+        return results

@@ -23,7 +23,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient, create_enum_info
+    import ConnectionInfo, WinrmCollectClient, create_enum_info, RequestError
 
 
 class WinServices(PythonPlugin):
@@ -56,7 +56,11 @@ class WinServices(PythonPlugin):
             port,
             connectiontype,
             keytab)
-        results = winrm.do_collect(conn_info, self.WinRMQueries)
+        try:
+            results = winrm.do_collect(conn_info, self.WinRMQueries)
+        except RequestError as e:
+            log.error(e[0])
+            raise
         return results
 
     def process(self, device, results, log):
