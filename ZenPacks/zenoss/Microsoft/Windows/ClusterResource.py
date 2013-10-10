@@ -50,7 +50,7 @@ class ClusterResource(OSComponent):
             return device.getPrimaryUrlPath()
         except(gaierror):
             log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
-            return "No device found"
+            return
 
     def getRRDTemplateName(self):
         return 'ClusterResource'
