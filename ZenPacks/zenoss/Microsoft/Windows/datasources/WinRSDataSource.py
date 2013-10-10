@@ -198,7 +198,6 @@ class PowershellGetCounterStrategy(object):
                 path = props_elem.findtext('.//*[@N="Path"]')
 
                 # Confirm timestamp format and convert
-                log.debug('Here is the data: {0}'.format(timestamp))
                 timestamp_str, milleseconds = timestamp.split(".")
                 format = '%Y-%m-%dT%H:%M:%S'
                 timestamp = calendar.timegm(time.strptime(timestamp_str, format))
