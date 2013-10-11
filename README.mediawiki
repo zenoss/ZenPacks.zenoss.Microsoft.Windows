@@ -1,18 +1,3 @@
-{{ZenPack
-|Summary=Monitoring for Microsoft Windows servers.
-|Organization=Zenoss, Inc.
-|ZenPack name=ZenPacks.zenoss.Microsoft.Windows
-|Homepage=https://github.com/zenoss/ZenPacks.zenoss.Microsoft.Windows
-|Releases=2.0.0 (beta)
-|Devices=
-|Applications={{Application
-|Product Name=Microsoft Windows
-|Version=2012, 2008, 2003 Server
-}}
-|Integrations=
-|Binaries=
-|Flavor=
-}}
 This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
 
 <span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
@@ -20,6 +5,8 @@ This ZenPack provides support for monitoring Microsoft Windows. Monitoring is pe
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
 This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
+
+Video: http://www.youtube.com/watch?v=kP28F_aQ77E&feature=youtu.be
 
 == Gallery ==
 <gallery widths=250px heights=127px>
@@ -394,4 +381,39 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * MSSQLServer (in /Server/Microsoft/Windows)
 * FileSystem (in /Server/Microsoft/Windows)
 * ethernetCsmacd (in /Server/Microsoft/Windows)
-{{ZenPackFooter}}
+2.0.0 (beta)
+
+;Troubleshooting:
+* Powershell
+try{     add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'     }catch{     try{          add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'          }     catch{          add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'          }}$con = new-object ('Microsoft.SqlServer.Management.Common.ServerConnection') 'dbname', 'username', 'password';$server = new-object ('Microsoft.SqlServer.Management.Smo.Server') $con;'$server.Databases | foreach {write-host "Name---" $_, "`tVersion---" $_.Version, "`tIsAccessible---" $_.IsAccessible, "`tID---\" $_.ID, "`tOwner---\" $_.Owner, "`tLastBackupDate---" $_.LastBackupDate, "`tCollation---" $_.Collation, "`tCreateDate---" $_.CreateDate, "`tDefaultFileGroup---" $_.DefaultFileGroup, "`tPrimaryFilePath---" $_.PrimaryFilePath, "`tLastLogBackupDate---" $_.LastLogBackupDate};$server.BackupDevices | foreach {write-host "Name---" $_.Name,"`tDeviceType---" $_.BackupDeviceType, "`tPhysicalLocation---" $_.PhysicalLocation, "`tStatus---" $_.State};
+
+* WMI
+** select * from Win32_SystemEnclosure
+** select * from Win32_ComputerSystem
+** select * from Win32_OperatingSystem
+** select * from Win32_Processor
+** select * from Win32_CacheMemory
+** select * from Win32_IP4RouteTable
+** select * from Win32_NetworkAdapter
+** select * from Win32_NetworkAdapterConfiguration
+** select * from Win32_logicaldisk
+** select * from Win32_Volume
+** select * from Win32_MappedLogicalDisk
+** select * from Win32_Service
+** select Name, InstallDate, Vendor from Win32_Product
+** select name, state, status, displayname from Win32_Service where name = ""
+** select ServerAutoStart from IIsWebServerSetting where name=""
+** namespace = microsoftiisv2
+** select * from IIsWebVirtualDirSetting
+** select * from IIsWebServerSetting
+** namespace = mscluster
+** select * from mscluster_cluster
+* SQL
+** select s.name as jobname, s.job_id as jobid, s.enabled as enabled, s.date_created as datecreated, s.description as description, l.name as username from msdb..sysjobs s left join master.sys.syslogins l on s.owner_sid = l.sid
+** select instance_name as databasename, counter_name as ckey, cntr_value as cvalue from sys.dm_os_performance_counters where instance_name = ''
+
+
+* Registry
+** To find SQL Server instances
+** HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\
+** HKLM:\Software\Microsoft\Microsoft SQL Server\{{ZenPackFooter}}
