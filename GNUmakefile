@@ -23,9 +23,11 @@ egg:
 	#setup.py will call 'make build' before creating the egg
 	python setup.py bdist_egg
 
+
+
 # pipe operator means src/txwinrm must exist (as opposed to being more recent)
 builddependencies: | src src/txwinrm
-	cd src/txwinrm; git pull
+	cd src/txwinrm; git checkout master; git pull
 	rm -rf $(LIB_DIR)/txwinrm
 	mkdir $(LIB_DIR)/txwinrm
 	cp -r $(TXWINRM_DIR)/*.py $(LIB_DIR)/txwinrm/

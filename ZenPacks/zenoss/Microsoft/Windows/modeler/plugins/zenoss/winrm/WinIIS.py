@@ -20,7 +20,8 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.collect import ConnectionInfo, WinrmCollectClient, create_enum_info
+from txwinrm.collect import ConnectionInfo, WinrmCollectClient, create_enum_info, \
+    RequestError
 
 namespace = 'microsoftiisv2'
 resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(namespace)
@@ -55,6 +56,8 @@ class WinIIS(PythonPlugin):
         scheme = 'http'
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
+        keytab = ''
+
         winrm = WinrmCollectClient()
         conn_info = ConnectionInfo(
             hostname,
@@ -63,13 +66,18 @@ class WinIIS(PythonPlugin):
             password,
             scheme,
             port,
-            connectiontype)
+            connectiontype,
+            keytab)
 
-        results = winrm.do_collect(conn_info, ENUM_INFOS.values())
-
+        try:
+            results = winrm.do_collect(conn_info, ENUM_INFOS.values())
+        except RequestError as e:
+            log.error(e[0])
+            raise
         return results
 
     def process(self, device, results, log):
+
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)
 

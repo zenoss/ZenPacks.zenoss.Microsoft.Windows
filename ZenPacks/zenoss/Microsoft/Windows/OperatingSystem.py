@@ -23,6 +23,12 @@ class OperatingSystem(BaseOS):
         ("winrmiis", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.WinIIS",
           "os")),
-    )
+        ("winsqlinstances", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+          "os")),
+        ("clusterservices", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
+          "os")),
+        )
 
 InitializeClass(OperatingSystem)

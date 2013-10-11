@@ -65,7 +65,7 @@ class WinOSResult(object):
     pass
 
 
-class WinOS(PythonPlugin):
+class ClusterOS(PythonPlugin):
 
     deviceProperties = PythonPlugin.deviceProperties + (
         'zWinUser',
@@ -106,7 +106,6 @@ class WinOS(PythonPlugin):
         return results
 
     def process(self, device, results, log):
-
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)
 
@@ -168,7 +167,6 @@ class WinOS(PythonPlugin):
                                              res.operatingSystem.Caption)
 
         cs_om = ObjectMap()
-        cs_om.title = res.computerSystem.DNSHostName
         cs_om.setHWProductKey = MultiArgs(res.computerSystem.Model,
                                           res.computerSystem.Manufacturer)
         osCaption = '{0} - {1}'.format(res.operatingSystem.Caption,
@@ -187,7 +185,7 @@ class WinOS(PythonPlugin):
             clusterlist = []
             for cluster in res.clusterInformation:
                 clusterlist.append(cluster.Name)
-            cs_om.setClusterMachines = clusterlist
+            cs_om.setClusterMachine = clusterlist
         except (AttributeError):
             pass
 

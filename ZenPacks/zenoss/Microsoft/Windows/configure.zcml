@@ -6,6 +6,30 @@
     >
 
     <adapter
+        factory=".info.DeviceInfo"
+        for=".Device.Device"
+        provides=".interfaces.IDeviceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterDeviceInfo"
+        for=".ClusterDevice.ClusterDevice"
+        provides=".interfaces.IClusterDeviceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterServiceInfo"
+        for=".ClusterService.ClusterService"
+        provides=".interfaces.IClusterServiceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterResourceInfo"
+        for=".ClusterResource.ClusterResource"
+        provides=".interfaces.IClusterResourceInfo"
+        />
+
+    <adapter
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"
@@ -21,7 +45,30 @@
         factory=".info.WinIISInfo"
         for=".WinIIS.WinIIS"
         provides=".interfaces.IWinIISInfo"
+        />
 
+    <adapter
+        factory=".info.WinSQLBackupInfo"
+        for=".WinSQLBackup.WinSQLBackup"
+        provides=".interfaces.IWinSQLBackupInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLDatabaseInfo"
+        for=".WinSQLDatabase.WinSQLDatabase"
+        provides=".interfaces.IWinSQLDatabaseInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLInstanceInfo"
+        for=".WinSQLInstance.WinSQLInstance"
+        provides=".interfaces.IWinSQLInstanceInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLJobInfo"
+        for=".WinSQLJob.WinSQLJob"
+        provides=".interfaces.IWinSQLJobInfo"
         />
 
     <adapter
@@ -47,6 +94,23 @@
         for=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionDataSource"
         factory=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionInfo"
         />
+
+    <adapter
+        provides=".datasources.WinProcessDataSource.IWinProcessDataSourceInfo"
+        for=".datasources.WinProcessDataSource.WinProcessDataSource"
+        factory=".datasources.WinProcessDataSource.WinProcessDataSourceInfo"
+        />
+
+    <!-- Device Links -->
+    <configure zcml:condition="have zenoss:IExpandedLinkProvider">
+        <subscriber
+            provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
+            for='Products.ZenModel.Device.Device'
+            factory='.Device.DeviceLinkProvider'
+            />
+
+    </configure>
+
     <!-- Browser -->
     <include package=".browser"/>
 
