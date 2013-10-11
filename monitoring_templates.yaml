@@ -125,15 +125,6 @@
       datapoints:
         CacheHitRatioBase: DERIVE_MIN_0
 
-    CommitTableEntries:
-      type: WinRS
-      resource: Commit table entries
-      strategy: powershell MSSQL
-      component: "${here/id}"
-
-      datapoints:
-        CommitTableEntries: GAUGE_MIN_0
-
     DataFileSize:
       type: WinRS
       resource: Data File(s) Size (KB)
@@ -296,15 +287,6 @@
       datapoints:
         ShrinkDataMovementBytesSec: DERIVE_MIN_0
 
-    TrackedTransactionsSec:
-      type: WinRS
-      resource: Tracked transactions/sec
-      strategy: powershell MSSQL
-      component: "${here/id}"
-
-      datapoints:
-        TrackedTransactionsSec: DERIVE_MIN_0
-
     TransactionsSec:
       type: WinRS
       resource: Transactions/sec
@@ -313,15 +295,6 @@
 
       datapoints:
         TransactionsSec: DERIVE_MIN_0
-
-    WriteTransactionsSec:
-      type: WinRS
-      resource: Write Transactions/sec
-      strategy: powershell MSSQL
-      component: "${here/id}"
-
-      datapoints:
-        WriteTransactionsSec: DERIVE_MIN_0
 
   graphs:
     Transactions:
@@ -342,25 +315,8 @@
           dpName: TransactionsSec
           format: "%7.2lf%s"
 
-        Write:
-          dpName: WriteTransactionsSec
-          format: "%7.2lf%s"
-
-        Tracked:
-          dpName: TrackedTransactionsSec
-          format: "%7.2lf%s"
-
         Replication:
           dpName: ReplTransRate
-          format: "%7.2lf%s"
-
-    Commit Table Entries:
-      units: entries
-      miny: 0
-
-      graphpoints:
-        Total:
-          dpName: CommitTableEntries
           format: "%7.2lf%s"
 
     Cache Entries:
