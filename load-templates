@@ -283,6 +283,10 @@ def add_graph(template, id_, cfg):
 def add_graphpoint(graph, id_, cfg):
     graphpoint = graph.createGraphPoint(DataPointGraphPoint, id_)
 
+    # Shorthand for datapoints that have the same name as their datasource.
+    if '_' not in cfg.get('dpName', '_'):
+        cfg['dpName'] = '_'.join((cfg['dpName'], cfg['dpName']))
+
     # Validate lineType.
     if 'lineType' in cfg:
         valid_linetypes = [x[1] for x in ComplexGraphPoint.lineTypeOptions]
