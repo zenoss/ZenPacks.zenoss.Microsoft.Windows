@@ -29,6 +29,15 @@ from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
+try:
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcessMatcher import OSProcessDataMatcher
+except ImportError:
+    class OSProcessDataMatcher(object):
+        def __init__(self, **attribs):
+            pass
+
+
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
@@ -214,17 +223,29 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         process_class = context.osProcessClass()
-        params = {
-            'regex': process_class.regex,
-            'alertOnRestart': context.alertOnRestart(),
-            'severity': context.getFailSeverity(),
-            }
 
-        if hasattr(process_class, 'excludeRegex'):
-            params['excludeRegex'] = process_class.excludeRegex
+        param_attributes = (
+            (process_class, 'regex', 'regex'),
+            (process_class, 'includeRegex', 'includeRegex'),
+            (process_class, 'excludeRegex', 'excludeRegex'),
+            (process_class, 'ignoreParameters', 'ignoreParameters'),
+            (process_class, 'replaceRegex', 'replaceRegex'),
+            (process_class, 'replacement', 'replacement'),
+            (process_class, 'primaryUrlPath', 'processClassPrimaryUrlPath'),
+            (context, 'alertOnRestart', 'alertOnRestart'),
+            (context, 'severity', 'getFailSeverity'),
+            (context, 'generatedId', 'generatedId'),
+            )
 
-        if hasattr(process_class, 'ignoreParameters'):
-            params['ignoreParameters'] = process_class.ignoreParameters
+        params = {}
+
+        # Only set valid params. Different versions of Zenoss have
+        # different available attributes for process classes and
+        # processes.
+        for obj, key, attribute in param_attributes:
+            if hasattr(obj, attribute):
+                value = getattr(obj, attribute)
+                params[key] = value() if callable(value) else value
 
         return params
 
@@ -296,7 +317,21 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             for datasource in config.datasources:
                 regex = re.compile(datasource.params['regex'])
 
-                if hasattr(OSProcess, 'matchRegex'):
+                # Zenoss 4.2 2013-10-15 RPS style.
+                if 'replacement' in datasource.params:
+                    matcher = OSProcessDataMatcher(
+                        includeRegex=datasource.params['includeRegex'],
+                        excludeRegex=datasource.params['replaceRegex'],
+                        replaceRegex=datasource.params['replaceRegex'],
+                        replacement=datasource.params['replacement'],
+                        primaryUrlPath=datasource.params['primaryUrlPath'],
+                        generatedId=datasource.params['generatedId'])
+
+                    if not matcher.matches(processText):
+                        continue
+
+                # Zenoss 4.2 intermediate style
+                elif hasattr(OSProcess, 'matchRegex'):
                     excludeRegex = re.compile(
                         datasource.params['excludeRegex'])
 
@@ -311,6 +346,8 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
 
                     if not capture_match:
                         continue
+
+                # Zenoss 4.1-4.2 style.
                 else:
                     if datasource.params['ignoreParameters']:
                         processText = item.ExecutablePath or item.Name
@@ -340,18 +377,17 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
 
                 # No restart if there are no current or previous PIDs.
                 # previous PIDs.
-                if not previous_pids or not current_pids:
-                    continue
+                if previous_pids and current_pids:
 
-                # Only consider PID changes a restart if all PIDs
-                # matching the process changed.
-                if current_pids.isdisjoint(previous_pids):
-                    summary = 'matching processes restarted'
+                    # Only consider PID changes a restart if all PIDs
+                    # matching the process changed.
+                    if current_pids.isdisjoint(previous_pids):
+                        summary = 'matching processes restarted'
 
-                    # If the process is configured to alert on
-                    # restart, the first "up" won't be a clear.
-                    if datasource.params['alertOnRestart']:
-                        severity = datasource.params['severity']
+                        # If the process is configured to alert on
+                        # restart, the first "up" won't be a clear.
+                        if datasource.params['alertOnRestart']:
+                            severity = datasource.params['severity']
 
             else:
                 severity = datasource.params['severity']
@@ -421,8 +457,9 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, error, config):
-        data = self.new_data()
+        LOG.error("%s process scan error: %s", config.id, error.value)
 
+        data = self.new_data()
         data['events'].append({
             'device': config.id,
             'severity': Event.Error,

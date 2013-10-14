@@ -15,11 +15,30 @@ Models running processes by querying Win32_Process via WMI.
 
 import re
 
+from itertools import ifilter, imap
+
 from Products.ZenModel import OSProcess
+from Products.ZenModel.Device import Device
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
+
+try:
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcessMatcher import buildObjectMapData
+except ImportError:
+    def buildObjectMapData(processClassMatchData, lines):
+        raise Exception("buildObjectMapData does not exist on this Zenoss")
+        return []
+
+
+if hasattr(Device, 'osProcessClassMatchData'):
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    PROXY_MATCH_PROPERTY = 'osProcessClassMatchData'
+else:
+    # Older property.
+    PROXY_MATCH_PROPERTY = 'getOSProcessMatchers'
 
 
 class Processes(WinRMPlugin):
@@ -28,7 +47,7 @@ class Processes(WinRMPlugin):
     modname = 'Products.ZenModel.OSProcess'
 
     deviceProperties = WinRMPlugin.deviceProperties + (
-        'getOSProcessMatchers',
+        PROXY_MATCH_PROPERTY,
         )
 
     wql_queries = [
@@ -40,6 +59,33 @@ class Processes(WinRMPlugin):
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
+        if hasattr(device, 'osProcessClassMatchData'):
+            return self.new_process(device, results, log)
+
+        return self.old_process(device, results, log)
+
+    def new_process(self, device, results, log):
+        '''
+        Model processes according to new style.
+
+        Handles style introduced by Zenoss 4.2 2013-10-15 RPS.
+        '''
+        processes = ifilter(bool, imap(get_processText, results.values()[0]))
+        oms = imap(
+            self.objectMap,
+            buildObjectMapData(device.osProcessClassMatchData, processes))
+
+        rm = self.relMap()
+        rm.extend(oms)
+
+        return rm
+
+    def old_process(self, device, results, log):
+        '''
+        Model processes according to old style.
+
+        Handles Zenoss 4.1 and Zenoss 4.2 prior to the 2013-10-15 RPS.
+        '''
         self.compile_regexes(device, log)
 
         seen = set()
