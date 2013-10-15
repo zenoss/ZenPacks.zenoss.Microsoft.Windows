@@ -321,7 +321,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
                 if 'replacement' in datasource.params:
                     matcher = OSProcessDataMatcher(
                         includeRegex=datasource.params['includeRegex'],
-                        excludeRegex=datasource.params['replaceRegex'],
+                        excludeRegex=datasource.params['excludeRegex'],
                         replaceRegex=datasource.params['replaceRegex'],
                         replacement=datasource.params['replacement'],
                         primaryUrlPath=datasource.params['primaryUrlPath'],
