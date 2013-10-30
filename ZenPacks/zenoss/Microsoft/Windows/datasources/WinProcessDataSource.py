@@ -91,6 +91,7 @@ VALID_DATAPOINTS = frozenset({
     'VirtualBytesPeak',
     'WorkingSet',
     'WorkingSetPeak',
+    'WorkingSetPrivate',
     })
 
 # Win32_PerfFormattedData_PerfProc_Process attributes that we don't
@@ -281,7 +282,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         if invalid_datapoints:
             LOG.warn(
                 "Removing invalid datapoints for %s: %s",
-                config.device, ', '.join(invalid_datapoints))
+                config.id, ', '.join(invalid_datapoints))
 
             perf_attrs.remove(invalid_datapoints)
 
