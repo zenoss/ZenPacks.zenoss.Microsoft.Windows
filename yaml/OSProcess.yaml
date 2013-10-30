@@ -35,7 +35,7 @@
       maxy: 100
 
       graphpoints:
-        Total:
+        Processor Time:
           dpName: process_PercentProcessorTime
           format: "%7.2lf%%"
 
