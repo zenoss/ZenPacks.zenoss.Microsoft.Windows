@@ -28916,7 +28916,7 @@ True
 1
 </property>
 <tomanycont id='graphPoints'>
-<object id='Total' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Processor Time' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
