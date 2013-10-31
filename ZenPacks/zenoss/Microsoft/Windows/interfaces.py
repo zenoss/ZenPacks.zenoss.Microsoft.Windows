@@ -24,6 +24,10 @@ class IClusterDeviceInfo(IDeviceInfo):
     creatingdc = schema.TextLine(title=_t(u'Creating DC'), readonly=True)
 
 
+class ITeamInterfaceInfo(IComponentInfo):
+    numofint = schema.TextLine(title=_t(u'# of Interfaces'), readonly=True)
+
+
 class IWinComponentInfo(IComponentInfo):
     title = schema.TextLine(title=_t(u'Title'), readonly=True)
 

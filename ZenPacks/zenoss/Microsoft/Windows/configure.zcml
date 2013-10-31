@@ -12,6 +12,12 @@
         />
 
     <adapter
+        factory=".info.TeamInterfaceInfo"
+        for=".TeamInterface.TeamInterface"
+        provides=".interfaces.ITeamInterfaceInfo"
+        />
+
+    <adapter
         factory=".info.ClusterDeviceInfo"
         for=".ClusterDevice.ClusterDevice"
         provides=".interfaces.IClusterDeviceInfo"

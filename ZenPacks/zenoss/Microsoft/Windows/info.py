@@ -30,6 +30,12 @@ class WinComponentInfo(ComponentInfo):
     title = ProxyProperty('title')
 
 
+class TeamInterfaceInfo(WinComponentInfo):
+    @property
+    def numofint(self):
+        return '2'
+
+
 class WinServiceInfo(WinComponentInfo):
     implements(IWinServiceInfo)
 
