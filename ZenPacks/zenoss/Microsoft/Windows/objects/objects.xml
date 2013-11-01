@@ -25088,7 +25088,7 @@ ${graphPoint/id}
 -1
 </property>
 <property type="string" id="dpName" mode="w" >
-process_PrivateWorkingSet
+process_WorkingSetPrivate
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
