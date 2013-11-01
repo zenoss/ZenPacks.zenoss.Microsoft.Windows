@@ -46,7 +46,7 @@
 
       graphpoints:
         "Private Working Set":
-          dpName: process_PrivateWorkingSet
+          dpName: process_WorkingSetPrivate
           format: "%7.2lf%s"
 
         "Total Working Set  ":
