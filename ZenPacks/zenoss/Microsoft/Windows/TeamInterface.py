@@ -10,17 +10,27 @@
 
 from Globals import InitializeClass
 
+from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenModel.IpInterface import IpInterface
-from Products.ZenRelations.RelSchema import ToManyCont, ToOne
+from Products.ZenRelations.RelSchema import ToManyCont, ToMany, ToOne
 
 
-class TeamInterface(IpInterface):
-    portal_type = meta_type = 'WinTeamInterface'
+class TeamInterface(IpInterface, OSComponent):
+    meta_type = portal_type = 'WinTeamInterface'
 
-    _relations = IpInterface._relations + (
-        ('winos', ToOne(ToManyCont,
+    numofnics = None
+
+    _properties = IpInterface._properties + (
+        {'id': 'numofnics', 'type': 'string', 'mode': 'w'},
+        )
+
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont,
             'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',
             'teaminterfaces')),
+        ("ipaddresses", ToMany(ToOne, "Products.ZenModel.IpAddress", "interface")),
+        ("iproutes", ToMany(ToOne, "Products.ZenModel.IpRouteEntry", "interface")),
         )
+
 
 InitializeClass(TeamInterface)

@@ -10,6 +10,7 @@
 from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
+from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -28,8 +29,8 @@ class IWinComponentInfo(IComponentInfo):
     title = schema.TextLine(title=_t(u'Title'), readonly=True)
 
 
-class ITeamInterfaceInfo(IWinComponentInfo):
-    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
+    numofnics = schema.TextLine(title=_t(u'# of Nics'), readonly=True)
 
 
 class IWinServiceInfo(IWinComponentInfo):

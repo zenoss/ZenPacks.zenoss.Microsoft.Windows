@@ -793,21 +793,14 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'title',
+            autoExpandColumn: 'description',
             componentType: 'WinTeamInterface',
             fields: [
                 {name: 'uid'},
                 {name: 'severity'},
                 {name: 'meta_type'},
                 {name: 'name'},
-                {name: 'title'},
-                {name: 'interfacename'},
-                {name: 'ips'},
                 {name: 'description'},
-                {name: 'macaddress'},
-                {name: 'adminStatus'},
-                {name: 'operStatus'},
-                {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
                 {name: 'monitored'}
@@ -820,40 +813,11 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 sortable: true,
                 width: 50
             },{
-                id: 'title',
-                dataIndex: 'interfacename',
-                header: _t('IP Interface'),
-                sortable: true
-            },{
-                id: 'ips',
-                dataIndex: 'ips',
-                header: _t('IP Addresses'),
-                sortable: true,
-                width: 200
-            },{
                 id: 'description',
                 dataIndex: 'description',
                 header: _t('Description'),
                 sortable: true,
                 width: 180
-            },{
-                id: 'macaddress',
-                dataIndex: 'macaddress',
-                header: _t('MAC Address'),
-                sortable: true,
-                width: 100
-            },{
-                id: 'operstatus',
-                dataIndex: 'operStatus',
-                header: _t('Operational Status'),
-                sortable: true,
-                width: 100
-            },{
-                id: 'adminstatus',
-                dataIndex: 'adminStatus',
-                header: _t('Admin Status'),
-                sortable: true,
-                width: 100
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',

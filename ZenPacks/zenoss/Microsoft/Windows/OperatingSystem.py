@@ -31,7 +31,7 @@ class OperatingSystem(BaseOS):
           "os")),
         ("teaminterfaces", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
-          "winos")),
+          "os")),
         )
 
 InitializeClass(OperatingSystem)

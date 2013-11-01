@@ -11,6 +11,7 @@ from zope.interface import implements
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.infos.device import DeviceInfo as BaseDeviceInfo
+from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpInterfaceInfo
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
@@ -30,8 +31,9 @@ class WinComponentInfo(ComponentInfo):
     title = ProxyProperty('title')
 
 
-class TeamInterfaceInfo(WinComponentInfo):
-    description = ProxyProperty('description')
+class TeamInterfaceInfo(BaseIpInterfaceInfo):
+    implements(ITeamInterfaceInfo)
+    numofnics = ProxyProperty('numofnics')
 
 
 class WinServiceInfo(WinComponentInfo):
