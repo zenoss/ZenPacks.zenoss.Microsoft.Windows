@@ -370,8 +370,7 @@ class WinOS(PythonPlugin):
                     log.debug('The TeamNic ID {0}'.format(int_om.id))
                     mapTeamInter.append(int_om)
                     continue
-            else:
-                mapInter.append(int_om)
+            mapInter.append(int_om)
 
         maps.append(RelationshipMap(
             relname="interfaces",

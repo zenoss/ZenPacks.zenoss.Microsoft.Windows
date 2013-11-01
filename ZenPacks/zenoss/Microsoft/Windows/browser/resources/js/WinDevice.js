@@ -786,6 +786,94 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterResourcePanel', ZC.MSClusterResourcePanel);
 
+ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
+
+ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'WinTeamInterface',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'interfacename'},
+                {name: 'ips'},
+                {name: 'description'},
+                {name: 'macaddress'},
+                {name: 'adminStatus'},
+                {name: 'operStatus'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'interfacename',
+                header: _t('IP Interface'),
+                sortable: true
+            },{
+                id: 'ips',
+                dataIndex: 'ips',
+                header: _t('IP Addresses'),
+                sortable: true,
+                width: 200
+            },{
+                id: 'description',
+                dataIndex: 'description',
+                header: _t('Description'),
+                sortable: true,
+                width: 180
+            },{
+                id: 'macaddress',
+                dataIndex: 'macaddress',
+                header: _t('MAC Address'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'operstatus',
+                dataIndex: 'operStatus',
+                header: _t('Operational Status'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'adminstatus',
+                dataIndex: 'adminStatus',
+                header: _t('Admin Status'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinTeamInterfacePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinTeamInterfacePanel', ZC.WinTeamInterfacePanel);
+
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',
     text: _t('Jobs'),

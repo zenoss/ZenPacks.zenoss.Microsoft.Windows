@@ -30,8 +30,8 @@ class OperatingSystem(BaseOS):
          "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
           "os")),
         ("teaminterfaces", ToManyCont(ToOne,
-         "ZenPacks.zenoss.Microsoft.Windows.TeamInterace",
-          "os")),
+         "ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
+          "winos")),
         )
 
 InitializeClass(OperatingSystem)
