@@ -34,12 +34,6 @@ def interface_by_id(device, interface_id):
 class TeamInterface(IpInterface, OSComponent):
     meta_type = portal_type = 'WinTeamInterface'
 
-    numofnics = None
-
-    _properties = IpInterface._properties + (
-        {'id': 'numofnics', 'type': 'string', 'mode': 'w'},
-        )
-
     _relations = OSComponent._relations + (
         ('os', ToOne(ToManyCont,
             'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',

@@ -30,7 +30,7 @@ class IWinComponentInfo(IComponentInfo):
 
 
 class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
-    numofnics = schema.TextLine(title=_t(u'# of Nics'), readonly=True)
+    pass
 
 
 class IInterfaceInfo(IBaseIpInterfaceInfo):
