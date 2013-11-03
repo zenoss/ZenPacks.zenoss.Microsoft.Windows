@@ -798,12 +798,20 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
             fields: [
                 {name: 'uid'},
                 {name: 'severity'},
-                {name: 'meta_type'},
                 {name: 'name'},
                 {name: 'description'},
+                {name: 'ipAddressObjs'},
+                {name: 'network'},//, mapping:'network.uid'},
+                {name: 'macaddress'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'operStatus'},
+                {name: 'adminStatus'},
+                {name: 'status'},
                 {name: 'monitor'},
+                {name: 'monitored'},
                 {name: 'locking'},
-                {name: 'monitored'}
+                {name: 'duplex'},
+                {name: 'netmask'}
             ],
             columns: [{
                 id: 'severity',
@@ -813,11 +821,54 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 sortable: true,
                 width: 50
             },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('IP Interface'),
+                width: 150
+            },{
+                id: 'ipAddresses',
+                dataIndex: 'ipAddressObjs',
+                header: _t('IP Addresses'),
+                renderer: function(ipaddresses) {
+                    var returnString = '';
+                    Ext.each(ipaddresses, function(ipaddress, index) {
+                        if (index > 0) returnString += ', ';
+                        if (ipaddress && Ext.isObject(ipaddress) && ipaddress.netmask) {
+                            var name = ipaddress.name + '/' + ipaddress.netmask;
+                            returnString += Zenoss.render.link(ipaddress.uid, undefined, name);
+                        }
+                        else if (Ext.isString(ipaddress)) {
+                            returnString += ipaddress;
+                        }
+                    });
+                    return returnString;
+                }
+            },{
                 id: 'description',
                 dataIndex: 'description',
-                header: _t('Description'),
+                header: _t('Description')
+            },{
+                id: 'macaddress',
+                dataIndex: 'macaddress',
+                header: _t('MAC Address'),
                 sortable: true,
-                width: 180
+                width: 120
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
+            },{
+                id: 'operStatus',
+                dataIndex: 'operStatus',
+                header: _t('Operational Status'),
+                width: 110
+            },{
+                id: 'adminStatus',
+                dataIndex: 'adminStatus',
+                header: _t('Admin Status'),
+                width: 80
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -837,6 +888,127 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
 });
 
 Ext.reg('WinTeamInterfacePanel', ZC.WinTeamInterfacePanel);
+
+ZC.registerName('WindowsInterface', _t('Interface'), _t('Interfaces'));
+
+ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'description',
+            componentType: 'WindowsInterface',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'name'},
+                {name: 'description'},
+                {name: 'ipAddressObjs'},
+                {name: 'network'},//, mapping:'network.uid'},
+                {name: 'macaddress'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'operStatus'},
+                {name: 'adminStatus'},
+                {name: 'status'},
+                {name: 'monitor'},
+                {name: 'monitored'},
+                {name: 'locking'},
+                {name: 'duplex'},
+                {name: 'netmask'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('IP Interface'),
+                width: 150
+            },{
+                id: 'ipAddresses',
+                dataIndex: 'ipAddressObjs',
+                header: _t('IP Addresses'),
+                renderer: function(ipaddresses) {
+                    var returnString = '';
+                    Ext.each(ipaddresses, function(ipaddress, index) {
+                        if (index > 0) returnString += ', ';
+                        if (ipaddress && Ext.isObject(ipaddress) && ipaddress.netmask) {
+                            var name = ipaddress.name + '/' + ipaddress.netmask;
+                            returnString += Zenoss.render.link(ipaddress.uid, undefined, name);
+                        }
+                        else if (Ext.isString(ipaddress)) {
+                            returnString += ipaddress;
+                        }
+                    });
+                    return returnString;
+                }
+            },{
+                id: 'description',
+                dataIndex: 'description',
+                header: _t('Description')
+            },{
+                id: 'macaddress',
+                dataIndex: 'macaddress',
+                header: _t('MAC Address'),
+                sortable: true,
+                width: 120
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
+            },{
+                id: 'operStatus',
+                dataIndex: 'operStatus',
+                header: _t('Operational Status'),
+                width: 110
+            },{
+                id: 'adminStatus',
+                dataIndex: 'adminStatus',
+                header: _t('Admin Status'),
+                width: 80
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WindowsInterfacePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WindowsInterfacePanel', ZC.WindowsInterfacePanel);
+
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_teaminterface',
+    text: _t('Interfaces'),
+    xtype: 'WindowsInterfacePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'WinTeamInterface') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.WindowsInterfacePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',

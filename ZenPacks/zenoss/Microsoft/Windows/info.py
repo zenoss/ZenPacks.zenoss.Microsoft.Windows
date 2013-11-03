@@ -36,6 +36,10 @@ class TeamInterfaceInfo(BaseIpInterfaceInfo):
     numofnics = ProxyProperty('numofnics')
 
 
+class InterfaceInfo(BaseIpInterfaceInfo):
+    implements(IInterfaceInfo)
+
+
 class WinServiceInfo(WinComponentInfo):
     implements(IWinServiceInfo)
 

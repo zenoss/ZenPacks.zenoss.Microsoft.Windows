@@ -18,6 +18,12 @@
         />
 
     <adapter
+        factory=".info.InterfaceInfo"
+        for=".Interface.Interface"
+        provides=".interfaces.IInterfaceInfo"
+        />
+
+    <adapter
         factory=".info.ClusterDeviceInfo"
         for=".ClusterDevice.ClusterDevice"
         provides=".interfaces.IClusterDeviceInfo"
@@ -105,6 +111,18 @@
         provides=".datasources.WinProcessDataSource.IWinProcessDataSourceInfo"
         for=".datasources.WinProcessDataSource.WinProcessDataSource"
         factory=".datasources.WinProcessDataSource.WinProcessDataSourceInfo"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IIndexableWrapper"
+        for=".TeamInterface.TeamInterface"
+        factory=".global_catalog.TeamInterfaceWrapper"
+        />
+
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IIndexableWrapper"
+        for=".Interface.Interface"
+        factory=".global_catalog.InterfaceWrapper"
         />
 
     <!-- Device Links -->

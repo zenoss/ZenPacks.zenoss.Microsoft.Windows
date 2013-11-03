@@ -308,7 +308,7 @@ class WinOS(PythonPlugin):
                                 "skipped".format(ipRecord))
 
             int_om = ObjectMap()
-            int_om.id = prepId(standardizeInstance(interconf.Description))
+            int_om.id = prepId(standardizeInstance(inter.Index + "-" + interconf.Description))
 
             int_om.setIpAddresses = ips
             int_om.interfaceName = inter.Description
@@ -368,14 +368,26 @@ class WinOS(PythonPlugin):
             if getattr(inter, 'TeamMode', None) is not None:
                 if inter.TeamMode == '0':
                     log.debug('The TeamNic ID {0}'.format(int_om.id))
+                    # Get the team name from the Description of the interface
+                    int_om.teamname = interconf.Description.strip()
                     mapTeamInter.append(int_om)
                     continue
             mapInter.append(int_om)
 
+        # Set supporting interfaces on TEAM nics
+        for teamNic in mapTeamInter:
+            members = []
+            for nic in mapInter:
+                if getattr(nic, 'teamname', None) is not None:
+                    if nic.teamname == teamNic.teamname:
+                        # This nic is a member of this team interface
+                        members.append(nic.id)
+            teamNic.setInterfaces = members
+
         maps.append(RelationshipMap(
             relname="interfaces",
             compname="os",
-            modname="Products.ZenModel.IpInterface",
+            modname="ZenPacks.zenoss.Microsoft.Windows.Interface",
             objmaps=mapInter))
 
         maps.append(RelationshipMap(

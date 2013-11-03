@@ -33,6 +33,10 @@ class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
     numofnics = schema.TextLine(title=_t(u'# of Nics'), readonly=True)
 
 
+class IInterfaceInfo(IBaseIpInterfaceInfo):
+    pass
+
+
 class IWinServiceInfo(IWinComponentInfo):
     servicename = schema.TextLine(title=_t(u'Service Name'), readonly=True)
     caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
