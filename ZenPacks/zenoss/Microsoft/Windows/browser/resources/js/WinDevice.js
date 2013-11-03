@@ -806,6 +806,7 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'usesMonitorAttribute'},
                 {name: 'operStatus'},
                 {name: 'adminStatus'},
+                {name: 'nic_count'},
                 {name: 'status'},
                 {name: 'monitor'},
                 {name: 'monitored'},
@@ -847,6 +848,11 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'description',
                 dataIndex: 'description',
                 header: _t('Description')
+            },{
+                id: 'niccount',
+                dataIndex: 'nic_count',
+                header: _t('# of NICs'),
+                width: 100
             },{
                 id: 'macaddress',
                 dataIndex: 'macaddress',

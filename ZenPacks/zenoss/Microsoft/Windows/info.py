@@ -33,7 +33,10 @@ class WinComponentInfo(ComponentInfo):
 
 class TeamInterfaceInfo(BaseIpInterfaceInfo):
     implements(ITeamInterfaceInfo)
-    numofnics = ProxyProperty('numofnics')
+
+    @property
+    def nic_count(self):
+        return self._object.teaminterfaces.countObjects()
 
 
 class InterfaceInfo(BaseIpInterfaceInfo):
