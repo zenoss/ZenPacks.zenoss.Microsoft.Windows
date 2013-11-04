@@ -125,6 +125,13 @@
         factory=".global_catalog.InterfaceWrapper"
         />
 
+
+    <!-- Custom Path Reporters -->
+    <adapter factory=".catalog.paths.InterfacePathReporter"
+        for=".Interface.Interface"
+        provides="Products.Zuul.catalog.interfaces.IPathReporter"
+        />
+
     <!-- Device Links -->
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
         <subscriber
