@@ -17,11 +17,10 @@ import string
 from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
-from Products.DataCollector.plugins.zenoss.snmp.CpuMap import getManufacturerAndModel
-from Products.ZenUtils.IpUtil import checkip, parse_iprange, IpAddressError
+from Products.ZenUtils.IpUtil import checkip, IpAddressError
 from Products.ZenUtils.Utils import prepId
 from Products.Zuul.utils import safe_hasattr
-from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_routetype, lookup_protocol, \
+from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_routetype, lookup_protocol, \
     lookup_drivetype, lookup_zendrivetype, guessBlockSize, addLocalLibPath, lookup_operstatus
 
 addLocalLibPath()
