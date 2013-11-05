@@ -16441,19 +16441,16 @@ True
 </object>
 <object id='IISSites' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
+Microsoft IIS site monitoring. (PowerShell Get-Counter)
 </property>
 <property type="text" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
+Microsoft IIS site monitoring. (PowerShell Get-Counter)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
-Products.ZenModel.Device
+ZenPacks.zenoss.Microsoft.Windows.WinIIS
 </property>
 <tomanycont id='datasources'>
 <object id='iisBytesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16480,25 +16477,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisBytesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisBytesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16525,25 +16513,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisBytesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisCGIRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16570,25 +16549,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCGIRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisConnectionAttempts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16615,25 +16585,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisConnectionAttempts' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisCopyRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16660,25 +16621,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCopyRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisCurrentConnections' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16705,25 +16657,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCurrentConnections' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisDeleteRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16750,25 +16693,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisDeleteRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisFilesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16795,25 +16729,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisFilesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisFilesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16840,25 +16765,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisFilesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisGetRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16885,25 +16801,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisGetRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisHeadRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16930,25 +16837,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisHeadRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisISAPIExtensionRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -16975,25 +16873,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisISAPIExtensionRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17020,25 +16909,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisLockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisMkcolRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17065,25 +16945,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisMkcolRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisMoveRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17110,25 +16981,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisMoveRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisOptionsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17155,25 +17017,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisOptionsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisOtherRequestMethods' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17200,25 +17053,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisOtherRequestMethods' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPostRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17245,25 +17089,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPostRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPropfindRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17290,25 +17125,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPropfindRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisProppatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17335,25 +17161,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisProppatchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPutRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17380,25 +17197,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPutRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisSearchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17425,25 +17233,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisSearchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisTraceRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17470,25 +17269,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisTraceRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisUnlockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -17515,25 +17305,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='iisUnlockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Monitoring for IIS Sites via PowerShell
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='sitecheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinIISSiteCollectionDataSource' class='WinIISSiteCollectionDataSource'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 IISSite
 </property>
@@ -17542,6 +17323,9 @@ True
 </property>
 <property type="string" id="component" mode="w" >
 ${here/id}
+</property>
+<property type="string" id="eventClass" mode="w" >
+/Status
 </property>
 <property type="int" id="severity" mode="w" >
 3
@@ -17558,10 +17342,7 @@ ${here/statusname}
 </object>
 </tomanycont>
 <tomanycont id='graphDefs'>
-<object id='IIS - Connections' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
+<object id='IIS - Connection Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -17587,10 +17368,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-0
+1
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisConnectionAttempts' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Attempts' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -17604,7 +17385,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17619,12 +17400,40 @@ iisConnectionAttempts_iisConnectionAttempts
 AVERAGE
 </property>
 </object>
-<object id='iisCurrentConnections' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisCurrentConnections_iisCurrentConnections
+</tomanycont>
+</object>
+<object id='IIS - Connections' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+connections
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
 </property>
 <property type="long" id="sequence" mode="w" >
-1
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='Current' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
@@ -17636,10 +17445,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.0lf
 </property>
 <property type="string" id="legend" mode="w" >
-Current Connections
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -17653,10 +17462,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='IIS - Files' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
+<object id='IIS - File Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -17682,10 +17488,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-1
+3
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisFilesReceived' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -17699,7 +17505,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17714,7 +17520,7 @@ iisFilesReceived_iisFilesReceived
 AVERAGE
 </property>
 </object>
-<object id='iisFilesSent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -17728,7 +17534,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17745,10 +17551,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='IIS - Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
+<object id='IIS - Request Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -17774,24 +17577,24 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-3
+2
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisCGIRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='CGI' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17806,21 +17609,21 @@ iisCGIRequests_iisCGIRequests
 AVERAGE
 </property>
 </object>
-<object id='iisCopyRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='COPY' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17835,21 +17638,21 @@ iisCopyRequests_iisCopyRequests
 AVERAGE
 </property>
 </object>
-<object id='iisDeleteRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='DELETE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 2
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17864,21 +17667,21 @@ iisDeleteRequests_iisDeleteRequests
 AVERAGE
 </property>
 </object>
-<object id='iisGetRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='GET' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 3
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17893,21 +17696,21 @@ iisGetRequests_iisGetRequests
 AVERAGE
 </property>
 </object>
-<object id='iisHeadRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='HEAD' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 4
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17922,21 +17725,21 @@ iisHeadRequests_iisHeadRequests
 AVERAGE
 </property>
 </object>
-<object id='iisISAPIExtensionRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='ISAPI' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 5
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17951,21 +17754,21 @@ iisISAPIExtensionRequests_iisISAPIExtensionRequests
 AVERAGE
 </property>
 </object>
-<object id='iisLockRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='LOCK' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 6
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -17980,21 +17783,21 @@ iisLockRequests_iisLockRequests
 AVERAGE
 </property>
 </object>
-<object id='iisMkcolRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='MKCOL' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 7
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18009,21 +17812,21 @@ iisMkcolRequests_iisMkcolRequests
 AVERAGE
 </property>
 </object>
-<object id='iisMoveRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='MOVE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 8
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18038,21 +17841,21 @@ iisMoveRequests_iisMoveRequests
 AVERAGE
 </property>
 </object>
-<object id='iisOptionsRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='OPTIONS' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 9
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18067,21 +17870,21 @@ iisOptionsRequests_iisOptionsRequests
 AVERAGE
 </property>
 </object>
-<object id='iisOtherRequestMethods' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Other' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 10
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18096,21 +17899,21 @@ iisOtherRequestMethods_iisOtherRequestMethods
 AVERAGE
 </property>
 </object>
-<object id='iisPostRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='POST' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 11
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18125,21 +17928,21 @@ iisPostRequests_iisPostRequests
 AVERAGE
 </property>
 </object>
-<object id='iisPropfindRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='PROPFIND' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 12
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18154,21 +17957,21 @@ iisPropfindRequests_iisPropfindRequests
 AVERAGE
 </property>
 </object>
-<object id='iisProppatchRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='PROPPATCH' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 13
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18183,21 +17986,21 @@ iisProppatchRequests_iisProppatchRequests
 AVERAGE
 </property>
 </object>
-<object id='iisPutRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='PUT' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 14
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18212,21 +18015,21 @@ iisPutRequests_iisPutRequests
 AVERAGE
 </property>
 </object>
-<object id='iisSearchRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='SEARCH' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 15
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18241,21 +18044,21 @@ iisSearchRequests_iisSearchRequests
 AVERAGE
 </property>
 </object>
-<object id='iisTraceRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='TRACE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 16
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18270,21 +18073,21 @@ iisTraceRequests_iisTraceRequests
 AVERAGE
 </property>
 </object>
-<object id='iisUnlockRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='UNLOCK' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 17
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18302,9 +18105,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='IIS - Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Monitoring for IIS Sites via PowerShell
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -18318,7 +18118,7 @@ bytes/sec
 False
 </property>
 <property type="boolean" id="base" mode="w" >
-False
+True
 </property>
 <property type="int" id="miny" mode="w" >
 0
@@ -18330,10 +18130,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-2
+4
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisBytesReceived' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -18347,7 +18147,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18362,7 +18162,7 @@ iisBytesReceived_iisBytesReceived
 AVERAGE
 </property>
 </object>
-<object id='iisBytesSent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -18376,7 +18176,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -18397,19 +18197,16 @@ AVERAGE
 </object>
 <object id='IISSites-TypePerf' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
+Microsoft IIS site monitoring. (typeperf)
 </property>
 <property type="text" id="description" mode="w" >
-IIS Site monitor via TypePerf
+Microsoft IIS site monitoring. (typeperf)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
-Products.ZenModel.Device
+ZenPacks.zenoss.Microsoft.Windows.WinIIS
 </property>
 <tomanycont id='datasources'>
 <object id='iisBytesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18436,25 +18233,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisBytesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisBytesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18481,25 +18269,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisBytesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisCGIRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18526,25 +18305,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCGIRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisConnectionAttempts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18567,29 +18337,20 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
 \Web Service(${here/sitename})\Connection Attempts/sec
 </property>
 <property type="string" id="strategy" >
-powershell Get-Counter
+typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisConnectionAttempts' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisCopyRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18616,25 +18377,52 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCopyRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
+</object>
+</tomanycont>
+</object>
+<object id='iisCurrentConnections' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRS
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+</property>
+<property type="string" id="resource" >
+\Web Service(${here/sitename})\Connection Attempts/sec
+</property>
+<property type="string" id="strategy" >
+typeperf -sc1
+</property>
+<tomanycont id='datapoints'>
+<object id='iisCurrentConnections' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='iisDeleteRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18661,25 +18449,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisDeleteRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisFilesReceived' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18706,25 +18485,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisFilesReceived' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisFilesSent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18751,25 +18521,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisFilesSent' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisGetRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18796,25 +18557,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisGetRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisHeadRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18841,25 +18593,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisHeadRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisISAPIExtensionRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18886,25 +18629,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisISAPIExtensionRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisLockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18931,25 +18665,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisLockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisMkcolRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -18976,25 +18701,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisMkcolRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisMoveRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19021,25 +18737,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisMoveRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisOptionsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19066,25 +18773,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisOptionsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisOtherRequestMethods' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19111,25 +18809,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisOtherRequestMethods' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPostRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19156,25 +18845,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPostRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPropfindRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19201,25 +18881,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPropfindRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisProppatchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19246,25 +18917,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisProppatchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisPutRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19291,25 +18953,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisPutRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisSearchRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19336,25 +18989,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisSearchRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisTraceRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19381,25 +19025,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisTraceRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='iisUnlockRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19426,25 +19061,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='iisUnlockRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-IIS Site monitor via TypePerf
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='sitecheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinIISSiteCollectionDataSource' class='WinIISSiteCollectionDataSource'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 IISSite
 </property>
@@ -19453,6 +19079,9 @@ True
 </property>
 <property type="string" id="component" mode="w" >
 ${here/id}
+</property>
+<property type="string" id="eventClass" mode="w" >
+/Status
 </property>
 <property type="int" id="severity" mode="w" >
 3
@@ -19469,10 +19098,7 @@ ${here/statusname}
 </object>
 </tomanycont>
 <tomanycont id='graphDefs'>
-<object id='IIS - Connections' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
+<object id='IIS - Connection Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -19498,13 +19124,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-0
+1
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisConnectionAttempts' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisConnectionAttempts_iisConnectionAttempts
-</property>
+<object id='Attempts' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -19512,16 +19135,16 @@ iisConnectionAttempts_iisConnectionAttempts
 LINE
 </property>
 <property type="long" id="lineWidth" mode="w" >
-2
+1
 </property>
 <property type="boolean" id="stacked" mode="w" >
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Connection Attempts
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19535,10 +19158,67 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='IIS - Files' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
+<object id='IIS - Connections' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
 </property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+connections
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='Current' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+iisCurrentConnections_iisCurrentConnections
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='IIS - File Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -19564,13 +19244,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-1
+3
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisFilesReceived' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisFilesReceived_iisFilesReceived
-</property>
+<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -19584,7 +19261,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -19599,10 +19276,7 @@ iisFilesReceived_iisFilesReceived
 AVERAGE
 </property>
 </object>
-<object id='iisFilesSent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisFilesSent_iisFilesSent
-</property>
+<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -19616,10 +19290,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Sent
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19633,10 +19307,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='IIS - Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
+<object id='IIS - Request Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -19662,13 +19333,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-3
+2
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisCGIRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisCGIRequests_iisCGIRequests
-</property>
+<object id='CGI' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -19682,10 +19350,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-CGI
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19697,10 +19365,7 @@ iisCGIRequests_iisCGIRequests
 AVERAGE
 </property>
 </object>
-<object id='iisCopyRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisCopyRequests_iisCopyRequests
-</property>
+<object id='COPY' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -19714,10 +19379,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-COPY
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19729,10 +19394,7 @@ iisCopyRequests_iisCopyRequests
 AVERAGE
 </property>
 </object>
-<object id='iisDeleteRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisDeleteRequests_iisDeleteRequests
-</property>
+<object id='DELETE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 2
 </property>
@@ -19746,10 +19408,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-DELETE
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19761,10 +19423,7 @@ iisDeleteRequests_iisDeleteRequests
 AVERAGE
 </property>
 </object>
-<object id='iisGetRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisGetRequests_iisGetRequests
-</property>
+<object id='GET' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 3
 </property>
@@ -19778,10 +19437,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-GET
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19793,10 +19452,7 @@ iisGetRequests_iisGetRequests
 AVERAGE
 </property>
 </object>
-<object id='iisHeadRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisHeadRequests_iisHeadRequests
-</property>
+<object id='HEAD' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 4
 </property>
@@ -19810,10 +19466,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-HEAD
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19825,10 +19481,7 @@ iisHeadRequests_iisHeadRequests
 AVERAGE
 </property>
 </object>
-<object id='iisISAPIExtensionRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisISAPIExtensionRequests_iisISAPIExtensionRequests
-</property>
+<object id='ISAPI' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 5
 </property>
@@ -19842,10 +19495,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-ISAPI Extension
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19857,10 +19510,7 @@ iisISAPIExtensionRequests_iisISAPIExtensionRequests
 AVERAGE
 </property>
 </object>
-<object id='iisLockRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisLockRequests_iisLockRequests
-</property>
+<object id='LOCK' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 6
 </property>
@@ -19874,10 +19524,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-LOCK
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19889,10 +19539,7 @@ iisLockRequests_iisLockRequests
 AVERAGE
 </property>
 </object>
-<object id='iisMkcolRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisMkcolRequests_iisMkcolRequests
-</property>
+<object id='MKCOL' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 7
 </property>
@@ -19906,10 +19553,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-MKCOL
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19921,10 +19568,7 @@ iisMkcolRequests_iisMkcolRequests
 AVERAGE
 </property>
 </object>
-<object id='iisMoveRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisMoveRequests_iisMoveRequests
-</property>
+<object id='MOVE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 8
 </property>
@@ -19938,10 +19582,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-MOVE
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19953,10 +19597,7 @@ iisMoveRequests_iisMoveRequests
 AVERAGE
 </property>
 </object>
-<object id='iisOptionsRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisOptionsRequests_iisOptionsRequests
-</property>
+<object id='OPTIONS' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 9
 </property>
@@ -19970,10 +19611,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-OPTIONS
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -19985,10 +19626,7 @@ iisOptionsRequests_iisOptionsRequests
 AVERAGE
 </property>
 </object>
-<object id='iisOtherRequestMethods' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisOtherRequestMethods_iisOtherRequestMethods
-</property>
+<object id='Other' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 10
 </property>
@@ -20002,10 +19640,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Other
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20017,10 +19655,7 @@ iisOtherRequestMethods_iisOtherRequestMethods
 AVERAGE
 </property>
 </object>
-<object id='iisPostRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisPostRequests_iisPostRequests
-</property>
+<object id='POST' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 11
 </property>
@@ -20034,10 +19669,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-POST
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20049,10 +19684,7 @@ iisPostRequests_iisPostRequests
 AVERAGE
 </property>
 </object>
-<object id='iisPropfindRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisPropfindRequests_iisPropfindRequests
-</property>
+<object id='PROPFIND' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 12
 </property>
@@ -20066,10 +19698,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-PROPFIND
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20081,10 +19713,7 @@ iisPropfindRequests_iisPropfindRequests
 AVERAGE
 </property>
 </object>
-<object id='iisProppatchRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisProppatchRequests_iisProppatchRequests
-</property>
+<object id='PROPPATCH' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 13
 </property>
@@ -20098,10 +19727,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-PROPPATCH
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20113,10 +19742,7 @@ iisProppatchRequests_iisProppatchRequests
 AVERAGE
 </property>
 </object>
-<object id='iisPutRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisPutRequests_iisPutRequests
-</property>
+<object id='PUT' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 14
 </property>
@@ -20130,10 +19756,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-PUT
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20145,10 +19771,7 @@ iisPutRequests_iisPutRequests
 AVERAGE
 </property>
 </object>
-<object id='iisSearchRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisSearchRequests_iisSearchRequests
-</property>
+<object id='SEARCH' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 15
 </property>
@@ -20162,10 +19785,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-SEARCH
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20177,10 +19800,7 @@ iisSearchRequests_iisSearchRequests
 AVERAGE
 </property>
 </object>
-<object id='iisTraceRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisTraceRequests_iisTraceRequests
-</property>
+<object id='TRACE' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 16
 </property>
@@ -20194,10 +19814,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-TRACE
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20209,10 +19829,7 @@ iisTraceRequests_iisTraceRequests
 AVERAGE
 </property>
 </object>
-<object id='iisUnlockRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisUnlockRequests_iisUnlockRequests
-</property>
+<object id='UNLOCK' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 17
 </property>
@@ -20226,10 +19843,10 @@ AREA
 True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-UNLOCK
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20244,9 +19861,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='IIS - Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-IIS Site monitor via TypePerf
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -20260,7 +19874,7 @@ bytes/sec
 False
 </property>
 <property type="boolean" id="base" mode="w" >
-False
+True
 </property>
 <property type="int" id="miny" mode="w" >
 0
@@ -20272,13 +19886,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-2
+4
 </property>
 <tomanycont id='graphPoints'>
-<object id='iisBytesReceived' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisBytesReceived_iisBytesReceived
-</property>
+<object id='Received' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -20292,10 +19903,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Received
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -20307,10 +19918,7 @@ iisBytesReceived_iisBytesReceived
 AVERAGE
 </property>
 </object>
-<object id='iisBytesSent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-iisBytesSent_iisBytesSent
-</property>
+<object id='Sent' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -20324,10 +19932,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Sent
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
