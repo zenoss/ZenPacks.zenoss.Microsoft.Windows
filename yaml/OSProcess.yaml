@@ -42,6 +42,7 @@
 
     Memory Usage:
       units: bytes
+      base: true
       miny: 0
 
       graphpoints:
