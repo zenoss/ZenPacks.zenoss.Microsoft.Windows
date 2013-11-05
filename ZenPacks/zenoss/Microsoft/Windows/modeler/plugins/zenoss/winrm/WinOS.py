@@ -38,7 +38,6 @@ ENUM_INFOS = dict(
     sysEnclosure=create_enum_info('select * from Win32_SystemEnclosure'),
     computerSystem=create_enum_info('select * from Win32_ComputerSystem'),
     operatingSystem=create_enum_info('select * from Win32_OperatingSystem'),
-    sysProcessor=create_enum_info('select * from Win32_Processor'),
     cacheMemory=create_enum_info('select * from Win32_CacheMemory'),
     netRoute=create_enum_info('select * from Win32_IP4RouteTable'),
     netInt=create_enum_info('select * from Win32_NetworkAdapter'),
@@ -188,29 +187,6 @@ class WinOS(PythonPlugin):
         os_om.totalSwap = \
             int(res.operatingSystem.TotalVirtualMemorySize) * 1024
         maps.append(os_om)
-
-        # Processor Map
-        mapProc = []
-        for proc in res.sysProcessor:
-            proc_om = ObjectMap()
-            proc_om.id = prepId(proc.DeviceID)
-            proc_om.caption = proc.Caption
-            proc_om.title = proc.Name
-            if safe_hasattr(proc, 'NumberOfCores'):
-                proc_om.numbercore = proc.NumberOfCores
-            proc_om.status = proc.Status
-            proc_om.architecture = lookup_architecture(int(proc.Architecture))
-            proc_om.clockspeed = proc.MaxClockSpeed  # MHz
-            proc_om.setProductKey = getManufacturerAndModel(' '.join([proc.Manufacturer, proc.Description]))
-            mapProc.append(proc_om)
-
-        maps.append(RelationshipMap(
-            relname="winrmproc",
-            compname="hw",
-            modname="ZenPacks.zenoss.Microsoft.Windows.WinProc",
-            objmaps=mapProc))
-
-        # OS Map
 
         # Operating System Map
         res.operatingSystem.Caption = re.sub(r'\s*\S*Microsoft\S*\s*', '',

@@ -41,6 +41,25 @@ setzPropertyCategory('zDBInstances', 'Misc')
 setzPropertyCategory('zDBInstancesPassword', 'Misc')
 
 
+# Used by zenchkschema to validate relationship schema.
+productNames = (
+    'ClusterDevice',
+    'ClusterResource',
+    'ClusterService',
+    'CPU',
+    'Device',
+    'Interface',
+    'OperatingSystem',
+    'TeamInterface',
+    'WinIIS',
+    'WinService',
+    'WinSQLBackup',
+    'WinSQLDatabase',
+    'WinSQLInstance',
+    'WinSQLJob',
+    )
+
+
 class ZenPack(ZenPackBase):
 
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']

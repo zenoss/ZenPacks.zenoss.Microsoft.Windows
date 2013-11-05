@@ -50,9 +50,9 @@ class Processes(WinRMPlugin):
         PROXY_MATCH_PROPERTY,
         )
 
-    wql_queries = [
-        "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
-        ]
+    wql_queries = {
+        'Win32_Process': "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
+        }
 
     def process(self, device, results, log):
         log.info(
