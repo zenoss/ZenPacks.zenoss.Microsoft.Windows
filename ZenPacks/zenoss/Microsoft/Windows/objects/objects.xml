@@ -19953,19 +19953,16 @@ AVERAGE
 </object>
 <object id='MSExchangeIS' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Microsoft Exchange Information Store
+Microsoft Exchange monitoring. (PowerShell Get-Counter)
 </property>
 <property type="text" id="description" mode="w" >
-Microsoft Exchange Information Store
+Microsoft Exchange monitoring. (PowerShell Get-Counter)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
 <object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -19992,25 +19989,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20037,25 +20025,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20082,25 +20061,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20127,25 +20097,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20172,25 +20133,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20217,25 +20169,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20262,25 +20205,16 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -20307,17 +20241,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
 </property>
 </object>
 </tomanycont>
@@ -20325,9 +20253,6 @@ Microsoft Exchange Information Store
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='Exchange - Mailbox Operations' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -20356,7 +20281,7 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Folder Opens    ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -20370,7 +20295,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20385,9 +20310,9 @@ mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
 AVERAGE
 </property>
 </object>
-<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Local Deliveries' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
-1
+2
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
@@ -20399,7 +20324,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20414,9 +20339,9 @@ mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
 AVERAGE
 </property>
 </object>
-<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Message Opens   ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
-2
+1
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
@@ -20428,7 +20353,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20445,10 +20370,70 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Exchange - RPC Operations' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
+<object id='Exchange - RPC Latency' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
 </property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+seconds
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+3
+</property>
+<tomanycont id='graphPoints'>
+<object id='Averaged' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="rpn" mode="w" >
+1000,/
+</property>
+<property type="string" id="dpName" mode="w" >
+mseisRPCAveragedLatency_mseisRPCAveragedLatency
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Exchange - RPC Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -20474,10 +20459,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-1
+2
 </property>
 <tomanycont id='graphPoints'>
-<object id='mseisRPCAveragedLatency' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Operations' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -20491,36 +20476,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-mseisRPCAveragedLatency_mseisRPCAveragedLatency
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20535,9 +20491,40 @@ mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
 AVERAGE
 </property>
 </object>
-<object id='mseisRPCRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+</tomanycont>
+</object>
+<object id='Exchange - RPC Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+requests
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
 <property type="long" id="sequence" mode="w" >
-2
+1
+</property>
+<tomanycont id='graphPoints'>
+<object id='Current' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
@@ -20549,7 +20536,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20567,9 +20554,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='SMTP Server - Local Queue Length' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -20595,10 +20579,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-2
+4
 </property>
 <tomanycont id='graphPoints'>
-<object id='smtpServerLocalQueueLength' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Queued' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -20612,7 +20596,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -20630,9 +20614,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='SMTP Server - Message Delivery Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -20658,10 +20639,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-3
+5
 </property>
 <tomanycont id='graphPoints'>
-<object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Messages' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -20675,7 +20656,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -21463,19 +21444,16 @@ AVERAGE
 </object>
 <object id='MSExchangeIS-TypePerf' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Microsoft Exchange Information Store
+Microsoft Exchange monitoring. (typeperf)
 </property>
 <property type="text" id="description" mode="w" >
-Microsoft Exchange Information Store
+Microsoft Exchange monitoring. (typeperf)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
 <object id='mseisMailboxFolderOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21502,25 +21480,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisMailboxLocalDeliveryRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21547,25 +21516,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisMailboxMessageOpensPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21592,25 +21552,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCAveragedLatency' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21637,25 +21588,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCOperationsPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21682,25 +21624,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='mseisRPCRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21727,25 +21660,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='smtpServerLocalQueueLength' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21772,25 +21696,16 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
-</property>
 </object>
 </tomanycont>
 </object>
 <object id='smtpServerMessagesDeliveredPerSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -21817,17 +21732,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Microsoft Exchange Information Store
 </property>
 </object>
 </tomanycont>
@@ -21835,9 +21744,6 @@ Microsoft Exchange Information Store
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='Exchange - Mailbox Operations' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -21866,10 +21772,7 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='mseisMailboxFolderOpensPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
-</property>
+<object id='Folder Opens    ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -21883,10 +21786,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%7.2lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Folder Opens
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -21898,42 +21801,7 @@ mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
 AVERAGE
 </property>
 </object>
-<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
-</property>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf
-</property>
-<property type="string" id="legend" mode="w" >
-Local Deliveries
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='mseisMailboxMessageOpensPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
-</property>
+<object id='Local Deliveries' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 2
 </property>
@@ -21947,10 +21815,39 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%7.2lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Message Opens
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Message Opens   ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -21964,10 +21861,70 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Exchange - RPC Operations' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
+<object id='Exchange - RPC Latency' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
 </property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+seconds
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+3
+</property>
+<tomanycont id='graphPoints'>
+<object id='Averaged' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="rpn" mode="w" >
+1000,/
+</property>
+<property type="string" id="dpName" mode="w" >
+mseisRPCAveragedLatency_mseisRPCAveragedLatency
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Exchange - RPC Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -21993,13 +21950,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-1
+2
 </property>
 <tomanycont id='graphPoints'>
-<object id='mseisRPCAveragedLatency' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisRPCAveragedLatency_mseisRPCAveragedLatency
-</property>
+<object id='Operations' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -22013,42 +21967,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%7.2lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Average Latency
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-mseisRPCAveragedLatency_mseisRPCAveragedLatency
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-<object id='mseisRPCOperationsPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
-</property>
-<property type="long" id="sequence" mode="w" >
-1
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf
-</property>
-<property type="string" id="legend" mode="w" >
-RPC Operations
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -22060,12 +21982,40 @@ mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
 AVERAGE
 </property>
 </object>
-<object id='mseisRPCRequests' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-mseisRPCRequests_mseisRPCRequests
+</tomanycont>
+</object>
+<object id='Exchange - RPC Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+requests
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
 </property>
 <property type="long" id="sequence" mode="w" >
-2
+1
+</property>
+<tomanycont id='graphPoints'>
+<object id='Current' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
@@ -22077,10 +22027,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%7.2lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-RPC Requests
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -22095,9 +22045,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='SMTP Server - Local Queue Length' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -22123,18 +22070,15 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-2
+4
 </property>
 <tomanycont id='graphPoints'>
-<object id='smtpServerLocalQueueLength' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-smtpServerLocalQueueLength_smtpServerLocalQueueLength
-</property>
+<object id='Queued' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-AREA
+LINE
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
@@ -22143,10 +22087,10 @@ AREA
 False
 </property>
 <property type="string" id="format" mode="w" >
-%8.0lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Queued Messages
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -22161,9 +22105,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='SMTP Server - Message Delivery Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Microsoft Exchange Information Store
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -22189,13 +22130,10 @@ False
 True
 </property>
 <property type="long" id="sequence" mode="w" >
-3
+5
 </property>
 <tomanycont id='graphPoints'>
-<object id='smtpServerMessagesDeliveredPerSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
-</property>
+<object id='Messages' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -22209,10 +22147,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%7.2lf
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Delivered Messages
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
