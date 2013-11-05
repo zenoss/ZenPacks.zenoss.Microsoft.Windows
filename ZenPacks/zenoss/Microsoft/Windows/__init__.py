@@ -40,6 +40,8 @@ for name, default_value, type_ in _PACK_Z_PROPS:
 setzPropertyCategory('zDBInstances', 'Misc')
 setzPropertyCategory('zDBInstancesPassword', 'Misc')
 
+# zProperties we share with WindowsMonitor. Require special handling.
+SHARED_ZPROPERTIES = ('zWinUser', 'zWinPassword')
 
 class ZenPack(ZenPackBase):
 
@@ -49,6 +51,7 @@ class ZenPack(ZenPackBase):
     def install(self, app):
         super(ZenPack, self).install(app)
 
+        self.usurp_zproperties(app.zport.dmd)
         self.register_devtype(app.zport.dmd)
 
         # add symlinks for command line utilities
@@ -58,12 +61,48 @@ class ZenPack(ZenPackBase):
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
             self.unregister_devtype(app.zport.dmd)
+            self.cede_zproperties(app.zport.dmd)
 
             # remove symlinks for command line utilities
             for utilname in self.binUtilities:
                 self.removeBinFile(utilname)
 
         super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
+
+    def usurp_zproperties(self, dmd):
+        '''
+        Usurp control of zProperties from the WindowsMonitor ZenPack.
+
+        This is done to prevent WindowsMonitor from removing zProperties
+        this ZenPack adds and needs when WindowsMonitor is removed.
+        '''
+        try:
+            old = dmd.getObjByPath(
+                'ZenPackManager/packs/ZenPacks.zenoss.WindowsMonitor')
+        except Exception:
+            return
+
+        old.packZProperties = [
+            t for t in old.packZProperties if t[0] not in SHARED_ZPROPERTIES]
+
+    def cede_zproperties(self, dmd):
+        '''
+        In the event that this ZenPack is removed from a system that
+        still has WindowsMonitor installed, cede control of shared
+        zProperties back to WindowsMonitor.
+        '''
+        try:
+            old = dmd.getObjByPath(
+                'ZenPackManager/packs/ZenPacks.zenoss.WindowsMonitor')
+
+            # Fall back to class definition instead of instance.
+            del(old.packZProperties)
+        except Exception:
+            return
+
+        # Prevent removal of shared properties.
+        self.packZProperties = [
+            t for t in self.packZProperties if t[0] not in SHARED_ZPROPERTIES]
 
     def register_devtype(self, dmd):
         '''
