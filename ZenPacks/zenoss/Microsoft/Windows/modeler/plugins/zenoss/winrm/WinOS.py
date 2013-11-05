@@ -11,6 +11,7 @@
 Windows Operating System Collection
 
 """
+from twisted.internet.defer import DeferredList
 import re
 import string
 from pprint import pformat
@@ -27,6 +28,7 @@ addLocalLibPath()
 
 from txwinrm.collect import ConnectionInfo, WinrmCollectClient, \
     create_enum_info, RequestError
+from txwinrm.shell import create_single_shot_command
 
 cluster_namespace = 'mscluster'
 resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
@@ -97,13 +99,39 @@ class WinOS(PythonPlugin):
             connectiontype,
             keytab)
 
+        deferreds = []
+
         try:
-            results = winrm.do_collect(conn_info, ENUM_INFOS.values())
+            deferreds.append(winrm.do_collect(conn_info, ENUM_INFOS.values()))
+            winrs = create_single_shot_command(conn_info)
+
         except RequestError as e:
             log.error(e[0])
             raise
 
-        return results
+        # Get registry information
+        psRegistryGet = []
+        # Base command line setup for powershell
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
+            "-OutputFormat TEXT -Command "
+
+        # Get information for network interfaces
+        # This information will help define the TEAM/NLB components
+        psRegistryGet.append("get-childitem \'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}\'")
+        psRegistryGet.append(" | foreach-object {get-itemproperty $_.pspath}")
+        psRegistryGet.append(" | where-object {$_.flowcontrol -or $_.teammode -eq 0}")
+        psRegistryGet.append(" | foreach-object {\'id=\', $_.pschildname, \';provider=\',")
+        psRegistryGet.append("$_.providername, \';teamname=\', $_.oldfriendly, \';teammode=\',")
+        psRegistryGet.append("$_.teammode, \';networkaddress=\', $_.networkaddress, \'|\'};")
+
+        command = "{0} \"& {{{1}}}\"".format(
+            pscommand,
+            ''.join(psRegistryGet))
+
+        deferreds.append(winrs.run_command(command))
+
+        d = DeferredList(deferreds, consumeErrors=True)
+        return d
 
     def process(self, device, results, log):
 
@@ -111,9 +139,17 @@ class WinOS(PythonPlugin):
                  self.name(), device.id)
 
         res = WinOSResult()
+
+        try:
+            osresults = results[0]
+            regresults = ''.join(results[1][1].stdout).split('|')
+        except (AttributeError):
+            log.info('Failure collecting values on OS')
+            pass
+
         for key, enum_info in ENUM_INFOS.iteritems():
             try:
-                value = results[enum_info]
+                value = osresults[1][enum_info]
                 if key in SINGLETON_KEYS:
                     value = value[0]
                 setattr(res, key, value)
@@ -121,6 +157,19 @@ class WinOS(PythonPlugin):
                 pass
 
         maps = []
+
+        # Registry Interface formatting
+        regInterface = {}
+        if regresults:
+            for intFace in regresults:
+                interfaceDict = {}
+                try:
+                    for keyvalues in intFace.split(';'):
+                        key, value = keyvalues.split('=')
+                        interfaceDict[key] = value
+                    regInterface[int(interfaceDict['id'])] = interfaceDict
+                except (KeyError, ValueError):
+                    pass
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
@@ -195,11 +244,24 @@ class WinOS(PythonPlugin):
 
         # Interface Map
         mapInter = []
+        # Virtual Team Interface Map
+        mapTeamInter = []
 
         skipifregex = getattr(device, 'zInterfaceMapIgnoreNames', None)
         perfmonInstanceMap = self.buildPerfmonInstances(res.netConf, log)
         for inter in res.netInt:
             #Get the Network Configuration data for this interface
+
+            #Merge registry data into object
+            try:
+                interfaceRegistry = regInterface[int(inter.DeviceID)]
+                inter.TeamName = interfaceRegistry['teamname']
+                inter.Provider = interfaceRegistry['provider']
+                inter.TeamMode = interfaceRegistry['teammode']
+                inter.TeamMAC = interfaceRegistry['networkaddress']
+
+            except (KeyError):
+                pass
 
             for intconf in res.netConf:
                 if intconf.Index == inter.Index:
@@ -246,7 +308,7 @@ class WinOS(PythonPlugin):
                                 "skipped".format(ipRecord))
 
             int_om = ObjectMap()
-            int_om.id = prepId(standardizeInstance(interconf.Description))
+            int_om.id = prepId(standardizeInstance(inter.Index + "-" + interconf.Description))
 
             int_om.setIpAddresses = ips
             int_om.interfaceName = inter.Description
@@ -294,13 +356,45 @@ class WinOS(PythonPlugin):
             if 'Microsoft Failover Cluster Virtual Adapter' in int_om.description:
                 int_om.monitor = False
 
+            # These physical interfaces should not be monitored as they are
+            # in a Team configuration and will be monitored at the Team interface
+
+            if getattr(inter, 'TeamName', None) is not None:
+                if 'TEAM' in inter.TeamName:
+                    int_om.monitor = False
+                    int_om.teamname = inter.TeamName.split('-')[0].strip()
+
+            # These interfaces are virtual TEAM interfaces
+            if getattr(inter, 'TeamMode', None) is not None:
+                if inter.TeamMode == '0':
+                    log.debug('The TeamNic ID {0}'.format(int_om.id))
+                    # Get the team name from the Description of the interface
+                    int_om.teamname = interconf.Description.strip()
+                    mapTeamInter.append(int_om)
+                    continue
             mapInter.append(int_om)
+
+        # Set supporting interfaces on TEAM nics
+        for teamNic in mapTeamInter:
+            members = []
+            for nic in mapInter:
+                if getattr(nic, 'teamname', None) is not None:
+                    if nic.teamname == teamNic.teamname:
+                        # This nic is a member of this team interface
+                        members.append(nic.id)
+            teamNic.setInterfaces = members
 
         maps.append(RelationshipMap(
             relname="interfaces",
             compname="os",
-            modname="Products.ZenModel.IpInterface",
+            modname="ZenPacks.zenoss.Microsoft.Windows.Interface",
             objmaps=mapInter))
+
+        maps.append(RelationshipMap(
+            relname="teaminterfaces",
+            compname="os",
+            modname="ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
+            objmaps=mapTeamInter))
 
         # Network Route Map
         mapRoute = []

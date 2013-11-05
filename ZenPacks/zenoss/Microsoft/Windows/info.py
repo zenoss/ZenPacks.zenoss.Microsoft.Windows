@@ -11,6 +11,7 @@ from zope.interface import implements
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.infos.device import DeviceInfo as BaseDeviceInfo
+from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpInterfaceInfo
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
@@ -28,6 +29,18 @@ class ClusterDeviceInfo(BaseDeviceInfo):
 
 class WinComponentInfo(ComponentInfo):
     title = ProxyProperty('title')
+
+
+class TeamInterfaceInfo(BaseIpInterfaceInfo):
+    implements(ITeamInterfaceInfo)
+
+    @property
+    def nic_count(self):
+        return self._object.teaminterfaces.countObjects()
+
+
+class InterfaceInfo(BaseIpInterfaceInfo):
+    implements(IInterfaceInfo)
 
 
 class WinServiceInfo(WinComponentInfo):
