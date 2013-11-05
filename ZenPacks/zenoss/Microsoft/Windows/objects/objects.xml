@@ -27628,19 +27628,16 @@ AVERAGE
 </object>
 <object id='ethernetCsmacd' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
+Microsoft Windows network interface monitoring. (PowerShell Get-Counter)
 </property>
 <property type="text" id="description" mode="w" >
-Ethernet interface template that uses Windows WinRS
+Microsoft Windows network interface monitoring. (PowerShell Get-Counter)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.IpInterface
 </property>
 <tomanycont id='datasources'>
 <object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27667,17 +27664,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='bytesReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='inputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -27687,9 +27678,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27716,17 +27704,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='bytesSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='outputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -27736,9 +27718,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27765,17 +27744,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsReceivedErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='ifInErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -27785,9 +27758,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27814,25 +27784,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27859,17 +27823,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsSentErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='ifOutErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -27879,9 +27837,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -27908,27 +27863,43 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='thresholds'>
+<object id='high utilization' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
+/Status/Interface
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
+['bytesReceivedSec_bytesReceivedSec', 'bytesSentSec_bytesSentSec']
+</property>
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="maxval" mode="w" >
+(here.speed or 1e9) / 8 * .75
+</property>
+<property type="int" id="escalateCount" mode="w" >
+0
+</property>
 </object>
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='Errors' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -27936,7 +27907,7 @@ Ethernet interface template that uses Windows WinRS
 500
 </property>
 <property type="string" id="units" mode="w" >
-errors
+errors/sec
 </property>
 <property type="boolean" id="log" mode="w" >
 False
@@ -27957,7 +27928,7 @@ True
 2
 </property>
 <tomanycont id='graphPoints'>
-<object id='packetsReceivedErrors' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Receive' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -27971,7 +27942,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -27986,7 +27957,7 @@ packetsReceivedErrors_packetsReceivedErrors
 AVERAGE
 </property>
 </object>
-<object id='packetsSentErrors' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Send' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28000,7 +27971,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -28018,9 +27989,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Packets' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -28049,7 +28017,7 @@ True
 1
 </property>
 <tomanycont id='graphPoints'>
-<object id='packetsReceivedSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Inbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -28063,7 +28031,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -28078,7 +28046,7 @@ packetsReceivedSec_packetsReceivedSec
 AVERAGE
 </property>
 </object>
-<object id='packetsSentSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Outbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28092,7 +28060,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -28110,9 +28078,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -28141,7 +28106,7 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='bytesReceivedSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Inbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -28155,13 +28120,16 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
+</property>
+<property type="string" id="rpn" mode="w" >
+8,*
 </property>
 <property type="string" id="dpName" mode="w" >
 bytesReceivedSec_bytesReceivedSec
@@ -28170,7 +28138,7 @@ bytesReceivedSec_bytesReceivedSec
 AVERAGE
 </property>
 </object>
-<object id='bytesSentSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Outbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28184,7 +28152,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -28192,8 +28160,11 @@ ${graphPoint/id}
 <property type="long" id="limit" mode="w" >
 -1
 </property>
+<property type="string" id="rpn" mode="w" >
+8,*
+</property>
 <property type="string" id="dpName" mode="w" >
-bytesSentSec_bytesSentSec
+bytesReceivedSec_bytesReceivedSec
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
@@ -28205,19 +28176,16 @@ AVERAGE
 </object>
 <object id='ethernetCsmacd-TypePerf' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
+Microsoft Windows network interface monitoring. (typeperf)
 </property>
 <property type="text" id="description" mode="w" >
-Ethernet interface template that uses Windows WinRS
+Microsoft Windows network interface monitoring. (typeperf)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.IpInterface
 </property>
 <tomanycont id='datasources'>
 <object id='bytesReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28244,17 +28212,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='bytesReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='inputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -28264,9 +28226,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='bytesSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28293,17 +28252,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='bytesSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='outputOctets__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -28313,9 +28266,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsReceivedErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28342,17 +28292,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsReceivedErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='ifInErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -28362,9 +28306,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsReceivedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28391,25 +28332,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsReceivedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='packetsSentErrors' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28436,17 +28371,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsSentErrors' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
 </property>
 <tomanycont id='aliases'>
 <object id='ifOutErrors' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -28456,9 +28385,6 @@ Ethernet interface template that uses Windows WMI.
 </tomanycont>
 </object>
 <object id='packetsSentSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -28485,27 +28411,43 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='packetsSentSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WMI.
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-Ethernet interface template that uses Windows WMI.
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='thresholds'>
+<object id='high utilization' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
+/Status/Interface
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
+['bytesReceivedSec_bytesReceivedSec', 'bytesSentSec_bytesSentSec']
+</property>
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="maxval" mode="w" >
+(here.speed or 1e9) / 8 * .75
+</property>
+<property type="int" id="escalateCount" mode="w" >
+0
+</property>
 </object>
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='Errors' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -28513,7 +28455,7 @@ Ethernet interface template that uses Windows WinRS
 500
 </property>
 <property type="string" id="units" mode="w" >
-errors
+errors/sec
 </property>
 <property type="boolean" id="log" mode="w" >
 False
@@ -28534,10 +28476,7 @@ True
 2
 </property>
 <tomanycont id='graphPoints'>
-<object id='packetsReceivedErrors' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-packetsReceivedErrors_packetsReceivedErrors
-</property>
+<object id='Receive' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -28551,10 +28490,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Receive
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28566,10 +28505,7 @@ packetsReceivedErrors_packetsReceivedErrors
 AVERAGE
 </property>
 </object>
-<object id='packetsSentErrors' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-packetsSentErrors_packetsSentErrors
-</property>
+<object id='Send' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28583,10 +28519,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Send
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28601,9 +28537,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Packets' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -28632,10 +28565,7 @@ True
 1
 </property>
 <tomanycont id='graphPoints'>
-<object id='packetsReceivedSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-packetsReceivedSec_packetsReceivedSec
-</property>
+<object id='Inbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -28649,10 +28579,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Inbound
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28664,10 +28594,7 @@ packetsReceivedSec_packetsReceivedSec
 AVERAGE
 </property>
 </object>
-<object id='packetsSentSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-packetsSentSec_packetsSentSec
-</property>
+<object id='Outbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28681,10 +28608,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Outbound
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28699,9 +28626,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Throughput' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-Ethernet interface template that uses Windows WinRS
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -28730,10 +28654,7 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='bytesReceivedSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-bytesReceivedSec_bytesReceivedSec
-</property>
+<object id='Inbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -28747,10 +28668,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Inbound
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28765,10 +28686,7 @@ bytesReceivedSec_bytesReceivedSec
 AVERAGE
 </property>
 </object>
-<object id='bytesSentSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-bytesSentSec_bytesSentSec
-</property>
+<object id='Outbound' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -28782,10 +28700,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Outbound
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -28794,7 +28712,7 @@ Outbound
 8,*
 </property>
 <property type="string" id="dpName" mode="w" >
-bytesSentSec_bytesSentSec
+bytesReceivedSec_bytesReceivedSec
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
