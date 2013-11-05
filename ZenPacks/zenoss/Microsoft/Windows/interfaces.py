@@ -47,16 +47,6 @@ class IWinServiceInfo(IWinComponentInfo):
     usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
 
 
-class IWinProcInfo(IWinComponentInfo):
-    caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
-    numbercore = schema.TextLine(title=_t(u'Number of Core'), readonly=True)
-    status = schema.TextLine(title=_t(u'Status'), readonly=True)
-    architecture = schema.TextLine(title=_t(u'Architecture'), readonly=True)
-    clockspeed = schema.TextLine(title=_t(u'Clock Speed'), readonly=True)
-    product = schema.Entity(title=u"Model", readonly=True)
-    manufacturer = schema.Entity(title=u"Manufacturer", readonly=True)
-
-
 class IWinIISInfo(IWinComponentInfo):
     sitename = schema.TextLine(title=_t(u'Site Name'), readonly=True)
     apppool = schema.TextLine(title=_t(u'App Pool'), readonly=True)

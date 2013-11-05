@@ -19,6 +19,7 @@ from zope.event import notify
 
 from ZODB.transact import transact
 
+from Products.ZenModel.DeviceHW import DeviceHW
 from Products.ZenModel.ZenStatus import ZenStatus
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.Zuul.catalog.events import IndexingEvent
@@ -26,7 +27,6 @@ from Products.ZenUtils.IpUtil import getHostByName
 
 from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
 from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
-from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
 class ClusterDevice(BaseDevice):
@@ -50,7 +50,7 @@ class ClusterDevice(BaseDevice):
         os = OperatingSystem()
         self._setObject(os.id, os)
 
-        hw = Hardware()
+        hw = DeviceHW()
         self._setObject(hw.id, hw)
 
         self._lastPollSnmpUpTime = ZenStatus(0)

@@ -66,28 +66,6 @@ class WinServiceInfo(WinComponentInfo):
     monitor = property(getMonitor, setMonitor)
 
 
-class WinProcInfo(WinComponentInfo):
-    implements(IWinProcInfo)
-
-    caption = ProxyProperty('caption')
-    numbercore = ProxyProperty('numbercore')
-    status = ProxyProperty('status')
-    architecture = ProxyProperty('architecture')
-    clockspeed = ProxyProperty('clockspeed')
-
-    @property
-    @info
-    def manufacturer(self):
-        pc = self._object.productClass()
-        if (pc):
-            return pc.manufacturer()
-
-    @property
-    @info
-    def product(self):
-        return self._object.productClass()
-
-
 class WinIISInfo(WinComponentInfo):
     implements(IWinIISInfo)
 

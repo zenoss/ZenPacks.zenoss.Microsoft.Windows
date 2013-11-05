@@ -43,6 +43,25 @@ setzPropertyCategory('zDBInstancesPassword', 'Misc')
 # zProperties we share with WindowsMonitor. Require special handling.
 SHARED_ZPROPERTIES = ('zWinUser', 'zWinPassword')
 
+# Used by zenchkschema to validate relationship schema.
+productNames = (
+    'ClusterDevice',
+    'ClusterResource',
+    'ClusterService',
+    'CPU',
+    'Device',
+    'Interface',
+    'OperatingSystem',
+    'TeamInterface',
+    'WinIIS',
+    'WinService',
+    'WinSQLBackup',
+    'WinSQLDatabase',
+    'WinSQLInstance',
+    'WinSQLJob',
+    )
+
+
 class ZenPack(ZenPackBase):
 
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
