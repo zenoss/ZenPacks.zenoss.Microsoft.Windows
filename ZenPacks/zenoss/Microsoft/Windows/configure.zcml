@@ -48,12 +48,6 @@
         />
 
     <adapter
-        factory=".info.WinProcInfo"
-        for=".WinProc.WinProc"
-        provides=".interfaces.IWinProcInfo"
-        />
-
-    <adapter
         factory=".info.WinIISInfo"
         for=".WinIIS.WinIIS"
         provides=".interfaces.IWinIISInfo"

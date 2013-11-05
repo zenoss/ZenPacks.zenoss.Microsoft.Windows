@@ -20,13 +20,13 @@ from zope.event import notify
 from ZODB.transact import transact
 
 from Products.ZenModel.Device import Device as BaseDevice
+from Products.ZenModel.DeviceHW import DeviceHW
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
 from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
-from ZenPacks.zenoss.Microsoft.Windows.Hardware import Hardware
 
 
 class Device(BaseDevice):
@@ -46,7 +46,7 @@ class Device(BaseDevice):
         os = OperatingSystem()
         self._setObject(os.id, os)
 
-        hw = Hardware()
+        hw = DeviceHW()
         self._setObject(hw.id, hw)
 
         self._lastPollSnmpUpTime = ZenStatus(0)

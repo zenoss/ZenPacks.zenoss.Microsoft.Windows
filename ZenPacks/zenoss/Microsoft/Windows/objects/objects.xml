@@ -28041,7 +28041,7 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 ['Active Directory', 'Device', 'IIS', 'MSExchangeIS', 'MSSQLServer']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
+['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.WinIIS', 'zenoss.winrm.WinServices', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
 </property>
 <property visible="True" type="lines" id="devtypes" >
 [('Windows Server', 'WMI')]
