@@ -22,7 +22,10 @@ from Products.ZenModel.Device import Device
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
+from ZenPacks.zenoss.Microsoft.Windows.utils import (
+    get_processNameAndArgs,
+    get_processText,
+    )
 
 try:
     # Introduced in Zenoss 4.2 2013-10-15 RPS.
@@ -93,14 +96,7 @@ class Processes(WinRMPlugin):
         rm = self.relMap()
 
         for item in results.values()[0]:
-            procName = item.ExecutablePath or item.Name
-            if item.CommandLine:
-                item.CommandLine = item.CommandLine.strip('"')
-                parameters = item.CommandLine.replace(
-                    procName, '', 1).strip()
-            else:
-                parameters = ''
-
+            procName, parameters = get_processNameAndArgs(item)
             processText = get_processText(item)
 
             for matcher in device.getOSProcessMatchers:
