@@ -257,7 +257,7 @@ def add_template(path, cfg):
     if 'description' in cfg:
         log_for(
             template,
-            "description = {}".format(cfg['targetPythonClass']))
+            "description = {}".format(cfg['description']))
 
         template.description = cfg['description']
 
