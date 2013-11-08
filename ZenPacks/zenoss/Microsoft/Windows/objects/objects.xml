@@ -10223,19 +10223,16 @@ State collection for Cluster Services
 </object>
 <object id='Device' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+Microsoft Windows server monitoring. (PowerShell Get-Counter)
 </property>
 <property type="text" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+Microsoft Windows server monitoring. (PowerShell Get-Counter)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
 <object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10262,17 +10259,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='memoryAvailable__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -10282,9 +10273,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 </object>
 <object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10311,25 +10299,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10356,25 +10338,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10401,25 +10377,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10446,25 +10416,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10491,25 +10455,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10536,17 +10494,11 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='cpu__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -10556,9 +10508,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 </object>
 <object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10585,25 +10534,19 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -10630,17 +10573,14 @@ powershell Get-Counter
 </property>
 <tomanycont id='datapoints'>
 <object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
@@ -10648,9 +10588,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='CPU Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -10670,7 +10607,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+100
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -10679,7 +10616,36 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='ProcessorTotalProcessorTime' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Privileged' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%%
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Total' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -10693,7 +10659,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%%
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10708,12 +10674,38 @@ ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
 AVERAGE
 </property>
 </object>
+<object id='User' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+2
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%%
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+ProcessorTotalUserTime_ProcessorTotalUserTime
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
 </tomanycont>
 </object>
 <object id='Memory Paging' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -10742,7 +10734,7 @@ True
 2
 </property>
 <tomanycont id='graphPoints'>
-<object id='MemoryPagesInputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Input' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -10756,7 +10748,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10771,7 +10763,7 @@ MemoryPagesInputSec_MemoryPagesInputSec
 AVERAGE
 </property>
 </object>
-<object id='MemoryPagesOutputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Output' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -10785,7 +10777,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10802,10 +10794,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Memory Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
+<object id='Memory Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -10819,7 +10808,7 @@ bytes
 False
 </property>
 <property type="boolean" id="base" mode="w" >
-False
+True
 </property>
 <property type="int" id="miny" mode="w" >
 0
@@ -10834,21 +10823,21 @@ True
 1
 </property>
 <tomanycont id='graphPoints'>
-<object id='MemoryAvailableBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Available' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10863,21 +10852,21 @@ MemoryAvailableBytes_MemoryAvailableBytes
 AVERAGE
 </property>
 </object>
-<object id='MemoryCommittedBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Committed' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10895,9 +10884,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Paging File Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -10917,7 +10903,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+100
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -10926,12 +10912,12 @@ True
 3
 </property>
 <tomanycont id='graphPoints'>
-<object id='PagingFileTotalUsage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<object id='Total Usage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
@@ -10940,7 +10926,7 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%%
 </property>
 <property type="string" id="legend" mode="w" >
 ${graphPoint/id}
@@ -10961,19 +10947,16 @@ AVERAGE
 </object>
 <object id='Device-TypePerf' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+Microsoft Windows server monitoring. (typeperf)
 </property>
 <property type="text" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+Microsoft Windows server monitoring. (typeperf)
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
 <object id='MemoryAvailableBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11000,17 +10983,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryAvailableBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='memoryAvailable__bytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -11020,9 +10997,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 </object>
 <object id='MemoryCommittedBytes' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11049,25 +11023,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryCommittedBytes' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesInputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11094,25 +11062,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesInputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='MemoryPagesOutputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11139,25 +11101,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='MemoryPagesOutputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='PagingFileTotalUsage' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11184,25 +11140,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='PagingFileTotalUsage' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalPrivilegedTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11229,25 +11179,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalPrivilegedTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='ProcessorTotalProcessorTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11274,17 +11218,11 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
-</property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
 </property>
 <tomanycont id='aliases'>
 <object id='cpu__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
@@ -11294,9 +11232,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 </object>
 <object id='ProcessorTotalUserTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11323,25 +11258,19 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='ProcessorTotalUserTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
 </object>
 <object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 WinRS
 </property>
@@ -11368,17 +11297,14 @@ typeperf -sc1
 </property>
 <tomanycont id='datapoints'>
 <object id='sysUpTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property type="string" id="description" mode="w" >
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
+<property type="string" id="rrdmin" mode="w" >
+0
 </property>
 </object>
 </tomanycont>
@@ -11386,9 +11312,6 @@ This template uses Windows Remote Shell (WinRS) to collect standard Windows metr
 </tomanycont>
 <tomanycont id='graphDefs'>
 <object id='CPU Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -11408,7 +11331,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+100
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -11417,15 +11340,12 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
-<object id='ProcessorTotalProcessorTime' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
-</property>
+<object id='Privileged' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
-0
+1
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-AREA
+LINE
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
@@ -11434,10 +11354,39 @@ AREA
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.1lf%%
+%7.2lf%%
 </property>
 <property type="string" id="legend" mode="w" >
-Processor Time
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='Total' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%%
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -11449,12 +11398,38 @@ ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
 AVERAGE
 </property>
 </object>
+<object id='User' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+2
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%%
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+ProcessorTotalUserTime_ProcessorTotalUserTime
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
 </tomanycont>
 </object>
 <object id='Memory Paging' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -11483,10 +11458,7 @@ True
 2
 </property>
 <tomanycont id='graphPoints'>
-<object id='MemoryPagesInputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-MemoryPagesInputSec_MemoryPagesInputSec
-</property>
+<object id='Input' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -11500,10 +11472,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Pages In
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -11515,10 +11487,7 @@ MemoryPagesInputSec_MemoryPagesInputSec
 AVERAGE
 </property>
 </object>
-<object id='MemoryPagesOutputSec' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-MemoryPagesOutputSec_MemoryPagesOutputSec
-</property>
+<object id='Output' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
@@ -11532,10 +11501,10 @@ LINE
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Pages Out
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -11549,10 +11518,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Memory Utilization' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
+<object id='Memory Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -11566,7 +11532,7 @@ bytes
 False
 </property>
 <property type="boolean" id="base" mode="w" >
-False
+True
 </property>
 <property type="int" id="miny" mode="w" >
 0
@@ -11581,27 +11547,24 @@ True
 1
 </property>
 <tomanycont id='graphPoints'>
-<object id='MemoryAvailableBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-MemoryAvailableBytes_MemoryAvailableBytes
-</property>
+<object id='Available' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Available Bytes
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -11613,27 +11576,24 @@ MemoryAvailableBytes_MemoryAvailableBytes
 AVERAGE
 </property>
 </object>
-<object id='MemoryCommittedBytes' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-MemoryCommittedBytes_MemoryCommittedBytes
-</property>
+<object id='Committed' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
 </property>
 <property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
+AREA
 </property>
 <property type="long" id="lineWidth" mode="w" >
 1
 </property>
 <property type="boolean" id="stacked" mode="w" >
-False
+True
 </property>
 <property type="string" id="format" mode="w" >
-%5.2lf%s
+%7.2lf%s
 </property>
 <property type="string" id="legend" mode="w" >
-Committed Bytes
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1
@@ -11648,9 +11608,6 @@ AVERAGE
 </tomanycont>
 </object>
 <object id='Paging File Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property id='zendoc' type='string'>
-This template uses Windows Remote Shell (WinRS) to collect standard Windows metrics (cpu, memory, paging, etc.)
-</property>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -11670,7 +11627,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
--1
+100
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -11679,10 +11636,7 @@ True
 3
 </property>
 <tomanycont id='graphPoints'>
-<object id='PagingFileTotalUsage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property id='zendoc' type='string'>
-PagingFileTotalUsage_PagingFileTotalUsage
-</property>
+<object id='Total Usage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
 </property>
@@ -11696,10 +11650,10 @@ AREA
 False
 </property>
 <property type="string" id="format" mode="w" >
-%5.1lf%%
+%7.2lf%%
 </property>
 <property type="string" id="legend" mode="w" >
-Total File Usage
+${graphPoint/id}
 </property>
 <property type="long" id="limit" mode="w" >
 -1

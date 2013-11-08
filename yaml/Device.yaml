@@ -1,0 +1,306 @@
+/Server/Microsoft/Device:
+  description: "Microsoft Windows server monitoring. (PowerShell Get-Counter)"
+
+  datasources:
+    MemoryAvailableBytes:
+      type: WinRS
+      resource: \Memory\Available bytes
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        MemoryAvailableBytes:
+          rrdmin: 0
+          aliases:
+            memoryAvailable__bytes: ""
+
+    MemoryCommittedBytes:
+      type: WinRS
+      resource: \Memory\Committed Bytes
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        MemoryCommittedBytes: GAUGE_MIN_0
+
+    MemoryPagesInputSec:
+      type: WinRS
+      resource: \Memory\Pages Input/sec
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        MemoryPagesInputSec: GAUGE_MIN_0
+
+    MemoryPagesOutputSec:
+      type: WinRS
+      resource: \Memory\Pages Output/sec
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        MemoryPagesOutputSec: GAUGE_MIN_0
+
+    PagingFileTotalUsage:
+      type: WinRS
+      resource: \Paging File(_Total)\% Usage
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        PagingFileTotalUsage: GAUGE_MIN_0
+
+    ProcessorTotalPrivilegedTime:
+      type: WinRS
+      resource: \Processor(_Total)\% Privileged Time
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalPrivilegedTime: GAUGE_MIN_0
+
+    ProcessorTotalProcessorTime:
+      type: WinRS
+      resource: \Processor(_Total)\% Processor Time
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalProcessorTime:
+          rrdmin: 0
+          aliases:
+            cpu__pct: ""
+
+    ProcessorTotalUserTime:
+      type: WinRS
+      resource: \Processor(_Total)\% User Time
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalUserTime: GAUGE_MIN_0
+
+    sysUpTime:
+      type: WinRS
+      resource: \System\System Up Time
+      strategy: powershell Get-Counter
+      component: ${here/id}
+
+      datapoints:
+        sysUpTime: GAUGE_MIN_0
+
+  graphs:
+    CPU Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total:
+          dpName: ProcessorTotalProcessorTime
+          format: "%7.2lf%%"
+
+        Privileged:
+          dpName: ProcessorTotalPrivilegedTime
+          format: "%7.2lf%%"
+
+        User:
+          dpName: ProcessorTotalUserTime
+          format: "%7.2lf%%"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Available:
+          dpName: MemoryAvailableBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        Committed:
+          dpName: MemoryCommittedBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+    Memory Paging:
+      units: pages/sec
+      miny: 0
+
+      graphpoints:
+        Input:
+          dpName: MemoryPagesInputSec
+          format: "%7.2lf%s"
+
+        Output:
+          dpName: MemoryPagesOutputSec
+          format: "%7.2lf%s"
+
+    Paging File Usage:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total Usage:
+          dpName: PagingFileTotalUsage
+          lineType: AREA
+          format: "%7.2lf%%"
+
+
+##############################################################################
+
+/Server/Microsoft/Device-TypePerf:
+  description: "Microsoft Windows server monitoring. (typeperf)"
+
+  datasources:
+    MemoryAvailableBytes:
+      type: WinRS
+      resource: \Memory\Available bytes
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        MemoryAvailableBytes:
+          rrdmin: 0
+          aliases:
+            memoryAvailable__bytes: ""
+
+    MemoryCommittedBytes:
+      type: WinRS
+      resource: \Memory\Committed Bytes
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        MemoryCommittedBytes: GAUGE_MIN_0
+
+    MemoryPagesInputSec:
+      type: WinRS
+      resource: \Memory\Pages Input/sec
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        MemoryPagesInputSec: GAUGE_MIN_0
+
+    MemoryPagesOutputSec:
+      type: WinRS
+      resource: \Memory\Pages Output/sec
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        MemoryPagesOutputSec: GAUGE_MIN_0
+
+    PagingFileTotalUsage:
+      type: WinRS
+      resource: \Paging File(_Total)\% Usage
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        PagingFileTotalUsage: GAUGE_MIN_0
+
+    ProcessorTotalPrivilegedTime:
+      type: WinRS
+      resource: \Processor(_Total)\% Privileged Time
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalPrivilegedTime: GAUGE_MIN_0
+
+    ProcessorTotalProcessorTime:
+      type: WinRS
+      resource: \Processor(_Total)\% Processor Time
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalProcessorTime:
+          rrdmin: 0
+          aliases:
+            cpu__pct: ""
+
+    ProcessorTotalUserTime:
+      type: WinRS
+      resource: \Processor(_Total)\% User Time
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        ProcessorTotalUserTime: GAUGE_MIN_0
+
+    sysUpTime:
+      type: WinRS
+      resource: \System\System Up Time
+      strategy: typeperf -sc1
+      component: ${here/id}
+
+      datapoints:
+        sysUpTime: GAUGE_MIN_0
+
+  graphs:
+    CPU Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total:
+          dpName: ProcessorTotalProcessorTime
+          format: "%7.2lf%%"
+
+        Privileged:
+          dpName: ProcessorTotalPrivilegedTime
+          format: "%7.2lf%%"
+
+        User:
+          dpName: ProcessorTotalUserTime
+          format: "%7.2lf%%"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Available:
+          dpName: MemoryAvailableBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        Committed:
+          dpName: MemoryCommittedBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+    Memory Paging:
+      units: pages/sec
+      miny: 0
+
+      graphpoints:
+        Input:
+          dpName: MemoryPagesInputSec
+          format: "%7.2lf%s"
+
+        Output:
+          dpName: MemoryPagesOutputSec
+          format: "%7.2lf%s"
+
+    Paging File Usage:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total Usage:
+          dpName: PagingFileTotalUsage
+          lineType: AREA
+          format: "%7.2lf%%"
