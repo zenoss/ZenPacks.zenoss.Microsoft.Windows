@@ -12,7 +12,7 @@ __doc__ = "Microsoft Windows ZenPack"
 import Globals
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
-from Products.ZenUtils.Utils import monkeypatch
+from Products.ZenUtils.Utils import monkeypatch, unused
 
 # unused
 Globals
@@ -161,3 +161,8 @@ if not hasattr(OSProcess, 'getMaxProcessCount'):
     @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
     def getMaxProcessCount(self):
         return None
+
+
+# Patch last to avoid import recursion problems.
+from ZenPacks.zenoss.Microsoft.Windows import patches
+unused(patches)
