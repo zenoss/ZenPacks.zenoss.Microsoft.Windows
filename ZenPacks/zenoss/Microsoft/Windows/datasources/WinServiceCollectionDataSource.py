@@ -120,6 +120,9 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     @classmethod
@@ -152,11 +155,12 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
         log.info('{0}:Start Collection of Services'.format(config.id))
         ds0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         servicename = ds0.params['servicename']
 
@@ -172,7 +176,8 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)

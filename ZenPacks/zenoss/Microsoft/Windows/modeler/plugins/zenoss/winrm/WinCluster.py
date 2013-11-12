@@ -14,8 +14,8 @@ Windows Cluster System Collection
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
-from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 
+from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
@@ -24,15 +24,12 @@ from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
-class WinCluster(PythonPlugin):
+class WinCluster(WinRMPlugin):
 
-    deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinUser',
-        'zWinPassword',
+    deviceProperties = WinRMPlugin.deviceProperties + (
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
-        'zWinRMPort',
         )
 
     @defer.inlineCallbacks
@@ -40,25 +37,7 @@ class WinCluster(PythonPlugin):
 
         maps = {}
 
-        hostname = device.manageIp
-        username = device.zWinUser
-        auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinPassword
-        scheme = 'http'
-        port = int(device.zWinRMPort)
-        connectiontype = 'Keep-Alive'
-        keytab = ''
-
-        conn_info = ConnectionInfo(
-            hostname,
-            auth_type,
-            username,
-            password,
-            scheme,
-            port,
-            connectiontype,
-            keytab)
-
+        conn_info = self.conn_info(device)
         winrs = create_single_shot_command(conn_info)
 
         # Collection for cluster nodes

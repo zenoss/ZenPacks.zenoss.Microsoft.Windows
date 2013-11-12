@@ -110,6 +110,9 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     subscriptionID = {}
@@ -146,11 +149,12 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         conn_info = ConnectionInfo(
             ds0.manageIp,
@@ -160,7 +164,8 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
 
         path = ds0.params['eventlog']
         select = ds0.params['query']

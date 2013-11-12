@@ -24,6 +24,9 @@ class WinRMPlugin(PythonPlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     wql_queries = []
@@ -42,10 +45,11 @@ class WinRMPlugin(PythonPlugin):
         username = device.zWinUser
         auth_type = 'kerberos' if '@' in username else 'basic'
         password = device.zWinPassword
-        scheme = 'http'
+        scheme = device.zWinScheme
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = device.zWinKeyTabFilePath
+        dcip = device.zWinKDC
 
         return txwinrm.collect.ConnectionInfo(
             hostname,
@@ -55,7 +59,8 @@ class WinRMPlugin(PythonPlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
 
     def create_enum_info(self, wql, resource_uri=None):
         if not resource_uri:

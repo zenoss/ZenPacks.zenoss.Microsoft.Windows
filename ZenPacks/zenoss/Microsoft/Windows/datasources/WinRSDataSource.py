@@ -439,9 +439,13 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class WinRSPlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ('zWinUser',
+    proxy_attributes = (
+        'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         'zDBInstances',
         'zDBInstancesPassword',
         )
@@ -504,14 +508,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
     def collect(self, config):
         dsconf0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = dsconf0.zWinScheme
         port = int(dsconf0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in dsconf0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = dsconf0.zWinKeyTabFilePath
+        dcip = dsconf0.zWinKDC
 
-        if '@' in dsconf0.zWinUser:
-            auth_type = 'kerberos'
         conn_info = ConnectionInfo(
             dsconf0.manageIp,
             auth_type,
@@ -520,7 +523,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
 
         strategy = self._get_strategy(dsconf0)
         counters = [dsconf.params['resource'] for dsconf in config.datasources]

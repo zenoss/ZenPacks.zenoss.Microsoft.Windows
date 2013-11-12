@@ -219,6 +219,9 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         ]
 
     @classmethod
@@ -259,10 +262,11 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             'kerberos' if '@' in ds0.zWinUser else 'basic',
             ds0.zWinUser,
             ds0.zWinPassword,
-            'http',
+            ds0.zWinScheme,
             int(ds0.zWinRMPort),
             'Keep-Alive',
-            '')
+            ds0.zWinKeyTabFilePath,
+            ds0.zWinKDC)
 
         # Always query Win32_Process. This is where we get process
         # status and count.

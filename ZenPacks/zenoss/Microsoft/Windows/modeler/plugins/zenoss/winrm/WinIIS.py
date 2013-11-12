@@ -14,8 +14,9 @@ Windows Internet Information Services Collection
 
 from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
-from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
+
+from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
@@ -40,34 +41,12 @@ class WinIISResult(object):
     pass
 
 
-class WinIIS(PythonPlugin):
-
-    deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinUser',
-        'zWinPassword',
-        'zWinRMPort',
-        )
+class WinIIS(WinRMPlugin):
 
     def collect(self, device, log):
-        hostname = device.manageIp
-        username = device.zWinUser
-        auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinPassword
-        scheme = 'http'
-        port = int(device.zWinRMPort)
-        connectiontype = 'Keep-Alive'
-        keytab = ''
 
         winrm = WinrmCollectClient()
-        conn_info = ConnectionInfo(
-            hostname,
-            auth_type,
-            username,
-            password,
-            scheme,
-            port,
-            connectiontype,
-            keytab)
+        conn_info = self.conn_info(device)
 
         try:
             results = winrm.do_collect(conn_info, ENUM_INFOS.values())

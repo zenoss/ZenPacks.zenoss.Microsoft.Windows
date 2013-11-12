@@ -102,6 +102,9 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     @classmethod
@@ -127,11 +130,12 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         wql = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
             ds0.params['statusname'])
@@ -147,7 +151,8 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)

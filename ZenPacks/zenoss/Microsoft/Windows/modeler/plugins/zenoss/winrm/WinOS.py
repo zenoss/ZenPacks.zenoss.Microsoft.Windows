@@ -16,11 +16,12 @@ import re
 import string
 from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
-from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.DataCollector.plugins.zenoss.snmp.CpuMap import getManufacturerAndModel
-from Products.ZenUtils.IpUtil import checkip, parse_iprange, IpAddressError
+from Products.ZenUtils.IpUtil import checkip, IpAddressError
 from Products.ZenUtils.Utils import prepId
 from Products.Zuul.utils import safe_hasattr
+
+from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import lookup_architecture, lookup_routetype, lookup_protocol, \
     lookup_drivetype, lookup_zendrivetype, guessBlockSize, addLocalLibPath, lookup_operstatus
 
@@ -67,37 +68,18 @@ class WinOSResult(object):
     pass
 
 
-class WinOS(PythonPlugin):
+class WinOS(WinRMPlugin):
 
-    deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinUser',
-        'zWinPassword',
+    deviceProperties = WinRMPlugin.deviceProperties + (
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
-        'zWinRMPort',
         )
 
     def collect(self, device, log):
-        hostname = device.manageIp
-        username = device.zWinUser
-        auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinPassword
-        scheme = 'http'
-        port = int(device.zWinRMPort)
-        connectiontype = 'Keep-Alive'
-        keytab = ''
 
         winrm = WinrmCollectClient()
-        conn_info = ConnectionInfo(
-            hostname,
-            auth_type,
-            username,
-            password,
-            scheme,
-            port,
-            connectiontype,
-            keytab)
+        conn_info = self.conn_info(device)
 
         deferreds = []
 

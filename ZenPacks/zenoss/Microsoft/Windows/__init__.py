@@ -10,6 +10,7 @@
 __doc__ = "Microsoft Windows ZenPack"
 
 import Globals
+import os
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import monkeypatch
@@ -22,11 +23,15 @@ ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
 DEVTYPE_NAME = 'Windows Server'
 DEVTYPE_PROTOCOL = 'WMI'
 
+
 _PACK_Z_PROPS = [('zWinUser', '', 'string'),
                 ('zWinPassword', '', 'password'),
                 ('zWinRMPort', '5985', 'string'),
                 ('zDBInstances', 'MSSQLSERVER;', 'string'),
-                ('zDBInstancesPassword', '', 'password')]
+                ('zDBInstancesPassword', '', 'password'),
+                ('zWinKDC', '', 'string'),
+                ('zWinKeyTabFilePath', '', 'string'),
+                ('zWinScheme', 'http', 'string')]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
     setzPropertyCategory(name, 'Windows')
