@@ -2,13 +2,23 @@
 <configure xmlns="http://namespaces.zope.org/browser">
 
     <resourceDirectory
-        name="microsoft"
+        name="mswindows"
         directory="resources"
         />
     
     <viewlet
-        name="js-windevice"
-        paths="/++resource++microsoft/js/WinDevice.js"
+        name="js-mswindows"
+        paths="/++resource++mswindows/js/global.js"
+        weight="10"
+        for="*"
+        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
+        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
+        permission="zope2.Public"
+        />
+
+    <viewlet
+        name="js-mswindowsdevice"
+        paths="/++resource++mswindows/js/device.js"
         weight="10"
         for="..Device.Device"
         manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"

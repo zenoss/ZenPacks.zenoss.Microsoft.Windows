@@ -24,6 +24,12 @@
         />
 
     <adapter
+        factory=".info.CPUInfo"
+        for=".CPU.CPU"
+        provides=".interfaces.ICPUInfo"
+        />
+
+    <adapter
         factory=".info.ClusterDeviceInfo"
         for=".ClusterDevice.ClusterDevice"
         provides=".interfaces.IClusterDeviceInfo"

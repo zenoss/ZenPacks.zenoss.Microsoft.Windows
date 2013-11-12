@@ -14,11 +14,23 @@ class CPU(BaseCPU):
     '''
     Model class for CPU.
     '''
+    meta_type = portal_type = 'WindowsCPU'
 
-    core = None
-    thread = None
+    description = None
+    cores = None
+    threads = None
+    cacheSpeedL2 = None
+    cacheSizeL3 = None
+    cacheSpeedL3 = None
 
     _properties = BaseCPU._properties + (
-        {'id': 'core', 'type': 'string', 'mode': 'w'},
-        {'id': 'thread', 'type': 'string', 'mode': 'w'},
+        {'id': 'description', 'type': 'string', 'mode': 'w'},
+        {'id': 'cores', 'type': 'int', 'mode': 'w'},
+        {'id': 'threads', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSpeedL2', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSizeL3', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSpeedL3', 'type': 'int', 'mode': 'w'},
         )
+
+    def getRRDTemplateName(self):
+        return 'CPU'
