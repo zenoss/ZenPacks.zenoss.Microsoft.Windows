@@ -11,6 +11,7 @@ from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
+from Products.Zuul.interfaces.component import ICPUInfo as IBaseCPUInfo
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -35,6 +36,20 @@ class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
 
 class IInterfaceInfo(IBaseIpInterfaceInfo):
     pass
+
+
+class ICPUInfo(IWinComponentInfo):
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    clockspeed_str = schema.TextLine(title=_t(u'Clock Speed'), readonly=True)
+    extspeed_str = schema.TextLine(title=_t(u'External Speed'), readonly=True)
+    voltage_str = schema.TextLine(title=_t(u'Voltage'), readonly=True)
+    cacheSizeL1_str = schema.TextLine(title=_t(u'L1 Cache Size'), readonly=True)
+    cacheSizeL2_str = schema.TextLine(title=_t(u'L2 Cache Size'), readonly=True)
+    cacheSpeedL2_str = schema.TextLine(title=_t('L2 Cache Speed'), readonly=True)
+    cacheSizeL3_str = schema.TextLine(title=_t(u'L3 Cache Size'), readonly=True)
+    cacheSpeedL3_str = schema.TextLine(title=_t('L3 Cache Speed'), readonly=True)
+    manufacturer = schema.Entity(title=_t('Manufacturer'), readonly=True)
+    product = schema.Entity(title=_t('Model'), readonly=True)
 
 
 class IWinServiceInfo(IWinComponentInfo):

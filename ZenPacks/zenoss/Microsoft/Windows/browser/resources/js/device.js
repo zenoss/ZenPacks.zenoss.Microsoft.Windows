@@ -20,6 +20,14 @@ function render_link(ob) {
     }
 }
 
+function render_na_for_null(value) {
+    if (value === null) {
+        return 'n/a';
+    }
+
+    return value;
+}
+
 Ext.apply(Zenoss.render, {
     win_entityLinkFromGrid: function(obj, col, record) {
         if (!obj)
@@ -104,7 +112,141 @@ ZC.WINComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
 });
 
 
-ZC.registerName('WinRMService', _t('Service'), _t('Services'));
+ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'name',
+            componentType: 'WindowsCPU',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'product'},
+                {name: 'socket'},
+                {name: 'cores'},
+                {name: 'threads'},
+                {name: 'clockspeed'},
+                {name: 'extspeed'},
+                {name: 'cacheSizeL1'},
+                {name: 'cacheSizeL2'},
+                {name: 'cacheSpeedL2'},
+                {name: 'cacheSizeL3'},
+                {name: 'cacheSpeedL3'},
+                {name: 'voltage'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('Name'),
+            },{
+                id: 'socket',
+                dataIndex: 'socket',
+                header: _t('Socket'),
+                width: 60
+            },{
+                id: 'cores_and_threads',
+                dataIndex: 'cores', // also requires threads
+                header: _t('Cores'),
+                renderer: function(value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+
+                    return '<span title="Cores x Threads">' +
+                        record.data.cores +
+                        ' x ' +
+                        record.data.threads +
+                        '</span>';
+                },
+                width: 55
+            },{
+                id: 'clockspeed',
+                dataIndex: 'clockspeed',
+                header: _t('Clock Speed'),
+                renderer: function(value) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return value + ' MHz';
+                },
+                width: 90
+            },{
+                id: 'l1_cache',
+                dataIndex: 'cacheSizeL1',
+                header: _t('L1 Cache'),
+                renderer: function(value) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+
+                    return value + ' KB';
+                },
+                width: 70
+            },{
+                id: 'l2_cache',
+                dataIndex: 'cacheSizeL2', // also requires cacheSpeedL2
+                header: _t('L2 Cache'),
+                renderer: function (value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return '<span title="Size @ Speed">' +
+                        record.data.cacheSizeL2 + ' KB @ ' +
+                        record.data.cacheSpeedL2 + ' MHz' +
+                        '</span>';
+                },
+                width: 115
+            },{
+                id: 'l3_cache',
+                dataIndex: 'cacheSizeL3', // also requires cacheSpeedL3
+                header: _t('L3 Cache'),
+                renderer: function (value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return '<span title="Size @ Speed">' +
+                        record.data.cacheSizeL3 + ' KB @ ' +
+                        record.data.cacheSpeedL3 + ' MHz' +
+                        '</span>';
+                },
+                width: 115
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons,
+                width: 65
+            }]
+        });
+        ZC.WindowsCPUPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WindowsCPUPanel', ZC.WindowsCPUPanel);
+
 
 ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -180,8 +322,6 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 Ext.reg('WinRMServicePanel', ZC.WinRMServicePanel);
 
 
-ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
-
 ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
 
@@ -249,8 +389,6 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
 Ext.reg('WinRMIISPanel', ZC.WinRMIISPanel);
 
 
-ZC.registerName('WinDBInstance', _t('Database Instance'), _t('DB Instances'));
-
 ZC.WinDBInstancePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
 
@@ -304,7 +442,6 @@ ZC.WinDBInstancePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinDBInstancePanel', ZC.WinDBInstancePanel);
 
-ZC.registerName('WinDatabase', _t('Database'), _t('Databases'));
 
 ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -386,7 +523,6 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinDatabasePanel', ZC.WinDatabasePanel);
 
-ZC.registerName('WinBackupDevice', _t('DB Backup Device'), _t('DB Backup Devices'));
 
 ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -462,7 +598,6 @@ ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinBackupDevicePanel', ZC.WinBackupDevicePanel);
 
-ZC.registerName('WinSQLJob', _t('DB Job'), _t('DB Jobs'));
 
 ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -532,7 +667,6 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
-ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 
 ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -615,7 +749,6 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterServicePanel', ZC.MSClusterServicePanel);
 
-ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
 
 ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -699,7 +832,6 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterResourcePanel', ZC.MSClusterResourcePanel);
 
-ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
 
 ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -808,7 +940,6 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinTeamInterfacePanel', ZC.WinTeamInterfacePanel);
 
-ZC.registerName('WindowsInterface', _t('Interface'), _t('Interfaces'));
 
 ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -996,4 +1127,5 @@ Zenoss.nav.appendTo('Component', [{
         ZC.WinDatabasePanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
+
 })();
