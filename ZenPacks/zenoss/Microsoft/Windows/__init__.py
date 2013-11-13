@@ -11,9 +11,12 @@ __doc__ = "Microsoft Windows ZenPack"
 
 import Globals
 import os
+import shutil
+
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import monkeypatch
+from Products.ZenUtils.Utils import zenPath
 
 # unused
 Globals
@@ -56,6 +59,11 @@ class ZenPack(ZenPackBase):
 
         self.register_devtype(app.zport.dmd)
 
+        #copy kerberos.so file to python path
+        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib\kerberos.so')
+        kerbdst = zenPath('lib', 'python')
+        shutil.copy(kerbsrc, kerbdst)
+
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
@@ -64,6 +72,9 @@ class ZenPack(ZenPackBase):
         if not leaveObjects:
             self.unregister_devtype(app.zport.dmd)
 
+            # remove kerberos.so file from python path
+            kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
+            shutil.remove(kerbdst)
             # remove symlinks for command line utilities
             for utilname in self.binUtilities:
                 self.removeBinFile(utilname)
