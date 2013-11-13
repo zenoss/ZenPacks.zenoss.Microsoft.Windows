@@ -60,7 +60,7 @@ class ZenPack(ZenPackBase):
         self.register_devtype(app.zport.dmd)
 
         #copy kerberos.so file to python path
-        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib\kerberos.so')
+        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', 'kerberos.so')
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)
 
