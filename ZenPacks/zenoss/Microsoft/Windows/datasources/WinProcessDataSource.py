@@ -24,6 +24,7 @@ from zope.interface import implements
 from Products.ZenEvents import Event
 from Products.ZenEvents.ZenEventClasses import Status_OSProcess
 from Products.ZenModel.OSProcess import OSProcess
+from Products.ZenUtils.Utils import prepId
 from Products.Zuul.form import schema
 from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
@@ -37,6 +38,13 @@ except ImportError:
         def __init__(self, **attribs):
             pass
 
+try:
+    # Removed in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcess import getProcessIdentifier
+except ImportError:
+    def getProcessIdentifier(name, parameters):
+        return 'THIS_WILL_NEVER_MATCH_ANYTHING'
+
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -44,6 +52,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ZenPacks.zenoss.Microsoft.Windows import ZENPACK_NAME
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
     addLocalLibPath,
+    get_processNameAndArgs,
     get_processText,
     )
 
@@ -357,7 +366,13 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
                     if datasource.params['ignoreParameters']:
                         processText = item.ExecutablePath or item.Name
 
-                    if not re.search(regex, processText):
+                    name, args = get_processNameAndArgs(item)
+                    if datasource.params['ignoreParameters']:
+                        proc_id = getProcessIdentifier(name, None)
+                    else:
+                        proc_id = getProcessIdentifier(name, args)
+
+                    if datasource.component != prepId(proc_id):
                         continue
 
                 datasource_by_pid[item.ProcessId] = datasource

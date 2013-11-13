@@ -12,6 +12,8 @@ from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 addLocalLibPath()
 
+from twisted.internet import defer
+
 import txwinrm
 
 
@@ -29,7 +31,7 @@ class WinRMPlugin(PythonPlugin):
         'zWinScheme',
         )
 
-    wql_queries = []
+    wql_queries = {}
 
     def client(self):
         '''
@@ -68,6 +70,7 @@ class WinRMPlugin(PythonPlugin):
 
         return txwinrm.collect.create_enum_info(wql, resource_uri=resource_uri)
 
+    @defer.inlineCallbacks
     def collect(self, device, log):
         '''
         Collect results of the class' queries list.
@@ -83,9 +86,19 @@ class WinRMPlugin(PythonPlugin):
             return
 
         try:
-            results = client.do_collect(
-                conn_info, map(self.create_enum_info, self.wql_queries))
+            collect_results = yield client.do_collect(
+                conn_info, map(
+                    self.create_enum_info,
+                    self.wql_queries.values()))
+
         except txwinrm.collect.RequestError as e:
             log.error(e[0])
             raise
-        return results
+
+        inverted_wql_queries = {v: k for k, v in self.wql_queries.iteritems()}
+
+        results = {}
+        for info, data in collect_results.iteritems():
+            results[inverted_wql_queries[info.wql]] = data
+
+        defer.returnValue(results)

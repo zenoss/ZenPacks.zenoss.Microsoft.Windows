@@ -228,3 +228,18 @@ def get_processText(item):
         item.CommandLine = item.CommandLine.strip('"')
 
     return item.CommandLine or item.ExecutablePath or item.Name
+
+
+def get_processNameAndArgs(item):
+    '''
+    Return (name, args) tuple given a Win32_Process item.
+    '''
+    name = item.ExecutablePath or item.Name
+    if item.CommandLine:
+        item.CommandLine = item.CommandLine.strip('"')
+        args = item.CommandLine.replace(
+            name, '', 1).strip()
+    else:
+        args = ''
+
+    return (name, args)

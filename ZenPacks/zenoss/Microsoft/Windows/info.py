@@ -11,10 +11,27 @@ from zope.interface import implements
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.infos.device import DeviceInfo as BaseDeviceInfo
+from Products.Zuul.infos.component.cpu import CPUInfo as BaseCPUInfo
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpInterfaceInfo
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
+from ZenPacks.zenoss.Microsoft.Windows.interfaces import ICPUInfo
+
+
+def SuffixedProperty(property_name, suffix):
+    '''
+    Return a read-only property with a value of property suffixed with
+    suffix.
+    '''
+    def getter(self):
+        value = getattr(self._object, property_name)
+        if value is None:
+            return 'n/a'
+
+        return '{} {}'.format(value, suffix)
+
+    return property(getter)
 
 
 class DeviceInfo(BaseDeviceInfo):
@@ -43,6 +60,45 @@ class InterfaceInfo(BaseIpInterfaceInfo):
     implements(IInterfaceInfo)
 
 
+class CPUInfo(WinComponentInfo):
+    implements(ICPUInfo)
+
+    description = ProxyProperty('description')
+    socket = ProxyProperty('socket')
+    cores = ProxyProperty('cores')
+    threads = ProxyProperty('threads')
+    clockspeed = ProxyProperty('clockspeed')
+    extspeed = ProxyProperty('extspeed')
+    voltage = ProxyProperty('voltage')
+    cacheSizeL1 = ProxyProperty('cacheSizeL1')
+    cacheSizeL2 = ProxyProperty('cacheSizeL2')
+    cacheSpeedL2 = ProxyProperty('cacheSpeedL2')
+    cacheSizeL3 = ProxyProperty('cacheSizeL3')
+    cacheSpeedL3 = ProxyProperty('cacheSpeedL3')
+
+    # String unit-suffixed versions of numeric properties.
+    clockspeed_str = SuffixedProperty('clockspeed', 'MHz')
+    extspeed_str = SuffixedProperty('extspeed', 'MHz')
+    voltage_str = SuffixedProperty('voltage', 'mV')
+    cacheSizeL1_str = SuffixedProperty('cacheSizeL1', 'KB')
+    cacheSizeL2_str = SuffixedProperty('cacheSizeL2', 'KB')
+    cacheSpeedL2_str = SuffixedProperty('cacheSpeedL2', 'MHz')
+    cacheSizeL3_str = SuffixedProperty('cacheSizeL3', 'KB')
+    cacheSpeedL3_str = SuffixedProperty('cacheSpeedL3', 'MHz')
+
+    @property
+    @info
+    def manufacturer(self):
+        pc = self._object.productClass()
+        if pc:
+            return pc.manufacturer()
+
+    @property
+    @info
+    def product(self):
+        return self._object.productClass()
+
+
 class WinServiceInfo(WinComponentInfo):
     implements(IWinServiceInfo)
 
@@ -64,28 +120,6 @@ class WinServiceInfo(WinComponentInfo):
         self._object.index_object()
 
     monitor = property(getMonitor, setMonitor)
-
-
-class WinProcInfo(WinComponentInfo):
-    implements(IWinProcInfo)
-
-    caption = ProxyProperty('caption')
-    numbercore = ProxyProperty('numbercore')
-    status = ProxyProperty('status')
-    architecture = ProxyProperty('architecture')
-    clockspeed = ProxyProperty('clockspeed')
-
-    @property
-    @info
-    def manufacturer(self):
-        pc = self._object.productClass()
-        if (pc):
-            return pc.manufacturer()
-
-    @property
-    @info
-    def product(self):
-        return self._object.productClass()
 
 
 class WinIISInfo(WinComponentInfo):

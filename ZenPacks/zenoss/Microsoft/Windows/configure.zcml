@@ -24,6 +24,12 @@
         />
 
     <adapter
+        factory=".info.CPUInfo"
+        for=".CPU.CPU"
+        provides=".interfaces.ICPUInfo"
+        />
+
+    <adapter
         factory=".info.ClusterDeviceInfo"
         for=".ClusterDevice.ClusterDevice"
         provides=".interfaces.IClusterDeviceInfo"
@@ -45,12 +51,6 @@
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"
-        />
-
-    <adapter
-        factory=".info.WinProcInfo"
-        for=".WinProc.WinProc"
-        provides=".interfaces.IWinProcInfo"
         />
 
     <adapter
