@@ -49,13 +49,8 @@ class FileSystems(WinRMPlugin):
 
         rm = self.relMap()
 
-        for ldisk in results.get('Win32_LogicalDisk', ()):
-            mount = (
-                "{driveletter} (Serial Number: {serialnumber}) - {name}"
-                .format(
-                    driveletter=ldisk.Name,
-                    serialnumber=ldisk.VolumeSerialNumber,
-                    name=ldisk.VolumeName))
+        for disk in results.get('Win32_LogicalDisk', ()):
+            mount = win32_logicaldisk_mount(disk)
 
             if ignore_names and ignore_names_search(mount):
                 log.info(
@@ -66,8 +61,8 @@ class FileSystems(WinRMPlugin):
                 continue
 
             if ignore_types:
-                zentypes = set(lookup_zendrivetypes(ldisk.DriveType or -1))
-                if zentypes.intersection(zentypes):
+                zentypes = set(lookup_zendrivetypes(disk.DriveType or -1))
+                if zentypes.intersection(ignore_types):
                     log.info(
                         "Ignoring %s on %s because it matches "
                         "zFileSystemMapIgnoreTypes",
@@ -75,27 +70,46 @@ class FileSystems(WinRMPlugin):
 
                     continue
 
-            if not ldisk.BlockSize:
-                ldisk.BlockSize = guess_block_size(ldisk.Size)
+            if not disk.BlockSize:
+                disk.BlockSize = guess_block_size(disk.Size)
 
             perfmonInstance = '\\LogicalDisk({})'.format(
-                ldisk.Name.rstrip('\\'))
+                disk.Name.rstrip('\\'))
 
             rm.append(self.objectMap({
-                'id': self.prepId(ldisk.DeviceID),
+                'id': self.prepId(disk.DeviceID),
                 'title': mount,
                 'mount': mount,
-                'monitor': (int(ldisk.Size) and int(ldisk.MediaType) in (12, 0)),
-                'storageDevice': ldisk.Name,
-                'drivetype': lookup_drivetype(ldisk.DriveType or -1),
-                'type': ldisk.FileSystem,
-                'blockSize': int(ldisk.BlockSize),
-                'totalBlocks': int(ldisk.Size) / int(ldisk.BlockSize),
-                'maxNameLen': ldisk.MaximumComponentLength,
+                'monitor': (int(disk.Size) and int(disk.MediaType) in (12, 0)),
+                'storageDevice': disk.Name,
+                'drivetype': lookup_drivetype(disk.DriveType or -1),
+                'type': disk.FileSystem,
+                'blockSize': int(disk.BlockSize),
+                'totalBlocks': int(disk.Size) / int(disk.BlockSize),
+                'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
                 }))
 
         return rm
+
+
+def win32_logicaldisk_mount(disk):
+    '''
+    Return a FileSystem.mount property given a Win32_LogicalDisk.
+    '''
+    mount_parts = []
+    if disk.Name:
+        mount_parts.append(disk.Name)
+
+    if disk.VolumeSerialNumber:
+        mount_parts.append(
+            '(Serial Number: {})'.format(disk.VolumeSerialNumber))
+
+    if disk.VolumeName:
+        mount_parts.append(
+            '- {}'.format(disk.VolumeName))
+
+    return ' '.join(mount_parts)
 
 
 def lookup_drivetype(value):
