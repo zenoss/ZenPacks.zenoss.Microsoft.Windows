@@ -12,8 +12,11 @@ Windows Operating System Collection
 
 """
 from twisted.internet.defer import DeferredList
+
+import itertools
 import re
 import string
+
 from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap, RelationshipMap
 from Products.ZenUtils.IpUtil import checkip, IpAddressError
@@ -221,8 +224,6 @@ class WinOS(WinRMPlugin):
                     interconf = intconf
                     continue
 
-            ips = []
-
             if inter.Description is not None:
                 if skipifregex and re.match(skipifregex, inter.Description):
                     log.debug("Interface {intname} matched regex -- skipping"
@@ -238,28 +239,33 @@ class WinOS(WinRMPlugin):
                     # This should not be modeled as a local interface
                     continue
 
+            ips = []
+
             if getattr(interconf, 'IPAddress', None) is not None:
                 iplist = []
+                masklist = []
+
                 if isinstance(interconf.IPAddress, basestring):
                     iplist.append(interconf.IPAddress)
                 else:
                     iplist = interconf.IPAddress
 
                 if isinstance(interconf.IPSubnet, basestring):
-                    ipsubnet = interconf.IPSubnet
+                    masklist.append(interconf.IPSubnet)
                 else:
-                    ipsubnet = interconf.IPSubnet[0]
+                    masklist = interconf.IPSubnet
 
-                for ipRecord in iplist:
+                for ip, mask in itertools.izip(iplist, masklist):
                     try:
-                        checkip(ipRecord)
-                        ipEntry = "{ipaddress}/{ipsubnet}".format(
-                                  ipaddress=ipRecord, ipsubnet=ipsubnet)
-                        ips.append(ipEntry)
-                    except (IpAddressError):
+                        checkip(ip)
+                    except IpAddressError:
                         log.debug(
-                            "Invalid IP Address {0} encountered and skipped"
-                            .format(ipRecord))
+                            "Invalid IP Address {} encountered and skipped"
+                            .format(ip))
+
+                        continue
+
+                    ips.append('{}/{}'.format(ip, self.maskToBits(mask)))
 
             int_om = ObjectMap()
             int_om.id = prepId(standardizeInstance(inter.Index + "-" + interconf.Description))
