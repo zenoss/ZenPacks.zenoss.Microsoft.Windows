@@ -85,6 +85,9 @@ class WinRMPlugin(PythonPlugin):
             log.error("Modeler %s has no WQL queries defined")
             return
 
+        for query_key in self.wql_queries:
+            log.info("Querying %s on %s", query_key, device.id)
+
         try:
             collect_results = yield client.do_collect(
                 conn_info, map(
