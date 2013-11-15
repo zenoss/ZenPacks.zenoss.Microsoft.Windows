@@ -73,34 +73,6 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def lookup_routetype(value):
-    return {
-        1: 'Other',
-        2: 'Invalid',
-        3: 'Direct',
-        4: 'Indirect',
-        }.get(value, 'unknown')
-
-
-def lookup_protocol(value):
-    return {
-        1: 'Other',
-        2: 'Local',
-        3: 'Netmgmt',
-        4: 'ICMP',
-        5: 'egp',
-        6: 'ggp',
-        7: 'hello',
-        8: 'rip',
-        9: 'is-is',
-        10: 'es-is',
-        11: 'Ciscolgrp',
-        12: 'bbnSpflgp',
-        13: 'ospf',
-        14: 'bgp',
-        }.get(value, 'unknown')
-
-
 def lookup_drivetype(value):
     return {
         0: 'Unknown',

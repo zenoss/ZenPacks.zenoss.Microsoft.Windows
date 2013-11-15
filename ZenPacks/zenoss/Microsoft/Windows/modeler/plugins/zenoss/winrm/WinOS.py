@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -22,8 +22,6 @@ from Products.Zuul.utils import safe_hasattr
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
-    lookup_routetype,
-    lookup_protocol,
     lookup_drivetype,
     lookup_zendrivetype,
     guessBlockSize,
@@ -45,8 +43,6 @@ ENUM_INFOS = dict(
     sysEnclosure=create_enum_info('select * from Win32_SystemEnclosure'),
     computerSystem=create_enum_info('select * from Win32_ComputerSystem'),
     operatingSystem=create_enum_info('select * from Win32_OperatingSystem'),
-    cacheMemory=create_enum_info('select * from Win32_CacheMemory'),
-    netRoute=create_enum_info('select * from Win32_IP4RouteTable'),
     netInt=create_enum_info('select * from Win32_NetworkAdapter'),
     netConf=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
     fsDisk=create_enum_info('select * from Win32_logicaldisk'),
@@ -362,36 +358,6 @@ class WinOS(WinRMPlugin):
             compname="os",
             modname="ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
             objmaps=mapTeamInter))
-
-        # Network Route Map
-        mapRoute = []
-        for route in res.netRoute:
-            route_om = ObjectMap()
-            route_om.id = prepId(route.Destination)
-            route_om.routemask = self.maskToBits(route.Mask)
-            route_om.setInterfaceIndex = int(route.InterfaceIndex)
-            route_om.setNextHopIp = route.NextHop
-            route_om.routeproto = lookup_protocol(int(route.Protocol))
-            route_om.routetype = lookup_routetype(int(route.Type))
-            route_om.metric1 = route.Metric1
-            route_om.metric2 = route.Metric2
-            route_om.metric3 = route.Metric3
-            route_om.metric4 = route.Metric4
-            route_om.metric5 = route.Metric5
-            route_om.routemask = self.maskToBits(route.Mask)
-            route_om.setTarget = route_om.id + "/" + str(route_om.routemask)
-            route_om.id += "_" + str(route_om.routemask)
-
-            if route_om.routemask == 32:
-                continue
-
-            mapRoute.append(route_om)
-
-        maps.append(RelationshipMap(
-            relname="routes",
-            compname="os",
-            modname="Products.ZenModel.IpRouteEntry",
-            objmaps=mapRoute))
 
         mapDisk = self.process_filesystems(device, res.fsDisk, log)
 
