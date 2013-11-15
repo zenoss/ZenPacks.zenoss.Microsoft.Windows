@@ -32,7 +32,7 @@ class Routes(WinRMPlugin):
 
         rm = self.relMap()
 
-        for route in results.values()[0]:
+        for route in results.get('Win32_IP4RouteTable', ()):
             if route.Mask == '32':
                 continue
 
