@@ -22,9 +22,6 @@ from Products.Zuul.utils import safe_hasattr
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
-    lookup_drivetype,
-    lookup_zendrivetype,
-    guessBlockSize,
     addLocalLibPath,
     lookup_operstatus,
     )
@@ -45,9 +42,6 @@ ENUM_INFOS = dict(
     operatingSystem=create_enum_info('select * from Win32_OperatingSystem'),
     netInt=create_enum_info('select * from Win32_NetworkAdapter'),
     netConf=create_enum_info('select * from Win32_NetworkAdapterConfiguration'),
-    fsDisk=create_enum_info('select * from Win32_logicaldisk'),
-    fsVol=create_enum_info('select * from Win32_Volume'),
-    fsMap=create_enum_info('select * from Win32_MappedLogicalDisk'),
     clusterInformation=create_enum_info(
         wql='select * from mscluster_cluster',
         resource_uri=resource_uri)
@@ -71,10 +65,7 @@ class WinOSResult(object):
 
 
 class WinOS(WinRMPlugin):
-
     deviceProperties = WinRMPlugin.deviceProperties + (
-        'zFileSystemMapIgnoreNames',
-        'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
         )
 
@@ -359,66 +350,7 @@ class WinOS(WinRMPlugin):
             modname="ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
             objmaps=mapTeamInter))
 
-        mapDisk = self.process_filesystems(device, res.fsDisk, log)
-
-        maps.append(RelationshipMap(
-            relname="filesystems",
-            compname="os",
-            modname="Products.ZenModel.FileSystem",
-            objmaps=mapDisk))
-
         return maps
-
-    def process_filesystems(self, device, fsDisk, log):
-        # File System Map
-        skipfsnames = getattr(device, 'zFileSystemMapIgnoreNames', None)
-        skipfstypes = getattr(device, 'zFileSystemMapIgnoreTypes', None)
-
-        mapDisk = []
-        for disk in fsDisk:
-            disk_om = ObjectMap()
-            disk_om.mount = \
-                "{driveletter} (Serial Number: {serialnumber}) - {name}" \
-                .format(
-                    driveletter=disk.Name,
-                    serialnumber=disk.VolumeSerialNumber,
-                    name=disk.VolumeName)
-
-            #Check if drive description matches skip names
-            if skipfsnames and re.search(skipfsnames, disk_om.mount):
-                continue
-
-            disk_om.drivetype = int(disk.DriveType)
-
-            #Check for excluded drives
-            if skipfstypes:
-                # Get mapping of Windows Drive types to
-                # Zenoss types for exclusion
-                zentype = lookup_zendrivetype(disk_om.drivetype)
-                for mapdisktype in zentype:
-                    if mapdisktype in skipfstypes:
-                        log.info(
-                            "{drivename} drive's filesystem {filesystem}"
-                            " has been excluded"
-                            .format(drivename=disk.Name,
-                                    filesystem=lookup_drivetype(
-                                        disk_om.drivetype)))
-                        break
-                else:
-                    disk_om.monitor = (disk.Size and int(disk.MediaType) in (12, 0))
-                    disk_om.storageDevice = disk.Name
-                    disk_om.drivetype = lookup_drivetype(disk_om.drivetype)
-                    disk_om.type = disk.FileSystem
-                    if disk.Size:
-                        if not disk.BlockSize:
-                            disk.BlockSize = guessBlockSize(disk.Size)
-                        disk_om.blockSize = int(disk.BlockSize)
-                        disk_om.totalBlocks = int(disk.Size) / disk_om.blockSize
-                    disk_om.maxNameLen = disk.MaximumComponentLength
-                    disk_om.id = self.prepId(disk.DeviceID)
-                    disk_om.perfmonInstance = '\\LogicalDisk({0})'.format(disk.Name.rstrip('\\'))
-                    mapDisk.append(disk_om)
-        return mapDisk
 
     # builds a dictionary of perfmon instance paths for each network adapter
     # found in the WMI results query, keyed by the Index attribute

@@ -27853,7 +27853,7 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 ['Active Directory', 'Device', 'IIS', 'MSExchangeIS', 'MSSQLServer']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.WinIIS', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
+['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.WinIIS', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
 </property>
 </object>
 <object id='Cluster' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
@@ -27864,7 +27864,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinCluster', 'zenoss.winrm.ClusterOS', 'zenoss.winrm.Services', 'zenoss.winrm.Software', 'zenoss.winrm.Processes']
+['zenoss.winrm.WinCluster', 'zenoss.winrm.ClusterOS', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Services', 'zenoss.winrm.Software', 'zenoss.winrm.Processes']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice

@@ -73,45 +73,11 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def lookup_drivetype(value):
-    return {
-        0: 'Unknown',
-        1: 'No Root Directory',
-        2: 'Removable Disk',
-        3: 'Local Disk',
-        4: 'Network Drive',
-        5: 'Compact Disc',
-        6: 'RAM Disk',
-        }.get(value, 'Unknown')
-
-
-def lookup_zendrivetype(value):
-    return {
-        0: ['other'],
-        2: ['removableDisk', 'floppyDisk'],
-        3: ['fixedDisk'],
-        4: ['networkDisk'],
-        5: ['compactDisk'],
-        6: ['ramDisk', 'virtualMemory', 'ram', 'flashMemory'],
-        }.get(value, 'uknown')
-
-
 def lookup_operstatus(value):
     if value == 'true':
         return 1
     else:
         return 2
-
-
-def guessBlockSize(bytes):
-    """Most of the MS operating systems don't seem to return a value
-    for block size.  So, let's try to guess by how the size is rounded
-    off.  That is, if the number is divisible by 1024, that's probably
-    due to the block size.  Ya, it's a kludge."""
-    for i in range(10, 17):
-        if int(bytes) / float(1 << i) % 1:
-            return 1 << (i - 1)
-    return 4096                 # a total fiction
 
 
 def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
