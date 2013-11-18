@@ -23,7 +23,7 @@ class Software(WinRMPlugin):
     relname = 'software'
     modname = 'Products.ZenModel.Software'
 
-    wql_queries = {
+    queries = {
         'Win32_Product': "SELECT Name, InstallDate, Vendor FROM Win32_Product",
         }
 

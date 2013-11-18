@@ -29,9 +29,6 @@ class OperatingSystem(BaseOS):
         ("clusterservices", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
           "os")),
-        ("teaminterfaces", ToManyCont(ToOne,
-         "ZenPacks.zenoss.Microsoft.Windows.TeamInterface",
-          "os")),
         )
 
 InitializeClass(OperatingSystem)
