@@ -40,7 +40,7 @@ class CPUs(WinRMPlugin):
         'InstalledSize',
         )
 
-    wql_queries = {
+    queries = {
         'Win32_Processor': 'SELECT * FROM Win32_Processor',
         'Win32_CacheMemory': "SELECT {} FROM Win32_CacheMemory".format(', '.join(cachememory_attrs)),
         }

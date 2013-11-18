@@ -53,7 +53,7 @@ class Processes(WinRMPlugin):
         PROXY_MATCH_PROPERTY,
         )
 
-    wql_queries = {
+    queries = {
         'Win32_Process': "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
         }
 

@@ -21,7 +21,7 @@ class Services(WinRMPlugin):
     relname = 'winrmservices'
     modname = 'ZenPacks.zenoss.Microsoft.Windows.WinService'
 
-    wql_queries = {
+    queries = {
         'Win32_Service': "SELECT * FROM Win32_Service",
         }
 

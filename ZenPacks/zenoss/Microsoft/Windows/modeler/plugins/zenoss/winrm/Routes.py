@@ -21,7 +21,7 @@ class Routes(WinRMPlugin):
     relname = 'routes'
     modname = 'Products.ZenModel.IpRouteEntry'
 
-    wql_queries = {
+    queries = {
         'Win32_IP4RouteTable': "SELECT * FROM Win32_IP4RouteTable",
         }
 

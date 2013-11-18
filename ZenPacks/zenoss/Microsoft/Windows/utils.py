@@ -24,7 +24,7 @@ def lookup_adminpasswordstatus(value):
         2: 'Enabled',
         3: 'Not Implemented',
         4: 'Unknown',
-       }.get(value, 'unknown')
+        }.get(value, 'unknown')
 
 
 def lookup_chassisbootupstate(value):
@@ -71,13 +71,6 @@ def lookup_architecture(value):
         6: 'Itanium-based systems',
         9: 'x64',
         }.get(value, 'unknown')
-
-
-def lookup_operstatus(value):
-    if value == 'true':
-        return 1
-    else:
-        return 2
 
 
 def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):

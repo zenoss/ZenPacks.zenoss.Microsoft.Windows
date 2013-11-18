@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -8,29 +8,17 @@
 ##############################################################################
 
 
-from Globals import InitializeClass
-
 from zope.event import notify
 
-from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenModel.IpInterface import IpInterface
-from Products.ZenRelations.RelSchema import ToManyCont, ToMany, ToOne
+from Products.ZenRelations.RelSchema import ToMany, ToOne
 from Products.Zuul.catalog.events import IndexingEvent
 
 
-class TeamInterface(IpInterface, OSComponent):
+class TeamInterface(IpInterface):
     meta_type = portal_type = 'WinTeamInterface'
 
-    _relations = OSComponent._relations + (
-        ('os', ToOne(ToManyCont,
-            'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',
-            'teaminterfaces')),
-        ('ipaddresses', ToMany(ToOne,
-            'Products.ZenModel.IpAddress',
-            'interface')),
-        ('iproutes', ToMany(ToOne,
-            'Products.ZenModel.IpRouteEntry',
-            'interface')),
+    _relations = IpInterface._relations + (
         ('teaminterfaces', ToMany(ToOne,
             'ZenPacks.zenoss.Microsoft.Windows.Interface',
             'teaminterface')),
@@ -50,7 +38,10 @@ class TeamInterface(IpInterface, OSComponent):
 
                 notify(IndexingEvent(interface, 'path', False))
 
+            # For componentSearch. Would be nice if we could target
+            # idxs=['getAllPaths'], but there's a chance that it won't
+            # exist yet.
+            interface.index_object()
+
     def getInterfaces(self):
         return sorted([x.id for x in self.teaminterfaces()])
-
-InitializeClass(TeamInterface)

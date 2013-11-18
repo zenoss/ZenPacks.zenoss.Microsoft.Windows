@@ -28,7 +28,7 @@ class FileSystems(WinRMPlugin):
         'zFileSystemMapIgnoreTypes',
         )
 
-    wql_queries = {
+    queries = {
         'Win32_LogicalDisk': "SELECT * FROM Win32_LogicalDisk",
 
         # TODO: Do we need to support these too?
