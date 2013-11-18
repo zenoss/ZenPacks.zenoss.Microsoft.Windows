@@ -21,6 +21,12 @@ class Routes(WinRMPlugin):
     relname = 'routes'
     modname = 'Products.ZenModel.IpRouteEntry'
 
+    deviceProperties = WinRMPlugin.deviceProperties + (
+        'zRouteMapCollectOnlyIndirect',
+        'zRouteMapCollectOnlyLocal',
+        'zRouteMapMaxRoutes',
+        )
+
     queries = {
         'Win32_IP4RouteTable': "SELECT * FROM Win32_IP4RouteTable",
         }
@@ -32,28 +38,53 @@ class Routes(WinRMPlugin):
 
         rm = self.relMap()
 
+        only_indirect = getattr(device, 'zRouteMapCollectOnlyIndirect', False)
+        only_local = getattr(device, 'zRouteMapCollectOnlyLocal', False)
+        max_routes = getattr(device, 'zRouteMapMaxRoutes', None)
+
+        total_routes = 0
+
         for route in results.get('Win32_IP4RouteTable', ()):
-            if route.Mask == '32':
+            routemask_bits = self.maskToBits(route.Mask)
+            protocol = lookup_protocol(route.Protocol or 0)
+            rtype = lookup_type(route.Type or 0)
+
+            if routemask_bits == 32:
                 continue
 
-            routemask_bits = self.maskToBits(route.Mask)
+            if only_local and protocol not in ('local', 'netmgmt'):
+                continue
+
+            if only_indirect and rtype != 'indirect':
+                continue
+
             target = '{}/{}'.format(route.Destination, routemask_bits)
 
             rm.append(self.objectMap({
                 'id': self.prepId(target),
                 'title': target,
                 'routemask': routemask_bits,
-                'routeproto': lookup_protocol(route.Protocol or 0),
-                'routetype': lookup_type(route.Type or 0),
+                'routeproto': protocol,
+                'routetype': rtype,
                 'metric1': route.Metric1,
                 'metric2': route.Metric2,
                 'metric3': route.Metric3,
                 'metric4': route.Metric4,
                 'metric5': route.Metric5,
                 'setTarget': target,
-                'setInterfaceIndex': route.setInterfaceIndex,
+                'setInterfaceIndex': route.InterfaceIndex,
                 'setNextHopIp': route.NextHop,
                 }))
+
+            total_routes += 1
+
+            if total_routes is not None:
+                if total_routes >= max_routes:
+                    log.warn(
+                        "Modeled zRouteMapMaxRoutes (%s) on %s",
+                        max_routes, device.id)
+
+                    break
 
         return rm
 

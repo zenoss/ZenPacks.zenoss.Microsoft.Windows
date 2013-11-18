@@ -102,9 +102,15 @@ class Interfaces(WinRMPlugin):
                 pass
 
             for intconf in netConf:
-                if intconf.Index == inter.Index:
+                if intconf.InterfaceIndex == inter.InterfaceIndex:
                     interconf = intconf
-                    continue
+                    break
+            else:
+                log.warn(
+                    "No configuration found for %s on %s",
+                    inter.Description, device.id)
+
+                continue
 
             if interconf.MACAddress is None:
                 continue
@@ -148,6 +154,7 @@ class Interfaces(WinRMPlugin):
                 standardizeInstance(
                     inter.Index + "-" + interconf.Description))
 
+            int_om.title = interconf.Description
             int_om.setIpAddresses = ips
             int_om.interfaceName = inter.Description
             if getattr(inter, 'NetConnectionID') is not None:
@@ -177,9 +184,9 @@ class Interfaces(WinRMPlugin):
             int_om.operStatus = int(lookup_operstatus(interconf.IPEnabled))
 
             try:
-                int_om.ifindex = int(inter.InterfaceIndex)
+                int_om.ifindex = inter.InterfaceIndex
             except (AttributeError, TypeError):
-                int_om.ifindex = int(inter.Index)
+                int_om.ifindex = inter.Index
 
             if inter.Index in perfmonInstanceMap:
                 int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
