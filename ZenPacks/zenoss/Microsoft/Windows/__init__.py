@@ -59,6 +59,7 @@ productNames = (
     'Device',
     'Interface',
     'OperatingSystem',
+    'OSProcess',
     'TeamInterface',
     'WinIIS',
     'WinService',

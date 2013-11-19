@@ -10,7 +10,8 @@
 '''
 Windows Running Processes
 
-Models running processes by querying Win32_Process via WMI.
+Models running processes by querying Win32_Process and
+Win32_PerfFormattedData_PerfProc_Process via WMI.
 '''
 
 import re
@@ -47,7 +48,7 @@ else:
 class Processes(WinRMPlugin):
     compname = 'os'
     relname = 'processes'
-    modname = 'Products.ZenModel.OSProcess'
+    modname = 'ZenPacks.zenoss.Microsoft.Windows.OSProcess'
 
     deviceProperties = WinRMPlugin.deviceProperties + (
         PROXY_MATCH_PROPERTY,
@@ -55,6 +56,7 @@ class Processes(WinRMPlugin):
 
     queries = {
         'Win32_Process': "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
+        'Win32_PerfFormattedData_PerfProc_Process': "SELECT * FROM Win32_PerfFormattedData_PerfProc_Process",
         }
 
     def process(self, device, results, log):
@@ -62,10 +64,25 @@ class Processes(WinRMPlugin):
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
-        if hasattr(device, 'osProcessClassMatchData'):
-            return self.new_process(device, results, log)
+        rm = self.relMap()
 
-        return self.old_process(device, results, log)
+        # Get process ObjectMap instances.
+        if hasattr(device, 'osProcessClassMatchData'):
+            oms = self.new_process(device, results, log)
+        else:
+            oms = self.old_process(device, results, log)
+
+        # Determine if WorkingSetPrivate is supported.
+        perfproc = results.get(
+            'Win32_PerfFormattedData_PerfProc_Process', (None,))[0]
+
+        supports_WorkingSetPrivate = hasattr(perfproc, 'WorkingSetPrivate')
+
+        for om in oms:
+            om.supports_WorkingSetPrivate = supports_WorkingSetPrivate
+            rm.append(om)
+
+        return rm
 
     def new_process(self, device, results, log):
         '''
@@ -78,10 +95,8 @@ class Processes(WinRMPlugin):
             self.objectMap,
             buildObjectMapData(device.osProcessClassMatchData, processes))
 
-        rm = self.relMap()
-        rm.extend(oms)
-
-        return rm
+        for om in oms:
+            yield om
 
     def old_process(self, device, results, log):
         '''
@@ -92,8 +107,6 @@ class Processes(WinRMPlugin):
         self.compile_regexes(device, log)
 
         seen = set()
-
-        rm = self.relMap()
 
         for item in results.values()[0]:
             procName, parameters = get_processNameAndArgs(item)
@@ -136,9 +149,7 @@ class Processes(WinRMPlugin):
                 if hasattr(OSProcess.OSProcess, 'processText'):
                     data['processText'] = processText
 
-                rm.append(self.objectMap(data))
-
-        return rm
+                yield self.objectMap(data)
 
     def compile_regexes(self, device, log):
         for matcher in device.getOSProcessMatchers:
