@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -35,13 +35,12 @@ class Services(WinRMPlugin):
         for service in results.get('Win32_Service', ()):
             rm.append(self.objectMap({
                 'id': self.prepId(service.Name),
-                'title': service.Name,
+                'title': service.Caption,
                 'servicename': service.Name,
                 'caption': service.Caption,
                 'description': service.Description,
                 'startmode': service.StartMode,
                 'account': service.StartName,
-                'state': service.State,
                 }))
 
         return rm

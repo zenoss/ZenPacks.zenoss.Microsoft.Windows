@@ -58,7 +58,6 @@ class IWinServiceInfo(IWinComponentInfo):
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     startmode = schema.TextLine(title=_t(u'Start Mode'), readonly=True)
     account = schema.TextLine(title=_t(u'Account'), readonly=True)
-    state = schema.TextLine(title=_t(u'Current State'), readonly=True)
     usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
 
 
