@@ -7,32 +7,24 @@
 #
 ##############################################################################
 
-
 import logging
+LOG = logging.getLogger("zen.MicrosoftWindows")
+
 from socket import gaierror
 
-log = logging.getLogger("zen.MicrosoftWindows")
-
-from Globals import InitializeClass
-
 from zope.event import notify
-
 from ZODB.transact import transact
 
-from Products.ZenModel.Device import Device as BaseDevice
-from Products.ZenModel.DeviceHW import DeviceHW
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenStatus import ZenStatus
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
-from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
+from ZenPacks.zenoss.Microsoft.Windows.zope_utils import BaseDevice
 
 
 class Device(BaseDevice):
-    """
-    A device class that knows about enclosures
-    """
+    '''
+    Model class for a Windows operating system device.
+    '''
 
     clusterdevices = ''
 
@@ -40,30 +32,16 @@ class Device(BaseDevice):
         {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
         )
 
-    def __init__(self, id, buildRelations=True):
-        ManagedEntity.__init__(self, id, buildRelations=buildRelations)
-
-        os = OperatingSystem()
-        self._setObject(os.id, os)
-
-        hw = DeviceHW()
-        self._setObject(hw.id, hw)
-
-        self._lastPollSnmpUpTime = ZenStatus(0)
-        self._snmpLastCollection = 0
-        self._lastChange = 0
-
-        if hasattr(self, '_create_componentSearch'):
-            self._create_componentSearch()
-
     def setClusterMachines(self, clusterdnsnames):
-
+        '''
+        Set cluster hostnames of which this server is a member.
+        '''
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in clusterdnsnames:
             try:
                 clusterip = getHostByName(clusterdnsname)
             except(gaierror):
-                log.warning('Unable to resolve hostname {0}'.format(clusterdnsname))
+                LOG.warning('Unable to resolve hostname {0}'.format(clusterdnsname))
                 return
 
             device = deviceRoot.findDeviceByIdOrIp(clusterip)
@@ -95,6 +73,9 @@ class Device(BaseDevice):
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachines(self):
+        '''
+        Get cluster hostnames of which this server is a member.
+        '''
         _clusterdevices = []
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in self.clusterdevices:
@@ -141,5 +122,3 @@ class DeviceLinkProvider(object):
                     )
 
         return links
-
-InitializeClass(Device)

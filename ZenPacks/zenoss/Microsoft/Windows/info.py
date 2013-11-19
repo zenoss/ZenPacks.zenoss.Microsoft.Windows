@@ -107,7 +107,6 @@ class WinServiceInfo(WinComponentInfo):
     description = ProxyProperty('description')
     startmode = ProxyProperty('startmode')
     account = ProxyProperty('account')
-    state = ProxyProperty('state')
     usermonitor = ProxyProperty('usermonitor')
 
     def getMonitor(self):

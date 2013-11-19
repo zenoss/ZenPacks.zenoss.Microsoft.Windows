@@ -7,6 +7,10 @@
 #
 ##############################################################################
 
+'''
+Basic utilities that don't cause any Zope stuff to be imported.
+'''
+
 
 def addLocalLibPath():
     """
