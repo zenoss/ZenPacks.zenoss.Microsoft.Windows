@@ -97,7 +97,12 @@ class ZenPack(ZenPackBase):
 
             # remove kerberos.so file from python path
             kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
-            shutil.remove(kerbdst)
+
+            try:
+                os.remove(kerbdst)
+            except Exception:
+                pass
+
             # remove symlinks for command line utilities
             for utilname in self.binUtilities:
                 self.removeBinFile(utilname)
