@@ -221,9 +221,9 @@ Perfmon counters are collected using the typeperf command within a remote shell 
 
 <br clear=all>
 
-For devices in the ''/Server/Microsoft/Windows'' device class, the above perfmon counters will be collected over WinRS using the Get-Counter cmdlet in a Powershell shell.
+For devices in the ''/Server/Microsoft/Windows'' device class, the above perfmon counters will be collected over WinRS using the Get-Counter cmdlet utilizing Powershell.
 
-{{note}} The zenpython daemon must be restarted after making changes to the WinService Datasource.
+{{note}} The zenpython daemon may need to be restarted after making changes to any of the Datasources.
 
 {{note}} IIS 6 Management compatibility needs to be installed on server side in order to use the IIS Sites component.
 
@@ -275,7 +275,7 @@ zenbatchload <filename>
 
 == Setting up WinRM Service on Target Windows Machines ==
 
-* Disabled firewall
+* Open port 80/443 if using WinRM Version 1.x and ports 5985/5986 for WinRM Version 2.x
 * Run command prompt as Administrator
 * winrm quickconfig
 * For WinRM 2.0 and greater(Use 'winrm id' and check Stack):
@@ -296,8 +296,6 @@ If you are installing this ZenPack on an existing Zenoss system or upgrading fro
 
 This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM, but does not automatically migrate monitoring of your Microsoft Windows resources when installed. The ZenPacks can coexist gracefully to allow you time to manually transition monitoring to the newer ZenPack with better capabilities.
 
-Depending on how heavily loaded your Windows and Zenoss server(s) are you may wish to avoid monitoring the same Windows resources twice in parallel. If this is the case, you should use the following instructions to first remove the existing Windows monitoring before adding the new monitoring.
-
 # Navigate to the Infrastructure page.
 # Expand the Server/Windows/WMI device class.
 # Single-click to select a Windows device.
@@ -306,7 +304,7 @@ Depending on how heavily loaded your Windows and Zenoss server(s) are you may wi
 # Add the device back using the [[#Adding a Windows Device]] instructions above. Be sure to select the /Server/Microsoft/Windows device class and not the /Server/Windows/WMI device class.
 # Repeat steps 3-6 for each Windows device.
 
-If you're comfortable monitoring the Windows devices twice in parallel for a time, you can simply follow the instructions under [[#Adding a Windows Device]] then delete the old devices from the ''/Server/Windows/WMI'' device class once you're satisfied with the new monitoring. Windows Server 2000 does not support WinRM. If you have Windows Server 2000 machines you can continue to monitor them with the ''ZenPacks.zenoss.WindowsMonitor'' ZenPack while moving other Windows devices to the new WinRM-based ZenPack's device class, ''/Server/Microsoft/Windows''. On Windows Server 2003, the WinRM service must be installed (it does not ship with the OS like it does with later versions of Windows server).
+If you have Windows Server 2000 machines you can continue to monitor them with the ''ZenPacks.zenoss.WindowsMonitor'' ZenPack while moving other Windows devices to the new WinRM-based ZenPack's device class, ''/Server/Microsoft/Windows''. On Windows Server 2003, the WinRM service must be installed (it does not ship with the OS like it does with later versions of Windows server).
 
 Old Windows ZenPacks:
 
@@ -332,7 +330,6 @@ The Beta release of the new WinRM-based Windows ZenPack does not support the fol
 * Kerberos (Active Directory authentication)
 * HTTPS
 * SPNEGO (encrypted payload over HTTP)
-* Clustering
 * Network Load Balancing
 
 Major bugs:
@@ -344,8 +341,6 @@ Major bugs:
 Minor bugs:
 
 * [http://jira.zenoss.com/jira/browse/ZEN-7264 ZEN-7264: Microsoft Windows ZenPack: Displays incorrect uptime]
-* [http://jira.zenoss.com/jira/browse/ZEN-7379 ZEN-7379: Active Directory Template - All the DS and LDAP graphs has three duplicate datapoints]
-* [http://jira.zenoss.com/jira/browse/ZEN-7259 ZEN-7259: Microsoft Windows ZenPack: For Processors component, the display dropdown shows two graph and an edit option]
 
 == Troubleshooting ==
 
@@ -364,14 +359,21 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ;Device Classes
 * /Server/Microsoft/Windows
+* /Server/Microsoft/Cluster
 
 ;Modeler Plugins
 * zenoss.winrm.WinOS
 * zenoss.winrm.WinIIS
 * zenoss.winrm.WinServices
+* zenoss.winrm.WinCluster
+* zenoss.winrm.ClusterOS
+* zenoss.winrm.Software
+* zenoss.winrm.Processes
 
 ;Datasource Types
 * WinRS
+* WinEvents
+* WinServices
 
 ;Monitoring Templates
 * Device (in /Server/Microsoft/Windows)
@@ -416,4 +418,4 @@ try{     add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=11.
 * Registry
 ** To find SQL Server instances
 ** HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\
-** HKLM:\Software\Microsoft\Microsoft SQL Server\{{ZenPackFooter}}
+** HKLM:\Software\Microsoft\Microsoft SQL Server\
