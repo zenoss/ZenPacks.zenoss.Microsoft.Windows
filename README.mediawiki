@@ -1,4 +1,4 @@
-This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
+This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
 
 <span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
 
@@ -6,7 +6,8 @@ This ZenPack provides support for monitoring Microsoft Windows. Monitoring is pe
 
 This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
 
-Video: http://www.youtube.com/watch?v=kP28F_aQ77E&feature=youtu.be
+== Video ==
+{{#widget:YouTube|id=kP28F_aQ77E|width=640|height=360}}
 
 == Gallery ==
 <gallery widths=250px heights=127px>
@@ -24,206 +25,265 @@ windows_services.png
 
 The features added by this ZenPack can be summarized as follows. They are each detailed further below.
 
-* Initial discovery and continual synchronization of relevant components.
+* Initial discovery and periodic remodeling of relevant components.
 * Performance monitoring.
 * Event management.
 
 === Discovery ===
 
-The following components will be automatically discovered through the Windows server address, username and password you provide. The properties and relationships will be continually maintained by remodeling the device.
+The following components will be automatically discovered through the Windows server address, username and password you provide. The properties and relationships will be periodically updated by modeling.
 
 [[File:windows_device.png|thumb|320px|Device]]
 [[File:windows_services.png|thumb|320px|File systems]]
 [[File:windows_interfaces.png|thumb|320px|Interfaces]]
 
-;File systems
-: Attributes: Mount Point, Status, Storage Device, Type, Block Size, Total Bytes, Used Bytes, Available Bytes, Total Files, Available Files, Capacity Files, Maximum Name Length
-: Relationships: None
+;Server (Device)
+: Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Total Memory, Total Swap, Operating System, Cluster
 
-;Interfaces
-: Attributes: IP Interface, IP Addresses, Description, MAC Address, Monitored, Operational Status, Admin Status
-: Relationships: None
+;Cluster (Device)
+: Attributes: Name, Contact, Description, Total Memory, Total Swap, Operating System, Member Servers
 
 ;Processors
-: Attributes: Manufacturer, Model, Number of Cores, Architecture, Clock Speed, Status
-: Relationships: None
+: Attributes: Name, Description, Model, Socket, Cores, Threads, Clock Speed, External Speed, Voltage, L1 Cache Size, L2 Cache Size and Speed, L3 Cache Size and Speed
 
-;Network routes
+;File System
+: Attributes: Mount Point, Status, Storage Device, Type, Block Size, Total Blocks, Total Bytes, Maximum Name Length
+
+;Interfaces
+: Attributes: Name, Description, MAC Address, MTU, Speed, Duplex, Type, Administrative Status, Operational Status, IP Addresses
+
+;Network Routes
 : Attributes: Destination, Next Hop, Interface, Protocol, Type
-: Relationships: None
+
+;Process Sets
+: Attributes: Name, Recent Matches, Process Class
+
+;Software
+: Attributes: Name, Vendor, Installation Date
 
 ;Services
-: Attributes: Name, Display Name, Start Mode, Status
-: Relationships: None
+: Attributes: Name, Display Name, Start Mode, Account
+
+;Cluster Services
+: Attributes: Name, Core Group, Owner Node, State, Description, Priority
+: Relationships: Cluster Resources
+
+;Cluster Resources
+: Attributes: Name, Owner Node, Description, Owner Group, State
+: Relationships: Cluster Service
+
+;IIS Sites
+: Attributes: Name, Status, App Pool
+
+;SQL Server Instances
+: Attributes: Name
+: Relationships: SQL Server Databases
+
+;SQL Server Databases
+: Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path
+: Relationships: SQL Server Instance
+
+;SQL Server Backups
+: Attributes: Name, Device Type, Physical Allocation, Status
+: Relationships: SQL Server Instance
+
+;SQL Server Jobs
+: Attributes: Name, Job ID, Description, Enabled, Date Created, Username
+; Relationships: SQL Server Instance
 
 <br clear=all>
 
 === Performance Monitoring ===
 
-Perfmon counters are collected using the typeperf command within a remote shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows perfmon counters can also be collected by adding them to the appropriate monitoring template.
+Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a remove shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows Perfmon counters can also be collected by adding them to the appropriate monitoring template.
 
 [[File:windows_graphs.png|thumb|320px|Device-level graphs]]
 [[File:windows_filesystem.png|thumb|320px|File systems]]
 
+;Device
+* \Memory\Available bytes
+* \Memory\Committed Bytes
+* \Memory\Pages Input/sec
+* \Memory\Pages Output/sec
+* \Paging File(_Total)\% Usage
+* \Processor(_Total)\% Privileged Time
+* \Processor(_Total)\% Processor Time
+* \Processor(_Total)\% User Time
+* \System\System Up Time
+
 ;Active Directory
-: \NTDS\DS Client Binds/sec
-: \NTDS\DS Directory Reads/sec
-: \NTDS\DS Directory Searches/sec
-: \NTDS\DS Directory Writes/sec
-: \NTDS\DS Monitor List Size
-: \NTDS\DS Name Cache hit rate
-: \NTDS\DS Notify Queue Size
-: \NTDS\DS Search sub-operations/sec
-: \NTDS\DS Server Binds/sec
-: \NTDS\DS Server Name Translations/sec
-: \NTDS\DS Threads in Use
-: \NTDS\KDC AS Requests
-: \NTDS\KDC TGS Requests
-: \NTDS\Kerberos Authentications
-: \NTDS\LDAP Active Threads
-: \NTDS\LDAP Bind Time
-: \NTDS\LDAP Client Sessions
-: \NTDS\LDAP Closed Connections/sec
-: \NTDS\LDAP New Connections/sec
-: \NTDS\LDAP New SSL Connections/sec
-: \NTDS\LDAP Searches/sec
-: \NTDS\LDAP Successful Binds/sec
-: \NTDS\LDAP UDP operations/sec
-: \NTDS\LDAP Writes/sec
-: \NTDS\NTLM Authentications
-: \NTDS\DS Client Binds/sec
-: \NTDS\DS Directory Reads/sec
-: \NTDS\DS Directory Searches/sec
-: \NTDS\DS Directory Writes/sec
-: \NTDS\DS Monitor List Size
-: \NTDS\DS Name Cache hit rate
-: \NTDS\DS Notify Queue Size
-: \NTDS\DS Search sub-operations/sec
-: \NTDS\DS Server Binds/sec
-: \NTDS\DS Server Name Translations/sec
-: \NTDS\DS Threads in Use
-: \NTDS\LDAP Active Threads
-: \NTDS\LDAP Bind Time
-: \NTDS\LDAP Client Sessions
-: \NTDS\LDAP Closed Connections/sec
-: \NTDS\LDAP New Connections/sec
-: \NTDS\LDAP New SSL Connections/sec
-: \NTDS\LDAP Searches/sec
-: \NTDS\LDAP Successful Binds/sec
-: \NTDS\LDAP UDP operations/sec
-: \NTDS\LDAP Writes/sec
-: \DirectoryServices(NTDS)\DS Client Binds/sec
-: \DirectoryServices(NTDS)\DS Directory Reads/sec
-: \DirectoryServices(NTDS)\DS Directory Searches/sec
-: \DirectoryServices(NTDS)\DS Directory Writes/sec
-: \DirectoryServices(NTDS)\DS Monitor List Size
-: \DirectoryServices(NTDS)\DS Name Cache hit rate
-: \DirectoryServices(NTDS)\DS Notify Queue Size
-: \DirectoryServices(NTDS)\DS Search sub-operations/sec
-: \DirectoryServices(NTDS)\DS Server Binds/sec
-: \DirectoryServices(NTDS)\DS Server Name Translations/sec
-: \DirectoryServices(NTDS)\DS Threads in Use
-: \DirectoryServices(NTDS)\LDAP Active Threads
-: \DirectoryServices(NTDS)\LDAP Bind Time
-: \DirectoryServices(NTDS)\LDAP Client Sessions
-: \DirectoryServices(NTDS)\LDAP Closed Connections/sec
-: \DirectoryServices(NTDS)\LDAP New Connections/sec
-: \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
-: \DirectoryServices(NTDS)\LDAP Searches/sec
-: \DirectoryServices(NTDS)\LDAP Successful Binds/sec
-: \DirectoryServices(NTDS)\LDAP UDP operations/sec
-: \DirectoryServices(NTDS)\LDAP Writes/sec
-
-;Memory
-: \Memory\Available bytes
-: \Memory\Committed Bytes
-: \Memory\Pages Input/sec
-: \Memory\Pages Output/sec
-: \Paging File(_Total)\% Usage
-
-;Processor
-: \Processor(_Total)\% Privileged Time
-: \Processor(_Total)\% Processor Time
-: \Processor(_Total)\% User Time
-
-;System
-: \System\System Up Time
-
-;File systems
-: \Disk Read Bytes/sec
-: \% Disk Read Time
-: \Disk Write Bytes/sec
-: \% Disk Write Time
-: \Free Megabytes
-
-; IIS
-: \Web Service(_Total)\Bytes Received/sec
-: \Web Service(_Total)\Bytes Sent/sec
-: \Web Service(_Total)\CGI Requests/sec
-: \Web Service(_Total)\Connection Attempts/sec
-: \Web Service(_Total)\Copy Requests/sec
-: \Web Service(_Total)\Delete Requests/sec
-: \Web Service(_Total)\Files Received/sec
-: \Web Service(_Total)\Files Sent/sec
-: \Web Service(_Total)\Get Requests/sec
-: \Web Service(_Total)\Head Requests/sec
-: \Web Service(_Total)\ISAPI Extension Requests/sec
-: \Web Service(_Total)\Lock Requests/sec
-: \Web Service(_Total)\Mkcol Requests/sec
-: \Web Service(_Total)\Move Requests/sec
-: \Web Service(_Total)\Options Requests/sec
-: \Web Service(_Total)\Other Request Methods/sec
-: \Web Service(_Total)\Post Requests/sec
-: \Web Service(_Total)\Propfind Requests/sec
-: \Web Service(_Total)\Proppatch Requests/sec
-: \Web Service(_Total)\Put Requests/sec
-: \Web Service(_Total)\Search Requests/sec
-: \Web Service(_Total)\Trace Requests/sec
-: \Web Service(_Total)\Unlock Requests/sec
+* \NTDS\DS Client Binds/sec
+* \NTDS\DS Directory Reads/sec
+* \NTDS\DS Directory Searches/sec
+* \NTDS\DS Directory Writes/sec
+* \NTDS\DS Monitor List Size
+* \NTDS\DS Name Cache hit rate
+* \NTDS\DS Notify Queue Size
+* \NTDS\DS Search sub-operations/sec
+* \NTDS\DS Server Binds/sec
+* \NTDS\DS Server Name Translations/sec
+* \NTDS\DS Threads in Use
+* \NTDS\KDC AS Requests
+* \NTDS\KDC TGS Requests
+* \NTDS\Kerberos Authentications
+* \NTDS\LDAP Active Threads
+* \NTDS\LDAP Bind Time
+* \NTDS\LDAP Client Sessions
+* \NTDS\LDAP Closed Connections/sec
+* \NTDS\LDAP New Connections/sec
+* \NTDS\LDAP New SSL Connections/sec
+* \NTDS\LDAP Searches/sec
+* \NTDS\LDAP Successful Binds/sec
+* \NTDS\LDAP UDP operations/sec
+* \NTDS\LDAP Writes/sec
+* \NTDS\NTLM Authentications
+* \NTDS\DS Client Binds/sec
+* \NTDS\DS Directory Reads/sec
+* \NTDS\DS Directory Searches/sec
+* \NTDS\DS Directory Writes/sec
+* \NTDS\DS Monitor List Size
+* \NTDS\DS Name Cache hit rate
+* \NTDS\DS Notify Queue Size
+* \NTDS\DS Search sub-operations/sec
+* \NTDS\DS Server Binds/sec
+* \NTDS\DS Server Name Translations/sec
+* \NTDS\DS Threads in Use
+* \NTDS\LDAP Active Threads
+* \NTDS\LDAP Bind Time
+* \NTDS\LDAP Client Sessions
+* \NTDS\LDAP Closed Connections/sec
+* \NTDS\LDAP New Connections/sec
+* \NTDS\LDAP New SSL Connections/sec
+* \NTDS\LDAP Searches/sec
+* \NTDS\LDAP Successful Binds/sec
+* \NTDS\LDAP UDP operations/sec
+* \NTDS\LDAP Writes/sec
+* \DirectoryServices(NTDS)\DS Client Binds/sec
+* \DirectoryServices(NTDS)\DS Directory Reads/sec
+* \DirectoryServices(NTDS)\DS Directory Searches/sec
+* \DirectoryServices(NTDS)\DS Directory Writes/sec
+* \DirectoryServices(NTDS)\DS Monitor List Size
+* \DirectoryServices(NTDS)\DS Name Cache hit rate
+* \DirectoryServices(NTDS)\DS Notify Queue Size
+* \DirectoryServices(NTDS)\DS Search sub-operations/sec
+* \DirectoryServices(NTDS)\DS Server Binds/sec
+* \DirectoryServices(NTDS)\DS Server Name Translations/sec
+* \DirectoryServices(NTDS)\DS Threads in Use
+* \DirectoryServices(NTDS)\LDAP Active Threads
+* \DirectoryServices(NTDS)\LDAP Bind Time
+* \DirectoryServices(NTDS)\LDAP Client Sessions
+* \DirectoryServices(NTDS)\LDAP Closed Connections/sec
+* \DirectoryServices(NTDS)\LDAP New Connections/sec
+* \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
+* \DirectoryServices(NTDS)\LDAP Searches/sec
+* \DirectoryServices(NTDS)\LDAP Successful Binds/sec
+* \DirectoryServices(NTDS)\LDAP UDP operations/sec
+* \DirectoryServices(NTDS)\LDAP Writes/sec
 
 ;Exchange
-: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-: \MSExchangeIS Mailbox(_Total)\Local delivery rate
-: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
-: \MSExchangeIS\RPC Averaged Latency
-: \MSExchangeIS\RPC Operations/sec
-: \MSExchangeIS\RPC Requests
-: \SMTP Server(_Total)\Local Queue Length
-: \SMTP Server(_Total)\Messages Delivered/sec
-: \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
-: \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
-: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-: \MSExchangeIS Mailbox(_Total)\Local delivery rate
-: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
-: \MSExchangeIS\RPC Averaged Latency
-: \MSExchangeIS\RPC Operations/sec
-: \MSExchangeIS\RPC Requests
+* \MSExchangeIS Mailbox(_Total)\Folder opens/sec
+* \MSExchangeIS Mailbox(_Total)\Local delivery rate
+* \MSExchangeIS Mailbox(_Total)\Message Opens/sec
+* \MSExchangeIS\RPC Averaged Latency
+* \MSExchangeIS\RPC Operations/sec
+* \MSExchangeIS\RPC Requests
+* \SMTP Server(_Total)\Local Queue Length
+* \SMTP Server(_Total)\Messages Delivered/sec
+* \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+* \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
+* \MSExchangeIS Mailbox(_Total)\Folder opens/sec
+* \MSExchangeIS Mailbox(_Total)\Local delivery rate
+* \MSExchangeIS Mailbox(_Total)\Message Opens/sec
+* \MSExchangeIS\RPC Averaged Latency
+* \MSExchangeIS\RPC Operations/sec
+* \MSExchangeIS\RPC Requests
+
+; IIS
+* \Web Service(_Total)\Bytes Received/sec
+* \Web Service(_Total)\Bytes Sent/sec
+* \Web Service(_Total)\CGI Requests/sec
+* \Web Service(_Total)\Connection Attempts/sec
+* \Web Service(_Total)\Copy Requests/sec
+* \Web Service(_Total)\Delete Requests/sec
+* \Web Service(_Total)\Files Received/sec
+* \Web Service(_Total)\Files Sent/sec
+* \Web Service(_Total)\Get Requests/sec
+* \Web Service(_Total)\Head Requests/sec
+* \Web Service(_Total)\ISAPI Extension Requests/sec
+* \Web Service(_Total)\Lock Requests/sec
+* \Web Service(_Total)\Mkcol Requests/sec
+* \Web Service(_Total)\Move Requests/sec
+* \Web Service(_Total)\Options Requests/sec
+* \Web Service(_Total)\Other Request Methods/sec
+* \Web Service(_Total)\Post Requests/sec
+* \Web Service(_Total)\Propfind Requests/sec
+* \Web Service(_Total)\Proppatch Requests/sec
+* \Web Service(_Total)\Put Requests/sec
+* \Web Service(_Total)\Search Requests/sec
+* \Web Service(_Total)\Trace Requests/sec
+* \Web Service(_Total)\Unlock Requests/sec
 
 ;SQLServer
-: \SQLServer:Access Methods\Full Scans/sec
-: \SQLServer:Buffer Manager\Buffer cache hit ratio
-: \SQLServer:Buffer Manager\Free pages
-: \SQLServer:Databases(_Total)\Data File(s) Size (KB)
-: \SQLServer:General Statistics\User Connections
-: \SQLServer:Latches\Latch Waits/sec
-: \SQLServer:Locks(_Total)\Average Wait Time (ms)
-: \SQLServer:Locks(_Total)\Lock Requests/sec
-: \SQLServer:Locks(_Total)\Number of Deadlocks/sec
-: \SQLServer:SQL Statistics\Batch Requests/sec
+* \SQLServer:Access Methods\Full Scans/sec
+* \SQLServer:Buffer Manager\Buffer cache hit ratio
+* \SQLServer:Buffer Manager\Free pages
+* \SQLServer:Databases(_Total)\Data File(s) Size (KB)
+* \SQLServer:General Statistics\User Connections
+* \SQLServer:Latches\Latch Waits/sec
+* \SQLServer:Locks(_Total)\Average Wait Time (ms)
+* \SQLServer:Locks(_Total)\Lock Requests/sec
+* \SQLServer:Locks(_Total)\Number of Deadlocks/sec
+* \SQLServer:SQL Statistics\Batch Requests/sec
+
+;File Systems
+* \Disk Read Bytes/sec
+* \% Disk Read Time
+* \Disk Write Bytes/sec
+* \% Disk Write Time
+* \Free Megabytes
 
 ;Interfaces
-: \Bytes Received/sec
-: \Bytes Sent/sec
-: \Packets Received Errors
-: \Packets Received/sec
-: \Packets Outbound Errors
-: \Packets Sent/sec
+* \Bytes Received/sec
+* \Bytes Sent/sec
+* \Packets Received Errors
+* \Packets Received/sec
+* \Packets Outbound Errors
+* \Packets Sent/sec
+
+;IIS Sites
+* \Bytes Received/sec
+* \Bytes Sent/sec
+* \CGI Requests/sec
+* \Connection Attempts/sec
+* \Copy Requests/sec
+* \Connection Attempts/sec
+* \Delete Requests/sec
+* \Files Received/sec
+* \Files Sent/sec
+* \Get Requests/sec
+* \Head Requests/sec
+* \ISAPI Extension Requests/sec
+* \Lock Requests/sec
+* \Mkcol Requests/sec
+* \Move Requests/sec
+* \Options Requests/sec
+* \Other Request Methods/sec
+* \Post Requests/sec
+* \Propfind Requests/sec
+* \Proppatch Requests/sec
+* \Put Requests/sec
+* \Search Requests/sec
+* \Trace Requests/sec
+* \Unlock Requests/sec
+
+The following metrics are collected directly via WMI.
+
+;Processes (Win32_PerfFormattedData_PerfProc_Process)
+* PercentProcessorTime
+* WorkingSet
+* WorkingSetPrivate (not available on Windows 2003)
 
 <br clear=all>
-
-For devices in the ''/Server/Microsoft/Windows'' device class, the above perfmon counters will be collected over WinRS using the Get-Counter cmdlet utilizing Powershell.
-
-{{note}} The zenpython daemon may need to be restarted after making changes to any of the Datasources.
 
 {{note}} IIS 6 Management compatibility needs to be installed on server side in order to use the IIS Sites component.
 
@@ -262,9 +322,9 @@ Alternatively you can use zenbatchload to add Windows servers from the command l
 
 <syntaxhighlight lang="text">
 /Devices/Server/Microsoft/Windows
-win2003-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
-win2008-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
-Win2012-1d.example.com zWinUser="Administrator", zWinPassword="password", zCollectorClientTimeout=90
+win2003-1d.example.com zWinUser="Administrator", zWinPassword="password"
+win2008-1d.example.com zWinUser="Administrator", zWinPassword="password"
+Win2012-1d.example.com zWinUser="Administrator", zWinPassword="password"
 </syntaxhighlight>
 
 You can then load the Windows servers into Zenoss Core or Resource Manager as devices with the following command.
@@ -275,20 +335,17 @@ zenbatchload <filename>
 
 == Setting up WinRM Service on Target Windows Machines ==
 
-* Open port 80/443 if using WinRM Version 1.x and ports 5985/5986 for WinRM Version 2.x
+Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
+
+* Open ports 5985/5986 for WinRM
 * Run command prompt as Administrator
 * winrm quickconfig
-* For WinRM 2.0 and greater(Use 'winrm id' and check Stack):
-** winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperationsPerUser="4294967295"}
-* For WinRM 1.1(Use 'winrm id' and check Stack):
-** winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperations="4294967295"}
+* winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperationsPerUser="4294967295"}
 * winrm s winrm/config/service/auth @{Basic="true"}
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
 
-{{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of perfmon counters.
-
-{{note}} WinRM 2.0 or greater is recommended (use ‘winrm id’ in command prompt and check the number after Stack). If using WinRM 1.1 or earlier, a WinRM HTTP port change to 5985 is required on the remote server side.
+{{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
 
 == Transitioning from WindowsMonitor ==
 
@@ -332,16 +389,6 @@ The Beta release of the new WinRM-based Windows ZenPack does not support the fol
 * SPNEGO (encrypted payload over HTTP)
 * Network Load Balancing
 
-Major bugs:
-
-* [http://jira.zenoss.com/jira/browse/ZEN-7867 ZEN-7867: With both Windows ZenPack installed, Windows Service from old Windows zenpack will also run on devices in Microsoft Windows class]
-* [http://jira.zenoss.com/jira/browse/ZEN-7255 ZEN-7255: On 4.2.4 RM only, moving device from old Windows ZP to new Windows ZP and selecting the device after that will bring up "A Zenoss error has occurred" page]
-* [http://jira.zenoss.com/jira/browse/ZEN-7262 ZEN-7262: Microsoft Windows ZenPack: Unable to add multiple devices to /Server/Microsoft/Windows]
-
-Minor bugs:
-
-* [http://jira.zenoss.com/jira/browse/ZEN-7264 ZEN-7264: Microsoft Windows ZenPack: Displays incorrect uptime]
-
 == Troubleshooting ==
 
 Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
@@ -358,32 +405,50 @@ If you cannot find the answer in the documentation, then Resource Manager (Servi
 Installing this ZenPack will add the following items to your Zenoss system.
 
 ;Device Classes
+* /Server/Microsoft
 * /Server/Microsoft/Windows
 * /Server/Microsoft/Cluster
 
 ;Modeler Plugins
 * zenoss.winrm.WinOS
-* zenoss.winrm.WinIIS
-* zenoss.winrm.WinServices
-* zenoss.winrm.WinCluster
 * zenoss.winrm.ClusterOS
-* zenoss.winrm.Software
+* zenoss.winrm.FileSystems
+* zenoss.winrm.Interfaces
+* zenoss.winrm.Routes
 * zenoss.winrm.Processes
+* zenoss.winrm.Services
+* zenoss.winrm.Software
+* zenoss.winrm.WinCluster
+* zenoss.winrm.WinIIS
+* zenoss.winrm.WinMSSQL
 
 ;Datasource Types
 * WinRS
 * WinEvents
+* Windows Process
 * WinServices
+* IISSite
 
 ;Monitoring Templates
-* Device (in /Server/Microsoft/Windows)
-* Active Directory (in /Server/Microsoft/Windows)
-* IIS (in /Server/Microsoft/Windows)
-* MSExchangeIS (in /Server/Microsoft/Windows)
-* MSSQLServer (in /Server/Microsoft/Windows)
-* FileSystem (in /Server/Microsoft/Windows)
-* ethernetCsmacd (in /Server/Microsoft/Windows)
-2.0.0 (beta)
+* Device (in /Server/Microsoft)
+* FileSystem (in /Server/Microsoft)
+* ethernetCsmacd (in /Server/Microsoft)
+* OSProcess (in /Server/Microsoft)
+* OSProcess-2003 (in /Server/Microsoft)
+* WinService (in /)
+* Active Directory (in /Server/Microsoft)
+* Active Directory 2008 (in /Server/Microsoft)
+* Active Directory 2008R2 (in /Server/Microsoft)
+* IIS (in /Server/Microsoft)
+* IISADMIN (in /Server/Microsoft)
+* IISSites (in /Server/Microsoft)
+* MSExchangeIS (in /Server/Microsoft)
+* MSExchangeIS 2007 (in /Server/Microsoft)
+* MSSQLServer (in /Server/Microsoft)
+* WinDatabase (in /Server/Microsoft)
+* Cluster (in /Server/Microsoft)
+* ClusterService (in /Server/Microsoft/Cluster)
+* ClusterResource (in /Server/Microsoft/Cluster)
 
 ;Troubleshooting:
 * Powershell
