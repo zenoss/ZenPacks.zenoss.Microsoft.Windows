@@ -166,10 +166,9 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                         return 'n/a';
                     }
 
-                    return '<span title="Cores x Threads">' +
+                    return '<span title="Cores (Logical Processors)">' +
                         record.data.cores +
-                        ' x ' +
-                        record.data.threads +
+                        ' (' + record.data.threads + ')' +
                         '</span>';
                 },
                 width: 55
