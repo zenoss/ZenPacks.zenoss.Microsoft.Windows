@@ -89,7 +89,7 @@
           format: "%7.2lf%s"
 
         Outbound:
-          dpName: bytesReceivedSec
+          dpName: bytesSentSec
           rpn: 8,*
           format: "%7.2lf%s"
 
@@ -213,7 +213,7 @@
           format: "%7.2lf%s"
 
         Outbound:
-          dpName: bytesReceivedSec
+          dpName: bytesSentSec
           rpn: 8,*
           format: "%7.2lf%s"
 

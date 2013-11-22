@@ -27555,7 +27555,7 @@ ${graphPoint/id}
 8,*
 </property>
 <property type="string" id="dpName" mode="w" >
-bytesReceivedSec_bytesReceivedSec
+bytesSentSec_bytesSentSec
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
@@ -28103,7 +28103,7 @@ ${graphPoint/id}
 8,*
 </property>
 <property type="string" id="dpName" mode="w" >
-bytesReceivedSec_bytesReceivedSec
+bytesSentSec_bytesSentSec
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
