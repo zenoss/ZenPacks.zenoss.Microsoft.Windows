@@ -60,7 +60,7 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
                 hidden: record.strategy == 'Custom Command'
             },{
                 xtype: 'parser',
-                width: 280,
+                width: 279,
                 fieldLabel: _t('Parser'),
                 name: 'parser',
                 ref: 'ParserCombo',

@@ -243,6 +243,16 @@ class PowershellGetCounterStrategy(object):
 powershellcounter_strategy = PowershellGetCounterStrategy()
 
 
+class WinParsedResults(ParsedResults):
+    """
+    WinRS version of ParsedResults. Includes the 'maps' list to automatically apply
+    modeling maps.
+    """
+    def __init__(self):
+        self.maps = []
+        super(WinParsedResults, self).__init__()
+
+
 class WinCmdResult(object):
     """
     Emulate the ZenCommand result object for WinCmd
@@ -289,10 +299,10 @@ class CustomCommandStrategy(object):
         cmd.device = dsconfs[0].params['servername']
         cmd.points = dsconfs[0].points
         cmd.usePowershell = dsconfs[0].params['usePowershell']
-        cmd.result.output = result.stdout
+        cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
         
-        collectedResult = ParsedResults()
+        collectedResult = WinParsedResults()
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         return collectedResult
@@ -533,6 +543,11 @@ class WinRSPlugin(PythonDataSourcePlugin):
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
+                context.id) if datasource.strategy != 'Custom Command' else \
+                (context.device().id,
+                datasource.getCycleTime(context),
+                datasource.strategy,
+                datasource.id,
                 context.id)
 
     @classmethod
@@ -696,8 +711,12 @@ class WinRSPlugin(PythonDataSourcePlugin):
         
         if 'CustomCommand' in str(strategy.__class__):
             cmdResult = strategy.parse_result(dsconfs, result)
+            dsconf = dsconfs[0]
+            import pdb; pdb.set_trace()
             data['events'] = cmdResult.events
-            data['values'] = cmdResult.values
+            data['maps'] = cmdResult.maps
+            for dp, value in cmdResult.values:
+                data['values'][dsconf.component][dp] = value, 'N'
         
         else:
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
