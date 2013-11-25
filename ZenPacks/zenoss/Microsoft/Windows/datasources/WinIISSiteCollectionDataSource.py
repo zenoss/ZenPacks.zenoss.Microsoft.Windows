@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to collect Windows IIS Site Status
+A datasource that uses WinRM to collect Windows IIS Site Status
 
 """
 import logging
