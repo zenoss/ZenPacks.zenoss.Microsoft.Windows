@@ -1,84 +1,84 @@
 /Server/Microsoft/MSSQLServer:
-  description: "Microsoft SQL Server monitoring. (PowerShell Get-Counter)"
+  description: "Microsoft SQL Server monitoring."
   targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
 
   datasources:
     AccessMethodsFullScans:
-      type: WinRS
-      resource: \SQLServer:Access Methods\Full Scans/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Access Methods\Full Scans/sec
+      component: SQLServer
 
       datapoints:
         AccessMethodsFullScans: GAUGE_MIN_0
 
     BufferManagerBufferCacheHitRatio:
-      type: WinRS
-      resource: \SQLServer:Buffer Manager\Buffer cache hit ratio
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Buffer Manager\Buffer cache hit ratio
+      component: SQLServer
 
       datapoints:
         BufferManagerBufferCacheHitRatio: GAUGE_MIN_0
 
     BufferManagerFreePages:
-      type: WinRS
-      resource: \SQLServer:Buffer Manager\Free pages
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Buffer Manager\Free pages
+      component: SQLServer
 
       datapoints:
         BufferManagerFreePages: GAUGE_MIN_0
 
     DatabasesTotalDataFileSize:
-      type: WinRS
-      resource: \SQLServer:Databases(_Total)\Data File(s) Size (KB)
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Databases(_Total)\Data File(s) Size (KB)
+      component: SQLServer
 
       datapoints:
         DatabasesTotalDataFileSize: GAUGE_MIN_0
 
     GeneralStatisticsUserConnections:
-      type: WinRS
-      resource: \SQLServer:General Statistics\User Connections
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:General Statistics\User Connections
+      component: SQLServer
 
       datapoints:
         GeneralStatisticsUserConnections: GAUGE_MIN_0
 
     LatchesLatchWaits:
-      type: WinRS
-      resource: \SQLServer:Latches\Latch Waits/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Latches\Latch Waits/sec
+      component: SQLServer
 
       datapoints:
         LatchesLatchWaits: GAUGE_MIN_0
 
     LocksTotalAverageWaitTime:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Average Wait Time (ms)
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Locks(_Total)\Average Wait Time (ms)
+      component: SQLServer
 
       datapoints:
         LocksTotalAverageWaitTime: GAUGE_MIN_0
 
     LocksTotalLockRequests:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Lock Requests/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Locks(_Total)\Lock Requests/sec
+      component: SQLServer
 
       datapoints:
         LocksTotalLockRequests: GAUGE_MIN_0
 
     LocksTotalNumberDeadlocks:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Number of Deadlocks/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:Locks(_Total)\Number of Deadlocks/sec
+      component: SQLServer
 
       datapoints:
         LocksTotalNumberDeadlocks: GAUGE_MIN_0
 
     SQLStatisticsBatchRequests:
-      type: WinRS
-      resource: \SQLServer:SQL Statistics\Batch Requests/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \SQLServer:SQL Statistics\Batch Requests/sec
+      component: SQLServer
 
       datapoints:
         SQLStatisticsBatchRequests: GAUGE_MIN_0
@@ -87,192 +87,6 @@
     low buffer hit ratio:
       type: MinMaxThreshold
       dsname: BufferManagerBufferCacheHitRatio
-      eventClass: /Perf
-      severity: 3
-      minval: "90"
-
-  graphs:
-    User Connections:
-      units: users
-      miny: 0
-
-      graphpoints:
-        Connected:
-          dpName: GeneralStatisticsUserConnections
-          format: "%7.0lf"
-
-    Data File Size:
-      units: bytes
-      base: true
-      miny: 0
-
-      graphpoints:
-        Total:
-          dpName: DatabasesTotalDataFileSize
-          rpn: "1024,*"
-          format: "%7.2lf%s"
-
-    Buffer Cache Hit Ratio:
-      units: percent
-      miny: 0
-      maxy: 100
-
-      graphpoints:
-        Hit:
-          dpName: BufferManagerBufferCacheHitRatio
-          format: "%7.2lf%%"
-
-    Buffer Page Usage:
-      units: pages
-      miny: 0
-
-      graphpoints:
-        Free:
-          dpName: BufferManagerFreePages
-          format: "%7.2lf%s"
-
-    Access Method Rates:
-      units: methods/sec
-      miny: 0
-
-      graphpoints:
-        Full Scan:
-          dpName: AccessMethodsFullScans
-          format: "%7.2lf%s"
-
-    Request Rates:
-      units: requests/sec
-      miny: 0
-
-      graphpoints:
-        Batch:
-          dpName: SQLStatisticsBatchRequests
-          format: "%7.2lf%s"
-
-        Lock:
-          dpName: LocksTotalLockRequests
-          format: "%7.2lf%s"
-
-    Deadlocks Rate:
-      units: deadlocks/sec
-      miny: 0
-
-      graphpoints:
-        Deadlocks:
-          dpName: LocksTotalNumberDeadlocks
-          format: "%7.2lf%s"
-
-    Wait Rates:
-      units: waits/sec
-      miny: 0
-
-      graphpoints:
-        Latch:
-          dpName: LatchesLatchWaits
-          format: "%7.2lf%s"
-
-    Wait Times:
-      units: seconds
-      miny: 0
-
-      graphpoints:
-        Lock:
-          dpName: LocksTotalAverageWaitTime
-          rpn: "1000,*"
-          format: "%7.2lf%s"
-
-
-##############################################################################
-
-/Server/Microsoft/MSSQLServer-TypePerf:
-  description: "Microsoft SQL Server monitoring. (typeperf)"
-  targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
-
-  datasources:
-    AccessMethodsFullScans:
-      type: WinRS
-      resource: \SQLServer:Access Methods\Full Scans/sec
-      strategy: typeperf -sc1
-
-      datapoints:
-        AccessMethodsFullScans: GAUGE_MIN_0
-
-    BufferManagerBufferCacheHitRatio:
-      type: WinRS
-      resource: \SQLServer:Buffer Manager\Buffer cache hit ratio
-      strategy: typeperf -sc1
-
-      datapoints:
-        BufferManagerBufferCacheHitRatio: GAUGE_MIN_0
-
-    BufferManagerFreePages:
-      type: WinRS
-      resource: \SQLServer:Buffer Manager\Free pages
-      strategy: typeperf -sc1
-
-      datapoints:
-        BufferManagerFreePages: GAUGE_MIN_0
-
-    DatabasesTotalDataFileSize:
-      type: WinRS
-      resource: \SQLServer:Databases(_Total)\Data File(s) Size (KB)
-      strategy: typeperf -sc1
-
-      datapoints:
-        DatabasesTotalDataFileSize: GAUGE_MIN_0
-
-    GeneralStatisticsUserConnections:
-      type: WinRS
-      resource: \SQLServer:General Statistics\User Connections
-      strategy: typeperf -sc1
-
-      datapoints:
-        GeneralStatisticsUserConnections: GAUGE_MIN_0
-
-    LatchesLatchWaits:
-      type: WinRS
-      resource: \SQLServer:Latches\Latch Waits/sec
-      strategy: typeperf -sc1
-
-      datapoints:
-        LatchesLatchWaits: GAUGE_MIN_0
-
-    LocksTotalAverageWaitTime:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Average Wait Time (ms)
-      strategy: typeperf -sc1
-
-      datapoints:
-        LocksTotalAverageWaitTime: GAUGE_MIN_0
-
-    LocksTotalLockRequests:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Lock Requests/sec
-      strategy: typeperf -sc1
-
-      datapoints:
-        LocksTotalLockRequests: GAUGE_MIN_0
-
-    LocksTotalNumberDeadlocks:
-      type: WinRS
-      resource: \SQLServer:Locks(_Total)\Number of Deadlocks/sec
-      strategy: typeperf -sc1
-
-      datapoints:
-        LocksTotalNumberDeadlocks: GAUGE_MIN_0
-
-    SQLStatisticsBatchRequests:
-      type: WinRS
-      resource: \SQLServer:SQL Statistics\Batch Requests/sec
-      strategy: typeperf -sc1
-
-      datapoints:
-        SQLStatisticsBatchRequests: GAUGE_MIN_0
-
-  thresholds:
-    low buffer hit ratio:
-      type: MinMaxThreshold
-      dsnames: BufferManagerBufferCacheHitRatio
       eventClass: /Perf
       severity: 3
       minval: "90"
