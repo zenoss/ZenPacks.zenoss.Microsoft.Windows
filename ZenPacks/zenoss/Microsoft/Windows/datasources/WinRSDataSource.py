@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to run typeperf -sc1 or powershell Get-Counter.
+A datasource that uses WinRS to run remote commands.
 
 See Products.ZenModel.ZenPack._getClassesByPath() to understand how this class
 gets discovered as a datasource type in Zenoss.
@@ -54,8 +54,6 @@ log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 WINRS_SOURCETYPE = 'WinRS'
 AVAILABLE_STRATEGIES = [
-    'typeperf -sc1',
-    'powershell Get-Counter',
     'Custom Command',
     'powershell MSSQL',
     'powershell Cluster Services',
@@ -133,114 +131,6 @@ class WinRSInfo(RRDDataSourceInfo):
         returns a list of available winrs strategies
         """
         return sorted(AVAILABLE_STRATEGIES)
-
-class TypeperfSc1Strategy(object):
-
-    def build_command_line(self, counters):
-        quoted_counters = ['"{0}"'.format(c) for c in counters]
-        counters_args = ' '.join(quoted_counters)
-        return 'typeperf {0} -sc 1'.format(counters_args)
-
-    def parse_result(self, dsconfs, result):
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        log.debug('Results have been parsed')
-        rows = list(csv.reader(result.stdout))
-        timestamp_str, milleseconds = rows[1][0].split(".")
-        format = '%m/%d/%Y %H:%M:%S'
-        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-
-        map_props = {}
-        #Clean out negative numbers from rows returned.
-        #Typeperf returns the value as negative but does not return the counter
-
-        for perfvalue_str in rows[1][1:]:
-            perfvalue = float(perfvalue_str)
-            if perfvalue < 0:
-                rows[1].remove(perfvalue_str)
-
-        counterlist = zip(rows[0][1:], rows[1][1:])
-
-        for counter in counterlist:
-            arrCounter = counter[0].split("\\")
-            countername = "\\{0}\\{1}".format(arrCounter[3], arrCounter[4]).lower()
-            value = counter[1]
-
-            map_props.update({countername: {'value': value, 'timestamp': timestamp}})
-
-        for dsconf in dsconfs:
-            try:
-                key = dsconf.params['resource'].lower()
-                value = map_props[key]['value']
-                timestamp = map_props[key]['timestamp']
-                log.debug('Resource: {0} has value {1}'.format(key, value))
-                yield dsconf, value, timestamp
-            except (KeyError):
-                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-
-typeperf_strategy = TypeperfSc1Strategy()
-
-
-class PowershellGetCounterStrategy(object):
-
-    def build_command_line(self, counters):
-        quoted_counters = ["'{0}'".format(c) for c in counters]
-        counters_args = ', '.join(quoted_counters)
-        return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
-               "XML -Command \"get-counter -ea silentlycontinue " \
-               "-counter @({0})\"".format(counters_args)
-
-    def parse_result(self, dsconfs, result):
-        if result.exit_code != 0 or len(result.stdout) == 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-
-        root_elem = ET.fromstring(result.stdout[1])
-        namespace = 'http://schemas.microsoft.com/powershell/2004/04'
-        for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
-            props_elems = lst_elem.findall('.//{%s}Props' % namespace)
-
-            map_props = {}
-
-            for props_elem in props_elems:
-                value = float(props_elem.findtext('./*[@N="CookedValue"]'))
-                timestamp = props_elem.findtext('.//*[@N="Timestamp"]')
-                path = props_elem.findtext('.//*[@N="Path"]')
-
-                # Confirm timestamp format and convert
-                timestamp_str, milleseconds = timestamp.split(".")
-                format = '%Y-%m-%dT%H:%M:%S'
-                timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-
-                arrPath = path.split("\\")
-                indexPath = "\\{0}\\{1}".format(arrPath[3], arrPath[4])
-
-                # System uptime needs to be in centiseconds format
-                if 'system up time' in indexPath:
-                    value = int(value) * 100
-
-                map_props.update({indexPath: {'value': value, 'timestamp': timestamp}})
-
-            for dsconf in dsconfs:
-                try:
-                    key = dsconf.params['resource'].lower()
-                    value = map_props[key]['value']
-                    timestamp = map_props[key]['timestamp']
-                    yield dsconf, value, timestamp
-                except (KeyError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['resource']))
-
-
-powershellcounter_strategy = PowershellGetCounterStrategy()
 
 
 class WinParsedResults(ParsedResults):
@@ -764,8 +654,6 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
     def _get_strategy(self, dsconf):
         return {
-        'typeperf -sc1': typeperf_strategy,
-        'powershell Get-Counter': powershellcounter_strategy,
         'Custom Command': customcommand_strategy,
         'powershell MSSQL': powershellmssql_strategy,
         'powershell Cluster Services': powershellclusterservice_strategy,
