@@ -6,7 +6,6 @@
  * License.zenoss under the directory where your Zenoss product is installed.
  *
  ****************************************************************************/
-GPOO='';
 (function(){
 
 var ZC = Ext.ns('Zenoss.component');
