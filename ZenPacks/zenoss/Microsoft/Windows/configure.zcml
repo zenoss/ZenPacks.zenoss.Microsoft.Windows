@@ -136,7 +136,7 @@
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
         <subscriber
             provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
-            for='Products.ZenModel.Device.Device'
+            for='ZenPacks.zenoss.Microsoft.Windows.Device.Device'
             factory='.Device.DeviceLinkProvider'
             />
 
