@@ -30,7 +30,7 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
     constructor: function(config) {
         config = config || {};
         var record = config.record;
-        GPOO = config;
+
         Ext.apply(config, {
             border: false,
             items:[{

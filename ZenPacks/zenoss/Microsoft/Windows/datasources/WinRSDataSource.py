@@ -540,14 +540,15 @@ class WinRSPlugin(PythonDataSourcePlugin):
         """
         Uniquely pull in datasources
         """
-        return (context.device().id,
-                datasource.getCycleTime(context),
-                datasource.strategy,
-                context.id) if datasource.strategy != 'Custom Command' else \
-                (context.device().id,
+        if datasource.strategy == 'Custom Command':
+            return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
                 datasource.id,
+                context.id)
+        return (context.device().id,
+                datasource.getCycleTime(context),
+                datasource.strategy,
                 context.id)
 
     @classmethod
@@ -712,7 +713,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
         if 'CustomCommand' in str(strategy.__class__):
             cmdResult = strategy.parse_result(dsconfs, result)
             dsconf = dsconfs[0]
-            import pdb; pdb.set_trace()
+            
             data['events'] = cmdResult.events
             data['maps'] = cmdResult.maps
             for dp, value in cmdResult.values:
