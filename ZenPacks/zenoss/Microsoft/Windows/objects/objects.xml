@@ -1989,6 +1989,9 @@ get-clustergroup
 <property type="string" id="strategy" >
 powershell Cluster Services
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property id='zendoc' type='string'>
@@ -7910,6 +7913,9 @@ Active Transactions
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='ActiveTransactions' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -7948,6 +7954,9 @@ Backup/Restore Throughput/sec
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='BackupRestoreThroughputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7988,6 +7997,9 @@ Bulk Copy Rows/sec
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='BulkCopyRowsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8026,6 +8038,9 @@ Bulk Copy Throughput/sec
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='BulkCopyThroughputSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8066,6 +8081,9 @@ Cache Entries Count
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='CacheEntriesCount' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8104,6 +8122,9 @@ Cache Entries Pinned Count
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='CacheEntriesPinnedCount' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8144,6 +8165,9 @@ Cache Hit Ratio
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='CacheHitRatio' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8182,6 +8206,9 @@ Cache Hit Ratio Base
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='CacheHitRatioBase' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8222,6 +8249,9 @@ DBCC Logical Scan Bytes/sec
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='DBCCLogicalScanBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8260,6 +8290,9 @@ Data File(s) Size (KB)
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='DataFileSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8300,6 +8333,9 @@ Log Bytes Flushed/sec
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogBytesFlushedSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8338,6 +8374,9 @@ Log Cache Hit Ratio
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogCacheHitRatio' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8378,6 +8417,9 @@ Log Cache Hit Ratio Base
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogCacheHitRatioBase' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8416,6 +8458,9 @@ Log Cache Reads/sec
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogCacheReadsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8456,6 +8501,9 @@ Log File(s) Size (KB)
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogFileSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8494,6 +8542,9 @@ Log File(s) Used Size (KB)
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogFileUsedSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8534,6 +8585,9 @@ Log Flush Wait Time
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogFlushWaitTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8572,6 +8626,9 @@ Log Flush Waits/sec
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogFlushWaitsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8612,6 +8669,9 @@ Log Flushes/sec
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogFlushesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8650,6 +8710,9 @@ Log Growths
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogGrowths' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8690,6 +8753,9 @@ Log Shrinks
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='LogShrinks' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8728,6 +8794,9 @@ Log Truncations
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='LogTruncations' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8768,6 +8837,9 @@ Percent Log Used
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='PercentLogUsed' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8806,6 +8878,9 @@ Repl. Pending Xacts
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='ReplPendingXacts' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -8846,6 +8921,9 @@ Repl. Trans. Rate
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='ReplTransRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8885,6 +8963,9 @@ Shrink Data Movement Bytes/sec
 <property type="string" id="strategy" >
 powershell MSSQL
 </property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 <tomanycont id='datapoints'>
 <object id='ShrinkDataMovementBytesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -8923,6 +9004,9 @@ Transactions/sec
 </property>
 <property type="string" id="strategy" >
 powershell MSSQL
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <tomanycont id='datapoints'>
 <object id='TransactionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -10858,7 +10942,7 @@ Windows Operating System
 ZenPacks.zenoss.Microsoft.Windows.Device
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Active Directory', 'Device', 'IIS', 'MSExchangeIS', 'MSSQLServer']
+['Device', 'IIS', 'MSExchangeIS', 'Active Directory']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.Interfaces', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Processes', 'zenoss.winrm.Services', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
@@ -10878,7 +10962,7 @@ Windows Cluster
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-[]
+['Device', 'Cluster', 'IIS', 'MSExchangeIS', 'Active Directory']
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
