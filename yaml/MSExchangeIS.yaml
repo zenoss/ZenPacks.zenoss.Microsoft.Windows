@@ -1,220 +1,68 @@
 /Server/Microsoft/MSExchangeIS:
-  description: "Microsoft Exchange monitoring. (PowerShell Get-Counter)"
+  description: "Microsoft Exchange monitoring."
   targetPythonClass: "Products.ZenModel.Device"
 
   datasources:
     mseisMailboxFolderOpensPerSec:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
+      component: Exchange
 
       datapoints:
         mseisMailboxFolderOpensPerSec: GAUGE
 
     mseisMailboxLocalDeliveryRate:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Local delivery rate
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS Mailbox(_Total)\Local delivery rate
+      component: Exchange
 
       datapoints:
         mseisMailboxLocalDeliveryRate: GAUGE
 
     mseisMailboxMessageOpensPerSec:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
+      component: Exchange
 
       datapoints:
         mseisMailboxMessageOpensPerSec: GAUGE
 
     mseisRPCAveragedLatency:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Averaged Latency
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS\RPC Averaged Latency
+      component: Exchange
 
       datapoints:
         mseisRPCAveragedLatency: GAUGE
 
     mseisRPCOperationsPerSec:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Operations/sec
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS\RPC Operations/sec
+      component: Exchange
 
       datapoints:
         mseisRPCOperationsPerSec: GAUGE
 
     mseisRPCRequests:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Requests
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \MSExchangeIS\RPC Requests
+      component: Exchange
 
       datapoints:
         mseisRPCRequests: GAUGE
 
     smtpServerLocalQueueLength:
-      type: WinRS
-      resource: \SMTP Server(_Total)\Local Queue Length
-      strategy: powershell Get-Counter
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \SMTP Server(_Total)\Local Queue Length
+      component: Exchange
 
       datapoints:
         smtpServerLocalQueueLength: GAUGE
 
     smtpServerMessagesDeliveredPerSec:
-      type: WinRS
-      resource: \SMTP Server(_Total)\Messages Delivered/sec
-      strategy: powershell Get-Counter
-      component: ${here/id}
-
-      datapoints:
-        smtpServerMessagesDeliveredPerSec: GAUGE
-
-  graphs:
-    "Exchange - Mailbox Operations":
-      units: operations/sec
-      miny: 0
-
-      graphpoints:
-        "Folder Opens    ":
-          dpName: mseisMailboxFolderOpensPerSec
-          format: "%7.2lf%s"
-
-        "Message Opens   ":
-          dpName: mseisMailboxMessageOpensPerSec
-          format: "%7.2lf%s"
-
-        "Local Deliveries":
-          dpName: mseisMailboxLocalDeliveryRate
-          format: "%7.2lf%s"
-
-    "Exchange - RPC Requests":
-      units: requests
-      miny: 0
-
-      graphpoints:
-        Current:
-          dpName: mseisRPCRequests
-          format: "%7.2lf%s"
-
-    "Exchange - RPC Rate":
-      units: operations/sec
-      miny: 0
-
-      graphpoints:
-        Operations:
-          dpName: mseisRPCOperationsPerSec
-          format: "%7.2lf%s"
-
-    "Exchange - RPC Latency":
-      units: seconds
-      miny: 0
-
-      graphpoints:
-        Averaged:
-          dpName: mseisRPCAveragedLatency
-          rpn: "1000,/"
-          format: "%7.2lf%s"
-
-    "SMTP Server - Local Queue Length":
-      units: messages
-      miny: 0
-
-      graphpoints:
-        Queued:
-          dpName: smtpServerLocalQueueLength
-          format: "%7.2lf%s"
-
-    "SMTP Server - Message Delivery Rate":
-      units: messages/sec
-      miny: 0
-
-      graphpoints:
-        Messages:
-          dpName: smtpServerMessagesDeliveredPerSec          
-          format: "%7.2lf%s"
-
-
-##############################################################################
-
-/Server/Microsoft/MSExchangeIS-TypePerf:
-  description: "Microsoft Exchange monitoring. (typeperf)"
-  targetPythonClass: "Products.ZenModel.Device"
-
-  datasources:
-    mseisMailboxFolderOpensPerSec:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisMailboxFolderOpensPerSec: GAUGE
-
-    mseisMailboxLocalDeliveryRate:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Local delivery rate
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisMailboxLocalDeliveryRate: GAUGE
-
-    mseisMailboxMessageOpensPerSec:
-      type: WinRS
-      resource: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisMailboxMessageOpensPerSec: GAUGE
-
-    mseisRPCAveragedLatency:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Averaged Latency
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisRPCAveragedLatency: GAUGE
-
-    mseisRPCOperationsPerSec:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Operations/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisRPCOperationsPerSec: GAUGE
-
-    mseisRPCRequests:
-      type: WinRS
-      resource: \MSExchangeIS\RPC Requests
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        mseisRPCRequests: GAUGE
-
-    smtpServerLocalQueueLength:
-      type: WinRS
-      resource: \SMTP Server(_Total)\Local Queue Length
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        smtpServerLocalQueueLength: GAUGE
-
-    smtpServerMessagesDeliveredPerSec:
-      type: WinRS
-      resource: \SMTP Server(_Total)\Messages Delivered/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
+      type: Windows Perfmon
+      counter: \SMTP Server(_Total)\Messages Delivered/sec
+      component: Exchange
 
       datapoints:
         smtpServerMessagesDeliveredPerSec: GAUGE

@@ -26,14 +26,17 @@ DEVTYPE_NAME = 'Windows Server'
 DEVTYPE_PROTOCOL = 'WMI'
 
 
-_PACK_Z_PROPS = [('zWinUser', '', 'string'),
-                ('zWinPassword', '', 'password'),
-                ('zWinRMPort', '5985', 'string'),
-                ('zDBInstances', 'MSSQLSERVER;', 'string'),
-                ('zDBInstancesPassword', '', 'password'),
-                ('zWinKDC', '', 'string'),
-                ('zWinKeyTabFilePath', '', 'string'),
-                ('zWinScheme', 'http', 'string')]
+_PACK_Z_PROPS = [
+    ('zWinUser', '', 'string'),
+    ('zWinPassword', '', 'password'),
+    ('zWinRMPort', '5985', 'string'),
+    ('zDBInstances', 'MSSQLSERVER;', 'string'),
+    ('zDBInstancesPassword', '', 'password'),
+    ('zWinKDC', '', 'string'),
+    ('zWinKeyTabFilePath', '', 'string'),
+    ('zWinScheme', 'http', 'string'),
+    ('zWinPerfmonInterval', 300, 'int'),
+    ]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
     setzPropertyCategory(name, 'Windows')

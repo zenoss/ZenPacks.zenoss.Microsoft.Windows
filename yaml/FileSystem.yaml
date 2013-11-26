@@ -1,48 +1,43 @@
 /Server/Microsoft/FileSystem:
-  description: "Microsoft Windows file system monitoring. (PowerShell Get-Counter)"
+  description: "Microsoft Windows file system monitoring."
   targetPythonClass: "Products.ZenModel.FileSystem"
 
   datasources:
     DiskReadBytesSec:
-      type: WinRS
-      resource: \Disk Read Bytes/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \Disk Read Bytes/sec
       component: ${here/id}
 
       datapoints:
         DiskReadBytesSec: GAUGE
 
     DiskReadTime:
-      type: WinRS
-      resource: \% Disk Read Time
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \% Disk Read Time
       component: ${here/id}
 
       datapoints:
         DiskReadTime: GAUGE
 
     DiskWriteBytesSec:
-      type: WinRS
-      resource: \Disk Write Bytes/sec
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \Disk Write Bytes/sec
       component: ${here/id}
 
       datapoints:
         DiskWriteBytesSec: GAUGE
 
     DiskWriteTime:
-      type: WinRS
-      resource: \% Disk Write Time
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \% Disk Write Time
       component: ${here/id}
 
       datapoints:
         DiskWriteTime: GAUGE
 
     FreeMegabytes:
-      type: WinRS
-      resource: \Free Megabytes
-      strategy: powershell Get-Counter
+      type: Windows Perfmon
+      counter: \Free Megabytes
       component: ${here/id}
 
       datapoints:
@@ -56,7 +51,7 @@
       type: MinMaxThreshold
       dsnames: ["FreeMegabytes"]
       minval: "here.totalBlocks * here.blockSize / 1024 / 1024 * .1"
-      eventClass: "/Status/Filesystem"
+      eventClass: "/Perf/Filesystem"
       severity: Warning
 
   graphs:
@@ -75,110 +70,6 @@
     Throughput:
       units: bytes/sec
       base: true
-      miny: 0
-
-      graphpoints:
-        Read:
-          dpName: DiskReadBytesSec
-          format: "%7.2lf%s"
-
-        Write:
-          dpName: DiskWriteBytesSec
-          format: "%7.2lf%s"
-
-    Time:
-      units: percent
-      miny: 0
-      maxy: 100
-
-      graphpoints:
-        Read:
-          dpName: DiskReadTime
-          format: "%7.2lf%%"
-
-        Write:
-          dpName: DiskWriteTime
-          format: "%7.2lf%%"
-
-
-##############################################################################
-
-/Server/Microsoft/FileSystem-TypePerf:
-  description: "Microsoft Windows file system monitoring. (typeperf)"
-  targetPythonClass: "Products.ZenModel.FileSystem"
-
-  datasources:
-    DiskReadBytesSec:
-      type: WinRS
-      resource: \Disk Read Bytes/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        DiskReadBytesSec: GAUGE_MIN_0
-
-    DiskReadTime:
-      type: WinRS
-      resource: \% Disk Read Time
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        DiskReadTime: GAUGE_MIN_0
-
-    DiskWriteBytesSec:
-      type: WinRS
-      resource: \Disk Write Bytes/sec
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        DiskWriteBytesSec: GAUGE_MIN_0
-
-    DiskWriteTime:
-      type: WinRS
-      resource: \% Disk Write Time
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        DiskWriteTime: GAUGE_MIN_0
-
-    FreeMegabytes:
-      type: WinRS
-      resource: \Free Megabytes
-      strategy: typeperf -sc1
-      component: ${here/id}
-
-      datapoints:
-        FreeMegabytes:
-          rrdmin: 0
-          aliases:
-            usedFilesystemSpace__bytes: "1024,*,1024,*,${here/totalBytes},EXC,-"
-
-  thresholds:
-    "low disk space":
-      type: MinMaxThreshold
-      dsnames: ["FreeMegabytes"]
-      minval: "here.totalBlocks * here.blockSize / 1024 / 1024 * .1"
-      eventClass: "/Status/Filesystem"
-      severity: Warning
-
-  graphs:
-    Utilization:
-      units: percent
-      miny: 0
-      maxy: 100
-
-      graphpoints:
-        Used:
-          dpName: FreeMegabytes
-          rpn: "1048576,*,${here/totalBlocks},/,${here/blockSize},/,100,*,100,-,-1,*"
-          lineType: AREA
-          format: "%7.2lf%%"
-
-    Throughput:
-      units: bytes/sec
       miny: 0
 
       graphpoints:
