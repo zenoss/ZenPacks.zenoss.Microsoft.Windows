@@ -232,7 +232,7 @@ class Interfaces(WinRMPlugin):
             teamNic.setInterfaces = members
 
         rm = self.relMap()
-        rm.extend(mapInter + mapTeamInter)
+        rm.maps.extend(mapInter + mapTeamInter)
 
         # Filter interfaces using filtering zProperties.
         rm.maps = list(filter_maps(rm.maps, device, log))
