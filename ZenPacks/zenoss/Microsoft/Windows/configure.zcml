@@ -90,9 +90,9 @@
         />
 
     <adapter
-        provides=".datasources.CounterDataSource.ICounterDataSourceInfo"
-        for=".datasources.CounterDataSource.CounterDataSource"
-        factory=".datasources.CounterDataSource.CounterDataSourceInfo"
+        provides=".datasources.PerfmonDataSource.IPerfmonDataSourceInfo"
+        for=".datasources.PerfmonDataSource.PerfmonDataSource"
+        factory=".datasources.PerfmonDataSource.PerfmonDataSourceInfo"
         />
 
     <adapter
