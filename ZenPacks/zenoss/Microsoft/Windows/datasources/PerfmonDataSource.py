@@ -21,6 +21,7 @@ import itertools
 import time
 
 from twisted.internet import defer
+from twisted.internet.error import ConnectError, TimeoutError
 from twisted.python.failure import Failure
 
 from zope.component import adapts, queryUtility
@@ -51,14 +52,14 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
 
 
-class CounterDataSource(PythonDataSource):
+class PerfmonDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
 
     sourcetype = SOURCETYPE
     sourcetypes = (SOURCETYPE,)
 
     plugin_classname = (
-        ZENPACKID + '.datasources.CounterDataSource.CounterDataSourcePlugin')
+        ZENPACKID + '.datasources.PerfmonDataSource.PerfmonDataSourcePlugin')
 
     # Defaults for PythonDataSource user-facing properties.
     cycletime = '${here/zWinPerfmonInterval}'
@@ -71,7 +72,7 @@ class CounterDataSource(PythonDataSource):
         )
 
 
-class ICounterDataSourceInfo(IRRDDataSourceInfo):
+class IPerfmonDataSourceInfo(IRRDDataSourceInfo):
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
 
@@ -80,9 +81,9 @@ class ICounterDataSourceInfo(IRRDDataSourceInfo):
         title=_t('Counter'))
 
 
-class CounterDataSourceInfo(RRDDataSourceInfo):
-    implements(ICounterDataSourceInfo)
-    adapts(CounterDataSource)
+class PerfmonDataSourceInfo(RRDDataSourceInfo):
+    implements(IPerfmonDataSourceInfo)
+    adapts(PerfmonDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
@@ -101,7 +102,7 @@ def group(lst, n):
     return itertools.izip(*[itertools.islice(lst, i, None, n) for i in range(n)])
 
 
-class CounterDataSourcePlugin(PythonDataSourcePlugin):
+class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
@@ -111,6 +112,7 @@ class CounterDataSourcePlugin(PythonDataSourcePlugin):
         'zWinScheme',
         )
 
+    config = None
     cycling = None
     initialized = None
     started = None
@@ -235,7 +237,16 @@ class CounterDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Start the continuous command.
         '''
-        yield self.command.start(self.commandline)
+        try:
+            yield self.command.start(self.commandline)
+        except ConnectError as e:
+            LOG.warn(
+                "Connection error on %s: %s",
+                self.config.id,
+                e.message or "timeout")
+
+            self.started = False
+            defer.returnValue(None)
 
         self.started = True
         self.collected_samples = 0
@@ -244,6 +255,31 @@ class CounterDataSourcePlugin(PythonDataSourcePlugin):
 
         if not self.cycling:
             yield self.receive_deferred
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def stop(self):
+        '''
+        Stop the continuous command.
+        '''
+        LOG.debug("stopping Get-Counter on %s", self.config.id)
+
+        self.started = False
+
+        if self.receive_deferred:
+            try:
+                self.receive_deferred.cancel()
+            except Exception:
+                pass
+
+        if self.command:
+            try:
+                yield self.command.stop()
+            except Exception, ex:
+                LOG.debug(
+                    "failed to stop Get-Counter on %s: %s",
+                    self.config.id, ex)
 
         defer.returnValue(None)
 
@@ -331,24 +367,42 @@ class CounterDataSourcePlugin(PythonDataSourcePlugin):
                 self.start()
 
     def onReceiveFail(self, failure):
-        if isinstance(failure.value, defer.CancelledError):
+        e = failure.value
+
+        if isinstance(e, defer.CancelledError):
             return
 
-        if 'OperationTimeout' in failure.value.message:
-            LOG.debug(
-                "%s failed to return output within OperationTimeout",
-                self.config.id)
+        retry, level, msg = (False, None, None)
 
+        # Handle errors on which we should retry the receive.
+        if 'OperationTimeout' in e.message:
+            retry, level, msg = (
+                True,
+                logging.DEBUG,
+                "OperationTimeout on {}"
+                .format(self.config.id))
+
+        elif isinstance(e, ConnectError):
+            retry, level, msg = (
+                isinstance(e, TimeoutError),
+                logging.WARN,
+                "network error on {}: {}"
+                .format(self.config.id, e.message or 'timeout'))
+
+        # Handle errors on which we should start over.
+        else:
+            retry, level, msg = (
+                False,
+                logging.WARN,
+                "receive failure on {}: {}"
+                .format(self.config.id, failure))
+
+        LOG.log(level, msg)
+        if retry:
             self.receive()
         else:
-            LOG.error(
-                "%s failed to return output: %s",
-                self.config.id,
-                failure)
-
             self.start()
 
-    @defer.inlineCallbacks
     def cleanup(self, config):
         '''
         Cleanup any resources associated with this task.
@@ -356,21 +410,7 @@ class CounterDataSourcePlugin(PythonDataSourcePlugin):
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
         '''
-        LOG.debug("stopping Get-Counter on %s", config.id)
+        if self.config:
+            return self.stop()
 
-        if self.receive_deferred:
-            self.receive_deferred.cancel()
-
-        if self.command:
-            try:
-                yield self.command.stop()
-            except Exception, ex:
-                LOG.debug(
-                    "failed to stop Get-Counter on %s: %s",
-                    config.id, ex)
-
-        self.started = False
-        self.command = None
-        self.data = None
-
-        defer.returnValue(None)
+        return defer.succeed(None)
