@@ -19,7 +19,7 @@ from ZODB.transact import transact
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
-from ZenPacks.zenoss.Microsoft.Windows.zope_utils import BaseDevice
+from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
 
 
 class ClusterDevice(BaseDevice):
@@ -41,6 +41,7 @@ class ClusterDevice(BaseDevice):
         '''
         Set hostnames of servers belonging to this cluster.
         '''
+        LOG.info('Hostnames {0}'.format(clusterhostdnsnames))
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames:
             try:

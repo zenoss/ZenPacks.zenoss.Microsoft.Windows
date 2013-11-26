@@ -46,6 +46,7 @@ class WinMSSQL(WinRMPlugin):
 
         dbinstance = device.zDBInstances
         dbinstancepassword = device.zDBInstancesPassword
+        password = device.zWinPassword
 
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
@@ -61,7 +62,7 @@ class WinMSSQL(WinRMPlugin):
             else:
                 arrInstance = dbinstance.split(';')
                 for instance in arrInstance:
-                    dblogins[instance] = {'username': 'sa', 'password': self.password}
+                    dblogins[instance] = {'username': 'sa', 'password': password}
                     results = {'clear': eventmessage}
 
         except (IndexError, ValueError):
