@@ -48,7 +48,8 @@ class WinCluster(WinRMPlugin):
         psClusterCommands.append("import-module failoverclusters;")
 
         psClusterHosts = []
-        psClusterHosts.append("get-clusternode | foreach {$_.Name};")
+        psClusterHosts.append("$domain='.' + (gwmi WIN32_ComputerSystem).Domain;")
+        psClusterHosts.append("get-clusternode | foreach {$_.Name + $domain};")
 
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
