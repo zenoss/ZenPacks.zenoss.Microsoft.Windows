@@ -283,7 +283,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.onReceive, self.onReceiveFail)
 
     def onReceive(self, result):
-        receive_time = time.time()
+        receive_time = int(time.time())
 
         self.data = self.new_data()
 
