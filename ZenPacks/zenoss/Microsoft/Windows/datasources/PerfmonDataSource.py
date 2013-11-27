@@ -17,12 +17,10 @@ via WinRS.
 import logging
 LOG = logging.getLogger('zen.windows')
 
-import itertools
 import time
 
 from twisted.internet import defer
 from twisted.internet.error import ConnectError, TimeoutError
-from twisted.python.failure import Failure
 
 from zope.component import adapts, queryUtility
 from zope.interface import implements
@@ -40,7 +38,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
     )
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, group
+from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout
 
 addLocalLibPath()
 
@@ -50,6 +49,9 @@ from txwinrm.shell import create_long_running_command
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
+
+# This should match OperationTimeout in txwinrm's receive.xml.
+OPERATION_TIMEOUT = 60
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -88,18 +90,6 @@ class PerfmonDataSourceInfo(RRDDataSourceInfo):
     testable = False
     cycletime = ProxyProperty('cycletime')
     counter = ProxyProperty('counter')
-
-
-def group(lst, n):
-    """group([0,3,4,10,2,3], 2) => iterator
-
-    Group an iterable into an n-tuples iterable. Incomplete tuples
-    are discarded e.g.
-
-    >>> list(group(range(10), 3))
-    [(0, 1, 2), (3, 4, 5), (6, 7, 8)]
-    """
-    return itertools.izip(*[itertools.islice(lst, i, None, n) for i in range(n)])
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
@@ -210,25 +200,24 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             '-counter @({Counters}) '
             '| Format-List -Property Readings"'
             ).format(
-                SampleInterval=self.sample_interval,
-                MaxSamples=self.max_samples,
-                Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
-                )
+            SampleInterval=self.sample_interval,
+            MaxSamples=self.max_samples,
+            Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
+            )
 
         self.config = config
 
-        self.connection_info = ConnectionInfo(
-            dsconf0.manageIp,
-            auth_type,
-            dsconf0.zWinUser,
-            dsconf0.zWinPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
-
-        self.command = create_long_running_command(self.connection_info)
+        self.command = create_long_running_command(
+            ConnectionInfo(
+                dsconf0.manageIp,
+                auth_type,
+                dsconf0.zWinUser,
+                dsconf0.zWinPassword,
+                scheme,
+                port,
+                connectiontype,
+                keytab,
+                dcip))
 
         self.initialized = True
 
@@ -287,7 +276,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Receive results from continuous command.
         '''
-        self.receive_deferred = self.command.receive()
+        self.receive_deferred = add_timeout(
+            self.command.receive(), OPERATION_TIMEOUT + 5)
+
         self.receive_deferred.addCallbacks(
             self.onReceive, self.onReceiveFail)
 
@@ -323,7 +314,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
             LOG.warn(
                 "%s missing counters for %s - see debug for details",
-                missing_counter_count, 
+                missing_counter_count,
                 self.config.id)
 
             LOG.debug(
