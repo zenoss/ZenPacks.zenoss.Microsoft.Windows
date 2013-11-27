@@ -7,6 +7,7 @@
 #
 ##############################################################################
 
+import logging
 import types
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
@@ -15,6 +16,11 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 addLocalLibPath()
 
 from twisted.internet import defer
+from twisted.internet.error import (
+    ConnectError,
+    ConnectionRefusedError,
+    TimeoutError,
+    )
 
 import txwinrm
 
@@ -141,6 +147,27 @@ class WinRMPlugin(PythonPlugin):
 
             yield (key, enuminfo)
 
+    def log_error(self, log, device, error):
+        '''
+        Log an approppriate message for error occurring on device.
+        '''
+        message, args = (None, [device.id])
+        if isinstance(error, txwinrm.collect.RequestError):
+            message = "Query error on %s: %s"
+            args.append(error[0])
+        elif isinstance(error, ConnectionRefusedError):
+            message = "Connection refused on %s: Verify WinRM setup"
+        elif isinstance(error, TimeoutError):
+            message = "Timeout on %s: Verify WinRM and firewall setup"
+        elif isinstance(error, ConnectError):
+            message = "Connection error on %s: %s"
+            args.append(error.message)
+        else:
+            message = "Error on %s: %s"
+            args.append(error)
+
+        log.error(message, *args)
+
     @defer.inlineCallbacks
     def collect(self, device, log):
         '''
@@ -159,14 +186,21 @@ class WinRMPlugin(PythonPlugin):
             query_map = {
                 enuminfo: key for key, enuminfo in self.enuminfo_tuples()}
 
+            # Silence winrm logging. We want to control the message.
+            winrm_log = logging.getLogger('winrm')
+            winrm_log.setLevel(logging.FATAL)
+
             try:
                 query_results = yield client.do_collect(
                     conn_info, query_map.iterkeys())
-            except txwinrm.collect.RequestError as e:
-                log.error("Query error on %s: %s", device.id, e[0])
+            except Exception as e:
+                self.log_error(log, device, e)
             else:
                 for info, data in query_results.iteritems():
                     results[query_map[info]] = data
+
+            # Unset winrm logging. Will fallback to root logger level.
+            # winrm_log.setLevel(logging.NOTSET)
 
         # Get a copy of the class' commands.
         commands = dict(self.get_commands())
@@ -185,10 +219,6 @@ class WinRMPlugin(PythonPlugin):
                 try:
                     results[command_key] = yield winrs.run_command(command)
                 except Exception as e:
-                    log.error(
-                        "Error running %s on %s: %s",
-                        command_key,
-                        device.id,
-                        e)
+                    self.log_error(log, device, e)
 
         defer.returnValue(results)
