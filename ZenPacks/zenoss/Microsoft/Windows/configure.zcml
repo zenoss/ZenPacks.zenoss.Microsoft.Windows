@@ -84,9 +84,9 @@
         />
 
     <adapter
-        provides=".datasources.WinRSDataSource.IWinRSInfo"
-        for=".datasources.WinRSDataSource.WinRSDataSource"
-        factory=".datasources.WinRSDataSource.WinRSInfo"
+        provides=".datasources.ShellDataSource.IShellDataSourceInfo"
+        for=".datasources.ShellDataSource.ShellDataSource"
+        factory=".datasources.ShellDataSource.ShellDataSourceInfo"
         />
 
     <adapter
@@ -96,27 +96,27 @@
         />
 
     <adapter
-        provides=".datasources.WinEventCollectionDataSource.IWinEventCollectionInfo"
-        for=".datasources.WinEventCollectionDataSource.WinEventCollectionDataSource"
-        factory=".datasources.WinEventCollectionDataSource.WinEventCollectionInfo"
+        provides=".datasources.EventLogDataSource.IEventLogInfo"
+        for=".datasources.EventLogDataSource.EventLogDataSource"
+        factory=".datasources.EventLogDataSource.EventLogInfo"
         />
 
     <adapter
-        provides=".datasources.WinServiceCollectionDataSource.IWinServiceCollectionInfo"
-        for=".datasources.WinServiceCollectionDataSource.WinServiceCollectionDataSource"
-        factory=".datasources.WinServiceCollectionDataSource.WinServiceCollectionInfo"
+        provides=".datasources.ServiceDataSource.IServiceDataSourceInfo"
+        for=".datasources.ServiceDataSource.ServiceDataSource"
+        factory=".datasources.ServiceDataSource.ServiceDataSourceInfo"
         />
 
     <adapter
-        provides=".datasources.WinIISSiteCollectionDataSource.IWinIISSiteCollectionInfo"
-        for=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionDataSource"
-        factory=".datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionInfo"
+        provides=".datasources.IISSiteDataSource.IIISSiteDataSourceInfo"
+        for=".datasources.IISSiteDataSource.IISSiteDataSource"
+        factory=".datasources.IISSiteDataSource.IISSiteDataSourceInfo"
         />
 
     <adapter
-        provides=".datasources.WinProcessDataSource.IWinProcessDataSourceInfo"
-        for=".datasources.WinProcessDataSource.WinProcessDataSource"
-        factory=".datasources.WinProcessDataSource.WinProcessDataSourceInfo"
+        provides=".datasources.ProcessDataSource.IProcessDataSourceInfo"
+        for=".datasources.ProcessDataSource.ProcessDataSource"
+        factory=".datasources.ProcessDataSource.ProcessDataSourceInfo"
         />
 
     <adapter

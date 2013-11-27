@@ -29,7 +29,7 @@ from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
 
-class WinOS(WinRMPlugin):
+class OperatingSystem(WinRMPlugin):
     queries = {
         'Win32_SystemEnclosure': "SELECT * FROM Win32_SystemEnclosure",
         'Win32_ComputerSystem': "SELECT * FROM Win32_ComputerSystem",

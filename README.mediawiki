@@ -406,28 +406,29 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ;Device Classes
 * /Server/Microsoft
-* /Server/Microsoft/Windows
 * /Server/Microsoft/Cluster
+* /Server/Microsoft/Windows
 
 ;Modeler Plugins
-* zenoss.winrm.WinOS
-* zenoss.winrm.ClusterOS
+* zenoss.winrm.CPUs
 * zenoss.winrm.FileSystems
+* zenoss.winrm.IIS
 * zenoss.winrm.Interfaces
-* zenoss.winrm.Routes
+* zenoss.winrm.OperatingSystem
 * zenoss.winrm.Processes
+* zenoss.winrm.Routes
 * zenoss.winrm.Services
 * zenoss.winrm.Software
 * zenoss.winrm.WinCluster
-* zenoss.winrm.WinIIS
 * zenoss.winrm.WinMSSQL
 
 ;Datasource Types
-* WinRS
-* WinEvents
+* Windows EventLog
+* Windows IIS Site
+* Windows Perfmon
 * Windows Process
-* WinServices
-* IISSite
+* Windows Service
+* Windows Shell
 
 ;Monitoring Templates
 * Device (in /Server/Microsoft)

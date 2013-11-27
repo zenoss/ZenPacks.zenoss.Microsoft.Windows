@@ -37,6 +37,18 @@ class ClusterDevice(BaseDevice):
         {'id': 'creatingdc', 'type': 'string', 'mode': 'w'},
         )
 
+    def setClusterMachines(self, clusterdnsnames):
+        '''
+        Don't do anything. Overridden from BaseDevice.
+        '''
+        self.clusterdevices = clusterdnsnames
+
+    def getClusterMachines(self):
+        '''
+        Return what was previously set.
+        '''
+        return self.clusterdevices
+
     def setClusterHostMachines(self, clusterhostdnsnames):
         '''
         Set hostnames of servers belonging to this cluster.

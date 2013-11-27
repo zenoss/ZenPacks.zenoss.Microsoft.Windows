@@ -17,6 +17,7 @@ via WinRS.
 import logging
 LOG = logging.getLogger('zen.windows')
 
+import collections
 import time
 
 from twisted.internet import defer
@@ -38,7 +39,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
     )
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, group
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout
 
 addLocalLibPath()
@@ -150,11 +151,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.data:
             data = self.data.copy()
-
-            # Reset so we don't deliver the same results more than once.
-            self.data = None
         else:
             data = self.new_data()
+
+        # Reset so we don't deliver the same results more than once.
+        self.data = self.new_data()
 
         defer.returnValue(data)
 
@@ -239,6 +240,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self.started = True
         self.collected_samples = 0
+        self.collected_counters = set()
 
         self.receive()
 
@@ -285,72 +287,38 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def onReceive(self, result):
         receive_time = int(time.time())
 
-        self.data = self.new_data()
+        # Initialize sample buffer. Start of a new sample.
+        if result[0][0].startswith('Readings : '):
+            result[0][0] = result[0][0].replace('Readings : ', '', 1)
 
-        collected_counters = set()
+            if self.collected_counters:
+                self.reportMissingCounters(
+                    self.counter_map, self.collected_counters)
 
-        for label, value in group(result[0], 2):
-            fq_counter = label.strip(' :').split(' : ')[-1]
-            counter = '\\{}'.format(fq_counter.split('\\', 3)[3])
+            self.sample_buffer = collections.deque(result[0])
+            self.collected_counters = set()
+            self.collected_samples += 1
 
-            collected_counters.add(counter)
+        # Extend sample buffer. Continuation of previous sample.
+        else:
+            self.sample_buffer.extend(result[0])
+
+        # Continue while we have counter/value pairs.
+        while len(self.sample_buffer) > 1:
+            # Buffer to counter conversion:
+            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec :'
+            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
+            #   '\\web service(another web site)\\move requests/sec'
+            counter = '\\{}'.format(
+                self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+
+            value = float(self.sample_buffer.popleft())
 
             component, datasource = self.counter_map.get(counter, (None, None))
-            if not datasource:
-                continue
+            if datasource:
+                self.collected_counters.add(counter)
+                self.data['values'][component][datasource] = (value, receive_time)
 
-            self.data['values'][component][datasource] = (value, receive_time)
-
-        unexpected_counters = collected_counters.difference(self.counter_map)
-        if unexpected_counters:
-            LOG.warn(
-                "unexpected counters for %s: %s",
-                self.config.id,
-                ', '.join(unexpected_counters))
-
-        missing_counters = set(self.counter_map).difference(collected_counters)
-        if missing_counters:
-            missing_counter_count = len(missing_counters)
-
-            LOG.warn(
-                "%s missing counters for %s - see debug for details",
-                missing_counter_count,
-                self.config.id)
-
-            LOG.debug(
-                "%s missing counters for %s: %s",
-                missing_counter_count,
-                self.config.id,
-                ', '.join(missing_counters))
-
-            summary = (
-                '{} counters missing in collection - see details'
-                .format(missing_counter_count))
-
-            message = (
-                '{} counters missing in collection: {}'
-                .format(
-                    missing_counter_count,
-                    ', '.join(missing_counters)))
-
-            self.data['events'].append({
-                'device': self.config.id,
-                'severity': ZenEventClasses.Info,
-                'component': 'Perfmon',
-                'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': summary,
-                'message': message,
-                })
-        else:
-            self.data['events'].append({
-                'device': self.config.id,
-                'severity': ZenEventClasses.Clear,
-                'component': 'Perfmon',
-                'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': '0 counters missing in collection',
-                })
-
-        self.collected_samples += 1
         if self.collected_samples < self.max_samples and result[0]:
             self.receive()
         else:
@@ -393,6 +361,52 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.receive()
         else:
             self.start()
+
+    def reportMissingCounters(self, requested, returned):
+        '''
+        Emit logs and events for counters requested but not returned.
+        '''
+        missing_counters = set(requested).difference(returned)
+        if missing_counters:
+            missing_counter_count = len(missing_counters)
+
+            LOG.warn(
+                "%s missing counters for %s - see debug for details",
+                missing_counter_count,
+                self.config.id)
+
+            LOG.debug(
+                "%s missing counters for %s: %s",
+                missing_counter_count,
+                self.config.id,
+                ', '.join(missing_counters))
+
+            summary = (
+                '{} counters missing in collection - see details'
+                .format(missing_counter_count))
+
+            message = (
+                '{} counters missing in collection: {}'
+                .format(
+                    missing_counter_count,
+                    ', '.join(missing_counters)))
+
+            self.data['events'].append({
+                'device': self.config.id,
+                'severity': ZenEventClasses.Info,
+                'component': 'Perfmon',
+                'eventKey': 'Windows Perfmon Missing Counters',
+                'summary': summary,
+                'message': message,
+                })
+        else:
+            self.data['events'].append({
+                'device': self.config.id,
+                'severity': ZenEventClasses.Clear,
+                'component': 'Perfmon',
+                'eventKey': 'Windows Perfmon Missing Counters',
+                'summary': '0 counters missing in collection',
+                })
 
     def cleanup(self, config):
         '''

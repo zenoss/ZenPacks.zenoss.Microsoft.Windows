@@ -1970,9 +1970,9 @@ AVERAGE
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -1987,7 +1987,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 get-clustergroup
@@ -4872,9 +4872,9 @@ AVERAGE
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinServices
+Windows Service
 </property>
 <property type="boolean" id="enabled" mode="w" >
 False
@@ -4889,7 +4889,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
 </property>
 <property type="string" id="servicename" >
 ${here/servicename}
@@ -5706,9 +5706,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='sitecheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinIISSiteCollectionDataSource' class='WinIISSiteCollectionDataSource'>
+<object id='sitecheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.IISSiteDataSource' class='IISSiteDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-IISSite
+Windows IIS Site
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -5726,7 +5726,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.IISSiteDataSource.IISSiteDataSourcePlugin
 </property>
 <property type="string" id="statusname" >
 ${here/statusname}
@@ -7298,7 +7298,7 @@ Microsoft Windows per-process monitoring.
 Products.ZenModel.OSProcess
 </property>
 <tomanycont id='datasources'>
-<object id='process' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinProcessDataSource' class='WinProcessDataSource'>
+<object id='process' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource' class='ProcessDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Process
 </property>
@@ -7318,7 +7318,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinProcessDataSource.WinProcessDataSourcePlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.ProcessDataSourcePlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='PercentProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7616,7 +7616,7 @@ Microsoft Windows 2003 per-process monitoring.
 Products.ZenModel.OSProcess
 </property>
 <tomanycont id='datasources'>
-<object id='process' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinProcessDataSource' class='WinProcessDataSource'>
+<object id='process' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource' class='ProcessDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Process
 </property>
@@ -7636,7 +7636,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinProcessDataSource.WinProcessDataSourcePlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.ProcessDataSourcePlugin
 </property>
 <tomanycont id='datapoints'>
 <object id='PercentProcessorTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7894,9 +7894,9 @@ Microsoft SQL Server per-database monitoring.
 ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase
 </property>
 <tomanycont id='datasources'>
-<object id='ActiveTransactions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='ActiveTransactions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -7911,7 +7911,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Active Transactions
@@ -7936,9 +7936,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='BackupRestoreThroughputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='BackupRestoreThroughputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -7953,7 +7953,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Backup/Restore Throughput/sec
@@ -7978,9 +7978,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='BulkCopyRowsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='BulkCopyRowsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -7995,7 +7995,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Bulk Copy Rows/sec
@@ -8020,9 +8020,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='BulkCopyThroughputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='BulkCopyThroughputSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8037,7 +8037,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Bulk Copy Throughput/sec
@@ -8062,9 +8062,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='CacheEntriesCount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='CacheEntriesCount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8079,7 +8079,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Cache Entries Count
@@ -8104,9 +8104,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='CacheEntriesPinnedCount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='CacheEntriesPinnedCount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8121,7 +8121,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Cache Entries Pinned Count
@@ -8146,9 +8146,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='CacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='CacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8163,7 +8163,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Cache Hit Ratio
@@ -8188,9 +8188,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='CacheHitRatioBase' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='CacheHitRatioBase' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8205,7 +8205,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Cache Hit Ratio Base
@@ -8230,9 +8230,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='DBCCLogicalScanBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='DBCCLogicalScanBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8247,7 +8247,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 DBCC Logical Scan Bytes/sec
@@ -8272,9 +8272,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='DataFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='DataFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8289,7 +8289,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Data File(s) Size (KB)
@@ -8314,9 +8314,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogBytesFlushedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogBytesFlushedSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8331,7 +8331,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Bytes Flushed/sec
@@ -8356,9 +8356,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogCacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogCacheHitRatio' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8373,7 +8373,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Cache Hit Ratio
@@ -8398,9 +8398,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogCacheHitRatioBase' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogCacheHitRatioBase' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8415,7 +8415,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Cache Hit Ratio Base
@@ -8440,9 +8440,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogCacheReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogCacheReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8457,7 +8457,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Cache Reads/sec
@@ -8482,9 +8482,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogFileSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8499,7 +8499,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log File(s) Size (KB)
@@ -8524,9 +8524,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogFileUsedSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogFileUsedSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8541,7 +8541,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log File(s) Used Size (KB)
@@ -8566,9 +8566,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogFlushWaitTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogFlushWaitTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8583,7 +8583,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Flush Wait Time
@@ -8608,9 +8608,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogFlushWaitsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogFlushWaitsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8625,7 +8625,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Flush Waits/sec
@@ -8650,9 +8650,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogFlushesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogFlushesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8667,7 +8667,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Flushes/sec
@@ -8692,9 +8692,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogGrowths' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogGrowths' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8709,7 +8709,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Growths
@@ -8734,9 +8734,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogShrinks' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogShrinks' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8751,7 +8751,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Shrinks
@@ -8776,9 +8776,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='LogTruncations' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='LogTruncations' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8793,7 +8793,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Log Truncations
@@ -8818,9 +8818,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='PercentLogUsed' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='PercentLogUsed' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8835,7 +8835,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Percent Log Used
@@ -8860,9 +8860,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='ReplPendingXacts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='ReplPendingXacts' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8877,7 +8877,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Repl. Pending Xacts
@@ -8902,9 +8902,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='ReplTransRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='ReplTransRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8919,7 +8919,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Repl. Trans. Rate
@@ -8944,9 +8944,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='ShrinkDataMovementBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='ShrinkDataMovementBytesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -8961,7 +8961,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Shrink Data Movement Bytes/sec
@@ -8986,9 +8986,9 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='TransactionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='TransactionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -9003,7 +9003,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 Transactions/sec
@@ -10951,7 +10951,7 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 ['Device', 'IIS', 'MSExchangeIS', 'Active Directory']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
+['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
 </property>
 </object>
 <object id='Cluster' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
@@ -10962,7 +10962,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.ClusterOS', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
+['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
@@ -10982,9 +10982,9 @@ Used to monitor the state of the Cluster Resources.
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -10999,7 +10999,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 get-clusterresource
@@ -11037,9 +11037,9 @@ Used to monitor the state of the Cluster Service.
 Products.ZenModel.Device
 </property>
 <tomanycont id='datasources'>
-<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource' class='WinRSDataSource'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinRS
+Windows Shell
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -11054,7 +11054,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinRSDataSource.WinRSPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
 </property>
 <property type="string" id="resource" >
 get-clustergroup
@@ -11096,12 +11096,12 @@ Default Windows Service monitoring template.
 Products.ZenModel.WinService
 </property>
 <tomanycont id='datasources'>
-<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource' class='WinServiceCollectionDataSource'>
+<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
 <property id='zendoc' type='string'>
 Default Windows Service monitoring template.
 </property>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-WinServices
+Windows Service
 </property>
 <property type="boolean" id="enabled" mode="w" >
 True
@@ -11116,7 +11116,7 @@ ${here/id}
 300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin
+ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
 </property>
 <property type="string" id="servicename" >
 ${here/id}

@@ -52,7 +52,7 @@ def string_to_lines(string):
     return None
 
 
-class WinIISSiteCollectionDataSource(PythonDataSource):
+class IISSiteDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -60,19 +60,19 @@ class WinIISSiteCollectionDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    sourcetypes = ('IISSite',)
+    sourcetypes = ('Windows IIS Site',)
     sourcetype = sourcetypes[0]
     statusname = '${here/statusname}'
 
     plugin_classname = ZENPACKID + \
-        '.datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionPlugin'
+        '.datasources.IISSiteDataSource.IISSiteDataSourcePlugin'
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
         )
 
 
-class IWinIISSiteCollectionInfo(IRRDDataSourceInfo):
+class IIISSiteDataSourceInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the IIS Site datasource.
     """
@@ -85,19 +85,19 @@ class IWinIISSiteCollectionInfo(IRRDDataSourceInfo):
     """
 
 
-class WinIISSiteCollectionInfo(RRDDataSourceInfo):
+class IISSiteDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the IIS Site plugin.
     """
-    implements(IWinIISSiteCollectionInfo)
-    adapts(WinIISSiteCollectionDataSource)
+    implements(IIISSiteDataSourceInfo)
+    adapts(IISSiteDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
     statusname = ProxyProperty('statusname')
 
 
-class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
+class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',

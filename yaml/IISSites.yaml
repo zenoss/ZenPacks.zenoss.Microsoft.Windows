@@ -196,7 +196,7 @@
         iisUnlockRequests: GAUGE
 
     sitecheck:
-      type: IISSite
+      type: Windows IIS Site
       statusname: "${here/statusname}"
       component: "${here/id}"
       eventClass: /Status

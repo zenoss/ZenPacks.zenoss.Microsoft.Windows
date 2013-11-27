@@ -115,7 +115,7 @@ NON_AGGREGATED_DATAPOINTS = frozenset({
 COUNT_DATAPOINT = 'count'
 
 
-class WinProcessDataSource(PythonDataSource):
+class ProcessDataSource(PythonDataSource):
     ZENPACKID = ZENPACK_NAME
 
     sourcetypes = (SOURCE_TYPE,)
@@ -130,8 +130,8 @@ class WinProcessDataSource(PythonDataSource):
     plugin_classname = '.'.join((
         ZENPACK_NAME,
         'datasources',
-        'WinProcessDataSource',
-        'WinProcessDataSourcePlugin'))
+        'ProcessDataSource',
+        'ProcessDataSourcePlugin'))
 
     def getDescription(self):
         '''
@@ -149,9 +149,9 @@ class WinProcessDataSource(PythonDataSource):
         return context.perfServer().processCycleInterval
 
 
-class IWinProcessDataSourceInfo(IInfo):
+class IProcessDataSourceInfo(IInfo):
     '''
-    Info interface for WinProcessDataSource.
+    Info interface for ProcessDataSource.
 
     Extends IInfo instead of IRRDDataSourceInfo because we want to
     reduce the set of options available.
@@ -185,16 +185,16 @@ class IWinProcessDataSourceInfo(IInfo):
         readonly=True)
 
 
-class WinProcessDataSourceInfo(InfoBase):
+class ProcessDataSourceInfo(InfoBase):
     '''
-    Info adapter factory for WinProcessDataSource.
+    Info adapter factory for ProcessDataSource.
 
     Extends InfoBase instead of RRDDataSourceInfo because we want to
     reduce the set of options available.
     '''
 
-    implements(IWinProcessDataSourceInfo)
-    adapts(WinProcessDataSource)
+    implements(IProcessDataSourceInfo)
+    adapts(ProcessDataSource)
 
     enabled = ProxyProperty('enabled')
 
@@ -219,7 +219,7 @@ class WinProcessDataSourceInfo(InfoBase):
         return self._object.sourcetype
 
 
-class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
+class ProcessDataSourcePlugin(PythonDataSourcePlugin):
     '''
     Collects Windows process data.
     '''
