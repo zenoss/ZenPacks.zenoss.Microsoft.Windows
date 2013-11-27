@@ -14,6 +14,9 @@ Microsoft Software
 <property visible="True" type="lines" id="zCollectorPlugins" >
 []
 </property>
+<property visible="True" type="string" id="zIcon" >
+/++resource++mswindows/img/server-windows.png
+</property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
