@@ -24,6 +24,15 @@ class TeamInterface(IpInterface):
             'teaminterface')),
         )
 
+    def monitored(self):
+        '''
+        Return the monitored status of this component.
+
+        Overridden from IpInterface to prevent monitoring
+        administratively down interfaces.
+        '''
+        return self.monitor and self.adminStatus == 1
+
     def setInterfaces(self, ids):
         new_ids = set(ids)
         current_ids = set(x.id for x in self.teaminterfaces())
