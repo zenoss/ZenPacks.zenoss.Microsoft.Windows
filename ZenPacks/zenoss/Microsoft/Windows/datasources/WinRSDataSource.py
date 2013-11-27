@@ -158,6 +158,7 @@ class WinCmd(object):
     """
     device = ''
     command = None
+    component = ''
     ds = ''
     useSsh = False
     cycleTime = None
@@ -170,6 +171,7 @@ class WinCmd(object):
     result = WinCmdResult()
     severity = 3
     usePowershell = False
+    deviceConfig = None
 
     
 class CustomCommandStrategy(object):
@@ -178,17 +180,24 @@ class CustomCommandStrategy(object):
                     '-Command "%s"' % script
         return pscommand.format(script) if usePowershell else script
 
-    def parse_result(self, dsconfs, result):
-        parserLoader = dsconfs[0].params['parser']
+    def parse_result(self, config, result):
+        dsconf = config.datasources[0]
+        parserLoader = dsconf.params['parser']
         log.debug('Trying to use the %s parser' % parserLoader.pluginName)
         
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
-        cmd.command = dsconfs[0].params['script']
-        cmd.ds = dsconfs[0].datasource
-        cmd.device = dsconfs[0].params['servername']
-        cmd.points = dsconfs[0].points
-        cmd.usePowershell = dsconfs[0].params['usePowershell']
+        cmd.command = dsconf.params['script']
+        cmd.ds = dsconf.datasource
+        cmd.device = dsconf.params['servername']
+        
+        # Add the device id to the config for compatibility with parsers
+        config.device = config.id
+        
+        cmd.deviceConfig = config
+        cmd.component = dsconf.params['contextcompname']
+        cmd.points = dsconf.points
+        cmd.usePowershell = dsconf.params['usePowershell']
         cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
         
@@ -601,13 +610,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
         strategy, dsconfs, result = results
         
         if 'CustomCommand' in str(strategy.__class__):
-            cmdResult = strategy.parse_result(dsconfs, result)
+            cmdResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
             
             data['events'] = cmdResult.events
             data['maps'] = cmdResult.maps
             for dp, value in cmdResult.values:
-                data['values'][dsconf.component][dp] = value, 'N'
+                data['values'][dsconf.component][dp.id] = value, 'N'
         
         else:
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
