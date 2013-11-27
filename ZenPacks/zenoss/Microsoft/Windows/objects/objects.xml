@@ -11,6 +11,9 @@ Microsoft Software
 <property visible="True" type="lines" id="zDeviceTemplates" >
 ['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchangeIS']
 </property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+[]
+</property>
 <tomanycont id='rrdTemplates'>
 <object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
@@ -10945,7 +10948,7 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 ['Device', 'IIS', 'MSExchangeIS', 'Active Directory']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.Interfaces', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Processes', 'zenoss.winrm.Services', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
+['zenoss.winrm.WinOS', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
 </property>
 </object>
 <object id='Cluster' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
@@ -10956,7 +10959,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.WinCluster', 'zenoss.winrm.ClusterOS', 'zenoss.winrm.Interfaces', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Processes', 'zenoss.winrm.Services', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
+['zenoss.winrm.ClusterOS', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
@@ -11000,6 +11003,9 @@ get-clusterresource
 </property>
 <property type="string" id="strategy" >
 powershell Cluster Resources
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <property visible="True" type="string" id="counter" >
 get-clusterresource
@@ -11052,6 +11058,9 @@ get-clustergroup
 </property>
 <property type="string" id="strategy" >
 powershell Cluster Services
+</property>
+<property type="boolean" id="usePowershell" >
+True
 </property>
 <property visible="True" type="string" id="counter" >
 get-clustergroup
