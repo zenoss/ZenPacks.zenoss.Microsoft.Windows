@@ -81,8 +81,8 @@ class WinRSDataSource(PythonDataSource):
         {'id': 'resource', 'type': 'string'},
         {'id': 'strategy', 'type': 'string'},
         {'id': 'parser', 'type': 'string'},
-        {'id': 'usePowershell', 'type':'boolean'},
-        {'id': 'script', 'type':'string'}
+        {'id': 'usePowershell', 'type': 'boolean'},
+        {'id': 'script', 'type': 'string'}
         )
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
@@ -103,6 +103,7 @@ class IWinRSInfo(IRRDDataSourceInfo):
         title=_t('Strategy'),
         xtype='winrsstrategy')
 
+
 class WinRSInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the WinRS plugin.
@@ -117,14 +118,14 @@ class WinRSInfo(RRDDataSourceInfo):
     parser = ProxyProperty('parser')
     usePowershell = ProxyProperty('usePowershell')
     script = ProxyProperty('script')
-    
+
     @property
     def availableParsers(self):
         """
         returns a list of all available parsers
         """
         return sorted(p.modPath for p in loadParserPlugins(self._object.dmd))
-    
+
     @property
     def availableStrategies(self):
         """
@@ -173,7 +174,7 @@ class WinCmd(object):
     usePowershell = False
     deviceConfig = None
 
-    
+
 class CustomCommandStrategy(object):
     def build_command_line(self, script, usePowershell):
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
@@ -184,7 +185,7 @@ class CustomCommandStrategy(object):
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
         log.debug('Trying to use the %s parser' % parserLoader.pluginName)
-        
+
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
         cmd.command = dsconf.params['script']
@@ -200,13 +201,14 @@ class CustomCommandStrategy(object):
         cmd.usePowershell = dsconf.params['usePowershell']
         cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
-        
+
         collectedResult = WinParsedResults()
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         return collectedResult
 
 customcommand_strategy = CustomCommandStrategy()
+
 
 class PowershellMSSQLStrategy(object):
 
@@ -485,7 +487,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
         servername = context.device().title
         if len(servername) == 0:
             servername = ''
-        
+
         parser = getParserLoader(context.dmd, datasource.parser)
 
         return dict(resource=resource,
@@ -552,7 +554,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
             resource = dsconf0.params['contexttitle']
             componenttype = dsconf0.params['resource']
             command_line = strategy.build_command_line(resource, componenttype)
-        
+
         elif dsconf0.params['strategy'] == 'Custom Command':
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
@@ -600,7 +602,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
             results = yield retrieve_long_running_shell(sender, shell_id, command_line)
 
-        log.info('Results retreived for device {0} on shell id {1}'.format(
+        log.debug('Results retreived for device {0} on shell id {1}'.format(
                 dsconf0.manageIp,
                 shell_id))
         defer.returnValue((strategy, config.datasources, results))
@@ -608,11 +610,11 @@ class WinRSPlugin(PythonDataSourcePlugin):
     def onSuccess(self, results, config):
         data = self.new_data()
         strategy, dsconfs, result = results
-        
+
         if 'CustomCommand' in str(strategy.__class__):
             cmdResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
-            
+
             data['events'] = cmdResult.events
             data['maps'] = cmdResult.maps
             for dp, value in cmdResult.values:
@@ -627,7 +629,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
                     'PartialOnline': ZenEventClasses.Error,
                     'Failed': ZenEventClasses.Critical
                     }.get(value[1], ZenEventClasses.Info)
-    
+
                     data['events'].append(dict(
                         eventClassKey='winrsClusterResource',
                         eventKey='ClusterResource',
@@ -636,7 +638,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
                         device=config.id,
                         component=prepId(dsconf.component)
                         ))
-    
+
                     data['maps'].append(
                         value[2]
                         )

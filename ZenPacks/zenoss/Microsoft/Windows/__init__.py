@@ -100,9 +100,11 @@ class ZenPack(ZenPackBase):
 
             # remove kerberos.so file from python path
             kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
+            kerbconfig = os.path.join(os.environ['ZENHOME'], 'var', 'krb5')
 
             try:
                 os.remove(kerbdst)
+                os.remove(kerbconfig)
             except Exception:
                 pass
 
