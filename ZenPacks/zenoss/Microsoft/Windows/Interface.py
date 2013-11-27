@@ -20,3 +20,12 @@ class Interface(IpInterface):
             'ZenPacks.zenoss.Microsoft.Windows.TeamInterface',
             'teaminterfaces')),
         )
+
+    def monitored(self):
+        '''
+        Return the monitored status of this component.
+
+        Overridden from IpInterface to prevent monitoring
+        administratively down interfaces.
+        '''
+        return self.monitor and self.adminStatus == 1
