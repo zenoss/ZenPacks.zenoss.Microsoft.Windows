@@ -187,13 +187,17 @@ class CustomCommandStrategy(object):
         cmd.command = dsconf.params['script']
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
+        cmd.component = dsconf.params['contextcompname']
 
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
-
         cmd.deviceConfig = config
-        cmd.component = dsconf.params['contextcompname']
-        cmd.points = dsconf.points
+
+        # Add the component id to the points array for compatibility with parsers
+        for point in dsconf.points:
+            point.component = cmd.component
+            cmd.points.append(point)
+
         cmd.usePowershell = dsconf.params['usePowershell']
         cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
