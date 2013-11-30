@@ -12,6 +12,7 @@ __doc__ = "Microsoft Windows ZenPack"
 import Globals
 import os
 import shutil
+import re
 
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
@@ -89,6 +90,15 @@ class ZenPack(ZenPackBase):
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)
 
+        # Set KRB5_CONFIG environment variable
+        userenvironconfig = '{0}/.bashrc'.format(os.environ['HOME'])
+        if 'KRB5_CONFIG' not in open(userenvironconfig).read():
+            environmentfile = open(userenvironconfig, "a")
+            environmentfile.write('# Following value required for Windows ZenPack\n')
+            environmentfile.write('export KRB5_CONFIG="{0}/var/krb5/krb5.conf"\n'.format(
+                os.environ['ZENHOME']))
+            environmentfile.close()
+
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
@@ -101,10 +111,23 @@ class ZenPack(ZenPackBase):
             # remove kerberos.so file from python path
             kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
             kerbconfig = os.path.join(os.environ['ZENHOME'], 'var', 'krb5')
+            userenvironconfig = '{0}/.bashrc'.format(os.environ['HOME'])
 
             try:
                 os.remove(kerbdst)
                 os.remove(kerbconfig)
+                # Remove export for KRB5_CONFIG from bashrc
+                bashfile = open(userenvironconfig, 'r')
+                content = bashfile.read()
+                bashfile.close()
+                content = re.sub(r'^# Following value required for Windows Zenoss\n?',
+                    '',
+                    content)
+                content = re.sub(r'export KRB5_CONFIG.*\n?', '', content)
+                newbashfile = open(userenvironconfig, 'w')
+                newbashfile.write(content)
+                newbashfile.close()
+
             except Exception:
                 pass
 
