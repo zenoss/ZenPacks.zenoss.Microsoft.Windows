@@ -118,6 +118,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def __init__(self):
         self.initialized = False
         self.started = False
+        self.data = self.new_data()
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -149,12 +150,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if not self.started:
             yield self.start()
 
-        if self.data:
-            data = self.data.copy()
-        else:
-            data = self.new_data()
-
         # Reset so we don't deliver the same results more than once.
+        data = self.data.copy()
         self.data = self.new_data()
 
         defer.returnValue(data)
