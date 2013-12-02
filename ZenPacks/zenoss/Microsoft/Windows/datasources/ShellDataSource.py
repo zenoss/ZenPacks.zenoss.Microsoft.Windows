@@ -417,7 +417,7 @@ class PowershellClusterServiceStrategy(object):
                     yield dsconf, value, timestamp
                 except(AttributeError):
                     log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except(AttributeError):
+        except (AttributeError, UnboundLocalError):
             log.debug('Error in parsing cluster service data')
 
 powershellclusterservice_strategy = PowershellClusterServiceStrategy()
