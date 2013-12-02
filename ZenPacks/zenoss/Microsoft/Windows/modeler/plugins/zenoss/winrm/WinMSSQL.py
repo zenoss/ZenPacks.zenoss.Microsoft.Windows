@@ -18,8 +18,9 @@ from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
-from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 from Products.ZenUtils.Utils import prepId
+
+from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, getSQLAssembly
 
 addLocalLibPath()
@@ -28,32 +29,24 @@ from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
-class WinMSSQL(PythonPlugin):
+class WinMSSQL(WinRMPlugin):
 
-    deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinUser',
-        'zWinPassword',
-        'zWinRMPort',
+    deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
         'zDBInstancesPassword',
         )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
-        hostname = device.manageIp
-
-        username = device.zWinUser
-        auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinPassword
 
         # Sample data for zDBInstanceLogin
         # MSSQLSERVER;ZenossInstance2
-
         # Sample data for zDBInstancePassword
         # sa:Sup3rPa$$;sa:WRAAgf4234@#$
 
         dbinstance = device.zDBInstances
         dbinstancepassword = device.zDBInstancesPassword
+        password = device.zWinPassword
 
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
@@ -77,20 +70,7 @@ class WinMSSQL(PythonPlugin):
             results = {'error': eventmessage}
             defer.returnValue(results)
 
-        scheme = 'http'
-        port = int(device.zWinRMPort)
-        connectiontype = 'Keep-Alive'
-        keytab = ''
-
-        conn_info = ConnectionInfo(
-            hostname,
-            auth_type,
-            username,
-            password,
-            scheme,
-            port,
-            connectiontype,
-            keytab)
+        conn_info = self.conn_info(device)
         winrs = create_single_shot_command(conn_info)
 
         #sqlserver = 'SQL1\ZENOSSINSTANCE2'

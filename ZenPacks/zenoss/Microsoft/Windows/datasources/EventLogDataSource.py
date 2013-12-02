@@ -50,7 +50,7 @@ def string_to_lines(string):
     return None
 
 
-class WinEventCollectionDataSource(PythonDataSource):
+class EventLogDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -60,13 +60,13 @@ class WinEventCollectionDataSource(PythonDataSource):
     cycletime = 300
     counter = ''
     strategy = ''
-    sourcetypes = ('WinEvents',)
+    sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]
     eventlog = ''
     query = ''
 
     plugin_classname = ZENPACKID + \
-        '.datasources.WinEventCollectionDataSource.WinEventCollectionPlugin'
+        '.datasources.EventLogDataSource.EventLogPlugin'
 
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
@@ -74,7 +74,7 @@ class WinEventCollectionDataSource(PythonDataSource):
         )
 
 
-class IWinEventCollectionInfo(IRRDDataSourceInfo):
+class IEventLogInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the WinRS Single Counter datasource.
     """
@@ -91,13 +91,13 @@ class IWinEventCollectionInfo(IRRDDataSourceInfo):
         xtype='twocolumntextarea')
 
 
-class WinEventCollectionInfo(RRDDataSourceInfo):
+class EventLogInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the WinRS Single
     Counter plugin.
     """
-    implements(IWinEventCollectionInfo)
-    adapts(WinEventCollectionDataSource)
+    implements(IEventLogInfo)
+    adapts(EventLogDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
@@ -105,11 +105,14 @@ class WinEventCollectionInfo(RRDDataSourceInfo):
     query = ProxyProperty('query')
 
 
-class WinEventCollectionPlugin(PythonDataSourcePlugin):
+class EventLogPlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     subscriptionID = {}
@@ -146,11 +149,12 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         conn_info = ConnectionInfo(
             ds0.manageIp,
@@ -160,7 +164,8 @@ class WinEventCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
 
         path = ds0.params['eventlog']
         select = ds0.params['query']

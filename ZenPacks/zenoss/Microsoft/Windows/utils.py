@@ -1,11 +1,17 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
+
+'''
+Basic utilities that don't cause any Zope stuff to be imported.
+'''
+
+import itertools
 
 
 def addLocalLibPath():
@@ -24,7 +30,7 @@ def lookup_adminpasswordstatus(value):
         2: 'Enabled',
         3: 'Not Implemented',
         4: 'Unknown',
-       }.get(value, 'unknown')
+        }.get(value, 'unknown')
 
 
 def lookup_chassisbootupstate(value):
@@ -71,75 +77,6 @@ def lookup_architecture(value):
         6: 'Itanium-based systems',
         9: 'x64',
         }.get(value, 'unknown')
-
-
-def lookup_routetype(value):
-    return {
-        1: 'Other',
-        2: 'Invalid',
-        3: 'Direct',
-        4: 'Indirect',
-        }.get(value, 'unknown')
-
-
-def lookup_protocol(value):
-    return {
-        1: 'Other',
-        2: 'Local',
-        3: 'Netmgmt',
-        4: 'ICMP',
-        5: 'egp',
-        6: 'ggp',
-        7: 'hello',
-        8: 'rip',
-        9: 'is-is',
-        10: 'es-is',
-        11: 'Ciscolgrp',
-        12: 'bbnSpflgp',
-        13: 'ospf',
-        14: 'bgp',
-        }.get(value, 'unknown')
-
-
-def lookup_drivetype(value):
-    return {
-        0: 'Unknown',
-        1: 'No Root Directory',
-        2: 'Removable Disk',
-        3: 'Local Disk',
-        4: 'Network Drive',
-        5: 'Compact Disc',
-        6: 'RAM Disk',
-        }.get(value, 'Unknown')
-
-
-def lookup_zendrivetype(value):
-    return {
-        0: ['other'],
-        2: ['removableDisk', 'floppyDisk'],
-        3: ['fixedDisk'],
-        4: ['networkDisk'],
-        5: ['compactDisk'],
-        6: ['ramDisk', 'virtualMemory', 'ram', 'flashMemory'],
-        }.get(value, 'uknown')
-
-
-def lookup_operstatus(value):
-    if value == 'true':
-        return 1
-    else:
-        return 2
-
-
-def guessBlockSize(bytes):
-    """Most of the MS operating systems don't seem to return a value
-    for block size.  So, let's try to guess by how the size is rounded
-    off.  That is, if the number is divisible by 1024, that's probably
-    due to the block size.  Ya, it's a kludge."""
-    for i in range(10, 17):
-        if int(bytes) / float(1 << i) % 1:
-            return 1 << (i - 1)
-    return 4096                 # a total fiction
 
 
 def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
@@ -228,3 +165,18 @@ def get_processText(item):
         item.CommandLine = item.CommandLine.strip('"')
 
     return item.CommandLine or item.ExecutablePath or item.Name
+
+
+def get_processNameAndArgs(item):
+    '''
+    Return (name, args) tuple given a Win32_Process item.
+    '''
+    name = item.ExecutablePath or item.Name
+    if item.CommandLine:
+        item.CommandLine = item.CommandLine.strip('"')
+        args = item.CommandLine.replace(
+            name, '', 1).strip()
+    else:
+        args = ''
+
+    return (name, args)

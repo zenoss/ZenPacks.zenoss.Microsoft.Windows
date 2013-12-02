@@ -1,23 +1,26 @@
 #!/usr/bin/env python
 
 """
-Build monitoring templates based on a YAML input file.
+Build monitoring templates from a YAML input file.
 
-Look at monitoring_templates.yml in the same directory for an example of what
-the YAML schema should be.
+Look at monitoring_templates.yaml in the same directory for an example
+of what the YAML schema should be.
 
-WARNING: This will delete and recreated the named monitoring templates. So it
-         can potentially be very destructive.
+WARNING: This will delete and recreate the named monitoring templates.
+         So it can potentially be very destructive.
 """
 
+import logging
+LOG = logging.getLogger()
 
+import os
 import re
 import sys
 import types
 
 
 def die(msg, *args):
-    print >> sys.stderr, msg % args
+    LOG.fatal(msg, *args)
     sys.exit(1)
 
 
@@ -31,6 +34,12 @@ unused(Globals)
 
 from Products.ZenUtils.ZenScriptBase import ZenScriptBase
 dmd = ZenScriptBase(connect=True).dmd
+
+# ZenScriptBase breaks logging. We'll fix it.
+LOG.removeHandler(LOG.handlers[0])
+logging.basicConfig(
+    format='%(message)s',
+    level=logging.DEBUG if os.environ.get('DEBUG') else logging.INFO)
 
 from transaction import commit
 
@@ -51,15 +60,23 @@ except ImportError:
     except ImportError:
         die('ordereddict must be installed. Try "easy_install ordereddict" first.')
 
-# TODO: Support other types of graph points.
 from Products.ZenModel.ComplexGraphPoint import ComplexGraphPoint
+from Products.ZenModel.DeviceClass import DeviceClass
+from Products.ZenModel.GraphDefinition import GraphDefinition
 from Products.ZenModel.GraphPoint import GraphPoint
 from Products.ZenModel.DataPointGraphPoint import DataPointGraphPoint
+from Products.ZenModel.RRDDataPoint import RRDDataPoint
+from Products.ZenModel.RRDDataSource import RRDDataSource
+from Products.ZenModel.RRDTemplate import RRDTemplate
+from Products.ZenModel.ThresholdClass import ThresholdClass
 
 
 class OrderedDictYAMLLoader(yaml.Loader):
     """
     A YAML loader that loads mappings into ordered dictionaries.
+
+    This is used to allow graph definitions to be sequenced naturally
+    without having to specify a sequence attribute.
     """
 
     def __init__(self, *args, **kwargs):
@@ -100,17 +117,56 @@ class OrderedDictYAMLLoader(yaml.Loader):
 
 
 def main():
+    data = {}
+
     if len(sys.argv) < 2:
-        data = yaml.load(sys.stdin.read(), OrderedDictYAMLLoader)
+        LOG.info("STDIN: loading YAML")
+        data.update(yaml.load(sys.stdin.read(), OrderedDictYAMLLoader) or {})
     else:
-        with open(sys.argv[1], 'r') as yaml_file:
-            data = yaml.load(yaml_file, OrderedDictYAMLLoader)
+        for filename in sys.argv[1:]:
+            LOG.info("{}: loading YAML".format(filename))
+            with open(filename, 'r') as yaml_file:
+                data.update(yaml.load(yaml_file, OrderedDictYAMLLoader) or {})
 
     for template_path, template_cfg in data.items():
         add_template(template_path, template_cfg)
 
-    # commit comes from the zendmd interpreter.
     commit()
+
+
+def log_for(obj, msg, level=logging.DEBUG):
+    '''
+    Log msg for obj at level.
+    '''
+    parts = None
+    if isinstance(obj, DeviceClass):
+        parts = (
+            obj.getOrganizerName(),)
+    elif isinstance(obj, RRDTemplate):
+        parts = (
+            obj.deviceClass().getOrganizerName(),
+            obj.id)
+    elif isinstance(obj, (RRDDataSource, ThresholdClass, GraphDefinition)):
+        parts = (
+            obj.rrdTemplate().deviceClass().getOrganizerName(),
+            obj.rrdTemplate().id,
+            obj.id)
+    elif isinstance(obj, RRDDataPoint):
+        parts = (
+            obj.datasource().rrdTemplate().deviceClass().getOrganizerName(),
+            obj.datasource().rrdTemplate().id,
+            obj.datasource().id,
+            obj.id)
+    elif isinstance(obj, GraphPoint):
+        parts = (
+            obj.graphDef().rrdTemplate().deviceClass().getOrganizerName(),
+            obj.graphDef().rrdTemplate().id,
+            obj.graphDef().id,
+            obj.id)
+    else:
+        parts = ()
+
+    LOG.log(level, '%s: %s', ' - '.join(parts), msg)
 
 
 def get_severity(value):
@@ -166,6 +222,7 @@ def apply_properties(obj, cfg, ignore=None):
     # Apply cfg items directly to datasource attributes.
     for k, v in cfg.items():
         if k not in ('type', 'datapoints'):
+            log_for(obj, "{} = {}".format(k, v), level=logging.DEBUG)
             setattr(obj, k, v)
 
 
@@ -181,26 +238,42 @@ def add_template(path, cfg):
 
     existing_template = device_class.rrdTemplates._getOb(id_, None)
     if existing_template:
+        log_for(existing_template, "replacing template", level=logging.INFO)
         device_class.rrdTemplates._delObject(id_)
 
     device_class.manage_addRRDTemplate(id_)
     template = device_class.rrdTemplates._getOb(id_)
 
+    if not existing_template:
+        log_for(template, "adding template", level=logging.INFO)
+
     if 'targetPythonClass' in cfg:
+        log_for(
+            template,
+            "targetPythonClass = {}".format(cfg['targetPythonClass']))
+
         template.targetPythonClass = cfg['targetPythonClass']
 
     if 'description' in cfg:
+        log_for(
+            template,
+            "description = {}".format(cfg['description']))
+
         template.description = cfg['description']
 
     if 'thresholds' in cfg:
+        log_for(
+            template, "adding {} thresholds".format(len(cfg['thresholds'])))
         for threshold_id, threshold_cfg in cfg['thresholds'].items():
             add_threshold(template, threshold_id, threshold_cfg)
 
     if 'datasources' in cfg:
+        log_for(template, "adding {} datasources".format(len(cfg['datasources'])))
         for datasource_id, datasource_cfg in cfg['datasources'].items():
             add_datasource(template, datasource_id, datasource_cfg)
 
     if 'graphs' in cfg:
+        log_for(template, "adding {} graphs".format(len(cfg['graphs'])))
         for graph_id, graph_cfg in cfg['graphs'].items():
             add_graph(template, graph_id, graph_cfg)
 
@@ -222,8 +295,10 @@ def add_datasource(template, id_, cfg):
         cfg['severity'] = get_severity(cfg['severity'])
 
     datasource = template.manage_addRRDDataSource(id_, type_)
+    log_for(datasource, "adding datasource")
 
     if 'datapoints' in cfg:
+        log_for(template, "adding {} datapoints".format(len(cfg['datapoints'])))
         for datapoint_id, datapoint_cfg in cfg['datapoints'].items():
             add_datapoint(datasource, datapoint_id, datapoint_cfg)
 
@@ -232,25 +307,36 @@ def add_datasource(template, id_, cfg):
 
 def add_datapoint(datasource, id_, cfg):
     datapoint = datasource.manage_addRRDDataPoint(id_)
+    log_for(datapoint, "adding datapoint")
 
     # Handle cfg shortcuts like DERIVE_MIN_0 and GAUGE_MIN_0_MAX_100.
     if isinstance(cfg, types.StringTypes):
+        log_for(datapoint, "using shortcut syntax")
         if 'DERIVE' in cfg.upper():
+            log_for(datapoint, "rrdtype = {}".format('DERIVE'))
             datapoint.rrdtype = 'DERIVE'
 
         min_match = re.search(r'MIN_(\d+)', cfg, re.IGNORECASE)
         if min_match:
-            datapoint.rrdmin = min_match.group(1)
+            rrdmin = min_match.group(1)
+            log_for(datapoint, "rrdmin = {}".format(rrdmin))
+            datapoint.rrdmin = rrdmin
 
         max_match = re.search(r'MAX_(\d+)', cfg, re.IGNORECASE)
         if max_match:
-            datapoint.rrdmax = max_match.group(1)
+            rrdmax = max_match.group(1)
+            log_for(datapoint, "rrdmax = {}".format(rrdmax))
+            datapoint.rrdmax = rrdmax
 
         return
 
     if 'aliases' in cfg:
+        log_for(datapoint, "adding {} aliases".format(len(cfg['aliases'])))
         for alias_id, formula in cfg['aliases'].items():
             datapoint.addAlias(alias_id, formula)
+            alias = datapoint.aliases._getOb(alias_id)
+            log_for(alias, "adding alias".format(alias_id))
+            log_for(alias, "formula = {}".format(formula))
 
     apply_properties(datapoint, cfg, ignore=['aliases'])
 
@@ -260,6 +346,22 @@ def add_threshold(template, id_, cfg):
         # Default to MinMaxThreshold since they're the most common.
         cfg['type'] = 'MinMaxThreshold'
 
+    if 'dsnames' not in cfg and 'dsname' not in cfg:
+        die("'%s' threshold has no dsname or dsnames attribute", id_)
+
+    # Shorthand for thresholds that only have one datapoint.
+    if 'dsname' in cfg:
+        cfg['dsnames'] = cfg['dsname']
+        del(cfg['dsname'])
+
+    if isinstance(cfg['dsnames'], types.StringTypes):
+        cfg['dsnames'] = [cfg['dsnames']]
+
+    # Shorthand for datapoints that have the same name as their datasource.
+    for i, dsname in enumerate(cfg['dsnames']):
+        if '_' not in dsname:
+            cfg['dsnames'][i] = '_'.join((dsname, dsname))
+
     threshold_types = dict((y, x) for x, y in template.getThresholdClasses())
     type_ = threshold_types.get(cfg['type'])
     if not type_:
@@ -267,13 +369,16 @@ def add_threshold(template, id_, cfg):
             cfg['type'], ', '.join(threshold_types))
 
     threshold = template.manage_addRRDThreshold(id_, cfg['type'])
+    log_for(threshold, "adding threshold")
     apply_properties(threshold, cfg, ignore=['type'])
 
 
 def add_graph(template, id_, cfg):
     graph = template.manage_addGraphDefinition(id_)
+    log_for(graph, "adding graph")
 
     if 'graphpoints' in cfg:
+        log_for(graph, "adding {} graphpoints".format(len(cfg['graphpoints'])))
         for graphpoint_id, graphpoint_cfg in cfg['graphpoints'].items():
             add_graphpoint(graph, graphpoint_id, graphpoint_cfg)
 
@@ -282,6 +387,11 @@ def add_graph(template, id_, cfg):
 
 def add_graphpoint(graph, id_, cfg):
     graphpoint = graph.createGraphPoint(DataPointGraphPoint, id_)
+    log_for(graphpoint, "adding graphpoint")
+
+    # Shorthand for datapoints that have the same name as their datasource.
+    if '_' not in cfg.get('dpName', '_'):
+        cfg['dpName'] = '_'.join((cfg['dpName'], cfg['dpName']))
 
     # Validate lineType.
     if 'lineType' in cfg:

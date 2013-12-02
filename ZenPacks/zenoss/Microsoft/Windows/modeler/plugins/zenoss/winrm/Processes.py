@@ -10,51 +10,106 @@
 '''
 Windows Running Processes
 
-Models running processes by querying Win32_Process via WMI.
+Models running processes by querying Win32_Process and
+Win32_PerfFormattedData_PerfProc_Process via WMI.
 '''
 
 import re
 
+from itertools import ifilter, imap
+
 from Products.ZenModel import OSProcess
+from Products.ZenModel.Device import Device
 from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText
+from ZenPacks.zenoss.Microsoft.Windows.utils import (
+    get_processNameAndArgs,
+    get_processText,
+    )
+
+try:
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcessMatcher import buildObjectMapData
+except ImportError:
+    def buildObjectMapData(processClassMatchData, lines):
+        raise Exception("buildObjectMapData does not exist on this Zenoss")
+        return []
+
+
+if hasattr(Device, 'osProcessClassMatchData'):
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    PROXY_MATCH_PROPERTY = 'osProcessClassMatchData'
+else:
+    # Older property.
+    PROXY_MATCH_PROPERTY = 'getOSProcessMatchers'
 
 
 class Processes(WinRMPlugin):
     compname = 'os'
     relname = 'processes'
-    modname = 'Products.ZenModel.OSProcess'
+    modname = 'ZenPacks.zenoss.Microsoft.Windows.OSProcess'
 
     deviceProperties = WinRMPlugin.deviceProperties + (
-        'getOSProcessMatchers',
+        PROXY_MATCH_PROPERTY,
         )
 
-    wql_queries = [
-        "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
-        ]
+    queries = {
+        'Win32_Process': "SELECT Name, ExecutablePath, CommandLine FROM Win32_Process",
+        'Win32_PerfFormattedData_PerfProc_Process': "SELECT * FROM Win32_PerfFormattedData_PerfProc_Process",
+        }
 
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
+        rm = self.relMap()
+
+        # Get process ObjectMap instances.
+        if hasattr(device, 'osProcessClassMatchData'):
+            oms = self.new_process(device, results, log)
+        else:
+            oms = self.old_process(device, results, log)
+
+        # Determine if WorkingSetPrivate is supported.
+        perfproc = results.get(
+            'Win32_PerfFormattedData_PerfProc_Process', (None,))[0]
+
+        supports_WorkingSetPrivate = hasattr(perfproc, 'WorkingSetPrivate')
+
+        for om in oms:
+            om.supports_WorkingSetPrivate = supports_WorkingSetPrivate
+            rm.append(om)
+
+        return rm
+
+    def new_process(self, device, results, log):
+        '''
+        Model processes according to new style.
+
+        Handles style introduced by Zenoss 4.2 2013-10-15 RPS.
+        '''
+        processes = ifilter(bool, imap(get_processText, results.values()[0]))
+        oms = imap(
+            self.objectMap,
+            buildObjectMapData(device.osProcessClassMatchData, processes))
+
+        for om in oms:
+            yield om
+
+    def old_process(self, device, results, log):
+        '''
+        Model processes according to old style.
+
+        Handles Zenoss 4.1 and Zenoss 4.2 prior to the 2013-10-15 RPS.
+        '''
         self.compile_regexes(device, log)
 
         seen = set()
 
-        rm = self.relMap()
-
         for item in results.values()[0]:
-            procName = item.ExecutablePath or item.Name
-            if item.CommandLine:
-                item.CommandLine = item.CommandLine.strip('"')
-                parameters = item.CommandLine.replace(
-                    procName, '', 1).strip()
-            else:
-                parameters = ''
-
+            procName, parameters = get_processNameAndArgs(item)
             processText = get_processText(item)
 
             for matcher in device.getOSProcessMatchers:
@@ -94,9 +149,7 @@ class Processes(WinRMPlugin):
                 if hasattr(OSProcess.OSProcess, 'processText'):
                     data['processText'] = processText
 
-                rm.append(self.objectMap(data))
-
-        return rm
+                yield self.objectMap(data)
 
     def compile_regexes(self, device, log):
         for matcher in device.getOSProcessMatchers:

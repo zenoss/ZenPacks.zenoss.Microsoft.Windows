@@ -8,7 +8,7 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to collect Windows IIS Site Status
+A datasource that uses WinRM to collect Windows IIS Site Status
 
 """
 import logging
@@ -52,7 +52,7 @@ def string_to_lines(string):
     return None
 
 
-class WinIISSiteCollectionDataSource(PythonDataSource):
+class IISSiteDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -60,19 +60,19 @@ class WinIISSiteCollectionDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    sourcetypes = ('IISSite',)
+    sourcetypes = ('Windows IIS Site',)
     sourcetype = sourcetypes[0]
     statusname = '${here/statusname}'
 
     plugin_classname = ZENPACKID + \
-        '.datasources.WinIISSiteCollectionDataSource.WinIISSiteCollectionPlugin'
+        '.datasources.IISSiteDataSource.IISSiteDataSourcePlugin'
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
         )
 
 
-class IWinIISSiteCollectionInfo(IRRDDataSourceInfo):
+class IIISSiteDataSourceInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the IIS Site datasource.
     """
@@ -85,23 +85,26 @@ class IWinIISSiteCollectionInfo(IRRDDataSourceInfo):
     """
 
 
-class WinIISSiteCollectionInfo(RRDDataSourceInfo):
+class IISSiteDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the IIS Site plugin.
     """
-    implements(IWinIISSiteCollectionInfo)
-    adapts(WinIISSiteCollectionDataSource)
+    implements(IIISSiteDataSourceInfo)
+    adapts(IISSiteDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
     statusname = ProxyProperty('statusname')
 
 
-class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
+class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     @classmethod
@@ -127,11 +130,12 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         wql = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
             ds0.params['statusname'])
@@ -147,7 +151,8 @@ class WinIISSiteCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)

@@ -1,0 +1,133 @@
+/Server/Microsoft/Device:
+  description: "Microsoft Windows server monitoring."
+
+  datasources:
+    MemoryAvailableBytes:
+      type: Windows Perfmon
+      counter: \Memory\Available bytes
+
+      datapoints:
+        MemoryAvailableBytes:
+          rrdmin: 0
+          aliases:
+            memoryAvailable__bytes: ""
+
+    MemoryCommittedBytes:
+      type: Windows Perfmon
+      counter: \Memory\Committed Bytes
+
+      datapoints:
+        MemoryCommittedBytes: GAUGE_MIN_0
+
+    MemoryPagesInputSec:
+      type: Windows Perfmon
+      counter: \Memory\Pages Input/sec
+
+      datapoints:
+        MemoryPagesInputSec: GAUGE_MIN_0
+
+    MemoryPagesOutputSec:
+      type: Windows Perfmon
+      counter: \Memory\Pages Output/sec
+
+      datapoints:
+        MemoryPagesOutputSec: GAUGE_MIN_0
+
+    PagingFileTotalUsage:
+      type: Windows Perfmon
+      counter: \Paging File(_Total)\% Usage
+
+      datapoints:
+        PagingFileTotalUsage: GAUGE_MIN_0
+
+    ProcessorTotalPrivilegedTime:
+      type: Windows Perfmon
+      counter: \Processor(_Total)\% Privileged Time
+
+      datapoints:
+        ProcessorTotalPrivilegedTime: GAUGE_MIN_0
+
+    ProcessorTotalProcessorTime:
+      type: Windows Perfmon
+      counter: \Processor(_Total)\% Processor Time
+
+      datapoints:
+        ProcessorTotalProcessorTime:
+          rrdmin: 0
+          aliases:
+            cpu__pct: ""
+
+    ProcessorTotalUserTime:
+      type: Windows Perfmon
+      counter: \Processor(_Total)\% User Time
+
+      datapoints:
+        ProcessorTotalUserTime: GAUGE_MIN_0
+
+    sysUpTime:
+      type: Windows Perfmon
+      counter: \System\System Up Time
+
+      datapoints:
+        sysUpTime: GAUGE_MIN_0
+
+  graphs:
+    CPU Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total:
+          dpName: ProcessorTotalProcessorTime
+          format: "%7.2lf%%"
+
+        Privileged:
+          dpName: ProcessorTotalPrivilegedTime
+          format: "%7.2lf%%"
+
+        User:
+          dpName: ProcessorTotalUserTime
+          format: "%7.2lf%%"
+
+    Memory Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Available:
+          dpName: MemoryAvailableBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        Committed:
+          dpName: MemoryCommittedBytes
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+    Memory Paging:
+      units: pages/sec
+      miny: 0
+
+      graphpoints:
+        Input:
+          dpName: MemoryPagesInputSec
+          format: "%7.2lf%s"
+
+        Output:
+          dpName: MemoryPagesOutputSec
+          format: "%7.2lf%s"
+
+    Paging File Usage:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Total Usage:
+          dpName: PagingFileTotalUsage
+          lineType: AREA
+          format: "%7.2lf%%"

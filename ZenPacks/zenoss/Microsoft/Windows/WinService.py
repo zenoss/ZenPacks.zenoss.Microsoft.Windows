@@ -22,7 +22,6 @@ class WinService(OSComponent):
     """
     startmode [string] = The start mode for the servicename
     account [string] = The account name the service runs as
-    state [string] = The current running state of the service
     usermonitor [boolean] = Did user manually set monitor.
     globalset [boolean] = Has the global templates been checked
     """
@@ -31,7 +30,6 @@ class WinService(OSComponent):
     description = None
     startmode = None
     account = None
-    state = None
     monitor = False
     usermonitor = False
     globalset = False
@@ -42,7 +40,6 @@ class WinService(OSComponent):
         {'id': 'description', 'type': 'string'},
         {'id': 'startmode', 'type': 'string'},
         {'id': 'account', 'type': 'string'},
-        {'id': 'state', 'type': 'string'},
         {'id': 'usermonitor', 'type': 'boolean'},
         {'id': 'globalset', 'type': 'boolean'},
         )

@@ -1,0 +1,114 @@
+/Server/Microsoft/ethernetCsmacd:
+  description: "Microsoft Windows network interface monitoring."
+  targetPythonClass: "Products.ZenModel.IpInterface"
+
+  datasources:
+    bytesReceivedSec:
+      type: Windows Perfmon
+      counter: \Bytes Received/sec
+      component: "${here/id}"
+
+      datapoints:
+        bytesReceivedSec:
+          rrdmin: 0
+          aliases:
+            inputOctets__bytes: ""
+
+    bytesSentSec:
+      type: Windows Perfmon
+      counter: \Bytes Sent/sec
+      component: "${here/id}"
+
+      datapoints:
+        bytesSentSec:
+          rrdmin: 0
+          aliases:
+            outputOctets__bytes: ""
+
+    packetsReceivedSec:
+      type: Windows Perfmon
+      counter: \Packets Received/sec
+      component: "${here/id}"
+
+      datapoints:
+        packetsReceivedSec: GAUGE_MIN_0
+
+    packetsSentSec:
+      type: Windows Perfmon
+      counter: \Packets Sent/sec
+      component: "${here/id}"
+
+      datapoints:
+        packetsSentSec: GAUGE_MIN_0
+
+    packetsReceivedErrors:
+      type: Windows Perfmon
+      counter: \Packets Received Errors
+      component: "${here/id}"
+
+      datapoints:
+        packetsReceivedErrors:
+          rrdmin: 0
+          aliases:
+            ifInErrors: ""
+
+    packetsSentErrors:
+      type: Windows Perfmon
+      counter: \Packets Outbound Errors
+      component: "${here/id}"
+
+      datapoints:
+        packetsSentErrors:
+          rrdmin: 0
+          aliases:
+            ifOutErrors: ""
+
+  thresholds:
+    "high utilization":
+      type: MinMaxThreshold
+      dsnames: ["bytesReceivedSec", "bytesSentSec"]
+      maxval: "(here.speed or 1e9) / 8 * .75"
+      eventClass: "/Status/Interface"
+      severity: Warning
+
+  graphs:
+    Throughput:
+      units: bits/sec
+      miny: 0
+
+      graphpoints:
+        Inbound:
+          dpName: bytesReceivedSec
+          rpn: 8,*
+          format: "%7.2lf%s"
+
+        Outbound:
+          dpName: bytesSentSec
+          rpn: 8,*
+          format: "%7.2lf%s"
+
+    Packets:
+      units: packets/sec
+      miny: 0
+
+      graphpoints:
+        Inbound:
+          dpName: packetsReceivedSec
+          format: "%7.2lf%s"
+
+        Outbound:
+          dpName: packetsSentSec
+          format: "%7.2lf%s"
+
+    Errors:
+      units: errors/sec
+      miny: 0
+
+      graphpoints:
+        Receive:
+          dpName: packetsReceivedErrors
+          format: "%7.2lf%s"
+
+        Send:
+          dpName: packetsSentErrors
+          format: "%7.2lf%s"

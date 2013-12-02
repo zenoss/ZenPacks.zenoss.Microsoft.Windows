@@ -23,9 +23,9 @@ class Software(WinRMPlugin):
     relname = 'software'
     modname = 'Products.ZenModel.Software'
 
-    wql_queries = [
-        "SELECT Name, InstallDate, Vendor FROM Win32_Product",
-        ]
+    queries = {
+        'Win32_Product': "SELECT Name, InstallDate, Vendor FROM Win32_Product",
+        }
 
     def process(self, device, results, log):
         log.info(

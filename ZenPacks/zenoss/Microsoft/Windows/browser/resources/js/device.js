@@ -20,6 +20,14 @@ function render_link(ob) {
     }
 }
 
+function render_na_for_null(value) {
+    if (value === null) {
+        return 'n/a';
+    }
+
+    return value;
+}
+
 Ext.apply(Zenoss.render, {
     win_entityLinkFromGrid: function(obj, col, record) {
         if (!obj)
@@ -104,7 +112,140 @@ ZC.WINComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
 });
 
 
-ZC.registerName('WinRMService', _t('Service'), _t('Services'));
+ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'name',
+            componentType: 'WindowsCPU',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'product'},
+                {name: 'socket'},
+                {name: 'cores'},
+                {name: 'threads'},
+                {name: 'clockspeed'},
+                {name: 'extspeed'},
+                {name: 'cacheSizeL1'},
+                {name: 'cacheSizeL2'},
+                {name: 'cacheSpeedL2'},
+                {name: 'cacheSizeL3'},
+                {name: 'cacheSpeedL3'},
+                {name: 'voltage'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('Name'),
+            },{
+                id: 'socket',
+                dataIndex: 'socket',
+                header: _t('Socket'),
+                width: 60
+            },{
+                id: 'cores_and_threads',
+                dataIndex: 'cores', // also requires threads
+                header: _t('Cores'),
+                renderer: function(value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+
+                    return '<span title="Cores (Logical Processors)">' +
+                        record.data.cores +
+                        ' (' + record.data.threads + ')' +
+                        '</span>';
+                },
+                width: 55
+            },{
+                id: 'clockspeed',
+                dataIndex: 'clockspeed',
+                header: _t('Clock Speed'),
+                renderer: function(value) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return value + ' MHz';
+                },
+                width: 90
+            },{
+                id: 'l1_cache',
+                dataIndex: 'cacheSizeL1',
+                header: _t('L1 Cache'),
+                renderer: function(value) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+
+                    return value + ' KB';
+                },
+                width: 70
+            },{
+                id: 'l2_cache',
+                dataIndex: 'cacheSizeL2', // also requires cacheSpeedL2
+                header: _t('L2 Cache'),
+                renderer: function (value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return '<span title="Size @ Speed">' +
+                        record.data.cacheSizeL2 + ' KB @ ' +
+                        record.data.cacheSpeedL2 + ' MHz' +
+                        '</span>';
+                },
+                width: 115
+            },{
+                id: 'l3_cache',
+                dataIndex: 'cacheSizeL3', // also requires cacheSpeedL3
+                header: _t('L3 Cache'),
+                renderer: function (value, metaData, record) {
+                    if (value === null) {
+                        return 'n/a';
+                    }
+                    
+                    return '<span title="Size @ Speed">' +
+                        record.data.cacheSizeL3 + ' KB @ ' +
+                        record.data.cacheSpeedL3 + ' MHz' +
+                        '</span>';
+                },
+                width: 115
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons,
+                width: 65
+            }]
+        });
+        ZC.WindowsCPUPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WindowsCPUPanel', ZC.WindowsCPUPanel);
+
 
 ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -122,7 +263,6 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'servicename'},
                 {name: 'caption'},
                 {name: 'startmode'},
-                {name: 'state'},
                 {name: 'account'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
@@ -154,12 +294,6 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 sortable: true,
                 width: 110
             },{
-                id: 'state',
-                dataIndex: 'state',
-                header: _t('Status'),
-                sortable: true,
-                width: 110
-            },{
                 id: 'monitored',
                 dataIndex: 'monitored',
                 header: _t('Monitored'),
@@ -179,95 +313,6 @@ ZC.WinRMServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinRMServicePanel', ZC.WinRMServicePanel);
 
-ZC.registerName('WinRMProc', _t('Processor'), _t('Processors'));
- 
-ZC.WinRMProcPanel = Ext.extend(ZC.WINComponentGridPanel, {
-    subComponentGridPanel: false,
-
-    constructor: function(config) {
-        config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'product',
-            componentType: 'WinRMProc',
-            fields: [
-                {name: 'uid'},
-                {name: 'severity'},
-                {name: 'meta_type'},
-                {name: 'name'},
-                {name: 'title'},
-                {name: 'numbercore'},
-                {name: 'status'},
-                {name: 'architecture'},
-                {name: 'clockspeed'},
-                {name: 'product'},
-                {name: 'manufacturer'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'locking'},
-                {name: 'monitored'}
-            ],
-            columns: [{
-                id: 'severity',
-                dataIndex: 'severity',
-                header: _t('Events'),
-                renderer: Zenoss.render.severity,
-                sortable: true,
-                width: 50
-            },{
-                id: 'manufacturer',
-                dataIndex: 'manufacturer',
-                header: _t('Manufacturer'),
-                renderer: render_link
-            },{
-                id: 'product',
-                dataIndex: 'product',
-                header: _t('Model'),
-                renderer: render_link
-            },{
-                id: 'numbercore',
-                dataIndex: 'numbercore',
-                header: _t('Number of Cores'),
-                sortable: true,
-                width: 110
-            },{
-                id: 'architecture',
-                dataIndex: 'architecture',
-                header: _t('Architecture'),
-                sortable: true,
-                width: 110
-            },{
-                id: 'clockspeed',
-                dataIndex: 'clockspeed',
-                header: _t('Clock Speed'),
-                sortable: true,
-                width: 110,
-                renderer: function(x){ return x + ' MHz';}
-            },{
-                id: 'status',
-                dataIndex: 'status',
-                header: _t('Status'),
-                sortable: true,
-                width: 110
-            },{
-                id: 'monitored',
-                dataIndex: 'monitored',
-                header: _t('Monitored'),
-                renderer: Zenoss.render.checkbox,
-                sortable: true,
-                width: 65
-            },{
-                id: 'locking',
-                dataIndex: 'locking',
-                header: _t('Locking'),
-                renderer: Zenoss.render.locking_icons
-            }]
-        });
-        ZC.WinRMProcPanel.superclass.constructor.call(this, config);
-    }
-});
-
-Ext.reg('WinRMProcPanel', ZC.WinRMProcPanel);
-
-ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
 
 ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -336,8 +381,6 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
 Ext.reg('WinRMIISPanel', ZC.WinRMIISPanel);
 
 
-ZC.registerName('WinDBInstance', _t('Database Instance'), _t('DB Instances'));
-
 ZC.WinDBInstancePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
 
@@ -391,7 +434,6 @@ ZC.WinDBInstancePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinDBInstancePanel', ZC.WinDBInstancePanel);
 
-ZC.registerName('WinDatabase', _t('Database'), _t('Databases'));
 
 ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -473,7 +515,6 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinDatabasePanel', ZC.WinDatabasePanel);
 
-ZC.registerName('WinBackupDevice', _t('DB Backup Device'), _t('DB Backup Devices'));
 
 ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -549,7 +590,6 @@ ZC.WinBackupDevicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinBackupDevicePanel', ZC.WinBackupDevicePanel);
 
-ZC.registerName('WinSQLJob', _t('DB Job'), _t('DB Jobs'));
 
 ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -619,7 +659,6 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('WinSQLJobPanel', ZC.WinSQLJobPanel);
 
-ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 
 ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -702,7 +741,6 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterServicePanel', ZC.MSClusterServicePanel);
 
-ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
 
 ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
     subComponentGridPanel: false,
@@ -786,6 +824,234 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
 
 Ext.reg('MSClusterResourcePanel', ZC.MSClusterResourcePanel);
 
+
+ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'description',
+            componentType: 'WinTeamInterface',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'name'},
+                {name: 'description'},
+                {name: 'ipAddressObjs'},
+                {name: 'network'},//, mapping:'network.uid'},
+                {name: 'macaddress'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'operStatus'},
+                {name: 'adminStatus'},
+                {name: 'nic_count'},
+                {name: 'status'},
+                {name: 'monitor'},
+                {name: 'monitored'},
+                {name: 'locking'},
+                {name: 'duplex'},
+                {name: 'netmask'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('IP Interface'),
+                width: 150
+            },{
+                id: 'ipAddresses',
+                dataIndex: 'ipAddressObjs',
+                header: _t('IP Addresses'),
+                renderer: function(ipaddresses) {
+                    var returnString = '';
+                    Ext.each(ipaddresses, function(ipaddress, index) {
+                        if (index > 0) returnString += ', ';
+                        if (ipaddress && Ext.isObject(ipaddress) && ipaddress.netmask) {
+                            var name = ipaddress.name + '/' + ipaddress.netmask;
+                            returnString += Zenoss.render.link(ipaddress.uid, undefined, name);
+                        }
+                        else if (Ext.isString(ipaddress)) {
+                            returnString += ipaddress;
+                        }
+                    });
+                    return returnString;
+                }
+            },{
+                id: 'description',
+                dataIndex: 'description',
+                header: _t('Description')
+            },{
+                id: 'niccount',
+                dataIndex: 'nic_count',
+                header: _t('# of NICs'),
+                width: 100
+            },{
+                id: 'macaddress',
+                dataIndex: 'macaddress',
+                header: _t('MAC Address'),
+                sortable: true,
+                width: 120
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
+            },{
+                id: 'operStatus',
+                dataIndex: 'operStatus',
+                header: _t('Operational Status'),
+                width: 110
+            },{
+                id: 'adminStatus',
+                dataIndex: 'adminStatus',
+                header: _t('Admin Status'),
+                width: 80
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinTeamInterfacePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WinTeamInterfacePanel', ZC.WinTeamInterfacePanel);
+
+
+ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'description',
+            componentType: 'WindowsInterface',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'name'},
+                {name: 'description'},
+                {name: 'ipAddressObjs'},
+                {name: 'network'},//, mapping:'network.uid'},
+                {name: 'macaddress'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'operStatus'},
+                {name: 'adminStatus'},
+                {name: 'status'},
+                {name: 'monitor'},
+                {name: 'monitored'},
+                {name: 'locking'},
+                {name: 'duplex'},
+                {name: 'netmask'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('IP Interface'),
+                width: 150
+            },{
+                id: 'ipAddresses',
+                dataIndex: 'ipAddressObjs',
+                header: _t('IP Addresses'),
+                renderer: function(ipaddresses) {
+                    var returnString = '';
+                    Ext.each(ipaddresses, function(ipaddress, index) {
+                        if (index > 0) returnString += ', ';
+                        if (ipaddress && Ext.isObject(ipaddress) && ipaddress.netmask) {
+                            var name = ipaddress.name + '/' + ipaddress.netmask;
+                            returnString += Zenoss.render.link(ipaddress.uid, undefined, name);
+                        }
+                        else if (Ext.isString(ipaddress)) {
+                            returnString += ipaddress;
+                        }
+                    });
+                    return returnString;
+                }
+            },{
+                id: 'description',
+                dataIndex: 'description',
+                header: _t('Description')
+            },{
+                id: 'macaddress',
+                dataIndex: 'macaddress',
+                header: _t('MAC Address'),
+                sortable: true,
+                width: 120
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
+            },{
+                id: 'operStatus',
+                dataIndex: 'operStatus',
+                header: _t('Operational Status'),
+                width: 110
+            },{
+                id: 'adminStatus',
+                dataIndex: 'adminStatus',
+                header: _t('Admin Status'),
+                width: 80
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WindowsInterfacePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('WindowsInterfacePanel', ZC.WindowsInterfacePanel);
+
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_teaminterface',
+    text: _t('Interfaces'),
+    xtype: 'WindowsInterfacePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'WinTeamInterface') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.WindowsInterfacePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
+
 Zenoss.nav.appendTo('Component', [{
     id: 'component_winsqljob',
     text: _t('Jobs'),
@@ -853,4 +1119,5 @@ Zenoss.nav.appendTo('Component', [{
         ZC.WinDatabasePanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
+
 })();

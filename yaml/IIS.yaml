@@ -1,0 +1,355 @@
+/Server/Microsoft/IIS:
+  description: "Microsoft Internet Information Services."
+  targetPythonClass: "Products.ZenModel.Device"
+
+  datasources:
+    iisBytesReceived:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Bytes Received/sec
+      component: IIS
+
+      datapoints:
+        iisBytesReceived: GAUGE_MIN_0
+
+    iisBytesSent:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Bytes Sent/sec
+      component: IIS
+
+      datapoints:
+        iisBytesSent: GAUGE_MIN_0
+
+    iisCGIRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\CGI Requests/sec
+      component: IIS
+
+      datapoints:
+        iisCGIRequests: GAUGE_MIN_0
+
+    iisConnectionAttempts:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Connection Attempts/sec
+      component: IIS
+
+      datapoints:
+        iisConnectionAttempts: GAUGE_MIN_0
+
+    iisCopyRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Copy Requests/sec
+      component: IIS
+
+      datapoints:
+        iisCopyRequests: GAUGE_MIN_0
+
+    iisCurrentConnections:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Current Connections
+      component: IIS
+
+      datapoints:
+        iisCurrentConnections: GAUGE_MIN_0
+
+    iisDeleteRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Delete Requests/sec
+      component: IIS
+
+      datapoints:
+        iisDeleteRequests: GAUGE_MIN_0
+
+    iisFilesReceived:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Files Received/sec
+      component: IIS
+
+      datapoints:
+        iisFilesReceived: GAUGE_MIN_0
+
+    iisFilesSent:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Files Sent/sec
+      component: IIS
+
+      datapoints:
+        iisFilesSent: GAUGE_MIN_0
+
+    iisGetRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Get Requests/sec
+      component: IIS
+
+      datapoints:
+        iisGetRequests: GAUGE_MIN_0
+
+    iisHeadRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Head Requests/sec
+      component: IIS
+
+      datapoints:
+        iisHeadRequests: GAUGE_MIN_0
+
+    iisISAPIExtensionRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\ISAPI Extension Requests/sec
+      component: IIS
+
+      datapoints:
+        iisISAPIExtensionRequests: GAUGE_MIN_0
+
+    iisLockRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Lock Requests/sec
+      component: IIS
+
+      datapoints:
+        iisLockRequests: GAUGE_MIN_0
+
+    iisMkcolRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Mkcol Requests/sec
+      component: IIS
+
+      datapoints:
+        iisMkcolRequests: GAUGE_MIN_0
+
+    iisMoveRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Move Requests/sec
+      component: IIS
+
+      datapoints:
+        iisMoveRequests: GAUGE_MIN_0
+
+    iisOptionsRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Options Requests/sec
+      component: IIS
+
+      datapoints:
+        iisOptionsRequests: GAUGE_MIN_0
+
+    iisOtherRequestMethods:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Other Request Methods/sec
+      component: IIS
+
+      datapoints:
+        iisOtherRequestMethods: GAUGE_MIN_0
+
+    iisPostRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Post Requests/sec
+      component: IIS
+
+      datapoints:
+        iisPostRequests: GAUGE_MIN_0
+
+    iisPropfindRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Propfind Requests/sec
+      component: IIS
+
+      datapoints:
+        iisPropfindRequests: GAUGE_MIN_0
+
+    iisProppatchRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Proppatch Requests/sec
+      component: IIS
+
+      datapoints:
+        iisProppatchRequests: GAUGE_MIN_0
+
+    iisPutRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Put Requests/sec
+      component: IIS
+
+      datapoints:
+        iisPutRequests: GAUGE_MIN_0
+
+    iisSearchRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Search Requests/sec
+      component: IIS
+
+      datapoints:
+        iisSearchRequests: GAUGE_MIN_0
+
+    iisTraceRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Trace Requests/sec
+      component: IIS
+
+      datapoints:
+        iisTraceRequests: GAUGE_MIN_0
+
+    iisUnlockRequests:
+      type: Windows Perfmon
+      counter: \Web Service(_Total)\Unlock Requests/sec
+      component: IIS
+
+      datapoints:
+        iisUnlockRequests: GAUGE_MIN_0
+
+  graphs:
+    "IIS - Connections":
+      units: connections
+      miny: 0
+
+      graphpoints:
+        Current:
+          dpName: iisCurrentConnections
+          format: "%7.0lf"
+
+    "IIS - Connection Rate":
+      units: connections/sec
+      miny: 0
+
+      graphpoints:
+        Attempts:
+          dpName: iisConnectionAttempts
+          format: "%7.2lf%s"
+
+    "IIS - Request Rate":
+      units: requests/sec
+      miny: 0
+
+      graphpoints:
+        CGI:
+          dpName: iisCGIRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        COPY:
+          dpName: iisCopyRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        DELETE:
+          dpName: iisDeleteRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        GET:
+          dpName: iisGetRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        HEAD:
+          dpName: iisHeadRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        ISAPI:
+          dpName: iisISAPIExtensionRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        LOCK:
+          dpName: iisLockRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        MKCOL:
+          dpName: iisMkcolRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        MOVE:
+          dpName: iisMoveRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        OPTIONS:
+          dpName: iisOptionsRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        Other:
+          dpName: iisOtherRequestMethods
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        POST:
+          dpName: iisPostRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        PROPFIND:
+          dpName: iisPropfindRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        PROPPATCH:
+          dpName: iisProppatchRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        PUT:
+          dpName: iisPutRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        SEARCH:
+          dpName: iisSearchRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        TRACE:
+          dpName: iisTraceRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+        UNLOCK:
+          dpName: iisUnlockRequests
+          lineType: AREA
+          stacked: true
+          format: "%7.2lf%s"
+
+    "IIS - File Rate":
+      units: files/sec
+      miny: 0
+
+      graphpoints:
+        Received:
+          dpName: iisFilesReceived
+          format: "%7.2lf%s"
+
+        Sent:
+          dpName: iisFilesSent
+          format: "%7.2lf%s"
+
+    "IIS - Throughput":
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Received:
+          dpName: iisBytesReceived
+          format: "%7.2lf%s"
+
+        Sent:
+          dpName: iisBytesSent
+          format: "%7.2lf%s"

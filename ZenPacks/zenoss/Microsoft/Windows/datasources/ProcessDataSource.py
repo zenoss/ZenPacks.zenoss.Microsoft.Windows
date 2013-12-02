@@ -24,10 +24,27 @@ from zope.interface import implements
 from Products.ZenEvents import Event
 from Products.ZenEvents.ZenEventClasses import Status_OSProcess
 from Products.ZenModel.OSProcess import OSProcess
+from Products.ZenUtils.Utils import prepId
 from Products.Zuul.form import schema
 from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
+
+try:
+    # Introduced in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcessMatcher import OSProcessDataMatcher
+except ImportError:
+    class OSProcessDataMatcher(object):
+        def __init__(self, **attribs):
+            pass
+
+try:
+    # Removed in Zenoss 4.2 2013-10-15 RPS.
+    from Products.ZenModel.OSProcess import getProcessIdentifier
+except ImportError:
+    def getProcessIdentifier(name, parameters):
+        return 'THIS_WILL_NEVER_MATCH_ANYTHING'
+
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -35,6 +52,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ZenPacks.zenoss.Microsoft.Windows import ZENPACK_NAME
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
     addLocalLibPath,
+    get_processNameAndArgs,
     get_processText,
     )
 
@@ -82,6 +100,7 @@ VALID_DATAPOINTS = frozenset({
     'VirtualBytesPeak',
     'WorkingSet',
     'WorkingSetPeak',
+    'WorkingSetPrivate',
     })
 
 # Win32_PerfFormattedData_PerfProc_Process attributes that we don't
@@ -96,7 +115,7 @@ NON_AGGREGATED_DATAPOINTS = frozenset({
 COUNT_DATAPOINT = 'count'
 
 
-class WinProcessDataSource(PythonDataSource):
+class ProcessDataSource(PythonDataSource):
     ZENPACKID = ZENPACK_NAME
 
     sourcetypes = (SOURCE_TYPE,)
@@ -111,8 +130,8 @@ class WinProcessDataSource(PythonDataSource):
     plugin_classname = '.'.join((
         ZENPACK_NAME,
         'datasources',
-        'WinProcessDataSource',
-        'WinProcessDataSourcePlugin'))
+        'ProcessDataSource',
+        'ProcessDataSourcePlugin'))
 
     def getDescription(self):
         '''
@@ -130,9 +149,9 @@ class WinProcessDataSource(PythonDataSource):
         return context.perfServer().processCycleInterval
 
 
-class IWinProcessDataSourceInfo(IInfo):
+class IProcessDataSourceInfo(IInfo):
     '''
-    Info interface for WinProcessDataSource.
+    Info interface for ProcessDataSource.
 
     Extends IInfo instead of IRRDDataSourceInfo because we want to
     reduce the set of options available.
@@ -166,16 +185,16 @@ class IWinProcessDataSourceInfo(IInfo):
         readonly=True)
 
 
-class WinProcessDataSourceInfo(InfoBase):
+class ProcessDataSourceInfo(InfoBase):
     '''
-    Info adapter factory for WinProcessDataSource.
+    Info adapter factory for ProcessDataSource.
 
     Extends InfoBase instead of RRDDataSourceInfo because we want to
     reduce the set of options available.
     '''
 
-    implements(IWinProcessDataSourceInfo)
-    adapts(WinProcessDataSource)
+    implements(IProcessDataSourceInfo)
+    adapts(ProcessDataSource)
 
     enabled = ProxyProperty('enabled')
 
@@ -200,7 +219,7 @@ class WinProcessDataSourceInfo(InfoBase):
         return self._object.sourcetype
 
 
-class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
+class ProcessDataSourcePlugin(PythonDataSourcePlugin):
     '''
     Collects Windows process data.
     '''
@@ -209,22 +228,37 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         ]
 
     @classmethod
     def params(cls, datasource, context):
         process_class = context.osProcessClass()
-        params = {
-            'regex': process_class.regex,
-            'alertOnRestart': context.alertOnRestart(),
-            'severity': context.getFailSeverity(),
-            }
 
-        if hasattr(process_class, 'excludeRegex'):
-            params['excludeRegex'] = process_class.excludeRegex
+        param_attributes = (
+            (process_class, 'regex', 'regex'),
+            (process_class, 'includeRegex', 'includeRegex'),
+            (process_class, 'excludeRegex', 'excludeRegex'),
+            (process_class, 'ignoreParameters', 'ignoreParameters'),
+            (process_class, 'replaceRegex', 'replaceRegex'),
+            (process_class, 'replacement', 'replacement'),
+            (process_class, 'primaryUrlPath', 'processClassPrimaryUrlPath'),
+            (context, 'alertOnRestart', 'alertOnRestart'),
+            (context, 'severity', 'getFailSeverity'),
+            (context, 'generatedId', 'generatedId'),
+            )
 
-        if hasattr(process_class, 'ignoreParameters'):
-            params['ignoreParameters'] = process_class.ignoreParameters
+        params = {}
+
+        # Only set valid params. Different versions of Zenoss have
+        # different available attributes for process classes and
+        # processes.
+        for obj, key, attribute in param_attributes:
+            if hasattr(obj, attribute):
+                value = getattr(obj, attribute)
+                params[key] = value() if callable(value) else value
 
         return params
 
@@ -237,10 +271,11 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             'kerberos' if '@' in ds0.zWinUser else 'basic',
             ds0.zWinUser,
             ds0.zWinPassword,
-            'http',
+            ds0.zWinScheme,
             int(ds0.zWinRMPort),
             'Keep-Alive',
-            '')
+            ds0.zWinKeyTabFilePath,
+            ds0.zWinKDC)
 
         # Always query Win32_Process. This is where we get process
         # status and count.
@@ -260,7 +295,7 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         if invalid_datapoints:
             LOG.warn(
                 "Removing invalid datapoints for %s: %s",
-                config.device, ', '.join(invalid_datapoints))
+                config.id, ', '.join(invalid_datapoints))
 
             perf_attrs.remove(invalid_datapoints)
 
@@ -296,7 +331,21 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
             for datasource in config.datasources:
                 regex = re.compile(datasource.params['regex'])
 
-                if hasattr(OSProcess, 'matchRegex'):
+                # Zenoss 4.2 2013-10-15 RPS style.
+                if 'replacement' in datasource.params:
+                    matcher = OSProcessDataMatcher(
+                        includeRegex=datasource.params['includeRegex'],
+                        excludeRegex=datasource.params['excludeRegex'],
+                        replaceRegex=datasource.params['replaceRegex'],
+                        replacement=datasource.params['replacement'],
+                        primaryUrlPath=datasource.params['primaryUrlPath'],
+                        generatedId=datasource.params['generatedId'])
+
+                    if not matcher.matches(processText):
+                        continue
+
+                # Zenoss 4.2 intermediate style
+                elif hasattr(OSProcess, 'matchRegex'):
                     excludeRegex = re.compile(
                         datasource.params['excludeRegex'])
 
@@ -311,11 +360,19 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
 
                     if not capture_match:
                         continue
+
+                # Zenoss 4.1-4.2 style.
                 else:
                     if datasource.params['ignoreParameters']:
                         processText = item.ExecutablePath or item.Name
 
-                    if not re.search(regex, processText):
+                    name, args = get_processNameAndArgs(item)
+                    if datasource.params['ignoreParameters']:
+                        proc_id = getProcessIdentifier(name, None)
+                    else:
+                        proc_id = getProcessIdentifier(name, args)
+
+                    if datasource.component != prepId(proc_id):
                         continue
 
                 datasource_by_pid[item.ProcessId] = datasource
@@ -340,18 +397,17 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
 
                 # No restart if there are no current or previous PIDs.
                 # previous PIDs.
-                if not previous_pids or not current_pids:
-                    continue
+                if previous_pids and current_pids:
 
-                # Only consider PID changes a restart if all PIDs
-                # matching the process changed.
-                if current_pids.isdisjoint(previous_pids):
-                    summary = 'matching processes restarted'
+                    # Only consider PID changes a restart if all PIDs
+                    # matching the process changed.
+                    if current_pids.isdisjoint(previous_pids):
+                        summary = 'matching processes restarted'
 
-                    # If the process is configured to alert on
-                    # restart, the first "up" won't be a clear.
-                    if datasource.params['alertOnRestart']:
-                        severity = datasource.params['severity']
+                        # If the process is configured to alert on
+                        # restart, the first "up" won't be a clear.
+                        if datasource.params['alertOnRestart']:
+                            severity = datasource.params['severity']
 
             else:
                 severity = datasource.params['severity']
@@ -421,8 +477,9 @@ class WinProcessDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, error, config):
-        data = self.new_data()
+        LOG.error("%s process scan error: %s", config.id, error.value)
 
+        data = self.new_data()
         data['events'].append({
             'device': config.id,
             'severity': Event.Error,

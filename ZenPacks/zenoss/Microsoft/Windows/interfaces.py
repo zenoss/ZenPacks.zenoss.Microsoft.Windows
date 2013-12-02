@@ -10,6 +10,8 @@
 from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
+from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
+from Products.Zuul.interfaces.component import ICPUInfo as IBaseCPUInfo
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -28,24 +30,35 @@ class IWinComponentInfo(IComponentInfo):
     title = schema.TextLine(title=_t(u'Title'), readonly=True)
 
 
+class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
+    pass
+
+
+class IInterfaceInfo(IBaseIpInterfaceInfo):
+    pass
+
+
+class ICPUInfo(IWinComponentInfo):
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    clockspeed_str = schema.TextLine(title=_t(u'Clock Speed'), readonly=True)
+    extspeed_str = schema.TextLine(title=_t(u'External Speed'), readonly=True)
+    voltage_str = schema.TextLine(title=_t(u'Voltage'), readonly=True)
+    cacheSizeL1_str = schema.TextLine(title=_t(u'L1 Cache Size'), readonly=True)
+    cacheSizeL2_str = schema.TextLine(title=_t(u'L2 Cache Size'), readonly=True)
+    cacheSpeedL2_str = schema.TextLine(title=_t('L2 Cache Speed'), readonly=True)
+    cacheSizeL3_str = schema.TextLine(title=_t(u'L3 Cache Size'), readonly=True)
+    cacheSpeedL3_str = schema.TextLine(title=_t('L3 Cache Speed'), readonly=True)
+    manufacturer = schema.Entity(title=_t('Manufacturer'), readonly=True)
+    product = schema.Entity(title=_t('Model'), readonly=True)
+
+
 class IWinServiceInfo(IWinComponentInfo):
     servicename = schema.TextLine(title=_t(u'Service Name'), readonly=True)
     caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     startmode = schema.TextLine(title=_t(u'Start Mode'), readonly=True)
     account = schema.TextLine(title=_t(u'Account'), readonly=True)
-    state = schema.TextLine(title=_t(u'Current State'), readonly=True)
     usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
-
-
-class IWinProcInfo(IWinComponentInfo):
-    caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
-    numbercore = schema.TextLine(title=_t(u'Number of Core'), readonly=True)
-    status = schema.TextLine(title=_t(u'Status'), readonly=True)
-    architecture = schema.TextLine(title=_t(u'Architecture'), readonly=True)
-    clockspeed = schema.TextLine(title=_t(u'Clock Speed'), readonly=True)
-    product = schema.Entity(title=u"Model", readonly=True)
-    manufacturer = schema.Entity(title=u"Manufacturer", readonly=True)
 
 
 class IWinIISInfo(IWinComponentInfo):

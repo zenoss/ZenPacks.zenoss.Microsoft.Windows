@@ -1,0 +1,466 @@
+/Server/Microsoft/WinDatabase:
+  description: "Microsoft SQL Server per-database monitoring."
+  targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase
+
+  datasources:
+    ActiveTransactions:
+      type: WinRS
+      resource: Active Transactions
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        ActiveTransactions: GAUGE_MIN_0
+
+    BackupRestoreThroughputSec:
+      type: WinRS
+      resource: Backup/Restore Throughput/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        BackupRestoreThroughputSec: DERIVE_MIN_0
+
+    BulkCopyRowsSec:
+      type: WinRS
+      resource: Bulk Copy Rows/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        BulkCopyRowsSec: DERIVE_MIN_0
+
+    BulkCopyThroughputSec:
+      type: WinRS
+      resource: Bulk Copy Throughput/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        BulkCopyThroughputSec: DERIVE_MIN_0
+
+    CacheEntriesCount:
+      type: WinRS
+      resource: Cache Entries Count
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        CacheEntriesCount: GAUGE_MIN_0
+
+    CacheEntriesPinnedCount:
+      type: WinRS
+      resource: Cache Entries Pinned Count
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        CacheEntriesPinnedCount: GAUGE_MIN_0
+
+    CacheHitRatio:
+      type: WinRS
+      resource: Cache Hit Ratio
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        CacheHitRatio: DERIVE_MIN_0
+
+    CacheHitRatioBase:
+      type: WinRS
+      resource: Cache Hit Ratio Base
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        CacheHitRatioBase: DERIVE_MIN_0
+
+    DataFileSize:
+      type: WinRS
+      resource: Data File(s) Size (KB)
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        DataFileSize: GAUGE_MIN_0
+
+    DBCCLogicalScanBytesSec:
+      type: WinRS
+      resource: DBCC Logical Scan Bytes/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        DBCCLogicalScanBytesSec: DERIVE_MIN_0
+
+    LogBytesFlushedSec:
+      type: WinRS
+      resource: Log Bytes Flushed/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogBytesFlushedSec: DERIVE_MIN_0
+
+    LogCacheHitRatio:
+      type: WinRS
+      resource: Log Cache Hit Ratio
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogCacheHitRatio: DERIVE_MIN_0
+
+    LogCacheHitRatioBase:
+      type: WinRS
+      resource: Log Cache Hit Ratio Base
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogCacheHitRatioBase: DERIVE_MIN_0
+
+    LogCacheReadsSec:
+      type: WinRS
+      resource: Log Cache Reads/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogCacheReadsSec: DERIVE_MIN_0
+
+    LogFileSize:
+      type: WinRS
+      resource: Log File(s) Size (KB)
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogFileSize: GAUGE_MIN_0
+
+    LogFileUsedSize:
+      type: WinRS
+      resource: Log File(s) Used Size (KB)
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogFileUsedSize: GAUGE_MIN_0
+
+    LogFlushWaitTime:
+      type: WinRS
+      resource: Log Flush Wait Time
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogFlushWaitTime: GAUGE_MIN_0
+
+    LogFlushWaitsSec:
+      type: WinRS
+      resource: Log Flush Waits/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogFlushWaitsSec: DERIVE_MIN_0
+
+    LogFlushesSec:
+      type: WinRS
+      resource: Log Flushes/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogFlushesSec: DERIVE_MIN_0
+
+    LogGrowths:
+      type: WinRS
+      resource: Log Growths
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogGrowths: DERIVE_MIN_0
+
+    LogShrinks:
+      type: WinRS
+      resource: Log Shrinks
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogShrinks: DERIVE_MIN_0
+
+    LogTruncations:
+      type: WinRS
+      resource: Log Truncations
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        LogTruncations: DERIVE_MIN_0
+
+    PercentLogUsed:
+      type: WinRS
+      resource: Percent Log Used
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        PercentLogUsed: GAUGE_MIN_0
+
+    ReplPendingXacts:
+      type: WinRS
+      resource: Repl. Pending Xacts
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        ReplPendingXacts: GAUGE_MIN_0
+
+    ReplTransRate:
+      type: WinRS
+      resource: Repl. Trans. Rate
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        ReplTransRate: DERIVE_MIN_0
+
+    ShrinkDataMovementBytesSec:
+      type: WinRS
+      resource: Shrink Data Movement Bytes/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        ShrinkDataMovementBytesSec: DERIVE_MIN_0
+
+    TransactionsSec:
+      type: WinRS
+      resource: Transactions/sec
+      strategy: powershell MSSQL
+      component: "${here/id}"
+
+      datapoints:
+        TransactionsSec: DERIVE_MIN_0
+
+  graphs:
+    Transactions:
+      units: transactions
+      miny: 0
+
+      graphpoints:
+        Active:
+          dpName: ActiveTransactions
+          format: "%7.0lf"
+
+    Transaction Rates:
+      units: transactions/sec
+      miny: 0
+
+      graphpoints:
+        Normal:
+          dpName: TransactionsSec
+          format: "%7.2lf%s"
+
+        Replication:
+          dpName: ReplTransRate
+          format: "%7.2lf%s"
+
+    Cache Entries:
+      units: entries
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: CacheEntriesCount
+          format: "%7.2lf%s"
+
+        Pinned:
+          dpName: CacheEntriesPinnedCount
+          format: "%7.2lf%s"
+
+    Cache Hit Ratio:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Base:
+          dpName: CacheHitRatioBase
+          lineType: DONTDRAW
+
+        Hit:
+          dpName: CacheHitRatio
+          rpn: "Base,/,100,*,0,MAX,100,MIN"
+          colorindex: 0
+          format: "%7.2lf%%"
+
+    Data File Size:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: DataFileSize
+          rpn: "1024,*"
+          format: "%7.2lf%s"
+
+    Log File Utilization:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Used:
+          dpName: PercentLogUsed
+          format: "%7.2lf%%"
+
+    Log File Usage:
+      units: bytes
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: LogFileSize
+          rpn: "1024,*"
+          format: "%7.2lf%s"
+          color: "000000"
+
+        Used:
+          dpName: LogFileUsedSize
+          rpn: "1024,*"
+          lineType: AREA
+          format: "%7.2lf%s"
+          colorindex: 0
+
+    Log Operation Rates:
+      units: operations/sec
+      miny: 0
+
+      graphpoints:
+        Growths:
+          dpName: LogGrowths
+          format: "%7.2lf%s"
+
+        Shrinks:
+          dpName: LogShrinks
+          format: "%7.2lf%s"
+
+        Truncations:
+          dpName: LogTruncations
+          format: "%7.2lf%s"
+
+    Log Flush Latency:
+      units: seconds
+      miny: 0
+
+      graphpoints:
+        Wait Time:
+          dpName: LogFlushWaitTime
+          rpn: "1000,/"
+          format: "%7.2lf%s"
+
+    Log Flush Rates:
+      units: per/sec
+      miny: 0
+
+      graphpoints:
+        Flushes:
+          dpName: LogFlushesSec
+          format: "%7.2lf%s"
+
+        Waits:
+          dpName: LogFlushWaitsSec
+          format: "%7.2lf%s"
+
+    Log Flush Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: LogBytesFlushedSec
+          format: "%7.2lf%s"
+
+    Log Cache Hit Ratio:
+      units: percent
+      miny: 0
+      maxy: 100
+
+      graphpoints:
+        Base:
+          dpName: LogCacheHitRatioBase
+          lineType: DONTDRAW
+
+        Hit:
+          dpName: LogCacheHitRatio
+          rpn: "Base,/,100,*,0,MAX,100,MIN"
+          colorindex: 0
+          format: "%7.2lf%%"
+
+    Log Cache Throughput:
+      units: operations/sec
+      miny: 0
+
+      graphpoints:
+        Reads:
+          dpName: LogCacheReadsSec
+          format: "%7.2lf%s"
+
+    Bulk Copy Rates:
+      units: per/sec
+      miny: 0
+
+      graphpoints:
+        Rows:
+          dpName: BulkCopyRowsSec
+          format: "%7.2lf%s"
+
+    Bulk Copy Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Bytes:
+          dpName: BulkCopyThroughputSec
+          format: "%7.2lf%s"
+
+    Replication:
+      units: transactions
+      miny: 0
+
+      graphpoints:
+        Pending:
+          dpName: ReplPendingXacts
+          format: "%7.2lf%s"
+
+    Backup and Restore Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Total:
+          dpName: BackupRestoreThroughputSec
+          format: "%7.2lf%s"
+
+    Database Console Commands (DBCC) Throughput:
+      units: bytes/sec
+      base: true
+      miny: 0
+
+      graphpoints:
+        Logical Scan:
+          dpName: DBCCLogicalScanBytesSec
+          format: "%7.2lf%s"
+
+        Shrink Data:
+          dpName: ShrinkDataMovementBytesSec
+          format: "%7.2lf%s"

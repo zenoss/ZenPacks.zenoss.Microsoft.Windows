@@ -8,27 +8,24 @@
 ##############################################################################
 
 """
-A datasource that uses WinRS to run typeperf -sc1 or powershell Get-Counter.
+A datasource that uses WinRS to run remote commands.
 
 See Products.ZenModel.ZenPack._getClassesByPath() to understand how this class
 gets discovered as a datasource type in Zenoss.
 """
 
-import csv
 import time
 import logging
-import calendar
 import urllib
 from urlparse import urlparse
 
 
-from xml.etree import cElementTree as ET
 from zope.component import adapts
 from zope.interface import implements
-from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps import ObjectMap
+from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.interfaces import IRRDDataSourceInfo
@@ -37,6 +34,7 @@ from Products.Zuul.utils import safe_hasattr
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.ZenUtils.Utils import prepId
 from Products.ZenEvents import ZenEventClasses
+from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
@@ -50,10 +48,9 @@ from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
-WINRS_SOURCETYPE = 'WinRS'
+WINRS_SOURCETYPE = 'Windows Shell'
 AVAILABLE_STRATEGIES = [
-    'typeperf -sc1',
-    'powershell Get-Counter',
+    'Custom Command',
     'powershell MSSQL',
     'powershell Cluster Services',
     'powershell Cluster Resources',
@@ -62,7 +59,7 @@ AVAILABLE_STRATEGIES = [
 connections_dct = {}
 
 
-class WinRSDataSource(PythonDataSource):
+class ShellDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -72,156 +69,145 @@ class WinRSDataSource(PythonDataSource):
     cycletime = 300
     resource = ''
     strategy = ''
+    parser = ''
+    usePowershell = True
+    script = ''
 
     _properties = PythonDataSource._properties + (
         {'id': 'resource', 'type': 'string'},
         {'id': 'strategy', 'type': 'string'},
+        {'id': 'parser', 'type': 'string'},
+        {'id': 'usePowershell', 'type': 'boolean'},
+        {'id': 'script', 'type': 'string'}
         )
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
     plugin_classname = ZENPACKID + \
-        '.datasources.WinRSDataSource.WinRSPlugin'
+        '.datasources.ShellDataSource.ShellDataSourcePlugin'
 
 
-class IWinRSInfo(IRRDDataSourceInfo):
+class IShellDataSourceInfo(IRRDDataSourceInfo):
     """
-    Provide the UI information for the WinRS datasource.
+    Provide the UI information for the Shell datasource.
     """
 
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
 
-    resource = schema.TextLine(
-        group=_t(WINRS_SOURCETYPE),
-        title=_t('Resource'))
-
-    strategy = schema.Choice(
+    strategy = schema.TextLine(
         group=_t(WINRS_SOURCETYPE),
         title=_t('Strategy'),
-        vocabulary=SimpleVocabulary.fromValues(
-            AVAILABLE_STRATEGIES),)
+        xtype='winrsstrategy')
 
 
-class WinRSInfo(RRDDataSourceInfo):
+class ShellDataSourceInfo(RRDDataSourceInfo):
     """
-    Pull in proxy values so they can be utilized within the WinRS plugin.
+    Pull in proxy values so they can be utilized within the Shell plugin.
     """
-    implements(IWinRSInfo)
-    adapts(WinRSDataSource)
+    implements(IShellDataSourceInfo)
+    adapts(ShellDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
     resource = ProxyProperty('resource')
     strategy = ProxyProperty('strategy')
+    parser = ProxyProperty('parser')
+    usePowershell = ProxyProperty('usePowershell')
+    script = ProxyProperty('script')
+
+    @property
+    def availableParsers(self):
+        """
+        returns a list of all available parsers
+        """
+        return sorted(p.modPath for p in loadParserPlugins(self._object.dmd))
+
+    @property
+    def availableStrategies(self):
+        """
+        returns a list of available winrs strategies
+        """
+        return sorted(AVAILABLE_STRATEGIES)
 
 
-class TypeperfSc1Strategy(object):
-
-    def build_command_line(self, counters):
-        quoted_counters = ['"{0}"'.format(c) for c in counters]
-        counters_args = ' '.join(quoted_counters)
-        return 'typeperf {0} -sc 1'.format(counters_args)
-
-    def parse_result(self, dsconfs, result):
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        log.debug('Results have been parsed')
-        rows = list(csv.reader(result.stdout))
-        timestamp_str, milleseconds = rows[1][0].split(".")
-        format = '%m/%d/%Y %H:%M:%S'
-        timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-
-        map_props = {}
-        #Clean out negative numbers from rows returned.
-        #Typeperf returns the value as negative but does not return the counter
-
-        for perfvalue_str in rows[1][1:]:
-            perfvalue = float(perfvalue_str)
-            if perfvalue < 0:
-                rows[1].remove(perfvalue_str)
-
-        counterlist = zip(rows[0][1:], rows[1][1:])
-
-        for counter in counterlist:
-            arrCounter = counter[0].split("\\")
-            countername = "\\{0}\\{1}".format(arrCounter[3], arrCounter[4]).lower()
-            value = counter[1]
-
-            map_props.update({countername: {'value': value, 'timestamp': timestamp}})
-
-        for dsconf in dsconfs:
-            try:
-                key = dsconf.params['resource'].lower()
-                value = map_props[key]['value']
-                timestamp = map_props[key]['timestamp']
-                log.debug('Resource: {0} has value {1}'.format(key, value))
-                yield dsconf, value, timestamp
-            except (KeyError):
-                log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-
-typeperf_strategy = TypeperfSc1Strategy()
+class ParsedResults(ParsedResults):
+    """
+    Shell version of ParsedResults. Includes the 'maps' list to automatically apply
+    modeling maps.
+    """
+    def __init__(self):
+        self.maps = []
+        super(ParsedResults, self).__init__()
 
 
-class PowershellGetCounterStrategy(object):
-
-    def build_command_line(self, counters):
-        quoted_counters = ["'{0}'".format(c) for c in counters]
-        counters_args = ', '.join(quoted_counters)
-        return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat " \
-               "XML -Command \"get-counter -ea silentlycontinue " \
-               "-counter @({0})\"".format(counters_args)
-
-    def parse_result(self, dsconfs, result):
-        if result.exit_code != 0 or len(result.stdout) == 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-
-        root_elem = ET.fromstring(result.stdout[1])
-        namespace = 'http://schemas.microsoft.com/powershell/2004/04'
-        for lst_elem in root_elem.findall('.//{%s}LST' % namespace):
-            props_elems = lst_elem.findall('.//{%s}Props' % namespace)
-
-            map_props = {}
-
-            for props_elem in props_elems:
-                value = float(props_elem.findtext('./*[@N="CookedValue"]'))
-                timestamp = props_elem.findtext('.//*[@N="Timestamp"]')
-                path = props_elem.findtext('.//*[@N="Path"]')
-
-                # Confirm timestamp format and convert
-                timestamp_str, milleseconds = timestamp.split(".")
-                format = '%Y-%m-%dT%H:%M:%S'
-                timestamp = calendar.timegm(time.strptime(timestamp_str, format))
-
-                arrPath = path.split("\\")
-                indexPath = "\\{0}\\{1}".format(arrPath[3], arrPath[4])
-
-                # System uptime needs to be in centiseconds format
-                if 'system up time' in indexPath:
-                    value = int(value) * 100
-
-                map_props.update({indexPath: {'value': value, 'timestamp': timestamp}})
-
-            for dsconf in dsconfs:
-                try:
-                    key = dsconf.params['resource'].lower()
-                    value = map_props[key]['value']
-                    timestamp = map_props[key]['timestamp']
-                    yield dsconf, value, timestamp
-                except (KeyError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['resource']))
+class CmdResult(object):
+    """
+    Emulate the ZenCommand result object for WinCmd
+    """
+    output = ''
+    exitCode = None
 
 
-powershellcounter_strategy = PowershellGetCounterStrategy()
+class WinCmd(object):
+    """
+    Emulate the SSH/ZenCommand returned object (Products.ZenRRD.zencommand.Cmd) for
+    compatibility with existing Command parsers
+    """
+    device = ''
+    command = None
+    component = ''
+    ds = ''
+    useSsh = False
+    cycleTime = None
+    env = None
+    eventClass = None
+    eventKey = None
+    lastStart = 0
+    lastStop = 0
+    points = []
+    result = CmdResult()
+    severity = 3
+    usePowershell = False
+    deviceConfig = None
+
+
+class CustomCommandStrategy(object):
+    def build_command_line(self, script, usePowershell):
+        pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
+                    '-Command "%s"' % script
+        return pscommand.format(script) if usePowershell else script
+
+    def parse_result(self, config, result):
+        dsconf = config.datasources[0]
+        parserLoader = dsconf.params['parser']
+        log.debug('Trying to use the %s parser' % parserLoader.pluginName)
+
+        # Build emulated Zencommand Cmd object
+        cmd = WinCmd()
+        cmd.command = dsconf.params['script']
+        cmd.ds = dsconf.datasource
+        cmd.device = dsconf.params['servername']
+        cmd.component = dsconf.params['contextcompname']
+
+        # Add the device id to the config for compatibility with parsers
+        config.device = config.id
+        cmd.deviceConfig = config
+
+        # Add the component id to the points array for compatibility with parsers
+        for point in dsconf.points:
+            point.component = cmd.component
+            cmd.points.append(point)
+
+        cmd.usePowershell = dsconf.params['usePowershell']
+        cmd.result.output = '\n'.join(result.stdout)
+        cmd.result.exitCode = result.exit_code
+
+        collectedResult = ParsedResults()
+        parser = parserLoader.create()
+        parser.processResults(cmd, collectedResult)
+        return collectedResult
+
+customcommand_strategy = CustomCommandStrategy()
 
 
 class PowershellMSSQLStrategy(object):
@@ -346,8 +332,9 @@ class PowershellClusterResourceStrategy(object):
 
             dsconf0 = dsconfs[0]
 
+            resourceID = 'res-{0}'.format(name)
             compObject = ObjectMap()
-            compObject.id = prepId(name)
+            compObject.id = prepId(resourceID)
             compObject.title = name
             compObject.ownernode = ownernode
             compObject.description = description
@@ -359,7 +346,7 @@ class PowershellClusterResourceStrategy(object):
 
             for dsconf in dsconfs:
                 try:
-                    value = (name, state, compObject)
+                    value = (resourceID, state, compObject)
                     timestamp = int(time.mktime(time.localtime()))
                     yield dsconf, value, timestamp
                 except(AttributeError):
@@ -431,17 +418,21 @@ class PowershellClusterServiceStrategy(object):
                     yield dsconf, value, timestamp
                 except(AttributeError):
                     log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except(AttributeError):
+        except (AttributeError, UnboundLocalError):
             log.debug('Error in parsing cluster service data')
 
 powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 
-class WinRSPlugin(PythonDataSourcePlugin):
+class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ('zWinUser',
+    proxy_attributes = (
+        'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         'zDBInstances',
         'zDBInstancesPassword',
         )
@@ -451,6 +442,12 @@ class WinRSPlugin(PythonDataSourcePlugin):
         """
         Uniquely pull in datasources
         """
+        if datasource.strategy == 'Custom Command':
+            return (context.device().id,
+                datasource.getCycleTime(context),
+                datasource.strategy,
+                datasource.id,
+                context.id)
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
@@ -462,7 +459,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
         if not resource.startswith('\\') and \
             datasource.strategy not in ('powershell MSSQL',
                 'powershell Cluster Services',
-                'powershell Cluster Resources'):
+                'powershell Cluster Resources',
+                'Custom Command'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
@@ -491,10 +489,15 @@ class WinRSPlugin(PythonDataSourcePlugin):
         if len(servername) == 0:
             servername = ''
 
+        parser = getParserLoader(context.dmd, datasource.parser)
+
         return dict(resource=resource,
             strategy=datasource.strategy,
             instancename=instancename,
             servername=servername,
+            script=datasource.script,
+            parser=parser,
+            usePowershell=datasource.usePowershell,
             contextrelname=contextrelname,
             contextcompname=contextcompname,
             contextmodname=contextmodname,
@@ -504,14 +507,13 @@ class WinRSPlugin(PythonDataSourcePlugin):
     def collect(self, config):
         dsconf0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = dsconf0.zWinScheme
         port = int(dsconf0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in dsconf0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = dsconf0.zWinKeyTabFilePath
+        dcip = dsconf0.zWinKDC
 
-        if '@' in dsconf0.zWinUser:
-            auth_type = 'kerberos'
         conn_info = ConnectionInfo(
             dsconf0.manageIp,
             auth_type,
@@ -520,7 +522,8 @@ class WinRSPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
 
         strategy = self._get_strategy(dsconf0)
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
@@ -553,6 +556,11 @@ class WinRSPlugin(PythonDataSourcePlugin):
             componenttype = dsconf0.params['resource']
             command_line = strategy.build_command_line(resource, componenttype)
 
+        elif dsconf0.params['strategy'] == 'Custom Command':
+            script = dsconf0.params['script']
+            usePowershell = dsconf0.params['usePowershell']
+            command_line = strategy.build_command_line(script, usePowershell)
+
         else:
             command_line = strategy.build_command_line(counters)
 
@@ -575,9 +583,9 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
         except:
             del connections_dct[conn_info]
-            # Shell could have failed for some reason
+            # WinRS could have failed for some reason
             # Need to restart shell here
-            log.info('Shell ID {0} no longer exists another connection will be \
+            log.info('WinRS ID {0} no longer exists another connection will be \
                 created. This could be a result of restarting the client machine \
                 or the idle timeout for WinRS is to short. If you are seeing this \
                 message freaquently you may need to adjust the idle timeout. \
@@ -595,7 +603,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
             results = yield retrieve_long_running_shell(sender, shell_id, command_line)
 
-        log.info('Results retreived for device {0} on shell id {1}'.format(
+        log.debug('Results retreived for device {0} on shell id {1}'.format(
                 dsconf0.manageIp,
                 shell_id))
         defer.returnValue((strategy, config.datasources, results))
@@ -603,29 +611,40 @@ class WinRSPlugin(PythonDataSourcePlugin):
     def onSuccess(self, results, config):
         data = self.new_data()
         strategy, dsconfs, result = results
-        for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-            if dsconf.datasource == 'state':
-                currentstate = {
-                'Online': ZenEventClasses.Clear,
-                'Offline': ZenEventClasses.Critical,
-                'PartialOnline': ZenEventClasses.Error,
-                'Failed': ZenEventClasses.Critical
-                }.get(value[1], ZenEventClasses.Info)
 
-                data['events'].append(dict(
-                    eventClassKey='winrsClusterResource',
-                    eventKey='ClusterResource',
-                    severity=currentstate,
-                    summary='Last state of component was {0}'.format(value[1]),
-                    device=config.id,
-                    component=prepId(dsconf.component)
-                    ))
+        if 'CustomCommand' in str(strategy.__class__):
+            cmdResult = strategy.parse_result(config, result)
+            dsconf = dsconfs[0]
 
-                data['maps'].append(
-                    value[2]
-                    )
-            else:
-                data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+            data['events'] = cmdResult.events
+            data['maps'] = cmdResult.maps
+            for dp, value in cmdResult.values:
+                data['values'][dsconf.component][dp.id] = value, 'N'
+
+        else:
+            for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                if dsconf.datasource == 'state':
+                    currentstate = {
+                    'Online': ZenEventClasses.Clear,
+                    'Offline': ZenEventClasses.Critical,
+                    'PartialOnline': ZenEventClasses.Error,
+                    'Failed': ZenEventClasses.Critical
+                    }.get(value[1], ZenEventClasses.Info)
+
+                    data['events'].append(dict(
+                        eventClassKey='winrsClusterResource',
+                        eventKey='ClusterResource',
+                        severity=currentstate,
+                        summary='Last state of component was {0}'.format(value[1]),
+                        device=config.id,
+                        component=prepId(dsconf.component)
+                        ))
+
+                    data['maps'].append(
+                        value[2]
+                        )
+                else:
+                    data['values'][dsconf.component][dsconf.datasource] = value, timestamp
 
         data['events'].append(dict(
             eventClassKey='winrsCollectionSuccess',
@@ -647,8 +666,7 @@ class WinRSPlugin(PythonDataSourcePlugin):
 
     def _get_strategy(self, dsconf):
         return {
-        'typeperf -sc1': typeperf_strategy,
-        'powershell Get-Counter': powershellcounter_strategy,
+        'Custom Command': customcommand_strategy,
         'powershell MSSQL': powershellmssql_strategy,
         'powershell Cluster Services': powershellclusterservice_strategy,
         'powershell Cluster Resources': powershellclusterresource_strategy,

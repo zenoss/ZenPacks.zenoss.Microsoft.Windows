@@ -53,7 +53,7 @@ def string_to_lines(string):
     return None
 
 
-class WinServiceCollectionDataSource(PythonDataSource):
+class ServiceDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
     """
@@ -61,14 +61,14 @@ class WinServiceCollectionDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
-    sourcetypes = ('WinServices',)
+    sourcetypes = ('Windows Service',)
     sourcetype = sourcetypes[0]
     servicename = '${here/servicename}'
     alertifnot = 'Running'
     defaultgraph = False
 
     plugin_classname = ZENPACKID + \
-        '.datasources.WinServiceCollectionDataSource.WinServiceCollectionPlugin'
+        '.datasources.ServiceDataSource.ServicePlugin'
 
     _properties = PythonDataSource._properties + (
         {'id': 'servicename', 'type': 'string'},
@@ -77,7 +77,7 @@ class WinServiceCollectionDataSource(PythonDataSource):
         )
 
 
-class IWinServiceCollectionInfo(IRRDDataSourceInfo):
+class IServiceDataSourceInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the WinRS Service datasource.
     """
@@ -101,12 +101,12 @@ class IWinServiceCollectionInfo(IRRDDataSourceInfo):
             [STATE_RUNNING, STATE_STOPPED]),)
 
 
-class WinServiceCollectionInfo(RRDDataSourceInfo):
+class ServiceDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the WinRS Service plugin.
     """
-    implements(IWinServiceCollectionInfo)
-    adapts(WinServiceCollectionDataSource)
+    implements(IServiceDataSourceInfo)
+    adapts(ServiceDataSource)
 
     testable = False
     cycletime = ProxyProperty('cycletime')
@@ -115,11 +115,14 @@ class WinServiceCollectionInfo(RRDDataSourceInfo):
     defaultgraph = ProxyProperty('defaultgraph')
 
 
-class WinServiceCollectionPlugin(PythonDataSourcePlugin):
+class ServicePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinUser',
         'zWinPassword',
         'zWinRMPort',
+        'zWinKDC',
+        'zWinKeyTabFilePath',
+        'zWinScheme',
         )
 
     @classmethod
@@ -152,11 +155,12 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
         log.info('{0}:Start Collection of Services'.format(config.id))
         ds0 = config.datasources[0]
 
-        scheme = 'http'
+        scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
         connectiontype = 'Keep-Alive'
-        keytab = ''
+        keytab = ds0.zWinKeyTabFilePath
+        dcip = ds0.zWinKDC
 
         servicename = ds0.params['servicename']
 
@@ -172,7 +176,8 @@ class WinServiceCollectionPlugin(PythonDataSourcePlugin):
             scheme,
             port,
             connectiontype,
-            keytab)
+            keytab,
+            dcip)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)
