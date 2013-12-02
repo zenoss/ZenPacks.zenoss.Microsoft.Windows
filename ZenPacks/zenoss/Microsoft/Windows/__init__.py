@@ -120,7 +120,7 @@ class ZenPack(ZenPackBase):
                 bashfile = open(userenvironconfig, 'r')
                 content = bashfile.read()
                 bashfile.close()
-                content = re.sub(r'^# Following value required for Windows Zenoss\n?',
+                content = re.sub(r'# Following value required for Windows ZenPack\n?',
                     '',
                     content)
                 content = re.sub(r'export KRB5_CONFIG.*\n?', '', content)

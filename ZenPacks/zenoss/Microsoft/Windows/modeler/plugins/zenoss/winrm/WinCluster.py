@@ -141,7 +141,7 @@ class WinCluster(WinRMPlugin):
         for app in applications:
             appline = app.split("|")
             app_om = ObjectMap()
-            app_om.id = self.prepId(appline[0])
+            app_om.id = self.prepId('res-{0}'.format(appline[0]))
             app_om.title = appline[0]
             app_om.ownernode = appline[2]
             app_om.description = appline[4]

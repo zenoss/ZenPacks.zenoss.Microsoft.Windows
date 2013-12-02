@@ -332,8 +332,9 @@ class PowershellClusterResourceStrategy(object):
 
             dsconf0 = dsconfs[0]
 
+            resourceID = 'res-{0}'.format(name)
             compObject = ObjectMap()
-            compObject.id = prepId(name)
+            compObject.id = prepId(resourceID)
             compObject.title = name
             compObject.ownernode = ownernode
             compObject.description = description
@@ -345,7 +346,7 @@ class PowershellClusterResourceStrategy(object):
 
             for dsconf in dsconfs:
                 try:
-                    value = (name, state, compObject)
+                    value = (resourceID, state, compObject)
                     timestamp = int(time.mktime(time.localtime()))
                     yield dsconf, value, timestamp
                 except(AttributeError):
