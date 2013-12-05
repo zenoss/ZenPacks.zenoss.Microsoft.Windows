@@ -526,6 +526,14 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             dcip)
 
         strategy = self._get_strategy(dsconf0)
+        if not strategy:
+            log.warn(
+                "No strategy chosen for %s on %s",
+                dsconf0.datasource,
+                config.id)
+
+            defer.returnValue(None)
+
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
 
         if dsconf0.params['strategy'] == 'powershell MSSQL':
@@ -610,6 +618,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     def onSuccess(self, results, config):
         data = self.new_data()
+
+        if not results:
+            return data
+
         strategy, dsconfs, result = results
 
         if 'CustomCommand' in str(strategy.__class__):
@@ -666,9 +678,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     def _get_strategy(self, dsconf):
         return {
-        'Custom Command': customcommand_strategy,
-        'powershell MSSQL': powershellmssql_strategy,
-        'powershell Cluster Services': powershellclusterservice_strategy,
-        'powershell Cluster Resources': powershellclusterresource_strategy,
-        'powershell': 'powershell_strategy',
-        }.get(dsconf.params['strategy'], 'unknown')
+            'Custom Command': customcommand_strategy,
+            'powershell MSSQL': powershellmssql_strategy,
+            'powershell Cluster Services': powershellclusterservice_strategy,
+            'powershell Cluster Resources': powershellclusterresource_strategy,
+            }.get(dsconf.params['strategy'])
