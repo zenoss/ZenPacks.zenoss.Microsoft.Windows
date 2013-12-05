@@ -11,12 +11,11 @@ from zope.interface import implements
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.infos.component import ComponentInfo
 from Products.Zuul.infos.device import DeviceInfo as BaseDeviceInfo
-from Products.Zuul.infos.component.cpu import CPUInfo as BaseCPUInfo
+from Products.Zuul.infos.component.filesystem import FileSystemInfo as BaseFileSystemInfo
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpInterfaceInfo
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
-from ZenPacks.zenoss.Microsoft.Windows.interfaces import ICPUInfo
 
 
 def SuffixedProperty(property_name, suffix):
@@ -97,6 +96,12 @@ class CPUInfo(WinComponentInfo):
     @info
     def product(self):
         return self._object.productClass()
+
+
+class FileSystemInfo(BaseFileSystemInfo):
+    implements(IFileSystemInfo)
+
+    mediatype = ProxyProperty('mediatype')
 
 
 class WinServiceInfo(WinComponentInfo):
