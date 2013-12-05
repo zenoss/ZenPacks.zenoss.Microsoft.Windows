@@ -11,7 +11,7 @@ from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
-from Products.Zuul.interfaces.component import ICPUInfo as IBaseCPUInfo
+from Products.Zuul.interfaces.component import IFileSystemInfo as IBaseFileSystemInfo
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -50,6 +50,10 @@ class ICPUInfo(IWinComponentInfo):
     cacheSpeedL3_str = schema.TextLine(title=_t('L3 Cache Speed'), readonly=True)
     manufacturer = schema.Entity(title=_t('Manufacturer'), readonly=True)
     product = schema.Entity(title=_t('Model'), readonly=True)
+
+
+class IFileSystemInfo(IBaseFileSystemInfo):
+    mediatype = schema.TextLine(title=_t(u'Media Type'), readonly=True)
 
 
 class IWinServiceInfo(IWinComponentInfo):

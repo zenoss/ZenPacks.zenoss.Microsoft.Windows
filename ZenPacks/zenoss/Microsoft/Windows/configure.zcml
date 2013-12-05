@@ -30,6 +30,12 @@
         />
 
     <adapter
+        factory=".info.FileSystemInfo"
+        for=".FileSystem.FileSystem"
+        provides=".interfaces.IFileSystemInfo"
+        />
+
+    <adapter
         factory=".info.ClusterDeviceInfo"
         for=".ClusterDevice.ClusterDevice"
         provides=".interfaces.IClusterDeviceInfo"
