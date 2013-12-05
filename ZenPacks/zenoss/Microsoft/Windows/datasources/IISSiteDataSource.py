@@ -99,8 +99,8 @@ class IISSiteDataSourceInfo(RRDDataSourceInfo):
 
 class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
-        'zWinUser',
-        'zWinPassword',
+        'zWinRMUser',
+        'zWinRMPassword',
         'zWinRMPort',
         'zWinKDC',
         'zWinKeyTabFilePath',
@@ -132,7 +132,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         ds0 = config.datasources[0]
         scheme = ds0.zWinScheme
         port = int(ds0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in ds0.zWinUser else 'basic'
+        auth_type = 'kerberos' if '@' in ds0.zWinRMUser else 'basic'
         connectiontype = 'Keep-Alive'
         keytab = ds0.zWinKeyTabFilePath
         dcip = ds0.zWinKDC
@@ -146,8 +146,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         conn_info = ConnectionInfo(
             ds0.manageIp,
             auth_type,
-            ds0.zWinUser,
-            ds0.zWinPassword,
+            ds0.zWinRMUser,
+            ds0.zWinRMPassword,
             scheme,
             port,
             connectiontype,

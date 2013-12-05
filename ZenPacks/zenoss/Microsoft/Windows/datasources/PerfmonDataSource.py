@@ -95,8 +95,8 @@ class PerfmonDataSourceInfo(RRDDataSourceInfo):
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
-        'zWinUser',
-        'zWinPassword',
+        'zWinRMUser',
+        'zWinRMPassword',
         'zWinRMPort',
         'zWinKDC',
         'zWinKeyTabFilePath',
@@ -167,7 +167,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         scheme = dsconf0.zWinScheme
         port = int(dsconf0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in dsconf0.zWinUser else 'basic'
+        auth_type = 'kerberos' if '@' in dsconf0.zWinRMUser else 'basic'
         connectiontype = 'Keep-Alive'
         keytab = dsconf0.zWinKeyTabFilePath
         dcip = dsconf0.zWinKDC
@@ -209,8 +209,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             ConnectionInfo(
                 dsconf0.manageIp,
                 auth_type,
-                dsconf0.zWinUser,
-                dsconf0.zWinPassword,
+                dsconf0.zWinRMUser,
+                dsconf0.zWinRMPassword,
                 scheme,
                 port,
                 connectiontype,

@@ -225,8 +225,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
     '''
 
     proxy_attributes = [
-        'zWinUser',
-        'zWinPassword',
+        'zWinRMUser',
+        'zWinRMPassword',
         'zWinRMPort',
         'zWinKDC',
         'zWinKeyTabFilePath',
@@ -268,9 +268,9 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         client = txwinrm.collect.WinrmCollectClient()
         conn_info = txwinrm.collect.ConnectionInfo(
             config.manageIp,
-            'kerberos' if '@' in ds0.zWinUser else 'basic',
-            ds0.zWinUser,
-            ds0.zWinPassword,
+            'kerberos' if '@' in ds0.zWinRMUser else 'basic',
+            ds0.zWinRMUser,
+            ds0.zWinRMPassword,
             ds0.zWinScheme,
             int(ds0.zWinRMPort),
             'Keep-Alive',
