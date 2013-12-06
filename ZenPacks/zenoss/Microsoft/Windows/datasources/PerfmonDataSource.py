@@ -314,6 +314,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource = self.counter_map.get(counter, (None, None))
             if datasource:
                 self.collected_counters.add(counter)
+
+                # We special-case the sysUpTime datapoint to convert
+                # from seconds to centi-seconds. Due to its origin in
+                # SNMP monitor Zenoss expects uptime in centi-seconds
+                # in many places.
+                if datasource == 'sysUpTime' and value is not None:
+                    value = float(value) * 100
+
                 self.data['values'][component][datasource] = (value, receive_time)
 
         if self.collected_samples < self.max_samples and result[0]:
