@@ -11,6 +11,7 @@ __doc__ = "Microsoft Windows ZenPack"
 
 import Globals
 import os
+import platform
 import shutil
 import re
 
@@ -82,7 +83,14 @@ class ZenPack(ZenPackBase):
         self.register_devtype(app.zport.dmd)
 
         #copy kerberos.so file to python path
+        osrelease = platform.release()
+        if 'el6' in osrelease:
+            os.rename(os.path.join(os.path.dirname(__file__), 'lib', 'kerberos-el6.so'), 'kerberos.so')
+        elif 'el5' in osrelease:
+            os.rename(os.path.join(os.path.dirname(__file__), 'lib', 'kerberos-el5.so'), 'kerberos.so')
+
         kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', 'kerberos.so')
+
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)
 

@@ -19,6 +19,19 @@ LIB_DIR=$(ZP_DIR)/lib
 
 GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "develop")
 
+# NOTE FOR KERBEROS SUPPORT
+#
+# The kerberos.so file needs to be built on the OS platform it is intended to support
+# To build:
+# Download kerberos 1.1.1 from pipi
+# 	https://pypi.python.org/pypi/kerberos
+#
+# yum install gcc krb5-devel python-devel -y
+# untar kerberos source
+# python setup.py build
+#
+# kerberos.so will be located in the build directory
+
 default: egg
 
 egg:
