@@ -5099,7 +5099,7 @@ ${here/zWinPerfmonInterval}
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
 <property type="string" id="counter" >
-\Web Service(${here/sitename})\Connection Attempts/sec
+\Web Service(${here/sitename})\Current Connections
 </property>
 <tomanycont id='datapoints'>
 <object id='iisCurrentConnections' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
