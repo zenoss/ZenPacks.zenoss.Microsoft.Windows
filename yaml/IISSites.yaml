@@ -45,7 +45,7 @@
 
     iisCurrentConnections:
       type: Windows Perfmon
-      counter: \Web Service(${here/sitename})\Connection Attempts/sec
+      counter: \Web Service(${here/sitename})\Current Connections
       component: "${here/id}"
 
       datapoints:
