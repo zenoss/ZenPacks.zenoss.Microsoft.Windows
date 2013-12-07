@@ -72,6 +72,16 @@ productNames = (
     )
 
 
+def getOSKerberos(osrelease):
+
+    if 'el6' in osrelease:
+        return 'kerberos_x86_64_27'
+    elif 'el5' in osrelease:
+        return 'kerberos_x86_64_24'
+    else:
+        return 'kerberos_x86_64_27'
+
+
 class ZenPack(ZenPackBase):
 
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
@@ -82,14 +92,9 @@ class ZenPack(ZenPackBase):
 
         self.register_devtype(app.zport.dmd)
 
-        #copy kerberos.so file to python path
+        # copy kerberos.so file to python path
         osrelease = platform.release()
-        if 'el6' in osrelease:
-            os.rename(os.path.join(os.path.dirname(__file__), 'lib', 'kerberos-el6.so'), 'kerberos.so')
-        elif 'el5' in osrelease:
-            os.rename(os.path.join(os.path.dirname(__file__), 'lib', 'kerberos-el5.so'), 'kerberos.so')
-
-        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', 'kerberos.so')
+        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')
 
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)
