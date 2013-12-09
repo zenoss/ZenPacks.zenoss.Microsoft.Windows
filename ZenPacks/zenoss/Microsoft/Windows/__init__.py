@@ -75,11 +75,11 @@ productNames = (
 def getOSKerberos(osrelease):
 
     if 'el6' in osrelease:
-        return 'kerberos_x86_64_27'
+        return 'kerberos_el6'
     elif 'el5' in osrelease:
-        return 'kerberos_x86_64_24'
+        return 'kerberos_el5'
     else:
-        return 'kerberos_x86_64_27'
+        return 'kerberos_el6'
 
 
 class ZenPack(ZenPackBase):
