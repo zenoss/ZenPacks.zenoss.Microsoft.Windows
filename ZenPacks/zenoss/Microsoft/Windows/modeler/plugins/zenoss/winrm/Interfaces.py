@@ -43,14 +43,32 @@ class Interfaces(WinRMPlugin):
         'Win32_NetworkAdapterConfiguration': "SELECT * FROM Win32_NetworkAdapterConfiguration",
         }
 
+    '''
+    Team NIC information is collected per device type from the registry.
+    Each vendor will have a differnt location in the registry to store the member
+    nic information. This version of the Windows ZP support the following NIC
+    teaming software.
+
+    Intel
+    Broadcom
+
+    '''
     powershell_commands = {
         'registry': (
             "get-childitem 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}'"
             " | foreach-object {get-itemproperty $_.pspath}"
-            " | where-object {$_.flowcontrol -or $_.teammode -eq 0}"
+            " | where-object {$_.flowcontrol -or $_.teammode -or $_.teamtype -eq 0}"
             " | foreach-object {'id=', $_.pschildname, ';provider=',"
             "$_.providername, ';teamname=', $_.oldfriendly, ';teammode=',"
-            "$_.teammode, ';networkaddress=', $_.networkaddress, '|'};"
+            "$_.teammode, ';networkaddress=', $_.networkaddress,"
+            "';netinterfaceid=', $_.netcfginstanceid,"
+            "';altteamname=', $_.teamname, '|'};"
+            ),
+        'broadcomnic': (
+            "get-childitem 'HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters'"
+            " | foreach-object {get-itemproperty $_.pspath}"
+            " | foreach-object {'id=', $_.pschildname, ';teamname=',"
+            "$_.teamname, '|'};"
             ),
         }
 
@@ -65,6 +83,10 @@ class Interfaces(WinRMPlugin):
         regresults = results.get('registry')
         if regresults:
             regresults = ''.join(regresults.stdout).split('|')
+
+        broadcomresults = results.get('broadcomnic')
+        if broadcomresults:
+            broadcomresults = ''.join(broadcomresults.stdout).split('|')
 
         # Interface Map
         mapInter = []
@@ -85,22 +107,49 @@ class Interfaces(WinRMPlugin):
                 except (KeyError, ValueError):
                     pass
 
+        # Broadcom member nic map
+        bdcDict = {}
+        if broadcomresults:
+            for memberNic in broadcomresults:
+                memberDict = {}
+                try:
+                    for keyvalues in memberNic.split(';'):
+                        key, value = keyvalues.split('=')
+                        memberDict[key] = value
+                    bdcDict[memberDict['id']] = memberDict['teamname']
+                except (KeyError, ValueError):
+                    pass
         perfmonInstanceMap = self.buildPerfmonInstances(netConf, log)
 
         for inter in netInt:
             #Get the Network Configuration data for this interface
 
-            #Merge registry data into object
+            # Merge broadcom NIC Team information into object
+            try:
+                inter.TeamName = bdcDict[inter.GUID]
+            except (KeyError):
+                pass
+
+            # Merge registry data for Team Interface into object
             try:
                 interfaceRegistry = regInterface[int(inter.DeviceID)]
-                inter.TeamName = interfaceRegistry['teamname']
+                if not interfaceRegistry['teamname']:
+                    if not interfaceRegistry['altteamname']:
+                        inter.TeamName = inter.NetConnectionID
+                    else:
+                        inter.TeamMode = '0'
+                        inter.TeamName = interfaceRegistry['altteamname']
+                    inter.netinterfaceid = interfaceRegistry['netinterfaceid']
+                else:
+                    inter.TeamName = interfaceRegistry['teamname']
+                    inter.TeamMode = interfaceRegistry['teammode']
+
                 inter.Provider = interfaceRegistry['provider']
-                inter.TeamMode = interfaceRegistry['teammode']
+                inter.InterfaceID = interfaceRegistry['netinterfaceid']
                 inter.TeamMAC = interfaceRegistry['networkaddress']
 
             except (KeyError):
                 pass
-
             for intconf in netConf:
                 if intconf.InterfaceIndex == inter.InterfaceIndex:
                     interconf = intconf
@@ -206,15 +255,26 @@ class Interfaces(WinRMPlugin):
 
             if getattr(inter, 'TeamName', None) is not None:
                 if 'TEAM' in inter.TeamName:
-                    int_om.monitor = False
+                    # Intel interface that is member of TEAM interface
                     int_om.teamname = inter.TeamName.split('-')[0].strip()
+                    int_om.monitor = False
+                else:
+                    if inter.GUID in bdcDict:
+                        # Broadcom interface that is member of TEAM interface
+                        int_om.teamname = inter.TeamName
+                        int_om.monitor = False
 
             # These interfaces are virtual TEAM interfaces
             if getattr(inter, 'TeamMode', None) is not None:
                 if inter.TeamMode == '0':
                     log.debug('The TeamNic ID {0}'.format(int_om.id))
-                    # Get the team name from the Description of the interface
-                    int_om.teamname = interconf.Description.strip()
+                    if not inter.TeamName:
+                        # Get the team name from the Description of the interface
+                        # This will be for Intel Team interfaces
+                        int_om.teamname = interconf.Description.strip()
+                    else:
+                        # The Broadcom TeamName can be set early in the process
+                        int_om.teamname = inter.TeamName
                     int_om.modname = 'ZenPacks.zenoss.Microsoft.Windows.TeamInterface'
                     mapTeamInter.append(int_om)
                     continue
@@ -229,6 +289,7 @@ class Interfaces(WinRMPlugin):
                     if nic.teamname == teamNic.teamname:
                         # This nic is a member of this team interface
                         members.append(nic.id)
+
             teamNic.setInterfaces = members
 
         rm = self.relMap()

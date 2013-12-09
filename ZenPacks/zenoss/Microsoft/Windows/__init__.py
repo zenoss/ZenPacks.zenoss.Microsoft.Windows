@@ -11,6 +11,7 @@ __doc__ = "Microsoft Windows ZenPack"
 
 import Globals
 import os
+import platform
 import shutil
 import re
 
@@ -71,6 +72,16 @@ productNames = (
     )
 
 
+def getOSKerberos(osrelease):
+
+    if 'el6' in osrelease:
+        return 'kerberos_x86_64_27'
+    elif 'el5' in osrelease:
+        return 'kerberos_x86_64_24'
+    else:
+        return 'kerberos_x86_64_27'
+
+
 class ZenPack(ZenPackBase):
 
     binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
@@ -81,8 +92,10 @@ class ZenPack(ZenPackBase):
 
         self.register_devtype(app.zport.dmd)
 
-        #copy kerberos.so file to python path
-        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', 'kerberos.so')
+        # copy kerberos.so file to python path
+        osrelease = platform.release()
+        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')
+
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)
 
