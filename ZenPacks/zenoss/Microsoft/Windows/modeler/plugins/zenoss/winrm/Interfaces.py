@@ -275,6 +275,8 @@ class Interfaces(WinRMPlugin):
                     else:
                         # The Broadcom TeamName can be set early in the process
                         int_om.teamname = inter.TeamName
+                        int_om.perfmonInstance = "\\network interface({0})".format(
+                            "isatap." + inter.netinterfaceid)
                     int_om.modname = 'ZenPacks.zenoss.Microsoft.Windows.TeamInterface'
                     mapTeamInter.append(int_om)
                     continue
