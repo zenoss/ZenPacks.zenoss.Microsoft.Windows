@@ -127,7 +127,7 @@ class Interfaces(WinRMPlugin):
             # Merge broadcom NIC Team information into object
             try:
                 inter.TeamName = bdcDict[inter.GUID]
-            except (KeyError):
+            except (KeyError, AttributeError):
                 pass
 
             # Merge registry data for Team Interface into object
