@@ -309,7 +309,7 @@ Use the following steps to start monitoring a Windows server using the Zenoss we
 
 # Navigate to the Infrastructure page.
 # Select the Server/Microsoft/Windows device class.
-# Click Details and set the configuration properties for zWinUser and zWinPassword.
+# Click Details and set the configuration properties for zWinRMUser and zWinRMPassword.
 # Click See All.
 # Choose ''Add Single Device'' from the add device button.
 # Fill out the form.
@@ -322,9 +322,9 @@ Alternatively you can use zenbatchload to add Windows servers from the command l
 
 <syntaxhighlight lang="text">
 /Devices/Server/Microsoft/Windows
-win2003-1d.example.com zWinUser="Administrator", zWinPassword="password"
-win2008-1d.example.com zWinUser="Administrator", zWinPassword="password"
-Win2012-1d.example.com zWinUser="Administrator", zWinPassword="password"
+win2003-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
+win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
+Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 </syntaxhighlight>
 
 You can then load the Windows servers into Zenoss Core or Resource Manager as devices with the following command.
@@ -361,10 +361,7 @@ This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Wind
 # Add the device back using the [[#Adding a Windows Device]] instructions above. Be sure to select the /Server/Microsoft/Windows device class and not the /Server/Windows/WMI device class.
 # Repeat steps 3-6 for each Windows device.
 
-If you have Windows Server 2000 machines you can continue to monitor them with the ''ZenPacks.zenoss.WindowsMonitor'' ZenPack while moving other Windows devices to the new WinRM-based ZenPack's device class, ''/Server/Microsoft/Windows''. On Windows Server 2003, the WinRM service must be installed (it does not ship with the OS like it does with later versions of Windows server).
-
 Old Windows ZenPacks:
-
 * PySamba
 * WindowsMonitor
 * ActiveDirectory
@@ -374,20 +371,35 @@ Old Windows ZenPacks:
 * MSSQLServer
 
 New Windows ZenPacks:
-* [[ZenPack:PythonCollector|PythonCollector]]
+* [[ZenPack:PythonCollector|PythonCollector]] is a requirement for this ZenPack. It provides the polling facility through the zenpython collector daemon.
 * This ZenPack (all the functionality of the old Windows ZenPacks is rolled into this one ZenPack)
 
 The old ZenPacks come as part of the Zenoss Core 4.2.x RPM. They can be installed on top of an RM install with the msmonitor RPM
 
+=== Using Old and New Windows ZenPacks Together ===
+
+There are some scenarios where it may be useful to use the old and new Windows ZenPacks together. In most cases this is as simple as putting servers you wish to be monitored by the new ZenPack in the /Server/Microsoft/Server device class and servers you wish to be monitored by the old ZenPack in the /Server/Windows/WMI device class.
+
+Due to this ZenPack's dependency on WinRM 2.0 it is not possible to monitor Windows versions earlier than Windows 2003 SP1. If you have a requirement to monitor these earlier Windows versions you must use the older [[ZenPack::Microsoft_Windows|WindowsMonitor ZenPack]] that uses DCOM/RPC instead of WinRM.
+
+There are also circumstances where you may currently be using the old Windows ZenPack and only want to initially use the new ZenPack for its new functionalities such as the ''Windows Shell'' datasource. This can be achieved using the following steps.
+
+# Keep the servers under the /Server/Windows/WMI device class.
+# Verify that all of the following configuration properties are set:
+#* ''zWinUser'': In DOMAIN\Username format for DCOM/RPC collection.
+#* ''zWinPassword'': Password for zWinUser account.
+#* ''zWinRMUser'': In username@example.com format for WinRM collection.
+#* ''zWinRMPassword'': Password for zWinRMUser account.
+# Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
+
 == Limitations of Beta Release ==
 
-The Beta release of the new WinRM-based Windows ZenPack does not support the following features:
+The current beta release is known to have the following limitations.
 
-* NTLMv2 (only basic authentication of local accounts is supported)
-* Kerberos (Active Directory authentication)
-* HTTPS
-* SPNEGO (encrypted payload over HTTP)
-* Network Load Balancing
+* Known issues related to discovering the relationship between cluster and server devices.
+* Support for team NICs is limited to Intel interfaces.
+
+A current list of known issues related to this ZenPack can be found with [this JIRA query|https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here|https://jira.zenoss.com/secure/Signup!default.jspa].
 
 == Troubleshooting ==
 
@@ -408,6 +420,17 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * /Server/Microsoft
 * /Server/Microsoft/Cluster
 * /Server/Microsoft/Windows
+
+;Configuration Properties
+* zWinRMUser
+* zWinRMPassword
+* zWinRMPort
+* zDBInstances
+* zDBInstancesPassword
+* zWinKDC
+* zWinKeyTabFilePath
+* zWinScheme
+* zWinPerfmonInterval
 
 ;Modeler Plugins
 * zenoss.winrm.CPUs
@@ -450,38 +473,3 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
-
-;Troubleshooting:
-* Powershell
-try{     add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'     }catch{     try{          add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=10.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'          }     catch{          add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=9.0.242.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91'          }}$con = new-object ('Microsoft.SqlServer.Management.Common.ServerConnection') 'dbname', 'username', 'password';$server = new-object ('Microsoft.SqlServer.Management.Smo.Server') $con;'$server.Databases | foreach {write-host "Name---" $_, "`tVersion---" $_.Version, "`tIsAccessible---" $_.IsAccessible, "`tID---\" $_.ID, "`tOwner---\" $_.Owner, "`tLastBackupDate---" $_.LastBackupDate, "`tCollation---" $_.Collation, "`tCreateDate---" $_.CreateDate, "`tDefaultFileGroup---" $_.DefaultFileGroup, "`tPrimaryFilePath---" $_.PrimaryFilePath, "`tLastLogBackupDate---" $_.LastLogBackupDate};$server.BackupDevices | foreach {write-host "Name---" $_.Name,"`tDeviceType---" $_.BackupDeviceType, "`tPhysicalLocation---" $_.PhysicalLocation, "`tStatus---" $_.State};
-
-* WMI
-** select * from Win32_SystemEnclosure
-** select * from Win32_ComputerSystem
-** select * from Win32_OperatingSystem
-** select * from Win32_Processor
-** select * from Win32_CacheMemory
-** select * from Win32_IP4RouteTable
-** select * from Win32_NetworkAdapter
-** select * from Win32_NetworkAdapterConfiguration
-** select * from Win32_logicaldisk
-** select * from Win32_Volume
-** select * from Win32_MappedLogicalDisk
-** select * from Win32_Service
-** select Name, InstallDate, Vendor from Win32_Product
-** select name, state, status, displayname from Win32_Service where name = ""
-** select ServerAutoStart from IIsWebServerSetting where name=""
-** namespace = microsoftiisv2
-** select * from IIsWebVirtualDirSetting
-** select * from IIsWebServerSetting
-** namespace = mscluster
-** select * from mscluster_cluster
-* SQL
-** select s.name as jobname, s.job_id as jobid, s.enabled as enabled, s.date_created as datecreated, s.description as description, l.name as username from msdb..sysjobs s left join master.sys.syslogins l on s.owner_sid = l.sid
-** select instance_name as databasename, counter_name as ckey, cntr_value as cvalue from sys.dm_os_performance_counters where instance_name = ''
-
-
-* Registry
-** To find SQL Server instances
-** HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\
-** HKLM:\Software\Microsoft\Microsoft SQL Server\

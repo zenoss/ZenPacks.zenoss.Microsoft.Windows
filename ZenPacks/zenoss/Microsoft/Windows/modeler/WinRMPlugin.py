@@ -38,8 +38,8 @@ class WinRMPlugin(PythonPlugin):
     '''
 
     deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinUser',
-        'zWinPassword',
+        'zWinRMUser',
+        'zWinRMPassword',
         'zWinRMPort',
         'zWinKDC',
         'zWinKeyTabFilePath',
@@ -89,9 +89,9 @@ class WinRMPlugin(PythonPlugin):
         Return a ConnectionInfo given device.
         '''
         hostname = device.manageIp
-        username = device.zWinUser
+        username = device.zWinRMUser
         auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinPassword
+        password = device.zWinRMPassword
         scheme = device.zWinScheme
         port = int(device.zWinRMPort)
         connectiontype = 'Keep-Alive'
