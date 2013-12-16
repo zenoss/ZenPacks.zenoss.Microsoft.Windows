@@ -333,19 +333,66 @@ You can then load the Windows servers into Zenoss Core or Resource Manager as de
 zenbatchload <filename>
 </syntaxhighlight>
 
-== Setting up WinRM Service on Target Windows Machines ==
+== Setting up WinRM Service for Target Windows Machines ==
 
 Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
 
-* Open ports 5985/5986 for WinRM
+Group Policy
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management
+
+WinRMClient
+* No setting changes required for client
+
+WinRMService
+* Allow remote server management through WinRm
+
+- HTTP (Windows default is HTTPS see note below for more information)
+* Allow unencrypted Traffic
+
+- Basic Authentication (Windows default is Kerberos see note below for more information)
+* Allow Basic Authentication 
+
+WinRS
+Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell
+* Allow Remote Shell Access
+* Max number of processes per shell = 4294967295
+* Max number of shells per user = 2147483647
+* Shell Timeout = 7200000
+
+Individual Machine configuration
+
+* Open ports 5985 (http)/5986(https) for WinRM
 * Run command prompt as Administrator
 * winrm quickconfig
-* winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperationsPerUser="4294967295"}
-* winrm s winrm/config/service/auth @{Basic="true"}
+
+* winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
 
+HTTP (Windows default is HTTPS see note below for more information)
+* winrm s winrm/config/service @{AllowUnencrypted="true"}
+
+Basic Authentication (Windows default is Kerberos see note below for moure information)
+* winrm s winrm/config/service/auth @{Basic="true"}
+
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
+
+{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients and you don't mind sending the payload in clear text but require the user name and password to be encrypted then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended.
+
+{{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
+
+{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on tbe client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
+http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
+Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
+
+setspn -l hostname1
+
+If you do not see a record with HTTPS/ at the beginning of the hostname you will need to create the record.
+
+example:
+setspn -s HTTPS/hostname1.zenoss.com hostname1
+
 
 == Transitioning from WindowsMonitor ==
 
@@ -392,12 +439,12 @@ There are also circumstances where you may currently be using the old Windows Ze
 #* ''zWinRMPassword'': Password for zWinRMUser account.
 # Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
 
-== Limitations of Beta Release ==
+== Limitations of Current Release ==
 
-The current beta release is known to have the following limitations.
+The current release is known to have the following limitations.
 
 * Known issues related to discovering the relationship between cluster and server devices.
-* Support for team NICs is limited to Intel interfaces.
+* Support for team NICs is limited to Intel and Broadcom interfaces.
 
 A current list of known issues related to this ZenPack can be found with [this JIRA query|https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here|https://jira.zenoss.com/secure/Signup!default.jspa].
 
