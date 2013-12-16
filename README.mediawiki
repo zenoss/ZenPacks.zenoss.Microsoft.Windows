@@ -1,10 +1,11 @@
 This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
 
-<span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
-
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
 This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
+
+== <span style="color:firebrick">Controlled Availability</span> ==
+This ZenPack is in a controlled release while it undergoes final testing. Take all necessary precautions before deploying into a production environment.
 
 == Video ==
 {{#widget:YouTube|id=kP28F_aQ77E|width=640|height=360}}
