@@ -476,8 +476,6 @@ kerberos authGSSClientStep failed (None)
 
 It is possible to workaround this error by manually establishing the tokens using the following steps.
 
-# Run the following command as the root user:
-#: <code>ln -s /usr/kerberos/bin/klist /usr/bin/klist</code>
 # Edit $ZENHOME/var/krb5/krb5.conf.
 ## Remove the ''includedir'' line.
 ## Add the following to the bottom of the file.
