@@ -1,8 +1,6 @@
-This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
+This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
-
-This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
 
 == <span style="color:firebrick">Controlled Availability</span> ==
 This ZenPack is in a controlled release while it undergoes final testing. Take all necessary precautions before deploying into a production environment.
@@ -302,6 +300,24 @@ Events will be collected from the Windows event log using a WinRM subscription. 
 
 Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
+== Requirements ==
+
+This ZenPack has the following requirements.
+
+;[[ZenPack:PythonCollector|PythonCollector ZenPack]]
+: This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed, and having the associated ''zenpython'' collector process running.
+
+;System Kerberos RPM
+: The operating system's kerberos RPM must be installed. See the [[#Installing_Kerberos_Dependency]] section for details.
+
+=== Installing Kerberos Dependency ===
+
+To use kerberos authentication the operating system's kerberos package must be installed on all Zenoss servers. On Enterprise Linux (Red Hat and CentOS) this is the ''krb5-workstation'' RPM and can typically be installed by running the following command as the ''root'' user.
+
+<console>
+yum -y install krb5-workstation
+</console>
+
 == Usage ==
 
 === Adding a Windows Device ===
@@ -374,7 +390,7 @@ Individual Machine configuration
 HTTP (Windows default is HTTPS see note below for more information)
 * winrm s winrm/config/service @{AllowUnencrypted="true"}
 
-Basic Authentication (Windows default is Kerberos see note below for moure information)
+Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth @{Basic="true"}
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
@@ -444,10 +460,47 @@ There are also circumstances where you may currently be using the old Windows Ze
 
 The current release is known to have the following limitations.
 
+* Failure to automatically establish kerberos tokens on Enterprise Linux 5.
 * Known issues related to discovering the relationship between cluster and server devices.
 * Support for team NICs is limited to Intel and Broadcom interfaces.
 
 A current list of known issues related to this ZenPack can be found with [this JIRA query|https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here|https://jira.zenoss.com/secure/Signup!default.jspa].
+
+=== Manually Establishing Kerberos Tickets ===
+
+In version 2.0.0 of the ZenPack there is a problem in the automatic establishment of kerberos tickets required for monitoring Windows devices using kerberos authentication. This is only a problem on Enterprise Linux 5 (Red Hat or CentOS). It is not a problem on Enterprise Linux 6. The problem will typically manifest as the following error when attempting to model a Windows device.
+
+<blockquote>
+kerberos authGSSClientStep failed (None)
+</blockquote>
+
+It is possible to workaround this error by manually establishing the tokens using the following steps.
+
+# Run the following command as the root user:
+#: <code>ln -s /usr/kerberos/bin/klist /usr/bin/klist</code>
+# Edit $ZENHOME/var/krb5/krb5.conf.
+## Remove the ''includedir'' line.
+## Add the following to the bottom of the file.
+
+<pre>
+[realms]
+ EXAMPLE1.COM = {
+  kdc = 192.168.77.77 #KDC IP Address or FQDN
+  admin_server = 192.168.77.77 #KDC IP Address or FQDN
+ }
+ EXAMPLE2.COM = {
+  kdc = 192.168.88.88 #KDC IP Address or FQDN
+  admin_server = 192.168.88.88 #KDC IP Address or FQDN
+ }
+
+[domain_realm]
+ .example1.com = EXAMPLE1.COM
+ example1.com = EXAMPLE1.COM
+ .example2.com = EXAMPLE2.COM
+ example2.com = EXAMPLE2.COM
+</pre>
+
+This is an example of what would be required if you had two domains: example1.com and example2.com with domain controllers at 192.168.77.77 and 192.168.88.88 respectively. You can use a single domain or more than two. Be sure to use the same capitalization scheme.
 
 == Troubleshooting ==
 
