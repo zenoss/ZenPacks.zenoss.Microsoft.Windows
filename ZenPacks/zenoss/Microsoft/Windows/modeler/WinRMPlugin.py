@@ -10,6 +10,8 @@
 import logging
 import types
 
+from xml.etree.cElementTree import ParseError as cParseError
+
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
@@ -162,6 +164,8 @@ class WinRMPlugin(PythonPlugin):
         elif isinstance(error, ConnectError):
             message = "Connection error on %s: %s"
             args.append(error.message)
+        elif isinstance(error, cParseError):
+            message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
         else:
             message = "Error on %s: %s"
             args.append(error)
