@@ -164,7 +164,7 @@ class WinRMPlugin(PythonPlugin):
         elif isinstance(error, ConnectError):
             message = "Connection error on %s: %s"
             args.append(error.message)
-        elif isinstance(error, cParseError):
+        elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
         else:
             message = "Error on %s: %s"
