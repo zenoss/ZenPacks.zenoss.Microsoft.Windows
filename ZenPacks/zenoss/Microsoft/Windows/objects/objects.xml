@@ -10403,6 +10403,48 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='WinService' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Windows per-service monitoring.
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Windows per-service monitoring.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.Winservice
+</property>
+<tomanycont id='datasources'>
+<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Service
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+60
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Running
+</property>
+<property type="boolean" id="defaultgraph" mode="w" >
+False
+</property>
+</object>
+</tomanycont>
+</object>
 <object id='ethernetCsmacd' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Microsoft Windows network interface monitoring.
@@ -11083,52 +11125,6 @@ True
 </object>
 </tomanycont>
 </object>
-</object>
-<!-- ('', 'zport', 'dmd', 'Devices', 'rrdTemplates', 'WinService') -->
-<object id='/zport/dmd/Devices/rrdTemplates/WinService' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
-<property id='zendoc' type='string'>
-Default Windows Service monitoring template.
-</property>
-<property type="text" id="description" mode="w" >
-Default Windows Service monitoring template.
-</property>
-<property type="string" id="targetPythonClass" mode="w" >
-Products.ZenModel.WinService
-</property>
-<tomanycont id='datasources'>
-<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
-<property id='zendoc' type='string'>
-Default Windows Service monitoring template.
-</property>
-<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-Windows Service
-</property>
-<property type="boolean" id="enabled" mode="w" >
-True
-</property>
-<property type="string" id="component" mode="w" >
-${here/id}
-</property>
-<property type="int" id="severity" mode="w" >
-5
-</property>
-<property type="string" id="cycletime" mode="w" >
-300
-</property>
-<property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
-</property>
-<property type="string" id="servicename" >
-${here/id}
-</property>
-<property type="string" id="alertifnot" >
-Running
-</property>
-<property type="boolean" id="defaultgraph" mode="w" >
-False
-</property>
-</object>
-</tomanycont>
 </object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'IISSiteStatus') -->
 <object id='/zport/dmd/Events/Status/instances/IISSiteStatus' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
