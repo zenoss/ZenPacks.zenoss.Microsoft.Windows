@@ -8,5 +8,11 @@ build
 eggs
 txwinrm
 
+# Packaged Libraries
+ZenPacks/zenoss/Microsoft/Windows/lib/*.pth
+ZenPacks/zenoss/Microsoft/Windows/lib/site.*
+ZenPacks/zenoss/Microsoft/Windows/lib/*.egg
+ZenPacks/zenoss/Microsoft/Windows/lib/*.egg-link
+
 .DS_Store
 
