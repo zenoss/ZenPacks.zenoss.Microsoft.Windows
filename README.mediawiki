@@ -460,7 +460,6 @@ There are also circumstances where you may currently be using the old Windows Ze
 
 The current release is known to have the following limitations.
 
-* Failure to automatically establish kerberos tokens on Enterprise Linux 5.
 * Known issues related to discovering the relationship between cluster and server devices.
 * Support for team NICs is limited to Intel and Broadcom interfaces.
 
@@ -469,6 +468,8 @@ A current list of known issues related to this ZenPack can be found with [this J
 === Manually Establishing Kerberos Tickets ===
 
 In version 2.0.0 of the ZenPack there is a problem in the automatic establishment of kerberos tickets required for monitoring Windows devices using kerberos authentication. This is only a problem on Enterprise Linux 5 (Red Hat or CentOS). It is not a problem on Enterprise Linux 6. The problem will typically manifest as the following error when attempting to model a Windows device.
+
+{{note}} Note that these manual steps are not necessary in version 2.0.1 and later of the ZenPack.
 
 <blockquote>
 kerberos authGSSClientStep failed (None)
@@ -558,7 +559,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ethernetCsmacd (in /Server/Microsoft)
 * OSProcess (in /Server/Microsoft)
 * OSProcess-2003 (in /Server/Microsoft)
-* WinService (in /)
+* WinService (in /Server/Microsoft)
 * Active Directory (in /Server/Microsoft)
 * Active Directory 2008 (in /Server/Microsoft)
 * Active Directory 2008R2 (in /Server/Microsoft)
@@ -572,3 +573,13 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
+
+== Changes ==
+
+;2.0.1
+* Eliminate need for manual kerberos configuration on Enterprise Linux 5. ([https://jira.zenoss.com/browse/ZEN-9389 ZEN-9389])
+* Fix "WinServiceLog: failed collection" error. ([https://jira.zenoss.com/browse/ZEN-9607 ZEN-9607])
+* Provide more helpful error if AllowUnencrypted is disabled. ([https://jira.zenoss.com/browse/ZEN-9524 ZEN-9524])
+
+;2.0.0
+* Initial release of new Windows support using WinRM instead of DCOM/RPC.
