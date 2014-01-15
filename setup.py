@@ -3,7 +3,7 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 AUTHOR = "Zenoss"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft']
@@ -16,17 +16,25 @@ PREV_ZENPACK_NAME = ""
 # Zenoss will not overwrite any changes you make below here.
 
 import os
-from subprocess import Popen, PIPE
+import subprocess
+import sys
+
 from setuptools import setup, find_packages
 
 
-# Run "make build" if a GNUmakefile is present.
 if os.path.isfile('GNUmakefile'):
-    print 'GNUmakefile found. Running "make builddependencies" ..'
-    p = Popen('make builddependencies', stdout=PIPE, stderr=PIPE, shell=True)
-    print p.communicate()[0]
-    if p.returncode != 0:
-        raise Exception('"make builddependencies" exited with an error: %s' % p.returncode)
+    make_target = None
+    if 'bdist_egg' in sys.argv:
+        make_target = 'egg-dependencies'
+    elif 'develop' in sys.argv:
+        make_target = 'develop-dependencies'
+
+    if make_target:
+        try:
+            subprocess.check_output('make {}'.format(make_target), shell=True)
+        except subprocess.CalledProcessError as e:
+            print e.output
+            raise
 
 setup(
     # This ZenPack metadata should usually be edited with the Zenoss

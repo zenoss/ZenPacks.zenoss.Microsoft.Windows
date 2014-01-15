@@ -84,7 +84,7 @@ def getOSKerberos(osrelease):
 
 class ZenPack(ZenPackBase):
 
-    binUtilities = ['genkrb5conf', 'typeperf', 'wecutil', 'winrm', 'winrs']
+    binUtilities = ['winrm', 'winrs']
     packZProperties = _PACK_Z_PROPS
 
     def install(self, app):

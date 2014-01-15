@@ -1,23 +1,11 @@
-###########################################################################
+##############################################################################
 #
-# This program is part of Zenoss Core, an open source monitoring platform.
-# Copyright (C) 2013 Zenoss Inc.
+# Copyright (C) Zenoss, Inc. 2013-2014, all rights reserved.
 #
-# This program is free software; you can redistribute it and/or modify it
-# under the terms of the GNU General Public License version 2 or (at your
-# option) any later version as published by the Free Software Foundation.
+# This content is made available according to terms specified in
+# License.zenoss under the directory where your Zenoss product is installed.
 #
-# For complete information please visit: http://www.zenoss.com/oss/
-#
-###########################################################################
-
-PYTHON=$(shell which python)
-HERE=$(PWD)
-TXWINRM_DIR=$(HERE)/src/txwinrm/txwinrm
-ZP_DIR=$(HERE)/ZenPacks/zenoss/Microsoft/Windows
-LIB_DIR=$(ZP_DIR)/lib
-
-GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "develop")
+##############################################################################
 
 # NOTE FOR KERBEROS SUPPORT
 #
@@ -32,25 +20,74 @@ GIT_BRANCH=$(shell git rev-parse --abbrev-ref HEAD 2>/dev/null || echo "develop"
 #
 # kerberos.so will be located in the build directory
 
+ZP_DIR=$(PWD)/ZenPacks/zenoss/Microsoft/Windows
+
+PYTHON=python
+SRC_DIR=$(PWD)/src
+BUILD_DIR=$(PWD)/build
+LIB_DIR=$(ZP_DIR)/lib
+
+# Sets TXWINRM=txwinrm-1.0.0 (or whatever the packaged version is)
+TXWINRM=$(patsubst $(SRC_DIR)/%.tar.gz,%,$(wildcard $(SRC_DIR)/txwinrm*.tar.gz))
+
+
+## Direct Targets ############################################################
+
 default: egg
 
-egg:
-	#setup.py will call 'make build' before creating the egg
-	python setup.py bdist_egg
 
-builddependencies: | src src/txwinrm
-	cd src/txwinrm; git checkout $(GIT_BRANCH) || git checkout develop; git pull
-	rm -rf $(LIB_DIR)/txwinrm
-	mkdir $(LIB_DIR)/txwinrm
-	cp -r $(TXWINRM_DIR)/*.py $(LIB_DIR)/txwinrm/
-	mkdir $(LIB_DIR)/txwinrm/request
-	cp -r $(TXWINRM_DIR)/request/*.xml $(LIB_DIR)/txwinrm/request/
-	
+egg: clean
+	@rm -f dist/*.egg
+	@python setup.py bdist_egg
+
+
+install: clean egg
+	@zenpack --install $(wildcard $(PWD)/dist/*.egg)
+
+
+develop: clean
+	@zenpack --link --install $(PWD)
+
+
 clean:
-	rm -rf lib build dist *.egg-info $(LIB_DIR)/txwinrm
+	@cd $(LIB_DIR) && rm -Rf *.pth site.* *.egg *.egg-link
+	@rm -rf build dist *.egg-info
 
-src:
-	mkdir src
 
-src/txwinrm:
-	cd src; git clone https://github.com/zenoss/txwinrm.git
+## setuptools Targets ########################################################
+
+egg-dependencies: clean
+	@mkdir -p $(BUILD_DIR)
+
+	@echo "Unpacking $(TXWINRM) into $(BUILD_DIR)/$(TXWINRM)/"
+	@cd $(BUILD_DIR) ; gzip -dc ../src/$(TXWINRM).tar.gz | tar -xf -
+
+	@echo "Installing $(TXWINRM) into $(LIB_DIR)/"
+	@cd $(BUILD_DIR)/$(TXWINRM) ; \
+		PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
+		$(PYTHON) setup.py install \
+		--install-lib="$(LIB_DIR)" \
+		--install-scripts=_scripts
+
+
+develop-dependencies: clean
+	@if [ -d "$(SRC_DIR)/txwinrm" ]; then \
+		echo "Using $(SRC_DIR)/txwinrm" ;\
+		cd $(SRC_DIR) ; \
+		echo "Linking txwinrm into $(LIB_DIR)/" ; \
+		cd txwinrm ; \
+			PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
+			$(PYTHON) setup.py develop \
+			--install-dir="$(LIB_DIR)" \
+			--script-dir=_scripts ;\
+	else \
+		echo "Unpacking $(TXWINRM) into $(SRC_DIR)/$(TXWINRM)/" ; \
+		cd $(SRC_DIR) ; \
+		gzip -dc ../src/$(TXWINRM).tar.gz | tar -xf - ; \
+		echo "Linking $(TXWINRM) into $(LIB_DIR)/" ; \
+		cd $(TXWINRM) ; \
+			PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
+			$(PYTHON) setup.py develop \
+			--install-dir="$(LIB_DIR)" \
+			--script-dir=_scripts ;\
+	fi

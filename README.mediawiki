@@ -1,10 +1,9 @@
-This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data. This ZenPack is compatible with Zenoss Core and Resource Manager versions 4.1.1, 4.2.3, 4.2.4.
-
-<span style="color: red; font-weight:bold">This ZenPack is currently in an open beta. See [[ZenPack:Microsoft_Windows|Microsoft Windows]] for the current ZenPack.</span>
+This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
-This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed.
+== <span style="color:firebrick">Controlled Availability</span> ==
+This ZenPack is in a controlled release while it undergoes final testing. Take all necessary precautions before deploying into a production environment.
 
 == Video ==
 {{#widget:YouTube|id=kP28F_aQ77E|width=640|height=360}}
@@ -301,6 +300,24 @@ Events will be collected from the Windows event log using a WinRM subscription. 
 
 Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
+== Requirements ==
+
+This ZenPack has the following requirements.
+
+;[[ZenPack:PythonCollector|PythonCollector ZenPack]]
+: This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed, and having the associated ''zenpython'' collector process running.
+
+;System Kerberos RPM
+: The operating system's kerberos RPM must be installed. See the [[#Installing_Kerberos_Dependency]] section for details.
+
+=== Installing Kerberos Dependency ===
+
+To use kerberos authentication the operating system's kerberos package must be installed on all Zenoss servers. On Enterprise Linux (Red Hat and CentOS) this is the ''krb5-workstation'' RPM and can typically be installed by running the following command as the ''root'' user.
+
+<console>
+yum -y install krb5-workstation
+</console>
+
 == Usage ==
 
 === Adding a Windows Device ===
@@ -333,19 +350,66 @@ You can then load the Windows servers into Zenoss Core or Resource Manager as de
 zenbatchload <filename>
 </syntaxhighlight>
 
-== Setting up WinRM Service on Target Windows Machines ==
+== Setting up WinRM Service for Target Windows Machines ==
 
 Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
 
-* Open ports 5985/5986 for WinRM
+Group Policy
+
+Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management
+
+WinRMClient
+* No setting changes required for client
+
+WinRMService
+* Allow remote server management through WinRm
+
+- HTTP (Windows default is HTTPS see note below for more information)
+* Allow unencrypted Traffic
+
+- Basic Authentication (Windows default is Kerberos see note below for more information)
+* Allow Basic Authentication 
+
+WinRS
+Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell
+* Allow Remote Shell Access
+* Max number of processes per shell = 4294967295
+* Max number of shells per user = 2147483647
+* Shell Timeout = 7200000
+
+Individual Machine configuration
+
+* Open ports 5985 (http)/5986(https) for WinRM
 * Run command prompt as Administrator
 * winrm quickconfig
-* winrm s winrm/config/service @{AllowUnencrypted="true";MaxConcurrentOperationsPerUser="4294967295"}
-* winrm s winrm/config/service/auth @{Basic="true"}
+
+* winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
 
+HTTP (Windows default is HTTPS see note below for more information)
+* winrm s winrm/config/service @{AllowUnencrypted="true"}
+
+Basic Authentication (Windows default is Kerberos see note below for more information)
+* winrm s winrm/config/service/auth @{Basic="true"}
+
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
+
+{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients and you don't mind sending the payload in clear text but require the user name and password to be encrypted then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended.
+
+{{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
+
+{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on tbe client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
+http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
+Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
+
+setspn -l hostname1
+
+If you do not see a record with HTTPS/ at the beginning of the hostname you will need to create the record.
+
+example:
+setspn -s HTTPS/hostname1.zenoss.com hostname1
+
 
 == Transitioning from WindowsMonitor ==
 
@@ -392,14 +456,50 @@ There are also circumstances where you may currently be using the old Windows Ze
 #* ''zWinRMPassword'': Password for zWinRMUser account.
 # Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
 
-== Limitations of Beta Release ==
+== Limitations of Current Release ==
 
-The current beta release is known to have the following limitations.
+The current release is known to have the following limitations.
 
 * Known issues related to discovering the relationship between cluster and server devices.
-* Support for team NICs is limited to Intel interfaces.
+* Support for team NICs is limited to Intel and Broadcom interfaces.
 
 A current list of known issues related to this ZenPack can be found with [this JIRA query|https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here|https://jira.zenoss.com/secure/Signup!default.jspa].
+
+=== Manually Establishing Kerberos Tickets ===
+
+In version 2.0.0 of the ZenPack there is a problem in the automatic establishment of kerberos tickets required for monitoring Windows devices using kerberos authentication. This is only a problem on Enterprise Linux 5 (Red Hat or CentOS). It is not a problem on Enterprise Linux 6. The problem will typically manifest as the following error when attempting to model a Windows device.
+
+{{note}} Note that these manual steps are not necessary in version 2.0.1 and later of the ZenPack.
+
+<blockquote>
+kerberos authGSSClientStep failed (None)
+</blockquote>
+
+It is possible to workaround this error by manually establishing the tokens using the following steps.
+
+# Edit $ZENHOME/var/krb5/krb5.conf.
+## Remove the ''includedir'' line.
+## Add the following to the bottom of the file.
+
+<pre>
+[realms]
+ EXAMPLE1.COM = {
+  kdc = 192.168.77.77 #KDC IP Address or FQDN
+  admin_server = 192.168.77.77 #KDC IP Address or FQDN
+ }
+ EXAMPLE2.COM = {
+  kdc = 192.168.88.88 #KDC IP Address or FQDN
+  admin_server = 192.168.88.88 #KDC IP Address or FQDN
+ }
+
+[domain_realm]
+ .example1.com = EXAMPLE1.COM
+ example1.com = EXAMPLE1.COM
+ .example2.com = EXAMPLE2.COM
+ example2.com = EXAMPLE2.COM
+</pre>
+
+This is an example of what would be required if you had two domains: example1.com and example2.com with domain controllers at 192.168.77.77 and 192.168.88.88 respectively. You can use a single domain or more than two. Be sure to use the same capitalization scheme.
 
 == Troubleshooting ==
 
@@ -459,7 +559,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ethernetCsmacd (in /Server/Microsoft)
 * OSProcess (in /Server/Microsoft)
 * OSProcess-2003 (in /Server/Microsoft)
-* WinService (in /)
+* WinService (in /Server/Microsoft)
 * Active Directory (in /Server/Microsoft)
 * Active Directory 2008 (in /Server/Microsoft)
 * Active Directory 2008R2 (in /Server/Microsoft)
@@ -473,3 +573,13 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
+
+== Changes ==
+
+;2.0.1
+* Eliminate need for manual kerberos configuration on Enterprise Linux 5. ([https://jira.zenoss.com/browse/ZEN-9389 ZEN-9389])
+* Fix "WinServiceLog: failed collection" error. ([https://jira.zenoss.com/browse/ZEN-9607 ZEN-9607])
+* Provide more helpful error if AllowUnencrypted is disabled. ([https://jira.zenoss.com/browse/ZEN-9524 ZEN-9524])
+
+;2.0.0
+* Initial release of new Windows support using WinRM instead of DCOM/RPC.
