@@ -463,7 +463,7 @@ The current release is known to have the following limitations.
 * Known issues related to discovering the relationship between cluster and server devices.
 * Support for team NICs is limited to Intel and Broadcom interfaces.
 
-A current list of known issues related to this ZenPack can be found with [this JIRA query|https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here|https://jira.zenoss.com/secure/Signup!default.jspa].
+A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
 === Manually Establishing Kerberos Tickets ===
 
