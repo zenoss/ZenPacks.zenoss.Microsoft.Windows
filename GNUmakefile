@@ -50,7 +50,7 @@ develop: clean
 
 
 clean:
-	@cd $(LIB_DIR) && rm -Rf *.pth site.* *.egg *.egg-link
+	@rm -Rf $(LIB_DIR)/txwinrm
 	@rm -rf build dist *.egg-info
 
 
@@ -62,32 +62,21 @@ egg-dependencies: clean
 	@echo "Unpacking $(TXWINRM) into $(BUILD_DIR)/$(TXWINRM)/"
 	@cd $(BUILD_DIR) ; gzip -dc ../src/$(TXWINRM).tar.gz | tar -xf -
 
-	@echo "Installing $(TXWINRM) into $(LIB_DIR)/"
-	@cd $(BUILD_DIR)/$(TXWINRM) ; \
-		PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
-		$(PYTHON) setup.py install \
-		--install-lib="$(LIB_DIR)" \
-		--install-scripts=_scripts
+	@echo "Building $(TXWINRM)"
+	@cd $(BUILD_DIR)/$(TXWINRM) ; $(PYTHON) setup.py build >/dev/null
 
+	@echo "Copying $(TXWINRM) into $(LIB_DIR)/"
+	@mkdir -p $(LIB_DIR)/txwinrm
+	@cd $(BUILD_DIR)/$(TXWINRM)/txwinrm ; \
+		tar -c --exclude test . | tar -x -C $(LIB_DIR)/txwinrm
 
 develop-dependencies: clean
 	@if [ -d "$(SRC_DIR)/txwinrm" ]; then \
-		echo "Using $(SRC_DIR)/txwinrm" ;\
-		cd $(SRC_DIR) ; \
-		echo "Linking txwinrm into $(LIB_DIR)/" ; \
-		cd txwinrm ; \
-			PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
-			$(PYTHON) setup.py develop \
-			--install-dir="$(LIB_DIR)" \
-			--script-dir=_scripts ;\
+		echo "Linking $(SRC_DIR)/txwinrm/txwinrm into $(LIB_DIR)/" ; \
+		ln -sf $(SRC_DIR)/txwinrm/txwinrm $(LIB_DIR)/ ; \
 	else \
 		echo "Unpacking $(TXWINRM) into $(SRC_DIR)/$(TXWINRM)/" ; \
-		cd $(SRC_DIR) ; \
-		gzip -dc ../src/$(TXWINRM).tar.gz | tar -xf - ; \
-		echo "Linking $(TXWINRM) into $(LIB_DIR)/" ; \
-		cd $(TXWINRM) ; \
-			PYTHONPATH="$(PYTHONPATH):$(LIB_DIR)" \
-			$(PYTHON) setup.py develop \
-			--install-dir="$(LIB_DIR)" \
-			--script-dir=_scripts ;\
+		cd $(SRC_DIR) ; gzip -dc ../src/$(TXWINRM).tar.gz | tar -xf - ; \
+		echo "Linking $(SRC_DIR)/$(TXWINRM)/txwinrm into $(LIB_DIR)/" ; \
+		ln -sf $(SRC_DIR)/$(TXWINRM)/txwinrm $(LIB_DIR)/ ; \
 	fi
