@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>IIS metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>IIS</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\Web Service(_Total)\Bytes Received/sec</li>
+        <li>\Web Service(_Total)\Bytes Sent/sec</li>
+        <li>\Web Service(_Total)\CGI Requests/sec</li>
+        <li>\Web Service(_Total)\Connection Attempts/sec</li>
+        <li>\Web Service(_Total)\Copy Requests/sec</li>
+        <li>\Web Service(_Total)\Delete Requests/sec</li>
+        <li>\Web Service(_Total)\Files Received/sec</li>
+        <li>\Web Service(_Total)\Files Sent/sec</li>
+        <li>\Web Service(_Total)\Get Requests/sec</li>
+        <li>\Web Service(_Total)\Head Requests/sec</li>
+        <li>\Web Service(_Total)\ISAPI Extension Requests/sec</li>
+        <li>\Web Service(_Total)\Lock Requests/sec</li>
+        <li>\Web Service(_Total)\Mkcol Requests/sec</li>
+        <li>\Web Service(_Total)\Move Requests/sec</li>
+        <li>\Web Service(_Total)\Options Requests/sec</li>
+        <li>\Web Service(_Total)\Other Request Methods/sec</li>
+        <li>\Web Service(_Total)\Post Requests/sec</li>
+        <li>\Web Service(_Total)\Propfind Requests/sec</li>
+        <li>\Web Service(_Total)\Proppatch Requests/sec</li>
+        <li>\Web Service(_Total)\Put Requests/sec</li>
+        <li>\Web Service(_Total)\Search Requests/sec</li>
+        <li>\Web Service(_Total)\Trace Requests/sec</li>
+        <li>\Web Service(_Total)\Unlock Requests/sec</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

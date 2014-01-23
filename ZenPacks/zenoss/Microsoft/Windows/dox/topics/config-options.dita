@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Authentication and transport options</title>
+  <refbody>
+    <section>
+      <p>For authentication and transport, you may configure one of the options in the following list. 
+        This ZenPack supports all four options.</p>
+      <dl>
+        <dlentry>
+          <dt>Basic authentication, HTTP transport</dt>
+          <dd>This option is the least secure and is not recommended. Usernames, passwords, and payloads
+            are transmitted in clear text.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Basic authentication, HTTPS transport</dt>
+          <dd>This option encrypts usernames, passwords, and payloads at the transport layer, with
+            SSL. The Windows systems to monitor must be configured to support HTTPS
+            individually.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Kerberos authentication, HTTP transport</dt>
+          <dd>This option encrypts usernames and passwords (at the application layer) but payloads
+            are not encrypted.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Kerberos authentication, HTTPS transport</dt>
+          <dd>This option is the most secure and is recommended. Usernames, passwords, and payloads
+            are all encrypted, first at the application layer, and again at the transport layer. The
+            Windows systems to monitor must be configured to support HTTPS individually.</dd>
+        </dlentry>
+      </dl>
+    </section>
+  </refbody>
+</reference>

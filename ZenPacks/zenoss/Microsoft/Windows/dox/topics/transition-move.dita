@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Moving Windows systems to this ZenPack</title>
+  <taskbody>
+    <steps>
+      <step>
+        <cmd>Log in to <ph conkeyref="names/platform"/> user interface <ph conkeyref="login-as/zm-or-m"/>.</cmd>
+      </step>
+      <step>
+        <cmd>Navigate to the <uicontrol>INFRASTRUCTURE</uicontrol> page.</cmd>
+      </step>
+      <step>
+        <cmd>In the left column, select the <codeph>/Server/Windows/WMI</codeph> device class.</cmd>
+      </step>
+      <step>
+        <cmd>In the device list, select a Windows system to remove from the class.</cmd>
+      </step>
+      <step>
+        <cmd>From the bottom of the left column, click the Action button, and then 
+        select <uicontrol>Delete Device...</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>In the <uicontrol>Delete Device</uicontrol> dialog, click <uicontrol>SUBMIT</uicontrol>.</cmd>
+      </step>
+    </steps>
+    <postreq>Add the deleted Windows device to the <codeph>/Server/Microsoft/Windows</codeph> class. 
+      For more information, see <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-adding"/>.</postreq>
+  </taskbody>
+</task>

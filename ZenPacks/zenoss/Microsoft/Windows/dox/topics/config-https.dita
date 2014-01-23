@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Configuring HTTPS</title>
+  <refbody>
+    <section>
+      <p>Currently, HTTPS must be configured on each Windows system to monitor. <ph
+          conkeyref="names/company"/> is testing several options for automating the task, but none
+        are available for production use.</p>
+      
+      <p>To successfully encrypt the payload between <ph conkeyref="names/platform"/> and
+        Windows clients, you must <xref scope="external"
+          href="http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx"
+          format="html">install a Server Authentication certificate on the client
+          system</xref>. Once the correct certificate is installed, change the client's <codeph>zWinScheme</codeph> property to 
+        HTTPS and the <codeph>zWinRMPort</codeph> property to 5986.</p>
+      
+      <p>If the preceding steps are unsuccessful, verify that the appropriate Service Principal Name
+        (SPN) record exists for Kerberos authentication. Log in to any Active Directory system and
+        enter the following command. Replace <varname>Hostname</varname> with the hostname portion
+        of the client system's fully-qualified domain name (FQDN).</p>
+      <codeblock>setspn -l <varname>Hostname</varname></codeblock>
+      
+      <p>If the preceding command returns a hostname record that does not start with 
+        <codeph>HTTPS/</codeph>, use the following command to create the record. Replace 
+        <varname>FQDN</varname> with the fully-qualified domain name of the client system.</p>
+      <codeblock>setspn -s HTTPS/<varname>FQDN</varname> <varname>Hostname</varname></codeblock>
+    </section>
+  </refbody>
+</reference>

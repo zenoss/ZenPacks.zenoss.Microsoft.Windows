@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Adding multiple Windows devices</title>
+  <taskbody>
+    <context>Follow these steps to add multiple Windows devices with the <cmdname>zenbatchload</cmdname> command.</context>
+    <steps>
+      <step>
+        <cmd>Log in to the <ph conkeyref="names/platform"/> master host <ph conkeyref="login-as/zenoss"/>.</cmd>
+      </step>
+      <step>
+        <cmd>Create a text file with content similar to the following example.</cmd>
+        <stepxmp>
+          <codeblock>/Devices/Server/Microsoft/Windows
+<varname>FQDN-or-IP-address</varname> zWinRMUser="Administrator", zWinRMPassword="<varname>Password</varname>"
+<varname>FQDN-or-IP-address</varname> zWinRMUser="Administrator", zWinRMPassword="<varname>Password</varname>"
+<varname>FQDN-or-IP-address</varname> zWinRMUser="Administrator", zWinRMPassword="<varname>Password</varname>"</codeblock>
+          <p>Replace <varname>FQDN-or-IP-address</varname> with the fully-qualified domain name or IP address of the Windows host to add,
+            and replace <varname>Password</varname> with the Administrator's password for each host.</p>
+        </stepxmp>
+      </step>
+      <step>
+        <cmd>Load the devices into <ph conkeyref="names/platform"/>. Replace <varname>Filename</varname> 
+          with the name of the file created in the preceding step.</cmd>
+        <stepxmp><userinput>zenbatchload <varname>Filename</varname></userinput></stepxmp>
+      </step>
+    </steps>
+  </taskbody>
+</task>

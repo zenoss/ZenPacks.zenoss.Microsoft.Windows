@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Device metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>Devices</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\Memory\Available bytes</li>
+        <li>\Memory\Committed Bytes</li>
+        <li>\Memory\Pages Input/sec</li>
+        <li>\Memory\Pages Output/sec</li>
+        <li>\Paging File(_Total)\% Usage</li>
+        <li>\Processor(_Total)\% Privileged Time</li>
+        <li>\Processor(_Total)\% Processor Time</li>
+        <li>\Processor(_Total)\% User Time</li>
+        <li>\System\System Up Time</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>
