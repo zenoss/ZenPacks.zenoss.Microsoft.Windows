@@ -27,9 +27,14 @@
             <entry>krb5-workstation</entry>
           </row>
           <row>
-            <entry>Windows software</entry>
+            <entry>Windows management</entry>
             <entry>WinRM 2.0. (Windows Server 2003 with SP1 and all subsequent 
                 releases of Windows Server include WinRM 2.0.)</entry>
+          </row>
+          <row>
+            <entry>IIS management</entry>
+            <entry>To enable the IIS Sites metrics, install the IIS 6 Management 
+              Compatibility module on the Windows systems to monitor.</entry>
           </row>
         </tbody>
       </tgroup>

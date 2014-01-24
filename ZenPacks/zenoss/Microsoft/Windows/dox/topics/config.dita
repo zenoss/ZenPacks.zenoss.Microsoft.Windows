@@ -12,6 +12,8 @@
         </li>
         <li>To configure systems individually, use the procedure in this section.</li>
       </ul>
+      <note>To enable the IIS Sites metrics, install the IIS 6 Management 
+        Compatibility module on the Windows systems to monitor.</note>
     </section>
   </refbody>
 </reference>
