@@ -391,35 +391,29 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 missing_counter_count,
                 self.config.id)
 
+            missing_counters_str = ', '.join(missing_counters)
+
             LOG.debug(
                 "%s missing counters for %s: %s",
                 missing_counter_count,
                 self.config.id,
-                ', '.join(missing_counters))
+                missing_counters_str)
 
             summary = (
                 '{} counters missing in collection - see details'
                 .format(missing_counter_count))
 
-            message = (
-                '{} counters missing in collection: {}'
-                .format(
-                    missing_counter_count,
-                    ', '.join(missing_counters)))
-
             self.data['events'].append({
                 'device': self.config.id,
                 'severity': ZenEventClasses.Info,
-                'component': 'Perfmon',
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': summary,
-                'message': message,
+                'missing_counters': missing_counters_str,
                 })
         else:
             self.data['events'].append({
                 'device': self.config.id,
                 'severity': ZenEventClasses.Clear,
-                'component': 'Perfmon',
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': '0 counters missing in collection',
                 })
