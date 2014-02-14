@@ -177,7 +177,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.cycling:
             self.sample_interval = dsconf0.cycletime
-            self.max_samples = 600 / self.sample_interval
+            self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
             self.max_samples = 1
