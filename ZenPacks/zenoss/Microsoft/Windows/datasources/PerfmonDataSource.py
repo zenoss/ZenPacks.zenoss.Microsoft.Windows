@@ -285,20 +285,22 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         receive_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
-        if result[0][0].startswith('Readings : '):
-            result[0][0] = result[0][0].replace('Readings : ', '', 1)
+        stdout_lines = result[0]
+        if stdout_lines:
+            if stdout_lines[0].startswith('Readings : '):
+                stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
 
-            if self.collected_counters:
-                self.reportMissingCounters(
-                    self.counter_map, self.collected_counters)
+                if self.collected_counters:
+                    self.reportMissingCounters(
+                        self.counter_map, self.collected_counters)
 
-            self.sample_buffer = collections.deque(result[0])
-            self.collected_counters = set()
-            self.collected_samples += 1
+                self.sample_buffer = collections.deque(stdout_lines)
+                self.collected_counters = set()
+                self.collected_samples += 1
 
-        # Extend sample buffer. Continuation of previous sample.
-        else:
-            self.sample_buffer.extend(result[0])
+            # Extend sample buffer. Continuation of previous sample.
+            else:
+                self.sample_buffer.extend(stdout_lines)
 
         # Continue while we have counter/value pairs.
         while len(self.sample_buffer) > 1:
