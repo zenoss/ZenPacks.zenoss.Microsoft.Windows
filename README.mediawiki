@@ -576,6 +576,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.0.2
+* Fix build issue that made ZenPack unavailable from catalog.
+
 ;2.0.1
 * Eliminate need for manual kerberos configuration on Enterprise Linux 5. ([https://jira.zenoss.com/browse/ZEN-9389 ZEN-9389])
 * Fix "WinServiceLog: failed collection" error. ([https://jira.zenoss.com/browse/ZEN-9607 ZEN-9607])
