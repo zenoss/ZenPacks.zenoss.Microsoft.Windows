@@ -8,6 +8,7 @@
 ##############################################################################
 
 from twisted.internet import reactor
+from twisted.internet.defer import Deferred
 from twisted.internet.error import TimeoutError
 
 
@@ -32,3 +33,12 @@ def add_timeout(deferred, timeout):
     deferred.addBoth(cancel_timeout_d)
 
     return deferred
+
+
+def sleep(seconds):
+    '''
+    Return a deferred that is called in given seconds.
+    '''
+    d = Deferred()
+    reactor.callLater(seconds, d.callback, None)
+    return d

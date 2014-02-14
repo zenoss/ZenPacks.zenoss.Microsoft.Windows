@@ -40,7 +40,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     )
 
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
-from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout
+from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout, sleep
 
 addLocalLibPath()
 
@@ -149,6 +149,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if not self.started:
             yield self.start()
+        else:
+            # When we ask for data, we know that we won't get the data
+            # back until now + cycletime. This introduces a race
+            # condition on the next collection interval where the data
+            # won't yet be available for a fraction of a second. This
+            # means we have to wait another collection interval before
+            # the data will be available.
+            #
+            # Doing an asynchronous sleep for 1 second here mitigates
+            # the race condition and greatly increases the chances that
+            # we'll get data a full collection interval earlier.
+            yield sleep(1)
 
         # Reset so we don't deliver the same results more than once.
         data = self.data.copy()
