@@ -224,7 +224,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Start the continuous command.
         '''
+        yield self.stop()
+
         try:
+            LOG.debug("starting Get-Counter on %s", self.config.id)
             yield self.command.start(self.commandline)
         except ConnectError as e:
             LOG.warn(
@@ -251,6 +254,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Stop the continuous command.
         '''
+        if not self.started:
+            defer.returnValue(None)
+
         LOG.debug("stopping Get-Counter on %s", self.config.id)
 
         self.started = False
@@ -265,7 +271,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield self.command.stop()
             except Exception, ex:
-                LOG.debug(
+                # Log this as a warning because it can mean that a WSMan
+                # active operation has been leaked on the Windows
+                # server.
+                LOG.warn(
                     "failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 
@@ -422,7 +431,4 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
         '''
-        if self.config:
-            return self.stop()
-
-        return defer.succeed(None)
+        return self.stop()
