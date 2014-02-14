@@ -618,6 +618,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
 
         data['events'].append(dict(
+            severity=ZenEventClasses.Clear,
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
             summary='winrs: successful collection',
