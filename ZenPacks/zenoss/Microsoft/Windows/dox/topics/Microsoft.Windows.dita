@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
 <reference id="referenceid">
-  <title><zenpack>ZenPacks.zenoss.Microsoft.Windows</zenpack></title>
-  <shortdesc>This ZenPack monitors Microsoft Windows systems and services through the Windows Remote
+  <title>(Microsoft.Windows) Microsoft Windows</title>
+  <shortdesc>The <zenpack>ZenPacks.zenoss.Microsoft.Windows</zenpack> ZenPack monitors Microsoft Windows systems and services through the Windows Remote
     Management (WinRM) and Windows Remote Shell (WinRS) interfaces.</shortdesc>
   <refbody>
     <section>
