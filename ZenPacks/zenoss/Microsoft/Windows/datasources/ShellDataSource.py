@@ -44,7 +44,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 addLocalLibPath()
 
 from txwinrm.util import ConnectionInfo
-from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
+from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -55,8 +55,6 @@ AVAILABLE_STRATEGIES = [
     'powershell Cluster Services',
     'powershell Cluster Resources',
     ]
-
-connections_dct = {}
 
 
 class ShellDataSource(PythonDataSource):
@@ -572,48 +570,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line = strategy.build_command_line(counters)
 
-        try:
-            sender = connections_dct[conn_info]['sender']
-            shell_id = connections_dct[conn_info]['shell_id']
+        command = create_single_shot_command(conn_info)
+        results = yield command.run_command(command_line)
 
-        except:
-            shell_conn = yield create_long_running_shell(conn_info)
-            sender = shell_conn['sender']
-            shell_id = shell_conn['shell_id']
-
-            connections_dct[conn_info] = {
-                'sender': sender,
-                'shell_id': shell_id
-            }
-
-        try:
-            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
-
-        except:
-            del connections_dct[conn_info]
-            # WinRS could have failed for some reason
-            # Need to restart shell here
-            log.info('WinRS ID {0} no longer exists another connection will be \
-                created. This could be a result of restarting the client machine \
-                or the idle timeout for WinRS is to short. If you are seeing this \
-                message freaquently you may need to adjust the idle timeout. \
-                Please refer to the FAQ section for information on how to make \
-                this adjustment'.format(shell_id))
-
-            shell_conn = yield create_long_running_shell(conn_info)
-            sender = shell_conn['sender']
-            shell_id = shell_conn['shell_id']
-
-            connections_dct[conn_info] = {
-                'sender': sender,
-                'shell_id': shell_id
-            }
-
-            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
-
-        log.debug('Results retreived for device {0} on shell id {1}'.format(
-                dsconf0.manageIp,
-                shell_id))
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
@@ -659,6 +618,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
 
         data['events'].append(dict(
+            severity=ZenEventClasses.Clear,
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
             summary='winrs: successful collection',
