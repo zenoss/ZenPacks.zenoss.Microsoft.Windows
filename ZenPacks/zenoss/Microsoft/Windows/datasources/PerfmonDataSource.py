@@ -37,14 +37,14 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSource,
     PythonDataSourcePlugin,
-    )
+)
 
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
+from txwinrm.util import ConnectionInfo, UnauthorizedError
 from txwinrm.shell import create_long_running_command
 
 
@@ -72,7 +72,7 @@ class PerfmonDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},
-        )
+    )
 
 
 class IPerfmonDataSourceInfo(IRRDDataSourceInfo):
@@ -101,7 +101,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         'zWinKDC',
         'zWinKeyTabFilePath',
         'zWinScheme',
-        )
+    )
 
     config = None
     cycling = None
@@ -125,7 +125,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return (
             context.device().id,
             datasource.getCycleTime(context),
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
@@ -135,7 +135,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         return {
             'counter': counter,
-            }
+        }
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -147,7 +147,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if not self.initialized:
             self.initialize(config)
 
-        if not self.started:
+        if not self.started and self.initialized:
             yield self.start()
 
         # Reset so we don't deliver the same results more than once.
@@ -187,7 +187,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.counter_map[dsconf.params['counter'].lower()] = (
                 dsconf.component,
                 dsconf.datasource,
-                )
+            )
 
         self.commandline = (
             'powershell -NoLogo -NonInteractive -NoProfile -Command "'
@@ -197,26 +197,33 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
             '-counter @({Counters}) '
             '| Format-List -Property Readings"'
-            ).format(
+        ).format(
             SampleInterval=self.sample_interval,
             MaxSamples=self.max_samples,
             Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
-            )
+        )
 
         self.config = config
-
-        self.command = create_long_running_command(
-            ConnectionInfo(
-                dsconf0.manageIp,
-                auth_type,
-                dsconf0.zWinRMUser,
-                dsconf0.zWinRMPassword,
-                scheme,
-                port,
-                connectiontype,
-                keytab,
-                dcip))
-
+        try:
+            self.command = create_long_running_command(
+                ConnectionInfo(
+                    dsconf0.manageIp,
+                    auth_type,
+                    dsconf0.zWinRMUser,
+                    dsconf0.zWinRMPassword,
+                    scheme,
+                    port,
+                    connectiontype,
+                    keytab,
+                    dcip))
+        except Exception, e:
+            self.initialized = False
+            LOG.warn(
+                "Connection error on %s: %s",
+                self.config.id,
+                e.message or "the task is not Initialized"
+            )
+            return
         self.initialized = True
 
     @defer.inlineCallbacks
@@ -226,7 +233,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         try:
             yield self.command.start(self.commandline)
-        except ConnectError as e:
+        except (ConnectError, UnauthorizedError) as e:
             LOG.warn(
                 "Connection error on %s: %s",
                 self.config.id,
@@ -403,7 +410,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': summary,
                 'message': message,
-                })
+            })
         else:
             self.data['events'].append({
                 'device': self.config.id,
@@ -411,7 +418,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'component': 'Perfmon',
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': '0 counters missing in collection',
-                })
+            })
 
     def cleanup(self, config):
         '''
