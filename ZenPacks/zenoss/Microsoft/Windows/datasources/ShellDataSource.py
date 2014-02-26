@@ -151,6 +151,7 @@ class WinCmd(object):
     Emulate the SSH/ZenCommand returned object (Products.ZenRRD.zencommand.Cmd) for
     compatibility with existing Command parsers
     """
+    name = None
     device = ''
     command = None
     component = ''
@@ -182,6 +183,7 @@ class CustomCommandStrategy(object):
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
+        cmd.name = '{}/{}'.format(dsconf.template, dsconf.datasource)
         cmd.command = dsconf.params['script']
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
