@@ -192,6 +192,7 @@ class CustomCommandStrategy(object):
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
         cmd.deviceConfig = config
+        cmd.deviceConfig.name = config.id
 
         # Add the component id to the points array for compatibility with parsers
         for point in dsconf.points:
