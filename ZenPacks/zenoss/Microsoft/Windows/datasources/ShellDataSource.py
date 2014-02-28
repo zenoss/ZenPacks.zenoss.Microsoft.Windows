@@ -171,6 +171,8 @@ class WinCmd(object):
 
 
 class CustomCommandStrategy(object):
+    key = 'CustomCommand'
+
     def build_command_line(self, script, usePowershell):
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command "%s"' % script
@@ -212,6 +214,7 @@ customcommand_strategy = CustomCommandStrategy()
 
 
 class PowershellMSSQLStrategy(object):
+    key = 'PowershellMSSQL'
 
     def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database):
         #SQL Command opening
@@ -293,6 +296,7 @@ powershellmssql_strategy = PowershellMSSQLStrategy()
 
 
 class PowershellClusterResourceStrategy(object):
+    key = 'ClusterResource'
 
     def build_command_line(self, resource, componenttype):
         #Clustering Command opening
@@ -359,6 +363,7 @@ powershellclusterresource_strategy = PowershellClusterResourceStrategy()
 
 
 class PowershellClusterServiceStrategy(object):
+    key = 'ClusterService'
 
     def build_command_line(self, resource, componenttype):
         #Clustering Command opening
@@ -586,7 +591,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         strategy, dsconfs, result = results
 
-        if 'CustomCommand' in str(strategy.__class__):
+        if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
 
@@ -599,15 +604,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                 if dsconf.datasource == 'state':
                     currentstate = {
-                    'Online': ZenEventClasses.Clear,
-                    'Offline': ZenEventClasses.Critical,
-                    'PartialOnline': ZenEventClasses.Error,
-                    'Failed': ZenEventClasses.Critical
+                        'Online': ZenEventClasses.Clear,
+                        'Offline': ZenEventClasses.Critical,
+                        'PartialOnline': ZenEventClasses.Error,
+                        'Failed': ZenEventClasses.Critical
                     }.get(value[1], ZenEventClasses.Info)
 
                     data['events'].append(dict(
-                        eventClassKey='winrsClusterResource',
-                        eventKey='ClusterResource',
+                        eventClassKey='winrs{0}'.format(strategy.key),
+                        eventKey=strategy.key,
                         severity=currentstate,
                         summary='Last state of component was {0}'.format(value[1]),
                         device=config.id,
