@@ -42,10 +42,12 @@ class Software(WinRMPlugin):
             om.id = self.prepId(item.Name)
             om.title = item.Name
             om.setProductKey = MultiArgs(item.Name, item.Vendor)
-            om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
-                item.InstallDate[0:4],
-                item.InstallDate[4:6],
-                item.InstallDate[6:8])
+
+            if item.InstallDate:
+                om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
+                    item.InstallDate[0:4],
+                    item.InstallDate[4:6],
+                    item.InstallDate[6:8])
 
             rm.append(om)
 

@@ -218,7 +218,7 @@ class Interfaces(WinRMPlugin):
                 int_om.mtu = 0
 
             if getattr(inter, 'Speed', 0) is not None:
-                int_om.speed = inter.Speed
+                int_om.speed = int(inter.Speed)
             else:
                 int_om.speed = 0
 

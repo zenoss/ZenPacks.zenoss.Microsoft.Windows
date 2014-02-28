@@ -40,7 +40,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 )
 
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
-from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout
+from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout, sleep
 
 addLocalLibPath()
 
@@ -149,6 +149,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if not self.started and self.initialized:
             yield self.start()
+        else:
+            # When we ask for data, we know that we won't get the data
+            # back until now + cycletime. This introduces a race
+            # condition on the next collection interval where the data
+            # won't yet be available for a fraction of a second. This
+            # means we have to wait another collection interval before
+            # the data will be available.
+            #
+            # Doing an asynchronous sleep for 1 second here mitigates
+            # the race condition and greatly increases the chances that
+            # we'll get data a full collection interval earlier.
+            yield sleep(1)
 
         # Reset so we don't deliver the same results more than once.
         data = self.data.copy()
@@ -177,7 +189,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.cycling:
             self.sample_interval = dsconf0.cycletime
-            self.max_samples = 600 / self.sample_interval
+            self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
             self.max_samples = 1
@@ -231,7 +243,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Start the continuous command.
         '''
+        yield self.stop()
+
         try:
+            LOG.debug("starting Get-Counter on %s", self.config.id)
             yield self.command.start(self.commandline)
         except (ConnectError, UnauthorizedError) as e:
             LOG.warn(
@@ -258,6 +273,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Stop the continuous command.
         '''
+        if not self.started:
+            defer.returnValue(None)
+
         LOG.debug("stopping Get-Counter on %s", self.config.id)
 
         self.started = False
@@ -272,7 +290,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield self.command.stop()
             except Exception, ex:
-                LOG.debug(
+                # Log this as a warning because it can mean that a WSMan
+                # active operation has been leaked on the Windows
+                # server.
+                LOG.warn(
                     "failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 
@@ -292,20 +313,22 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         receive_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
-        if result[0][0].startswith('Readings : '):
-            result[0][0] = result[0][0].replace('Readings : ', '', 1)
+        stdout_lines = result[0]
+        if stdout_lines:
+            if stdout_lines[0].startswith('Readings : '):
+                stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
 
-            if self.collected_counters:
-                self.reportMissingCounters(
-                    self.counter_map, self.collected_counters)
+                if self.collected_counters:
+                    self.reportMissingCounters(
+                        self.counter_map, self.collected_counters)
 
-            self.sample_buffer = collections.deque(result[0])
-            self.collected_counters = set()
-            self.collected_samples += 1
+                self.sample_buffer = collections.deque(stdout_lines)
+                self.collected_counters = set()
+                self.collected_samples += 1
 
-        # Extend sample buffer. Continuation of previous sample.
-        else:
-            self.sample_buffer.extend(result[0])
+            # Extend sample buffer. Continuation of previous sample.
+            else:
+                self.sample_buffer.extend(stdout_lines)
 
         # Continue while we have counter/value pairs.
         while len(self.sample_buffer) > 1:
@@ -387,35 +410,29 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 missing_counter_count,
                 self.config.id)
 
+            missing_counters_str = ', '.join(missing_counters)
+
             LOG.debug(
                 "%s missing counters for %s: %s",
                 missing_counter_count,
                 self.config.id,
-                ', '.join(missing_counters))
+                missing_counters_str)
 
             summary = (
                 '{} counters missing in collection - see details'
                 .format(missing_counter_count))
 
-            message = (
-                '{} counters missing in collection: {}'
-                .format(
-                    missing_counter_count,
-                    ', '.join(missing_counters)))
-
             self.data['events'].append({
                 'device': self.config.id,
                 'severity': ZenEventClasses.Info,
-                'component': 'Perfmon',
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': summary,
-                'message': message,
+                'missing_counters': missing_counters_str,
             })
         else:
             self.data['events'].append({
                 'device': self.config.id,
                 'severity': ZenEventClasses.Clear,
-                'component': 'Perfmon',
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': '0 counters missing in collection',
             })
@@ -427,7 +444,4 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
         '''
-        if self.config:
-            return self.stop()
-
-        return defer.succeed(None)
+        return self.stop()
