@@ -576,6 +576,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.0.3
+* Support TALES in Windows Shell custom command script. ([https://jira.zenoss.com/browse/ZEN-10426 ZEN-10426])
+
 ;2.0.2
 * Fix build issue that made ZenPack unavailable from catalog.
 

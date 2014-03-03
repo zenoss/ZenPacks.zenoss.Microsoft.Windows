@@ -496,7 +496,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             strategy=datasource.strategy,
             instancename=instancename,
             servername=servername,
-            script=datasource.script,
+            script=datasource.talesEval(datasource.script, context),
             parser=parser,
             usePowershell=datasource.usePowershell,
             contextrelname=contextrelname,
