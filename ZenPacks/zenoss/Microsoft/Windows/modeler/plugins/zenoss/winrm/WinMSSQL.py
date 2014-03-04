@@ -47,6 +47,7 @@ class WinMSSQL(WinRMPlugin):
         dbinstance = device.zDBInstances
         dbinstancepassword = device.zDBInstancesPassword
         password = device.zWinRMPassword
+        login_as_user = False
 
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
@@ -54,6 +55,7 @@ class WinMSSQL(WinRMPlugin):
             if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
                 arrInstance = dbinstance.split(';')
                 arrPassword = dbinstancepassword.split(';')
+                login_as_user = True
                 i = 0
                 for instance in arrInstance:
                     dbuser, dbpass = arrPassword[i].split(':', 1)
@@ -156,7 +158,15 @@ class WinMSSQL(WinRMPlugin):
                     "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
                     "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
-                sqlConnection.append("$con.Connect();")
+                if login_as_user:
+                    # Login using windows credentials
+                    sqlConnection.append("$con.LoginSecure=$true;")
+                    sqlConnection.append("$con.ConnectAsUser=$true;")
+                    # Omit domain part of username
+                    sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
+                    sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+                else:
+                    sqlConnection.append("$con.Connect();")
 
                 # Connect to Database Server
                 sqlConnection.append("$server = new-object " \
