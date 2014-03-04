@@ -111,14 +111,17 @@ class DeviceLinkProvider(object):
         except(AttributeError):
             pass
 
-        clusters = self.device.getClusterMachines()
-        if clusters:
-            for cluster in clusters:
-                links.append(
-                    'Clustered Server: <a href="{}">{}</a>'.format(
-                        cluster.getPrimaryUrlPath(),
-                        cluster.titleOrId()
+        try:
+            clusters = self.device.getClusterMachines()
+            if clusters:
+                for cluster in clusters:
+                    links.append(
+                        'Clustered Server: <a href="{}">{}</a>'.format(
+                            cluster.getPrimaryUrlPath(),
+                            cluster.titleOrId()
+                            )
                         )
-                    )
+        except(AttributeError):
+            pass
 
         return links
