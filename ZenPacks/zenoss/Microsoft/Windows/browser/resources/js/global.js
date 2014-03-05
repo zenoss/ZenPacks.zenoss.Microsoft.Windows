@@ -112,3 +112,19 @@ if (Ext.version === undefined) {
 }
 
 }());
+
+var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
+
+Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
+    var summarypanel = Ext.getCmp(DEVICE_SUMMARY_PANEL);
+    if (Zenoss.env.device_uid.search('/Server/Microsoft') != -1){
+        summarypanel.removeField('memory');
+        summarypanel.addField({
+            xtype: 'displayfield',
+            id: 'memory-displayfield',
+            name: 'memory',
+            fieldLabel: _t('Physical/Total Memory'),
+        });
+    }
+
+});
