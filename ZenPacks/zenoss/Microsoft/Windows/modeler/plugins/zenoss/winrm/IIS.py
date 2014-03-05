@@ -50,13 +50,14 @@ class IIS(WinRMPlugin):
             om.statusname = iisSite.Name
             om.title = iisSite.ServerComment
             om.sitename = iisSite.ServerComment
+            om.apppool = iisSite.AppPoolId
             if iisSite.ServerAutoStart == 'false':
                 om.status = 'Stopped'
             else:
                 om.status = 'Running'
 
             for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
-                if iisVirt.Name == iisSite.Name + "/root":
+                if iisVirt.Name == iisSite.Name + "/ROOT":
                     om.apppool = iisVirt.AppPoolId
 
             rm.append(om)
