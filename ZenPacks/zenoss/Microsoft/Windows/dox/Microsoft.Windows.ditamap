@@ -2,7 +2,7 @@
 <!DOCTYPE map
   PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:map" "map.dtd">
 <map>
-   <title>ZenPacks.zenoss.Microsoft.Windows</title>
+   <title>Microsoft.Windows</title>
    <!-- <topicref chunk="to-content" href="topics/Microsoft.Windows.dita"> -->
    <topicref href="topics/Microsoft.Windows.dita">
       <topicref href="topics/discovery.dita"/>
