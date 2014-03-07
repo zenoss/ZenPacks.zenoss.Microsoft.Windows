@@ -167,6 +167,20 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
 
+        # Look up for HyperV server with same IP
+        try:
+            dc = self._object.getDmdRoot('Devices').getOrganizer('/Server/Microsoft/HyperV')
+        except Exception:
+            return
+
+        results = ICatalogTool(dc).search(
+            types=('Device',),
+            query=Eq('id', self._object.id))
+
+        for brain in results:
+            obj = brain.getObject()
+            yield edge(self.guid(), guid(obj))
+
 
 class FileSystemRelationsProvider(BaseRelationsProvider):
 
