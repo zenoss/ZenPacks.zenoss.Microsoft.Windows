@@ -173,13 +173,13 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         except Exception:
             return
 
-        results = ICatalogTool(dc).search(
-            types=('Device',),
-            query=Eq('id', self._object.id))
+        results = ICatalogTool(dc).search()
 
         for brain in results:
             obj = brain.getObject()
-            yield edge(self.guid(), guid(obj))
+            if hasattr(obj, 'ip'):
+                if obj.ip == self._object.id:
+                    yield edge(self.guid(), guid(obj))
 
 
 class FileSystemRelationsProvider(BaseRelationsProvider):
