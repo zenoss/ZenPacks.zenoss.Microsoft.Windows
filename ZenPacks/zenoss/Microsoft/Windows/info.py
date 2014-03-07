@@ -131,7 +131,6 @@ class WinIISInfo(WinComponentInfo):
 
     sitename = ProxyProperty('sitename')
     apppool = ProxyProperty('apppool')
-    caption = ProxyProperty('caption')
     status = ProxyProperty('status')
     statusname = ProxyProperty('statusname')
 
