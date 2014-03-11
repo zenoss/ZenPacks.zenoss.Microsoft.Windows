@@ -34,6 +34,12 @@ RESOURCE_URI_FORMAT = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{}/*'
 POWERSHELL_PREFIX = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command'
 
 
+class Unauthorized(Exception):
+    '''
+    Exception for Unauthorized credentials.
+    '''
+
+
 class WinRMPlugin(PythonPlugin):
     '''
     Base modeler plugin class for WinRM modeler plugins.
@@ -99,6 +105,12 @@ class WinRMPlugin(PythonPlugin):
         connectiontype = 'Keep-Alive'
         keytab = device.zWinKeyTabFilePath
         dcip = device.zWinKDC
+
+        import re
+        pattern = r'[a-zA-Z0-9][a-zA-Z0-9.]{0,14}\\[^"/\\\[\]:;|=,+*?<>]{1,104}'
+
+        if re.match(pattern, username):
+            raise Unauthorized("Down-level logon name is not supported.")
 
         return txwinrm.collect.ConnectionInfo(
             hostname,
@@ -181,10 +193,13 @@ class WinRMPlugin(PythonPlugin):
         required.
         '''
         client = self.client()
-        conn_info = self.conn_info(device)
+        try:
+            conn_info = self.conn_info(device)
+        except Unauthorized, e:
+            self.log_error(log, device, e)
+            return
 
         results = {}
-
         queries = self.get_queries()
         if queries:
             query_map = {
