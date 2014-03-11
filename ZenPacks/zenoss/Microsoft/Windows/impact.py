@@ -15,6 +15,7 @@ from zope.interface import implements
 from Products.ZenRelations.ToManyRelationship import ToManyRelationshipBase
 from Products.ZenRelations.ToOneRelationship import ToOneRelationship
 from Products.ZenUtils.guid.interfaces import IGlobalIdentifier
+from Products.Zuul.interfaces import ICatalogTool
 
 from ZenPacks.zenoss.Impact.impactd import Trigger
 from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge

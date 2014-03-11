@@ -15,6 +15,7 @@ from socket import gaierror
 from zope.event import notify
 from ZODB.transact import transact
 
+from Products.Zuul.interfaces import ICatalogTool
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
@@ -122,6 +123,26 @@ class DeviceLinkProvider(object):
                             )
                         )
         except(AttributeError):
+            pass
+
+        # Look up for HyperV server with same IP
+        try:
+            dc = self.device.getDmdRoot('Devices').getOrganizer(
+                '/Server/Microsoft/HyperV')
+
+            results = ICatalogTool(dc).search()
+
+            for brain in results:
+                obj = brain.getObject()
+                if hasattr(obj, 'ip'):
+                    if obj.ip == self.device.id:
+                        links.append(
+                            'Hyper-V Server: <a href="{}">{}</a>'.format(
+                                obj.getPrimaryUrlPath(),
+                                obj.titleOrId()
+                                )
+                            )
+        except Exception:
             pass
 
         return links
