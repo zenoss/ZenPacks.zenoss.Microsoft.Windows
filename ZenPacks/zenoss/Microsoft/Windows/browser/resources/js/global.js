@@ -14,10 +14,10 @@ var ZC = Ext.ns('Zenoss.component');
 
 ZC.registerName('WinRMService', _t('Service'), _t('Services'));
 ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
-ZC.registerName('WinDBInstance', _t('Database Instance'), _t('DB Instances'));
-ZC.registerName('WinDatabase', _t('Database'), _t('Databases'));
-ZC.registerName('WinBackupDevice', _t('DB Backup Device'), _t('DB Backup Devices'));
-ZC.registerName('WinSQLJob', _t('DB Job'), _t('DB Jobs'));
+ZC.registerName('WinDBInstance', _t('MSSQL Instance'), _t('MSSQL Instances'));
+ZC.registerName('WinDatabase', _t('MSSQL Database'), _t('MSSQL Databases'));
+ZC.registerName('WinBackupDevice', _t('MSSQL Backup Device'), _t('MSSQL Backup Devices'));
+ZC.registerName('WinSQLJob', _t('MSSQL Job'), _t('MSSQL Jobs'));
 ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
 ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
