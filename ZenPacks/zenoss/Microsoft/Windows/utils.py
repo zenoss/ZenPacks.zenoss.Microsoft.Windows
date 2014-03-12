@@ -86,9 +86,10 @@ def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
         arrPassword = dbinstancespassword.split(';')
         i = 0
         for instance in arrInstance:
-            dbuser, dbpass = arrPassword[i].split(':')
-            i = i + 1
-            dblogins[instance] = {'username': dbuser, 'password': dbpass}
+            if instance and len(arrPassword) > i:
+                dbuser, dbpass = arrPassword[i].split(':')
+                i = i + 1
+                dblogins[instance] = {'username': dbuser, 'password': dbpass}
     else:
         dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
 
