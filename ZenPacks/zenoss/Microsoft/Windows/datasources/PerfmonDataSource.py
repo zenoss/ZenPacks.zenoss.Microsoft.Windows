@@ -93,6 +93,13 @@ class PerfmonDataSourceInfo(RRDDataSourceInfo):
     counter = ProxyProperty('counter')
 
 
+class PluginStates(object):
+    STARTING = 'STARTING'
+    STARTED = 'STARTED'
+    STOPPING = 'STOPPING'
+    STOPPED = 'STOPPED'
+
+
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = (
         'zWinRMUser',
@@ -106,8 +113,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     config = None
     cycling = None
     initialized = None
-    started = None
+    state = None
+    last_time = None
     receive_deferred = None
+    data_deferred = None
     command = None
     data = None
     sample_interval = None
@@ -117,7 +126,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def __init__(self):
         self.initialized = False
-        self.started = False
+        self.state = PluginStates.STOPPED
         self.data = self.new_data()
 
     @classmethod
@@ -125,6 +134,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return (
             context.device().id,
             datasource.getCycleTime(context),
+            SOURCETYPE,
             )
 
     @classmethod
@@ -136,37 +146,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return {
             'counter': counter,
             }
-
-    @defer.inlineCallbacks
-    def collect(self, config):
-        '''
-        Collect for config.
-
-        Called each collection interval.
-        '''
-        if not self.initialized:
-            self.initialize(config)
-
-        if not self.started:
-            yield self.start()
-        else:
-            # When we ask for data, we know that we won't get the data
-            # back until now + cycletime. This introduces a race
-            # condition on the next collection interval where the data
-            # won't yet be available for a fraction of a second. This
-            # means we have to wait another collection interval before
-            # the data will be available.
-            #
-            # Doing an asynchronous sleep for 1 second here mitigates
-            # the race condition and greatly increases the chances that
-            # we'll get data a full collection interval earlier.
-            yield sleep(1)
-
-        # Reset so we don't deliver the same results more than once.
-        data = self.data.copy()
-        self.data = self.new_data()
-
-        defer.returnValue(data)
 
     def initialize(self, config):
         '''
@@ -232,30 +211,96 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.initialized = True
 
     @defer.inlineCallbacks
+    def collect(self, config):
+        '''
+        Collect for config.
+
+        Called each collection interval.
+        '''
+        if not self.initialized:
+            self.initialize(config)
+
+        yield self.start()
+        yield self.wait_for_data()
+
+        # Reset so we don't deliver the same results more than once.
+        data = self.data.copy()
+        self.data = self.new_data()
+
+        defer.returnValue(data)
+
+    @defer.inlineCallbacks
+    def wait_for_data(self):
+        '''
+        Wait for no more than 5 seconds for data to be received.
+
+        When we ask for data, we know that we won't get the data back
+        until now + cycletime. This introduces a race condition on the
+        next collection interval where the data won't yet be available
+        for a fraction of a second. This means we have to wait another
+        collection interval before the data will be available.
+
+        We can try to predict if we're going to get data soon based on
+        when we last asked for, or received, data. If "soon" is soon
+        enough, we'll sleep to wait for the data.
+        '''
+        if self.last_time:
+            until_time = self.sample_interval - (time.time() - self.last_time)
+
+            if until_time <= 0:
+                defer.returnValue(None)
+
+            wait_time = until_time + 2
+            if wait_time < min(5, self.sample_interval):
+                LOG.debug(
+                    "waiting %.2f seconds for %s Get-Counter data",
+                    wait_time, self.config.id)
+
+                self.data_deferred = defer.Deferred()
+                try:
+                    yield add_timeout(self.data_deferred, wait_time)
+                except Exception:
+                    pass
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
     def start(self):
         '''
         Start the continuous command.
         '''
-        yield self.stop()
+        if self.state != PluginStates.STOPPED:
+            LOG.debug(
+                "skipping Get-Counter start on %s while it's %s",
+                self.config.id,
+                self.state)
+
+            defer.returnValue(None)
+
+        LOG.debug("starting Get-Counter on %s", self.config.id)
+        self.state = PluginStates.STARTING
 
         try:
-            LOG.debug("starting Get-Counter on %s", self.config.id)
             yield self.command.start(self.commandline)
-        except ConnectError as e:
+        except Exception as e:
             LOG.warn(
-                "Connection error on %s: %s",
+                "Error on %s: %s",
                 self.config.id,
                 e.message or "timeout")
 
-            self.started = False
+            self.state = PluginStates.STOPPED
             defer.returnValue(None)
 
-        self.started = True
+        self.state = PluginStates.STARTED
+        self.last_time = time.time()
         self.collected_samples = 0
         self.collected_counters = set()
 
         self.receive()
 
+        # When running in the foreground without the --cycle option we
+        # must wait for the receive deferred to fire to have any chance
+        # at collecting data.
         if not self.cycling:
             yield self.receive_deferred
 
@@ -266,12 +311,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Stop the continuous command.
         '''
-        if not self.started:
+        if self.state != PluginStates.STARTED:
+            LOG.debug(
+                "skipping Get-Counter stop on %s while it's %s",
+                self.config.id,
+                self.state)
+
             defer.returnValue(None)
 
         LOG.debug("stopping Get-Counter on %s", self.config.id)
 
-        self.started = False
+        self.state = PluginStates.STOPPING
 
         if self.receive_deferred:
             try:
@@ -290,6 +340,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     "failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 
+        self.state = PluginStates.STOPPED
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def restart(self):
+        '''
+        Stop then start the long-running command.
+        '''
+        yield self.stop()
+        yield self.start()
         defer.returnValue(None)
 
     def receive(self):
@@ -302,8 +363,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.receive_deferred.addCallbacks(
             self.onReceive, self.onReceiveFail)
 
+    @defer.inlineCallbacks
     def onReceive(self, result):
-        receive_time = int(time.time())
+        self.last_time = time.time()
 
         # Initialize sample buffer. Start of a new sample.
         stdout_lines = result[0]
@@ -345,14 +407,23 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if datasource == 'sysUpTime' and value is not None:
                     value = float(value) * 100
 
-                self.data['values'][component][datasource] = (value, receive_time)
+                self.data['values'][component][datasource] = (
+                    value, int(self.last_time))
+
+        LOG.debug("received Get-Counter data for %s", self.config.id)
+
+        if self.data_deferred and not self.data_deferred.called:
+            self.data_deferred.callback(None)
 
         if self.collected_samples < self.max_samples and result[0]:
             self.receive()
         else:
             if self.cycling:
-                self.start()
+                yield self.restart()
 
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
     def onReceiveFail(self, failure):
         e = failure.value
 
@@ -384,11 +455,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 "receive failure on {}: {}"
                 .format(self.config.id, failure))
 
+        if self.data_deferred and not self.data_deferred.called:
+            self.data_deferred.errback(failure)
+
         LOG.log(level, msg)
         if retry:
             self.receive()
         else:
-            self.start()
+            yield self.restart()
+
+        defer.returnValue(None)
 
     def reportMissingCounters(self, requested, returned):
         '''
