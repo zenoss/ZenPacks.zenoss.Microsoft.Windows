@@ -16,7 +16,7 @@ from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpI
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
-
+from ZenPacks.zenoss.Microsoft.Windows.interfaces import IFileSystemInfo as WIFileSystemInfo
 
 def SuffixedProperty(property_name, suffix):
     '''
@@ -98,8 +98,40 @@ class CPUInfo(WinComponentInfo):
         return self._object.productClass()
 
 
-class FileSystemInfo(BaseFileSystemInfo):
-    implements(IFileSystemInfo)
+class FileSystemInfo(ComponentInfo):
+    implements(WIFileSystemInfo)
+
+    mount = ProxyProperty('mount')
+    storageDevice = ProxyProperty('storageDevice')
+    type = ProxyProperty('type')
+    blockSize = ProxyProperty('blockSize')
+    totalBlocks = ProxyProperty('totalBlocks')
+    totalFiles = ProxyProperty('totalFiles')
+    maxNameLength = ProxyProperty('maxNameLen')
+
+    @property
+    def totalBytes(self):
+        return self._object.totalBytes()
+
+    @property
+    def usedBytes(self):
+        return self._object.usedBytes()
+
+    #@property
+    #def availableBytes(self):
+    #    return self._object.availBytes()
+
+    @property
+    def capacityBytes(self):
+        return self._object.capacity()
+
+    @property
+    def availableFiles(self):
+        return self._object.availFiles()
+
+    @property
+    def capacityFiles(self):
+        return self._object.inodeCapacity()
 
     mediatype = ProxyProperty('mediatype')
 
