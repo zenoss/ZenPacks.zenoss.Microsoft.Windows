@@ -130,18 +130,21 @@ class DeviceLinkProvider(object):
             dc = self.device.getDmdRoot('Devices').getOrganizer(
                 '/Server/Microsoft/HyperV')
 
-            results = ICatalogTool(dc).search()
+            results = ICatalogTool(dc).search(
+                types=(
+                    'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
+                )
+            )
 
             for brain in results:
                 obj = brain.getObject()
-                if hasattr(obj, 'ip'):
-                    if obj.ip == self.device.id:
-                        links.append(
-                            'Hyper-V Server: <a href="{}">{}</a>'.format(
-                                obj.getPrimaryUrlPath(),
-                                obj.titleOrId()
-                                )
+                if obj.ip == self.device.id:
+                    links.append(
+                        'Hyper-V Server: <a href="{}">{}</a>'.format(
+                            obj.getPrimaryUrlPath(),
+                            obj.titleOrId()
                             )
+                        )
         except Exception:
             pass
 
