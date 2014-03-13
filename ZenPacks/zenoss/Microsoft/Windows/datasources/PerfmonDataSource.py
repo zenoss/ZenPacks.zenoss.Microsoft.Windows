@@ -365,7 +365,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def onReceive(self, result):
-        self.last_time = int(time.time())
+        self.last_time = time.time()
 
         # Initialize sample buffer. Start of a new sample.
         stdout_lines = result[0]
@@ -408,7 +408,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     value = float(value) * 100
 
                 self.data['values'][component][datasource] = (
-                    value, self.last_time)
+                    value, int(self.last_time))
 
         LOG.debug("received Get-Counter data for %s", self.config.id)
 
