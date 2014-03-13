@@ -44,6 +44,9 @@ class WinCluster(WinRMPlugin):
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
 
+        psHostCommands = []
+        psHostCommands.append("$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (512, 512);")
+
         psClusterCommands = []
         psClusterCommands.append("import-module failoverclusters;")
 
@@ -53,7 +56,7 @@ class WinCluster(WinRMPlugin):
 
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
-            ''.join(psClusterCommands + psClusterHosts))
+            ''.join(psHostCommands + psClusterCommands + psClusterHosts))
 
         clusternodes = winrs.run_command(command)
         clusternode = yield clusternodes
