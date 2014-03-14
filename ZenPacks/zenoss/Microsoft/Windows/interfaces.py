@@ -11,7 +11,9 @@ from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
-from Products.Zuul.interfaces.component import IFileSystemInfo as IBaseFileSystemInfo
+#from Products.Zuul.interfaces.component import IFileSystemInfo as IBaseFileSystemInfo
+
+from zope.interface import Attribute
 
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
@@ -52,7 +54,24 @@ class ICPUInfo(IWinComponentInfo):
     product = schema.Entity(title=_t('Model'), readonly=True)
 
 
-class IFileSystemInfo(IBaseFileSystemInfo):
+class IFileSystemInfo(IComponentInfo):
+    """
+    Info adapter for FileSystem components.
+    """
+    mount = schema.TextLine(title=u"Mount Point", group="Overview", order=-1)
+    storageDevice = schema.TextLine(title=u"Storage Device", group="Details")
+    type = schema.TextLine(title=u"Type", group="Details")
+    blockSize = schema.Int(title=u"Block Size", group="Details")
+    totalBlocks = Attribute("Total Blocks")
+    totalBytes = schema.Int(title=u"Total Bytes", readonly=True,
+                            group="Details")
+    usedBytes = schema.Int(title=u"Used Bytes", readonly=True, group="Details")
+    capacityBytes = schema.Int(title=u"Capacity Bytes", readonly=True, group="Details")
+    totalFiles = schema.Int(title=u"Total Files", group="Details")
+    availableFiles = schema.Int(title=u"Available Files", readonly=True, group="Details")
+    capacityFiles = schema.Int(title=u"Capacity Files", readonly=True, group="Details")
+    maxNameLength = schema.Int(title=u"Maximum Name Length", group="Details")
+
     mediatype = schema.TextLine(title=_t(u'Media Type'), readonly=True)
 
 
@@ -67,8 +86,7 @@ class IWinServiceInfo(IWinComponentInfo):
 
 class IWinIISInfo(IWinComponentInfo):
     sitename = schema.TextLine(title=_t(u'Site Name'), readonly=True)
-    apppool = schema.TextLine(title=_t(u'App Pool'), readonly=True)
-    caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
+    apppool = schema.TextLine(title=_t(u'Application Pool'), readonly=True)
     status = schema.TextLine(title=_t(u'Status'), readonly=True)
     statusname = schema.TextLine(title=_t(u'Status Name'), readonly=True)
 

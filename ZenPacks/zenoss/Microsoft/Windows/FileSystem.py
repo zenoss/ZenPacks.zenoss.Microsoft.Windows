@@ -31,3 +31,9 @@ class FileSystem(BaseFileSystem):
             return False
 
         return self.monitor and True
+
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/filesystem.png'

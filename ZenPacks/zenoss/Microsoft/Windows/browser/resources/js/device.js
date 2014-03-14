@@ -325,7 +325,7 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'displayname',
+            autoExpandColumn: 'name',
             componentType: 'WinRMIIS',
             fields: [
                 {name: 'uid'},
@@ -334,7 +334,6 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'sitename'},
-                {name: 'caption'},
                 {name: 'apppool'},
                 {name: 'status'},
                 {name: 'usesMonitorAttribute'},
@@ -353,12 +352,6 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'sitename',
                 header: _t('Name'),
-                sortable: true,
-                width: 110
-            },{
-                id: 'displayname',
-                dataIndex: 'caption',
-                header: _t('Caption Name'),
                 sortable: true
             },{
                 id: 'status',

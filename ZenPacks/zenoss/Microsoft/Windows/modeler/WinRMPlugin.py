@@ -34,6 +34,12 @@ RESOURCE_URI_FORMAT = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{}/*'
 POWERSHELL_PREFIX = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command'
 
 
+class Unauthorized(Exception):
+    '''
+    Exception for Unauthorized credentials.
+    '''
+
+
 class WinRMPlugin(PythonPlugin):
     '''
     Base modeler plugin class for WinRM modeler plugins.
@@ -51,6 +57,7 @@ class WinRMPlugin(PythonPlugin):
     queries = {}
     commands = {}
     powershell_commands = {}
+    custom_powershell_commands = {}
 
     def get_queries(self):
         '''
@@ -80,6 +87,16 @@ class WinRMPlugin(PythonPlugin):
         '''
         return self.powershell_commands
 
+    def get_custom_powershell_commands(self):
+        '''
+        Return custom PowerShell commands list.
+
+        To be overridden if powershell_commands needs to be
+        programmatically defined instead of set in the class-level
+        commands property.
+        '''
+        return self.custom_powershell_commands
+
     def client(self):
         '''
         Return a WinrmCollectClient.
@@ -99,6 +116,12 @@ class WinRMPlugin(PythonPlugin):
         connectiontype = 'Keep-Alive'
         keytab = device.zWinKeyTabFilePath
         dcip = device.zWinKDC
+
+        import re
+        pattern = r'[a-zA-Z0-9][a-zA-Z0-9.]{0,14}\\[^"/\\\[\]:;|=,+*?<>]{1,104}'
+
+        if re.match(pattern, username):
+            raise Unauthorized("Down-level logon name is not supported.")
 
         return txwinrm.collect.ConnectionInfo(
             hostname,
@@ -172,6 +195,14 @@ class WinRMPlugin(PythonPlugin):
 
         log.error(message, *args)
 
+    def prepare_custom_commands(self, results):
+        for res in results.get('Win32_LogicalDisk', ()):
+            if res.Access:
+                self.custom_powershell_commands[res.Name] = '{0} "& {{{1}}}"'.format(
+                    POWERSHELL_PREFIX, self.custom_powershell_commands["TotalFiles"] % res.Name)
+        #Delete template query as unnecessary
+        del self.custom_powershell_commands["TotalFiles"]
+
     @defer.inlineCallbacks
     def collect(self, device, log):
         '''
@@ -181,10 +212,13 @@ class WinRMPlugin(PythonPlugin):
         required.
         '''
         client = self.client()
-        conn_info = self.conn_info(device)
+        try:
+            conn_info = self.conn_info(device)
+        except Unauthorized, e:
+            self.log_error(log, device, e)
+            return
 
         results = {}
-
         queries = self.get_queries()
         if queries:
             query_map = {
@@ -224,5 +258,18 @@ class WinRMPlugin(PythonPlugin):
                     results[command_key] = yield winrs.run_command(command)
                 except Exception as e:
                     self.log_error(log, device, e)
+
+        if self.get_custom_powershell_commands():
+            self.prepare_custom_commands(results)
+            custom_commands = self.get_custom_powershell_commands()
+
+            if custom_commands:
+                sn_commands = txwinrm.shell.create_single_shot_command(conn_info)
+
+                for key, custom_command in custom_commands.iteritems():
+                    try:
+                        results[key] = yield sn_commands.run_command(custom_command)
+                    except Exception as e:
+                        self.log_error(log, device, e)
 
         defer.returnValue(results)

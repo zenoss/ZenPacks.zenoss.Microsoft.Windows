@@ -69,7 +69,7 @@ class IISSiteDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
-        )
+    )
 
 
 class IIISSiteDataSourceInfo(IRRDDataSourceInfo):
@@ -105,7 +105,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         'zWinKDC',
         'zWinKeyTabFilePath',
         'zWinScheme',
-        )
+    )
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -116,7 +116,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             datasource.id,
             datasource.plugin_classname,
             params.get('statusname'),
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
@@ -171,21 +171,23 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         evtmessage = 'IIS Service {0} is in {1} state'.format(
             ds0.component,
             sitestatus
-            )
+        )
 
         data['events'].append({
             'eventClassKey': 'IISSiteStatus',
             'eventKey': 'IISSite',
-            'severity': ZenEventClasses.Info,
+            'severity': ZenEventClasses.Warning,
             'summary': evtmessage,
             'component': ds0.component,
             'device': config.id,
-            })
+        })
 
         return data
 
     def onError(self, result, config):
-        msg = 'WindowsIISSiteLog: failed collection {0} {1}'.format(result, config)
+        msg = 'WindowsIISSiteLog: failed collection {0} {1}'.format(
+            result, config
+        )
         log.error(msg)
         data = self.new_data()
         data['events'].append({

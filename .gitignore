@@ -1,5 +1,8 @@
 *.py[cod]
 
+# editors
+*.swp
+
 # Packages
 *.egg
 *.egg-info
@@ -16,3 +19,4 @@ ZenPacks/zenoss/Microsoft/Windows/lib/*.egg-link
 
 .DS_Store
 
+.idea/
