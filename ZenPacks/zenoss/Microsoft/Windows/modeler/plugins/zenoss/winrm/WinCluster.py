@@ -45,6 +45,7 @@ class WinCluster(WinRMPlugin):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append("$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (512, 512);")
         psClusterCommands.append("import-module failoverclusters;")
 
         psClusterHosts = []
