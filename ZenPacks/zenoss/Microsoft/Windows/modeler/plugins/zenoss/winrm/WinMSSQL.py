@@ -293,7 +293,8 @@ class WinMSSQL(WinRMPlugin):
                             om_jobs.jobid = value.strip()
                             om_jobs.id = self.prepId(om_jobs.jobid)
                         elif key.strip() == 'enabled':
-                            om_jobs.enabled = value.strip()
+                            om_jobs.enabled = 'Yes'\
+                                if value.strip() == '1' else 'No'
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
                         elif key.strip() == 'datecreated':
