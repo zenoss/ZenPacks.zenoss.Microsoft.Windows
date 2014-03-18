@@ -195,19 +195,26 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             )
 
         self.config = config
-
-        self.command = create_long_running_command(
-            ConnectionInfo(
-                dsconf0.manageIp,
-                auth_type,
-                dsconf0.zWinRMUser,
-                dsconf0.zWinRMPassword,
-                scheme,
-                port,
-                connectiontype,
-                keytab,
-                dcip))
-
+        try:
+            self.command = create_long_running_command(
+                ConnectionInfo(
+                    dsconf0.manageIp,
+                    auth_type,
+                    dsconf0.zWinRMUser,
+                    dsconf0.zWinRMPassword,
+                    scheme,
+                    port,
+                    connectiontype,
+                    keytab,
+                    dcip))
+        except Exception, e:
+            self.initialized = False
+            LOG.warn(
+                "Connection error on %s: %s",
+                self.config.id,
+                e.message.capitalize() or "the task is not Initialized"
+            )
+            return
         self.initialized = True
 
     @defer.inlineCallbacks
@@ -219,8 +226,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         if not self.initialized:
             self.initialize(config)
-
-        yield self.start()
+        if self.initialized:
+            yield self.start()
         yield self.wait_for_data()
 
         # Reset so we don't deliver the same results more than once.

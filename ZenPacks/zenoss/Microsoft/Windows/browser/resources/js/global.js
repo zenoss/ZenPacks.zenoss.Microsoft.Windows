@@ -35,7 +35,7 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
             border: false,
             items:[{
                 xtype: 'combo',
-                width: 300,
+                width: 279,
                 fieldLabel: _t('Strategy'),
                 name: 'strategy',
                 ref: 'StrategyCombo',
