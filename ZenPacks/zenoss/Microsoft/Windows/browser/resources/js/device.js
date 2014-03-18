@@ -325,7 +325,7 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
 
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'displayname',
+            autoExpandColumn: 'name',
             componentType: 'WinRMIIS',
             fields: [
                 {name: 'uid'},
