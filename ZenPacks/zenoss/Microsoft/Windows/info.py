@@ -231,8 +231,13 @@ class ClusterServiceInfo(WinComponentInfo):
     state = ProxyProperty('state')
 
     @property
+    @info
     def clusternode(self):
-        return self._object.ownernodeurl()
+        entity = self._object.ownernodeentity()
+        if entity:
+            return '<a class="z-entity" href="{}">{}</a>'.format(
+                entity.getPrimaryUrlPath(), self._object.ownernode)
+        return self._object.ownernode
 
 
 class ClusterResourceInfo(WinComponentInfo):
@@ -248,8 +253,14 @@ class ClusterResourceInfo(WinComponentInfo):
         return self._object.clusterservice()
 
     @property
+    @info
     def clusternode(self):
-        return self._object.ownernodeurl()
+        entity = self._object.ownernodeentity()
+        if entity:
+            return '<a class="z-entity" href="{}">{}</a>'.format(
+                entity.getPrimaryUrlPath(), self._object.ownernode)
+        return self._object.ownernode
+
 
 
 class WinSQLJobInfo(WinComponentInfo):

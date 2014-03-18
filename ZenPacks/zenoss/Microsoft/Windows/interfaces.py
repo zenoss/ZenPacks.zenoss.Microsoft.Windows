@@ -116,7 +116,7 @@ class IWinSQLInstanceInfo(IWinComponentInfo):
 
 
 class IClusterServiceInfo(IWinComponentInfo):
-    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    clusternode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     coregroup = schema.TextLine(title=_t(u'Core Group'), readonly=True)
     priority = schema.TextLine(title=_t(u'Priority'), readonly=True)
@@ -124,7 +124,7 @@ class IClusterServiceInfo(IWinComponentInfo):
 
 
 class IClusterResourceInfo(IWinComponentInfo):
-    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    clusternode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     ownergroup = schema.TextLine(title=_t(u'Owner Group'), readonly=True)
     state = schema.TextLine(title=_t(u'State'), readonly=True)
