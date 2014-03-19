@@ -66,7 +66,7 @@ class ClusterDevice(BaseDevice):
             if device:
                 # Server device in cluster already exists
                 self.clusterhostdevices = clusterhostdnsnames
-                return
+                continue
 
             @transact
             def create_device():
