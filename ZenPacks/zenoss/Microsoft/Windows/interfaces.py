@@ -66,6 +66,8 @@ class IFileSystemInfo(IComponentInfo):
     totalBytes = schema.Int(title=u"Total Bytes", readonly=True,
                             group="Details")
     usedBytes = schema.Int(title=u"Used Bytes", readonly=True, group="Details")
+    availableBytes = schema.Int(title=u"Available Bytes", readonly=True,
+                               group="Details")
     capacityBytes = schema.Int(title=u"Capacity Bytes", readonly=True, group="Details")
     totalFiles = schema.Int(title=u"Total Files", group="Details")
     availableFiles = schema.Int(title=u"Available Files", readonly=True, group="Details")
