@@ -60,6 +60,11 @@ class Device(BaseDevice):
                 cluster.manageIp = clusterip
                 cluster.title = clusterdnsname
                 cluster.setPerformanceMonitor(self.getPerformanceServerName())
+                # Transfer settings to newly created cluster device
+                cluster.zCollectorPlugins.append('zenoss.winrm.WinCluster')
+                cluster.setZenProperty('zWinRMUser', self.zWinRMUser)
+                cluster.setZenProperty('zWinRMPassword', self.zWinRMPassword)
+                cluster.setZenProperty('zWinRMPort', self.zWinRMPort)
                 cluster.index_object()
                 notify(IndexingEvent(cluster))
 
