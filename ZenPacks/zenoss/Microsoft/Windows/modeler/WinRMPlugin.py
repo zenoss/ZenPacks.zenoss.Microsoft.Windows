@@ -198,8 +198,10 @@ class WinRMPlugin(PythonPlugin):
     def prepare_custom_commands(self, results):
         for res in results.get('Win32_LogicalDisk', ()):
             if res.Access:
+                disc = res.Name + '\\'
                 self.custom_powershell_commands[res.Name] = '{0} "& {{{1}}}"'.format(
-                    POWERSHELL_PREFIX, self.custom_powershell_commands["TotalFiles"] % res.Name)
+                    POWERSHELL_PREFIX, self.custom_powershell_commands["TotalFiles"] % disc)
+
         #Delete template query as unnecessary
         del self.custom_powershell_commands["TotalFiles"]
 

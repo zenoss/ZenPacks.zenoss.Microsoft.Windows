@@ -117,9 +117,9 @@ class FileSystemInfo(ComponentInfo):
     def usedBytes(self):
         return self._object.usedBytes()
 
-    #@property
-    #def availableBytes(self):
-    #    return self._object.availBytes()
+    @property
+    def availableBytes(self):
+        return self._object.availBytes()
 
     @property
     def capacityBytes(self):
