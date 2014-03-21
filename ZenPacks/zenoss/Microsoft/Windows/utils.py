@@ -97,6 +97,9 @@ def parseDBUserNamePass(dbinstances=''):
                     username='sa',
                     password=''
                 )
+            # Retain the default behaviour, before zProps change.
+            if not dbinstance:
+                dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
     except (ValueError, TypeError, IndexError):
         pass
 
