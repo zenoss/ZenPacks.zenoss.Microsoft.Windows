@@ -44,7 +44,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
+from txwinrm.util import ConnectionInfo, UnauthorizedError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -60,6 +60,12 @@ AVAILABLE_STRATEGIES = [
 
 class WindowsShellException(Exception):
     '''Exception class to catch known exceptions '''
+
+
+class ShellResult(object):
+    exit_code = 0
+    stderr = []
+    stdout = []
 
 
 class ShellDataSource(PythonDataSource):
@@ -585,7 +591,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(counters)
 
         command = create_single_shot_command(conn_info)
-        results = yield command.run_command(command_line)
+        try:
+            results = yield command.run_command(command_line)
+        except UnauthorizedError:
+            results = ShellResult()
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
