@@ -54,6 +54,7 @@ class WinMSSQL(WinRMPlugin):
             dbinstance = json.loads(dbinstance)
             users = [el.get('user') for el in filter(None, dbinstance)]
             if ''.join(users):
+                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=el.get('user'),
@@ -67,6 +68,7 @@ class WinMSSQL(WinRMPlugin):
                     )
             results = {'clear': eventmessage}
         except (ValueError, TypeError, IndexError):
+            # Error with dbinstance names or password
             results = {'error': eventmessage}
             defer.returnValue(results)
 
