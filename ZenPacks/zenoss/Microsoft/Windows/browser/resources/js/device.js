@@ -699,6 +699,11 @@ ZC.MSClusterServicePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'clusternode',
                 dataIndex: 'clusternode',
                 header: _t('Owner Node'),
+                renderer: function(v) {
+                    // The value is returned in link format in details, but
+                    // it should be rendered so that html is not escaped.
+                    return v;
+                },
                 sortable: true,
                 width: 200
             },{
@@ -774,6 +779,9 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'clusternode',
                 dataIndex: 'clusternode',
                 header: _t('Owner Node'),
+                renderer: function (v) {
+                    return v;
+                },
                 sortable: true,
                 width: 200
             },{
