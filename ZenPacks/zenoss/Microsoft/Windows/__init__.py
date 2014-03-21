@@ -32,8 +32,7 @@ _PACK_Z_PROPS = [
     ('zWinRMUser', '', 'string'),
     ('zWinRMPassword', '', 'password'),
     ('zWinRMPort', '5985', 'string'),
-    ('zDBInstances', 'MSSQLSERVER;', 'string'),
-    ('zDBInstancesPassword', '', 'password'),
+    ('zDBInstances', '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'instancecredentials'),
     ('zWinKDC', '', 'string'),
     ('zWinKeyTabFilePath', '', 'string'),
     ('zWinScheme', 'http', 'string'),
@@ -45,12 +44,10 @@ for name, default_value, type_ in _PACK_Z_PROPS:
 
 # General zProp for Instance logins
 # Format example:
-# zDBInstanceLogin = 'MSSQLSERVER;ZenossInstance2'
-# zDBInstnacePassword = 'sa:Pzwrd;sa:i24ns3'
-
+# zDBInstances = '[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
+#{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
 
 setzPropertyCategory('zDBInstances', 'Misc')
-setzPropertyCategory('zDBInstancesPassword', 'Misc')
 
 # Used by zenchkschema to validate relationship schema.
 productNames = (

@@ -455,7 +455,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         'zWinKeyTabFilePath',
         'zWinScheme',
         'zDBInstances',
-        'zDBInstancesPassword',
         )
 
     @classmethod
@@ -557,9 +556,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
-            dbinstancespassword = dsconf0.zDBInstancesPassword
 
-            dblogins = parseDBUserNamePass(dbinstances, dbinstancespassword)
+            dblogins = parseDBUserNamePass(dbinstances)
+
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
 
