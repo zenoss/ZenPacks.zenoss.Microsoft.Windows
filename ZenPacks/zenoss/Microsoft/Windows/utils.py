@@ -80,8 +80,9 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def parseDBUserNamePass(dbinstances=''):
+def parseDBUserNamePass(dbinstances='', password=''):
     dblogins = {}
+    login_as_user = False
     try:
         dbinstance = json.loads(dbinstances)
         users = [el.get('user') for el in filter(None, dbinstance)]
@@ -91,19 +92,23 @@ def parseDBUserNamePass(dbinstances=''):
                     username=el.get('user'),
                     password=el.get('passwd')
                 )
+            login_as_user = True
         else:
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username='sa',
-                    password=''
+                    password=password
                 )
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
-                dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
+                dblogins['MSSQLSERVER'] = {
+                    'username': 'sa',
+                    'password': password
+                }
     except (ValueError, TypeError, IndexError):
         pass
 
-    return dblogins
+    return dblogins, login_as_user
 
 
 def getSQLAssembly():

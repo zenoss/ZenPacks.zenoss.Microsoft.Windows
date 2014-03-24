@@ -231,7 +231,7 @@ customcommand_strategy = CustomCommandStrategy()
 class PowershellMSSQLStrategy(object):
     key = 'PowershellMSSQL'
 
-    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database):
+    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database, login_as_user):
         #SQL Command opening
 
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -246,7 +246,15 @@ class PowershellMSSQLStrategy(object):
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
             "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
-        sqlConnection.append("$con.Connect();")
+        if login_as_user:
+            # Login using windows credentials
+            sqlConnection.append("$con.LoginSecure=$true;")
+            sqlConnection.append("$con.ConnectAsUser=$true;")
+            # Omit domain part of username
+            sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
+            sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+        else:
+            sqlConnection.append("$con.Connect();")
 
         # Connect to Database Server
         sqlConnection.append("$server = new-object " \
@@ -556,8 +564,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
+            password = dsconf0.zWinRMPassword
 
-            dblogins = parseDBUserNamePass(dbinstances)
+            dblogins, login_as_user = parseDBUserNamePass(dbinstances, password)
 
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
@@ -572,7 +581,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 sqlserver=sqlserver,
                 sqlusername=dblogins[instance]['username'],
                 sqlpassword=dblogins[instance]['password'],
-                database=dbname)
+                database=dbname,
+                login_as_user=login_as_user)
 
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
                 'powershell Cluster Resources'):
