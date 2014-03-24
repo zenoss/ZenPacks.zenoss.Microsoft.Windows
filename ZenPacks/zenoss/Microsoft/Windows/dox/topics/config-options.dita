@@ -30,6 +30,7 @@
             Windows systems to monitor must be configured to support HTTPS individually.</dd>
         </dlentry>
       </dl>
+      <note>NTLMv2 is not supported, and cannot be configured to work with this ZenPack.</note>
     </section>
   </refbody>
 </reference>
