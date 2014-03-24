@@ -245,6 +245,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             (process_class, 'replaceRegex', 'replaceRegex'),
             (process_class, 'replacement', 'replacement'),
             (process_class, 'primaryUrlPath', 'processClassPrimaryUrlPath'),
+            (process_class, 'sequence', 'sequence'),
             (context, 'alertOnRestart', 'alertOnRestart'),
             (context, 'severity', 'getFailSeverity'),
             (context, 'generatedId', 'generatedId'),
@@ -323,12 +324,16 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
         pids_by_component = collections.defaultdict(set)
 
+        sorted_datasource = sorted(
+            config.datasources,
+            key=lambda x: x.params.get('sequence', 0))
+
         # Win32_Process: Counts and correlation to performance table.
         process_key = [x for x in results if 'Win32_Process' in x.wql][0]
         for item in results[process_key]:
             processText = get_processText(item)
 
-            for datasource in config.datasources:
+            for datasource in sorted_datasource:
                 regex = re.compile(datasource.params['regex'])
 
                 # Zenoss 4.2 2013-10-15 RPS style.
@@ -382,6 +387,9 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 # match because the generic aggregator below will sum
                 # them up to the total count.
                 metrics_by_component[datasource.component][COUNT_DATAPOINT].append(1)
+
+                # Don't continue matching once a match is found.
+                break
 
         # Send process status events.
         for datasource in config.datasources:
