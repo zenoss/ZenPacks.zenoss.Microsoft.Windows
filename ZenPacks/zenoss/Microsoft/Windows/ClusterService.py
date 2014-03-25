@@ -46,12 +46,11 @@ class ClusterService(OSComponent):
             'clusterservice')),
     )
 
-    def ownernodeurl(self):
+    def ownernodeentity(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         try:
             clusterhostip = getHostByName(self.ownernode)
-            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
-            return device.getPrimaryUrlPath()
+            return deviceRoot.findDeviceByIdOrIp(clusterhostip)
         except(gaierror):
             log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
             return

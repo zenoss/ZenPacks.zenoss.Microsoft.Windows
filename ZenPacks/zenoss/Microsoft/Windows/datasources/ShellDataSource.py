@@ -23,6 +23,7 @@ from urlparse import urlparse
 from zope.component import adapts
 from zope.interface import implements
 from twisted.internet import defer
+from twisted.python.failure import Failure
 
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
@@ -43,7 +44,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
+from txwinrm.util import ConnectionInfo, UnauthorizedError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -55,6 +56,16 @@ AVAILABLE_STRATEGIES = [
     'powershell Cluster Services',
     'powershell Cluster Resources',
     ]
+
+
+class WindowsShellException(Exception):
+    '''Exception class to catch known exceptions '''
+
+
+class ShellResult(object):
+    exit_code = 0
+    stderr = []
+    stdout = []
 
 
 class ShellDataSource(PythonDataSource):
@@ -179,6 +190,9 @@ class CustomCommandStrategy(object):
         return pscommand.format(script) if usePowershell else script
 
     def parse_result(self, config, result):
+        check = check_datasource(config, result)
+        if not isinstance(check, bool):
+            return check
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
         log.debug('Trying to use the %s parser' % parserLoader.pluginName)
@@ -187,6 +201,7 @@ class CustomCommandStrategy(object):
         cmd = WinCmd()
         cmd.name = '{}/{}'.format(dsconf.template, dsconf.datasource)
         cmd.command = dsconf.params['script']
+
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
         cmd.component = dsconf.params['contextcompname']
@@ -216,7 +231,7 @@ customcommand_strategy = CustomCommandStrategy()
 class PowershellMSSQLStrategy(object):
     key = 'PowershellMSSQL'
 
-    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database):
+    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database, login_as_user):
         #SQL Command opening
 
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -231,7 +246,15 @@ class PowershellMSSQLStrategy(object):
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
             "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
-        sqlConnection.append("$con.Connect();")
+        if login_as_user:
+            # Login using windows credentials
+            sqlConnection.append("$con.LoginSecure=$true;")
+            sqlConnection.append("$con.ConnectAsUser=$true;")
+            # Omit domain part of username
+            sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
+            sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+        else:
+            sqlConnection.append("$con.Connect();")
 
         # Connect to Database Server
         sqlConnection.append("$server = new-object " \
@@ -440,7 +463,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         'zWinKeyTabFilePath',
         'zWinScheme',
         'zDBInstances',
-        'zDBInstancesPassword',
         )
 
     @classmethod
@@ -533,21 +555,19 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         strategy = self._get_strategy(dsconf0)
         if not strategy:
-            log.warn(
-                "No strategy chosen for %s on %s",
-                dsconf0.datasource,
-                config.id)
-
-            defer.returnValue(None)
+            raise WindowsShellException(
+                "No strategy chosen for {0}".format(dsconf0.datasource)
+            )
 
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
 
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
-            dbinstancespassword = dsconf0.zDBInstancesPassword
+            password = dsconf0.zWinRMPassword
 
-            dblogins = parseDBUserNamePass(dbinstances, dbinstancespassword)
+            dblogins, login_as_user = parseDBUserNamePass(dbinstances, password)
+
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
 
@@ -561,7 +581,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 sqlserver=sqlserver,
                 sqlusername=dblogins[instance]['username'],
                 sqlpassword=dblogins[instance]['password'],
-                database=dbname)
+                database=dbname,
+                login_as_user=login_as_user)
 
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
                 'powershell Cluster Resources'):
@@ -579,27 +600,34 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(counters)
 
         command = create_single_shot_command(conn_info)
-        results = yield command.run_command(command_line)
-
+        try:
+            results = yield command.run_command(command_line)
+        except UnauthorizedError:
+            results = ShellResult()
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
         data = self.new_data()
+        dsconf0 = config.datasources[0]
 
         if not results:
             return data
 
         strategy, dsconfs, result = results
-
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
-            dsconf = dsconfs[0]
-
-            data['events'] = cmdResult.events
-            data['maps'] = cmdResult.maps
-            for dp, value in cmdResult.values:
-                data['values'][dsconf.component][dp.id] = value, 'N'
-
+            if not cmdResult:
+                raise WindowsShellException(
+                    "No parser chosen for {0}".format(dsconf0.datasource)
+                )
+            if not isinstance(cmdResult, str):
+                dsconf = dsconfs[0]
+                data['events'] = cmdResult.events
+                data['maps'] = cmdResult.maps
+                for dp, value in cmdResult.values:
+                    data['values'][dsconf.component][dp.id] = value, 'N'
+            else:
+                log.warn(cmdResult)
         else:
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                 if dsconf.datasource == 'state':
@@ -634,12 +662,23 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
-        msg = 'winrs: failed collection {0} {1}'.format(result, config)
-        log.error(msg)
+        logg = log.error
+        msg = 'winrs: failed collection - {0} on {1}'.format(result, config)
+        eventKey = 'winrsCollection'
+        if isinstance(result, Failure):
+            if isinstance(result.value, WindowsShellException):
+                result = str(result.value)
+                eventKey = 'datasourceWarning_{0}'.format(
+                    config.datasources[0].datasource
+                )
+                msg = '{0} on {1}'.format(result, config)
+                logg = log.warn
+
+        logg(msg)
         data = self.new_data()
         data['events'].append(dict(
             eventClassKey='winrsCollectionError',
-            eventKey='winrsCollection',
+            eventKey=eventKey,
             summary=msg,
             device=config.id))
         return data
@@ -650,4 +689,27 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             'powershell MSSQL': powershellmssql_strategy,
             'powershell Cluster Services': powershellclusterservice_strategy,
             'powershell Cluster Resources': powershellclusterresource_strategy,
-            }.get(dsconf.params['strategy'])
+        }.get(dsconf.params['strategy'])
+
+
+def check_datasource(config, result):
+    '''
+    Check whether the data is correctly filled in datasource.
+    '''
+    dsconf = config.datasources[0]
+
+    # Return None if no parser chosen.
+    if not dsconf.params['parser']:
+        return None
+    # Return message if script was not inputted.
+    elif not dsconf.params['script']:
+        return 'There is no script inputted for {0} on {1}'.format(
+            dsconf.datasource, config
+        )
+    # Return message if was inputted invalid script.
+    elif not result.exit_code == 0:
+        return 'No output from script for {0} on {1}'.format(
+            dsconf.datasource, config
+        )
+    else:
+        return True

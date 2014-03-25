@@ -66,6 +66,8 @@ class IFileSystemInfo(IComponentInfo):
     totalBytes = schema.Int(title=u"Total Bytes", readonly=True,
                             group="Details")
     usedBytes = schema.Int(title=u"Used Bytes", readonly=True, group="Details")
+    availableBytes = schema.Int(title=u"Available Bytes", readonly=True,
+                               group="Details")
     capacityBytes = schema.Int(title=u"Capacity Bytes", readonly=True, group="Details")
     totalFiles = schema.Int(title=u"Total Files", group="Details")
     availableFiles = schema.Int(title=u"Available Files", readonly=True, group="Details")
@@ -116,7 +118,7 @@ class IWinSQLInstanceInfo(IWinComponentInfo):
 
 
 class IClusterServiceInfo(IWinComponentInfo):
-    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    clusternode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     coregroup = schema.TextLine(title=_t(u'Core Group'), readonly=True)
     priority = schema.TextLine(title=_t(u'Priority'), readonly=True)
@@ -124,7 +126,7 @@ class IClusterServiceInfo(IWinComponentInfo):
 
 
 class IClusterResourceInfo(IWinComponentInfo):
-    ownernode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
+    clusternode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     ownergroup = schema.TextLine(title=_t(u'Owner Group'), readonly=True)
     state = schema.TextLine(title=_t(u'State'), readonly=True)

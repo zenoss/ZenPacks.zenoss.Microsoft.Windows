@@ -14,6 +14,8 @@ Collection is done via PowerShell script due to the lack of information
 available in WMI.
 
 """
+import json
+
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
@@ -33,41 +35,39 @@ class WinMSSQL(WinRMPlugin):
 
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
-        'zDBInstancesPassword',
         )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
 
-        # Sample data for zDBInstanceLogin
-        # MSSQLSERVER;ZenossInstance2
-        # Sample data for zDBInstancePassword
-        # sa:Sup3rPa$$;sa:WRAAgf4234@#$
+        # Sample data for zDBInstances
+        #[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
+        #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
 
         dbinstance = device.zDBInstances
-        dbinstancepassword = device.zDBInstancesPassword
         password = device.zWinRMPassword
         login_as_user = False
-
         dblogins = {}
-        eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
-        try:
-            if len(dbinstance) > 0 and len(dbinstancepassword) > 0:
-                arrInstance = dbinstance.split(';')
-                arrPassword = dbinstancepassword.split(';')
-                login_as_user = True
-                i = 0
-                for instance in arrInstance:
-                    dbuser, dbpass = arrPassword[i].split(':', 1)
-                    i = i + 1
-                    dblogins[instance] = {'username': dbuser, 'password': dbpass}
-            else:
-                arrInstance = dbinstance.split(';')
-                for instance in arrInstance:
-                    dblogins[instance] = {'username': 'sa', 'password': password}
-                    results = {'clear': eventmessage}
+        eventmessage = 'Error parsing zDBInstances'
 
-        except (IndexError, ValueError):
+        try:
+            dbinstance = json.loads(dbinstance)
+            users = [el.get('user') for el in filter(None, dbinstance)]
+            if ''.join(users):
+                login_as_user = True
+                for el in filter(None, dbinstance):
+                    dblogins[el.get('instance')] = dict(
+                        username=el.get('user'),
+                        password=el.get('passwd')
+                    )
+            else:
+                for el in filter(None, dbinstance):
+                    dblogins[el.get('instance')] = dict(
+                        username='sa',
+                        password=password
+                    )
+            results = {'clear': eventmessage}
+        except (ValueError, TypeError, IndexError):
             # Error with dbinstance names or password
             results = {'error': eventmessage}
             defer.returnValue(results)
@@ -191,8 +191,9 @@ class WinMSSQL(WinRMPlugin):
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
                     ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
-                instancedatabases = winrs.run_command(command)
-                databases = yield instancedatabases
+                databases = yield winrs.run_command(command)
+
+                check_username(databases, instance, log)
                 for dbobj in databases.stdout:
                     db = dbobj.split('\t')
                     dbdict = {}
@@ -293,7 +294,8 @@ class WinMSSQL(WinRMPlugin):
                             om_jobs.jobid = value.strip()
                             om_jobs.id = self.prepId(om_jobs.jobid)
                         elif key.strip() == 'enabled':
-                            om_jobs.enabled = value.strip()
+                            om_jobs.enabled = 'Yes'\
+                                if value.strip() == '1' else 'No'
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
                         elif key.strip() == 'datecreated':
@@ -382,3 +384,17 @@ class WinMSSQL(WinRMPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
         return maps
+
+
+def check_username(databases, instance, log):
+    if not databases.stdout and\
+        (('Exception calling "Connect" with "0" argument(s): '
+            '"Failed to connect to server'
+            in ''.join(databases.stderr)) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "Logon failure: unknown user name or bad password.'
+            in ''.join(databases.stderr))):
+        log.error(
+            'Incorrect username/password for the {0} instance.'.format(
+                instance
+            ))

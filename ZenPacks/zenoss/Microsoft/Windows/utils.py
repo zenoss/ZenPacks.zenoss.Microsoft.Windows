@@ -12,6 +12,7 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import itertools
+import json
 
 
 def addLocalLibPath():
@@ -79,20 +80,35 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
+def parseDBUserNamePass(dbinstances='', password=''):
     dblogins = {}
-    if len(dbinstances) > 0 and len(dbinstancespassword) > 0:
-        arrInstance = dbinstances.split(';')
-        arrPassword = dbinstancespassword.split(';')
-        i = 0
-        for instance in arrInstance:
-            dbuser, dbpass = arrPassword[i].split(':')
-            i = i + 1
-            dblogins[instance] = {'username': dbuser, 'password': dbpass}
-    else:
-        dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
+    login_as_user = False
+    try:
+        dbinstance = json.loads(dbinstances)
+        users = [el.get('user') for el in filter(None, dbinstance)]
+        if ''.join(users):
+            for el in filter(None, dbinstance):
+                dblogins[el.get('instance')] = dict(
+                    username=el.get('user'),
+                    password=el.get('passwd')
+                )
+            login_as_user = True
+        else:
+            for el in filter(None, dbinstance):
+                dblogins[el.get('instance')] = dict(
+                    username='sa',
+                    password=password
+                )
+            # Retain the default behaviour, before zProps change.
+            if not dbinstance:
+                dblogins['MSSQLSERVER'] = {
+                    'username': 'sa',
+                    'password': password
+                }
+    except (ValueError, TypeError, IndexError):
+        pass
 
-    return dblogins
+    return dblogins, login_as_user
 
 
 def getSQLAssembly():
