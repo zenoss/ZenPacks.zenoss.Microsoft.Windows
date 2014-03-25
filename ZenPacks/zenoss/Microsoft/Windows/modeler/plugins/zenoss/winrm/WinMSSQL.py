@@ -58,9 +58,10 @@ class WinMSSQL(WinRMPlugin):
                 login_as_user = True
                 i = 0
                 for instance in arrInstance:
-                    dbuser, dbpass = arrPassword[i].split(':', 1)
-                    i = i + 1
-                    dblogins[instance] = {'username': dbuser, 'password': dbpass}
+                    if instance and len(arrPassword) > i:
+                        dbuser, dbpass = arrPassword[i].split(':', 1)
+                        i = i + 1
+                        dblogins[instance] = {'username': dbuser, 'password': dbpass}
             else:
                 arrInstance = dbinstance.split(';')
                 for instance in arrInstance:
