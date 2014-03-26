@@ -177,7 +177,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             sitestatusinfo[0].ServerAutoStart, 'Unknown')
 
         evtmessage = 'IIS Service {0} is in {1} state'.format(
-            ds0.component,
+            ds0.config_key[4],
             sitestatus
             )
 
