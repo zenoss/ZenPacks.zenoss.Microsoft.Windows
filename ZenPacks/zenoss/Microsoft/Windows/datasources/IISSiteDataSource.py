@@ -38,9 +38,12 @@ from txwinrm.collect \
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
-namespace = 'microsoftiisv2'
-resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
-    namespace)
+namespace_iis6 = 'microsoftiisv2'
+namespace_iis7 = 'webadministration'
+resource_uri_iis6 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
+    namespace_iis6)
+resource_uri_iis7 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
+    namespace_iis7)
 
 
 def string_to_lines(string):
@@ -137,11 +140,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         keytab = ds0.zWinKeyTabFilePath
         dcip = ds0.zWinKDC
 
-        wql = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
+        wql_iis6 = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
+            ds0.params['statusname'])
+
+        wql_iis7 = 'select ServerAutoStart from Site where name="{0}"'.format(
             ds0.params['statusname'])
 
         WinRMQueries = [
-            create_enum_info(wql=wql, resource_uri=resource_uri)]
+            create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),
+            create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),
+            ]
 
         conn_info = ConnectionInfo(
             ds0.manageIp,

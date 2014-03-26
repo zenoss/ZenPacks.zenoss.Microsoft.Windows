@@ -35,6 +35,16 @@ class IIS(WinRMPlugin):
             'query': "SELECT * FROM IIsWebVirtualDirSetting",
             'namespace': 'microsoftiisv2',
             },
+
+        'IIs7Site': {
+            'query': "SELECT Name, Id, ServerAutoStart  FROM Site",
+            'namespace': 'WebAdministration',
+            },
+
+        'IIs7VirtualDirectory': {
+            'query': "SELECT * FROM VirtualDirectory",
+            'namespace': 'WebAdministration',
+            },
         }
 
     def process(self, device, results, log):
@@ -43,23 +53,40 @@ class IIS(WinRMPlugin):
             self.name(), device.id)
 
         rm = self.relMap()
+        if results.get('IIsWebServerSetting'):
+            for iisSite in results.get('IIsWebServerSetting', ()):
+                om = self.objectMap()
+                om.id = self.prepId(iisSite.Name)
+                om.statusname = iisSite.Name
+                om.title = iisSite.ServerComment
+                om.sitename = iisSite.ServerComment  # Default Web Site
+                if iisSite.ServerAutoStart == 'false':
+                    om.status = 'Stopped'
+                else:
+                    om.status = 'Running'
 
-        for iisSite in results.get('IIsWebServerSetting', ()):
-            om = self.objectMap()
-            om.id = self.prepId(iisSite.Name)
-            om.statusname = iisSite.Name
-            om.title = iisSite.ServerComment
-            om.sitename = iisSite.ServerComment
-            om.apppool = iisSite.AppPoolId
-            if iisSite.ServerAutoStart == 'false':
-                om.status = 'Stopped'
-            else:
-                om.status = 'Running'
+                for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
+                    if iisVirt.Name == iisSite.Name + "/ROOT":
+                        om.apppool = iisVirt.AppPoolId
 
-            for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
-                if iisVirt.Name == iisSite.Name + "/ROOT":
-                    om.apppool = iisVirt.AppPoolId
+                rm.append(om)
+        else:
+            for iisSite in results.get('IIs7Site', ()):
+                try:
+                    om = self.objectMap()
+                    om.id = self.prepId(iisSite.Id)
+                    om.title = om.statusname = om.sitename = iisSite.Name
+                    if iisSite.ServerAutoStart == 'false':
+                        om.status = 'Stopped'
+                    else:
+                        om.status = 'Running'
 
-            rm.append(om)
+                    for iisVirt in results.get('IIs7VirtualDirectory', ()):
+                        if iisVirt.SiteName == iisSite.Name:
+                            om.apppool = iisVirt.Path
+
+                    rm.append(om)
+                except AttributeError:
+                    pass
 
         return rm
