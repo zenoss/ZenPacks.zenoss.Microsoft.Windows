@@ -120,7 +120,8 @@ class ZenPack(ZenPackBase):
 
             try:
                 os.remove(kerbdst)
-                os.remove(kerbconfig)
+                # Remove directory, if it exists.
+                shutil.rmtree(kerbconfig, ignore_errors=True)
                 # Remove export for KRB5_CONFIG from bashrc
                 bashfile = open(userenvironconfig, 'r')
                 content = bashfile.read()
