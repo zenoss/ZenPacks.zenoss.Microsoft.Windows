@@ -31,6 +31,7 @@ DEVTYPE_PROTOCOL = 'WMI'
 _PACK_Z_PROPS = [
     ('zWinRMUser', '', 'string'),
     ('zWinRMPassword', '', 'password'),
+    ('zWinRMServerName', '', 'string'),
     ('zWinRMPort', '5985', 'string'),
     ('zDBInstances', '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'instancecredentials'),
     ('zWinKDC', '', 'string'),

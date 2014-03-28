@@ -20,7 +20,6 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
