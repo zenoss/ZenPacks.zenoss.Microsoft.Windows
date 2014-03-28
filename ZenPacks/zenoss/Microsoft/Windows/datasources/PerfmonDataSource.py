@@ -39,12 +39,10 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
     )
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
-from ZenPacks.zenoss.Microsoft.Windows.twisted_utils import add_timeout, sleep
+from ..twisted_utils import add_timeout
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
-addLocalLibPath()
-
-from txwinrm.util import ConnectionInfo
+# Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
 
 
@@ -101,14 +99,7 @@ class PluginStates(object):
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     config = None
     cycling = None
@@ -156,13 +147,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         dsconf0 = config.datasources[0]
 
-        scheme = dsconf0.zWinScheme
-        port = int(dsconf0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in dsconf0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = dsconf0.zWinKeyTabFilePath
-        dcip = dsconf0.zWinKDC
-
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
 
@@ -195,19 +179,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             )
 
         self.config = config
-
-        self.command = create_long_running_command(
-            ConnectionInfo(
-                dsconf0.manageIp,
-                auth_type,
-                dsconf0.zWinRMUser,
-                dsconf0.zWinRMPassword,
-                scheme,
-                port,
-                connectiontype,
-                keytab,
-                dcip))
-
+        try:
+            self.command = create_long_running_command(
+                createConnectionInfo(dsconf0))
+        except Exception, e:
+            self.initialized = False
+            LOG.warn(
+                "Connection error on %s: %s",
+                self.config.id,
+                e.message.capitalize() or "the task is not Initialized"
+            )
+            return
         self.initialized = True
 
     @defer.inlineCallbacks
@@ -333,10 +315,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield self.command.stop()
             except Exception, ex:
-                # Log this as a warning because it can mean that a WSMan
-                # active operation has been leaked on the Windows
-                # server.
-                LOG.warn(
+                if 'canceled by the user' in ex.message:
+                    # This means the command finished naturally before
+                    # we got a chance to stop it. Totally normal.
+                    log_level = logging.DEBUG
+                else:
+                    # Otherwise this could result in leaking active
+                    # operations on the Windows server and should be
+                    # logged as a warning.
+                    log_level = logging.WARN
+
+                LOG.log(
+                    log_level,
                     "failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 

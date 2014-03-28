@@ -38,12 +38,11 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath, parseDBUserNamePass, getSQLAssembly
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import parseDBUserNamePass, getSQLAssembly
 
-addLocalLibPath()
-
-from txwinrm.util import ConnectionInfo
+# Requires that txwinrm_utils is already imported.
+from txwinrm.util import UnauthorizedError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -427,16 +426,7 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        'zDBInstances',
-        'zDBInstancesPassword',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -507,24 +497,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @defer.inlineCallbacks
     def collect(self, config):
         dsconf0 = config.datasources[0]
-
-        scheme = dsconf0.zWinScheme
-        port = int(dsconf0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in dsconf0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = dsconf0.zWinKeyTabFilePath
-        dcip = dsconf0.zWinKDC
-
-        conn_info = ConnectionInfo(
-            dsconf0.manageIp,
-            auth_type,
-            dsconf0.zWinRMUser,
-            dsconf0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(dsconf0)
 
         strategy = self._get_strategy(dsconf0)
         if not strategy:

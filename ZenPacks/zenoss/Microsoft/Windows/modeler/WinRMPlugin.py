@@ -14,9 +14,6 @@ from xml.etree.cElementTree import ParseError as cParseError
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
-addLocalLibPath()
-
 from twisted.internet import defer
 from twisted.internet.error import (
     ConnectError,
@@ -24,6 +21,9 @@ from twisted.internet.error import (
     TimeoutError,
     )
 
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+
+# Requires that txwinrm_utils is already imported.
 import txwinrm
 
 
@@ -39,14 +39,7 @@ class WinRMPlugin(PythonPlugin):
     Base modeler plugin class for WinRM modeler plugins.
     '''
 
-    deviceProperties = PythonPlugin.deviceProperties + (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        )
+    deviceProperties = PythonPlugin.deviceProperties + ConnectionInfoProperties
 
     queries = {}
     commands = {}
@@ -90,26 +83,7 @@ class WinRMPlugin(PythonPlugin):
         '''
         Return a ConnectionInfo given device.
         '''
-        hostname = device.manageIp
-        username = device.zWinRMUser
-        auth_type = 'kerberos' if '@' in username else 'basic'
-        password = device.zWinRMPassword
-        scheme = device.zWinScheme
-        port = int(device.zWinRMPort)
-        connectiontype = 'Keep-Alive'
-        keytab = device.zWinKeyTabFilePath
-        dcip = device.zWinKDC
-
-        return txwinrm.collect.ConnectionInfo(
-            hostname,
-            auth_type,
-            username,
-            password,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        return createConnectionInfo(device)
 
     def enuminfo(self, query, resource_uri=None, namespace=None):
         '''
