@@ -146,14 +146,17 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
 
     // --- Value handling ---
     setValue: function(values) {
-        values = JSON.parse(values);
         var data = [];
-        if (values) {
-            Ext.each(values, function(value) {
-                data.push({value: value});
-            });
-        }
-        this.grid.getStore().loadData(data);
+        try {
+            values = JSON.parse(values);
+        
+            if (values) {
+                Ext.each(values, function(value) {
+                    data.push({value: value});
+                });
+            }
+            this.grid.getStore().loadData(data);
+        } catch(e) {}
     },
 
     getValue: function() {

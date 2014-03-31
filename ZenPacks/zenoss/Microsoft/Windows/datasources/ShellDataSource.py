@@ -44,7 +44,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils \
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
+from txwinrm.util import ConnectionInfo, UnauthorizedError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -60,6 +60,12 @@ AVAILABLE_STRATEGIES = [
 
 class WindowsShellException(Exception):
     '''Exception class to catch known exceptions '''
+
+
+class ShellResult(object):
+    exit_code = 0
+    stderr = []
+    stdout = []
 
 
 class ShellDataSource(PythonDataSource):
@@ -225,7 +231,7 @@ customcommand_strategy = CustomCommandStrategy()
 class PowershellMSSQLStrategy(object):
     key = 'PowershellMSSQL'
 
-    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database):
+    def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database, login_as_user):
         #SQL Command opening
 
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -240,7 +246,15 @@ class PowershellMSSQLStrategy(object):
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
             "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
-        sqlConnection.append("$con.Connect();")
+        if login_as_user:
+            # Login using windows credentials
+            sqlConnection.append("$con.LoginSecure=$true;")
+            sqlConnection.append("$con.ConnectAsUser=$true;")
+            # Omit domain part of username
+            sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
+            sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+        else:
+            sqlConnection.append("$con.Connect();")
 
         # Connect to Database Server
         sqlConnection.append("$server = new-object " \
@@ -550,8 +564,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
+            password = dsconf0.zWinRMPassword
 
-            dblogins = parseDBUserNamePass(dbinstances)
+            dblogins, login_as_user = parseDBUserNamePass(dbinstances, password)
 
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
@@ -566,7 +581,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 sqlserver=sqlserver,
                 sqlusername=dblogins[instance]['username'],
                 sqlpassword=dblogins[instance]['password'],
-                database=dbname)
+                database=dbname,
+                login_as_user=login_as_user)
 
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
                 'powershell Cluster Resources'):
@@ -584,7 +600,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(counters)
 
         command = create_single_shot_command(conn_info)
-        results = yield command.run_command(command_line)
+        try:
+            results = yield command.run_command(command_line)
+        except UnauthorizedError:
+            results = ShellResult()
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):

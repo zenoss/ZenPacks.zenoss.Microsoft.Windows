@@ -191,8 +191,9 @@ class WinMSSQL(WinRMPlugin):
                 command = "{0} \"& {{{1}}}\"".format(
                     pscommand,
                     ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
-                instancedatabases = winrs.run_command(command)
-                databases = yield instancedatabases
+                databases = yield winrs.run_command(command)
+
+                check_username(databases, instance, log)
                 for dbobj in databases.stdout:
                     db = dbobj.split('\t')
                     dbdict = {}
@@ -383,3 +384,17 @@ class WinMSSQL(WinRMPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
         return maps
+
+
+def check_username(databases, instance, log):
+    if not databases.stdout and\
+        (('Exception calling "Connect" with "0" argument(s): '
+            '"Failed to connect to server'
+            in ''.join(databases.stderr)) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "Logon failure: unknown user name or bad password.'
+            in ''.join(databases.stderr))):
+        log.error(
+            'Incorrect username/password for the {0} instance.'.format(
+                instance
+            ))
