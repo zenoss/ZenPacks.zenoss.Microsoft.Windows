@@ -8,7 +8,7 @@
  ****************************************************************************/
 (function(){
 
-/* helper function to get the number of stars returned for password */
+/* Helper function to get the number of stars returned for password */
 String.prototype.repeat = function(num) {
     return new Array(isNaN(num)? 1 : ++num).join(this);
 }
@@ -169,7 +169,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
     }
 });
 
-// Ext.version will be defined in ExtJS3 and undefined in ExtJS4.
+/* Ext.version will be defined in ExtJS3 and undefined in ExtJS4. */
 if (Ext.version === undefined) {
     Zenoss.zproperties.registerZPropertyType('instancecredentials', {
         xtype: 'instancecredentials',
@@ -180,7 +180,8 @@ if (Ext.version === undefined) {
     // Ext.reg('instancecredentials', Zenoss.form.InstanceCredentials);
 }
 
-// render zDBInstances property on the grid
+/* Zenoss.ConfigProperty.Grid */
+/* Render zDBInstances property on the grid */
 zDBInstancesRender = function(value) {
     result = [];
     try {
@@ -194,9 +195,8 @@ zDBInstancesRender = function(value) {
     return result.join(';');
 }
 
-/* Zenoss.ConfigProperty.Grid override */
-Ext.ComponentMgr.onAvailable('device_config_properties', function(){
-    var configpanel = Ext.getCmp('device_config_properties');
+/* Override function for configpanel */
+panelOverride = function(configpanel, gridID) {
     try {
     var columns = configpanel.configGrid.columns;
     for (var el in columns) {
@@ -222,7 +222,7 @@ Ext.ComponentMgr.onAvailable('device_config_properties', function(){
     } catch (err) {
         try {
         /* workaround for zenoss 4.1.1 */
-        var configGrid = Ext.getCmp('ext-comp-1112');
+        var configGrid = Ext.getCmp(gridID);
         var columns = configGrid.colModel.columns;
         // var columns = configpanel.items[0].colModel.columns;
         for (var el in columns) {
@@ -246,6 +246,18 @@ Ext.ComponentMgr.onAvailable('device_config_properties', function(){
         }
         } catch (err) {}
     }
+}
+
+/* Zenoss.ConfigProperty.Grid override (for device) */
+Ext.ComponentMgr.onAvailable('device_config_properties', function(){
+    var configpanel = Ext.getCmp('device_config_properties');
+    panelOverride(configpanel, 'ext-comp-1112');
+});
+
+/* Zenoss.ConfigProperty.Grid override (for zenoss details) */
+Ext.ComponentMgr.onAvailable('configuration_properties', function(){
+    var configpanel = Ext.getCmp('configuration_properties');
+    panelOverride(configpanel, 'ext-comp-1157');
 });
 
 }());
