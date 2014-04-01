@@ -192,7 +192,6 @@ class WinMSSQL(WinRMPlugin):
                     pscommand,
                     ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
                 databases = yield winrs.run_command(command)
-
                 check_username(databases, instance, log)
                 for dbobj in databases.stdout:
                     db = dbobj.split('\t')
@@ -387,13 +386,20 @@ class WinMSSQL(WinRMPlugin):
 
 
 def check_username(databases, instance, log):
+    stderr = ''.join(databases.stderr)
     if not databases.stdout and\
         (('Exception calling "Connect" with "0" argument(s): '
             '"Failed to connect to server'
-            in ''.join(databases.stderr)) or (
+            in stderr) or (
             'The following exception was thrown when trying to enumerate the '
             'collection: "Logon failure: unknown user name or bad password.'
-            in ''.join(databases.stderr))):
+            in stderr) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "Anattempt was made to logon, but the network logon '
+            'service was not started.' in stderr) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "There are currently no logon servers available to '
+            'service the logon request.' in stderr)):
         log.error(
             'Incorrect username/password for the {0} instance.'.format(
                 instance
