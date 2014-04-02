@@ -26,13 +26,10 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
-addLocalLibPath()
-
-from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient, create_enum_info
+# Requires that txwinrm_utils is already imported.
+from txwinrm.collect import WinrmCollectClient, create_enum_info
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -101,14 +98,7 @@ class IISSiteDataSourceInfo(RRDDataSourceInfo):
 
 
 class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-    )
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -133,12 +123,6 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
-        scheme = ds0.zWinScheme
-        port = int(ds0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in ds0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = ds0.zWinKeyTabFilePath
-        dcip = ds0.zWinKDC
 
         wql_iis6 = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
             ds0.params['statusname'])
@@ -151,16 +135,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),
             ]
 
-        conn_info = ConnectionInfo(
-            ds0.manageIp,
-            auth_type,
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(ds0)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)
