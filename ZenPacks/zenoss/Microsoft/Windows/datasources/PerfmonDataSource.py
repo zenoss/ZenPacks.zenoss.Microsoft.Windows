@@ -103,9 +103,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     config = None
     cycling = None
-    initialized = None
     state = None
-    last_time = None
+    start_deferred = None
     receive_deferred = None
     data_deferred = None
     command = None
@@ -115,41 +114,19 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     collected_samples = None
     counter_map = None
 
-    def __init__(self):
-        self.initialized = False
-        self.state = PluginStates.STOPPED
-        self.data = self.new_data()
+    # How many times collect has been called on the task.
+    collect_count = None
 
-    @classmethod
-    def config_key(cls, datasource, context):
-        return (
-            context.device().id,
-            datasource.getCycleTime(context),
-            SOURCETYPE,
-            )
-
-    @classmethod
-    def params(cls, datasource, context):
-        counter = datasource.talesEval(datasource.counter, context)
-        if getattr(context, 'perfmonInstance', None):
-            counter = ''.join((context.perfmonInstance, counter))
-
-        return {
-            'counter': counter,
-            }
-
-    def initialize(self, config):
-        '''
-        Initialize the task.
-
-        Only logic that should only ever be executed as single time when
-        a task is created should go here.
-        '''
+    def __init__(self, config):
+        preferences = queryUtility(ICollectorPreferences, 'zenpython')
         dsconf0 = config.datasources[0]
 
-        preferences = queryUtility(ICollectorPreferences, 'zenpython')
-        self.cycling = preferences.options.cycle
+        self.config = config
+        self.state = PluginStates.STOPPED
+        self.data = self.new_data()
+        self.collect_count = 0
 
+        self.cycling = preferences.options.cycle
         if self.cycling:
             self.sample_interval = dsconf0.cycletime
             self.max_samples = max(600 / self.sample_interval, 1)
@@ -178,19 +155,34 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
             )
 
-        self.config = config
-        try:
-            self.command = create_long_running_command(
-                createConnectionInfo(dsconf0))
-        except Exception, e:
-            self.initialized = False
-            LOG.warn(
-                "Connection error on %s: %s",
-                self.config.id,
-                e.message.capitalize() or "the task is not Initialized"
+        self.command = create_long_running_command(
+            createConnectionInfo(dsconf0))
+
+        # We start the command here because __init__ gets called
+        # immediately when a task is created rather than the collect
+        # method which only gets called when the task gets scheduled and
+        # enters the running state. This is important because it allows
+        # us to begin receiving data more quickly after configuration
+        # update causes the task to be recreated.
+        self.start_deferred = self.start()
+
+    @classmethod
+    def config_key(cls, datasource, context):
+        return (
+            context.device().id,
+            datasource.getCycleTime(context),
+            SOURCETYPE,
             )
-            return
-        self.initialized = True
+
+    @classmethod
+    def params(cls, datasource, context):
+        counter = datasource.talesEval(datasource.counter, context)
+        if getattr(context, 'perfmonInstance', None):
+            counter = ''.join((context.perfmonInstance, counter))
+
+        return {
+            'counter': counter,
+            }
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -199,50 +191,41 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         '''
-        if not self.initialized:
-            self.initialize(config)
-        if self.initialized:
-            yield self.start()
+        # Wait for the start called from __init__ to finish.
+        if self.start_deferred and not self.start_deferred.called:
+            LOG.debug("waiting for Get-Counter on %s to start", config.id)
+            yield self.start_deferred
+
+        yield self.start()
         yield self.wait_for_data()
 
         # Reset so we don't deliver the same results more than once.
         data = self.data.copy()
         self.data = self.new_data()
 
+        self.collect_count += 1
+
         defer.returnValue(data)
 
     @defer.inlineCallbacks
     def wait_for_data(self):
         '''
-        Wait for no more than 5 seconds for data to be received.
+        Wait for data to be returned.
 
-        When we ask for data, we know that we won't get the data back
-        until now + cycletime. This introduces a race condition on the
-        next collection interval where the data won't yet be available
-        for a fraction of a second. This means we have to wait another
-        collection interval before the data will be available.
-
-        We can try to predict if we're going to get data soon based on
-        when we last asked for, or received, data. If "soon" is soon
-        enough, we'll sleep to wait for the data.
+        If data already exists, or if this is the very first collection,
+        we won't wait. This is because we know Get-Counter will take a
+        full collection cycle to get data the first time.
         '''
-        if self.last_time:
-            until_time = self.sample_interval - (time.time() - self.last_time)
+        if not self.collect_count or self.data['values']:
+            defer.returnValue(None)
 
-            if until_time <= 0:
-                defer.returnValue(None)
+        LOG.debug("waiting for %s Get-Counter data", self.config.id)
 
-            wait_time = until_time + 2
-            if wait_time < min(5, self.sample_interval):
-                LOG.debug(
-                    "waiting %.2f seconds for %s Get-Counter data",
-                    wait_time, self.config.id)
-
-                self.data_deferred = defer.Deferred()
-                try:
-                    yield add_timeout(self.data_deferred, wait_time)
-                except Exception:
-                    pass
+        self.data_deferred = defer.Deferred()
+        try:
+            yield add_timeout(self.data_deferred, self.sample_interval)
+        except Exception:
+            pass
 
         defer.returnValue(None)
 
@@ -259,6 +242,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
             defer.returnValue(None)
 
+        self.collect_count = 0
+        self.collected_samples = 0
+        self.collected_counters = set()
+
         LOG.debug("starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
 
@@ -274,9 +261,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             defer.returnValue(None)
 
         self.state = PluginStates.STARTED
-        self.last_time = time.time()
-        self.collected_samples = 0
-        self.collected_counters = set()
 
         self.receive()
 
@@ -355,7 +339,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def onReceive(self, result):
-        self.last_time = time.time()
+        collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
         stdout_lines = result[0]
@@ -398,7 +382,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     value = float(value) * 100
 
                 self.data['values'][component][datasource] = (
-                    value, int(self.last_time))
+                    value, collect_time)
 
         LOG.debug("received Get-Counter data for %s", self.config.id)
 
