@@ -44,8 +44,8 @@ class WinMSSQL(WinRMPlugin):
         #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
 
         dbinstance = device.zDBInstances
-        username = device.zWinRMUser
-        password = device.zWinRMPassword
+        username = device.windows_user
+        password = device.windows_password
         login_as_user = False
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'

@@ -540,8 +540,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
-            username = dsconf0.zWinRMUser
-            password = dsconf0.zWinRMPassword
+            username = dsconf0.windows_user
+            password = dsconf0.windows_password
 
             dblogins, login_as_user = parseDBUserNamePass(dbinstances, \
                 username, password
