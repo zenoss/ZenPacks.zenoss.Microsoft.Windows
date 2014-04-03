@@ -45,6 +45,7 @@ class WinMSSQL(WinRMPlugin):
         #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
 
         dbinstance = device.zDBInstances
+        username = device.zWinRMUser
         password = device.zWinRMPassword
         login_as_user = False
         dblogins = {}
@@ -54,16 +55,16 @@ class WinMSSQL(WinRMPlugin):
             dbinstance = json.loads(dbinstance)
             users = [el.get('user') for el in filter(None, dbinstance)]
             if ''.join(users):
-                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=el.get('user'),
                         password=el.get('passwd')
                     )
             else:
+                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
-                        username='sa',
+                        username=username,
                         password=password
                     )
             results = {'clear': eventmessage}

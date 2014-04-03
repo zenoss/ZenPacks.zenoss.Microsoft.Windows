@@ -80,29 +80,37 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def parseDBUserNamePass(dbinstances='', password=''):
+def parseDBUserNamePass(dbinstances='', username='', password=''):
+    """
+    Try to get username(s)/password(s) from configuration,
+    if not - uses WinRM credentials.
+    """
     dblogins = {}
     login_as_user = False
     try:
         dbinstance = json.loads(dbinstances)
         users = [el.get('user') for el in filter(None, dbinstance)]
+        # a) MSSQL auth
         if ''.join(users):
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username=el.get('user'),
                     password=el.get('passwd')
                 )
-            login_as_user = True
+        # b) Windows auth
         else:
+            login_as_user = True
+
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
-                    username='sa',
+                    username=username,
                     password=password
                 )
+
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
                 dblogins['MSSQLSERVER'] = {
-                    'username': 'sa',
+                    'username': username, # 'sa',
                     'password': password
                 }
     except (ValueError, TypeError, IndexError):
