@@ -49,15 +49,11 @@ except ImportError:
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows import ZENPACK_NAME
-from ZenPacks.zenoss.Microsoft.Windows.utils import (
-    addLocalLibPath,
-    get_processNameAndArgs,
-    get_processText,
-    )
+from .. import ZENPACK_NAME
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import get_processNameAndArgs, get_processText
 
-addLocalLibPath()
-
+# Requires that txwinrm_utils is already imported.
 import txwinrm.collect
 
 
@@ -224,14 +220,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
     Collects Windows process data.
     '''
 
-    proxy_attributes = [
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        ]
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def params(cls, datasource, context):
@@ -264,19 +253,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return params
 
     def collect(self, config):
-        ds0 = config.datasources[0]
-
         client = txwinrm.collect.WinrmCollectClient()
-        conn_info = txwinrm.collect.ConnectionInfo(
-            config.manageIp,
-            'kerberos' if '@' in ds0.zWinRMUser else 'basic',
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            ds0.zWinScheme,
-            int(ds0.zWinRMPort),
-            'Keep-Alive',
-            ds0.zWinKeyTabFilePath,
-            ds0.zWinKDC)
+        conn_info = createConnectionInfo(config.datasources[0])
 
         # Always query Win32_Process. This is where we get process
         # status and count.

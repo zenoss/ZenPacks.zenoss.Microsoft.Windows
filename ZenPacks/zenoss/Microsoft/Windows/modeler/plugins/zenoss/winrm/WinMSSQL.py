@@ -20,14 +20,12 @@ from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
-from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, getSQLAssembly
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
