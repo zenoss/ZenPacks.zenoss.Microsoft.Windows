@@ -300,6 +300,13 @@ Events will be collected from the Windows event log using a WinRM subscription. 
 
 Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
+To change event severity follow the steps:
+# go to IIS Site events, and click on '/Status' event class.
+# find 'EventClass Mappings' section and click on 'IISSiteStatus' link
+# click the ''Edit'' button
+# in the 'Transform' section, add "<code>evt.severity = <severity number(see link http://community.zenoss.org/docs/DOC-3923 in the '#7.1.1.3. severity Field' section)></code>" at the bottom
+# click the ''Save'' button
+
 == Requirements ==
 
 This ZenPack has the following requirements.

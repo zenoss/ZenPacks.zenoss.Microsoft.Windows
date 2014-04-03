@@ -111,6 +111,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     command = None
     data = None
     sample_interval = None
+    sample_buffer = []
     max_samples = None
     collected_samples = None
     counter_map = None

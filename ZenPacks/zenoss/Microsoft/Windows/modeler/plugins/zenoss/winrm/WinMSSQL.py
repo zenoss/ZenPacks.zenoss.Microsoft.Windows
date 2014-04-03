@@ -22,7 +22,8 @@ from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, getSQLAssembly
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
+    getSQLAssembly, filter_sql_stdout
 
 addLocalLibPath()
 
@@ -43,7 +44,8 @@ class WinMSSQL(WinRMPlugin):
         #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
 
         dbinstance = device.zDBInstances
-        password = device.zWinRMPassword
+        username = device.windows_user
+        password = device.windows_password
         login_as_user = False
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'
@@ -52,16 +54,16 @@ class WinMSSQL(WinRMPlugin):
             dbinstance = json.loads(dbinstance)
             users = [el.get('user') for el in filter(None, dbinstance)]
             if ''.join(users):
-                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=el.get('user'),
                         password=el.get('passwd')
                     )
             else:
+                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
-                        username='sa',
+                        username=username,
                         password=password
                     )
             results = {'clear': eventmessage}
@@ -157,6 +159,7 @@ class WinMSSQL(WinRMPlugin):
                     "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
                 if login_as_user:
+                    log.debug("Windows auth %s / %s" % (sqlusername, sqlpassword))
                     # Login using windows credentials
                     sqlConnection.append("$con.LoginSecure=$true;")
                     sqlConnection.append("$con.ConnectAsUser=$true;")
@@ -164,6 +167,7 @@ class WinMSSQL(WinRMPlugin):
                     sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
                     sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
                 else:
+                    log.debug("DB auth %s / %s" % (sqlusername, sqlpassword))
                     sqlConnection.append("$con.Connect();")
 
                 # Connect to Database Server
@@ -190,9 +194,8 @@ class WinMSSQL(WinRMPlugin):
                     pscommand,
                     ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
                 databases = yield winrs.run_command(command)
-
                 check_username(databases, instance, log)
-                for dbobj in databases.stdout:
+                for dbobj in filter_sql_stdout(databases.stdout):
                     db = dbobj.split('\t')
                     dbdict = {}
 
@@ -204,31 +207,32 @@ class WinMSSQL(WinRMPlugin):
                             log.info('Error parsing returned values : {0}'.format(
                                 dbitem))
 
-                    if dbdict['lastlogbackupdate'][:8] == '1/1/0001':
-                        lastlogbackupdate = None
-                    else:
+                    lastlogbackupdate = None
+                    if ('lastlogbackupdate' in dbdict) \
+                    and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
                         lastlogbackupdate = dbdict['lastlogbackupdate']
 
-                    if dbdict['lastbackupdate'][:8] == '1/1/0001':
-                        lastbackupdate = None
-                    else:
+                    lastbackupdate = None
+                    if ('lastbackupdate' in dbdict) \
+                    and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
                         lastbackupdate = dbdict['lastbackupdate']
 
-                    om_database = ObjectMap()
-                    om_database.id = self.prepId(instance + dbdict['id'])
-                    om_database.title = dbdict['name'][1:-1]
-                    om_database.instancename = om_instance.id
-                    om_database.version = dbdict['version']
-                    om_database.owner = dbdict['owner']
-                    om_database.lastbackupdate = lastbackupdate
-                    om_database.lastlogbackupdate = lastlogbackupdate
-                    om_database.isaccessible = dbdict['isaccessible']
-                    om_database.collation = dbdict['collation']
-                    om_database.createdate = str(dbdict['createdate'])
-                    om_database.defaultfilegroup = dbdict['defaultfilegroup']
-                    om_database.primaryfilepath = dbdict['primaryfilepath']
+                    if ('id' in dbdict):
+                        om_database = ObjectMap()
+                        om_database.id = self.prepId(instance + dbdict['id'])
+                        om_database.title = dbdict['name'][1:-1]
+                        om_database.instancename = om_instance.id
+                        om_database.version = dbdict['version']
+                        om_database.owner = dbdict['owner']
+                        om_database.lastbackupdate = lastbackupdate
+                        om_database.lastlogbackupdate = lastlogbackupdate
+                        om_database.isaccessible = dbdict['isaccessible']
+                        om_database.collation = dbdict['collation']
+                        om_database.createdate = str(dbdict['createdate'])
+                        om_database.defaultfilegroup = dbdict['defaultfilegroup']
+                        om_database.primaryfilepath = dbdict['primaryfilepath']
 
-                    database_oms.append(om_database)
+                        database_oms.append(om_database)
 
                 # Get SQL Backup Jobs information
                 backup_sqlConnection = []
@@ -246,7 +250,7 @@ class WinMSSQL(WinRMPlugin):
 
                 backuplist = winrs.run_command(command)
                 backups = yield backuplist
-                for backupobj in backups.stdout:
+                for backupobj in filter_sql_stdout(backups.stdout):
                     backup = backupobj.split('\t')
                     backupdict = {}
 
@@ -280,7 +284,7 @@ class WinMSSQL(WinRMPlugin):
 
                 jobslist = winrs.run_command(command)
                 jobs = yield jobslist
-                for job in jobs.stdout:
+                for job in filter_sql_stdout(jobs.stdout):
                     key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
                         #New Job Record
@@ -385,13 +389,20 @@ class WinMSSQL(WinRMPlugin):
 
 
 def check_username(databases, instance, log):
+    stderr = ''.join(databases.stderr)
     if not databases.stdout and\
         (('Exception calling "Connect" with "0" argument(s): '
             '"Failed to connect to server'
-            in ''.join(databases.stderr)) or (
+            in stderr) or (
             'The following exception was thrown when trying to enumerate the '
             'collection: "Logon failure: unknown user name or bad password.'
-            in ''.join(databases.stderr))):
+            in stderr) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "Anattempt was made to logon, but the network logon '
+            'service was not started.' in stderr) or (
+            'The following exception was thrown when trying to enumerate the '
+            'collection: "There are currently no logon servers available to '
+            'service the logon request.' in stderr)):
         log.error(
             'Incorrect username/password for the {0} instance.'.format(
                 instance
