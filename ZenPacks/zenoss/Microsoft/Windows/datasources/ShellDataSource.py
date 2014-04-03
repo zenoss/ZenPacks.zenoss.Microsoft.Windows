@@ -40,7 +40,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import parseDBUserNamePass, getSQLAssembly
+from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
+    parseDBUserNamePass, getSQLAssembly
+
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import UnauthorizedError
@@ -297,7 +299,7 @@ class PowershellMSSQLStrategy(object):
         # Parse values
         valuemap = {}
 
-        for counterline in result.stdout:
+        for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':')
             if key.strip() == 'ckey':
                 _counter = value.strip().lower()

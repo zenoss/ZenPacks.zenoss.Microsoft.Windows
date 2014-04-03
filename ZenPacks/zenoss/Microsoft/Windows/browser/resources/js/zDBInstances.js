@@ -25,7 +25,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
             submitValue: true,
             triggerAction: 'all',
         });
-        config.fieldLabel = "DB Instances";
+        config.fieldLabel = "DB Instances (leave user/password blank to use Windows authentication)";
         Zenoss.form.InstanceCredentials.superclass.constructor.apply(this, arguments);
     },
 
