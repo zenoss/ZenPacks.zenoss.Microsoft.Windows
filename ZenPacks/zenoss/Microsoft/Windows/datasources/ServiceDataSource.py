@@ -28,13 +28,10 @@ from Products.ZenUtils.Utils import prepId
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
-addLocalLibPath()
-
-from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient, create_enum_info
+# Requires that txwinrm_utils is already imported.
+from txwinrm.collect import WinrmCollectClient, create_enum_info
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -116,14 +113,7 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
 
 
 class ServicePlugin(PythonDataSourcePlugin):
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -155,29 +145,14 @@ class ServicePlugin(PythonDataSourcePlugin):
         log.info('{0}:Start Collection of Services'.format(config.id))
         ds0 = config.datasources[0]
 
-        scheme = ds0.zWinScheme
-        port = int(ds0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in ds0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = ds0.zWinKeyTabFilePath
-        dcip = ds0.zWinKDC
-
         servicename = ds0.params['servicename']
 
         WinRMQueries = [
             create_enum_info('select name, state, status, displayname'\
              ' from Win32_Service where name = "{0}"'.format(servicename))]
 
-        conn_info = ConnectionInfo(
-            ds0.manageIp,
-            auth_type,
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(ds0)
+
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)

@@ -20,7 +20,6 @@ from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
     import ObjectMap, RelationshipMap
-from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
@@ -28,7 +27,6 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
@@ -46,8 +44,8 @@ class WinMSSQL(WinRMPlugin):
         #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
 
         dbinstance = device.zDBInstances
-        username = device.zWinRMUser
-        password = device.zWinRMPassword
+        username = device.windows_user
+        password = device.windows_password
         login_as_user = False
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'

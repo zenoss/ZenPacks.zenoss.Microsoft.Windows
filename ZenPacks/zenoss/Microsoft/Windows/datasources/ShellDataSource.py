@@ -39,12 +39,13 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
-    parseDBUserNamePass, getSQLAssembly, filter_sql_stdout
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
+    parseDBUserNamePass, getSQLAssembly
 
-addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo, UnauthorizedError
+# Requires that txwinrm_utils is already imported.
+from txwinrm.util import UnauthorizedError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -455,15 +456,7 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        'zDBInstances',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -534,24 +527,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @defer.inlineCallbacks
     def collect(self, config):
         dsconf0 = config.datasources[0]
-
-        scheme = dsconf0.zWinScheme
-        port = int(dsconf0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in dsconf0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = dsconf0.zWinKeyTabFilePath
-        dcip = dsconf0.zWinKDC
-
-        conn_info = ConnectionInfo(
-            dsconf0.manageIp,
-            auth_type,
-            dsconf0.zWinRMUser,
-            dsconf0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(dsconf0)
 
         strategy = self._get_strategy(dsconf0)
         if not strategy:
@@ -564,8 +540,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if dsconf0.params['strategy'] == 'powershell MSSQL':
             sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
-            username = dsconf0.zWinRMUser
-            password = dsconf0.zWinRMPassword
+            username = dsconf0.windows_user
+            password = dsconf0.windows_password
 
             dblogins, login_as_user = parseDBUserNamePass(dbinstances, \
                 username, password
