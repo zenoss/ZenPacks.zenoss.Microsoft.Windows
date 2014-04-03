@@ -20,8 +20,9 @@ LOG = logging.getLogger('zen.windows')
 import collections
 import time
 
-from twisted.internet import defer
+from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
+from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
 from zope.interface import implements
@@ -98,58 +99,105 @@ class PluginStates(object):
     STOPPED = 'STOPPED'
 
 
+class DataPersister(object):
+
+    """Cache of data collected from devices.
+
+    Designed to be used in module scope to preserve data that comes in
+    between the return of a plugin's collect and cleanup calls.
+
+    """
+
+    # Dictionary containing data for all monitored devices.
+    devices = None
+
+    # For performing periodic cleanup of stale data.
+    maintenance_interval = 600
+
+    # Data older than this (in seconds) will be dropped on maintenance.
+    max_data_age = 3600
+
+    def __init__(self):
+        self.devices = {}
+        self.start()
+
+    def start(self, result=None):
+        if result:
+            LOG.debug("data maintenance failed: %s", result)
+
+        LOG.debug("starting data maintenance")
+        d = LoopingCall(self.maintenance).start(self.maintenance_interval)
+        d.addBoth(self.start)
+
+    def maintenance(self):
+        LOG.debug("performing periodic data maintenance")
+        for device, data in self.devices.items():
+            data_age = time.time() - data['last']
+            if data_age > self.max_data_age:
+                LOG.debug(
+                    "dropping data for %s (%d seconds old)",
+                    device, data_age)
+
+                self.remove(device)
+
+    def touch(self, device):
+        if device not in self.devices:
+            self.devices[device] = {
+                'last': time.time(),
+                'values': collections.defaultdict(dict),
+                'events': [],
+                'maps': [],
+                }
+
+    def get(self, device):
+        return self.devices[device].copy()
+
+    def remove(self, device):
+        if device in self.devices:
+            del(self.devices[device])
+
+    def add_event(self, device, event):
+        self.touch(device)
+        self.devices[device]['events'].append(event)
+
+    def add_value(self, device, component, datasource, value, collect_time):
+        self.touch(device)
+        self.devices[device]['values'][component][datasource] = (
+            value, collect_time)
+
+    def pop(self, device):
+        if device in self.devices:
+            data = self.get(device)
+            self.remove(device)
+            return data
+
+
+# Module-scoped to allow persistence of data across recreation of
+# collector tasks.
+PERSISTER = DataPersister()
+
+
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties
 
     config = None
     cycling = None
-    initialized = None
     state = None
-    last_time = None
     receive_deferred = None
     data_deferred = None
     command = None
-    data = None
     sample_interval = None
     max_samples = None
     collected_samples = None
     counter_map = None
 
-    def __init__(self):
-        self.initialized = False
+    def __init__(self, config):
+        self.config = config
         self.state = PluginStates.STOPPED
-        self.data = self.new_data()
 
-    @classmethod
-    def config_key(cls, datasource, context):
-        return (
-            context.device().id,
-            datasource.getCycleTime(context),
-            SOURCETYPE,
-            )
-
-    @classmethod
-    def params(cls, datasource, context):
-        counter = datasource.talesEval(datasource.counter, context)
-        if getattr(context, 'perfmonInstance', None):
-            counter = ''.join((context.perfmonInstance, counter))
-
-        return {
-            'counter': counter,
-            }
-
-    def initialize(self, config):
-        '''
-        Initialize the task.
-
-        Only logic that should only ever be executed as single time when
-        a task is created should go here.
-        '''
         dsconf0 = config.datasources[0]
-
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
-
         if self.cycling:
             self.sample_interval = dsconf0.cycletime
             self.max_samples = max(600 / self.sample_interval, 1)
@@ -178,19 +226,26 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
             )
 
-        self.config = config
-        try:
-            self.command = create_long_running_command(
-                createConnectionInfo(dsconf0))
-        except Exception, e:
-            self.initialized = False
-            LOG.warn(
-                "Connection error on %s: %s",
-                self.config.id,
-                e.message.capitalize() or "the task is not Initialized"
+        self.command = create_long_running_command(
+            createConnectionInfo(dsconf0))
+
+    @classmethod
+    def config_key(cls, datasource, context):
+        return (
+            context.device().id,
+            datasource.getCycleTime(context),
+            SOURCETYPE,
             )
-            return
-        self.initialized = True
+
+    @classmethod
+    def params(cls, datasource, context):
+        counter = datasource.talesEval(datasource.counter, context)
+        if getattr(context, 'perfmonInstance', None):
+            counter = ''.join((context.perfmonInstance, counter))
+
+        return {
+            'counter': counter,
+            }
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -199,52 +254,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         '''
-        if not self.initialized:
-            self.initialize(config)
-
         yield self.start()
-        yield self.wait_for_data()
 
-        # Reset so we don't deliver the same results more than once.
-        data = self.data.copy()
-        self.data = self.new_data()
-
+        data = yield self.get_data()
         defer.returnValue(data)
-
-    @defer.inlineCallbacks
-    def wait_for_data(self):
-        '''
-        Wait for no more than 5 seconds for data to be received.
-
-        When we ask for data, we know that we won't get the data back
-        until now + cycletime. This introduces a race condition on the
-        next collection interval where the data won't yet be available
-        for a fraction of a second. This means we have to wait another
-        collection interval before the data will be available.
-
-        We can try to predict if we're going to get data soon based on
-        when we last asked for, or received, data. If "soon" is soon
-        enough, we'll sleep to wait for the data.
-        '''
-        if self.last_time:
-            until_time = self.sample_interval - (time.time() - self.last_time)
-
-            if until_time <= 0:
-                defer.returnValue(None)
-
-            wait_time = until_time + 2
-            if wait_time < min(5, self.sample_interval):
-                LOG.debug(
-                    "waiting %.2f seconds for %s Get-Counter data",
-                    wait_time, self.config.id)
-
-                self.data_deferred = defer.Deferred()
-                try:
-                    yield add_timeout(self.data_deferred, wait_time)
-                except Exception:
-                    pass
-
-        defer.returnValue(None)
 
     @defer.inlineCallbacks
     def start(self):
@@ -252,11 +265,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Start the continuous command.
         '''
         if self.state != PluginStates.STOPPED:
-            LOG.debug(
-                "skipping Get-Counter start on %s while it's %s",
-                self.config.id,
-                self.state)
-
             defer.returnValue(None)
 
         LOG.debug("starting Get-Counter on %s", self.config.id)
@@ -274,7 +282,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             defer.returnValue(None)
 
         self.state = PluginStates.STARTED
-        self.last_time = time.time()
         self.collected_samples = 0
         self.collected_counters = set()
 
@@ -287,6 +294,27 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             yield self.receive_deferred
 
         defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def get_data(self):
+        '''
+        Wait for data to arrive if necessary, then return it.
+        '''
+        data = PERSISTER.pop(self.config.id)
+        if data and data['values']:
+            defer.returnValue(data)
+
+        if hasattr(self, '_wait_for_data'):
+            LOG.debug("waiting for %s Get-Counter data", self.config.id)
+            self.data_deferred = defer.Deferred()
+            try:
+                yield add_timeout(self.data_deferred, self.sample_interval)
+            except Exception:
+                pass
+        else:
+            self._wait_for_data = True
+
+        defer.returnValue(PERSISTER.pop(self.config.id))
 
     @defer.inlineCallbacks
     def stop(self):
@@ -355,7 +383,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def onReceive(self, result):
-        self.last_time = time.time()
+        collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
         stdout_lines = result[0]
@@ -397,8 +425,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if datasource == 'sysUpTime' and value is not None:
                     value = float(value) * 100
 
-                self.data['values'][component][datasource] = (
-                    value, int(self.last_time))
+                PERSISTER.add_value(
+                    self.config.id, component, datasource, value, collect_time)
 
         LOG.debug("received Get-Counter data for %s", self.config.id)
 
@@ -481,7 +509,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 '{} counters missing in collection - see details'
                 .format(missing_counter_count))
 
-            self.data['events'].append({
+            PERSISTER.add_event(self.config.id, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Info,
                 'eventKey': 'Windows Perfmon Missing Counters',
@@ -489,7 +517,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'missing_counters': missing_counters_str,
                 })
         else:
-            self.data['events'].append({
+            PERSISTER.add_event(self.config.id, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Clear,
                 'eventKey': 'Windows Perfmon Missing Counters',
@@ -503,4 +531,4 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
         '''
-        return self.stop()
+        return reactor.callLater(self.sample_interval, self.stop)
