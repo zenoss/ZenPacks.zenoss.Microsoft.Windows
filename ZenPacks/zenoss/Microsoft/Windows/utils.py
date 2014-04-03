@@ -119,6 +119,14 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
     return dblogins, login_as_user
 
 
+def filter_sql_stdout(val):
+    """
+    Filters SQL stdout from service messages
+    """
+    # SQL 2005 returns in stdout when Win auth
+    return filter(lambda x: x!="LogonUser succedded", val)
+
+
 def getSQLAssembly():
 
     ASSEMBLY_Connection = "add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo"

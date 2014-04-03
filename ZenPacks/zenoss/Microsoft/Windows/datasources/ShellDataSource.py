@@ -39,8 +39,8 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath, parseDBUserNamePass, getSQLAssembly
+from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
+    parseDBUserNamePass, getSQLAssembly, filter_sql_stdout
 
 addLocalLibPath()
 
@@ -298,7 +298,7 @@ class PowershellMSSQLStrategy(object):
         # Parse values
         valuemap = {}
 
-        for counterline in result.stdout:
+        for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':')
             if key.strip() == 'ckey':
                 _counter = value.strip().lower()
