@@ -18,7 +18,7 @@ from Products.ZenModel.Device import Device
 from Products.ZenModel.DeviceHW import DeviceHW
 from Products.ZenModel.ManagedEntity import ManagedEntity
 from Products.ZenModel.ZenStatus import ZenStatus
-from Products.ZenUtils.ZenTales import InvalidTalesException, talesEvalStr
+from Products.ZenUtils.ZenTales import talesEvalStr
 
 from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
 
@@ -73,7 +73,7 @@ class BaseDevice(Device):
         if pvalue:
             try:
                 return talesEvalStr(pvalue, self)
-            except InvalidTalesException:
+            except Exception:
                 LOG.warn(
                     "%s.%s contains invalid TALES expression: %s",
                     self.id, pname, pvalue)
