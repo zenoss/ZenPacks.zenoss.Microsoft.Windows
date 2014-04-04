@@ -44,7 +44,7 @@ class WinMSSQL(WinRMPlugin):
 
         dbinstance = device.zDBInstances
         dbinstancepassword = device.zDBInstancesPassword
-        password = device.zWinRMPassword
+        password = device.windows_password
 
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances or zDBInstancesPassword'
