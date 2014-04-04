@@ -11191,6 +11191,10 @@ True
 </object>
 </tomanycont>
 </object>
+<property visible="True" type="lines" id="zCredentialsZProperties" >
+['zWinRMUser','zWinRMPassword','zWinRMPort','zDBInstances','zDBInstancesPassword','zWinKDC',
+    'zWinKeyTabFilePath','zWinScheme','zWinPerfmonInterval']
+</property>
 </object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'IISSiteStatus') -->
 <object id='/zport/dmd/Events/Status/instances/IISSiteStatus' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
