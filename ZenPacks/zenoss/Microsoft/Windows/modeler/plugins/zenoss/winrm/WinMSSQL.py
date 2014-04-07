@@ -130,6 +130,9 @@ class WinMSSQL(WinRMPlugin):
             defer.returnValue(results)
 
         sqlhostname = server_config['hostname'][0]
+        # Set value for device sqlhostname property
+        device_om = ObjectMap()
+        device_om.sqlhostname = sqlhostname
         for instance in server_config['instances']:
 
             if instance not in dblogins:
@@ -311,6 +314,7 @@ class WinMSSQL(WinRMPlugin):
         maps['instances'] = instance_oms
         maps['backups'] = backup_oms
         maps['jobs'] = jobs_oms
+        maps['device'] = device_om
 
         defer.returnValue(maps)
 
@@ -318,7 +322,7 @@ class WinMSSQL(WinRMPlugin):
         log.info('Modeler %s processing data for device %s',
             self.name(), device.id)
         maps = []
-
+        maps.append(results['device'])
         try:
             eventmessage = results['error']
             log.error(eventmessage)

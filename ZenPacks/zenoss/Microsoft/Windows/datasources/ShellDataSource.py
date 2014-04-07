@@ -283,7 +283,6 @@ class PowershellMSSQLStrategy(object):
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
             ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
-
         return command
 
     def parse_result(self, dsconfs, result):
@@ -298,7 +297,6 @@ class PowershellMSSQLStrategy(object):
 
         # Parse values
         valuemap = {}
-
         for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':')
             if key.strip() == 'ckey':
@@ -456,7 +454,7 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ConnectionInfoProperties
+    proxy_attributes = ConnectionInfoProperties + ('sqlhostname',)
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -538,22 +536,21 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
 
         if dsconf0.params['strategy'] == 'powershell MSSQL':
-            sqlhostname = dsconf0.params['servername']
             dbinstances = dsconf0.zDBInstances
             username = dsconf0.windows_user
             password = dsconf0.windows_password
 
-            dblogins, login_as_user = parseDBUserNamePass(dbinstances, \
-                username, password
+            dblogins, login_as_user = parseDBUserNamePass(
+                dbinstances, username, password
             )
 
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
 
             if instance == 'MSSQLSERVER':
-                sqlserver = sqlhostname
+                sqlserver = dsconf0.config_key
             else:
-                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+                sqlserver = '{0}\{1}'.format(dsconf0.sqlhostname, instance)
 
             command_line = strategy.build_command_line(
                 counters,
