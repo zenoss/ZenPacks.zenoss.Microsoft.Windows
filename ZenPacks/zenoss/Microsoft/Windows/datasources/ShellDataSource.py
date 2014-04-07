@@ -426,7 +426,10 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ConnectionInfoProperties
+    proxy_attributes = ConnectionInfoProperties + (
+        'zDBInstances',
+        'zDBInstancesPassword',
+        )
 
     @classmethod
     def config_key(cls, datasource, context):
