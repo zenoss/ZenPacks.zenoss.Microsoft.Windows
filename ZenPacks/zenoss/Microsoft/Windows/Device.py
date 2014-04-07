@@ -28,10 +28,12 @@ class Device(BaseDevice):
     '''
 
     clusterdevices = ''
+    sqlhostname = None
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
-        )
+        {'id': 'sqlhostname', 'type': 'string', 'mode': 'w'},
+    )
 
     def setClusterMachines(self, clusterdnsnames):
         '''
