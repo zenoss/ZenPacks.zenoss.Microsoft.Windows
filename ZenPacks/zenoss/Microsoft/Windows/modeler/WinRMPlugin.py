@@ -25,6 +25,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm
+import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
+import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1 
 
 
 # Format string for a resource URI.
