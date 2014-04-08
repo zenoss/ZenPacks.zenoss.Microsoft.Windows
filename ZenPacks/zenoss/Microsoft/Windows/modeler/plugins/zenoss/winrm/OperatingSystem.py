@@ -38,8 +38,13 @@ class OperatingSystem(WinRMPlugin):
         'MSCluster': {
             'query': 'SELECT * FROM mscluster_cluster',
             'namespace': 'mscluster',
-            },
-        }
+        },
+    }
+    powershell_commands = dict(
+        exchange_version=(
+            'Get-Command exsetup |%{$_.Fileversioninfo.ProductVersion}'
+        )
+    )
 
     def process(self, device, results, log):
         log.info(
@@ -50,7 +55,13 @@ class OperatingSystem(WinRMPlugin):
         computerSystem = results.get('Win32_ComputerSystem', (None,))[0]
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
-
+        exchange_version = results.get('exchange_version')
+        if exchange_version:
+            exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
+        if exchange_version:
+            exchange_version = {'14': '2010', '15': '2013'}.get(
+                exchange_version
+            )
         maps = []
 
         # Device Map
@@ -58,6 +69,14 @@ class OperatingSystem(WinRMPlugin):
         device_om.snmpSysName = computerSystem.Name
         device_om.snmpContact = computerSystem.PrimaryOwnerName
         device_om.snmpDescr = computerSystem.Caption
+
+        # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx 
+        print exchange_version
+        if exchange_version:
+            device_om.zDeviceTemplates = [
+                x for x in (device.zDeviceTemplates or [])
+                if not 'MSExchange' in x
+            ] + ['MSExchange%sIS' % exchange_version]
 
         # Cluster Information
         try:
