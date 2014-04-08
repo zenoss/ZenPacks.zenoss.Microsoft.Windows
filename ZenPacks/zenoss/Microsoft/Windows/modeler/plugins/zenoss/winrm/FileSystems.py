@@ -36,10 +36,6 @@ class FileSystems(WinRMPlugin):
         # 'Win32_Volume': "SELECT * FROM Win32_Volume",
         }
 
-    custom_powershell_commands = {
-        'TotalFiles': "(Get-ChildItem -Path %s -Recurse -Force).Count",
-    }
-
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
@@ -80,10 +76,6 @@ class FileSystems(WinRMPlugin):
             perfmonInstance = '\\LogicalDisk({})'.format(
                 disk.Name.rstrip('\\'))
 
-            total_files = 0
-            if results.get(disk.Name, ()):
-                total_files = results.get(disk.Name, 0).stdout
-
             rm.append(self.objectMap({
                 'id': self.prepId(disk.DeviceID),
                 'title': mount,
@@ -96,7 +88,7 @@ class FileSystems(WinRMPlugin):
                 'totalBlocks': int(disk.Size) / int(disk.BlockSize),
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
-                'totalFiles': total_files or 0,
+                'totalFiles': 0,
                 }))
 
         return rm
