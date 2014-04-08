@@ -25,6 +25,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm
+import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
+import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1 
 
 
 # Format string for a resource URI.
@@ -44,7 +46,6 @@ class WinRMPlugin(PythonPlugin):
     queries = {}
     commands = {}
     powershell_commands = {}
-    custom_powershell_commands = {}
 
     def get_queries(self):
         '''
@@ -73,16 +74,6 @@ class WinRMPlugin(PythonPlugin):
         commands property.
         '''
         return self.powershell_commands
-
-    def get_custom_powershell_commands(self):
-        '''
-        Return custom PowerShell commands list.
-
-        To be overridden if powershell_commands needs to be
-        programmatically defined instead of set in the class-level
-        commands property.
-        '''
-        return self.custom_powershell_commands
 
     def client(self):
         '''
@@ -157,16 +148,6 @@ class WinRMPlugin(PythonPlugin):
 
         log.error(message, *args)
 
-    def prepare_custom_commands(self, results):
-        for res in results.get('Win32_LogicalDisk', ()):
-            if res.Access:
-                disc = res.Name + '\\'
-                self.custom_powershell_commands[res.Name] = '{0} "& {{{1}}}"'.format(
-                    POWERSHELL_PREFIX, self.custom_powershell_commands["TotalFiles"] % disc)
-
-        #Delete template query as unnecessary
-        del self.custom_powershell_commands["TotalFiles"]
-
     @defer.inlineCallbacks
     def collect(self, device, log):
         '''
@@ -218,18 +199,5 @@ class WinRMPlugin(PythonPlugin):
                     results[command_key] = yield winrs.run_command(command)
                 except Exception as e:
                     self.log_error(log, device, e)
-
-        if self.get_custom_powershell_commands():
-            self.prepare_custom_commands(results)
-            custom_commands = self.get_custom_powershell_commands()
-
-            if custom_commands:
-                sn_commands = txwinrm.shell.create_single_shot_command(conn_info)
-
-                for key, custom_command in custom_commands.iteritems():
-                    try:
-                        results[key] = yield sn_commands.run_command(custom_command)
-                    except Exception as e:
-                        self.log_error(log, device, e)
 
         defer.returnValue(results)
