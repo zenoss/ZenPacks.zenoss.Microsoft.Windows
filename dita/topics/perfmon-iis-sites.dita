@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>IIS Sites metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>IIS Sites</codeph> Perfmon counter.</p>
+      <note>To use these metrics, install the IIS 6 Management Compatibility module on the servers to monitor.</note>
+      <ul>
+        <li>\Bytes Received/sec</li>
+        <li>\Bytes Sent/sec</li>
+        <li>\CGI Requests/sec</li>
+        <li>\Connection Attempts/sec</li>
+        <li>\Copy Requests/sec</li>
+        <li>\Connection Attempts/sec</li>
+        <li>\Delete Requests/sec</li>
+        <li>\Files Received/sec</li>
+        <li>\Files Sent/sec</li>
+        <li>\Get Requests/sec</li>
+        <li>\Head Requests/sec</li>
+        <li>\ISAPI Extension Requests/sec</li>
+        <li>\Lock Requests/sec</li>
+        <li>\Mkcol Requests/sec</li>
+        <li>\Move Requests/sec</li>
+        <li>\Options Requests/sec</li>
+        <li>\Other Request Methods/sec</li>
+        <li>\Post Requests/sec</li>
+        <li>\Propfind Requests/sec</li>
+        <li>\Proppatch Requests/sec</li>
+        <li>\Put Requests/sec</li>
+        <li>\Search Requests/sec</li>
+        <li>\Trace Requests/sec</li>
+        <li>\Unlock Requests/sec</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

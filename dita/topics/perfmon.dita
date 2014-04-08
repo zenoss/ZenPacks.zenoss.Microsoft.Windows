@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Performance Monitoring</title>
+  <refbody>
+    <section>
+      <p>Perfmon counter data are collected through the PowerShell Get-Counter cmdlet, within a
+        remote shell (WinRS). To collect data from any other Perfmon counter, simply add the counter
+        to the appropriate <ph conkeyref="names/platform"/> monitoring template.</p>
+      <note>The following Processes metrics (Win32_PerfFormattedData_PerfProc_Process) are collected
+        directly through Windows Management Instrumentation (WMI). <ul>
+          <li>PercentProcessorTime</li>
+          <li>WorkingSet</li>
+          <li>WorkingSetPrivate (not available on Windows 2003)</li>
+        </ul></note>
+    </section>
+  </refbody>
+</reference>

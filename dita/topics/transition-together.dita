@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Using this ZenPack with the deprecated ZenPacks</title>
+  <refbody>
+    <section>
+      <p>You may use this ZenPack with the deprecated Windows monitoring ZenPacks</p>
+      <ul>
+        <li>by adding some Windows systems to the <codeph>/Server/Microsoft/Windows</codeph> device class
+          and leaving other systems in the <codeph>/Server/Windows/WMI</codeph> device class</li>
+        <li>by adding a subset of this ZenPack, such as the Windows Shell data source, to devices in
+          the <codeph>/Server/Windows/WMI</codeph> device class
+        </li>
+      </ul>
+      <p>To add a subset of this ZenPack to a device, follow these steps.</p>
+      <ol>
+        <li>In the <codeph>/Server/Windows/WMI</codeph> device class,
+          select the device to modify.</li>
+        <li>
+          <p>Verify that the following properties are configured.</p>
+          <dl>
+            <dlentry>
+              <dt>zWinUser</dt>
+              <dd>Use the DOMAIN\Username format required for DCOM/RPC collection.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>zWinPassword</dt>
+              <dd>The password for the zWinUser account.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>zWinRMUser</dt>
+              <dd>Use the username@example.com format required for WinRM collection.</dd>
+            </dlentry>
+            <dlentry>
+              <dt>zWinRMPassword</dt>
+              <dd>The password for the zWinRMUser account.</dd>
+            </dlentry>
+          </dl>
+        </li>
+        <li>Create a monitoring template containing a Windows Shell datasource, and then bind it to the device.</li>
+      </ol>
+    </section>
+  </refbody>
+</reference>

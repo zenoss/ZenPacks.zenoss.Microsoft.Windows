@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Installing Kerberos authentication</title>
+  <taskbody>
+    <context>To use this ZenPack, Kerberos authentication must be installed 
+      on all <ph conkeyref="names/platform"/> hosts (master, collector, and hub hosts).</context>
+    <steps>
+      <step>
+        <cmd>Log in to a <ph conkeyref="names/platform"/> host <ph conkeyref="login-as/root"/>.</cmd>
+      </step>
+      <step>
+        <cmd>Determine whether the Kerberos authentication package is installed.</cmd>
+        <stepxmp><userinput>rpm -qa | grep -i krb5-workstation</userinput></stepxmp>
+        <choices>
+          <choice>If the command returns a result, Kerberos authentication is installed. Discontinue this procedure.</choice>
+          <choice>If the command does not return a result, proceed to the next step.</choice>
+        </choices>
+      </step>
+      <step>
+        <cmd>Install Kerberos authentication.</cmd>
+        <stepxmp><userinput>yum -y install krb5-workstation</userinput></stepxmp>
+      </step>
+    </steps>
+  </taskbody>
+</task>

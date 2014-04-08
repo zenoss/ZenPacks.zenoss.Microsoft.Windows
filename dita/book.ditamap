@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE bookmap
+  PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:bookmap" "bookmap.dtd">
+<bookmap>
+  <booktitle>
+    <mainbooktitle>Zenoss ZenPack</mainbooktitle>
+  </booktitle>
+  <bookmeta>
+    <publisherinformation>
+      <organization>Zenoss, Inc.</organization>
+    </publisherinformation>
+    <prodinfo>
+      <prodname>Zenoss Service Dynamics</prodname>
+      <vrmlist>
+        <vrm version="4" release="2" modification="5"/>        
+      </vrmlist>
+    </prodinfo>
+    <bookrights>
+      <copyrfirst>
+        <year>2014</year>
+      </copyrfirst>
+      <bookowner>
+        <organization>Zenoss, Inc., 11305 Four Points Drive, Bldg 1 - Suite 300, Austin, Texas 78726, U.S.A.</organization>        
+      </bookowner>
+    </bookrights>
+    <data name="trademarks">
+      <data name="trademark">Zenoss and the Zenoss logo are trademarks or registered trademarks
+        of Zenoss, Inc., in the United States and other countries. All other
+        trademarks, logos, and service marks are the property of Zenoss or other
+        third parties. Use of these marks is prohibited without the express
+        written consent of Zenoss, Inc., or the third-party owner.</data>
+      <data name="trademark">Amazon Web Services, AWS, Amazon Elastic Compute Cloud, and Amazon EC2 are trademarks 
+        of Amazon.com, Inc. or its affiliates in the United States and/or other countries.</data>
+      <data name="trademark">Flash is a registered trademark of Adobe Systems Incorporated.</data>
+      <data name="trademark">Oracle, the Oracle logo, Java, and MySQL are registered trademarks of the Oracle Corporation and/or its affiliates.</data>
+      <data name="trademark">Linux is a registered trademark of Linus Torvalds.</data>
+      <data name="trademark">SNMP Informant is a trademark of Garth K. Williams (Informant Systems, Inc.).</data>
+      <data name="trademark">Sybase is a registered trademark of Sybase, Inc.</data>
+      <data name="trademark">Tomcat is a trademark of the Apache Software Foundation.</data>
+      <data name="trademark">VMware is a registered trademark or trademark of VMware, Inc. in the United States and/or other jurisdictions.</data>
+      <data name="trademark">Windows is a registered trademark of Microsoft Corporation in the United States and other countries.</data>
+      <data name="trademark">All other companies and products mentioned are trademarks and property of their respective owners.</data>      
+    </data>
+  </bookmeta>
+  <frontmatter>
+      <mapref href="../../../../../../docs.common/keydefs-misc.ditamap"/>
+      <mapref href="../../../../../../docs.common/keydefs-topics.ditamap"/>
+      <mapref href="../../../../../../docs.extmon/keydefs-topics.ditamap"/>
+  </frontmatter>
+
+  <chapter href="Microsoft.Windows.ditamap" format="ditamap"/>
+  
+</bookmap>
