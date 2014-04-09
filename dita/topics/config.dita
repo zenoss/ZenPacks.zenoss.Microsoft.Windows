@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Configuring systems for monitoring</title>
+  <refbody>
+    <section>
+      <p>You may configure the Windows systems to monitor with this ZenPack collectively or individually.</p>
+      <ul>
+        <li>
+          <p>To configure systems collectively, use Windows Group Policy.</p>
+          <note>This option may require configuration steps on each Windows system to monitor.</note>
+        </li>
+        <li>To configure systems individually, use the procedure in this section.</li>
+      </ul>
+      <note>To enable the IIS Sites metrics, install the IIS 6 Management 
+        Compatibility module on the Windows systems to monitor.</note>
+    </section>
+  </refbody>
+</reference>

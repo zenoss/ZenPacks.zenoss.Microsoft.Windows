@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>(Microsoft.Windows) Microsoft Windows</title>
+  <shortdesc>The <zenpack>ZenPacks.zenoss.Microsoft.Windows</zenpack> ZenPack monitors Microsoft Windows systems and services through the Windows Remote
+    Management (WinRM) and Windows Remote Shell (WinRS) interfaces.</shortdesc>
+  <refbody>
+    <section>
+      <p>Monitoring data is collected from the Windows Management Instrumentation (WMI) and Windows
+        Reliability and Performance Monitor (Perfmon) services.</p>
+      
+      <note>For Windows systems that support WinRM, this ZenPack replaces the following, deprecated ZenPacks. 
+        <ul id="win-deprecated">
+          <li><zenpack>ZenPacks.zenoss.ActiveDirectory</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.IISMonitor</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.MSExchange</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.MSMQMonitor</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.MSSQLServer</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.PySamba</zenpack></li>
+          <li><zenpack>ZenPacks.zenoss.WindowsMonitor</zenpack></li>
+        </ul>
+        However, installing this ZenPack does not automatically migrate Windows systems or disable monitoring
+        through the deprecated ZenPacks. For more information about transitioning to this ZenPack, see
+        <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-transition"/>.</note>
+    </section>
+  </refbody>
+</reference>

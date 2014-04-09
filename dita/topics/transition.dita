@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Transitioning to this ZenPack</title>
+  <refbody>
+    <section>
+      <p>This ZenPack provides a superset of the functionality provided in earlier
+        Windows monitoring ZenPacks, with better performance and reliability.</p>
+
+      <note>The new and old Windows monitoring ZenPacks co-exist gracefully&#8212;no
+        automatic migration is attempted, and all history is preserved.</note>
+        
+      <p><ph conkeyref="names/company"/> recommends transitioning to this ZenPack 
+        as soon as possible in all but the following situations:</p>
+      <ul>
+        <li>
+          <p>You must continue to monitor Windows systems that do not support WinRM 2.0.</p>
+          <p>At some point, <ph conkeyref="names/company"/> will discontinue support for
+          the deprecated ZenPacks, so moving older Windows systems to a version that 
+          supports WinRM 2.0 is encouraged.</p>
+        </li>
+        <li>
+          <p>You must maintain an unbroken history of monitoring, using exactly the same metrics,
+            gathered in exactly the same way.</p>
+          <p>Testing or regulatory requirements may prevent an immediate migration. However, no
+            monitoring history is discarded when this ZenPack is enabled. You may maintain the RRD
+            files created with the deprecated ZenPacks alongside the new ones, and use them to
+            examine the complete monitoring history.</p>
+        </li>
+      </ul>
+      <p>To determine whether the deprecated Windows monitoring ZenPacks are installed,
+        log in to the broswer interface, and navigate to ADVANCED &gt; ZenPacks. Look for the
+      following ZenPacks.</p>
+      <ul conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows/win-deprecated">
+        <li></li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

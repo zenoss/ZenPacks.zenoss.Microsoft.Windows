@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Installed items</title>
+  <refbody>
+    <section>
+      <p>This ZenPack installs the following items.</p>
+      <dl>
+        <dlentry>
+          <dt>Device classes</dt>
+          <dd>/Server/Microsoft</dd>
+          <dd>/Server/Microsoft/Cluster</dd>
+          <dd>/Server/Microsoft/Windows</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Configuration properties</dt>
+          <dd>zWinRMUser</dd>
+          <dd>zWinRMPassword</dd>
+          <dd>zWinRMPort</dd>
+          <dd>zDBInstances</dd>
+          <dd>zDBInstancesPassword</dd>
+          <dd>zWinKDC</dd>
+          <dd>zWinKeyTabFilePath</dd>
+          <dd>zWinScheme</dd>
+          <dd>zWinPerfmonInterval</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Modeler plugins</dt>
+          <dd>zenoss.winrm.CPUs</dd>
+          <dd>zenoss.winrm.FileSystems</dd>
+          <dd>zenoss.winrm.IIS</dd>
+          <dd>zenoss.winrm.Interfaces</dd>
+          <dd>zenoss.winrm.OperatingSystem</dd>
+          <dd>zenoss.winrm.Processes</dd>
+          <dd>zenoss.winrm.Routes</dd>
+          <dd>zenoss.winrm.Services</dd>
+          <dd>zenoss.winrm.Software</dd>
+          <dd>zenoss.winrm.WinCluster</dd>
+          <dd>zenoss.winrm.WinMSSQL</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Datasource types</dt>
+          <dd>Windows EventLog</dd>
+          <dd>Windows IIS Site</dd>
+          <dd>Windows Perfmon</dd>
+          <dd>Windows Process</dd>
+          <dd>Windows Service</dd>
+          <dd>Windows Shell</dd>
+        </dlentry>
+        <dlentry>
+          <dt>Monitoring templates</dt>
+          <dd>Device (in /Server/Microsoft)</dd>
+          <dd>FileSystem (in /Server/Microsoft)</dd>
+          <dd>ethernetCsmacd (in /Server/Microsoft)</dd>
+          <dd>OSProcess (in /Server/Microsoft)</dd>
+          <dd>OSProcess-2003 (in /Server/Microsoft)</dd>
+          <dd>WinService (in /Server/Microsoft)</dd>
+          <dd>Active Directory (in /Server/Microsoft)</dd>
+          <dd>Active Directory 2008 (in /Server/Microsoft)</dd>
+          <dd>Active Directory 2008R2 (in /Server/Microsoft)</dd>
+          <dd>IIS (in /Server/Microsoft)</dd>
+          <dd>IISADMIN (in /Server/Microsoft)</dd>
+          <dd>IISSites (in /Server/Microsoft)</dd>
+          <dd>MSExchangeIS (in /Server/Microsoft)</dd>
+          <dd>MSExchangeIS 2007 (in /Server/Microsoft)</dd>
+          <dd>MSSQLServer (in /Server/Microsoft)</dd>
+          <dd>WinDatabase (in /Server/Microsoft)</dd>
+          <dd>Cluster (in /Server/Microsoft)</dd>
+          <dd>ClusterService (in /Server/Microsoft/Cluster)</dd>
+          <dd>ClusterResource (in /Server/Microsoft/Cluster)</dd>
+        </dlentry>
+      </dl>
+    </section>
+  </refbody>
+</reference>

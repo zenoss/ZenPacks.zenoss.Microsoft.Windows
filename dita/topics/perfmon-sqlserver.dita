@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>SQLServer metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>SQLServer</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\SQLServer:Access Methods\Full Scans/sec</li>
+        <li>\SQLServer:Buffer Manager\Buffer cache hit ratio</li>
+        <li>\SQLServer:Buffer Manager\Free pages</li>
+        <li>\SQLServer:Databases(_Total)\Data File(s) Size (KB)</li>
+        <li>\SQLServer:General Statistics\User Connections</li>
+        <li>\SQLServer:Latches\Latch Waits/sec</li>
+        <li>\SQLServer:Locks(_Total)\Average Wait Time (ms)</li>
+        <li>\SQLServer:Locks(_Total)\Lock Requests/sec</li>
+        <li>\SQLServer:Locks(_Total)\Number of Deadlocks/sec</li>
+        <li>\SQLServer:SQL Statistics\Batch Requests/sec</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>
