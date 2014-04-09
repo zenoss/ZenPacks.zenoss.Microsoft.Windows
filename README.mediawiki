@@ -617,7 +617,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ;2.0.3
 * Reduce possibility of gaps in perfmon collection. ([https://jira.zenoss.com/browse/ZEN-10600 ZEN-10600])
-* Add zWinRMServerName property. ([https://jira.zenoss.com/browse/ZEN-9712 ZEN-9712]) ([https://jira.zenoss.com/browse/ZEN-9398 ZEN-9398])
+* Add zWinRMServerName property. ([https://jira.zenoss.com/browse/ZEN-9712 ZEN-9712])
 * Support for IIS 7-8 without IIS 6 compatibility.
 * Honor sequence in process monitoring. ([https://jira.zenoss.com/browse/ZEN-10777 ZEN-10777])
 * Fix cluster modeling for long server names. ([https://jira.zenoss.com/browse/ZEN-10572 ZEN-10572])
