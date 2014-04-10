@@ -9,7 +9,7 @@ Microsoft Software
 Microsoft Software
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'Active Directory', 'IIS']
+['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 []
@@ -11800,7 +11800,7 @@ Windows Operating System
 ZenPacks.zenoss.Microsoft.Windows.Device
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'IIS', 'Active Directory']
+['Device', 'IIS', 'Active Directory', 'MSExchange2010IS']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
@@ -11823,7 +11823,7 @@ Windows Cluster
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'IIS', 'Active Directory']
+['Device', 'Cluster', 'IIS', 'Active Directory', 'MSExchange2010IS']
 </property>
 <property visible="True" type="instancecredentials" id="zDBInstances" >
 [{"passwd": "", "instance": "[{\"instance\": \"MSSQLSERVER\", \"user\": \"\", \"passwd\": \"\"}]", "user": ""}]
