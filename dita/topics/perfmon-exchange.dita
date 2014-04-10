@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Exchange metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>Exchange</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\MSExchangeIS Mailbox(_Total)\Folder opens/sec</li>
+        <li>\MSExchangeIS Mailbox(_Total)\Local delivery rate</li>
+        <li>\MSExchangeIS Mailbox(_Total)\Message Opens/sec</li>
+        <li>\MSExchangeIS\RPC Averaged Latency</li>
+        <li>\MSExchangeIS\RPC Operations/sec</li>
+        <li>\MSExchangeIS\RPC Requests</li>
+        <li>\SMTP Server(_Total)\Local Queue Length</li>
+        <li>\SMTP Server(_Total)\Messages Delivered/sec</li>
+        <li>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length</li>
+        <li>\MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second</li>
+        <li>\MSExchangeIS Mailbox(_Total)\Folder opens/sec</li>
+        <li>\MSExchangeIS Mailbox(_Total)\Local delivery rate</li>
+        <li>\MSExchangeIS Mailbox(_Total)\Message Opens/sec</li>
+        <li>\MSExchangeIS\RPC Averaged Latency</li>
+        <li>\MSExchangeIS\RPC Operations/sec</li>
+        <li>\MSExchangeIS\RPC Requests</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

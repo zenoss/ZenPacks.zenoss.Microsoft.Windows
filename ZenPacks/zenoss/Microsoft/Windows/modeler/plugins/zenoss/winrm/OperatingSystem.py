@@ -70,14 +70,9 @@ class OperatingSystem(WinRMPlugin):
         device_om.snmpContact = computerSystem.PrimaryOwnerName
         device_om.snmpDescr = computerSystem.Caption
 
-        # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx 
-        print exchange_version
+        # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
         if exchange_version:
-            device_om.zDeviceTemplates = [
-                x for x in (device.zDeviceTemplates or [])
-                if not 'MSExchange' in x
-            ] + ['MSExchange%sIS' % exchange_version]
-
+            device_om.msexchangeversion = 'MSExchange%sIS' % exchange_version
         # Cluster Information
         try:
             clusterlist = []

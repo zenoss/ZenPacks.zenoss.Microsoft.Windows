@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE map
+  PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:map" "map.dtd">
+<map>
+   <title>Microsoft.Windows</title>
+   <!-- <topicref chunk="to-content" href="topics/Microsoft.Windows.dita"> -->
+   <topicref href="topics/Microsoft.Windows.dita">
+      <topicref href="topics/discovery.dita"/>
+      <topicref href="topics/perfmon.dita">
+         <topicref href="topics/perfmon-device.dita"/>
+         <topicref href="topics/perfmon-active-directory.dita"/>
+         <topicref href="topics/perfmon-exchange.dita"/>
+         <topicref href="topics/perfmon-iis.dita"/>
+         <topicref href="topics/perfmon-iis-sites.dita"/>
+         <topicref href="topics/perfmon-sqlserver.dita"/>
+         <topicref href="topics/perfmon-file-systems.dita"/>
+         <topicref href="topics/perfmon-interfaces.dita"/>
+      </topicref>
+      <topicref href="topics/events.dita"/>
+      <topicref href="topics/prerequisites.dita">
+         <topicref href="topics/install-kerberos.dita"/>
+      </topicref>
+      <topicref href="topics/adding.dita">
+         <topicref href="topics/adding-multiple.dita"/>
+      </topicref>
+      <topicref href="topics/config.dita">
+         <topicref href="topics/config-options.dita"/>
+         <topicref href="topics/config-group.dita">
+            <topicref href="topics/config-https.dita"/>
+         </topicref>
+         <topicref href="topics/config-individual.dita"/>
+      </topicref>
+      <topicref href="topics/transition.dita">
+         <topicref href="topics/transition-move.dita"/>
+         <topicref href="topics/transition-together.dita"/>
+      </topicref>
+      <topicref href="topics/installed.dita"/>
+   </topicref>
+</map>

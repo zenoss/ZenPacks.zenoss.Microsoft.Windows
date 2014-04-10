@@ -36,6 +36,7 @@ def SuffixedProperty(property_name, suffix):
 class DeviceInfo(BaseDeviceInfo):
     clusterdevices = ProxyProperty('clusterdevices')
     sqlhostname = ProxyProperty('sqlhostname')
+    msexchangeversion = ProxyProperty('msexchangeversion')
 
 
 class ClusterDeviceInfo(BaseDeviceInfo):

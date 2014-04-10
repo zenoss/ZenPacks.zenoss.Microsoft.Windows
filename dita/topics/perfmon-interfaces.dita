@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Interfaces metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>Interfaces</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\Bytes Received/sec</li>
+        <li>\Bytes Sent/sec</li>
+        <li>\Packets Received Errors</li>
+        <li>\Packets Received/sec</li>
+        <li>\Packets Outbound Errors</li>
+        <li>\Packets Sent/sec</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

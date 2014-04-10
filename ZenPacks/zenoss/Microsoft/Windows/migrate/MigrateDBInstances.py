@@ -60,7 +60,8 @@ class MigrateDBInstances(ZenPackMigration):
         try:
             # Successful load mean we already have proper value
             val = json.loads(thing.zDBInstances)
-            _ = val["instance"]
+            if not isinstance(val, list):
+                raise
         except:
             log.info("Migrating zDBInstances for %s", name_for_thing(thing))
 

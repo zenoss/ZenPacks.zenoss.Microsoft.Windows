@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>File Systems metrics</title>
+  <refbody>
+    <section>
+      <p>The following metrics are collected from the <codeph>File Systems</codeph> Perfmon counter.</p>
+      <ul>
+        <li>\Disk Read Bytes/sec</li>
+        <li>\% Disk Read Time</li>
+        <li>\Disk Write Bytes/sec</li>
+        <li>\% Disk Write Time</li>
+        <li>\Free Megabytes</li>
+      </ul>
+    </section>
+  </refbody>
+</reference>

@@ -41,8 +41,7 @@ class WinRMPlugin(PythonPlugin):
     Base modeler plugin class for WinRM modeler plugins.
     '''
 
-    deviceProperties = PythonPlugin.deviceProperties \
-        + ConnectionInfoProperties + ('zDeviceTemplates',)
+    deviceProperties = PythonPlugin.deviceProperties + ConnectionInfoProperties
 
     queries = {}
     commands = {}

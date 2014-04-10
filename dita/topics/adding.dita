@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Adding a Windows device</title>
+  <taskbody>
+    <context>Follow these steps to add a Windows device through the <ph conkeyref="names/platform"/> user interface.</context>
+    <steps>
+      <step>
+        <cmd>Log in to <ph conkeyref="names/platform"/> user interface <ph conkeyref="login-as/zm-or-m"/>.</cmd>
+      </step>
+      <step>
+        <cmd>Navigate to the <uicontrol>INFRASTRUCTURE</uicontrol> page.</cmd>
+      </step>
+      <step>
+        <cmd>In the left column, select the <uicontrol>/Server/Microsoft/Windows</uicontrol> class, 
+          and then click <uicontrol>DETAILS</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Select <uicontrol>Configuration Properties</uicontrol>, and then provide values for
+          the <codeph>zWinRMUser</codeph> and <codeph>zWinRMPassword</codeph> properties.</cmd>
+      </step>
+      <step>
+        <cmd>In the left column, click <uicontrol>SEE ALL</uicontrol>.</cmd> 
+      </step>
+      <step>
+        <cmd>From the the <uicontrol>Add</uicontrol> menu, select <uicontrol>Add a Single Device</uicontrol>.</cmd>
+      </step>
+      <step>
+        <cmd>Complete the form with the information for the Windows device to add.</cmd>
+        <info>The value of the <uicontrol>Name or IP</uicontrol> field must be resolvable and
+          accessible from the collector host specified in the <uicontrol>Collector</uicontrol>
+          field.</info>
+      </step>
+      <step>
+        <cmd>Click <uicontrol>ADD</uicontrol>.</cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

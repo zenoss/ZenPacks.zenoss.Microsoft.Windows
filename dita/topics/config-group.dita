@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="winrm-group">
+  <title>Configuring systems with Windows Group Policy</title>
+  <refbody>
+    <section>
+      <title>Windows Remote Management (WinRM)</title>
+      <p>The <filepath>Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management</filepath> 
+        category includes the WinRM Client and WinRM Service sub-categories. For WinRM Client, no policy changes are required. 
+        The default policies provide the needed support.</p>
+      
+      <p>The following table shows the WinRM Service policies to set
+        for the desired authentication and transport option.</p>
+      <table>
+        <title>WinRM Service policy options</title>
+        <tgroup cols="5">
+          <colspec colname="c1" colwidth="2*"/>
+          <colspec colname="c2" colwidth="1*"/>
+          <colspec colname="c3" colwidth="1*"/>
+          <colspec colname="c4" colwidth="1*"/>
+          <colspec colname="c5" colwidth="1*"/>
+          <thead>
+            <row>
+              <entry morerows="1">Policy</entry>
+              <entry namest="c2" nameend="c5">Authentication/Transport option</entry>
+            </row>
+            <row>
+              <entry>Basic/HTTP</entry>
+              <entry>Basic/HTTPS</entry>
+              <entry>Kerberos/HTTP</entry>
+              <entry>Kerberos/HTTPS</entry>
+            </row>
+          </thead>
+          <tbody>
+            <row>
+              <entry><xref scope="external" href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2770" format="html">Allow 
+                remote server management through WinRm</xref></entry>
+              <entry>Enabled</entry>
+              <entry>Enabled</entry>
+              <entry>Enabled</entry>
+              <entry>Enabled</entry>
+            </row>
+            <row>
+              <entry><xref scope="external" href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2774" format="html">Allow 
+                unencrypted Traffic</xref></entry>
+              <entry>Enabled</entry>
+              <entry>Disabled</entry>
+              <entry>Enabled</entry>
+              <entry>Disabled</entry>
+            </row>
+            <row>
+              <entry><xref scope="external" href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2773" format="html">Allow 
+                Basic authentication</xref></entry>
+              <entry>Enabled</entry>
+              <entry>Enabled</entry>
+              <entry>Disabled</entry>
+              <entry>Disabled</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+      <p>For more information about configuring HTTPS, see <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-https"/>.</p>
+    </section>
+    
+    <section>
+      <title>Windows Remote Shell (WinRS)</title>
+      <p>Configure the following policies in the <filepath>Computer
+          Configuration\Policies\Administrative Templates\Windows Components\Windows Remote
+          Shell</filepath> category.</p>
+      <ul>
+        <li>
+          <p>Policy: <xref scope="external"
+              href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2779" format="html">Allow
+              Remote Shell Access</xref></p>
+          <p>Choose the default setting, which allows remote shell connections.</p>
+        </li>
+        
+        <li>
+          <p>Policy: <xref scope="external"
+              href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2783" format="html">Specify
+              maximum number of processes per Shell</xref>
+          </p>
+          <p>Set the value to 4294967295.</p>
+          <note id="winrm-max">This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
+            opens concurrent requests for each WQL query and set of Perfmon counters. If the maximum value is inappropriate
+            for your environment, 50 should be adequate.</note>
+        </li>
+        
+        <li>
+          <p>Policy: <xref scope="external"
+              href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2785" format="html">Specify
+              maximum number of remote shells per user</xref>
+          </p>
+          <p>Set the value to 2147483647.</p>
+          <note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/>
+        </li>
+        
+        <li>
+          <p>Policy: <xref scope="external"
+              href="http://gpsearch.azurewebsites.net/default.aspx?ref=1#2784" format="html">Specify
+              Shell Timeout</xref></p>
+          <p>Set the value to 7200000.</p>
+        </li>
+      </ul>
+    </section>
+  </refbody>
+</reference>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
