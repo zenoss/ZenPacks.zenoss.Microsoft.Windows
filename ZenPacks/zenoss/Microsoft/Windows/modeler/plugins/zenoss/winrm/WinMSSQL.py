@@ -320,9 +320,10 @@ class WinMSSQL(WinRMPlugin):
 
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
-            self.name(), device.id)
+                 self.name(), device.id)
         maps = []
-        maps.append(results['device'])
+        if results.get('device'):
+            maps.append(results['device'])
         try:
             eventmessage = results['error']
             log.error(eventmessage)
