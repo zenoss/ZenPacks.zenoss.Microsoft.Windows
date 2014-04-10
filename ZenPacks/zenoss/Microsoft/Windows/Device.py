@@ -29,10 +29,12 @@ class Device(BaseDevice):
 
     clusterdevices = ''
     sqlhostname = None
+    msexchangeversion = None
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
         {'id': 'sqlhostname', 'type': 'string', 'mode': 'w'},
+        {'id': 'msexchangeversion', 'type': 'string', 'mode': 'w'},
     )
 
     def setClusterMachines(self, clusterdnsnames):
@@ -44,7 +46,9 @@ class Device(BaseDevice):
             try:
                 clusterip = getHostByName(clusterdnsname)
             except(gaierror):
-                LOG.warning('Unable to resolve hostname {0}'.format(clusterdnsname))
+                LOG.warning(
+                    'Unable to resolve hostname {0}'.format(clusterdnsname)
+                )
                 return
 
             device = deviceRoot.findDeviceByIdOrIp(clusterip)
@@ -56,7 +60,9 @@ class Device(BaseDevice):
             @transact
             def create_device():
                 # Need to create cluster device
-                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Cluster')
+                dc = self.dmd.Devices.getOrganizer(
+                    '/Devices/Server/Microsoft/Cluster'
+                )
 
                 cluster = dc.createInstance(clusterdnsname)
                 cluster.manageIp = clusterip
@@ -89,11 +95,29 @@ class Device(BaseDevice):
         for clusterdnsname in self.clusterdevices:
             try:
                 clusterip = getHostByName(clusterdnsname)
-                _clusterdevices.append(deviceRoot.findDeviceByIdOrIp(clusterip))
+                _clusterdevices.append(
+                    deviceRoot.findDeviceByIdOrIp(clusterip)
+                )
             except(gaierror):
                 _clusterdevices.append('Unable to resolve hostname {0}'.format(
                     clusterdnsname))
         return _clusterdevices
+
+    def getRRDTemplates(self):
+        """
+        Returns all the templates bound to this Device and
+        add MSExchangeIS template if needed.
+        """
+        result = BaseDevice.getRRDTemplates(self)
+        if self.msexchangeversion:
+            templates = [
+                x for x in (self.zDeviceTemplates or [])
+                if not 'MSExchange' in x
+            ] + [self.msexchangeversion]
+            if [x for x in (self.zDeviceTemplates or [])
+                    if 'MSExchange' in x]:
+                self.setZenProperty('zDeviceTemplates', templates)
+        return result
 
 
 class DeviceLinkProvider(object):
@@ -114,8 +138,8 @@ class DeviceLinkProvider(object):
                         'Clustered Host: <a href="{}">{}</a>'.format(
                             host.getPrimaryUrlPath(),
                             host.titleOrId()
-                            )
                         )
+                    )
         except(AttributeError):
             pass
 
@@ -127,8 +151,8 @@ class DeviceLinkProvider(object):
                         'Clustered Server: <a href="{}">{}</a>'.format(
                             cluster.getPrimaryUrlPath(),
                             cluster.titleOrId()
-                            )
                         )
+                    )
         except(AttributeError):
             pass
 
@@ -150,8 +174,8 @@ class DeviceLinkProvider(object):
                         'Hyper-V Server: <a href="{}">{}</a>'.format(
                             obj.getPrimaryUrlPath(),
                             obj.titleOrId()
-                            )
                         )
+                    )
         except Exception:
             pass
 
