@@ -55,42 +55,45 @@ class MigrateDBInstances(ZenPackMigration):
         ''' Converts zDBInstances and zDBInstancesPassword to new format '''
 
         if not thing.zDBInstances:
-            pass
+            return
 
         try:
             # Successful load mean we already have proper value
-            val = json.loads(thing.zDBInstances)
-            if not isinstance(val, list):
+            if not isinstance(json.loads(thing.zDBInstances), list):
                 raise
         except:
             log.info("Migrating zDBInstances for %s", name_for_thing(thing))
 
             res = []
-            instances = thing.zDBInstances.split(';')
-            credentials = []
-            if thing.hasProperty('zDBInstancesPassword'):
-                credentials = thing.zDBInstancesPassword.split(';')
-
-            # a) no passwords, only MSSQL instances
-            if not credentials:
-                for instance in instances:
-                    if instance:
-                        res.append({
-                            "instance": instance,
-                            "user": "",
-                            "passwd": ""
-                        })
-            # b) passwords in zDBInstancesPassword
+            if isinstance(thing.zDBInstances, list):
+                res = thing.zDBInstances
+                res[0]['instance'] = "MSSQLSERVER"
             else:
-                for instance, cred in zip(instances, credentials):
-                    if instance:
-                        user, passwd = cred.split(':')
-                        res.append({
-                            "instance": instance,
-                            "user": user,
-                            "passwd": passwd
-                        })
+                instances = thing.zDBInstances.split(';')
+                credentials = []
+                if thing.hasProperty('zDBInstancesPassword'):
+                    credentials = thing.zDBInstancesPassword.split(';')
 
+                # a) no passwords, only MSSQL instances
+                if not credentials:
+                    for instance in instances:
+                        if instance:
+                            res.append({
+                                "instance": instance,
+                                "user": "",
+                                "passwd": ""
+                            })
+                # b) passwords in zDBInstancesPassword
+                else:
+                    for instance, cred in zip(instances, credentials):
+                        if instance:
+                            user, passwd = cred.split(':')
+                            res.append({
+                                "instance": instance,
+                                "user": user,
+                                "passwd": passwd
+                            })
+            # print json.dumps(res)
             thing.setZenProperty('zDBInstances', json.dumps(res))
 
 
