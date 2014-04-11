@@ -525,7 +525,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             if instance == 'MSSQLSERVER':
                 sqlserver = sqlhostname
             else:
-                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+                sqlserver = '{0}\{1}'.format('LOCALHOST', instance)
 
             command_line = strategy.build_command_line(
                 counters,
