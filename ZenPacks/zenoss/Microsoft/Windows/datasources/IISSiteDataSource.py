@@ -26,21 +26,21 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
-addLocalLibPath()
-
-from txwinrm.collect \
-    import ConnectionInfo, WinrmCollectClient, create_enum_info
+# Requires that txwinrm_utils is already imported.
+from txwinrm.collect import WinrmCollectClient, create_enum_info
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
-namespace = 'microsoftiisv2'
-resource_uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
-    namespace)
+namespace_iis6 = 'microsoftiisv2'
+namespace_iis7 = 'webadministration'
+resource_uri_iis6 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
+    namespace_iis6)
+resource_uri_iis7 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
+    namespace_iis7)
 
 
 def string_to_lines(string):
@@ -98,14 +98,7 @@ class IISSiteDataSourceInfo(RRDDataSourceInfo):
 
 
 class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -130,29 +123,19 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
-        scheme = ds0.zWinScheme
-        port = int(ds0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in ds0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = ds0.zWinKeyTabFilePath
-        dcip = ds0.zWinKDC
 
-        wql = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
+        wql_iis6 = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
+            ds0.params['statusname'])
+
+        wql_iis7 = 'select ServerAutoStart from Site where name="{0}"'.format(
             ds0.params['statusname'])
 
         WinRMQueries = [
-            create_enum_info(wql=wql, resource_uri=resource_uri)]
+            create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),
+            create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),
+            ]
 
-        conn_info = ConnectionInfo(
-            ds0.manageIp,
-            auth_type,
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(ds0)
         winrm = WinrmCollectClient()
         results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)
@@ -169,7 +152,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             sitestatusinfo[0].ServerAutoStart, 'Unknown')
 
         evtmessage = 'IIS Service {0} is in {1} state'.format(
-            ds0.component,
+            ds0.config_key[4],
             sitestatus
             )
 

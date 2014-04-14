@@ -27,12 +27,9 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
-addLocalLibPath()
-
-from txwinrm.util import ConnectionInfo
+# Requires that txwinrm_utils is already imported.
 from txwinrm.subscribe import create_event_subscription
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -106,14 +103,7 @@ class EventLogInfo(RRDDataSourceInfo):
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        )
+    proxy_attributes = ConnectionInfoProperties
 
     subscriptionID = {}
 
@@ -148,24 +138,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         log.info('Start Collection of Events')
 
         ds0 = config.datasources[0]
-
-        scheme = ds0.zWinScheme
-        port = int(ds0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in ds0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = ds0.zWinKeyTabFilePath
-        dcip = ds0.zWinKDC
-
-        conn_info = ConnectionInfo(
-            ds0.manageIp,
-            auth_type,
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(ds0)
 
         path = ds0.params['eventlog']
         select = ds0.params['query']

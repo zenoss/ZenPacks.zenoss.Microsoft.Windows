@@ -38,13 +38,12 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows.utils \
-    import addLocalLibPath, parseDBUserNamePass, getSQLAssembly
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import parseDBUserNamePass, getSQLAssembly
 
-addLocalLibPath()
-
-from txwinrm.util import ConnectionInfo
-from txwinrm.shell import create_long_running_shell, retrieve_long_running_shell
+# Requires that txwinrm_utils is already imported.
+from txwinrm.util import UnauthorizedError
+from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -55,8 +54,6 @@ AVAILABLE_STRATEGIES = [
     'powershell Cluster Services',
     'powershell Cluster Resources',
     ]
-
-connections_dct = {}
 
 
 class ShellDataSource(PythonDataSource):
@@ -153,6 +150,7 @@ class WinCmd(object):
     Emulate the SSH/ZenCommand returned object (Products.ZenRRD.zencommand.Cmd) for
     compatibility with existing Command parsers
     """
+    name = None
     device = ''
     command = None
     component = ''
@@ -184,6 +182,7 @@ class CustomCommandStrategy(object):
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
+        cmd.name = '{}/{}'.format(dsconf.template, dsconf.datasource)
         cmd.command = dsconf.params['script']
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
@@ -192,6 +191,7 @@ class CustomCommandStrategy(object):
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
         cmd.deviceConfig = config
+        cmd.deviceConfig.name = config.id
 
         # Add the component id to the points array for compatibility with parsers
         for point in dsconf.points:
@@ -426,13 +426,7 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = (
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
+    proxy_attributes = ConnectionInfoProperties + (
         'zDBInstances',
         'zDBInstancesPassword',
         )
@@ -495,7 +489,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             strategy=datasource.strategy,
             instancename=instancename,
             servername=servername,
-            script=datasource.script,
+            script=datasource.talesEval(datasource.script, context),
             parser=parser,
             usePowershell=datasource.usePowershell,
             contextrelname=contextrelname,
@@ -506,24 +500,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @defer.inlineCallbacks
     def collect(self, config):
         dsconf0 = config.datasources[0]
-
-        scheme = dsconf0.zWinScheme
-        port = int(dsconf0.zWinRMPort)
-        auth_type = 'kerberos' if '@' in dsconf0.zWinRMUser else 'basic'
-        connectiontype = 'Keep-Alive'
-        keytab = dsconf0.zWinKeyTabFilePath
-        dcip = dsconf0.zWinKDC
-
-        conn_info = ConnectionInfo(
-            dsconf0.manageIp,
-            auth_type,
-            dsconf0.zWinRMUser,
-            dsconf0.zWinRMPassword,
-            scheme,
-            port,
-            connectiontype,
-            keytab,
-            dcip)
+        conn_info = createConnectionInfo(dsconf0)
 
         strategy = self._get_strategy(dsconf0)
         if not strategy:
@@ -548,7 +525,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             if instance == 'MSSQLSERVER':
                 sqlserver = sqlhostname
             else:
-                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+                sqlserver = '{0}\{1}'.format('LOCALHOST', instance)
 
             command_line = strategy.build_command_line(
                 counters,
@@ -572,48 +549,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line = strategy.build_command_line(counters)
 
-        try:
-            sender = connections_dct[conn_info]['sender']
-            shell_id = connections_dct[conn_info]['shell_id']
+        command = create_single_shot_command(conn_info)
+        results = yield command.run_command(command_line)
 
-        except:
-            shell_conn = yield create_long_running_shell(conn_info)
-            sender = shell_conn['sender']
-            shell_id = shell_conn['shell_id']
-
-            connections_dct[conn_info] = {
-                'sender': sender,
-                'shell_id': shell_id
-            }
-
-        try:
-            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
-
-        except:
-            del connections_dct[conn_info]
-            # WinRS could have failed for some reason
-            # Need to restart shell here
-            log.info('WinRS ID {0} no longer exists another connection will be \
-                created. This could be a result of restarting the client machine \
-                or the idle timeout for WinRS is to short. If you are seeing this \
-                message freaquently you may need to adjust the idle timeout. \
-                Please refer to the FAQ section for information on how to make \
-                this adjustment'.format(shell_id))
-
-            shell_conn = yield create_long_running_shell(conn_info)
-            sender = shell_conn['sender']
-            shell_id = shell_conn['shell_id']
-
-            connections_dct[conn_info] = {
-                'sender': sender,
-                'shell_id': shell_id
-            }
-
-            results = yield retrieve_long_running_shell(sender, shell_id, command_line)
-
-        log.debug('Results retreived for device {0} on shell id {1}'.format(
-                dsconf0.manageIp,
-                shell_id))
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
@@ -659,6 +597,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
 
         data['events'].append(dict(
+            severity=ZenEventClasses.Clear,
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
             summary='winrs: successful collection',

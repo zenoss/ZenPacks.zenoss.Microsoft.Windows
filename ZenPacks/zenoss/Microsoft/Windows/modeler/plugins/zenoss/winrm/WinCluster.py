@@ -20,7 +20,6 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 
 addLocalLibPath()
 
-from txwinrm.util import ConnectionInfo
 from txwinrm.shell import create_single_shot_command
 
 
@@ -45,6 +44,7 @@ class WinCluster(WinRMPlugin):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append("$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (512, 512);")
         psClusterCommands.append("import-module failoverclusters;")
 
         psClusterHosts = []

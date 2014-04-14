@@ -49,15 +49,11 @@ except ImportError:
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ZenPacks.zenoss.Microsoft.Windows import ZENPACK_NAME
-from ZenPacks.zenoss.Microsoft.Windows.utils import (
-    addLocalLibPath,
-    get_processNameAndArgs,
-    get_processText,
-    )
+from .. import ZENPACK_NAME
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import get_processNameAndArgs, get_processText
 
-addLocalLibPath()
-
+# Requires that txwinrm_utils is already imported.
 import txwinrm.collect
 
 
@@ -224,14 +220,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
     Collects Windows process data.
     '''
 
-    proxy_attributes = [
-        'zWinRMUser',
-        'zWinRMPassword',
-        'zWinRMPort',
-        'zWinKDC',
-        'zWinKeyTabFilePath',
-        'zWinScheme',
-        ]
+    proxy_attributes = ConnectionInfoProperties
 
     @classmethod
     def params(cls, datasource, context):
@@ -245,6 +234,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             (process_class, 'replaceRegex', 'replaceRegex'),
             (process_class, 'replacement', 'replacement'),
             (process_class, 'primaryUrlPath', 'processClassPrimaryUrlPath'),
+            (process_class, 'sequence', 'sequence'),
             (context, 'alertOnRestart', 'alertOnRestart'),
             (context, 'severity', 'getFailSeverity'),
             (context, 'generatedId', 'generatedId'),
@@ -263,19 +253,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return params
 
     def collect(self, config):
-        ds0 = config.datasources[0]
-
         client = txwinrm.collect.WinrmCollectClient()
-        conn_info = txwinrm.collect.ConnectionInfo(
-            config.manageIp,
-            'kerberos' if '@' in ds0.zWinRMUser else 'basic',
-            ds0.zWinRMUser,
-            ds0.zWinRMPassword,
-            ds0.zWinScheme,
-            int(ds0.zWinRMPort),
-            'Keep-Alive',
-            ds0.zWinKeyTabFilePath,
-            ds0.zWinKDC)
+        conn_info = createConnectionInfo(config.datasources[0])
 
         # Always query Win32_Process. This is where we get process
         # status and count.
@@ -323,12 +302,16 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
         pids_by_component = collections.defaultdict(set)
 
+        sorted_datasource = sorted(
+            config.datasources,
+            key=lambda x: x.params.get('sequence', 0))
+
         # Win32_Process: Counts and correlation to performance table.
         process_key = [x for x in results if 'Win32_Process' in x.wql][0]
         for item in results[process_key]:
             processText = get_processText(item)
 
-            for datasource in config.datasources:
+            for datasource in sorted_datasource:
                 regex = re.compile(datasource.params['regex'])
 
                 # Zenoss 4.2 2013-10-15 RPS style.
@@ -382,6 +365,9 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 # match because the generic aggregator below will sum
                 # them up to the total count.
                 metrics_by_component[datasource.component][COUNT_DATAPOINT].append(1)
+
+                # Don't continue matching once a match is found.
+                break
 
         # Send process status events.
         for datasource in config.datasources:
