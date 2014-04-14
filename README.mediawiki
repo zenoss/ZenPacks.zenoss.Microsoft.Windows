@@ -284,7 +284,8 @@ The following metrics are collected directly via WMI.
 
 <br clear=all>
 
-{{note}} IIS 6 Management compatibility needs to be installed on server side in order to use the IIS Sites component.
+{{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
+{{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
 
 === Event Management ===
 
@@ -329,7 +330,7 @@ yum -y install krb5-workstation
 
 === Adding a Windows Device ===
 
-Use the following steps to start monitoring a Windows server using the Zenoss web interface.
+Use the following steps to start monitoring a Windows server using local authentication in the Zenoss web interface.
 
 # Navigate to the Infrastructure page.
 # Select the Server/Microsoft/Windows device class.
@@ -356,6 +357,41 @@ You can then load the Windows servers into Zenoss Core or Resource Manager as de
 <syntaxhighlight lang="bash">
 zenbatchload <filename>
 </syntaxhighlight>
+
+=== Configuration Options ===
+
+The [[#Adding a Windows Device]] steps shown above are for the simplest case of using Windows local authentication. The following configuration properties can be used to support monitoring other environments.
+
+;zWinRMUser
+: The syntax used for zWinRMUser controls whether Zenoss will attempt Windows local authentication or domain (kerberos) authentication. If the value of zWinRMUser is ''username'', local Windows authentication will be used. If zWinRMUser is ''username@example.com'', domain authentication will be used. The zWinKDC and potentially the zWinRMServerName properties become important.
+
+;zWinRMPassword
+: Password for user defined by ''zWinRMUser''.
+
+;zWinKDC
+: The zWinKDC property must be set if domain authentication is used. It must be the IP address of a valid Windows domain controller.
+
+;zWinRMServerName
+: This property should only be used in conjunction with domain authentication when the DNS PTR record for a monitored server's managed IP address does not resolve to the name by which the server is known in Active Directory. For example, if myserver1 is known as myserver1.ad.example.com by Active Directory and is being managed by IP address 192.51.100.21, but 192.51.100.21 resolves to www.example.com, you will have to set zWinRMServerName to ''myserver1.ad.example.com'' for domain authentication to work.
+
+: If many Windows servers in your environment don't have DNS PTR records that match Active Directory, it is recommended that you set the name of the Zenoss device's to be the fully-qualified Active Directory name and set zWinRMServerName to ''${here/titleOrId}'' at the /Server/Microsoft/Windows device class. This avoids the necessity of setting zWinRMServerName on every device.
+
+: It is recommended to leave zWinRMServerName blank if local authentication is used, or DNS PTR records match Active Directory. This allows Zenoss to not rely on DNS resolution while monitoring, and avoids the overhead of configuring zWinRMServerName.
+
+;zWinScheme
+: This must be set to either ''http'' or ''https''. The default is ''http''.
+
+;zWinRMPort
+: The port on which the Windows server is listening for ''WinRM'' or ''WS-Management'' connections. The default is ''5985''. It is uncommon for this to be configured as anything else.
+
+;zWinPerfmonInterval
+: The default interval in seconds at which ''Windows Perfmon'' datapoints will be collected. The default is ''300'' seconds or 5 minutes. It is also possible to override the collection interval for individual counters.
+
+;zWinKeyTabFilePath
+: This property is currently used and reserved for future use when keytab files are supported.
+
+;zDBInstances
+: This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server. The default is ''MSSQLSERVER''.
 
 == Setting up WinRM Service for Target Windows Machines ==
 
@@ -533,6 +569,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ;Configuration Properties
 * zWinRMUser
 * zWinRMPassword
+* zWinRMServerName
 * zWinRMPort
 * zDBInstances
 * zDBInstancesPassword
@@ -586,7 +623,21 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ;2.0.3
+* Reduce possibility of gaps in perfmon collection. ([https://jira.zenoss.com/browse/ZEN-10600 ZEN-10600])
+* Add zWinRMServerName property. ([https://jira.zenoss.com/browse/ZEN-9712 ZEN-9712])
+* Support for IIS 7-8 without IIS 6 compatibility.
+* Honor sequence in process monitoring. ([https://jira.zenoss.com/browse/ZEN-10777 ZEN-10777])
+* Fix cluster modeling for long server names. ([https://jira.zenoss.com/browse/ZEN-10572 ZEN-10572])
 * Support TALES in Windows Shell custom command script. ([https://jira.zenoss.com/browse/ZEN-10426 ZEN-10426])
+* Fix custom parser issue with Windows Shell datasource. ([https://jira.zenoss.com/browse/ZEN-10365 ZEN-10365])
+* Handle null software install date. ([https://jira.zenoss.com/browse/ZEN-10361 ZEN-10361])
+* Handle null process socket designation. ([https://jira.zenoss.com/browse/ZEN-10360 ZEN-10360])
+* Model interface speed as integer. ([https://jira.zenoss.com/browse/ZEN-9608 ZEN-9608])
+* Change WinRS success events from info to clear severity.
+* Fix leaking of active operations on Windows server.
+* Add missing counter details to missing counter events.
+* Fix Windows Shell collection on empty results.
+* Fix Windows Perfmon collection with cycletime > 600.
 
 ;2.0.2
 * Fix build issue that made ZenPack unavailable from catalog.
