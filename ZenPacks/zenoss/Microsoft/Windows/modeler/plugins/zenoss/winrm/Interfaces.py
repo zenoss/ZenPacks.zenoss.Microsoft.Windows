@@ -26,6 +26,19 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
 _transTable = string.maketrans("#()/", "_[]_")
 
+# Windows Server 2003 and Windows XP has no true/false status field
+# for enabled/disabled states. This statuses used to determine if
+# interface is enabled:
+ENABLED_NC_STATUSES = [
+    '1',  # Connecting
+    '2',  # Connected
+    '8',  # Authenticating
+    '9',  # Authentication succeeded
+    '10', # Authentication failed
+    '11', # Invalid address
+    '12'  # Credentials required
+]
+
 
 class Interfaces(WinRMPlugin):
     compname = 'os'
@@ -229,6 +242,9 @@ class Interfaces(WinRMPlugin):
                 int_om.adminStatus = int(lookup_operstatus(inter.NetEnabled))
             except (AttributeError):
                 int_om.adminStatus = 0
+                # Workaround for 2003 / XP
+                if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
+                    int_om.adminStatus = 1
 
             int_om.operStatus = int(lookup_operstatus(interconf.IPEnabled))
 
