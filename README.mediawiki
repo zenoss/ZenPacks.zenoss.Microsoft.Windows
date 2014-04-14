@@ -284,7 +284,8 @@ The following metrics are collected directly via WMI.
 
 <br clear=all>
 
-{{note}} IIS 6 Management compatibility needs to be installed on server side in order to use the IIS Sites component.
+{{note}} IIS 6 Management compatibility role is no longer required to use the IIS Sites component.
+{{note}} IIS Management Scripts and Tools role is required to use the IIS Sites component.
 
 === Event Management ===
 
