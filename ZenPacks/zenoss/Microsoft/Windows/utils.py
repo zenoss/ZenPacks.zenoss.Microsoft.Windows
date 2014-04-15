@@ -225,6 +225,9 @@ def check_for_network_error(result, config):
     if 'timeout' in str_result:
         return 'Timeout while connecting to host', '/Status'
 
+    if 'Unauthorized' in str_result:
+        return 'Unauthorized, check username and password', '/Status'
+
     msg = 'Failed collection {0} on {1}'.format(
         result, config
     )
