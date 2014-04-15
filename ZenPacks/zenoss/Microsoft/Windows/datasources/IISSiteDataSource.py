@@ -27,6 +27,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import check_for_network_error
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -165,18 +166,27 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             'device': config.id,
         })
 
+        # Clear previous error event
+        data['events'].append({
+            'eventClass': '/Status',
+            'eventClassKey': 'IISSiteStatusError',
+            'eventKey': 'IISSite',
+            'severity': ZenEventClasses.Clear,
+            'summary': 'Monitoring ok',
+            'device': config.id,
+        })
+
         return data
 
     def onError(self, result, config):
-        msg = 'WindowsIISSiteLog: failed collection {0} {1}'.format(
-            result, config
-        )
+        msg, event_class = check_for_network_error(result, config)
         log.error(msg)
         data = self.new_data()
         data['events'].append({
+            'eventClass': event_class,
             'severity': ZenEventClasses.Warning,
             'eventClassKey': 'IISSiteStatusError',
             'eventKey': 'IISSite',
-            'summary': msg,
+            'summary': 'IISSite: ' + msg,
             'device': config.id})
         return data

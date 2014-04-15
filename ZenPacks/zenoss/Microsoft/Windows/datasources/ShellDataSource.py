@@ -42,6 +42,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
+from ..utils import check_for_network_error
 
 
 # Requires that txwinrm_utils is already imported.
@@ -635,11 +636,21 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             eventKey='winrsCollection',
             summary='winrs: successful collection',
             device=config.id))
+
+        # Clear previous error event
+        data['events'].append(dict(
+            eventClass='/Status',
+            severity=ZenEventClasses.Clear,
+            eventClassKey='winrsCollectionError',
+            eventKey='winrsCollection',
+            summary='Monitoring ok',
+            device=config.id))
+
         return data
 
     def onError(self, result, config):
         logg = log.error
-        msg = 'winrs: failed collection - {0} on {1}'.format(result, config)
+        msg, event_class = check_for_network_error(result, config)
         eventKey = 'winrsCollection'
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
@@ -653,9 +664,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         logg(msg)
         data = self.new_data()
         data['events'].append(dict(
+            eventClass=event_class,
+            severity=ZenEventClasses.Warning,
             eventClassKey='winrsCollectionError',
             eventKey=eventKey,
-            summary=msg,
+            summary='WinRS: ' + msg,
             device=config.id))
         return data
 
