@@ -212,3 +212,21 @@ def get_processNameAndArgs(item):
         args = ''
 
     return (name, args)
+
+
+def check_for_network_error(result, config):
+    '''
+    Checks value for timeout/no route to host tracebacks
+    '''
+    str_result = str(result)
+    if 'No route to host' in str_result:
+        return 'No route to host', '/Status'
+
+    if 'timeout' in str_result:
+        return 'Timeout while connecting to host', '/Status'
+
+    msg = 'Failed collection {0} on {1}'.format(
+        result, config
+    )
+
+    return msg, '/Unknown'
