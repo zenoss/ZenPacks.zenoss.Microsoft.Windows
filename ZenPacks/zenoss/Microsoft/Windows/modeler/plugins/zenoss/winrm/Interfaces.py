@@ -275,7 +275,7 @@ class Interfaces(WinRMPlugin):
                     int_om.teamname = inter.TeamName.split('-')[0].strip()
                     int_om.monitor = False
                 else:
-                    if inter.GUID in bdcDict:
+                    if hasattr(inter, 'GUID') and (inter.GUID in bdcDict):
                         # Broadcom interface that is member of TEAM interface
                         int_om.teamname = inter.TeamName
                         int_om.monitor = False
