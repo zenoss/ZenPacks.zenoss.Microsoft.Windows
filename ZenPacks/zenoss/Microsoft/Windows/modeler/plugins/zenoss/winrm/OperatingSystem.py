@@ -56,10 +56,12 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
+
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
+
         if exchange_version:
-            exchange_version = {'14': '2010', '15': '2013'}.get(
+            exchange_version = {'6': '2003', '8': '2007', '14': '2010', '15': '2013'}.get(
                 exchange_version
             )
         maps = []
@@ -72,7 +74,7 @@ class OperatingSystem(WinRMPlugin):
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
         if exchange_version:
-            device_om.msexchangeversion = 'MSExchange%sIS' % exchange_version
+            device_om.msexchangeversion = 'MSExchange%sIS' % (exchange_version if exchange_version in ['2010', '2013'] else "")
         # Cluster Information
         try:
             clusterlist = []
