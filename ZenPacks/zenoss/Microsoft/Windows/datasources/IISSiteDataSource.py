@@ -148,9 +148,11 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         ds0 = config.datasources[0]
         sitestatusinfo = results[results.keys()[0]]
+        sitestatus = 'Unknown'
 
-        sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
-            sitestatusinfo[0].ServerAutoStart, 'Unknown')
+        if sitestatusinfo:
+            sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
+                sitestatusinfo[0].ServerAutoStart, 'Unknown')
 
         evtmessage = 'IIS Service {0} is in {1} state'.format(
             ds0.config_key[4],
