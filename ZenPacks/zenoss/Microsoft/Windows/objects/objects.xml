@@ -7497,7 +7497,7 @@ ${here/zWinPerfmonInterval}
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
 <property type="string" id="counter" >
-\MSExchange RpcClientAccess\RPC Averaged Latency
+\MSExchange Store Interface(_Total)\RPC Latency average (msec)
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7536,7 +7536,7 @@ ${here/zWinPerfmonInterval}
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
 <property type="string" id="counter" >
-\MSExchange RpcClientAccess\RPC Operations/sec
+\MSExchange Store Interface(_Total)\RPC Requests sent/sec
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCOperationsPerSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7575,7 +7575,7 @@ ${here/zWinPerfmonInterval}
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
 <property type="string" id="counter" >
-\MSExchange RpcClientAccess\RPC Requests
+\MSExchange Store Interface(_Total)\RPC Requests sent
 </property>
 <tomanycont id='datapoints'>
 <object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -7855,67 +7855,7 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='Exchange - RPC Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
-<property type="int" id="height" mode="w" >
-100
-</property>
-<property type="int" id="width" mode="w" >
-500
-</property>
-<property type="string" id="units" mode="w" >
-operations/sec
-</property>
-<property type="boolean" id="log" mode="w" >
-False
-</property>
-<property type="boolean" id="base" mode="w" >
-False
-</property>
-<property type="int" id="miny" mode="w" >
-0
-</property>
-<property type="int" id="maxy" mode="w" >
--1
-</property>
-<property type="boolean" id="hasSummary" mode="w" >
-True
-</property>
-<property type="long" id="sequence" mode="w" >
-2
-</property>
-<tomanycont id='graphPoints'>
-<object id='Operations' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
-<property type="long" id="sequence" mode="w" >
-0
-</property>
-<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
-LINE
-</property>
-<property type="long" id="lineWidth" mode="w" >
-1
-</property>
-<property type="boolean" id="stacked" mode="w" >
-False
-</property>
-<property type="string" id="format" mode="w" >
-%7.2lf%s
-</property>
-<property type="string" id="legend" mode="w" >
-${graphPoint/id}
-</property>
-<property type="long" id="limit" mode="w" >
--1
-</property>
-<property type="string" id="dpName" mode="w" >
-mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
-</property>
-<property type="string" id="cFunc" mode="w" >
-AVERAGE
-</property>
-</object>
-</tomanycont>
-</object>
-<object id='Exchange - RPC Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<object id='Exchange - RPC Requests Sent' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
 <property type="int" id="height" mode="w" >
 100
 </property>
@@ -7968,6 +7908,66 @@ ${graphPoint/id}
 </property>
 <property type="string" id="dpName" mode="w" >
 mseisRPCRequests_mseisRPCRequests
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Exchange - RPC Requests Sent per Sec' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+requests/sec
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+2
+</property>
+<tomanycont id='graphPoints'>
+<object id='Operations' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE

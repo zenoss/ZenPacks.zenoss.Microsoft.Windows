@@ -225,6 +225,9 @@ def check_for_network_error(result, config):
     if 'timeout' in str_result:
         return 'Timeout while connecting to host', '/Status'
 
+    if 'refused' in str_result:
+        return 'Connection was refused by other side', '/Status'
+
     if 'Unauthorized' in str_result:
         return 'Unauthorized, check username and password', '/Status'
 
