@@ -25,7 +25,7 @@ class Software(WinRMPlugin):
 
     queries = {
         'Win32_Product': "SELECT Name, InstallDate, Vendor FROM Win32_Product",
-        }
+    }
 
     def process(self, device, results, log):
         log.info(
@@ -41,6 +41,8 @@ class Software(WinRMPlugin):
             om = self.objectMap()
             om.id = self.prepId(item.Name)
             om.title = item.Name
+            if not item.Vendor:
+                item.Vendor = 'Unknown'
             om.setProductKey = MultiArgs(item.Name, item.Vendor)
 
             if item.InstallDate:
