@@ -419,13 +419,15 @@ class PowershellClusterServiceStrategy(object):
                 .format(
                     result.exit_code, counters, dsconf.device))
             return
-
         # Parse values
         try:
-            for resourceline in result.stdout:
-                name, iscoregroup, ownernode, state, \
-                description, nodeid, priority = resourceline.split('|')
-
+            # stdout split all output on 79 symbols by default, and when our string is
+            # "Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|1"(80 symbols),
+            # then we get something like this "['Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|', '1']"
+            stdout = ''.join(result.stdout)
+            if stdout:
+                name, iscoregroup, ownernode, state, description, \
+                    nodeid, priority = stdout.split('|')
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
