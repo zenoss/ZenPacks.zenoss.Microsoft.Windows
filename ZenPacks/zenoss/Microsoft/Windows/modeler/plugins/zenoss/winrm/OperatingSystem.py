@@ -75,6 +75,8 @@ class OperatingSystem(WinRMPlugin):
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
         if exchange_version:
             device_om.msexchangeversion = 'MSExchange%sIS' % (exchange_version if exchange_version in ['2010', '2013'] else "")
+        else:
+            device_om.msexchangeversion = 'MSExchangeIS'
         # Cluster Information
         try:
             clusterlist = []
