@@ -46,12 +46,21 @@ class MigrateDBInstances(ZenPackMigration):
         '''
 
         for dc in DEVICE_CLASSES:
-            for device in dmd.Devices.getOrganizer(dc).devices():
-                self.migrate_sql_settings(device)
+            organizer = self.get_organizer(dc)
+            if organizer:
+                for device in organizer.devices():
+                    self.migrate_sql_settings(device)
 
         for dc in DEVICE_CLASSES:
-            self.migrate_sql_settings(dmd.Devices.getOrganizer(dc))
+            organizer = self.get_organizer(dc)
+            if organizer:
+                self.migrate_sql_settings(organizer)
 
+    def get_organizer(self, dc):
+        try:
+            return dmd.Devices.getOrganizer(dc)
+        except:
+            return None
 
     def migrate_sql_settings(self, thing):
         ''' Converts zDBInstances and zDBInstancesPassword to new format '''
