@@ -39,4 +39,4 @@ class CPU(BaseCPU):
         '''
         Return the path to an icon for this component.
         '''
-        return '/++resource++mswindows/img/cpu.png'
+        return '/++resource++mswindows/img/CPU.png'

@@ -58,4 +58,10 @@ class ClusterService(OSComponent):
     def getRRDTemplateName(self):
         return 'ClusterService'
 
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/ClusterService.png'
+
 InitializeClass(ClusterService)

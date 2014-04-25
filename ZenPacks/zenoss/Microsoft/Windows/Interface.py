@@ -34,4 +34,4 @@ class Interface(IpInterface):
         '''
         Return the path to an icon for this component.
         '''
-        return '/++resource++mswindows/img/interface.png'
+        return '/++resource++mswindows/img/Interface.png'
