@@ -18,8 +18,10 @@ from Products.ZenModel.ZenPack import ZenPackMigration
 
 
 DEVICE_CLASSES = [
+    '/Server/Microsoft/Windows/SQL',
     '/Server/Microsoft/Windows',
-    '/Server/Microsoft/Cluster'
+    '/Server/Microsoft/Cluster',
+    '/'
 ]
 
 
@@ -73,7 +75,6 @@ class MigrateDBInstances(ZenPackMigration):
                 credentials = []
                 if thing.hasProperty('zDBInstancesPassword'):
                     credentials = thing.zDBInstancesPassword.split(';')
-
                 # a) no passwords, only MSSQL instances
                 if not credentials:
                     for instance in instances:
@@ -87,7 +88,9 @@ class MigrateDBInstances(ZenPackMigration):
                 else:
                     for instance, cred in zip(instances, credentials):
                         if instance:
-                            user, passwd = cred.split(':')
+                            user, passwd = '', ''
+                            if cred:
+                                user, passwd = cred.split(':')
                             res.append({
                                 "instance": instance,
                                 "user": user,

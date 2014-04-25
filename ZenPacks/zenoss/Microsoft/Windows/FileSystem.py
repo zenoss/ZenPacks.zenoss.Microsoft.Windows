@@ -36,4 +36,4 @@ class FileSystem(BaseFileSystem):
         '''
         Return the path to an icon for this component.
         '''
-        return '/++resource++mswindows/img/filesystem.png'
+        return '/++resource++mswindows/img/FileSystem.png'
