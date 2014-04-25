@@ -45,4 +45,10 @@ class WinSQLInstance(OSComponent):
     def getRRDTemplateName(self):
         return 'WinDBInstance'
 
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/WinSQLInstance.png'
+
 InitializeClass(WinSQLInstance)
