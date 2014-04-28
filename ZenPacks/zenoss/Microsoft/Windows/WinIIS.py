@@ -42,4 +42,11 @@ class WinIIS(OSComponent):
     def getRRDTemplateName(self):
         return 'IISSites'
 
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/WinIIS.png'
+
+
 InitializeClass(WinIIS)

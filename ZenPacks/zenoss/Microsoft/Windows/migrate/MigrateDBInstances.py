@@ -18,8 +18,10 @@ from Products.ZenModel.ZenPack import ZenPackMigration
 
 
 DEVICE_CLASSES = [
+    '/Server/Microsoft/Windows/SQL',
     '/Server/Microsoft/Windows',
-    '/Server/Microsoft/Cluster'
+    '/Server/Microsoft/Cluster',
+    '/'
 ]
 
 
@@ -44,12 +46,21 @@ class MigrateDBInstances(ZenPackMigration):
         '''
 
         for dc in DEVICE_CLASSES:
-            for device in dmd.Devices.getOrganizer(dc).devices():
-                self.migrate_sql_settings(device)
+            organizer = self.get_organizer(dc)
+            if organizer:
+                for device in organizer.devices():
+                    self.migrate_sql_settings(device)
 
         for dc in DEVICE_CLASSES:
-            self.migrate_sql_settings(dmd.Devices.getOrganizer(dc))
+            organizer = self.get_organizer(dc)
+            if organizer:
+                self.migrate_sql_settings(organizer)
 
+    def get_organizer(self, dc):
+        try:
+            return dmd.Devices.getOrganizer(dc)
+        except:
+            return None
 
     def migrate_sql_settings(self, thing):
         ''' Converts zDBInstances and zDBInstancesPassword to new format '''
@@ -73,7 +84,6 @@ class MigrateDBInstances(ZenPackMigration):
                 credentials = []
                 if thing.hasProperty('zDBInstancesPassword'):
                     credentials = thing.zDBInstancesPassword.split(';')
-
                 # a) no passwords, only MSSQL instances
                 if not credentials:
                     for instance in instances:
@@ -87,7 +97,9 @@ class MigrateDBInstances(ZenPackMigration):
                 else:
                     for instance, cred in zip(instances, credentials):
                         if instance:
-                            user, passwd = cred.split(':')
+                            user, passwd = '', ''
+                            if cred:
+                                user, passwd = cred.split(':')
                             res.append({
                                 "instance": instance,
                                 "user": user,
