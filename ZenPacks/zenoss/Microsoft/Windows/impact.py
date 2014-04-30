@@ -156,9 +156,9 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         for obj in self._object.os.interfaces():
             yield edge(guid(obj), self.guid())
 
-        # IIS Sites
-        for obj in self._object.os.winrmiis():
-            yield edge(guid(obj), self.guid())
+        # # IIS Sites
+        # for obj in self._object.os.winrmiis():
+        #     yield edge(guid(obj), self.guid())
 
         # DB Instances
         for obj in self._object.os.winsqlinstances():
@@ -201,10 +201,10 @@ class InterfaceRelationsProvider(BaseRelationsProvider):
         yield edge(self.guid(), guid(self.device()))
 
 
-class IISRelationsProvider(BaseRelationsProvider):
+# class IISRelationsProvider(BaseRelationsProvider):
 
-    def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+#     def getEdges(self):
+#         yield edge(self.guid(), guid(self.device()))
 
 
 class SQLRelationsProvider(BaseRelationsProvider):
