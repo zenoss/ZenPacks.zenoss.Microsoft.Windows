@@ -549,6 +549,12 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
             instance = dsconf0.params['instancename']
             dbname = dsconf0.params['contexttitle']
+            try:
+                instance_login = dblogins[instance]
+            except KeyError:
+                raise WindowsShellException(
+                    "zDBInstances don't contain credentials for %s" % instance
+                )
 
             if instance == 'MSSQLSERVER':
                 sqlserver = dsconf0.config_key
@@ -558,8 +564,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(
                 counters,
                 sqlserver=sqlserver,
-                sqlusername=dblogins[instance]['username'],
-                sqlpassword=dblogins[instance]['password'],
+                sqlusername=instance_login['username'],
+                sqlpassword=instance_login['password'],
                 database=dbname,
                 login_as_user=login_as_user)
 
