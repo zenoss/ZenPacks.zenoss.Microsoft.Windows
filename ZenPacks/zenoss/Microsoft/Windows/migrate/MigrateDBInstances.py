@@ -44,22 +44,21 @@ class MigrateDBInstances(ZenPackMigration):
         This is the main method. Its migrates the data to the new format of
         properties.
         '''
-
         for dc in DEVICE_CLASSES:
-            organizer = self.get_organizer(dc)
+            organizer = self.get_organizer(dc, dmd)
             if organizer:
                 for device in organizer.devices():
                     self.migrate_sql_settings(device)
 
         for dc in DEVICE_CLASSES:
-            organizer = self.get_organizer(dc)
+            organizer = self.get_organizer(dc, dmd)
             if organizer:
                 self.migrate_sql_settings(organizer)
 
-    def get_organizer(self, dc):
+    def get_organizer(self, dc, dmd):
         try:
             return dmd.Devices.getOrganizer(dc)
-        except:
+        except Exception as e:
             return None
 
     def migrate_sql_settings(self, thing):
