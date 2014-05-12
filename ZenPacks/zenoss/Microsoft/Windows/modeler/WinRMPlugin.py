@@ -142,6 +142,8 @@ class WinRMPlugin(PythonPlugin):
             args.append(error.message)
         elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
+        elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
+            message = "Error with domain connection on %s. Please, check that it's zWinKDC property contains FQDN or IP of domain controller"
         else:
             message = "Error on %s: %s"
             args.append(error)
