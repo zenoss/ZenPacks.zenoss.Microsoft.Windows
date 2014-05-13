@@ -34,10 +34,31 @@ ENABLED_NC_STATUSES = [
     '2',  # Connected
     '8',  # Authenticating
     '9',  # Authentication succeeded
-    '10', # Authentication failed
-    '11', # Invalid address
-    '12'  # Credentials required
+    '10',  # Authentication failed
+    '11',  # Invalid address
+    '12',  # Credentials required
 ]
+
+# Availability instead of Operational Status
+AVAILABILITY = {
+    '1': 4,  # Other
+    '2': 4,  # Unknown
+    '3': 1,  # Running or Full Power
+    '4': 1,  # Warning
+    '5': 3,  # In Test
+    '6': 4,  # Not Applicable
+    '7': 2,  # Power Off
+    '8': 2,  # Off Line
+    '9': 2,  # Off Duty
+    '10': 1,  # Degraded
+    '11': 6,  # Not Installed
+    '12': 6,  # Install Error
+    '13': 4,  # Power Save - Unknown
+    '14': 1,  # Power Save - Lower Power Mode
+    '15': 2,  # Power Save - Standby
+    '16': 2,  # Power Cycle
+    '17': 1,  # Warning
+}
 
 
 class Interfaces(WinRMPlugin):
@@ -246,7 +267,7 @@ class Interfaces(WinRMPlugin):
                 if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                     int_om.adminStatus = 1
 
-            int_om.operStatus = int(lookup_operstatus(interconf.IPEnabled))
+            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:
                 int_om.ifindex = inter.InterfaceIndex
