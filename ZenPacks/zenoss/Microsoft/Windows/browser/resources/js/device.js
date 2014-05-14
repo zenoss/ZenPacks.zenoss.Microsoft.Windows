@@ -32,18 +32,18 @@ Ext.apply(Zenoss.render, {
     win_entityLinkFromGrid: function(obj, col, record) {
         if (!obj)
             return;
-        
+
         if (obj.name == 'NONE')
             return;
-        
+
         if (typeof(obj) == 'string')
             obj = record.data;
-        
+
         if (!obj.title && obj.name)
             obj.title = obj.name;
-        
+
         var isLink = false;
-        
+
         if (this.refName == 'componentgrid'){
             if (this.subComponentGridPanel || this.componentType != obj.meta_type)
                 isLink = true;
@@ -51,7 +51,7 @@ Ext.apply(Zenoss.render, {
             if (!this.panel || this.panel.subComponentGridPanel)
                 isLink = true;
         }
-        
+
         if (isLink) {
             return '<a href="javascript:Ext.getCmp(\'component_card\').componentgrid.jumpToEntity(\''+obj.uid+'\', \''+obj.meta_type+'\');">'+obj.title+'</a>';
         } else {
@@ -79,12 +79,12 @@ ZC.WINComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
                 if (n.data) {
                     return n.data.text == 'Components';
                 }
-                
+
                 return n.text == 'Components';
             });
-        
+
         var component_card = Ext.getCmp('component_card');
-        
+
         if (components_node.data) {
             component_card.setContext(components_node.data.id, meta_type);
         } else {
@@ -97,10 +97,10 @@ ZC.WINComponentGridPanel = Ext.extend(ZC.ComponentGridPanel, {
                 if (n.data) {
                     return n.data.id == meta_type;
                 }
-                
+
                 return n.id == meta_type;
             });
-        
+
         if (component_type_node.select) {
             tree_selection_model.suspendEvents();
             component_type_node.select();
@@ -151,7 +151,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'name',
                 dataIndex: 'name',
-                header: _t('Name'),
+                header: _t('Name')
             },{
                 id: 'socket',
                 dataIndex: 'socket',
@@ -180,7 +180,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-                    
+
                     return value + ' MHz';
                 },
                 width: 90
@@ -204,7 +204,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-                    
+
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL2 + ' KB @ ' +
                         record.data.cacheSpeedL2 + ' MHz' +
@@ -219,7 +219,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-                    
+
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL3 + ' KB @ ' +
                         record.data.cacheSpeedL3 + ' MHz' +
