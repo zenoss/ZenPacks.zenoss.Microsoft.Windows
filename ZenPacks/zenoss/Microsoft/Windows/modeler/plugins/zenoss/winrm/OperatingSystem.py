@@ -81,7 +81,7 @@ class OperatingSystem(WinRMPlugin):
         try:
             clusterlist = []
             for cluster in clusterInformation:
-                clusterlist.append(cluster.Name)
+                clusterlist.append(cluster.Name + '.' + computerSystem.Domain)
             device_om.setClusterMachines = clusterlist
         except (AttributeError):
             pass

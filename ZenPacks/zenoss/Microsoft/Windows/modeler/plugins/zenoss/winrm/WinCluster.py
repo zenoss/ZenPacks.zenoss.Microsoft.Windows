@@ -65,7 +65,7 @@ class WinCluster(WinRMPlugin):
 
         psResources.append('get-clustergroup | foreach {{{0}}};'.format(
             " + '|' + ".join(clustergroupitems)
-            ))
+        ))
 
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,

@@ -8,7 +8,7 @@
 ##############################################################################
 
 import logging
-LOG = logging.getLogger("zen.MicrosoftWindows")
+log = logging.getLogger("zen.MicrosoftWindows")
 
 from socket import gaierror
 
@@ -46,7 +46,7 @@ class Device(BaseDevice):
             try:
                 clusterip = getHostByName(clusterdnsname)
             except(gaierror):
-                LOG.warning(
+                log.warning(
                     'Unable to resolve hostname {0}'.format(clusterdnsname)
                 )
                 return
@@ -129,13 +129,12 @@ class DeviceLinkProvider(object):
 
     def getExpandedLinks(self):
         links = []
-
         try:
             hosts = self.device.getClusterHostMachines()
             if hosts:
                 for host in hosts:
                     links.append(
-                        'Clustered Host: <a href="{}">{}</a>'.format(
+                        'Node: <a href="{}">{}</a>'.format(
                             host.getPrimaryUrlPath(),
                             host.titleOrId()
                         )
@@ -148,7 +147,7 @@ class DeviceLinkProvider(object):
             if clusters:
                 for cluster in clusters:
                     links.append(
-                        'Clustered Server: <a href="{}">{}</a>'.format(
+                        'Cluster: <a href="{}">{}</a>'.format(
                             cluster.getPrimaryUrlPath(),
                             cluster.titleOrId()
                         )

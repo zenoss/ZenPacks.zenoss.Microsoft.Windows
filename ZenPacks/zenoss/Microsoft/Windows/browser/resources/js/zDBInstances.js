@@ -11,8 +11,8 @@
 /* Helper function to get the number of stars returned for password */
 String.prototype.repeat = function(num) {
     return new Array(isNaN(num)? 1 : ++num).join(this);
-}
-ERROR_MESSAGE = "ERROR: Invalid connection string!";
+};
+var ERROR_MESSAGE = "ERROR: Invalid connection string!";
 
 Ext.ns('Zenoss.form');
 
@@ -23,7 +23,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
             editable: true,
             allowBlank: true,
             submitValue: true,
-            triggerAction: 'all',
+            triggerAction: 'all'
         });
         config.fieldLabel = "DB Instances (leave user/password blank to use Windows authentication)";
         Zenoss.form.InstanceCredentials.superclass.constructor.apply(this, arguments);
@@ -53,13 +53,13 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
 
             height: this.height || 150,
             width: 350,
-            
+
             tbar: [{
                 itemId: 'instance',
                 xtype: "textfield",
                 scope: this,
                 width: 90,
-                emptyText:'DB Instance',
+                emptyText:'DB Instance'
             },{
                 itemId: 'user',
                 xtype: "textfield",
@@ -84,7 +84,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
 
                     var value = {
                         'instance': instance.value,
-                        'user': user.value, 
+                        'user': user.value,
                         'passwd': passwd.value
                     };
                     if (instance.value) {
@@ -149,7 +149,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
         var data = [];
         try {
             values = JSON.parse(values);
-        
+
             if (values) {
                 Ext.each(values, function(value) {
                     data.push({value: value});
@@ -175,7 +175,7 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
 /* Ext.version will be defined in ExtJS3 and undefined in ExtJS4. */
 if (Ext.version === undefined) {
     Zenoss.zproperties.registerZPropertyType('instancecredentials', {
-        xtype: 'instancecredentials',
+        xtype: 'instancecredentials'
     });
     Ext.reg('instancecredentials', 'Zenoss.form.InstanceCredentials');
 } else {
@@ -185,8 +185,8 @@ if (Ext.version === undefined) {
 
 /* Zenoss.ConfigProperty.Grid */
 /* Render zDBInstances property on the grid */
-zDBInstancesRender = function(value) {
-    result = [];
+var zDBInstancesRender = function(value) {
+    var result = [];
     try {
         var v = JSON.parse(value);
         Ext.each(v, function(val) {
@@ -196,10 +196,10 @@ zDBInstancesRender = function(value) {
         result.push(ERROR_MESSAGE);
     }
     return result.join(';');
-}
+};
 
 /* Override function for configpanel */
-panelOverride = function(configpanel, gridID) {
+var panelOverride = function(configpanel, gridID) {
     try {
     var columns = configpanel.configGrid.columns;
     for (var el in columns) {
@@ -219,7 +219,7 @@ panelOverride = function(configpanel, gridID) {
                 } catch (err) {
                     return v;
                 }
-            }
+            };
         }
     }
     } catch (err) {
@@ -244,12 +244,12 @@ panelOverride = function(configpanel, gridID) {
                     } catch (err) {
                         return v;
                     }
-                }
+                };
             }
         }
         } catch (err) {}
     }
-}
+};
 
 /* Zenoss.ConfigProperty.Grid override (for device) */
 Ext.ComponentMgr.onAvailable('device_config_properties', function(){
