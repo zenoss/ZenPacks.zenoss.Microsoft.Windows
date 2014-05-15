@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -26,7 +26,6 @@ class ClusterCommander(object):
     def __init__(self, conn_info):
         self.winrs = create_single_shot_command(conn_info)
 
-    # Collection for cluster nodes
     pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
@@ -35,7 +34,7 @@ class ClusterCommander(object):
     psClusterCommands.append("import-module failoverclusters;")
 
     def run_command(self, command):
-        print command
+        ''' Run command for powershell failover clusters '''
         if isinstance(command, str):
             command = command.splitlines()
         command = "{0} \"& {{{1}}}\"".format(
@@ -53,7 +52,7 @@ class WinCluster(WinRMPlugin):
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
-        )
+    )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
@@ -151,13 +150,15 @@ class WinCluster(WinRMPlugin):
             compname="os",
             relname="clusterservices",
             modname="ZenPacks.zenoss.Microsoft.Windows.ClusterService",
-            objmaps=map_resources_oms))
+            objmaps=map_resources_oms
+        ))
 
         for resourceid, apps in map_apps_to_resource.items():
             maps.append(RelationshipMap(
                 compname="os/clusterservices/" + resourceid,
                 relname="clusterresources",
                 modname="ZenPacks.zenoss.Microsoft.Windows.ClusterResource",
-                objmaps=apps))
+                objmaps=apps
+            ))
 
         return maps
