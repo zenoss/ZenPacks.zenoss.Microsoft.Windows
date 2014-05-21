@@ -18,6 +18,7 @@ import time
 import logging
 import urllib
 from urlparse import urlparse
+from traceback import format_exc
 
 
 from zope.component import adapts
@@ -46,7 +47,7 @@ from ..utils import check_for_network_error
 
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.util import UnauthorizedError
+from txwinrm.util import UnauthorizedError, RequestError
 from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -668,6 +669,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 )
                 msg = '{0} on {1}'.format(result, config)
                 logg = log.warn
+            if isinstance(result.value, RequestError):
+                args = result.value.args
+                msg = args[0] if args else format_exc(result.value)
+                event_class = '/Status'
 
         logg(msg)
         data = self.new_data()
