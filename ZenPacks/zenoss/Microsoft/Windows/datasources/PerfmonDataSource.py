@@ -533,7 +533,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'severity': ZenEventClasses.Info,
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': summary,
-                'missing_counters': missing_counters_str,
+                'missing_counters': missing_counters_str.decode('UTF-8'),
                 })
         else:
             PERSISTER.add_event(self.config.id, {
