@@ -177,7 +177,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'clockspeed',
                 header: _t('Clock Speed'),
                 renderer: function(value) {
-                    if (value === null) {
+                    if (value === null || value == 0) {
                         return 'n/a';
                     }
 
@@ -193,7 +193,8 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                         return 'n/a';
                     }
 
-                    return value + ' KB';
+                    return '<span title="Size">' +
+                        value + ' KB </span>';
                 },
                 width: 70
             },{
@@ -201,14 +202,13 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'cacheSizeL2', // also requires cacheSpeedL2
                 header: _t('L2 Cache'),
                 renderer: function (value, metaData, record) {
-                    if (value === null) {
+                    if (value === null || value == 0) {
                         return 'n/a';
                     }
 
-                    return '<span title="Size @ Speed">' +
-                        record.data.cacheSizeL2 + ' KB @ ' +
-                        record.data.cacheSpeedL2 + ' MHz' +
-                        '</span>';
+                    return '<span title="Size">' +
+                        value + ' KB </span>';
+
                 },
                 width: 115
             },{
@@ -216,14 +216,13 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'cacheSizeL3', // also requires cacheSpeedL3
                 header: _t('L3 Cache'),
                 renderer: function (value, metaData, record) {
-                    if (value === null) {
+                    if (value === null || value == 0) {
                         return 'n/a';
                     }
 
-                    return '<span title="Size @ Speed">' +
-                        record.data.cacheSizeL3 + ' KB @ ' +
-                        record.data.cacheSpeedL3 + ' MHz' +
-                        '</span>';
+                    return '<span title="Size">' +
+                        value + ' KB </span>';
+
                 },
                 width: 115
             },{
