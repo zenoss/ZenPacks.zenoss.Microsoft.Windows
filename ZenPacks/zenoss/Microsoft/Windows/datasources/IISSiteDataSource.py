@@ -27,6 +27,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import check_for_network_error
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -69,7 +70,7 @@ class IISSiteDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
-        )
+    )
 
 
 class IIISSiteDataSourceInfo(IRRDDataSourceInfo):
@@ -109,7 +110,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             datasource.id,
             datasource.plugin_classname,
             params.get('statusname'),
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
@@ -147,14 +148,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         ds0 = config.datasources[0]
         sitestatusinfo = results[results.keys()[0]]
+        sitestatus = 'Unknown'
 
-        sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
-            sitestatusinfo[0].ServerAutoStart, 'Unknown')
+        if sitestatusinfo:
+            sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
+                sitestatusinfo[0].ServerAutoStart, 'Unknown')
 
         evtmessage = 'IIS Service {0} is in {1} state'.format(
             ds0.config_key[4],
             sitestatus
-            )
+        )
 
         data['events'].append({
             'eventClassKey': 'IISSiteStatus',
@@ -163,18 +166,29 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             'summary': evtmessage,
             'component': ds0.component,
             'device': config.id,
-            })
+        })
+
+        # Clear previous error event
+        data['events'].append({
+            'eventClass': '/Status',
+            'eventClassKey': 'IISSiteStatusError',
+            'eventKey': 'IISSite',
+            'severity': ZenEventClasses.Clear,
+            'summary': 'Monitoring ok',
+            'device': config.id,
+        })
 
         return data
 
     def onError(self, result, config):
-        msg = 'WindowsIISSiteLog: failed collection {0} {1}'.format(result, config)
+        msg, event_class = check_for_network_error(result, config)
         log.error(msg)
         data = self.new_data()
         data['events'].append({
+            'eventClass': event_class,
             'severity': ZenEventClasses.Warning,
             'eventClassKey': 'IISSiteStatusError',
             'eventKey': 'IISSite',
-            'summary': msg,
+            'summary': 'IISSite: ' + msg,
             'device': config.id})
         return data

@@ -88,6 +88,7 @@ class FileSystems(WinRMPlugin):
                 'totalBlocks': int(disk.Size) / int(disk.BlockSize),
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
+                'totalFiles': 0,
                 }))
 
         return rm

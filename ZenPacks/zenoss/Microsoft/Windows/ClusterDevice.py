@@ -9,7 +9,7 @@
 
 
 import logging
-LOG = logging.getLogger("zen.MicrosoftWindows")
+log = logging.getLogger("zen.MicrosoftWindows")
 
 from socket import gaierror
 
@@ -53,20 +53,20 @@ class ClusterDevice(BaseDevice):
         '''
         Set hostnames of servers belonging to this cluster.
         '''
-        LOG.info('Hostnames {0}'.format(clusterhostdnsnames))
+        log.info('Hostnames {0}'.format(clusterhostdnsnames))
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames:
             try:
                 clusterhostip = getHostByName(clusterhostdnsname)
             except(gaierror):
-                LOG.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
+                log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
                 return
 
             device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
             if device:
                 # Server device in cluster already exists
                 self.clusterhostdevices = clusterhostdnsnames
-                return
+                continue
 
             @transact
             def create_device():

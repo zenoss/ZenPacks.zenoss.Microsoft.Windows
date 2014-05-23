@@ -16,7 +16,7 @@ from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpI
 from Products.Zuul.decorators import info
 
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
-
+from ZenPacks.zenoss.Microsoft.Windows.interfaces import IFileSystemInfo as WIFileSystemInfo
 
 def SuffixedProperty(property_name, suffix):
     '''
@@ -35,6 +35,8 @@ def SuffixedProperty(property_name, suffix):
 
 class DeviceInfo(BaseDeviceInfo):
     clusterdevices = ProxyProperty('clusterdevices')
+    sqlhostname = ProxyProperty('sqlhostname')
+    msexchangeversion = ProxyProperty('msexchangeversion')
 
 
 class ClusterDeviceInfo(BaseDeviceInfo):
@@ -98,8 +100,40 @@ class CPUInfo(WinComponentInfo):
         return self._object.productClass()
 
 
-class FileSystemInfo(BaseFileSystemInfo):
-    implements(IFileSystemInfo)
+class FileSystemInfo(ComponentInfo):
+    implements(WIFileSystemInfo)
+
+    mount = ProxyProperty('mount')
+    storageDevice = ProxyProperty('storageDevice')
+    type = ProxyProperty('type')
+    blockSize = ProxyProperty('blockSize')
+    totalBlocks = ProxyProperty('totalBlocks')
+    totalFiles = ProxyProperty('totalFiles')
+    maxNameLength = ProxyProperty('maxNameLen')
+
+    @property
+    def totalBytes(self):
+        return self._object.totalBytes()
+
+    @property
+    def usedBytes(self):
+        return self._object.usedBytes()
+
+    @property
+    def availableBytes(self):
+        return self._object.availBytes()
+
+    @property
+    def capacityBytes(self):
+        return self._object.capacity()
+
+    @property
+    def availableFiles(self):
+        return self._object.availFiles()
+
+    @property
+    def capacityFiles(self):
+        return self._object.inodeCapacity()
 
     mediatype = ProxyProperty('mediatype')
 
@@ -131,7 +165,6 @@ class WinIISInfo(WinComponentInfo):
 
     sitename = ProxyProperty('sitename')
     apppool = ProxyProperty('apppool')
-    caption = ProxyProperty('caption')
     status = ProxyProperty('status')
     statusname = ProxyProperty('statusname')
 
@@ -200,8 +233,13 @@ class ClusterServiceInfo(WinComponentInfo):
     state = ProxyProperty('state')
 
     @property
+    @info
     def clusternode(self):
-        return self._object.ownernodeurl()
+        entity = self._object.ownernodeentity()
+        if entity:
+            return '<a class="z-entity" href="{}">{}</a>'.format(
+                entity.getPrimaryUrlPath(), self._object.ownernode)
+        return self._object.ownernode
 
 
 class ClusterResourceInfo(WinComponentInfo):
@@ -217,8 +255,14 @@ class ClusterResourceInfo(WinComponentInfo):
         return self._object.clusterservice()
 
     @property
+    @info
     def clusternode(self):
-        return self._object.ownernodeurl()
+        entity = self._object.ownernodeentity()
+        if entity:
+            return '<a class="z-entity" href="{}">{}</a>'.format(
+                entity.getPrimaryUrlPath(), self._object.ownernode)
+        return self._object.ownernode
+
 
 
 class WinSQLJobInfo(WinComponentInfo):

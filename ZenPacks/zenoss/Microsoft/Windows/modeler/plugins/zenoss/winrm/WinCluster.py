@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -22,6 +22,29 @@ addLocalLibPath()
 
 from txwinrm.shell import create_single_shot_command
 
+class ClusterCommander(object):
+    def __init__(self, conn_info):
+        self.winrs = create_single_shot_command(conn_info)
+
+    pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
+        "-OutputFormat TEXT -Command "
+
+    psClusterCommands = []
+    psClusterCommands.append("$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (512, 512);")
+    psClusterCommands.append("import-module failoverclusters;")
+
+    def run_command(self, command):
+        ''' Run command for powershell failover clusters '''
+        if isinstance(command, str):
+            command = command.splitlines()
+        command = "{0} \"& {{{1}}}\"".format(
+            self.pscommand,
+            ''.join(self.psClusterCommands + command)
+        )
+        return self.winrs.run_command(command)
+
+def pipejoin(items):
+    return " + '|' + ".join(items.split())
 
 class WinCluster(WinRMPlugin):
 
@@ -29,72 +52,39 @@ class WinCluster(WinRMPlugin):
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
         'zInterfaceMapIgnoreNames',
-        )
+    )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
-
         maps = {}
 
         conn_info = self.conn_info(device)
-        winrs = create_single_shot_command(conn_info)
+        cmd = ClusterCommander(conn_info)
 
-        # Collection for cluster nodes
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
+        domain = yield cmd.run_command("(gwmi WIN32_ComputerSystem).Domain;")
+        domain = domain.stdout[0]
 
-        psClusterCommands = []
-        psClusterCommands.append("$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (512, 512);")
-        psClusterCommands.append("import-module failoverclusters;")
+        clusternode = yield cmd.run_command(
+            "get-clusternode | foreach {$_.Name + '.%s'};" % domain
+        )
 
-        psClusterHosts = []
-        psClusterHosts.append("$domain='.' + (gwmi WIN32_ComputerSystem).Domain;")
-        psClusterHosts.append("get-clusternode | foreach {$_.Name + $domain};")
+        resource = yield cmd.run_command(
+            'get-clustergroup | foreach {%s};' % pipejoin(
+                '$_.Name $_.IsCoreGroup $_.OwnerNode '
+                '$_.State $_.Description $_.Id $_.Priority'
+            )
+        )
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
-            ''.join(psClusterCommands + psClusterHosts))
-
-        clusternodes = winrs.run_command(command)
-        clusternode = yield clusternodes
-
-        # Collection for cluster groups
-        psResources = []
-        clustergroupitems = ('$_.Name', '$_.IsCoreGroup', '$_.OwnerNode', '$_.State',
-            '$_.Description', '$_.Id', '$_.Priority')
-
-        psResources.append('get-clustergroup | foreach {{{0}}};'.format(
-            " + '|' + ".join(clustergroupitems)
-            ))
-
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
-            ''.join(psClusterCommands + psResources))
-
-        resources = winrs.run_command(command)
-        resource = yield resources
-
-        # Collection for cluster applications
-
-        psApplications = []
-        clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
-            '$_.Description')
-        # For some reason if I add the $_.Id the data is returned corrupted.
-
-        psApplications.append('get-clusterresource | foreach {{{0}}};'.format(
-            " + '|' + ".join(clusterappitems)
-            ))
-
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
-            ''.join(psClusterCommands + psApplications))
-
-        clusterapps = winrs.run_command(command)
-        clusterapp = yield clusterapps
+        clusterapp = yield cmd.run_command(
+            'get-clusterresource | foreach {%s};' % pipejoin(
+                '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description'
+            )
+        )
 
         maps['apps'] = clusterapp.stdout
         maps['resources'] = resource.stdout
         maps['nodes'] = clusternode.stdout
+        maps['domain'] = domain
 
         defer.returnValue(maps)
 
@@ -115,6 +105,7 @@ class WinCluster(WinRMPlugin):
         # Cluster Resource Maps
 
         resources = results['resources']
+        domain = '.' + results['domain']
 
         # This section is for ClusterService class
         for resource in resources:
@@ -124,7 +115,7 @@ class WinCluster(WinRMPlugin):
             res_om.id = self.prepId(resourceline[5])
             res_om.title = resourceline[0]
             res_om.coregroup = resourceline[1]
-            res_om.ownernode = resourceline[2]
+            res_om.ownernode = resourceline[2] + domain
             res_om.state = resourceline[3]
             res_om.description = resourceline[4]
             res_om.priority = resourceline[6]
@@ -143,7 +134,7 @@ class WinCluster(WinRMPlugin):
             app_om = ObjectMap()
             app_om.id = self.prepId('res-{0}'.format(appline[0]))
             app_om.title = appline[0]
-            app_om.ownernode = appline[2]
+            app_om.ownernode = appline[2] + domain
             app_om.description = appline[4]
             app_om.ownergroup = appline[1]
             app_om.state = appline[3]
@@ -159,13 +150,15 @@ class WinCluster(WinRMPlugin):
             compname="os",
             relname="clusterservices",
             modname="ZenPacks.zenoss.Microsoft.Windows.ClusterService",
-            objmaps=map_resources_oms))
+            objmaps=map_resources_oms
+        ))
 
         for resourceid, apps in map_apps_to_resource.items():
             maps.append(RelationshipMap(
                 compname="os/clusterservices/" + resourceid,
                 relname="clusterresources",
                 modname="ZenPacks.zenoss.Microsoft.Windows.ClusterResource",
-                objmaps=apps))
+                objmaps=apps
+            ))
 
         return maps

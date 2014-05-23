@@ -29,3 +29,9 @@ class Interface(IpInterface):
         administratively down interfaces.
         '''
         return self.monitor and self.adminStatus == 1
+
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/Interface.png'

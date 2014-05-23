@@ -14,10 +14,10 @@ var ZC = Ext.ns('Zenoss.component');
 
 ZC.registerName('WinRMService', _t('Service'), _t('Services'));
 ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
-ZC.registerName('WinDBInstance', _t('Database Instance'), _t('DB Instances'));
-ZC.registerName('WinDatabase', _t('Database'), _t('Databases'));
-ZC.registerName('WinBackupDevice', _t('DB Backup Device'), _t('DB Backup Devices'));
-ZC.registerName('WinSQLJob', _t('DB Job'), _t('DB Jobs'));
+ZC.registerName('WinDBInstance', _t('MSSQL Instance'), _t('MSSQL Instances'));
+ZC.registerName('WinDatabase', _t('MSSQL Database'), _t('MSSQL Databases'));
+ZC.registerName('WinBackupDevice', _t('MSSQL Backup Device'), _t('MSSQL Backup Devices'));
+ZC.registerName('WinSQLJob', _t('MSSQL Job'), _t('MSSQL Jobs'));
 ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
 ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
@@ -35,7 +35,7 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
             border: false,
             items:[{
                 xtype: 'combo',
-                width: 300,
+                width: 279,
                 fieldLabel: _t('Strategy'),
                 name: 'strategy',
                 ref: 'StrategyCombo',
@@ -84,10 +84,10 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
                 hidden: record.strategy != 'Custom Command'
             }]
         });
-        
+
         Zenoss.form.WinRSStrategy.superclass.constructor.apply(this, arguments);
     },
-    
+
     updateFormFields: function() {
         if (this.StrategyCombo.value == 'Custom Command') {
             this.ResourceTextfield.hide();
@@ -112,3 +112,19 @@ if (Ext.version === undefined) {
 }
 
 }());
+
+var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
+
+Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
+    var summarypanel = Ext.getCmp(DEVICE_SUMMARY_PANEL);
+    if (Zenoss.env.device_uid.search('/Server/Microsoft') != -1){
+        summarypanel.removeField('memory');
+        summarypanel.addField({
+            xtype: 'displayfield',
+            id: 'memory-displayfield',
+            name: 'memory',
+            fieldLabel: _t('Physical/Total Memory')
+        });
+    }
+
+});

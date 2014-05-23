@@ -154,6 +154,56 @@
 
     </configure>
 
+    <!-- Impact -->
+    <configure zcml:condition="installed ZenPacks.zenoss.Impact">
+        <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Device.Device"
+            factory=".impact.DeviceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".FileSystem.FileSystem"
+            factory=".impact.FileSystemRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".CPU.CPU"
+            factory=".impact.CPURelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Interface.Interface"
+            factory=".impact.InterfaceRelationsProvider"
+            />
+            
+        <!--
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinIIS.WinIIS"
+            factory=".impact.IISRelationsProvider"
+            />
+        -->
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLInstance.WinSQLInstance"
+            factory=".impact.SQLRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterService.ClusterService"
+            factory=".impact.ClusterRelationsProvider"
+            />
+
+    </configure>
+
     <!-- Browser -->
     <include package=".browser"/>
 

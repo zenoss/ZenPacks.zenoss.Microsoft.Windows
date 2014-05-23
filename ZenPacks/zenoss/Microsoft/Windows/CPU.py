@@ -34,3 +34,9 @@ class CPU(BaseCPU):
 
     def getRRDTemplateName(self):
         return 'CPU'
+
+    def getIconPath(self):
+        '''
+        Return the path to an icon for this component.
+        '''
+        return '/++resource++mswindows/img/CPU.png'

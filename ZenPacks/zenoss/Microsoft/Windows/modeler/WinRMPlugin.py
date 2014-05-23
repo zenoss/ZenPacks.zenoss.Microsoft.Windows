@@ -25,6 +25,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm
+import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
+import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1 
 
 
 # Format string for a resource URI.
@@ -140,6 +142,8 @@ class WinRMPlugin(PythonPlugin):
             args.append(error.message)
         elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
+        elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
+            message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
         else:
             message = "Error on %s: %s"
             args.append(error)
@@ -158,7 +162,6 @@ class WinRMPlugin(PythonPlugin):
         conn_info = self.conn_info(device)
 
         results = {}
-
         queries = self.get_queries()
         if queries:
             query_map = {

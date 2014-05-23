@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Configuring systems individually</title>
+  <taskbody>
+    <context>
+      <p>You may configure the Windows systems to monitor individually, without Windows Group Policy.</p>
+      
+      <note> If you choose the default WinRM configuration, supply Kerberos authentication settings
+        in <codeph>zProperties</codeph>. The Kerberos authentication process requires a Key
+        Distribution Center (KDC), which acts as both an authentication server and a ticket granting
+        server. Microsoft Active Directory is a KDC, so the <codeph>zWinKDC</codeph> value must be
+        set to the IP address of the Active Directory server, and <ph conkeyref="names/platform"/>
+        collectors must be able to send TCP/IP packets to it. The value of
+          <codeph>zWinRMUserName</codeph> must include a fully qualified domain name (for example,
+          <codeph>jsmith@zenoss.com</codeph>) and <codeph>zWinRMPassword</codeph> must include the
+        password of the user account.</note>
+      
+      <p>Follow these steps to enable this ZenPack to monitor a Windows system.</p>
+    </context>
+    
+    <steps>
+      <step>
+        <cmd>Log on to the Windows system to enable, and open the <wintitle>Windows Firewall with
+            Advanced Security</wintitle> utility, or its equivalent.</cmd>
+      </step>
+      <step>
+        <cmd>Open port 5985 (for HTTP) or 5986 (for HTTPS) for WinRM, and then close the
+          utility.</cmd>
+      </step>
+      <step>
+        <cmd>Start a command window as Administrator.</cmd>
+      </step>
+      <step>
+        <cmd>Configure the system to accept WS-Management requests from other systems.</cmd>
+        <stepxmp><userinput>winrm quickconfig</userinput></stepxmp>
+      </step>
+      <step>
+        <cmd>Configure the maximum number of concurrent operations per user.</cmd>
+        <stepxmp><userinput>winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}</userinput></stepxmp>
+        <info><note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/></info>
+      </step>
+      <step>
+        <cmd>Configure the maximum number of shells per user.</cmd>
+        <stepxmp><userinput>winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}</userinput></stepxmp>
+        <info><note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/></info>
+      </step>
+      <step>
+        <cmd>Configure the idle timeout.</cmd>
+        <stepxmp><userinput>winrm s winrm/config/winrs @{IdleTimeout="7200000"}</userinput></stepxmp>
+      </step>
+      <step importance="optional">
+        <cmd>Configure HTTP. The default is HTTPS.</cmd>
+        <stepxmp><userinput>winrm s winrm/config/service @{AllowUnencrypted="true"}</userinput></stepxmp>
+        <info>For more information about configuring HTTPS, see 
+          <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-https"/>.</info>
+      </step>
+      <step importance="optional">
+        <cmd>Configure Basic Authentication. The default is Kerberos. </cmd>
+        <stepxmp><userinput>winrm s winrm/config/service/auth @{Basic="true"}</userinput></stepxmp>
+      </step>
+    </steps>
+  </taskbody>
+</task>

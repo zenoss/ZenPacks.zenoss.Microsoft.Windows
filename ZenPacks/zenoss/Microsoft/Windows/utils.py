@@ -12,6 +12,7 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import itertools
+import json
 
 
 def addLocalLibPath():
@@ -79,20 +80,51 @@ def lookup_architecture(value):
         }.get(value, 'unknown')
 
 
-def parseDBUserNamePass(dbinstances='', dbinstancespassword=''):
+def parseDBUserNamePass(dbinstances='', username='', password=''):
+    """
+    Try to get username(s)/password(s) from configuration,
+    if not - uses WinRM credentials.
+    """
     dblogins = {}
-    if len(dbinstances) > 0 and len(dbinstancespassword) > 0:
-        arrInstance = dbinstances.split(';')
-        arrPassword = dbinstancespassword.split(';')
-        i = 0
-        for instance in arrInstance:
-            dbuser, dbpass = arrPassword[i].split(':')
-            i = i + 1
-            dblogins[instance] = {'username': dbuser, 'password': dbpass}
-    else:
-        dblogins['MSSQLSERVER'] = {'username': 'sa', 'password': ''}
+    login_as_user = False
+    try:
+        dbinstance = json.loads(dbinstances)
+        users = [el.get('user') for el in filter(None, dbinstance)]
+        # a) MSSQL auth
+        if ''.join(users):
+            for el in filter(None, dbinstance):
+                dblogins[el.get('instance')] = dict(
+                    username=el.get('user'),
+                    password=el.get('passwd')
+                )
+        # b) Windows auth
+        else:
+            login_as_user = True
 
-    return dblogins
+            for el in filter(None, dbinstance):
+                dblogins[el.get('instance')] = dict(
+                    username=username,
+                    password=password
+                )
+
+            # Retain the default behaviour, before zProps change.
+            if not dbinstance:
+                dblogins['MSSQLSERVER'] = {
+                    'username': username, # 'sa',
+                    'password': password
+                }
+    except (ValueError, TypeError, IndexError):
+        pass
+
+    return dblogins, login_as_user
+
+
+def filter_sql_stdout(val):
+    """
+    Filters SQL stdout from service messages
+    """
+    # SQL 2005 returns in stdout when Win auth
+    return filter(lambda x: x!="LogonUser succedded", val)
 
 
 def getSQLAssembly():
@@ -180,3 +212,27 @@ def get_processNameAndArgs(item):
         args = ''
 
     return (name, args)
+
+
+def check_for_network_error(result, config):
+    '''
+    Checks value for timeout/no route to host tracebacks
+    '''
+    str_result = str(result)
+    if 'No route to host' in str_result:
+        return 'No route to host', '/Status'
+
+    if 'timeout' in str_result:
+        return 'Timeout while connecting to host', '/Status'
+
+    if 'refused' in str_result:
+        return 'Connection was refused by other side', '/Status'
+
+    if 'Unauthorized' in str_result:
+        return 'Unauthorized, check username and password', '/Status'
+
+    msg = 'Failed collection {0} on {1}'.format(
+        result, config
+    )
+
+    return msg, '/Unknown'

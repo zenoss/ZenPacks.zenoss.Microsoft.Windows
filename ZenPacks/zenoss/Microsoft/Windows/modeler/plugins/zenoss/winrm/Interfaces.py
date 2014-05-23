@@ -26,6 +26,40 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
 _transTable = string.maketrans("#()/", "_[]_")
 
+# Windows Server 2003 and Windows XP has no true/false status field
+# for enabled/disabled states. This statuses used to determine if
+# interface is enabled:
+ENABLED_NC_STATUSES = [
+    '1',  # Connecting
+    '2',  # Connected
+    '8',  # Authenticating
+    '9',  # Authentication succeeded
+    '10',  # Authentication failed
+    '11',  # Invalid address
+    '12',  # Credentials required
+]
+
+# Availability instead of Operational Status
+AVAILABILITY = {
+    '1': 4,  # Other
+    '2': 4,  # Unknown
+    '3': 1,  # Running or Full Power
+    '4': 1,  # Warning
+    '5': 3,  # In Test
+    '6': 4,  # Not Applicable
+    '7': 2,  # Power Off
+    '8': 2,  # Off Line
+    '9': 2,  # Off Duty
+    '10': 1,  # Degraded
+    '11': 6,  # Not Installed
+    '12': 6,  # Install Error
+    '13': 4,  # Power Save - Unknown
+    '14': 1,  # Power Save - Lower Power Mode
+    '15': 2,  # Power Save - Standby
+    '16': 2,  # Power Cycle
+    '17': 1,  # Warning
+}
+
 
 class Interfaces(WinRMPlugin):
     compname = 'os'
@@ -70,6 +104,18 @@ class Interfaces(WinRMPlugin):
             " | foreach-object {'id=', $_.pschildname, ';teamname=',"
             "$_.teamname, '|'};"
             ),
+        'counters2012': (
+            ' '.join('''$ver2012 = (Get-WmiObject win32_OperatingSystem).Name -like '*2012*';
+            function replace_unallowed($s)
+            {$s.replace('(', '[').replace(')', ']').replace('#', '_').replace('\\', '_').replace('/', '_').toLower()}
+            if($ver2012){
+            (Get-Counter '\Network Adapter(*)\*').CounterSamples |
+                % {$_.InstanceName} | gu | % {
+                foreach($na in (Get-WmiObject MSFT_NetAdapter -Namespace 'root/StandardCimv2')) {
+                    if($_ -eq (replace_unallowed $na.InterfaceDescription) -or $_ -like 'isatap.' + "$($na.DeviceID)") {
+                        $na.DeviceID, ':', $_, '|'
+            }}}}'''.split())
+            )
         }
 
     def process(self, device, results, log):
@@ -87,6 +133,12 @@ class Interfaces(WinRMPlugin):
         broadcomresults = results.get('broadcomnic')
         if broadcomresults:
             broadcomresults = ''.join(broadcomresults.stdout).split('|')
+
+        # Performance Counters for Windows 2012
+        counters = results.get('counters2012')
+        if counters:
+            counters = dict([(elem.split(':')[0], elem.split(':')[1]) for elem
+                            in ''.join(counters.stdout).split('|')[:-1]])
 
         # Interface Map
         mapInter = []
@@ -119,7 +171,7 @@ class Interfaces(WinRMPlugin):
                     bdcDict[memberDict['id']] = memberDict['teamname']
                 except (KeyError, ValueError):
                     pass
-        perfmonInstanceMap = self.buildPerfmonInstances(netConf, log)
+        perfmonInstanceMap = self.buildPerfmonInstances(netConf, log, counters)
 
         for inter in netInt:
             #Get the Network Configuration data for this interface
@@ -229,8 +281,11 @@ class Interfaces(WinRMPlugin):
                 int_om.adminStatus = int(lookup_operstatus(inter.NetEnabled))
             except (AttributeError):
                 int_om.adminStatus = 0
+                # Workaround for 2003 / XP
+                if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
+                    int_om.adminStatus = 1
 
-            int_om.operStatus = int(lookup_operstatus(interconf.IPEnabled))
+            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:
                 int_om.ifindex = inter.InterfaceIndex
@@ -259,7 +314,7 @@ class Interfaces(WinRMPlugin):
                     int_om.teamname = inter.TeamName.split('-')[0].strip()
                     int_om.monitor = False
                 else:
-                    if inter.GUID in bdcDict:
+                    if hasattr(inter, 'GUID') and (inter.GUID in bdcDict):
                         # Broadcom interface that is member of TEAM interface
                         int_om.teamname = inter.TeamName
                         int_om.monitor = False
@@ -267,6 +322,11 @@ class Interfaces(WinRMPlugin):
             # These interfaces are virtual TEAM interfaces
             if getattr(inter, 'TeamMode', None) is not None:
                 if inter.TeamMode == '0':
+                    if counters and counters.get(inter.netinterfaceid):
+                        pass
+                    else:
+                        int_om.perfmonInstance = "\\network interface({0})".format(
+                            "isatap." + inter.netinterfaceid)
                     log.debug('The TeamNic ID {0}'.format(int_om.id))
                     if not inter.TeamName:
                         # Get the team name from the Description of the interface
@@ -275,12 +335,9 @@ class Interfaces(WinRMPlugin):
                     else:
                         # The Broadcom TeamName can be set early in the process
                         int_om.teamname = inter.TeamName
-                        int_om.perfmonInstance = "\\network interface({0})".format(
-                            "isatap." + inter.netinterfaceid)
                     int_om.modname = 'ZenPacks.zenoss.Microsoft.Windows.TeamInterface'
                     mapTeamInter.append(int_om)
                     continue
-
             mapInter.append(int_om)
 
         # Set supporting interfaces on TEAM nics
@@ -319,7 +376,7 @@ class Interfaces(WinRMPlugin):
     # TOOD: this method can be made generic for all perfmon data that has
     # multiple instances and should be moved into WMIPlugin or some other
     # helper class.
-    def buildPerfmonInstances(self, adapters, log):
+    def buildPerfmonInstances(self, adapters, log, counters=None):
         # don't bother with adapters without a description or interface index
         adapters = [a for a in adapters
                     if getattr(a, 'Description', None) is not None
@@ -338,27 +395,32 @@ class Interfaces(WinRMPlugin):
         index = 0
         prevDesc = None
         for adapter in adapters:
-            # if we've encountered the same description multiple times in a row
-            # then increment the index for this description for the additional
-            # instances, otherwise build a perfmon-compatible description and
-            # reset the index
-            desc = adapter.Description
-            if desc == prevDesc:
-                index += 1
+            # comparison Performance Counters with existing Network Adapters for Windows 2012
+            if counters and counters.get(adapter.SettingID):
+                instanceMap[adapter.Index] = '\\Network Adapter({})'.format(
+                    counters.get(adapter.SettingID)
+                )
             else:
-                index = 0
-                prevDesc = standardizeInstance(desc)
+                # if we've encountered the same description multiple times in a row
+                # then increment the index for this description for the additional
+                # instances, otherwise build a perfmon-compatible description and
+                # reset the index
+                desc = adapter.Description
+                if desc == prevDesc:
+                    index += 1
+                else:
+                    index = 0
+                    prevDesc = standardizeInstance(desc)
 
-            # only additional instances need the #index appended to the instance
-            # name - the first item always appears without that qualifier
-            if index > 0:
-                perfmonInstance = '\\Network Interface(%s#%d)' % (prevDesc,
-                                                                  index)
-            else:
-                perfmonInstance = '\\Network Interface(%s)' % prevDesc
-            log.debug("%s=%s", adapter.Index, perfmonInstance)
-            instanceMap[adapter.Index] = perfmonInstance
-
+                # only additional instances need the #index appended to the instance
+                # name - the first item always appears without that qualifier
+                if index > 0:
+                    perfmonInstance = '\\Network Interface(%s#%d)' % (prevDesc,
+                                                                      index)
+                else:
+                    perfmonInstance = '\\Network Interface(%s)' % prevDesc
+                instanceMap[adapter.Index] = perfmonInstance
+            log.debug("%s=%s", adapter.Index, instanceMap[adapter.Index])
         return instanceMap
 
 

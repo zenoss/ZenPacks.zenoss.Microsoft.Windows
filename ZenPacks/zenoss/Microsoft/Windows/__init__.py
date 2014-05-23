@@ -33,8 +33,7 @@ _PACK_Z_PROPS = [
     ('zWinRMPassword', '', 'password'),
     ('zWinRMServerName', '', 'string'),
     ('zWinRMPort', '5985', 'string'),
-    ('zDBInstances', 'MSSQLSERVER;', 'string'),
-    ('zDBInstancesPassword', '', 'password'),
+    ('zDBInstances', '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'instancecredentials'),
     ('zWinKDC', '', 'string'),
     ('zWinKeyTabFilePath', '', 'string'),
     ('zWinScheme', 'http', 'string'),
@@ -46,12 +45,10 @@ for name, default_value, type_ in _PACK_Z_PROPS:
 
 # General zProp for Instance logins
 # Format example:
-# zDBInstanceLogin = 'MSSQLSERVER;ZenossInstance2'
-# zDBInstnacePassword = 'sa:Pzwrd;sa:i24ns3'
-
+# zDBInstances = '[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
+#{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
 
 setzPropertyCategory('zDBInstances', 'Misc')
-setzPropertyCategory('zDBInstancesPassword', 'Misc')
 
 # Used by zenchkschema to validate relationship schema.
 productNames = (
@@ -113,6 +110,8 @@ class ZenPack(ZenPackBase):
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
 
+        self.cleanup_zProps()
+
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
             self.unregister_devtype(app.zport.dmd)
@@ -124,7 +123,8 @@ class ZenPack(ZenPackBase):
 
             try:
                 os.remove(kerbdst)
-                os.remove(kerbconfig)
+                # Remove directory, if it exists.
+                shutil.rmtree(kerbconfig, ignore_errors=True)
                 # Remove export for KRB5_CONFIG from bashrc
                 bashfile = open(userenvironconfig, 'r')
                 content = bashfile.read()
@@ -172,6 +172,11 @@ class ZenPack(ZenPackBase):
             return
 
         deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
+
+    def cleanup_zProps(self):
+        # Delete zProperty when updating the older zenpack version without reinstall.
+        if self.dmd.Devices.hasProperty('zDBInstancesPassword'):
+            self.dmd.Devices.deleteZenProperty('zDBInstancesPassword')
 
 
 from Products.ZenModel.OSProcess import OSProcess

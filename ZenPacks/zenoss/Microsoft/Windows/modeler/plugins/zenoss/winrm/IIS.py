@@ -53,7 +53,7 @@ class IIS(WinRMPlugin):
             self.name(), device.id)
 
         rm = self.relMap()
-        if results.get('IIsWebServerSetting', ()):
+        if results.get('IIsWebServerSetting'):
             for iisSite in results.get('IIsWebServerSetting', ()):
                 om = self.objectMap()
                 om.id = self.prepId(iisSite.Name)
@@ -84,7 +84,9 @@ class IIS(WinRMPlugin):
                     for iisVirt in results.get('IIs7VirtualDirectory', ()):
                         if iisVirt.SiteName == iisSite.Name:
                             om.apppool = iisVirt.Path
+
                     rm.append(om)
                 except AttributeError:
                     pass
+
         return rm
