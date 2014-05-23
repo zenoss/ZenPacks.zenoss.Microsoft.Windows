@@ -14,6 +14,9 @@ Microsoft Software
 <property visible="True" type="lines" id="zCollectorPlugins" >
 []
 </property>
+<property visible="True" type="lines" id="zCredentialsZProperties" >
+['zWinRMUser','zWinRMPassword','zWinKDC']
+</property>
 <property visible="True" type="string" id="zIcon" >
 /++resource++mswindows/img/server-windows.png
 </property>

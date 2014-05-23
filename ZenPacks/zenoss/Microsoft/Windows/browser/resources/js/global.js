@@ -84,10 +84,10 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
                 hidden: record.strategy != 'Custom Command'
             }]
         });
-        
+
         Zenoss.form.WinRSStrategy.superclass.constructor.apply(this, arguments);
     },
-    
+
     updateFormFields: function() {
         if (this.StrategyCombo.value == 'Custom Command') {
             this.ResourceTextfield.hide();
@@ -123,7 +123,7 @@ Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
             xtype: 'displayfield',
             id: 'memory-displayfield',
             name: 'memory',
-            fieldLabel: _t('Physical/Total Memory'),
+            fieldLabel: _t('Physical/Total Memory')
         });
     }
 
