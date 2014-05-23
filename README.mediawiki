@@ -641,9 +641,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ;2.1.0
-* Support for Impact adapter
-* Support for Exchange 2010 and Exchange 2013
-* Windows authentication support for zenoss.winrm.WinMSSQL
+* Support for Service Impact
+* Support for Microsoft Exchange 2010 and Microsoft Exchange 2013
+* Ability to monitor Microsoft SQL Server using Windows Authenticated user
 * Fix Exchange 2007 counters
 * Fix cluster and node relationship
 * Fix virtual network adapter monitoring
