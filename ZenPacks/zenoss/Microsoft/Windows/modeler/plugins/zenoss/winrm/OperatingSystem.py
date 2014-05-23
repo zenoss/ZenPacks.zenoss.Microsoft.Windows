@@ -61,7 +61,7 @@ class OperatingSystem(WinRMPlugin):
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
 
         if exchange_version:
-            exchange_version = {'6': '2003', '8': '2007', '14': '2010', '15': '2013'}.get(
+            exchange_version = {'6': '2003', '8': '2010', '08': '2010', '14': '2010', '15': '2013'}.get(
                 exchange_version
             )
         maps = []
