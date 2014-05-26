@@ -288,18 +288,18 @@ The following metrics are collected directly via WMI.
 {{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
 
 === Event Management ===
+Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
-Events will be collected from the Windows event log using a WinRM subscription. Various information encoded in these event classes will be used to automatically determine as best as possible the following Zenoss event fields.
+To monitor EventLog events you should add to monitoring template "Windows EventLog with Powershell" datasource, and in the Event Log field put the name of event log, that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as Powershell scriptblock for Where-Object comandlet. 
 
-;Standard Zenoss Event Fields
-* device
-* component
-* summary
-* severity
-* eventClassKey (for mapping specific event types)
-* eventKey (for de-duplication and auto-clear fingerprinting)
+For example, here is Event Query for error events only:
 
-Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
+    { $$_.EntryType -eq 'Error' }
+
+<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+
+And to know more about writing Powershell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
+
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
