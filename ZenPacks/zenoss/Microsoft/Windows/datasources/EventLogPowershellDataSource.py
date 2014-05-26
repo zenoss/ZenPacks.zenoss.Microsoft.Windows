@@ -12,6 +12,7 @@ A datasource that uses Powershell comandlet to collect Windows Event Logs
 
 """
 import logging
+import json
 
 from twisted.internet import defer
 
@@ -102,7 +103,6 @@ class EventLogQuery(object):
             self.PS_COMMAND,
             self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (eventlog, selector)
         )
-        print command
         return self.winrs.run_command(command)
 
 class EventLogPowershellPlugin(EventLogPlugin):
@@ -120,20 +120,27 @@ class EventLogPowershellPlugin(EventLogPlugin):
         select = ds0.params['query']
 
         res = yield query.run(eventlog, select)
-        print res
+        defer.returnValue(json.loads(
+            '\n'.join(res.stdout)
+        ))
 
-        defer.returnValue(results)
 
     def onSuccess(self, results, config):
         data = self.new_data()
         for evt in results:
+            severity = {
+                'Information': ZenEventClasses.Clear,
+                'Warning': ZenEventClasses.Warning,
+                'Error': ZenEventClasses.Critical,
+            }.get(evt['severity'], ZenEventClasses.Info)
+
             data['events'].append({
                 'eventClassKey': 'WindowsEventLog',
                 'eventKey': 'WindowsEvent',
                 'severity': severity,
-                'summary': 'Collected Event: %s' % evtmessage,
+                'summary': 'Collected Event: %s' % evt['message'],
                 'device': config.id,
-                })
+            })
 
         data['events'].append({
             'device': config.id,
@@ -141,6 +148,6 @@ class EventLogPowershellPlugin(EventLogPlugin):
             'severity': ZenEventClasses.Info,
             'eventKey': 'WindowsEventCollection',
             'eventClassKey': 'WindowsEventLogSuccess',
-            })
+        })
 
         return data
