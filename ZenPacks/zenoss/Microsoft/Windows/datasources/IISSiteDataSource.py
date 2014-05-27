@@ -22,6 +22,7 @@ from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.ZenEvents import ZenEventClasses
+from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -163,8 +164,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             'eventClassKey': 'IISSiteStatus',
             'eventKey': 'IISSite',
             'severity': ZenEventClasses.Info,
-            'summary': evtmessage,
-            'component': ds0.component,
+            'summary': evtmessage.decode('UTF-8'),
+            'component': prepId(ds0.component),
             'device': config.id,
         })
 
