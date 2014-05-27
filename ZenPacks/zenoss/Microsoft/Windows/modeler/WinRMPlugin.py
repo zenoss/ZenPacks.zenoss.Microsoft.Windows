@@ -19,7 +19,9 @@ from twisted.internet.error import (
     ConnectError,
     ConnectionRefusedError,
     TimeoutError,
+    ConnectionLost,
     )
+from twisted.web._newclient import ResponseFailed
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -144,6 +146,11 @@ class WinRMPlugin(PythonPlugin):
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
         elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
             message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
+        elif isinstance(error, ResponseFailed):
+            for reason in error.reasons:
+                if isinstance(reason.value, ConnectionLost):
+                    message = "Connection lost for %s. Check if WinRM service listening on port %s is working correctly."
+                    args.append(device.zWinRMPort)
         else:
             message = "Error on %s: %s"
             args.append(error)
