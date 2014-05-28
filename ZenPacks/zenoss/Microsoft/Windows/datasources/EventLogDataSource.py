@@ -142,10 +142,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
         data = self.new_data()
         for evt in results:
             severity = {
-                'Information': ZenEventClasses.Clear,
+                'Error': ZenEventClasses.Error,
                 'Warning': ZenEventClasses.Warning,
-                'Error': ZenEventClasses.Critical,
-            }.get(evt['severity'], ZenEventClasses.Info)
+                'Information': ZenEventClasses.Info,
+                'SuccessAudit': ZenEventClasses.Info,
+                'FailureAudit': ZenEventClasses.Info,
+            }.get(evt['severity'], ZenEventClasses.Debug)
 
             data['events'].append({
                 'eventClassKey': 'WindowsEventLog',
