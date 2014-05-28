@@ -177,6 +177,22 @@ class DataPersister(object):
 PERSISTER = DataPersister()
 
 
+def convert_to_ps_counter(counter):
+    esc_counter = counter.encode("unicode_escape")
+    start_indx = esc_counter.find('(')
+    end_indx = esc_counter.rfind(')')
+    resource = esc_counter[start_indx + 1:end_indx]
+    if '\u' in resource and start_indx != -1 and end_indx != -1:
+        ps_repr = resource.replace('\u', '+[char]0x')
+        ps_counter = [esc_counter[:start_indx]]
+        ps_counter.append("('")
+        ps_counter.append(ps_repr)
+        ps_counter.append("+'")
+        ps_counter.append(esc_counter[end_indx:])
+        return ''.join(ps_counter).decode('string_escape')
+    return counter
+
+
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties
 
@@ -207,14 +223,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.max_samples = 1
 
         self.counter_map = {}
+        self.ps_counter_map = {}
         for dsconf in config.datasources:
-            self.counter_map[dsconf.params['counter'].lower()] = (
-                dsconf.component,
-                dsconf.datasource,
-                )
+            counter = dsconf.params['counter'].lower()
+            ps_counter = convert_to_ps_counter(counter)
+            self.counter_map[counter] = (dsconf.component,dsconf.datasource)
+            self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
 
         self.commandline = (
             'powershell -NoLogo -NonInteractive -NoProfile -Command "'
+            '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False) ; '
             '$FormatEnumerationLimit = -1 ; '
             '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25) ; '
             'get-counter -ea silentlycontinue '
@@ -224,7 +242,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             ).format(
             SampleInterval=self.sample_interval,
             MaxSamples=self.max_samples,
-            Counters=', '.join("'{0}'".format(c) for c in self.counter_map),
+            Counters=', '.join("('{0}')".format(c) for c in self.ps_counter_map),
             )
 
         self.command = create_long_running_command(
@@ -386,8 +404,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def onReceive(self, result):
         collect_time = int(time.time())
 
-        # Initialize sample buffer. Start of a new sample.
-        stdout_lines = result[0]
+        # Initialize sample buffer. Start of a new sample. Remove BOM marker.
+        stdout_lines = result[0][1:]
         if stdout_lines:
             if stdout_lines[0].startswith('Readings : '):
                 stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
@@ -515,7 +533,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'severity': ZenEventClasses.Info,
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': summary,
-                'missing_counters': missing_counters_str,
+                'missing_counters': missing_counters_str.decode('UTF-8'),
                 })
         else:
             PERSISTER.add_event(self.config.id, {

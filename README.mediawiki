@@ -179,7 +179,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
-;Exchange
+;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 * \MSExchangeIS Mailbox(_Total)\Local delivery rate
 * \MSExchangeIS Mailbox(_Total)\Message Opens/sec
@@ -188,14 +188,26 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \MSExchangeIS\RPC Requests
 * \SMTP Server(_Total)\Local Queue Length
 * \SMTP Server(_Total)\Messages Delivered/sec
-* \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
-* \MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second
+
+;Exchange 2007 & 2010
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 * \MSExchangeIS Mailbox(_Total)\Local delivery rate
 * \MSExchangeIS Mailbox(_Total)\Message Opens/sec
 * \MSExchangeIS\RPC Averaged Latency
 * \MSExchangeIS\RPC Operations/sec
 * \MSExchangeIS\RPC Requests
+* \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+* \MSExchangeTransport SmtpSend(_Total)\Messages Sent/sec
+
+;Exchange 2013
+* \MSExchangeIS Store(_Total)\Folders opened/sec
+* \MSExchangeIS Store(_Total)\Messages Delivered/sec
+* \MSExchangeIS Store(_Total)\Messages opened/sec
+* \MSExchange Store Interface(_Total)\RPC Latency average (msec)
+* \MSExchange Store Interface(_Total)\RPC Requests sent/sec
+* \MSExchange Store Interface(_Total)\RPC Requests sent
+* \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+* \MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
 
 ; IIS
 * \Web Service(_Total)\Bytes Received/sec
@@ -391,7 +403,7 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : This property is currently used and reserved for future use when keytab files are supported.
 
 ;zDBInstances
-: This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server. The default is ''MSSQLSERVER''.
+: This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server. The default instance is ''MSSQLSERVER''. Fill in the user and password to use SQL authentication. Leave the user and password blank to use Windows authentication.
 
 == Setting up WinRM Service for Target Windows Machines ==
 
@@ -503,7 +515,6 @@ There are also circumstances where you may currently be using the old Windows Ze
 
 The current release is known to have the following limitations.
 
-* Known issues related to discovering the relationship between cluster and server devices.
 * Support for team NICs is limited to Intel and Broadcom interfaces.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property
 in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
@@ -546,6 +557,13 @@ It is possible to workaround this error by manually establishing the tokens usin
 
 This is an example of what would be required if you had two domains: example1.com and example2.com with domain controllers at 192.168.77.77 and 192.168.88.88 respectively. You can use a single domain or more than two. Be sure to use the same capitalization scheme.
 
+== Service Impact ==
+
+When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact capability for services running on Microsoft Windows. The following service impact relationships are automatically added. These will be included in any services that contain one or more of the explicitly mentioned entities.
+
+;Service Impact Relationships
+* The Windows server is impacted by the Processors, Interfaces and File Systems.
+
 == Troubleshooting ==
 
 Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
@@ -572,7 +590,6 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * zWinRMServerName
 * zWinRMPort
 * zDBInstances
-* zDBInstancesPassword
 * zWinKDC
 * zWinKeyTabFilePath
 * zWinScheme
@@ -613,7 +630,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * IISADMIN (in /Server/Microsoft)
 * IISSites (in /Server/Microsoft)
 * MSExchangeIS (in /Server/Microsoft)
-* MSExchangeIS 2007 (in /Server/Microsoft)
+* MSExchange2010IS (in /Server/Microsoft)
+* MSExchange2013IS (in /Server/Microsoft)
 * MSSQLServer (in /Server/Microsoft)
 * WinDatabase (in /Server/Microsoft)
 * Cluster (in /Server/Microsoft)
@@ -621,6 +639,14 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.1.0
+* Support for Service Impact
+* Support for Microsoft Exchange 2010 and Microsoft Exchange 2013
+* Ability to monitor Microsoft SQL Server using Windows Authenticated user
+* Fix Exchange 2007 counters
+* Fix cluster and node relationship
+* Fix virtual network adapter monitoring
 
 ;2.0.3
 * Reduce possibility of gaps in perfmon collection. ([https://jira.zenoss.com/browse/ZEN-10600 ZEN-10600])
