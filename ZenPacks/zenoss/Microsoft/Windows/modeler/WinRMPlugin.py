@@ -22,6 +22,7 @@ from twisted.internet.error import (
     ConnectionLost,
     )
 from twisted.web._newclient import ResponseFailed
+from OpenSSL.SSL import Error as SSLError
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -151,6 +152,12 @@ class WinRMPlugin(PythonPlugin):
                 if isinstance(reason.value, ConnectionLost):
                     message = "Connection lost for %s. Check if WinRM service listening on port %s is working correctly."
                     args.append(device.zWinRMPort)
+                elif isinstance(reason.value, SSLError):
+                    message = message = "Connection lost for %s. SSL Error: %s."
+                    args.append(', '.join(reason.value.args[0][0]))
+                log.error(message, *args)
+            return
+
         else:
             message = "Error on %s: %s"
             args.append(error)
