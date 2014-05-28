@@ -23,6 +23,7 @@ from twisted.internet.error import (
     )
 from twisted.web._newclient import ResponseFailed
 from OpenSSL.SSL import Error as SSLError
+from txwinrm.util import UnauthorizedError
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -136,6 +137,9 @@ class WinRMPlugin(PythonPlugin):
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
             args.append(error[0])
+            if isinstance(error, UnauthorizedError):
+                message += '\n Please refer to txwinrm documentation at '\
+                            'https://github.com/zenoss/txwinrm#configuring-the-target-windows-machines'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
         elif isinstance(error, TimeoutError):
