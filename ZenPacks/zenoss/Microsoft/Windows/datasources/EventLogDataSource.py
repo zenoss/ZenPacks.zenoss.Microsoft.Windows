@@ -9,7 +9,6 @@
 
 """
 A datasource that uses Powershell comandlet to collect Windows Event Logs
-
 """
 
 import logging
@@ -133,29 +132,44 @@ class EventLogPlugin(PythonDataSourcePlugin):
         select = ds0.params['query']
 
         res = yield query.run(eventlog, select)
-        defer.returnValue(json.loads(
-            '\n'.join(res.stdout)
-        ))
+        output = '\n'.join(res.stdout)
+        try:
+            value = json.loads(output)
+        except ValueError:
+            log.error('Could not parse json: %r' % output)
+            raise
+        defer.returnValue(value)
+
+    def _makeEvent(self, evt, config):
+        severity = {
+            'Error': ZenEventClasses.Error,
+            'Warning': ZenEventClasses.Warning,
+            'Information': ZenEventClasses.Info,
+            'SuccessAudit': ZenEventClasses.Info,
+            'FailureAudit': ZenEventClasses.Info,
+        }.get(evt['EntryType'], ZenEventClasses.Debug)
+
+        evt = dict(
+            device=config.id,
+            eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
+            eventKey='WindowsEvent',
+            component=evt['Source'],
+            ntevid=evt['InstanceId'],
+            summary=evt['Message'],
+            severity=severity,
+            user=evt['UserName'],
+            categorystring=evt['Category'],
+            originaltime=evt['TimeGenerated'],
+            computername=evt['MachineName'],
+            eventidentifier=['EventID']
+        )
+        return evt
 
 
     def onSuccess(self, results, config):
         data = self.new_data()
         for evt in results:
-            severity = {
-                'Error': ZenEventClasses.Error,
-                'Warning': ZenEventClasses.Warning,
-                'Information': ZenEventClasses.Info,
-                'SuccessAudit': ZenEventClasses.Info,
-                'FailureAudit': ZenEventClasses.Info,
-            }.get(evt['severity'], ZenEventClasses.Debug)
-
-            data['events'].append({
-                'eventClassKey': 'WindowsEventLog',
-                'eventKey': 'WindowsEvent',
-                'severity': severity,
-                'summary': 'Collected Event: %s' % evt['message'],
-                'device': config.id,
-            })
+            data['events'].append(self._makeEvent(evt, config))
 
         data['events'].append({
             'device': config.id,
@@ -219,8 +233,15 @@ class EventLogQuery(object):
             }
             
             '[' + (($events | ? $selector | %% { "{
-                `"severity`": `"$($_.EntryType)`",
-                `"message`": `"Collected Event: EventID: $($_.EventID)\nSource: $($_.Source)\nMessage: $($_.Message)`"
+                `"EntryType`": `"$($_.EntryType)`",
+                `"Message`": `"$($_.Message)`",
+                `"TimeGenerated`": `"$($_.TimeGenerated)`",
+                `"Source`": `"$($_.Source)`",
+                `"InstanceId`": `"$($_.InstanceId)`",
+                `"UserName`": `"$($_.UserName)`",
+                `"Category`": `"$($_.Category)`",
+                `"MachineName`": `"$($_.MachineName)`",
+                `"EventID`": `"$($_.EventID)`"
             }" }) -join ', ') + ']'
         };
         get_new_recent_entries %s %s;
