@@ -19,23 +19,19 @@ class TestDataSourcePlugin(BaseTestCase):
         plugin = EventLogPlugin()
 
         res = plugin.onSuccess([
-            {'severity': 'SuccessAudit', 'message': 'test'},
+            {'Category': u'(0)',
+             'EntryType': u'Information',
+             'EventID': u'10120',
+             'InstanceId': u'468872',
+             'MachineName': u'machine',
+             'Message': 'message',
+             'Source': u'WinRM',
+             'TimeGenerated': u'05/30/2014 18:27:22',
+             'UserName': u''}
         ], Mock(id=sentinel.id))
 
-        expectation = plugin.new_data()
-        expectation['events'] = [
-            {'device': sentinel.id,
-             'eventClassKey': 'WindowsEventLog',
-             'eventKey': 'WindowsEvent',
-             'severity': ZenEventClasses.Info,
-             'summary': 'Collected Event: test'},
-            {'device': sentinel.id,
-             'eventClassKey': 'WindowsEventLogSuccess',
-             'eventKey': 'WindowsEventCollection',
-             'severity': ZenEventClasses.Clear,
-             'summary': 'Windows EventLog: successful event collection'},
-        ]
-        self.assertEquals(res, expectation)
+        self.assertEquals(len(res['events']), 2)
+        self.assertEquals(res['events'][0]['summary'], 'message')
 
 def test_suite():
     from unittest import TestSuite, makeSuite

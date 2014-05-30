@@ -152,7 +152,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         evt = dict(
             device=config.id,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
-            eventKey='WindowsEvent',
+            eventKey='WindowsEvent' + evt['InstanceId'],
             component=evt['Source'],
             ntevid=evt['InstanceId'],
             summary=evt['Message'],
