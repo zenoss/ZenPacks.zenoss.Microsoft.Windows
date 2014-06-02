@@ -132,6 +132,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         select = ds0.params['query']
 
         res = yield query.run(eventlog, select)
+        if res.stderr:
+            raise Exception(res.stderr)
         output = '\n'.join(res.stdout)
         try:
             value = json.loads(output)
@@ -141,6 +143,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         defer.returnValue(value)
 
     def _makeEvent(self, evt, config):
+        assert isinstance(evt, dict)
         severity = {
             'Error': ZenEventClasses.Error,
             'Warning': ZenEventClasses.Warning,
@@ -152,7 +155,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         evt = dict(
             device=config.id,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
-            eventKey='WindowsEvent' + evt['InstanceId'],
+            eventKey='WindowsEvent%s' % evt['InstanceId'],
             component=evt['Source'],
             ntevid=evt['InstanceId'],
             summary=evt['Message'],
@@ -232,17 +235,7 @@ class EventLogQuery(object):
                 Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -Value ([String]$last_read);
             }
             
-            '[' + (($events | ? $selector | %% { "{
-                `"EntryType`": `"$($_.EntryType)`",
-                `"Message`": `"$($_.Message)`",
-                `"TimeGenerated`": `"$($_.TimeGenerated)`",
-                `"Source`": `"$($_.Source)`",
-                `"InstanceId`": `"$($_.InstanceId)`",
-                `"UserName`": `"$($_.UserName)`",
-                `"Category`": `"$($_.Category)`",
-                `"MachineName`": `"$($_.MachineName)`",
-                `"EventID`": `"$($_.EventID)`"
-            }" }) -join ', ') + ']'
+            @($events | ? $selector) | ConvertTo-Json
         };
         get_new_recent_entries %s %s;
     '''
