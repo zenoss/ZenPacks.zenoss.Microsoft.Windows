@@ -150,11 +150,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'Information': ZenEventClasses.Info,
             'SuccessAudit': ZenEventClasses.Info,
             'FailureAudit': ZenEventClasses.Info,
-        }.get(evt['EntryType'], ZenEventClasses.Debug)
+        }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
 
         evt = dict(
             device=config.id,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
+            eventClass='/Status',
             eventKey='WindowsEvent%s' % evt['InstanceId'],
             component=evt['Source'],
             ntevid=evt['InstanceId'],
@@ -173,7 +174,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         data = self.new_data()
         for evt in results:
             data['events'].append(self._makeEvent(evt, config))
-
+        
         data['events'].append({
             'device': config.id,
             'summary': 'Windows EventLog: successful event collection',
@@ -181,7 +182,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsEventCollection',
             'eventClassKey': 'WindowsEventLogSuccess',
         })
-
         return data
 
     def onError(self, result, config):
@@ -235,9 +235,15 @@ class EventLogQuery(object):
                 Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -Value ([String]$last_read);
             }
             
-            @($events | ? $selector) | ConvertTo-Json
+            @($events | ? $selector) | Select-Object `
+                @{Name='EntryType'; Expression={"$($_.EntryType)"}},`
+                @{Name='TimeGenerated'; Expression={"$($_.TimeGenerated)"}}, `
+                Source, InstanceId, Message, UserName, Category, `
+                MachineName, EventID `
+            | ConvertTo-Json
         };
         get_new_recent_entries %s %s;
+
     '''
 
     def run(self, eventlog, selector):
