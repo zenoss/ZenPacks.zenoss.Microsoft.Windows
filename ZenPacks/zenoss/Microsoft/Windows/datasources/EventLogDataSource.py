@@ -143,6 +143,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         defer.returnValue(value)
 
     def _makeEvent(self, evt, config):
+        ds = config.datasources[0].params
         assert isinstance(evt, dict)
         severity = {
             'Error': ZenEventClasses.Error,
@@ -155,17 +156,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
         evt = dict(
             device=config.id,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
-            eventClass='/Status',
-            eventKey='WindowsEvent%s' % evt['InstanceId'],
+            eventGroup=ds['eventlog'],
             component=evt['Source'],
             ntevid=evt['InstanceId'],
             summary=evt['Message'],
             severity=severity,
             user=evt['UserName'],
-            categorystring=evt['Category'],
             originaltime=evt['TimeGenerated'],
             computername=evt['MachineName'],
-            eventidentifier=['EventID']
+            eventidentifier=evt['EventID'],
         )
         return evt
 
@@ -237,8 +236,8 @@ class EventLogQuery(object):
             
             @($events | ? $selector) | Select-Object `
                 @{Name='EntryType'; Expression={"$($_.EntryType)"}},`
-                @{Name='TimeGenerated'; Expression={"$($_.TimeGenerated)"}}, `
-                Source, InstanceId, Message, UserName, Category, `
+                @{Name='TimeGenerated'; Expression={"$($_.TimeGenerated)"}},`
+                Source, InstanceId, Message, UserName,`
                 MachineName, EventID `
             | ConvertTo-Json
         };

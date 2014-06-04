@@ -24,14 +24,18 @@ class TestDataSourcePlugin(BaseTestCase):
              'EventID': u'10120',
              'InstanceId': u'468872',
              'MachineName': u'machine',
-             'Message': 'message',
+             'Message': sentinel.message,
              'Source': u'WinRM',
              'TimeGenerated': u'05/30/2014 18:27:22',
              'UserName': u''}
-        ], Mock(id=sentinel.id))
+        ], Mock(
+            id=sentinel.id,
+            datasources=[Mock(params={'eventlog': sentinel.eventlog})],
+        ))
 
         self.assertEquals(len(res['events']), 2)
-        self.assertEquals(res['events'][0]['summary'], 'message')
+        self.assertEquals(res['events'][0]['summary'], sentinel.message)
+        self.assertEquals(res['events'][0]['eventGroup'], sentinel.eventlog)
 
 def test_suite():
     from unittest import TestSuite, makeSuite
