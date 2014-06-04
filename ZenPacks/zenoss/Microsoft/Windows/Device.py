@@ -30,6 +30,8 @@ class Device(BaseDevice):
     clusterdevices = ''
     sqlhostname = None
     msexchangeversion = None
+    # Save previous modeled value of cluster.
+    oldclusterdevices = ''
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
@@ -87,6 +89,20 @@ class Device(BaseDevice):
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachines(self):
+        # Check if previous value of cluster machines is the same like now.
+        if self.oldclusterdevices == self.clusterdevices:
+            return self.clusterdevices
+        else:
+            self.oldclusterdevices = self.clusterdevices
+            return False
+
+    def setClusterMachinesList(self, value):
+        '''
+        Don't do anything.
+        '''
+        pass
+
+    def getClusterMachinesList(self):
         '''
         Get cluster hostnames of which this server is a member.
         '''
@@ -130,7 +146,7 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
         try:
-            hosts = self.device.getClusterHostMachines()
+            hosts = self.device.getClusterHostMachinesList()
             if hosts:
                 for host in hosts:
                     links.append(
@@ -143,7 +159,7 @@ class DeviceLinkProvider(object):
             pass
 
         try:
-            clusters = self.device.getClusterMachines()
+            clusters = self.device.getClusterMachinesList()
             if clusters:
                 for cluster in clusters:
                     links.append(
