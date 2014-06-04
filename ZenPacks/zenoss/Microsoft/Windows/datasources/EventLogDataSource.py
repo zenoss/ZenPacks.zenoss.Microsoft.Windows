@@ -47,6 +47,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     eventlog = ''
     query = ''
+    max_age = 24.0
 
     plugin_classname = ZENPACKID + \
         '.datasources.EventLogDataSource.EventLogPlugin'
@@ -54,6 +55,7 @@ class EventLogDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
         {'id': 'query', 'type': 'lines'},
+        {'id': 'max_age', 'type': 'float'},
     )
 
 
@@ -70,6 +72,10 @@ class IEventLogInfo(IRRDDataSourceInfo):
         title=_t('Event Query'),
         xtype='twocolumntextarea'
     )
+    max_age = schema.Text(
+        group=_t(u'WindowsEventLog'),
+        title=_t('Max age of events to get'),
+    )
 
 
 class EventLogInfo(RRDDataSourceInfo):
@@ -80,6 +86,7 @@ class EventLogInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     eventlog = ProxyProperty('eventlog')
     query = ProxyProperty('query')
+    max_age = ProxyProperty('max_age')
 
 
 def string_to_lines(string):
@@ -87,8 +94,6 @@ def string_to_lines(string):
         return string
     elif hasattr(string, 'splitlines'):
         return string.splitlines()
-
-    return None
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
@@ -108,14 +113,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @classmethod
     def params(cls, datasource, context):
+        te = lambda x: datasource.talesEval(x, context)
         return dict(
-            eventlog=datasource.talesEval(
-                datasource.eventlog, context
-            ), 
-            query=datasource.talesEval(
-                ' '.join(string_to_lines(datasource.query)),
-                context
-            )
+            eventlog=te(datasource.eventlog), 
+            query=te(' '.join(string_to_lines(datasource.query))),
+            max_age=te(datasource.max_age), 
         )
 
     @defer.inlineCallbacks
@@ -130,13 +132,16 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
         eventlog = ds0.params['eventlog']
         select = ds0.params['query']
+        max_age = ds0.params['max_age']
 
-        res = yield query.run(eventlog, select)
+        res = yield query.run(eventlog, select, max_age)
         if res.stderr:
             raise Exception(res.stderr)
         output = '\n'.join(res.stdout)
         try:
-            value = json.loads(output)
+            value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
+            if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
+                value = [value]
         except ValueError:
             log.error('Could not parse json: %r' % output)
             raise
@@ -208,7 +213,7 @@ class EventLogQuery(object):
         $FormatEnumerationLimit = -1;
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
-        function get_new_recent_entries($logname, $selector={$True}) { 
+        function get_new_recent_entries($logname, $selector, $max_age) {
             <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
@@ -241,14 +246,17 @@ class EventLogQuery(object):
                 MachineName, EventID `
             | ConvertTo-Json
         };
-        get_new_recent_entries %s %s;
-
+        get_new_recent_entries -logname %s -selector %s -max_age %s;
     '''
 
-    def run(self, eventlog, selector):
+    def run(self, eventlog, selector, max_age):
         command = "{0} \"& {{{1}}}\"".format(
             self.PS_COMMAND,
-            self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (eventlog, selector)
+            self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (
+                eventlog or 'System',
+                selector or '{$True}',
+                max_age or '24'
+            )
         )
         return self.winrs.run_command(command)
 
