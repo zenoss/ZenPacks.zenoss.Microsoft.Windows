@@ -25,7 +25,7 @@ def SuffixedProperty(property_name, suffix):
     '''
     def getter(self):
         value = getattr(self._object, property_name)
-        if not value or value == '0':
+        if value is None:
             return 'n/a'
 
         return '{} {}'.format(value, suffix)

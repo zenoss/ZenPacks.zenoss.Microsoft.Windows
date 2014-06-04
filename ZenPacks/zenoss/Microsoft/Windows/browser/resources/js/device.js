@@ -189,7 +189,7 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'cacheSizeL1',
                 header: _t('L1 Cache'),
                 renderer: function(value) {
-                    if (value === null || value == '0') {
+                    if (value === null) {
                         return 'n/a';
                     }
 
@@ -204,26 +204,10 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-
-                    if (record.data.cacheSizeL2== '0' || record.data.cacheSizeL2== null ){
-                        if(record.data.cacheSpeedL2=='0' || record.data.cacheSpeedL2== null){
-                            return 'n/a';
-                        }
-                        else{
-                            return '<span title="Speed">'+
-                                record.data.cacheSpeedL2 + ' MHz' +
-                                '</span>';
-                        }
-                    }
-                    if (record.data.cacheSpeedL2=='0' || record.data.cacheSpeedL2==null){
-                        if(record.data.cacheSizeL2=='0' || record.data.cacheSizeL2==null){
-                            return 'n/a';
-                        }
-                        else{
+                    if(record.data.cacheSpeedL2 === null){
                             return '<span title="Size">'+
                                 record.data.cacheSizeL2 + ' KB' +
                                 '</span>';
-                        }
                     }
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL2 + ' KB @ ' +
@@ -236,28 +220,13 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'cacheSizeL3', // also requires cacheSpeedL3
                 header: _t('L3 Cache'),
                 renderer: function (value, metaData, record) {
-                    if (value == null) {
+                    if (value === null) {
                         return 'n/a';
                     }
-                    if (record.data.cacheSizeL3=='0' || record.data.cacheSizeL3== null ){
-                        if(record.data.cacheSpeedL3=='0' || record.data.cacheSpeedL3== null){
-                            return 'n/a';
-                        }
-                        else{
-                            return '<span title="Speed">'+
-                                record.data.cacheSpeedL3 + ' MHz' +
-                                '</span>';
-                        }
-                    }
-                    if (record.data.cacheSpeedL3=='0' || record.data.cacheSpeedL3==null){
-                        if(record.data.cacheSizeL3=='0' || record.data.cacheSizeL3==null){
-                            return 'n/a';
-                        }
-                        else{
+                    if(record.data.cacheSpeedL3 === null){
                             return '<span title="Size">'+
                                 record.data.cacheSizeL3 + ' KB' +
                                 '</span>';
-                        }
                     }
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL3 + ' KB @ ' +
