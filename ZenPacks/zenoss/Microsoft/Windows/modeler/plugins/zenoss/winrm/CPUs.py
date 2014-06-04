@@ -15,7 +15,8 @@ Models logical processors by querying Win32_Processor via WMI.
 
 import re
 
-from Products.DataCollector.plugins.zenoss.snmp.CpuMap import getManufacturerAndModel
+from Products.DataCollector.plugins.zenoss.snmp.CpuMap import \
+    getManufacturerAndModel
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
@@ -30,6 +31,13 @@ def int_or_none(value):
         return None
 
 
+def check_value(value):
+    '''
+    Return value or None
+    '''
+    return value if value else None
+
+
 class CPUs(WinRMPlugin):
     compname = 'hw'
     relname = 'cpus'
@@ -38,12 +46,14 @@ class CPUs(WinRMPlugin):
     cachememory_attrs = (
         'DeviceID',
         'InstalledSize',
-        )
+    )
 
     queries = {
         'Win32_Processor': 'SELECT * FROM Win32_Processor',
-        'Win32_CacheMemory': "SELECT {} FROM Win32_CacheMemory".format(', '.join(cachememory_attrs)),
-        }
+        'Win32_CacheMemory': "SELECT {} FROM Win32_CacheMemory".format(
+            ', '.join(cachememory_attrs)
+        ),
+    }
 
     def process(self, device, results, log):
         log.info(
@@ -71,9 +81,15 @@ class CPUs(WinRMPlugin):
 
             # Not available in Windows 2003 or XP.
             cores = int_or_none(getattr(processor, 'NumberOfCores', None))
-            threads = int_or_none(getattr(processor, 'NumberOfLogicalProcessors', None))
-            l3_cache_size = int_or_none(getattr(processor, 'L3CacheSize', None))
-            l3_cache_speed = int_or_none(getattr(processor, 'L3CacheSpeed', None))
+            threads = int_or_none(
+                getattr(processor, 'NumberOfLogicalProcessors', None)
+            )
+            l3_cache_size = int_or_none(
+                getattr(processor, 'L3CacheSize', None)
+            )
+            l3_cache_speed = int_or_none(
+                getattr(processor, 'L3CacheSpeed', None)
+            )
 
             current_voltage = int_or_none(processor.CurrentVoltage)
             if current_voltage:
@@ -91,12 +107,14 @@ class CPUs(WinRMPlugin):
                 'clockspeed': int_or_none(processor.CurrentClockSpeed),
                 'extspeed': int_or_none(processor.ExtClock),
                 'voltage': current_voltage,
-                'cacheSizeL1': l1_cache_size,
-                'cacheSizeL2': int_or_none(processor.L2CacheSize),
-                'cacheSpeedL2': int_or_none(processor.L2CacheSpeed),
-                'cacheSizeL3': l3_cache_size,
-                'cacheSpeedL3': l3_cache_speed,
-                }))
+                'cacheSizeL1': check_value(l1_cache_size),
+                'cacheSizeL2': check_value(int_or_none(processor.L2CacheSize)),
+                'cacheSpeedL2': check_value(
+                    int_or_none(processor.L2CacheSpeed)
+                ),
+                'cacheSizeL3': check_value(l3_cache_size),
+                'cacheSpeedL3': check_value(l3_cache_speed),
+            }))
 
         return rm
 
