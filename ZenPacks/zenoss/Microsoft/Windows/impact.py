@@ -160,19 +160,13 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         # for obj in self._object.os.winrmiis():
         #     yield edge(guid(obj), self.guid())
 
-        # # DB Instances
-        # for obj in self._object.os.winsqlinstances():
-        #     yield edge(guid(obj), self.guid())
-
         # Cluster Services
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
 
         # Look up for HyperV server with same IP
         try:
-            dc = self._object.getDmdRoot('Devices').getOrganizer(
-                '/Server/Microsoft/HyperV'
-            )
+            dc = self._object.getDmdRoot('Devices').getOrganizer('/Server/Microsoft/HyperV')
         except Exception:
             return
 
@@ -204,12 +198,6 @@ class InterfaceRelationsProvider(BaseRelationsProvider):
 
 
 # class IISRelationsProvider(BaseRelationsProvider):
-
-#     def getEdges(self):
-#         yield edge(self.guid(), guid(self.device()))
-
-
-# class SQLRelationsProvider(BaseRelationsProvider):
 
 #     def getEdges(self):
 #         yield edge(self.guid(), guid(self.device()))

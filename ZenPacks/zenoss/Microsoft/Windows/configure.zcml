@@ -188,12 +188,6 @@
             for=".WinIIS.WinIIS"
             factory=".impact.IISRelationsProvider"
             />
-
-        <subscriber
-            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".WinSQLInstance.WinSQLInstance"
-            factory=".impact.SQLRelationsProvider"
-            />
         -->
 
         <subscriber
