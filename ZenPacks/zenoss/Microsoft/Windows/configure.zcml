@@ -192,12 +192,6 @@
 
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".WinSQLInstance.WinSQLInstance"
-            factory=".impact.SQLRelationsProvider"
-            />
-
-        <subscriber
-            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for=".ClusterService.ClusterService"
             factory=".impact.ClusterRelationsProvider"
             />

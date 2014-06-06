@@ -160,10 +160,6 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         # for obj in self._object.os.winrmiis():
         #     yield edge(guid(obj), self.guid())
 
-        # DB Instances
-        for obj in self._object.os.winsqlinstances():
-            yield edge(guid(obj), self.guid())
-
         # Cluster Services
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
@@ -205,12 +201,6 @@ class InterfaceRelationsProvider(BaseRelationsProvider):
 
 #     def getEdges(self):
 #         yield edge(self.guid(), guid(self.device()))
-
-
-class SQLRelationsProvider(BaseRelationsProvider):
-
-    def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
 
 
 class ClusterRelationsProvider(BaseRelationsProvider):
