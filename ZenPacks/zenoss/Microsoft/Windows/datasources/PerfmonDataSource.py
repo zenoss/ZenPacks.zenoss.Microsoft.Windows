@@ -45,6 +45,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
+import codecs
 
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -203,7 +204,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     data_deferred = None
     command = None
     sample_interval = None
-    sample_buffer = []
+    sample_buffer = collections.deque([])
     max_samples = None
     collected_samples = None
     counter_map = None
@@ -404,8 +405,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def onReceive(self, result):
         collect_time = int(time.time())
 
-        # Initialize sample buffer. Start of a new sample. Remove BOM marker.
-        stdout_lines = result[0][1:]
+        # Initialize sample buffer. Start of a new sample. Remove BOM marker(if present).
+
+        stdout_lines = result[0]
+        if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):
+            stdout_lines = stdout_lines[1:]
         if stdout_lines:
             if stdout_lines[0].startswith('Readings : '):
                 stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
