@@ -122,9 +122,21 @@ class Device(BaseDevice):
     def getRRDTemplates(self):
         """
         Returns all the templates bound to this Device and
-        add MSExchangeIS template if needed.
+        add MSExchangeIS or Active Directory template according to version.
         """
         result = BaseDevice.getRRDTemplates(self)
+        # Check if version of the system
+        # modeled by OperatingSystem plugin is Windows 2003.
+        # https://jira.hyperic.com/browse/HHQ-5553
+        if '2003' in self.getOSProductName():
+            if [x for x in (self.zDeviceTemplates or [])
+                    if 'Active Directory' in x]:
+                templates = [
+                    x for x in (self.zDeviceTemplates or [])
+                    if not 'Active Directory' in x
+                ] + ['Active Directory 2003']
+                self.setZenProperty('zDeviceTemplates', templates)
+
         if self.msexchangeversion:
             templates = [
                 x for x in (self.zDeviceTemplates or [])
