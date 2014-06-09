@@ -170,31 +170,32 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         except Exception:
             return
 
-        results = ICatalogTool(dc).search()
+        results = ICatalogTool(dc).search(types=(
+            'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
+        ))
 
         for brain in results:
             obj = brain.getObject()
-            if hasattr(obj, 'ip'):
-                if obj.ip == self._object.id:
-                    yield edge(self.guid(), guid(obj))
+            if obj.ip == self._object.id:
+                yield edge(self.guid(), guid(obj))
 
 
 class FileSystemRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
 
 
 class CPURelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
 
 
 class InterfaceRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
 
 
 # class IISRelationsProvider(BaseRelationsProvider):
@@ -206,4 +207,4 @@ class InterfaceRelationsProvider(BaseRelationsProvider):
 class ClusterRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
