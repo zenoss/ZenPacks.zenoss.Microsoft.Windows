@@ -80,7 +80,7 @@ class IFileSystemInfo(IComponentInfo):
 class IWinServiceInfo(IWinComponentInfo):
     servicename = schema.TextLine(title=_t(u'Service Name'), readonly=True)
     caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
-    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    formatted_description = schema.TextLine(title=_t(u'Description'), readonly=True)
     startmode = schema.TextLine(title=_t(u'Start Mode'), readonly=True)
     account = schema.TextLine(title=_t(u'Account'), readonly=True)
     usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)

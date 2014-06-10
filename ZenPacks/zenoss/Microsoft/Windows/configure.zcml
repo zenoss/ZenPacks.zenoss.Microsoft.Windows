@@ -181,14 +181,6 @@
             for=".Interface.Interface"
             factory=".impact.InterfaceRelationsProvider"
             />
-            
-        <!--
-        <subscriber
-            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".WinIIS.WinIIS"
-            factory=".impact.IISRelationsProvider"
-            />
-        -->
 
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"

@@ -148,6 +148,12 @@ class WinServiceInfo(WinComponentInfo):
     account = ProxyProperty('account')
     usermonitor = ProxyProperty('usermonitor')
 
+    @property
+    @info
+    def formatted_description(self):
+        return '<div style="white-space: normal;">{}</div>'.format(
+            self._object.description)
+
     def getMonitor(self):
         monitorstatus = self._object.getMonitor()
         return monitorstatus
