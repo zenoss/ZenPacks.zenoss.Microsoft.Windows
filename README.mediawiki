@@ -2,9 +2,6 @@ This ZenPack provides support for monitoring Microsoft Windows. Monitoring is pe
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
-== <span style="color:firebrick">Controlled Availability</span> ==
-This ZenPack is in a controlled release while it undergoes final testing. Take all necessary precautions before deploying into a production environment.
-
 == Video ==
 {{#widget:YouTube|id=kP28F_aQ77E|width=640|height=360}}
 
@@ -404,6 +401,45 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 ;zDBInstances
 : This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server. The default instance is ''MSSQLSERVER''. Fill in the user and password to use SQL authentication. Leave the user and password blank to use Windows authentication.
+
+=== Configuring Service Monitoring ===
+
+There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, or somewhere in between. The following flowchart describes how Zenoss decides whether a service will be monitored, and subsequently what monitoring template will be used to monitor the service.
+
+[[File:windows-service-monitoring-flowchart.png|Windows Service Monitoring Flowchart]]
+
+This allows for the following example uses.
+
+;Enable or disable monitoring for a single service on a single server.
+# Navigate to the service on the server.
+# Click to select it.
+# Choose ''Monitoring'' from the gear menu.
+# Choose Yes or No depending on what you want.
+
+;Enable monitoring by default for the WinRM service wherever it is enabled.
+# Navigate to Advanced -> Monitoring Templates.
+# Verify the list of templates is grouped by template.
+# Expand the ''WinService'' tree.
+# Click once to select the ''/Server/Microsoft'' copy.
+# Choose ''Copy / Override Template'' from the gear menu.
+# Select ''/Server/Microsoft (Create Copy)'' from the target list then click submit.
+# Expand the resulting ''copy_of_WinService'' tree.
+# Select the ''/Server/Microsoft'' copy.
+# Choose ''View and Edit Details'' from the gear menu.
+# Change the template's name to ''WinRM'' then click submit.
+# Double-click to edit the ''DefaultService' datasource.
+# Put a check mark in ''Monitor by Default'' then click save.
+
+;Enable monitoring by default for the WinRM service for a select group of servers.
+# Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
+# Move the servers to the new device class.
+# Follow steps 1-5 from the previous section.
+# Choose your new device class as the target then click submit.
+# Expand the ''WinService'' tree then select the copy in your device class.
+# Double-click to edit the ''DefaultService' datasource.
+# Put a check mark in ''Monitor by Default'' then click save.
+
+<br clear=all>
 
 == Setting up WinRM Service for Target Windows Machines ==
 
