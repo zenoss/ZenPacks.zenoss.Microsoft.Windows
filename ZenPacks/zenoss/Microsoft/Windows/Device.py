@@ -129,19 +129,17 @@ class Device(BaseDevice):
         # modeled by OperatingSystem plugin is Windows 2003.
         # https://jira.hyperic.com/browse/HHQ-5553
         if '2003' in self.getOSProductName():
-            for x in result:
+            for template in result:
                 ad = self.getRRDTemplateByName('Active Directory 2003')
                 if ad:
-                    if 'Active Directory' in x.id:
-                        result.remove(x)
-                        result.append(ad)
+                    if 'Active Directory' in template.id:
+                        result[result.index(template)] = ad
         if self.msexchangeversion:
-            for x in result:
+            for template in result:
                 exchange = self.getRRDTemplateByName(self.msexchangeversion)
                 if exchange:
-                    if 'MSExchange' in x.id:
-                        result.remove(x)
-                        result.append(exchange)
+                    if 'MSExchange' in template.id:
+                        result[result.index(template)] = exchange
         return result
 
 
