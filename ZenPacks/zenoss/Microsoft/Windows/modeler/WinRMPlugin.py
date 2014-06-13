@@ -23,7 +23,6 @@ from twisted.internet.error import (
     )
 from twisted.web._newclient import ResponseFailed
 from OpenSSL.SSL import Error as SSLError
-from txwinrm.util import UnauthorizedError
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -31,6 +30,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 import txwinrm
 import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
 import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1 
+
+from txwinrm.util import UnauthorizedError
 
 
 # Format string for a resource URI.
