@@ -356,9 +356,9 @@ class PowershellClusterResourceStrategy(object):
 
         # Parse values
         try:
-            for resourceline in result.stdout:
-                name, ownergroup, ownernode, state, description = resourceline.split('|')
-
+            stdout = parse_stdout(result)
+            if stdout:
+                name, ownergroup, ownernode, state, description = stdout
             dsconf0 = dsconfs[0]
 
             resourceID = 'res-{0}'.format(name)
@@ -380,7 +380,7 @@ class PowershellClusterResourceStrategy(object):
                     yield dsconf, value, timestamp
                 except(AttributeError):
                     log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except(AttributeError):
+        except(AttributeError, UnboundLocalError):
             log.debug('Error in parsing cluster resource data')
 
 powershellclusterresource_strategy = PowershellClusterResourceStrategy()
@@ -425,10 +425,10 @@ class PowershellClusterServiceStrategy(object):
             # stdout split all output on 79 symbols by default, and when our string is
             # "Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|1"(80 symbols),
             # then we get something like this "['Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|', '1']"
-            stdout = ''.join(result.stdout)
+            stdout = parse_stdout(result)
             if stdout:
-                name, iscoregroup, ownernode, state, description, \
-                    nodeid, priority = stdout.split('|')
+                name, iscoregroup, ownernode, state, description, nodeid,\
+                    priority = stdout
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
@@ -715,3 +715,17 @@ def check_datasource(config, result):
         )
     else:
         return True
+
+
+def parse_stdout(result):
+    '''
+    Get cmd result list with string elements separated by "|" inside,
+    and return list of requested values.
+    '''
+    try:
+        stdout = ''.join(result.stdout).split('|')
+    except AttributeError:
+        return
+    if filter(None, stdout):
+        return stdout
+    return
