@@ -355,10 +355,9 @@ class PowershellClusterResourceStrategy(object):
             return
 
         # Parse values
-        try:
-            stdout = parse_stdout(result)
-            if stdout:
-                name, ownergroup, ownernode, state, description = stdout
+        stdout = parse_stdout(result)
+        if stdout:
+            name, ownergroup, ownernode, state, description = stdout
             dsconf0 = dsconfs[0]
 
             resourceID = 'res-{0}'.format(name)
@@ -374,13 +373,10 @@ class PowershellClusterResourceStrategy(object):
             compObject.relname = dsconf0.params['contextrelname']
 
             for dsconf in dsconfs:
-                try:
-                    value = (resourceID, state, compObject)
-                    timestamp = int(time.mktime(time.localtime()))
-                    yield dsconf, value, timestamp
-                except(AttributeError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except(AttributeError, UnboundLocalError):
+                value = (resourceID, state, compObject)
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+        else:
             log.debug('Error in parsing cluster resource data')
 
 powershellclusterresource_strategy = PowershellClusterResourceStrategy()
@@ -421,14 +417,13 @@ class PowershellClusterServiceStrategy(object):
                     result.exit_code, counters, dsconf.device))
             return
         # Parse values
-        try:
-            # stdout split all output on 79 symbols by default, and when our string is
-            # "Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|1"(80 symbols),
-            # then we get something like this "['Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|', '1']"
-            stdout = parse_stdout(result)
-            if stdout:
-                name, iscoregroup, ownernode, state, description, nodeid,\
-                    priority = stdout
+        # stdout split all output on 79 symbols by default, and when our string is
+        # "Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|1"(80 symbols),
+        # then we get something like this "['Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|', '1']"
+        stdout = parse_stdout(result)
+        if stdout:
+            name, iscoregroup, ownernode, state, description, nodeid,\
+                priority = stdout
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
@@ -444,13 +439,10 @@ class PowershellClusterServiceStrategy(object):
             compObject.relname = dsconf0.params['contextrelname']
 
             for dsconf in dsconfs:
-                try:
-                    value = (name, state, compObject)
-                    timestamp = int(time.mktime(time.localtime()))
-                    yield dsconf, value, timestamp
-                except(AttributeError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except (AttributeError, UnboundLocalError):
+                value = (name, state, compObject)
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+        else:
             log.debug('Error in parsing cluster service data')
 
 powershellclusterservice_strategy = PowershellClusterServiceStrategy()
@@ -728,4 +720,3 @@ def parse_stdout(result):
         return
     if filter(None, stdout):
         return stdout
-    return
