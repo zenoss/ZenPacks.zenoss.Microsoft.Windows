@@ -568,7 +568,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             # Use the owner node's hostname to get monitoring data for
             # databases of network instances for cluster devices.
             if dsconf0.cluster_node_server:
-                owner_node, server = dsconf0.cluster_node_server.split('\\')
+                owner_node, server = dsconf0.cluster_node_server.split('//')
                 if owner_node:
                     conn_info = conn_info._replace(hostname=owner_node)
                     sqlserver = server

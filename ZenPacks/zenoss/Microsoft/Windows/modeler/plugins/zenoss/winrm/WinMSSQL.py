@@ -303,7 +303,7 @@ class WinMSSQL(WinRMPlugin):
                         om_database.createdate = str(dbdict['createdate'])
                         om_database.defaultfilegroup = dbdict['defaultfilegroup']
                         om_database.primaryfilepath = dbdict['primaryfilepath']
-                        om_database.cluster_node_server = '{0}\\{1}'.format(
+                        om_database.cluster_node_server = '{0}//{1}'.format(
                             owner_node.strip(), sqlserver)
 
                         database_oms.append(om_database)
