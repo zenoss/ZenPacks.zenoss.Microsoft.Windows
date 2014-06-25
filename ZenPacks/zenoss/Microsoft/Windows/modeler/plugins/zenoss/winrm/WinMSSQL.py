@@ -120,11 +120,6 @@ class WinMSSQL(WinRMPlugin):
 
     @defer.inlineCallbacks
     def collect(self, device, log):
-
-        # Sample data for zDBInstances
-        #[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
-        #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
-
         # Check if the device is a cluster device.
         isCluster = True if 'Microsoft/Cluster' in device.getDeviceClassName \
             else False
@@ -160,10 +155,6 @@ class WinMSSQL(WinRMPlugin):
 
         conn_info = self.conn_info(device)
         winrs = SQLCommander(conn_info)
-
-        #sqlserver = 'SQL1\ZENOSSINSTANCE2'
-        #sqlusername = 'sa'
-        #sqlpassword = 'Z3n0ss12345'
 
         dbinstances = winrs.get_instances_names(isCluster)
         instances = yield dbinstances
@@ -401,12 +392,10 @@ class WinMSSQL(WinRMPlugin):
         if results.get('device'):
             maps.append(results['device'])
 
-        try:
-            eventmessage = results['error']
+        eventmessage = results.get('error')
+        if eventmessage:
             log.error(eventmessage)
             return
-        except (KeyError):
-            pass
 
         map_dbs_instance_oms = {}
         map_jobs_instance_oms = {}
