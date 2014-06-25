@@ -200,6 +200,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     createdate = ProxyProperty('createdate')
     defaultfilegroup = ProxyProperty('defaultfilegroup')
     primaryfilepath = ProxyProperty('primaryfilepath')
+    cluster_node_server = ProxyProperty('cluster_node_server')
 
     @property
     def lastlogbackup(self):

@@ -30,10 +30,92 @@ addLocalLibPath()
 from txwinrm.shell import create_single_shot_command
 
 
+class SQLCommander(object):
+    '''
+    Custom WinRS client to construct and run PowerShell commands.
+    '''
+
+    def __init__(self, conn_info):
+        self.winrs = create_single_shot_command(conn_info)
+
+    PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
+        "-OutputFormat TEXT -Command "
+
+    LOCAL_INSTANCES_PS_SCRIPT = '''
+        <# Get registry key for instances (with 2003 or 32/64 Bit 2008 base key) #>
+        $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);
+        $baseKeys = 'SOFTWARE\Microsoft\Microsoft SQL Server',
+            'SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server';
+        If ($reg.OpenSubKey($basekeys[0])) {
+            $regPath = $basekeys[0];
+        } ElseIf ($reg.OpenSubKey($basekeys[1])) {
+            $regPath = $basekeys[1];
+        } Else {Continue};
+        $regKey= $reg.OpenSubKey($regPath);
+
+        <# Get installed instances' names (both cluster and local) #>
+        If ($regKey.GetSubKeyNames() -contains 'Instance Names') {
+            $regKey = $reg.OpenSubKey($regpath+'\Instance Names\SQL');
+            $instances = @($regkey.GetValueNames());
+        } ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {
+            $instances = $regKey.GetValue('InstalledInstances');
+        } Else {Continue};
+
+        <# Get only local instances' names #>
+        $local_instances = New-Object System.Collections.Arraylist;
+        $instances | % {
+            $instanceValue = $regKey.GetValue($_);
+            $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
+            If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
+                $local_instances += $_;
+            };
+        };
+        $local_instances | % {write-host \"instances:\"$_};
+    '''
+
+    CLUSTER_INSTANCES_PS_SCRIPT = '''
+        $domain = (gwmi WIN32_ComputerSystem).Domain;
+        Import-Module FailoverClusters;
+        $cluster_instances = Get-ClusterResource
+            | ? {$_.ResourceType -like 'SQL Server'}
+            | % {$ownernode = $_.OwnerNode; $_
+            | Get-ClusterParameter -Name VirtualServerName,InstanceName
+            | Group ClusterObject | Select
+            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
+            @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
+        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance};
+    '''
+
+    HOSTNAME_PS_SCRIPT = '''
+        $hostname = hostname; write-host \"hostname:\"$hostname;
+    '''
+
+    def get_instances_names(self, is_cluster):
+        '''
+        Run script to retrieve DB instances' names and hostname either
+        available in the cluster or installed on the local machine,
+        according to the 'is_cluster' parameter supplied.
+        '''
+        psinstance_script = self.CLUSTER_INSTANCES_PS_SCRIPT if is_cluster \
+            else self.LOCAL_INSTANCES_PS_SCRIPT
+        return self.run_command(
+            psinstance_script.replace('\n', ' ') + self.HOSTNAME_PS_SCRIPT
+        )
+
+    def run_command(self, pscommand):
+        '''
+        Run PowerShell command.
+        '''
+        command = "{0} \"& {{{1}}}\"".format(
+            self.PS_COMMAND, pscommand)
+        return self.winrs.run_command(command)
+
+
 class WinMSSQL(WinRMPlugin):
 
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
+        'getDeviceClassName'
         )
 
     @defer.inlineCallbacks
@@ -42,6 +124,10 @@ class WinMSSQL(WinRMPlugin):
         # Sample data for zDBInstances
         #[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
         #{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]
+
+        # Check if the device is a cluster device.
+        isCluster = True if 'Microsoft/Cluster' in device.getDeviceClassName \
+            else False
 
         dbinstance = device.zDBInstances
         username = device.windows_user
@@ -73,38 +159,15 @@ class WinMSSQL(WinRMPlugin):
             defer.returnValue(results)
 
         conn_info = self.conn_info(device)
-        winrs = create_single_shot_command(conn_info)
+        winrs = SQLCommander(conn_info)
 
         #sqlserver = 'SQL1\ZENOSSINSTANCE2'
         #sqlusername = 'sa'
         #sqlpassword = 'Z3n0ss12345'
 
-        # Base command line setup for powershell
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
-
-        psInstances = []
-
-        psInstances.append("$hostname=hostname;")
-
-        # Get registry key for instances
-        # 32/64 Bit 2008
-        psInstances.append("if (get-itemproperty \'HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\')")
-        psInstances.append("{$instances = get-itemproperty \'HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server\';}")
-
-        # 2003
-        psInstances.append("if (get-itemproperty \'HKLM:\Software\Microsoft\Microsoft SQL Server\')")
-        psInstances.append("{$instances = get-itemproperty \'HKLM:\Software\Microsoft\Microsoft SQL Server\';}")
-
-        psInstances.append("$instances.InstalledInstances | foreach {write-host \"instances:\"$_};")
-        psInstances.append("write-host \"hostname:\"$hostname;")
-
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
-            ''.join(psInstances))
-
-        dbinstances = winrs.run_command(command)
+        dbinstances = winrs.get_instances_names(isCluster)
         instances = yield dbinstances
+
         maps = {}
         instance_oms = []
         database_oms = []
@@ -124,7 +187,7 @@ class WinMSSQL(WinRMPlugin):
                 serverlist.append(value.strip())
                 server_config[key] = serverlist
 
-        if server_config['instances'][0] == '':
+        if not server_config.get('instances'):
             eventmessage = 'No MSSQL Servers are installed but modeler is enabled'
             results = {'error': eventmessage}
             defer.returnValue(results)
@@ -134,6 +197,19 @@ class WinMSSQL(WinRMPlugin):
         device_om = ObjectMap()
         device_om.sqlhostname = sqlhostname
         for instance in server_config['instances']:
+            owner_node = ''  # Leave empty for local databases.
+            # For cluster device, create a new a connection to each node,
+            # which owns network instances.
+            if isCluster:
+                try:
+                    owner_node, sql_server, instance = instance.split('\\') 
+                    device.windows_servername = owner_node.strip()
+                    conn_info = self.conn_info(device)
+                    winrs = SQLCommander(conn_info)
+                except ValueError:
+                    log.error('Owner node for DB Instance {0} was not found'.format(
+                        instance))
+                    continue
 
             if instance not in dblogins:
                 log.info("DB Instance {0} found but was not set in zDBInstances".format(
@@ -152,6 +228,9 @@ class WinMSSQL(WinRMPlugin):
                     sqlserver = sqlhostname
                 else:
                     sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+
+                if isCluster:
+                    sqlserver = sql_server.strip()
 
                 sqlusername = dblogins[instance]['username']
                 sqlpassword = dblogins[instance]['password']
@@ -193,10 +272,9 @@ class WinMSSQL(WinRMPlugin):
                     '\"`tLastLogBackupDate---\" $_.LastLogBackupDate' \
                     '};')
 
-                command = "{0} \"& {{{1}}}\"".format(
-                    pscommand,
-                    ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection))
-                databases = yield winrs.run_command(command)
+                databases = yield winrs.run_command(
+                    ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection)
+                )
                 check_username(databases, instance, log)
                 for dbobj in filter_sql_stdout(databases.stdout):
                     db = dbobj.split('\t')
@@ -234,6 +312,8 @@ class WinMSSQL(WinRMPlugin):
                         om_database.createdate = str(dbdict['createdate'])
                         om_database.defaultfilegroup = dbdict['defaultfilegroup']
                         om_database.primaryfilepath = dbdict['primaryfilepath']
+                        om_database.cluster_node_server = '{0}\\{1}'.format(
+                            owner_node.strip(), sqlserver)
 
                         database_oms.append(om_database)
 
@@ -247,11 +327,9 @@ class WinMSSQL(WinRMPlugin):
                     '\"`tStatus---\" $_.State' \
                     '};')
 
-                command = "{0} \"& {{{1}}}\"".format(
-                    pscommand,
-                    ''.join(getSQLAssembly() + sqlConnection + backup_sqlConnection))
-
-                backuplist = winrs.run_command(command)
+                backuplist = winrs.run_command(
+                    ''.join(getSQLAssembly() + sqlConnection + backup_sqlConnection)
+                )
                 backups = yield backuplist
                 for backupobj in filter_sql_stdout(backups.stdout):
                     backup = backupobj.split('\t')
@@ -281,11 +359,9 @@ class WinMSSQL(WinRMPlugin):
                 job_sqlConnection.append("$ds = $db.ExecuteWithResults('{0}');".format(jobsquery))
                 job_sqlConnection.append('$ds.Tables | Format-List;')
 
-                command = "{0} \"& {{{1}}}\"".format(
-                    pscommand,
-                    ''.join(getSQLAssembly() + sqlConnection + job_sqlConnection))
-
-                jobslist = winrs.run_command(command)
+                jobslist = winrs.run_command(
+                    ''.join(getSQLAssembly() + sqlConnection + job_sqlConnection)
+                )
                 jobs = yield jobslist
                 for job in filter_sql_stdout(jobs.stdout):
                     key, value = job.split(':', 1)
@@ -324,6 +400,7 @@ class WinMSSQL(WinRMPlugin):
         maps = []
         if results.get('device'):
             maps.append(results['device'])
+
         try:
             eventmessage = results['error']
             log.error(eventmessage)
