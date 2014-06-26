@@ -137,6 +137,18 @@
         factory=".global_catalog.InterfaceWrapper"
         />
 
+    <!-- Custom Actions -->
+    <utility
+        name="wincommand"
+        provides="Products.ZenModel.interfaces.IAction"
+        factory=".actions.WinCommandAction"
+        />
+
+    <adapter
+        provides=".actions.IWinCommandActionContentInfo"
+        for="Products.ZenModel.NotificationSubscription.NotificationSubscription"
+        factory=".actions.WinCommandActionContentInfo"
+        />
 
     <!-- Custom Path Reporters -->
     <adapter factory=".catalog.paths.InterfacePathReporter"

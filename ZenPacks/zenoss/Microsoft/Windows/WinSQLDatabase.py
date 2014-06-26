@@ -29,6 +29,7 @@ class WinSQLDatabase(OSComponent):
     createdate = None
     defaultfilegroup = None
     primaryfilepath = None
+    cluster_node_server = None
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'type': 'string'},

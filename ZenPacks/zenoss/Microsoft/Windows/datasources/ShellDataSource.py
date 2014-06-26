@@ -458,7 +458,10 @@ powershellclusterservice_strategy = PowershellClusterServiceStrategy()
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
-    proxy_attributes = ConnectionInfoProperties + ('sqlhostname',)
+    proxy_attributes = ConnectionInfoProperties + (
+        'sqlhostname',
+        'cluster_node_server',
+    )
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -561,6 +564,14 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 sqlserver = dsconf0.config_key
             else:
                 sqlserver = '{0}\{1}'.format(dsconf0.sqlhostname, instance)
+
+            # Use the owner node's hostname to get monitoring data for
+            # databases of network instances for cluster devices.
+            if dsconf0.cluster_node_server:
+                owner_node, server = dsconf0.cluster_node_server.split('//')
+                if owner_node:
+                    conn_info = conn_info._replace(hostname=owner_node)
+                    sqlserver = server
 
             command_line = strategy.build_command_line(
                 counters,
