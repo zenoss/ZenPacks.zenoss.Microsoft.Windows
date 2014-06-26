@@ -190,6 +190,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     def onError(self, result, config):
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
+
+        if isinstance(result.value, Exception) and result.value.message[0].startswith('? : Input name "'):
+            msg_splitted = result.value.message[0][3:].split(".")
+            msg = "WindowsEventLog: failed collection." + msg_splitted[0] + "." + msg_splitted[1]
+
         log.error(msg)
         data = self.new_data()
         data['events'].append({
