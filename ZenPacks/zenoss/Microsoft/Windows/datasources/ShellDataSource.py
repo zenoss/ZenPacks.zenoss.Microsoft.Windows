@@ -642,7 +642,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         data['events'].append(dict(
             severity=severity,
-            eventClassKey='winrsCollectionl',
+            eventClassKey='winrsCollection',
             eventKey='winrsCollection {}'.format(
                 dsconf0.params['contexttitle']
             ),
