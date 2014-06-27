@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Configuration properties</title>
+  <refbody>
+    <section>
+      <p>The #Adding a Windows Device steps shown above are for the simplest case of using Windows local authentication. 
+        The following configuration properties can be used to support monitoring other environments.</p>
+      <dl>
+        <dlentry>
+          <dt>zWinRMUser</dt>
+          <dd>The syntax used for zWinRMUser controls whether Zenoss will attempt Windows local authentication or domain 
+            (kerberos) authentication. If the value of zWinRMUser is username, local Windows authentication will be used.
+            If zWinRMUser is username@example.com, domain authentication will be used. The zWinKDC and potentially the 
+            zWinRMServerName properties become important.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMPassword</dt>
+          <dd>Password for user defined by zWinRMUser. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinKDC</dt>
+          <dd>The zWinKDC property must be set if domain authentication is used. It must be the IP address of a 
+            valid Windows domain controller. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMServerName</dt>
+          <dd>This property should only be used in conjunction with domain authentication when 
+            the DNS PTR record for a monitored server's managed IP address does not resolve to
+            the name by which the server is known in Active Directory. For example, if myserver1
+            is known as myserver1.ad.example.com by Active Directory and is being managed by 
+            IP address 192.51.100.21, but 192.51.100.21 resolves to www.example.com, you will 
+            have to set zWinRMServerName to myserver1.ad.example.com for domain authentication to work.
+            If many Windows servers in your environment don't have DNS PTR records that match
+            Active Directory, it is recommended that you set the name of the Zenoss device's 
+            to be the fully-qualified Active Directory name and set zWinRMServerName to 
+            ${here/titleOrId} at the /Server/Microsoft/Windows device class. This avoids 
+            the necessity of setting zWinRMServerName on every device.
+            It is recommended to leave zWinRMServerName blank if local authentication is 
+            used, or DNS PTR records match Active Directory. This allows Zenoss to not rely 
+            on DNS resolution while monitoring, and avoids the overhead of configuring zWinRMServerName. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinScheme</dt>
+          <dd>This must be set to either http or https. The default is http. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMPort</dt>
+          <dd>The port on which the Windows server is listening for WinRM or WS-Management connections. 
+            The default is 5985. It is uncommon for this to be configured as anything else.</dd> 
+        </dlentry>
+        <dlentry>
+          <dt>zWinPerfmonInterval</dt>
+          <dd>The default interval in seconds at which Windows Perfmon datapoints will be collected. 
+            The default is 300 seconds or 5 minutes. It is also possible to override the collection
+            interval for individual counters. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinKeyTabFilePath</dt>
+          <dd>This property is currently used and reserved for future use when keytab files are supported. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zDBInstances</dt>
+          <dd>This setting is only relevant when the zenoss.winrm.WinMSSQL modeler plugin is enabled.
+            Multiple instances can be specified to monitor multiple SQL Server instances per server. 
+            The default instance is MSSQLSERVER. Fill in the user and password to use SQL authentication.
+            Leave the user and password blank to use Windows authentication.</dd>
+        </dlentry>
+      </dl>
+    </section>
+  </refbody>
+</reference>

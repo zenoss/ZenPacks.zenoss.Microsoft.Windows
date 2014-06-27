@@ -6,6 +6,27 @@
     <section>
       <p>The following metrics are collected from the <codeph>Active Directory</codeph> Perfmon counter.</p>
       <ul>
+        <li>\DirectoryServices(NTDS)\DS Client Binds/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Directory Reads/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Directory Searches/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Directory Writes/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Monitor List Size</li>
+        <li>\DirectoryServices(NTDS)\DS Name Cache hit rate</li>
+        <li>\DirectoryServices(NTDS)\DS Notify Queue Size</li>
+        <li>\DirectoryServices(NTDS)\DS Search sub-operations/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Server Binds/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Server Name Translations/sec</li>
+        <li>\DirectoryServices(NTDS)\DS Threads in Use</li>
+        <li>\DirectoryServices(NTDS)\LDAP Active Threads</li>
+        <li>\DirectoryServices(NTDS)\LDAP Bind Time</li>
+        <li>\DirectoryServices(NTDS)\LDAP Client Sessions</li>
+        <li>\DirectoryServices(NTDS)\LDAP Closed Connections/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP New Connections/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP New SSL Connections/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP Searches/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP Successful Binds/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP UDP operations/sec</li>
+        <li>\DirectoryServices(NTDS)\LDAP Writes/sec</li>
         <li>\NTDS\DS Client Binds/sec</li>
         <li>\NTDS\DS Directory Reads/sec</li>
         <li>\NTDS\DS Directory Searches/sec</li>
@@ -31,48 +52,6 @@
         <li>\NTDS\LDAP UDP operations/sec</li>
         <li>\NTDS\LDAP Writes/sec</li>
         <li>\NTDS\NTLM Authentications</li>
-        <li>\NTDS\DS Client Binds/sec</li>
-        <li>\NTDS\DS Directory Reads/sec</li>
-        <li>\NTDS\DS Directory Searches/sec</li>
-        <li>\NTDS\DS Directory Writes/sec</li>
-        <li>\NTDS\DS Monitor List Size</li>
-        <li>\NTDS\DS Name Cache hit rate</li>
-        <li>\NTDS\DS Notify Queue Size</li>
-        <li>\NTDS\DS Search sub-operations/sec</li>
-        <li>\NTDS\DS Server Binds/sec</li>
-        <li>\NTDS\DS Server Name Translations/sec</li>
-        <li>\NTDS\DS Threads in Use</li>
-        <li>\NTDS\LDAP Active Threads</li>
-        <li>\NTDS\LDAP Bind Time</li>
-        <li>\NTDS\LDAP Client Sessions</li>
-        <li>\NTDS\LDAP Closed Connections/sec</li>
-        <li>\NTDS\LDAP New Connections/sec</li>
-        <li>\NTDS\LDAP New SSL Connections/sec</li>
-        <li>\NTDS\LDAP Searches/sec</li>
-        <li>\NTDS\LDAP Successful Binds/sec</li>
-        <li>\NTDS\LDAP UDP operations/sec</li>
-        <li>\NTDS\LDAP Writes/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Client Binds/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Directory Reads/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Directory Searches/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Directory Writes/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Monitor List Size</li>
-        <li>\DirectoryServices(NTDS)\DS Name Cache hit rate</li>
-        <li>\DirectoryServices(NTDS)\DS Notify Queue Size</li>
-        <li>\DirectoryServices(NTDS)\DS Search sub-operations/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Server Binds/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Server Name Translations/sec</li>
-        <li>\DirectoryServices(NTDS)\DS Threads in Use</li>
-        <li>\DirectoryServices(NTDS)\LDAP Active Threads</li>
-        <li>\DirectoryServices(NTDS)\LDAP Bind Time</li>
-        <li>\DirectoryServices(NTDS)\LDAP Client Sessions</li>
-        <li>\DirectoryServices(NTDS)\LDAP Closed Connections/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP New Connections/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP New SSL Connections/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP Searches/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP Successful Binds/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP UDP operations/sec</li>
-        <li>\DirectoryServices(NTDS)\LDAP Writes/sec</li>
       </ul>
     </section>
   </refbody>

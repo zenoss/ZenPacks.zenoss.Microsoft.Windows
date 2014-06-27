@@ -16,9 +16,9 @@
           <dt>Configuration properties</dt>
           <dd>zWinRMUser</dd>
           <dd>zWinRMPassword</dd>
+          <dd>zWinRMServerName</dd>
           <dd>zWinRMPort</dd>
           <dd>zDBInstances</dd>
-          <dd>zDBInstancesPassword</dd>
           <dd>zWinKDC</dd>
           <dd>zWinKeyTabFilePath</dd>
           <dd>zWinScheme</dd>
@@ -62,7 +62,8 @@
           <dd>IISADMIN (in /Server/Microsoft)</dd>
           <dd>IISSites (in /Server/Microsoft)</dd>
           <dd>MSExchangeIS (in /Server/Microsoft)</dd>
-          <dd>MSExchangeIS 2007 (in /Server/Microsoft)</dd>
+          <dd>MSExchange2010IS (in /Server/Microsoft)</dd>
+          <dd>MSExchange2013IS (in /Server/Microsoft)</dd>
           <dd>MSSQLServer (in /Server/Microsoft)</dd>
           <dd>WinDatabase (in /Server/Microsoft)</dd>
           <dd>Cluster (in /Server/Microsoft)</dd>

@@ -34,7 +34,7 @@
           <row>
             <entry>IIS management</entry>
             <entry>To enable the IIS Sites metrics, install the IIS 6 Management 
-              Compatibility module on the Windows systems to monitor.</entry>
+              Scripts and Tools role on the Windows systems to monitor.</entry>
           </row>
         </tbody>
       </tgroup>

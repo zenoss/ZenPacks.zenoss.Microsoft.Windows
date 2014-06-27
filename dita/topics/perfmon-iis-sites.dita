@@ -5,7 +5,9 @@
   <refbody>
     <section>
       <p>The following metrics are collected from the <codeph>IIS Sites</codeph> Perfmon counter.</p>
-      <note>To use these metrics, install the IIS 6 Management Compatibility module on the servers to monitor.</note>
+      <note>To use these metrics, install the IIS 6 Management 
+        Scripts and Tools role on the Windows systems to monitor.
+        (Previously, the IIS 6 Management compatibility role was needed, but no longer.) </note>
       <ul>
         <li>\Bytes Received/sec</li>
         <li>\Bytes Sent/sec</li>

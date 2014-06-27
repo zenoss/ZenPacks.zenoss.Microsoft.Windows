@@ -3,7 +3,8 @@
 <task id="taskid">
   <title>Adding a Windows device</title>
   <taskbody>
-    <context>Follow these steps to add a Windows device through the <ph conkeyref="names/platform"/> user interface.</context>
+    <context>Follow these steps to add a Windows device using local authentication, through the <ph
+        conkeyref="names/platform"/> user interface.</context>
     <steps>
       <step>
         <cmd>Log in to <ph conkeyref="names/platform"/> user interface <ph conkeyref="login-as/zm-or-m"/>.</cmd>

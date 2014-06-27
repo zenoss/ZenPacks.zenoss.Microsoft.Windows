@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Event Management</title>
+  <refbody>
+    <section>
+      <p>Events are collected from Windows event logs through a WinRM subscription. Information encoded in 
+        Windows event classes is used to populate the following, standard Zenoss event fields.</p>
+        <ul>
+          <li>device</li>
+          <li>component</li>
+          <li>summary</li>
+          <li>severity</li>
+          <li>eventClassKey (for mapping specific event types)</li>
+          <li>eventKey (for de-duplication and auto-clear fingerprinting)</li>
+        </ul>
+       <p>Events collected in this manner are timestamped with the time 
+         from the Windows event log, not the collection time.</p>
+      <note>This ZenPack generates an event with severity 
+        <codeph>Info</codeph> when an IIS Site is stopped. 
+        To assign a different severity level, create
+        a transform. For more information, refer to
+        <cite conkeyref="pubs/cite-admin"/>.
+      </note>
+    </section>
+  </refbody>
+</reference>
