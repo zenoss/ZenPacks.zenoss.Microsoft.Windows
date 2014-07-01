@@ -4,6 +4,61 @@
   <title>Configuring systems for monitoring</title>
   <refbody>
     <section>
+      <p>There are multiple ways to configure Windows service monitoring.
+        depending on if you want to configure for a single service on a single server,
+        a specific service across all Windows servers, or somewhere in between. 
+        The following flowchart describes how Zenoss decides whether a 
+        service will be monitored, and subsequently what monitoring 
+        template will be used to monitor the service. </p>
+      
+      <fig>
+        <title>Service monitoring flowchart</title>
+        <image href="../images/mswin-service-monitoring-flowchart.png" scale="80"/>
+      </fig>
+    </section>
+    
+    <section>
+      <title>Enable or disable monitoring for a single service on a single server</title>
+        <ol>
+          <li>Navigate to the service on the server.</li>
+          <li>Click to select it.</li>
+          <li>Choose Monitoring from the gear menu.</li>
+          <li>Choose Yes or No depending on what you want. </li>
+        </ol>
+    </section>
+    
+    <section>
+      <title>Enable monitoring by default for the WinRM service wherever it is enabled</title>
+      <ol>
+        <li>Navigate to Advanced -> Monitoring Templates.</li>
+        <li>Verify the list of templates is grouped by template.</li>
+        <li>Expand the WinService tree.</li>
+        <li>Click once to select the /Server/Microsoft copy.</li>
+        <li>Choose Copy / Override Template from the gear menu.</li>
+        <li>Select /Server/Microsoft (Create Copy) from the target list then click submit.</li>
+        <li>Expand the resulting copy_of_WinService tree.</li>
+        <li>Select the /Server/Microsoft copy.</li>
+        <li>Choose View and Edit Details from the gear menu.</li>
+        <li>Change the template's name to WinRM then click submit.</li>
+        <li>Double-click to edit the DefaultService' datasource.</li>
+        <li>Put a check mark in Monitor by Default then click save. </li>
+      </ol>
+    </section>
+    
+    <section>
+      <title>Enable monitoring by default for the WinRM service for a select group of servers</title>
+      <ol>
+        <li>Create a new device class somewhere under /Server/Microsoft/Windows for the select group of servers.</li>
+        <li>Move the servers to the new device class.</li>
+        <li>Follow steps 1-5 from the previous section.</li>
+        <li>Choose your new device class as the target then click submit.</li>
+        <li>Expand the WinService tree then select the copy in your device class.</li>
+        <li>Double-click to edit the DefaultService' datasource.</li>
+        <li>Put a check mark in Monitor by Default then click save. </li>
+      </ol>
+    </section>
+    
+    <section>
       <p>You may configure the Windows systems to monitor with this ZenPack collectively or individually.</p>
       <ul>
         <li>
@@ -12,8 +67,8 @@
         </li>
         <li>To configure systems individually, use the procedure in this section.</li>
       </ul>
-      <note>To enable the IIS Sites metrics, install the IIS 6 Management 
-        Compatibility module on the Windows systems to monitor.</note>
+      <note>For more information about configuring Windows systems, 
+        refer to <xref keyref="url-mswin-kb">this Knowledge Base article</xref>.</note>
     </section>
   </refbody>
 </reference>

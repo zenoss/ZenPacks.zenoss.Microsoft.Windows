@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Integration with <ph conkeyref="names/impact"/></title>
+  <refbody>
+    <section>
+      <p>This ZenPack adds features that are used in <ph conkeyref="names/impact-long"/> 
+        (<ph conkeyref="names/impact"/>). Services running on Microsoft Windows servers
+        are affected by the Processor, Interface and File System components, and the 
+        affects are automatically included in services that are modeled in <ph conkeyref="names/impact"/>.</p>
+    </section>
+  </refbody>
+</reference>

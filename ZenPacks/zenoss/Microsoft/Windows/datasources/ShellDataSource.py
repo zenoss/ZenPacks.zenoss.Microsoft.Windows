@@ -355,10 +355,9 @@ class PowershellClusterResourceStrategy(object):
             return
 
         # Parse values
-        try:
-            for resourceline in result.stdout:
-                name, ownergroup, ownernode, state, description = resourceline.split('|')
-
+        stdout = parse_stdout(result)
+        if stdout:
+            name, ownergroup, ownernode, state, description = stdout
             dsconf0 = dsconfs[0]
 
             resourceID = 'res-{0}'.format(name)
@@ -374,13 +373,10 @@ class PowershellClusterResourceStrategy(object):
             compObject.relname = dsconf0.params['contextrelname']
 
             for dsconf in dsconfs:
-                try:
-                    value = (resourceID, state, compObject)
-                    timestamp = int(time.mktime(time.localtime()))
-                    yield dsconf, value, timestamp
-                except(AttributeError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except(AttributeError):
+                value = (resourceID, state, compObject)
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+        else:
             log.debug('Error in parsing cluster resource data')
 
 powershellclusterresource_strategy = PowershellClusterResourceStrategy()
@@ -421,14 +417,10 @@ class PowershellClusterServiceStrategy(object):
                     result.exit_code, counters, dsconf.device))
             return
         # Parse values
-        try:
-            # stdout split all output on 79 symbols by default, and when our string is
-            # "Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|1"(80 symbols),
-            # then we get something like this "['Available Storage|True|echun-tb4|Offline||a4fb0385-a110-4188-9995-9e13ac7cf852|', '1']"
-            stdout = ''.join(result.stdout)
-            if stdout:
-                name, iscoregroup, ownernode, state, description, \
-                    nodeid, priority = stdout.split('|')
+        stdout = parse_stdout(result)
+        if stdout:
+            name, iscoregroup, ownernode, state, description, nodeid,\
+                priority = stdout
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
@@ -444,13 +436,10 @@ class PowershellClusterServiceStrategy(object):
             compObject.relname = dsconf0.params['contextrelname']
 
             for dsconf in dsconfs:
-                try:
-                    value = (name, state, compObject)
-                    timestamp = int(time.mktime(time.localtime()))
-                    yield dsconf, value, timestamp
-                except(AttributeError):
-                    log.debug("No value was returned for {0}".format(dsconf.params['counter']))
-        except (AttributeError, UnboundLocalError):
+                value = (name, state, compObject)
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+        else:
             log.debug('Error in parsing cluster service data')
 
 powershellclusterservice_strategy = PowershellClusterServiceStrategy()
@@ -626,7 +615,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 log.warn(cmdResult)
         else:
+            checked_result = False
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                checked_result = True
                 if dsconf.datasource == 'state':
                     currentstate = {
                         'Online': ZenEventClasses.Clear,
@@ -649,6 +640,26 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         )
                 else:
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+            if checked_result:
+                msg = 'winrs: successful collection'
+                severity = ZenEventClasses.Clear
+            else:
+                msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
+                    ' datasource'.format(
+                        dsconf0.params['strategy'],
+                        dsconf0.datasource,
+                    )
+                severity = ZenEventClasses.Warning
+
+        data['events'].append(dict(
+            severity=severity,
+            eventClassKey='winrsCollection',
+            eventKey='winrsCollection {}'.format(
+                dsconf0.params['contexttitle']
+            ),
+            summary=msg,
+            component=dsconf0.component,
+            device=config.id))
 
         data['events'].append(dict(
             severity=ZenEventClasses.Clear,
@@ -680,7 +691,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 )
                 msg = '{0} on {1}'.format(result, config)
                 logg = log.warn
-            if isinstance(result.value, RequestError):
+            elif isinstance(result.value, RequestError):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
                 event_class = '/Status'
@@ -726,3 +737,16 @@ def check_datasource(config, result):
         )
     else:
         return True
+
+
+def parse_stdout(result):
+    '''
+    Get cmd result list with string elements separated by "|" inside,
+    and return list of requested values.
+    '''
+    try:
+        stdout = ''.join(result.stdout).split('|')
+    except AttributeError:
+        return
+    if filter(None, stdout):
+        return stdout

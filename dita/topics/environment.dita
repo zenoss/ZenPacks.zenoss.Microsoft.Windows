@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Environment</title>
+  <refbody>
+    <section>
+      <dl>
+        <dlentry>
+          <dt>Compatible Platforms</dt>
+          <dd><ph conkeyref="names/resmgr"/> version 4.2.x</dd>
+          <dd><ph conkeyref="names/resmgr"/> version 4.1.x</dd>
+          <dd><ph conkeyref="names/core"/> version 4.2.x</dd>
+        </dlentry>
+
+        <dlentry>
+          <dt>Required Platform Software</dt>
+          <dd>Kerberos authentication (krb5-workstation). For more information, 
+            see <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-install-kerberos"/>.</dd>
+        </dlentry>
+
+        <dlentry>
+          <dt>Required ZenPacks (minimum version)</dt>
+          <dd><zenpack>ZenPacks.zenoss.Microsoft.Windows</zenpack> (2.1.x)</dd>
+          <dd><zenpack>ZenPacks.zenoss.PythonCollector</zenpack> (1.4.x)</dd>
+        </dlentry>
+        
+        <dlentry>
+          <dt>Required Device Software</dt>
+          <dd>WinRM 2.0. (Windows Server 2003 with SP1 and all subsequent 
+            releases of Windows Server include WinRM 2.0.)</dd>
+          <dd>To enable the IIS Sites metrics, install the IIS 6 Management 
+            Scripts and Tools role on the Windows systems to monitor.</dd>
+        </dlentry>
+        
+        <dlentry>
+          <dt>Modeling Daemons</dt>
+          <dd><zendaemon>zenpython</zendaemon></dd>
+        </dlentry>
+        
+        <dlentry>
+          <dt>Monitoring Daemons</dt>
+          <dd><zendaemon>zenpython</zendaemon></dd>
+        </dlentry>
+      </dl>
+      
+    </section>
+  </refbody>
+</reference>
