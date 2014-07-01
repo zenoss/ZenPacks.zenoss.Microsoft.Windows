@@ -182,9 +182,11 @@ def guess_block_size(bytes):
     That is, if the number is divisible by 1024, that's probably due to
     the block size. Ya, it's a kludge.
     '''
-    for i in range(10, 17):
-        if int(bytes) / float(1 << i) % 1:
-            return 1 << (i - 1)
+
+    if bytes:
+        for i in range(10, 17):
+            if int(bytes) / float(1 << i) % 1:
+                return 1 << (i - 1)
 
     # Naive assumption. Though so far it seems to work.
     return 4096
