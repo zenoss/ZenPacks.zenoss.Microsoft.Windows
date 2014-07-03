@@ -4,15 +4,13 @@
   <title>Configuring systems for monitoring</title>
   <refbody>
     <section>
-      <p>There are multiple ways to configure Windows service monitoring.
-        depending on if you want to configure for a single service on a single server,
-        a specific service across all Windows servers, or somewhere in between. 
-        The following flowchart describes how Zenoss decides whether a 
-        service will be monitored, and subsequently what monitoring 
-        template will be used to monitor the service. </p>
+      <p>You may configure Windows service monitoring for a single service on a single server, a
+        specific service across all Windows servers, or somewhere in between. The Windows Service
+        Monitoring flowchart describes how <ph conkeyref="names/platform"/> decides whether a 
+        service is monitored, and then, which monitoring template is used to monitor a service. </p>
       
       <fig>
-        <title>Service monitoring flowchart</title>
+        <title>Windows Service Monitoring Flowchart</title>
         <image href="../images/mswin-service-monitoring-flowchart.png" scale="80"/>
       </fig>
     </section>
@@ -59,14 +57,6 @@
     </section>
     
     <section>
-      <p>You may configure the Windows systems to monitor with this ZenPack collectively or individually.</p>
-      <ul>
-        <li>
-          <p>To configure systems collectively, use Windows Group Policy.</p>
-          <note>This option may require configuration steps on each Windows system to monitor.</note>
-        </li>
-        <li>To configure systems individually, use the procedure in this section.</li>
-      </ul>
       <note>For more information about configuring Windows systems, 
         refer to <xref keyref="url-mswin-kb">this Knowledge Base article</xref>.</note>
     </section>
