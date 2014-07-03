@@ -863,7 +863,7 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('IP Interface'),
-                width: 150
+                width: 200
             },{
                 id: 'ipAddresses',
                 dataIndex: 'ipAddressObjs',
@@ -970,7 +970,7 @@ ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('IP Interface'),
-                width: 150
+                width: 200
             },{
                 id: 'ipAddresses',
                 dataIndex: 'ipAddressObjs',
