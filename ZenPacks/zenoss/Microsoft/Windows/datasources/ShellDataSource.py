@@ -297,6 +297,9 @@ class PowershellMSSQLStrategy(object):
                     result.exit_code, counters, dsconf.device))
             return
 
+        if result.stderr:
+            log.debug('MSSQL error: {0}' + ''.join(result.stderr))
+
         # Parse values
         valuemap = {}
         for counterline in filter_sql_stdout(result.stdout):
