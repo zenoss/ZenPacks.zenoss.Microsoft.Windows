@@ -194,6 +194,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
         if isinstance(result.value, Exception) and result.value.message[0].startswith('? : Input name "'):
             msg_splitted = result.value.message[0][3:].split(".")
             msg = "WindowsEventLog: failed collection." + msg_splitted[0] + "." + msg_splitted[1]
+        if isinstance(result.value, Exception) and result.value.message[0].startswith('Where-Object'):
+            msg = "WindowsEventLog: failed collection. " + "".join(result.value.message[0])
+        if isinstance(result.value, Exception) and result.value.message[0].startswith('The term'):
+            msg = "WindowsEventLog: failed collection. " + "".join(result.value.message[0])
 
         log.error(msg)
         data = self.new_data()
