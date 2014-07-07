@@ -70,6 +70,8 @@ class FileSystems(WinRMPlugin):
 
                     continue
 
+            if not disk.Size:
+                disk.Size = 0
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Size)
 
