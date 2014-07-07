@@ -289,6 +289,9 @@ class PowershellMSSQLStrategy(object):
 
     def parse_result(self, dsconfs, result):
 
+        if result.stderr:
+            log.debug('MSSQL error: {0}' + ''.join(result.stderr))
+
         if result.exit_code != 0:
             counters = [dsconf.params['counter'] for dsconf in dsconfs]
             log.info(
