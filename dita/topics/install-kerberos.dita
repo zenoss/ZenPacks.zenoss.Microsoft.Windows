@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
-<task id="taskid">
+<task product="not-ucs" id="taskid">
   <title>Installing Kerberos authentication</title>
   <taskbody>
     <context>To use this ZenPack, Kerberos authentication must be installed 

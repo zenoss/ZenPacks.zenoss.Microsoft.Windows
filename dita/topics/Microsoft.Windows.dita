@@ -9,7 +9,7 @@
       <p>Monitoring data is collected from the Windows Management Instrumentation (WMI) and Windows
         Reliability and Performance Monitor (Perfmon) services.</p>
       
-      <note>For Windows systems that support WinRM, this ZenPack replaces the following, deprecated ZenPacks. 
+      <note product="not-ucs">For Windows systems that support WinRM, this ZenPack replaces the following, deprecated ZenPacks. 
         <ul id="win-deprecated">
           <li><zenpack>ZenPacks.zenoss.ActiveDirectory</zenpack></li>
           <li><zenpack>ZenPacks.zenoss.IISMonitor</zenpack></li>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
-<reference id="referenceid">
+<reference product="not-ucs" id="referenceid">
   <title>Integration with <ph conkeyref="names/impact"/></title>
   <refbody>
     <section>
