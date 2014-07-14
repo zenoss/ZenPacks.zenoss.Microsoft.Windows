@@ -44,7 +44,7 @@ from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command
+from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
 
@@ -230,7 +230,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component,dsconf.datasource)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
+        
+        self.build_commandline()
 
+        self.command = create_long_running_command(
+            createConnectionInfo(dsconf0))
+
+    def build_commandline(self):
         self.commandline = (
             'powershell -NoLogo -NonInteractive -NoProfile -Command "'
             '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False) ; '
@@ -245,9 +251,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             MaxSamples=self.max_samples,
             Counters=', '.join("('{0}')".format(c) for c in self.ps_counter_map),
             )
-
-        self.command = create_long_running_command(
-            createConnectionInfo(dsconf0))
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -458,9 +461,45 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.collected_samples < self.max_samples and result[0]:
             self.receive()
+        elif not result[0] and self.cycling:
+            # Log error message if present.
+            if result[1]:
+                LOG.error(' '.join(result[1]))
+            # If the command contains corrupt counters, remove them 
+            # from the command and then try to get data again.
+            self.remove_corrupt_counters()
         else:
             if self.cycling:
                 yield self.restart()
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def remove_corrupt_counters(self):
+        '''
+        Remove counters which are not ignored by Error Action parameter.
+        '''
+        LOG.debug('Performing check for corrupt counters')
+        dsconf0 = self.config.datasources[0]
+        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+        corrupt_counters = []
+        # Check each counter.
+        for counter in self.ps_counter_map:
+            command = (
+                "powershell -NoLogo -NonInteractive -NoProfile -Command "
+                "\"get-counter -ea silentlycontinue -counter '{0}'\" ".format(
+                    counter)
+                )
+            result = yield winrs.run_command(command)
+            if result.exit_code != 0:
+                LOG.debug("Counter '{0}' not found".format(counter))
+                corrupt_counters.append(counter)
+        # Remove the error counters from the counter map.
+        for counter in corrupt_counters:
+            del self.ps_counter_map[counter]
+        # Rebuild the command.
+        self.build_commandline()
+        yield self.restart()
 
         defer.returnValue(None)
 
