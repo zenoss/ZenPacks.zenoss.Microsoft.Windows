@@ -470,6 +470,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.remove_corrupt_counters()
         else:
             if self.cycling:
+                LOG.debug('Result: {0}'.format(result))
                 yield self.restart()
 
         defer.returnValue(None)
@@ -482,9 +483,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         LOG.debug('Performing check for corrupt counters')
         dsconf0 = self.config.datasources[0]
         winrs = create_single_shot_command(createConnectionInfo(dsconf0))
-        corrupt_counters = []
         # Check each counter.
-        for counter in self.ps_counter_map:
+        for counter in self.ps_counter_map.keys():
             command = (
                 "powershell -NoLogo -NonInteractive -NoProfile -Command "
                 "\"get-counter -ea silentlycontinue -counter '{0}'\" ".format(
@@ -492,11 +492,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 )
             result = yield winrs.run_command(command)
             if result.exit_code != 0:
-                LOG.debug("Counter '{0}' not found".format(counter))
-                corrupt_counters.append(counter)
-        # Remove the error counters from the counter map.
-        for counter in corrupt_counters:
-            del self.ps_counter_map[counter]
+                LOG.debug("Counter '{0}' not found. Removing".format(counter))
+                # Remove the error counters from the counter map.
+                del self.ps_counter_map[counter]
         # Rebuild the command.
         self.build_commandline()
         yield self.restart()
