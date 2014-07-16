@@ -213,9 +213,6 @@ class Interfaces(WinRMPlugin):
 
                 continue
 
-            if interconf.MACAddress is None:
-                continue
-
             if getattr(interconf, 'ServiceName', None) is not None:
                 if 'netft' in interconf.ServiceName.lower():
                     # This is a Network Fault-Tolerant interface
