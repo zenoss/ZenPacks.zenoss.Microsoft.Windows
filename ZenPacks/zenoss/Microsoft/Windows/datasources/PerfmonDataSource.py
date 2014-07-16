@@ -53,6 +53,9 @@ SOURCETYPE = 'Windows Perfmon'
 
 # This should match OperationTimeout in txwinrm's receive.xml.
 OPERATION_TIMEOUT = 60
+# Store corrupt counters in module scope, not to doublecheck
+# them when configuration for the device changes.
+CORRUPT_COUNTERS = []
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -408,6 +411,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def onReceive(self, result):
         collect_time = int(time.time())
 
+        # Log error message if present.
+        if result[1]:
+            LOG.error(' '.join(result[1]))
+
         # Initialize sample buffer. Start of a new sample. Remove BOM marker(if present).
 
         stdout_lines = result[0]
@@ -462,12 +469,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.collected_samples < self.max_samples and result[0]:
             self.receive()
         elif not result[0] and self.cycling:
-            # Log error message if present.
-            if result[1]:
-                LOG.error(' '.join(result[1]))
             # If the command contains corrupt counters, remove them 
             # from the command and then try to get data again.
-            self.remove_corrupt_counters()
+            yield self.remove_corrupt_counters()
+            yield self.restart()
         else:
             if self.cycling:
                 LOG.debug('Result: {0}'.format(result))
@@ -475,29 +480,60 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
+    def check_remotely(self, winrs, counter_list):
+        command = ("powershell -NoLogo -NonInteractive -NoProfile -Command "
+                    "\"get-counter -ea silentlycontinue -counter @({0})\" ")
+        return winrs.run_command(command.format(
+            ', '.join("('{0}')".format(c) for c in counter_list)))
+
+    @defer.inlineCallbacks
+    def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
+        '''
+        Bisect the counters to determine which of them are corrupt.
+        '''
+        num_counters = len(counter_list)
+
+        if num_counters == 0:
+            pass
+        elif num_counters == 1:
+            result = yield self.check_remotely(winrs, counter_list)
+            if not result.stdout:
+                corrupt_list.extend(counter_list)
+        else:
+            mid_index = num_counters/2
+            slices = (counter_list[:mid_index], counter_list[mid_index:])
+            for counter_slice in slices:
+                result = yield self.check_remotely(winrs, counter_slice)
+                if not result.stdout:
+                    yield self.search_corrupt_counters(
+                        winrs, counter_slice, corrupt_list)
+
+        defer.returnValue(corrupt_list)
+
     @defer.inlineCallbacks
     def remove_corrupt_counters(self):
         '''
-        Remove counters which are not ignored by Error Action parameter.
+        Remove counters which are not ignored by Error Action parameter
+        and crash the whole command.
         '''
         LOG.debug('Performing check for corrupt counters')
         dsconf0 = self.config.datasources[0]
         winrs = create_single_shot_command(createConnectionInfo(dsconf0))
-        # Check each counter.
-        for counter in self.ps_counter_map.keys():
-            command = (
-                "powershell -NoLogo -NonInteractive -NoProfile -Command "
-                "\"get-counter -ea silentlycontinue -counter '{0}'\" ".format(
-                    counter)
-                )
-            result = yield winrs.run_command(command)
-            if result.exit_code != 0:
+
+        counter_list = sorted(set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS))
+        corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
+
+        # Add newly found corrupt counters to the previously checked ones.
+        if corrupt_counters:
+            CORRUPT_COUNTERS.extend(corrupt_counters)
+
+        # Remove the error counters from the counter map.
+        for counter in CORRUPT_COUNTERS:
+            if self.ps_counter_map.get(counter):
                 LOG.debug("Counter '{0}' not found. Removing".format(counter))
-                # Remove the error counters from the counter map.
                 del self.ps_counter_map[counter]
         # Rebuild the command.
         self.build_commandline()
-        yield self.restart()
 
         defer.returnValue(None)
 
