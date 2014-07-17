@@ -16,16 +16,14 @@
          <topicref href="topics/perfmon-file-systems.dita"/>
          <topicref href="topics/perfmon-interfaces.dita"/>
       </topicref>
-      <topicref href="topics/events.dita">
-        <topicref href="topics/events-change.dita"/>
-      </topicref>
+      <topicref href="topics/events.dita"/>
       <topicref href="topics/environment.dita">
          <topicref href="topics/install-kerberos.dita"/>
       </topicref>
       <topicref href="topics/impact.dita"/>
       <topicref href="topics/adding.dita">
-         <topicref href="topics/config-props.dita"/>
          <topicref href="topics/adding-multiple.dita"/>
+         <topicref href="topics/config-props.dita"/>
       </topicref>
       <topicref href="topics/config.dita">
          <topicref href="topics/config-options.dita"/>

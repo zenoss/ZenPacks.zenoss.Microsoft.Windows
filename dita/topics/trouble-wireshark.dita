@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
 <reference id="referenceid">
-  <title>Reference title</title>
+  <title>Troubleshooting Kerberos Authentication with Wireshark</title>
   <refbody>
     <section>
-      <p>There are many reasons for kerberos authentication not to work, and a lot 
-        of them result in the following unhelpful error message.
-        
-        kerberos authGSSClientStep failed (None)
-        
-        While Zenoss is unable to extract a useful error message when this occurs, it turns 
-        out that Wireshark can get useful errors by looking at the kerberos packets sent 
-        between Zenoss, your domain controller (zWinKDC) and the monitored Windows server. 
-        Let's walk through an example of using Wireshark to resolve an authGSSClientStep failed error.
-        
-        First install Wireshark on your system. It's GUI is easier to use than the command 
-        line equivalent.
-        
-        Next you will need to create a packet capture file on your Zenoss server. 
-        Assuming the Windows server you're trying to monitor is 192.0.2.101 and the 
-        domain controller (zWinKDC) is 203.0.113.10, you would run the following c
-        ommand as the root user on your Zenoss server.
-        
-        tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10
-        
-        This will start capturing all packets to or from those two IP addresses. 
-        It will continue to capture these packets until you type CTRL-C. 
-        
-        Now you should attempt to remodel the Windows server where you're 
-        encountering the error. Once it completes, and fails, again you should
-        go back to the terminal where tcpdump is running and type CTRL-C. 
-        You will now have a kerberdebug.pcap file in the directory where 
-        you ran the command.
-        
-        Copy kerberdebug.pcap to your system where you installed Wireshark. 
-        Start Wireshark and open kerberdebug.pcap. You should see something
-        like the following. 
-        
-        You'll see that there's a KRB5KRB_AP_ERR_SKEW error. Searching for 
-        this specific error code will quickly show that it occurs when the
-        kerberos client and server don't have their time's synchronized. 
-        There's a tolerance for some difference, but in this case it was
-        a big difference due to misconfiguration.
-        
-        There are some kerberos errors you'll see in the packets that a completely
-        normal part of negotiation and won't lead to any problems. You should 
-        ignore the following errors shown in Wireshark:
-        
-        KRB5KRB_API_ERR_TKT_EXPIRED: Zenoss will subsequently request a new ticket when this occurs.
-        KRB5KRB_ERR_PREAUTH_REQUIRED: This is a normal part of kerberos negotiation.
-        KRB5KRB_ERR_RESPONSE_TOO_BIG: Most requests won't fit in UDP. Zenoss will automatically switch to TCP. 
-        
-        You'll also see other kerberos messages that are normal. You should 
-        ignore these kerberos messages shown by Wireshark:
-        
-        TGS-REQ
-        AS-REQ 
-        
-        The following are the most common errors:
-        
-        KRB5KRB_AP_ERR_SKEW
-        As shown in the above example. A clock synchronization issue.
-        
-        KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN
-        This can happen if zWinRMServerName resolves to the server's IP address, 
-        but is not the name the server is known by in Active Directory. This will
-        also be the error if you don't enter a zWinRMServerName and the reverse
-        resolution of the device's manage IP address resolves to a name that 
-        doesn't match the server's name in Active Directory. </p>
+      <p>There are many reasons why Kerberos authentication fails, and a lot of them result in the
+        following unhelpful error message.</p>
+      <codeblock>kerberos authGSSClientStep failed (None)</codeblock>Although <ph
+        conkeyref="names/platform"/> is unable to extract a useful error message when this occurs,
+      the <xref keyref="url-wireshark">Wireshark</xref> package can, by looking at the Kerberos
+      packets sent among <ph conkeyref="names/platform"/>, your domain controller (zWinKDC), and the
+      monitored Windows device. This section demonstrates using Wireshark to resolve an
+        <codeph>authGSSClientStep failed</codeph> error. <ol>
+        <li>Download and install Wireshark on your workstation. Its GUI is easier to use than the
+          command-line equivalent.</li>
+        <li>
+          <p>Create a packet capture file to analyze.</p>
+          <p>For example, to monitor a Windows device at 192.0.2.101 where the domain controller
+            (zWinKDC) is 203.0.113.10, log in to the <ph conkeyref="names/platform"/> master host
+              <ph conkeyref="login-as/root"/>, and enter the following command.</p>
+          <codeblock>tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10</codeblock>
+          <p>The command captures all packets traveling between the two IP addresses, and continues
+            until you enter CTRL-C.</p>
+        </li>
+        <li>Remodel the Windows device that returns the <codeph>authGSSClientStep failed</codeph>
+          error. When the remodeling attempt completes (and fails, again) enter CTRL-C in the
+          terminal in which <cmdname>tcpdump</cmdname> is running. The <cmdname>tcdump</cmdname>
+          command closes the <filepath>kerberdebug.pcap</filepath> file and exits.</li>
+        <li>
+          <p>Copy <filepath>kerberdebug.pcap</filepath> to your workstation, start Wireshark, and
+            open the file. The following figure shows an example <cmdname>tcpdump</cmdname> file in
+            the Wireshark GUI.</p>
+          <fig>
+            <title>Example tcpdump file in Wireshark</title>
+            <image href="../images/mswin-kerberos-wireshark.png" scale="40"/>
+          </fig>
+          <p>A KRB5KRB_AP_ERR_SKEW error is highlighted. A quick search of the internet for this
+            error code reveals that the cause of the failure: The system clocks of the Kerberos
+            client and server are not synchronized. (Some difference is tolerated, but the in this
+            case, the difference is too large, and most likely due to misconfiguration.)</p>
+        </li>
+      </ol>
+      <p>Some Kerberos errors are benign, such as the following errors.</p>
+      <dl>
+        <dlentry>
+          <dt>KRB5KRB_API_ERR_TKT_EXPIRED</dt>
+          <dd><ph conkeyref="names/platform"/> requests a new ticket when this occurs.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>KRB5KRB_ERR_PREAUTH_REQUIRED</dt>
+          <dd>A normal part of Kerberos negotiation.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>KRB5KRB_ERR_RESPONSE_TOO_BIG</dt>
+          <dd>Most requests do not fit in UDP, so <ph conkeyref="names/platform"/> switches to TCP
+            automatically.</dd>
+        </dlentry>
+      </dl>
+      <p>Wireshark also reveals TGS-REQ and AS-REQ messages, which may be ignored.</p>
+      <p>The following errors are the most common errors.</p>
+      <dl>
+        <dlentry>
+          <dt>KRB5KRB_AP_ERR_SKEW</dt>
+          <dd>The clock synchronization issue highlighted in the preceding example.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN</dt>
+          <dd>This can happen if zWinRMServerName resolves to the server's IP address, but is not
+            the name by which the server is known in Active Directory. This will also be the error
+            if you do not provide a zWinRMServerName and the DNS resolution of the device's IP
+            address resolves to a name that does not match the server's name in Active
+            Directory.</dd>
+        </dlentry>
+      </dl>
     </section>
   </refbody>
 </reference>

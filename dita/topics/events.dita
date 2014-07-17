@@ -16,6 +16,12 @@
         </ul>
        <p>Events collected in this manner are timestamped with the time 
          from the Windows event log, not the collection time.</p>
+      <note>This ZenPack generates an event with severity 
+        <codeph>Info</codeph> when an IIS Site is stopped. 
+        To assign a different severity level, create
+        a transform. For more information, refer to
+        <cite conkeyref="pubs/cite-admin"/>.
+      </note>
     </section>
   </refbody>
 </reference>
