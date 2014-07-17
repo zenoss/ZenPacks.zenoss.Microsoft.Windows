@@ -44,7 +44,7 @@ from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command
+from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
 
@@ -53,6 +53,9 @@ SOURCETYPE = 'Windows Perfmon'
 
 # This should match OperationTimeout in txwinrm's receive.xml.
 OPERATION_TIMEOUT = 60
+# Store corrupt counters in module scope, not to doublecheck
+# them when configuration for the device changes.
+CORRUPT_COUNTERS = []
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -230,7 +233,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component,dsconf.datasource)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
+        
+        self.build_commandline()
 
+        self.command = create_long_running_command(
+            createConnectionInfo(dsconf0))
+
+    def build_commandline(self):
         self.commandline = (
             'powershell -NoLogo -NonInteractive -NoProfile -Command "'
             '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False) ; '
@@ -245,9 +254,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             MaxSamples=self.max_samples,
             Counters=', '.join("('{0}')".format(c) for c in self.ps_counter_map),
             )
-
-        self.command = create_long_running_command(
-            createConnectionInfo(dsconf0))
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -405,6 +411,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def onReceive(self, result):
         collect_time = int(time.time())
 
+        # Log error message if present.
+        if result[1]:
+            LOG.error(' '.join(result[1]))
+
         # Initialize sample buffer. Start of a new sample. Remove BOM marker(if present).
 
         stdout_lines = result[0]
@@ -458,11 +468,77 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.collected_samples < self.max_samples and result[0]:
             self.receive()
+        elif not result[0] and self.cycling:
+            # If the command contains corrupt counters, remove them 
+            # from the command and then try to get data again.
+            yield self.remove_corrupt_counters()
+            yield self.restart()
         else:
             if self.cycling:
+                LOG.debug('Result: {0}'.format(result))
                 yield self.restart()
 
         defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
+        '''
+        Bisect the counters to determine which of them are corrupt.
+        '''
+        command = lambda counters: (
+            "powershell -NoLogo -NonInteractive -NoProfile -Command "
+            "\"get-counter -ea silentlycontinue -counter @({0})\" ".format(
+                ', '.join("('{0}')".format(c) for c in counters))
+        )
+
+        num_counters = len(counter_list)
+
+        if num_counters == 0:
+            pass
+        elif num_counters == 1:
+            result = yield winrs.run_command(command(counter_list))
+            if result.exit_code != 0:
+                corrupt_list.extend(counter_list)
+        else:
+            mid_index = num_counters/2
+            slices = (counter_list[:mid_index], counter_list[mid_index:])
+            for counter_slice in slices:
+                result = yield winrs.run_command(command(counter_slice))
+                if result.exit_code != 0:
+                    yield self.search_corrupt_counters(
+                        winrs, counter_slice, corrupt_list)
+
+        defer.returnValue(corrupt_list)
+
+    @defer.inlineCallbacks
+    def remove_corrupt_counters(self):
+        '''
+        Remove counters which are not ignored by Error Action parameter
+        and crash the whole command.
+        '''
+        LOG.debug('Performing check for corrupt counters')
+        dsconf0 = self.config.datasources[0]
+        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+
+        counter_list = sorted(set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS))
+        corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
+
+        # Add newly found corrupt counters to the previously checked ones.
+        if corrupt_counters:
+            CORRUPT_COUNTERS.extend(corrupt_counters)
+
+        # Remove the error counters from the counter map.
+        for counter in CORRUPT_COUNTERS:
+            if self.ps_counter_map.get(counter):
+                LOG.debug("Counter '{0}' not found. Removing".format(counter))
+                del self.ps_counter_map[counter]
+
+        # Rebuild the command.
+        self.build_commandline()
+
+        defer.returnValue(None)
+
+
 
     @defer.inlineCallbacks
     def onReceiveFail(self, failure):
