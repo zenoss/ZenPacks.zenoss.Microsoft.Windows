@@ -480,31 +480,31 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
-    def check_remotely(self, winrs, counter_list):
-        command = ("powershell -NoLogo -NonInteractive -NoProfile -Command "
-                    "\"get-counter -ea silentlycontinue -counter @({0})\" ")
-        return winrs.run_command(command.format(
-            ', '.join("('{0}')".format(c) for c in counter_list)))
-
     @defer.inlineCallbacks
     def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
         '''
         Bisect the counters to determine which of them are corrupt.
         '''
+        command = lambda counters: (
+            "powershell -NoLogo -NonInteractive -NoProfile -Command "
+            "\"get-counter -ea silentlycontinue -counter @({0})\" ".format(
+                ', '.join("('{0}')".format(c) for c in counters))
+        )
+
         num_counters = len(counter_list)
 
         if num_counters == 0:
             pass
         elif num_counters == 1:
-            result = yield self.check_remotely(winrs, counter_list)
-            if not result.stdout:
+            result = yield winrs.run_command(command(counter_list))
+            if result.exit_code != 0:
                 corrupt_list.extend(counter_list)
         else:
             mid_index = num_counters/2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
-                result = yield self.check_remotely(winrs, counter_slice)
-                if not result.stdout:
+                result = yield winrs.run_command(command(counter_slice))
+                if result.exit_code != 0:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)
 
@@ -532,10 +532,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if self.ps_counter_map.get(counter):
                 LOG.debug("Counter '{0}' not found. Removing".format(counter))
                 del self.ps_counter_map[counter]
+
         # Rebuild the command.
         self.build_commandline()
 
         defer.returnValue(None)
+
+
 
     @defer.inlineCallbacks
     def onReceiveFail(self, failure):
