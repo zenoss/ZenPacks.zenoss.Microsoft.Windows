@@ -53,9 +53,9 @@ SOURCETYPE = 'Windows Perfmon'
 
 # This should match OperationTimeout in txwinrm's receive.xml.
 OPERATION_TIMEOUT = 60
-# Store corrupt counters in module scope, not to doublecheck
+# Store corrupt counters for each device in module scope, not to doublecheck
 # them when configuration for the device changes.
-CORRUPT_COUNTERS = []
+CORRUPT_COUNTERS = collections.defaultdict(list)
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -520,15 +520,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = self.config.datasources[0]
         winrs = create_single_shot_command(createConnectionInfo(dsconf0))
 
-        counter_list = sorted(set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS))
+        counter_list = sorted(
+            set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS[dsconf0.device]))
         corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
 
         # Add newly found corrupt counters to the previously checked ones.
         if corrupt_counters:
-            CORRUPT_COUNTERS.extend(corrupt_counters)
+            CORRUPT_COUNTERS[dsconf0.device].extend(corrupt_counters)
 
         # Remove the error counters from the counter map.
-        for counter in CORRUPT_COUNTERS:
+        for counter in CORRUPT_COUNTERS[dsconf0.device]:
             if self.ps_counter_map.get(counter):
                 LOG.debug("Counter '{0}' not found. Removing".format(counter))
                 del self.ps_counter_map[counter]
@@ -537,8 +538,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.build_commandline()
 
         defer.returnValue(None)
-
-
 
     @defer.inlineCallbacks
     def onReceiveFail(self, failure):
