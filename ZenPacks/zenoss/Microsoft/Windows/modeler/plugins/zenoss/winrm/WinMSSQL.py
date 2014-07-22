@@ -106,8 +106,10 @@ class SQLCommander(object):
         '''
         Run PowerShell command.
         '''
-        command = "{0} \"& {{{1}}}\"".format(
-            self.PS_COMMAND, pscommand)
+        buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
+                       'Management.Automation.Host.Size (4096, 25);')
+        command = "{0} \"{1} & {{{2}}}\"".format(
+            self.PS_COMMAND, buffer_size, pscommand)
         return self.winrs.run_command(command)
 
 
@@ -340,10 +342,15 @@ class WinMSSQL(WinRMPlugin):
                     backup_oms.append(om_backup)
 
                 # Get SQL Jobs information
-                jobsquery = "select s.name as jobname, s.job_id as jobid, " \
-                "s.enabled as enabled, s.date_created as datecreated, " \
-                "s.description as description, l.name as username from " \
-                "msdb..sysjobs s left join master.sys.syslogins l on s.owner_sid = l.sid"
+                jobsquery = (
+                    "select s.name as jobname, s.job_id as jobid, "
+                    "s.enabled as enabled, s.date_created as datecreated, "
+                    # Replace each new line with a space in description.
+                    "replace(replace(s.description, char(13), char(32)), "
+                    "char(10), char(32)) as description, "
+                    "l.name as username from msdb..sysjobs s left join "
+                    "master.sys.syslogins l on s.owner_sid = l.sid"
+                )
 
                 job_sqlConnection = []
                 job_sqlConnection.append("$db = $server.Databases[0];")
@@ -355,6 +362,11 @@ class WinMSSQL(WinRMPlugin):
                 )
                 jobs = yield jobslist
                 for job in filter_sql_stdout(jobs.stdout):
+                    # Make sure that the job description length does not go 
+                    # beyond the buffer size (4096 characters).
+                    if ':' not in job:
+                        continue
+
                     key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
                         #New Job Record
