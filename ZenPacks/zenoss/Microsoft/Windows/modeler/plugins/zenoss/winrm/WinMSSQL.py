@@ -23,7 +23,7 @@ from Products.DataCollector.plugins.DataMaps \
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
-    getSQLAssembly, filter_sql_stdout
+    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
 
 addLocalLibPath()
 
@@ -126,7 +126,7 @@ class WinMSSQL(WinRMPlugin):
         isCluster = True if 'Microsoft/Cluster' in device.getDeviceClassName \
             else False
 
-        dbinstance = device.zDBInstances
+        dbinstance = prepare_zDBInstances(device.zDBInstances)
         username = device.windows_user
         password = device.windows_password
         login_as_user = False
