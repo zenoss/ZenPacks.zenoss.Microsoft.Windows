@@ -39,7 +39,9 @@ class Software(WinRMPlugin):
                 continue
 
             om = self.objectMap()
-            om.id = self.prepId(item.Name)
+            # prepId don't care about __ in resulting id
+            # this results OFS ObjectManaget checkValidId() to fail
+            om.id = self.eliminate_underscores(self.prepId(item.Name))
             om.title = item.Name
             if not item.Vendor:
                 item.Vendor = 'Unknown'
@@ -54,3 +56,7 @@ class Software(WinRMPlugin):
             rm.append(om)
 
         return rm
+
+    def eliminate_underscores(self, val):
+        """Eliminates double underscores in object ID"""
+        return val.replace('__', '')
