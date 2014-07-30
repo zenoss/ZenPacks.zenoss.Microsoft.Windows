@@ -182,7 +182,6 @@ PERSISTER = DataPersister()
 
 
 class ComplexLongRunningCommand(object):
-
     '''
     A complex command containing one or more long running commands,
     according to the number of commands supplied.
@@ -281,7 +280,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def _build_commandlines(self):
         '''
-        Retirn a list of command lines needed to get data for all counters.
+        Return a list of command lines needed to get data for all counters.
 
         '''
         # The max length of the cmd.exe command is 8192.
