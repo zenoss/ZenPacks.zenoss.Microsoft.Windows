@@ -236,3 +236,22 @@ def check_for_network_error(result, config):
     )
 
     return msg, '/Unknown'
+
+
+def prepare_zDBInstances(inst):
+    '''
+    Workaround for ZEN-11424
+    '''
+    dbinstance = inst
+    if isinstance(inst, list):
+        if inst[0].get('instance'):
+            dbinstance = inst[0].get('instance')
+            # checks if the pre_parced is list
+            if isinstance(dbinstance, list):
+                # check if the first element is dict
+                if isinstance(dbinstance[0], dict):
+                    # Convert dict to string
+                    prep_inst = str(dbinstance[0])
+                    prep_inst = prep_inst.replace('\'', '"')
+                    dbinstance = '[' + prep_inst + ']'
+    return dbinstance

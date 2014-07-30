@@ -575,7 +575,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             counter = '\\{}'.format(
                 self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
 
-            value = float(self.sample_buffer.popleft())
+            value = self.sample_buffer.popleft()
+
+            # ZEN-12024: Some locales use ',' as the decimal point.
+            if ',' in value:
+                value = value.replace(',', '.', 1)
 
             component, datasource = self.counter_map.get(counter, (None, None))
             if datasource:
