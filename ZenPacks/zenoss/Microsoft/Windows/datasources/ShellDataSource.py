@@ -403,7 +403,6 @@ class PowershellClusterServiceStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         #Clustering Command opening
-
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
 
@@ -433,9 +432,7 @@ class PowershellClusterServiceStrategy(object):
                     result.exit_code, counters, dsconf.device))
             return
         # Parse values
-        print '>' * 100, result
-        stdout = parse_stdout(result)
-        print '<' * 100, stdout
+        stdout = parse_stdout(result, check_stderr=True)
         if stdout:
             name, iscoregroup, ownernode, state, description, nodeid,\
                 priority = stdout
@@ -593,6 +590,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 'powershell Cluster Resources'):
 
             resource = dsconf0.params['contexttitle']
+            if not resource:
+                return
             componenttype = dsconf0.params['resource']
             command_line = strategy.build_command_line(resource, componenttype)
 
@@ -749,11 +748,15 @@ def check_datasource(config, result):
         return True
 
 
-def parse_stdout(result):
+def parse_stdout(result, check_stderr=False):
     '''
     Get cmd result list with string elements separated by "|" inside,
     and return list of requested values or None, if there are no elements.
     '''
+    if check_stderr:
+        stderr = ''.join(getattr(result, 'stderr', [])).strip()
+        if stderr:
+            raise WindowsShellException(stderr)
     try:
         stdout = ''.join(result.stdout).split('|')
     except AttributeError:
