@@ -22,7 +22,11 @@ from traceback import format_exc
 
 
 from zope.component import adapts
+from zope.component import getGlobalSiteManager
+from zope.component import queryUtility
 from zope.interface import implements
+from zope.interface import Interface
+
 from twisted.internet import defer
 from twisted.python.failure import Failure
 
@@ -60,6 +64,7 @@ AVAILABLE_STRATEGIES = [
     'powershell Cluster Resources',
     ]
 
+gsm = getGlobalSiteManager()
 
 class WindowsShellException(Exception):
     '''Exception class to catch known exceptions '''
@@ -184,7 +189,12 @@ class WinCmd(object):
     deviceConfig = None
 
 
+class IStrategy(Interface):
+    ''' Interface for strategy '''
+
 class CustomCommandStrategy(object):
+    implements(IStrategy)
+
     key = 'CustomCommand'
 
     def build_command_line(self, script, usePowershell):
@@ -228,10 +238,11 @@ class CustomCommandStrategy(object):
         parser.processResults(cmd, collectedResult)
         return collectedResult
 
-customcommand_strategy = CustomCommandStrategy()
-
+gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
 
 class PowershellMSSQLStrategy(object):
+    implements(IStrategy)
+
     key = 'PowershellMSSQL'
 
     def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database, login_as_user):
@@ -318,11 +329,11 @@ class PowershellMSSQLStrategy(object):
             except:
                 log.debug("No value was returned for {0}".format(dsconf.params['resource']))
 
-
-powershellmssql_strategy = PowershellMSSQLStrategy()
-
+gsm.registerUtility(PowershellMSSQLStrategy(), IStrategy, 'powershell MSSQL')
 
 class PowershellClusterResourceStrategy(object):
+    implements(IStrategy)
+
     key = 'ClusterResource'
 
     def build_command_line(self, resource, componenttype):
@@ -382,10 +393,12 @@ class PowershellClusterResourceStrategy(object):
         else:
             log.debug('Error in parsing cluster resource data')
 
-powershellclusterresource_strategy = PowershellClusterResourceStrategy()
+gsm.registerUtility(PowershellClusterResourceStrategy(), IStrategy, 'powershell Cluster Resources')
 
 
 class PowershellClusterServiceStrategy(object):
+    implements(IStrategy)
+
     key = 'ClusterService'
 
     def build_command_line(self, resource, componenttype):
@@ -420,7 +433,9 @@ class PowershellClusterServiceStrategy(object):
                     result.exit_code, counters, dsconf.device))
             return
         # Parse values
+        print '>' * 100, result
         stdout = parse_stdout(result)
+        print '<' * 100, stdout
         if stdout:
             name, iscoregroup, ownernode, state, description, nodeid,\
                 priority = stdout
@@ -445,7 +460,7 @@ class PowershellClusterServiceStrategy(object):
         else:
             log.debug('Error in parsing cluster service data')
 
-powershellclusterservice_strategy = PowershellClusterServiceStrategy()
+gsm.registerUtility(PowershellClusterServiceStrategy(), IStrategy, 'powershell Cluster Services')
 
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
@@ -526,7 +541,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = config.datasources[0]
         conn_info = createConnectionInfo(dsconf0)
 
-        strategy = self._get_strategy(dsconf0)
+        strategy = queryUtility(IStrategy, dsconf0.params['strategy'])
+
         if not strategy:
             raise WindowsShellException(
                 "No strategy chosen for {0}".format(dsconf0.datasource)
@@ -636,11 +652,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         summary='Last state of component was {0}'.format(value[1]),
                         device=config.id,
                         component=prepId(dsconf.component)
-                        ))
+                    ))
 
                     data['maps'].append(
                         value[2]
-                        )
+                    )
                 else:
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
             if checked_result:
@@ -710,15 +726,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             device=config.id))
         return data
 
-    def _get_strategy(self, dsconf):
-        return {
-            'Custom Command': customcommand_strategy,
-            'powershell MSSQL': powershellmssql_strategy,
-            'powershell Cluster Services': powershellclusterservice_strategy,
-            'powershell Cluster Resources': powershellclusterresource_strategy,
-        }.get(dsconf.params['strategy'])
-
-
 def check_datasource(config, result):
     '''
     Check whether the data is correctly filled in datasource.
@@ -745,7 +752,7 @@ def check_datasource(config, result):
 def parse_stdout(result):
     '''
     Get cmd result list with string elements separated by "|" inside,
-    and return list of requested values.
+    and return list of requested values or None, if there are no elements.
     '''
     try:
         stdout = ''.join(result.stdout).split('|')
@@ -753,3 +760,4 @@ def parse_stdout(result):
         return
     if filter(None, stdout):
         return stdout
+
