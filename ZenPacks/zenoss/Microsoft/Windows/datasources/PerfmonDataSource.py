@@ -223,55 +223,6 @@ class ComplexLongRunningCommand(object):
             yield command.stop()
 
 
-# Helper functions for PerfmonDataSource plugin.
-def convert_to_ps_counter(counter):
-    esc_counter = counter.encode("unicode_escape")
-    start_indx = esc_counter.find('(')
-    end_indx = esc_counter.rfind(')')
-    resource = esc_counter[start_indx + 1:end_indx]
-    if '\u' in resource and start_indx != -1 and end_indx != -1:
-        ps_repr = resource.replace('\u', '+[char]0x')
-        ps_counter = [esc_counter[:start_indx]]
-        ps_counter.append("('")
-        ps_counter.append(ps_repr)
-        ps_counter.append("+'")
-        ps_counter.append(esc_counter[end_indx:])
-        return ''.join(ps_counter).decode('string_escape')
-    return counter
-
-
-def format_counters(ps_counters):
-    '''
-    Convert a list of supplied counters into a string, which will
-    be further used to cteate ps command line.
-    '''
-    return ','.join(
-        "('{0}')".format(counter) for counter in ps_counters)
-
-
-def chunkify(lst, n):
-    '''
-    Yield successive n-sized chunks from the list.
-    '''
-    return [lst[i::n] for i in xrange(n)]
-
-
-def format_stdout(stdout_lines):
-    '''
-    '''
-    sample_start = False
-    # Remove BOM marker(if present).
-    if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):
-        stdout_lines = stdout_lines[1:]
-
-    # Remove property name from the first stdout line.
-    if stdout_lines and stdout_lines[0].startswith('Readings : '):
-        stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
-        sample_start = True
-
-    return stdout_lines, sample_start
-
-
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties
 
@@ -322,7 +273,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component, dsconf.datasource)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
-        
+
         self._build_commandlines()
 
         self.complex_command = ComplexLongRunningCommand(
@@ -351,10 +302,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         counters = chunkify(counters, self.num_commands)
 
         self.commandlines = [self.command_line.format(
-                SampleInterval=self.sample_interval,
-                MaxSamples=self.max_samples,
-                Counters=format_counters(counter_group)
-            ) for counter_group in counters]
+            SampleInterval=self.sample_interval,
+            MaxSamples=self.max_samples,
+            Counters=format_counters(counter_group)
+        ) for counter_group in counters]
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -389,7 +340,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Start the continuous command.
         '''
-
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
@@ -426,7 +376,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Wait for data to arrive if necessary, then return it.
         '''
-
         data = PERSISTER.pop(self.config.id)
         if data and data['values']:
             defer.returnValue(data)
@@ -448,7 +397,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Stop the continuous command.
         '''
-
         if self.state != PluginStates.STARTED:
             LOG.debug(
                 "skipping Get-Counter stop on %s while it's %s",
@@ -623,6 +571,49 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         defer.returnValue(None)
 
     @defer.inlineCallbacks
+    def onReceiveFail(self, failure):
+        e = failure.value
+
+        if isinstance(e, defer.CancelledError):
+            return
+
+        retry, level, msg = (False, None, None)
+
+        # Handle errors on which we should retry the receive.
+        if 'OperationTimeout' in e.message:
+            retry, level, msg = (
+                True,
+                logging.DEBUG,
+                "OperationTimeout on {}"
+                .format(self.config.id))
+
+        elif isinstance(e, ConnectError):
+            retry, level, msg = (
+                isinstance(e, TimeoutError),
+                logging.WARN,
+                "network error on {}: {}"
+                .format(self.config.id, e.message or 'timeout'))
+
+        # Handle errors on which we should start over.
+        else:
+            retry, level, msg = (
+                False,
+                logging.WARN,
+                "receive failure on {}: {}"
+                .format(self.config.id, failure))
+
+        if self.data_deferred and not self.data_deferred.called:
+            self.data_deferred.errback(failure)
+
+        LOG.log(level, msg)
+        if retry:
+            self.receive()
+        else:
+            yield self.restart()
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
     def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
         '''
         Bisect the counters to determine which of them are corrupt.
@@ -681,49 +672,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
-    @defer.inlineCallbacks
-    def onReceiveFail(self, failure):
-        e = failure.value
-
-        if isinstance(e, defer.CancelledError):
-            return
-
-        retry, level, msg = (False, None, None)
-
-        # Handle errors on which we should retry the receive.
-        if 'OperationTimeout' in e.message:
-            retry, level, msg = (
-                True,
-                logging.DEBUG,
-                "OperationTimeout on {}"
-                .format(self.config.id))
-
-        elif isinstance(e, ConnectError):
-            retry, level, msg = (
-                isinstance(e, TimeoutError),
-                logging.WARN,
-                "network error on {}: {}"
-                .format(self.config.id, e.message or 'timeout'))
-
-        # Handle errors on which we should start over.
-        else:
-            retry, level, msg = (
-                False,
-                logging.WARN,
-                "receive failure on {}: {}"
-                .format(self.config.id, failure))
-
-        if self.data_deferred and not self.data_deferred.called:
-            self.data_deferred.errback(failure)
-
-        LOG.log(level, msg)
-        if retry:
-            self.receive()
-        else:
-            yield self.restart()
-
-        defer.returnValue(None)
-
     def reportMissingCounters(self, requested, returned):
         '''
         Emit logs and events for counters requested but not returned.
@@ -772,3 +720,55 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         deleted or modified.
         '''
         return reactor.callLater(self.sample_interval, self.stop)
+
+
+# Helper functions for PerfmonDataSource plugin.
+def convert_to_ps_counter(counter):
+    esc_counter = counter.encode("unicode_escape")
+    start_indx = esc_counter.find('(')
+    end_indx = esc_counter.rfind(')')
+    resource = esc_counter[start_indx + 1:end_indx]
+    if '\u' in resource and start_indx != -1 and end_indx != -1:
+        ps_repr = resource.replace('\u', '+[char]0x')
+        ps_counter = [esc_counter[:start_indx]]
+        ps_counter.append("('")
+        ps_counter.append(ps_repr)
+        ps_counter.append("+'")
+        ps_counter.append(esc_counter[end_indx:])
+        return ''.join(ps_counter).decode('string_escape')
+    return counter
+
+
+def format_counters(ps_counters):
+    '''
+    Convert a list of supplied counters into a string, which will
+    be further used to cteate ps command line.
+    '''
+    return ','.join(
+        "('{0}')".format(counter) for counter in ps_counters)
+
+
+def chunkify(lst, n):
+    '''
+    Yield successive n-sized chunks from the list.
+    '''
+    return [lst[i::n] for i in xrange(n)]
+
+
+def format_stdout(stdout_lines):
+    '''
+    Return a tuple containing a list of stdout lines without the
+    BOM marker and property name, and a bool value specifying if it
+    is a start of a sample.
+    '''
+    sample_start = False
+    # Remove BOM marker(if present).
+    if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):
+        stdout_lines = stdout_lines[1:]
+
+    # Remove property name from the first stdout line.
+    if stdout_lines and stdout_lines[0].startswith('Readings : '):
+        stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
+        sample_start = True
+
+    return stdout_lines, sample_start
