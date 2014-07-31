@@ -281,7 +281,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def _build_commandlines(self):
         '''
         Return a list of command lines needed to get data for all counters.
-
         '''
         # The max length of the cmd.exe command is 8192.
         # The length of the powershell prefix is 399 chars.
@@ -498,52 +497,55 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if stdout_lines:
             LOG.debug("received Get-Counter data for %s", self.config.id)
+            # Data persister will take care of data order.
+            self.sample_buffer = collections.deque(stdout_lines)
 
             if sample_start:
-                # Report missing counters and initialize sample buffer.
-                if self.collected_counters:
-                    self.reportMissingCounters(
-                        self.counter_map, self.collected_counters)
-
-                self.sample_buffer = collections.deque(stdout_lines)
-                self.collected_counters = set()
                 self.collected_samples += 1
-
-            # Extend sample buffer. Continuation of previous sample.
-            else:
-                self.sample_buffer.extend(stdout_lines)
 
         # Continue while we have counter/value pairs.
         while len(self.sample_buffer) > 1:
-            # Buffer to counter conversion:
-            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec :'
-            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
-            #   '\\web service(another web site)\\move requests/sec'
-            counter = '\\{}'.format(
-                self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+            # Make sure no exceptions happen here. Otherwise all data
+            # collection would go down.
+            try:
+                # Buffer to counter conversion:
+                #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec :'
+                #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
+                #   '\\web service(another web site)\\move requests/sec'
+                counter = '\\{}'.format(
+                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
 
-            value = self.sample_buffer.popleft()
+                value = self.sample_buffer.popleft()
 
-            # ZEN-12024: Some locales use ',' as the decimal point.
-            if ',' in value:
-                value = value.replace(',', '.', 1)
+                # ZEN-12024: Some locales use ',' as the decimal point.
+                if ',' in value:
+                    value = value.replace(',', '.', 1)
 
-            component, datasource = self.counter_map.get(counter, (None, None))
-            if datasource:
-                self.collected_counters.add(counter)
+                component, datasource = self.counter_map.get(counter, (None, None))
+                if datasource:
+                    self.collected_counters.add(counter)
 
-                # We special-case the sysUpTime datapoint to convert
-                # from seconds to centi-seconds. Due to its origin in
-                # SNMP monitor Zenoss expects uptime in centi-seconds
-                # in many places.
-                if datasource == 'sysUpTime' and value is not None:
-                    value = float(value) * 100
+                    # We special-case the sysUpTime datapoint to convert
+                    # from seconds to centi-seconds. Due to its origin in
+                    # SNMP monitor Zenoss expects uptime in centi-seconds
+                    # in many places.
+                    if datasource == 'sysUpTime' and value is not None:
+                        value = float(value) * 100
 
-                PERSISTER.add_value(
-                    self.config.id, component, datasource, value, collect_time)
+                    PERSISTER.add_value(
+                        self.config.id, component, datasource, value, collect_time)
+            except Exception, err:
+                LOG.debug('Could not process a sample. Error: {}'.format(err))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.callback(None)
+
+        # Report missing counters every sample interval.
+        if self.collected_counters and self.collected_samples >= self.max_samples:
+            self.reportMissingCounters(
+                self.counter_map, self.collected_counters)
+            # Reinitialize collected counters for reporting.
+            self.collected_counters = set()
 
         # Log error message and wait for the data.
         if failures and not results:
