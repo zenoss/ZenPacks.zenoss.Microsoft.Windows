@@ -30,8 +30,6 @@ class ClusterDevice(BaseDevice):
     clusterhostdevices = ''
     guid = None
     creatingdc = None
-    # Save previous modeled value of cluster nodes.
-    oldclusterhostdevices = ''
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterhostdevices', 'type': 'string', 'mode': 'w'},
@@ -62,7 +60,7 @@ class ClusterDevice(BaseDevice):
                 clusterhostip = getHostByName(clusterhostdnsname)
             except(gaierror):
                 log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
-                return
+                continue
 
             device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
             if device:
@@ -93,12 +91,7 @@ class ClusterDevice(BaseDevice):
         self.clusterhostdevices = clusterhostdnsnames
 
     def getClusterHostMachines(self):
-        # Check if previous value of cluster nodes is the same like now.
-        if self.oldclusterhostdevices == self.clusterhostdevices:
-            return self.clusterhostdevices
-        else:
-            self.oldclusterhostdevices = self.clusterhostdevices
-            return False
+        return self.clusterhostdevices
 
     def setClusterHostMachinesList(self, value):
         '''

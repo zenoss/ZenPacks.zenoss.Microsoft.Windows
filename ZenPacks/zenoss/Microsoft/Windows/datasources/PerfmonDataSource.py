@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2014, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -181,20 +181,45 @@ class DataPersister(object):
 PERSISTER = DataPersister()
 
 
-def convert_to_ps_counter(counter):
-    esc_counter = counter.encode("unicode_escape")
-    start_indx = esc_counter.find('(')
-    end_indx = esc_counter.rfind(')')
-    resource = esc_counter[start_indx + 1:end_indx]
-    if '\u' in resource and start_indx != -1 and end_indx != -1:
-        ps_repr = resource.replace('\u', '+[char]0x')
-        ps_counter = [esc_counter[:start_indx]]
-        ps_counter.append("('")
-        ps_counter.append(ps_repr)
-        ps_counter.append("+'")
-        ps_counter.append(esc_counter[end_indx:])
-        return ''.join(ps_counter).decode('string_escape')
-    return counter
+class ComplexLongRunningCommand(object):
+    '''
+    A complex command containing one or more long running commands,
+    according to the number of commands supplied.
+    '''
+
+    def __init__(self, dsconf, num_commands):
+        self.dsconf = dsconf
+        self.num_commands = num_commands
+        self.commands = self._create_commands(num_commands)
+
+    def _create_commands(self, num_commands):
+        '''
+        Create initial set of commands according to the number supplied.
+        '''
+        self.num_commands = num_commands
+        return [create_long_running_command(createConnectionInfo(self.dsconf))
+                for i in xrange(num_commands)]
+
+    @defer.inlineCallbacks
+    def start(self, command_lines):
+        '''
+        Start a separate command for each command line.
+        If the number of commands has changed since the last start,
+        create an appropriate set of commands.
+        '''
+        if self.num_commands != len(command_lines):
+            self.commands = self._create_commands(len(command_lines))
+
+        for command, command_line in zip(self.commands, command_lines):
+            yield command.start(command_line)
+
+    @defer.inlineCallbacks
+    def stop(self):
+        '''
+        Stop all started commands.
+        '''
+        for command in self.commands:
+            yield command.stop()
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
@@ -203,7 +228,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     config = None
     cycling = None
     state = None
-    receive_deferred = None
+    receive_deferreds = None
     data_deferred = None
     command = None
     sample_interval = None
@@ -212,6 +237,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     collected_samples = None
     counter_map = None
 
+    command_line = (
+        'powershell -NoLogo -NonInteractive -NoProfile -Command "'
+        '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
+        '$FormatEnumerationLimit = -1; '
+        '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25); '
+        'get-counter -ea silentlycontinue '
+        '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
+        '-counter @({Counters}) '
+        '| Format-List -Property Readings"'
+    )
+
     def __init__(self, config):
         self.config = config
         self.state = PluginStates.STOPPED
@@ -219,6 +255,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = config.datasources[0]
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
+
+        # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
             self.sample_interval = dsconf0.cycletime
             self.max_samples = max(600 / self.sample_interval, 1)
@@ -226,34 +264,46 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.sample_interval = 1
             self.max_samples = 1
 
+        # Get counters from all components in the device.
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in config.datasources:
             counter = dsconf.params['counter'].lower()
             ps_counter = convert_to_ps_counter(counter)
-            self.counter_map[counter] = (dsconf.component,dsconf.datasource)
+            self.counter_map[counter] = (dsconf.component, dsconf.datasource)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
-        
-        self.build_commandline()
 
-        self.command = create_long_running_command(
-            createConnectionInfo(dsconf0))
+        self._build_commandlines()
 
-    def build_commandline(self):
-        self.commandline = (
-            'powershell -NoLogo -NonInteractive -NoProfile -Command "'
-            '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False) ; '
-            '$FormatEnumerationLimit = -1 ; '
-            '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25) ; '
-            'get-counter -ea silentlycontinue '
-            '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
-            '-counter @({Counters}) '
-            '| Format-List -Property Readings"'
-            ).format(
+        self.complex_command = ComplexLongRunningCommand(
+            dsconf0, self.num_commands)
+
+    def _build_commandlines(self):
+        '''
+        Return a list of command lines needed to get data for all counters.
+        '''
+        # The max length of the cmd.exe command is 8192.
+        # The length of the powershell prefix is 399 chars.
+        # Thus the line containing counters should not go beyond 7600 limit.
+        counters_limit = 7600
+
+        counters = sorted(self.ps_counter_map.keys())
+
+        # The number of long running commands needed to get data for all
+        # counters of the device equals to floor division of the current
+        # counters_line length by the calculated limit, incremented by 1.
+        self.num_commands = len(format_counters(counters)) // counters_limit + 1
+        LOG.debug('Creating {0} long running command(s)'.format(
+            self.num_commands))
+
+        # Chunk a counter list into num_commands equal parts.
+        counters = chunkify(counters, self.num_commands)
+
+        self.commandlines = [self.command_line.format(
             SampleInterval=self.sample_interval,
             MaxSamples=self.max_samples,
-            Counters=', '.join("('{0}')".format(c) for c in self.ps_counter_map),
-            )
+            Counters=format_counters(counter_group)
+        ) for counter_group in counters]
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -269,9 +319,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if getattr(context, 'perfmonInstance', None):
             counter = ''.join((context.perfmonInstance, counter))
 
-        return {
-            'counter': counter,
-            }
+        return {'counter': counter}
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -297,7 +345,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.state = PluginStates.STARTING
 
         try:
-            yield self.command.start(self.commandline)
+            yield self.complex_command.start(self.commandlines)
         except Exception as e:
             LOG.warn(
                 "Error on %s: %s",
@@ -317,7 +365,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # must wait for the receive deferred to fire to have any chance
         # at collecting data.
         if not self.cycling:
-            yield self.receive_deferred
+            yield self.receive_deferreds
 
         defer.returnValue(None)
 
@@ -359,15 +407,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self.state = PluginStates.STOPPING
 
-        if self.receive_deferred:
+        if self.receive_deferreds:
             try:
-                self.receive_deferred.cancel()
+                self.receive_deferreds.cancel()
             except Exception:
                 pass
 
-        if self.command:
+        if self.complex_command:
             try:
-                yield self.command.stop()
+                yield self.complex_command.stop()
             except Exception, ex:
                 if 'canceled by the user' in ex.message:
                     # This means the command finished naturally before
@@ -401,145 +449,125 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Receive results from continuous command.
         '''
-        self.receive_deferred = add_timeout(
-            self.command.receive(), OPERATION_TIMEOUT + 5)
+        deferreds = [cmd.receive() for cmd in self.complex_command.commands]
 
-        self.receive_deferred.addCallbacks(
+        self.receive_deferreds = add_timeout(
+            defer.DeferredList(deferreds, consumeErrors=True),
+            OPERATION_TIMEOUT + 5)
+
+        self.receive_deferreds.addCallbacks(
             self.onReceive, self.onReceiveFail)
+
+    def _parse_deferred_result(self, result):
+        '''
+        Group all stdout data and failures from each command result
+        and return them as a tuple of two lists: (filures, results)
+        '''
+        failures, results = [], []
+
+        for index, command_result in enumerate(result):
+            # The DeferredList result is of type:
+            # [(True/False, [stdout, stderr]/failure), ]
+            success, data = command_result
+            if success:
+                stdout, stderr = data
+                # Log error message if present.
+                if stderr:
+                    LOG.debug(' '.join(stderr))
+                # Leave sample start marker in first command result
+                # to properly report missing counters.
+                if index == 0:
+                    results.extend(stdout)
+                else:
+                    results.extend(format_stdout(stdout)[0])
+            else:
+                failures.append(data)
+
+        return failures, results
 
     @defer.inlineCallbacks
     def onReceive(self, result):
+        # Group the result of all commands into a single result.
+        failures, results = self._parse_deferred_result(result)
+
         collect_time = int(time.time())
 
-        # Log error message if present.
-        if result[1]:
-            LOG.error(' '.join(result[1]))
+        # Initialize sample buffer. Start of a new sample.
+        stdout_lines, sample_start = format_stdout(results)
 
-        # Initialize sample buffer. Start of a new sample. Remove BOM marker(if present).
-
-        stdout_lines = result[0]
-        if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):
-            stdout_lines = stdout_lines[1:]
         if stdout_lines:
-            if stdout_lines[0].startswith('Readings : '):
-                stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
+            LOG.debug("received Get-Counter data for %s", self.config.id)
+            # Data persister will take care of data order.
+            self.sample_buffer = collections.deque(stdout_lines)
 
-                if self.collected_counters:
-                    self.reportMissingCounters(
-                        self.counter_map, self.collected_counters)
-
-                self.sample_buffer = collections.deque(stdout_lines)
-                self.collected_counters = set()
+            if sample_start:
                 self.collected_samples += 1
-
-            # Extend sample buffer. Continuation of previous sample.
-            else:
-                self.sample_buffer.extend(stdout_lines)
 
         # Continue while we have counter/value pairs.
         while len(self.sample_buffer) > 1:
-            # Buffer to counter conversion:
-            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec :'
-            #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
-            #   '\\web service(another web site)\\move requests/sec'
-            counter = '\\{}'.format(
-                self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+            # Make sure no exceptions happen here. Otherwise all data
+            # collection would go down.
+            try:
+                # Buffer to counter conversion:
+                #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec :'
+                #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
+                #   '\\web service(another web site)\\move requests/sec'
+                counter = '\\{}'.format(
+                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
 
-            value = self.sample_buffer.popleft()
+                value = self.sample_buffer.popleft()
 
-            # ZEN-12024: Some locales use ',' as the decimal point.
-            if ',' in value:
-                value = value.replace(',', '.', 1)
+                # ZEN-12024: Some locales use ',' as the decimal point.
+                if ',' in value:
+                    value = value.replace(',', '.', 1)
 
-            component, datasource = self.counter_map.get(counter, (None, None))
-            if datasource:
-                self.collected_counters.add(counter)
+                component, datasource = self.counter_map.get(counter, (None, None))
+                if datasource:
+                    self.collected_counters.add(counter)
 
-                # We special-case the sysUpTime datapoint to convert
-                # from seconds to centi-seconds. Due to its origin in
-                # SNMP monitor Zenoss expects uptime in centi-seconds
-                # in many places.
-                if datasource == 'sysUpTime' and value is not None:
-                    value = float(value) * 100
+                    # We special-case the sysUpTime datapoint to convert
+                    # from seconds to centi-seconds. Due to its origin in
+                    # SNMP monitor Zenoss expects uptime in centi-seconds
+                    # in many places.
+                    if datasource == 'sysUpTime' and value is not None:
+                        value = float(value) * 100
 
-                PERSISTER.add_value(
-                    self.config.id, component, datasource, value, collect_time)
-
-        LOG.debug("received Get-Counter data for %s", self.config.id)
+                    PERSISTER.add_value(
+                        self.config.id, component, datasource, value, collect_time)
+            except Exception, err:
+                LOG.debug('Could not process a sample. Error: {}'.format(err))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.callback(None)
 
-        if self.collected_samples < self.max_samples and result[0]:
+        # Report missing counters every sample interval.
+        if self.collected_counters and self.collected_samples >= self.max_samples:
+            self.reportMissingCounters(
+                self.counter_map, self.collected_counters)
+            # Reinitialize collected counters for reporting.
+            self.collected_counters = set()
+
+        # Log error message and wait for the data.
+        if failures and not results:
+            # No need to call onReceiveFail for each command in DeferredList.
+            self.onReceiveFail(failures[0])
+
+        # Continue to receive if MaxSamples value has not been reached yet.
+        elif self.collected_samples < self.max_samples and results:
             self.receive()
-        elif not result[0] and self.cycling:
-            # If the command contains corrupt counters, remove them 
-            # from the command and then try to get data again.
-            yield self.remove_corrupt_counters()
+
+        # In case ZEN-12676/ZEN-11912 are valid issues.
+        elif not results and not failures and self.cycling:
+            try:
+                yield self.remove_corrupt_counters()
+            except Exception, ex:
+                pass
             yield self.restart()
+
         else:
             if self.cycling:
                 LOG.debug('Result: {0}'.format(result))
                 yield self.restart()
-
-        defer.returnValue(None)
-
-    @defer.inlineCallbacks
-    def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
-        '''
-        Bisect the counters to determine which of them are corrupt.
-        '''
-        command = lambda counters: (
-            "powershell -NoLogo -NonInteractive -NoProfile -Command "
-            "\"get-counter -ea silentlycontinue -counter @({0})\" ".format(
-                ', '.join("('{0}')".format(c) for c in counters))
-        )
-
-        num_counters = len(counter_list)
-
-        if num_counters == 0:
-            pass
-        elif num_counters == 1:
-            result = yield winrs.run_command(command(counter_list))
-            if result.exit_code != 0:
-                corrupt_list.extend(counter_list)
-        else:
-            mid_index = num_counters/2
-            slices = (counter_list[:mid_index], counter_list[mid_index:])
-            for counter_slice in slices:
-                result = yield winrs.run_command(command(counter_slice))
-                if result.exit_code != 0:
-                    yield self.search_corrupt_counters(
-                        winrs, counter_slice, corrupt_list)
-
-        defer.returnValue(corrupt_list)
-
-    @defer.inlineCallbacks
-    def remove_corrupt_counters(self):
-        '''
-        Remove counters which are not ignored by Error Action parameter
-        and crash the whole command.
-        '''
-        LOG.debug('Performing check for corrupt counters')
-        dsconf0 = self.config.datasources[0]
-        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
-
-        counter_list = sorted(
-            set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS[dsconf0.device]))
-        corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
-
-        # Add newly found corrupt counters to the previously checked ones.
-        if corrupt_counters:
-            CORRUPT_COUNTERS[dsconf0.device].extend(corrupt_counters)
-
-        # Remove the error counters from the counter map.
-        for counter in CORRUPT_COUNTERS[dsconf0.device]:
-            if self.ps_counter_map.get(counter):
-                LOG.debug("Counter '{0}' not found. Removing".format(counter))
-                del self.ps_counter_map[counter]
-
-        # Rebuild the command.
-        self.build_commandline()
 
         defer.returnValue(None)
 
@@ -583,6 +611,65 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.receive()
         else:
             yield self.restart()
+
+        defer.returnValue(None)
+
+    @defer.inlineCallbacks
+    def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
+        '''
+        Bisect the counters to determine which of them are corrupt.
+        '''
+        command = lambda counters: (
+            "powershell -NoLogo -NonInteractive -NoProfile -Command "
+            "\"get-counter -ea silentlycontinue -counter @({0})\" ".format(
+                ', '.join("('{0}')".format(c) for c in counters))
+        )
+
+        num_counters = len(counter_list)
+
+        if num_counters == 0:
+            pass
+        elif num_counters == 1:
+            result = yield winrs.run_command(command(counter_list))
+            if result.stderr:
+                corrupt_list.extend(counter_list)
+        else:
+            mid_index = num_counters/2
+            slices = (counter_list[:mid_index], counter_list[mid_index:])
+            for counter_slice in slices:
+                result = yield winrs.run_command(command(counter_slice))
+                if result.stderr:
+                    yield self.search_corrupt_counters(
+                        winrs, counter_slice, corrupt_list)
+
+        defer.returnValue(corrupt_list)
+
+    @defer.inlineCallbacks
+    def remove_corrupt_counters(self):
+        '''
+        Remove counters which are not ignored by Error Action parameter
+        and crash the whole command.
+        '''
+        LOG.debug('Performing check for corrupt counters')
+        dsconf0 = self.config.datasources[0]
+        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+
+        counter_list = sorted(
+            set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS[dsconf0.device]))
+        corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
+
+        # Add newly found corrupt counters to the previously checked ones.
+        if corrupt_counters:
+            CORRUPT_COUNTERS[dsconf0.device].extend(corrupt_counters)
+
+        # Remove the error counters from the counter map.
+        for counter in CORRUPT_COUNTERS[dsconf0.device]:
+            if self.ps_counter_map.get(counter):
+                LOG.debug("Counter '{0}' not found. Removing".format(counter))
+                del self.ps_counter_map[counter]
+
+        # Rebuild the command.
+        self._build_commandlines()
 
         defer.returnValue(None)
 
@@ -634,3 +721,55 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         deleted or modified.
         '''
         return reactor.callLater(self.sample_interval, self.stop)
+
+
+# Helper functions for PerfmonDataSource plugin.
+def convert_to_ps_counter(counter):
+    esc_counter = counter.encode("unicode_escape")
+    start_indx = esc_counter.find('(')
+    end_indx = esc_counter.rfind(')')
+    resource = esc_counter[start_indx + 1:end_indx]
+    if '\u' in resource and start_indx != -1 and end_indx != -1:
+        ps_repr = resource.replace('\u', '+[char]0x')
+        ps_counter = [esc_counter[:start_indx]]
+        ps_counter.append("('")
+        ps_counter.append(ps_repr)
+        ps_counter.append("+'")
+        ps_counter.append(esc_counter[end_indx:])
+        return ''.join(ps_counter).decode('string_escape')
+    return counter
+
+
+def format_counters(ps_counters):
+    '''
+    Convert a list of supplied counters into a string, which will
+    be further used to cteate ps command line.
+    '''
+    return ','.join(
+        "('{0}')".format(counter) for counter in ps_counters)
+
+
+def chunkify(lst, n):
+    '''
+    Yield successive n-sized chunks from the list.
+    '''
+    return [lst[i::n] for i in xrange(n)]
+
+
+def format_stdout(stdout_lines):
+    '''
+    Return a tuple containing a list of stdout lines without the
+    BOM marker and property name, and a bool value specifying if it
+    is a start of a sample.
+    '''
+    sample_start = False
+    # Remove BOM marker(if present).
+    if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):
+        stdout_lines = stdout_lines[1:]
+
+    # Remove property name from the first stdout line.
+    if stdout_lines and stdout_lines[0].startswith('Readings : '):
+        stdout_lines[0] = stdout_lines[0].replace('Readings : ', '', 1)
+        sample_start = True
+
+    return stdout_lines, sample_start
