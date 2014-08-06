@@ -30,8 +30,6 @@ class Device(BaseDevice):
     clusterdevices = ''
     sqlhostname = None
     msexchangeversion = None
-    # Save previous modeled value of cluster.
-    oldclusterdevices = ''
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
@@ -51,13 +49,13 @@ class Device(BaseDevice):
                 log.warning(
                     'Unable to resolve hostname {0}'.format(clusterdnsname)
                 )
-                return
+                continue
 
             device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
-                return
+                continue
 
             @transact
             def create_device():
@@ -89,12 +87,7 @@ class Device(BaseDevice):
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachines(self):
-        # Check if previous value of cluster machines is the same like now.
-        if self.oldclusterdevices == self.clusterdevices:
-            return self.clusterdevices
-        else:
-            self.oldclusterdevices = self.clusterdevices
-            return False
+        return self.clusterdevices
 
     def setClusterMachinesList(self, value):
         '''
