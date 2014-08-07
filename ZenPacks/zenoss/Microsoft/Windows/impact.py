@@ -154,7 +154,8 @@ class DeviceRelationsProvider(BaseRelationsProvider):
 
         # Interfaces
         for obj in self._object.os.interfaces():
-            yield edge(guid(obj), self.guid())
+            if obj.adminStatus == 1:
+                yield edge(guid(obj), self.guid())
 
         # Cluster Services
         for obj in self._object.os.clusterservices():
@@ -193,7 +194,8 @@ class CPURelationsProvider(BaseRelationsProvider):
 class InterfaceRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self._object.device()))
+        if self._object.adminStatus == 1:
+            yield edge(self.guid(), guid(self._object.device()))
 
 
 class ClusterRelationsProvider(BaseRelationsProvider):
