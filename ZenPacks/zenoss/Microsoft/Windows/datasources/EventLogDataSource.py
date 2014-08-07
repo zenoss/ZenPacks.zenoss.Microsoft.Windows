@@ -142,8 +142,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
             value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
             if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
                 value = [value]
-        except ValueError:
-            log.error('Could not parse json: %r' % output)
+        except ValueError as e:
+            log.error('Could not parse json: %r\n%s' % (output, e))
             raise
         defer.returnValue(value)
 
@@ -216,6 +216,37 @@ class EventLogQuery(object):
         $FormatEnumerationLimit = -1;
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
+        function sstring($s) {
+            return "$($s)".replace('"', '\"').trim();
+        };
+        function EventLogToJSON {
+            begin {
+                $first = $True;
+                '['
+            }
+            process {
+                if ($first) {
+                    $separator = "";
+                    $first = $False;
+                } else {
+                    $separator = ",";
+                }
+                $separator + "{
+                    `"EntryType`": `"$(sstring($_.EntryType))`",
+                    `"TimeGenerated`": `"$(sstring($_.TimeGenerated))`",
+                    `"Source`": `"$(sstring($_.Source))`",
+                    `"InstanceId`": `"$(sstring($_.InstanceId))`",
+                    `"Message`": `"$(sstring($_.Message))`",
+                    `"UserName`": `"$(sstring($_.UserName))`",
+                    `"MachineName`": `"$(sstring($_.MachineName))`",
+                    `"EventID`": `"$(sstring($_.EventID))`"
+                }"
+            }
+            end {
+                ']'
+            }
+        };
+
         function get_new_recent_entries($logname, $selector, $max_age) {
             <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
@@ -242,17 +273,14 @@ class EventLogQuery(object):
                 Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -Value ([String]$last_read);
             }
             
-            @($events | ? $selector) | Select-Object `
-                @{Name='EntryType'; Expression={"$($_.EntryType)"}},`
-                @{Name='TimeGenerated'; Expression={"$($_.TimeGenerated)"}},`
-                Source, InstanceId, Message, UserName,`
-                MachineName, EventID `
-            | ConvertTo-Json
+            @($events | ? $selector) | EventLogToJSON
         };
         get_new_recent_entries -logname %s -selector %s -max_age %s;
     '''
 
     def run(self, eventlog, selector, max_age):
+        if selector.strip() == '*':
+            selector = '{$True}'
         command = "{0} \"& {{{1}}}\"".format(
             self.PS_COMMAND,
             self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (
