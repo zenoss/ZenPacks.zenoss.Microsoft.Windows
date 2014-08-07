@@ -30,7 +30,7 @@ class WinService(OSComponent):
     description = None
     startmode = None
     account = None
-    monitor = None
+    monitor = False
     usermonitor = False
     globalset = False
 
@@ -84,7 +84,7 @@ class WinService(OSComponent):
         if self.usermonitor == True:
             if self.globalset == True:
                 self.globalset = False
-        #return self.monitor
+            return self.monitor
 
         # 2 - Check to see if a default template exists with default set
         best_template = self.getBest()
