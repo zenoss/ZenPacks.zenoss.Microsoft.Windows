@@ -59,6 +59,8 @@ class WinService(OSComponent):
     def getBest(self):
         # Method to find template that matches this service
         # Gets the monitor value
+        self.monitor = False
+        self.usermonitor = False
         try:
             if self.getRRDTemplateByName(self.servicename):
                 template = self.getRRDTemplateByName(self.servicename)
@@ -66,13 +68,18 @@ class WinService(OSComponent):
                     if self.globalset == False:
                         self.globalset = True
                         self.monitor = True
+                        self.usermonitor = True
                         self.index_object()
                     return True
+                else:
+                    template.datasources.DefaultService.enabled = False
+                    return False
             return False
         except:
             return False
 
     def monitored(self):
+
         # 1 - Check to see if the user has manually set monitor status
         if self.usermonitor == True:
             if self.globalset == True:
@@ -86,6 +93,6 @@ class WinService(OSComponent):
             return True
         # 3 - Default to what the current monitor status is
         else:
-            return  self.monitor
+            return self.monitor
 
 InitializeClass(WinService)
