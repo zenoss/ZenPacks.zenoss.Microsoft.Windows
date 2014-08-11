@@ -33,7 +33,7 @@ class FileSystems(WinRMPlugin):
 
         # TODO: Do we need to support these too?
         # 'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
-        'Win32_Volume': "SELECT * FROM Win32_Volume where driveletter=NULL",
+        'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
         }
 
     def process(self, device, results, log):
@@ -115,7 +115,7 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Capacity:
-                disk.Size = 0
+                disk.Capacity = 0
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Capacity)
 
@@ -142,7 +142,7 @@ class FileSystems(WinRMPlugin):
 
 def Win32_volume_mount(disk):
     '''
-    Return a FileSystem.mount property given a Win32_LogicalDisk.
+    Return a FileSystem.mount property given a Win32_Volume.
     '''
     mount_parts = []
     if disk.Name:
