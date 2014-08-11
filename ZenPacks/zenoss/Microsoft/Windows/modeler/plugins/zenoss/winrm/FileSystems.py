@@ -33,7 +33,7 @@ class FileSystems(WinRMPlugin):
 
         # TODO: Do we need to support these too?
         # 'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
-        # 'Win32_Volume': "SELECT * FROM Win32_Volume",
+        'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
         }
 
     def process(self, device, results, log):
@@ -93,8 +93,69 @@ class FileSystems(WinRMPlugin):
                 'totalFiles': 0,
                 }))
 
+        for disk in results.get('Win32_Volume', ()):
+            mount = Win32_volume_mount(disk)
+
+            if ignore_names and ignore_names_search(mount):
+                log.info(
+                    "Ignoring %s on %s because it matches "
+                    "zFileSystemMapIgnoreNames",
+                    mount, device.id)
+
+                continue
+
+            if ignore_types:
+                zentypes = set(lookup_zendrivetypes(disk.DriveType or -1))
+                if zentypes.intersection(ignore_types):
+                    log.info(
+                        "Ignoring %s on %s because it matches "
+                        "zFileSystemMapIgnoreTypes",
+                        mount, device.id)
+
+                    continue
+
+            if not disk.Capacity:
+                disk.Capacity = 0
+            if not disk.BlockSize:
+                disk.BlockSize = guess_block_size(disk.Capacity)
+
+            perfmonInstance = '\\LogicalDisk({})'.format(
+                disk.Name.rstrip('\\'))
+
+            rm.append(self.objectMap({
+                'id': self.prepId(disk.DeviceID),
+                'title': mount,
+                'mount': mount,
+                'storageDevice': disk.Name,
+                'drivetype': lookup_drivetype(disk.DriveType or -1),
+                'mediatype': lookup_mediatype(12),
+                'type': disk.FileSystem,
+                'blockSize': int(disk.BlockSize),
+                'totalBlocks': int(disk.Capacity) / int(disk.BlockSize),
+                'maxNameLen': disk.MaximumFileNameLength,
+                'perfmonInstance': perfmonInstance,
+                'totalFiles': 0,
+                }))
+        
         return rm
 
+
+def Win32_volume_mount(disk):
+    '''
+    Return a FileSystem.mount property given a Win32_Volume.
+    '''
+    mount_parts = []
+    if disk.Name:
+        mount_parts.append(disk.Name)
+
+    if disk.SerialNumber:
+        mount_parts.append(
+            '(Serial Number: {})'.format(disk.SerialNumber))
+
+    if disk.Label:
+        mount_parts.append('- {}'.format(disk.Label))
+
+    return ' '.join(mount_parts)
 
 def win32_logicaldisk_mount(disk):
     '''
