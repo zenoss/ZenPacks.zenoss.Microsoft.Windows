@@ -19,7 +19,7 @@ import logging
 import urllib
 from urlparse import urlparse
 from traceback import format_exc
-
+import re
 
 from zope.component import adapts
 from zope.component import getGlobalSiteManager
@@ -248,6 +248,8 @@ class PowershellMSSQLStrategy(object):
     def build_command_line(self, counters, sqlserver, sqlusername, sqlpassword, database, login_as_user):
         #SQL Command opening
 
+        database = re.sub('[\']', '\' +[char]39 + [char]39+ \'', database)
+
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
 
@@ -304,7 +306,9 @@ class PowershellMSSQLStrategy(object):
             log.debug('MSSQL error: {0}' + ''.join(result.stderr))
 
         if result.exit_code != 0:
-            counters = [dsconf.params['counter'] for dsconf in dsconfs]
+            for dsconf in dsconfs:
+                dsconf.params['counter'] = dsconf
+            counters = dsconf.params['counter']
             log.info(
                 'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
