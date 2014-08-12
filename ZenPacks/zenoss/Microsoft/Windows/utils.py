@@ -88,7 +88,7 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
     dblogins = {}
     login_as_user = False
     try:
-        dbinstance = json.loads(dbinstances)
+        dbinstance = json.loads(prepare_zDBInstances(dbinstances))
         users = [el.get('user') for el in filter(None, dbinstance)]
         # a) MSSQL auth
         if ''.join(users):
