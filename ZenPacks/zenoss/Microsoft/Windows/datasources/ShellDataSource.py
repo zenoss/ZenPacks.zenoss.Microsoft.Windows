@@ -617,6 +617,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     def onSuccess(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
+        severity = ZenEventClasses.Clear
+        msg = 'winrs: successful collection'
 
         if not results:
             return data
@@ -636,6 +638,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     data['values'][dsconf.component][dp.id] = value, 'N'
             else:
                 log.warn(cmdResult)
+                severity = ZenEventClasses.Warning
+                msg = cmdResult
         else:
             checked_result = False
             for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
@@ -662,10 +666,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     )
                 else:
                     data['values'][dsconf.component][dsconf.datasource] = value, timestamp
-            if checked_result:
-                msg = 'winrs: successful collection'
-                severity = ZenEventClasses.Clear
-            else:
+            if not checked_result:
                 msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
                     ' datasource'.format(
                         dsconf0.params['strategy'],
