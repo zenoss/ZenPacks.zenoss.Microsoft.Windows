@@ -318,7 +318,7 @@ class PowershellMSSQLStrategy(object):
         # Parse values
         valuemap = {}
         for counterline in filter_sql_stdout(result.stdout):
-            key, value = counterline.split(':')
+            key, value = counterline.split(':', 1)
             if key.strip() == 'ckey':
                 _counter = value.strip().lower()
             elif key.strip() == 'cvalue':
