@@ -175,8 +175,15 @@ class ZenPack(ZenPackBase):
 
     def cleanup_zProps(self):
         # Delete zProperty when updating the older zenpack version without reinstall.
-        if self.dmd.Devices.hasProperty('zDBInstancesPassword'):
-            self.dmd.Devices.deleteZenProperty('zDBInstancesPassword')
+        devices = self.dmd.Devices
+        try:
+            devices.deleteZenProperty('zDBInstancesPassword')
+        except:
+            pass
+        # workaround for ZEN-13662
+        devices._properties = tuple(
+            [x for x in devices._properties if x[0] != 'zDBInstancesPassword']
+        )
 
 
 from Products.ZenModel.OSProcess import OSProcess
