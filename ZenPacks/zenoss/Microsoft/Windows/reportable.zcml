@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<configure xmlns="http://namespaces.zope.org/zope"
+           xmlns:browser="http://namespaces.zope.org/browser"
+           >
+
+  <!-- Define the reportable schema -->
+  <adapter factory=".basereportable.BaseReportable"
+           for=".zope_utils.BaseDevice"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".zope_utils.BaseDevice"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".ClusterResource.ClusterResource"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".ClusterResource.ClusterResource"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".ClusterService.ClusterService"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".ClusterService.ClusterService"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".CPU.CPU"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".CPU.CPU"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".FileSystem.FileSystem"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".FileSystem.FileSystem"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".Interface.Interface"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".Interface.Interface"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".OperatingSystem.OperatingSystem"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".OperatingSystem.OperatingSystem"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".OSProcess.OSProcess"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".OSProcess.OSProcess"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".TeamInterface.TeamInterface"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".TeamInterface.TeamInterface"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinIIS.WinIIS"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinIIS.WinIIS"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinService.WinService"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinService.WinService"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLBackup.WinSQLBackup"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLBackup.WinSQLBackup"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLDatabase.WinSQLDatabase"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLDatabase.WinSQLDatabase"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLInstance.WinSQLInstance"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLInstance.WinSQLInstance"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLJob.WinSQLJob"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLJob.WinSQLJob"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+</configure>

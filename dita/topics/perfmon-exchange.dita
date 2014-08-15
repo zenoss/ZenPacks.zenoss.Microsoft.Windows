@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
-<reference id="referenceid">
+<reference product="not-ucs" id="referenceid">
   <title>Exchange metrics</title>
   <refbody>
     <section>
       <p>The following metrics are collected from the <codeph>Exchange</codeph> Perfmon counter.</p>
+    </section>
+    <section>
+      <title>Exchange 2003</title>
       <ul>
         <li>\MSExchangeIS Mailbox(_Total)\Folder opens/sec</li>
         <li>\MSExchangeIS Mailbox(_Total)\Local delivery rate</li>
@@ -14,14 +17,32 @@
         <li>\MSExchangeIS\RPC Requests</li>
         <li>\SMTP Server(_Total)\Local Queue Length</li>
         <li>\SMTP Server(_Total)\Messages Delivered/sec</li>
-        <li>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length</li>
-        <li>\MSExchangeTransport Queues(_Total)\Messages Completed Delivery Per Second</li>
+      </ul>
+    </section>
+    <section>
+      <title>Exchange 2007 and 2010</title>
+      <ul>
         <li>\MSExchangeIS Mailbox(_Total)\Folder opens/sec</li>
         <li>\MSExchangeIS Mailbox(_Total)\Local delivery rate</li>
         <li>\MSExchangeIS Mailbox(_Total)\Message Opens/sec</li>
         <li>\MSExchangeIS\RPC Averaged Latency</li>
         <li>\MSExchangeIS\RPC Operations/sec</li>
         <li>\MSExchangeIS\RPC Requests</li>
+        <li>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length</li>
+        <li>\MSExchangeTransport SmtpSend(_Total)\Messages Sent/sec</li>
+      </ul>
+    </section>
+    <section>
+      <title>Exchange 2013</title>
+      <ul>
+        <li>\MSExchangeIS Store(_Total)\Folders opened/sec</li>
+        <li>\MSExchangeIS Store(_Total)\Messages Delivered/sec</li>
+        <li>\MSExchangeIS Store(_Total)\Messages opened/sec</li>
+        <li>\MSExchange Store Interface(_Total)\RPC Latency average (msec)</li>
+        <li>\MSExchange Store Interface(_Total)\RPC Requests sent/sec</li>
+        <li>\MSExchange Store Interface(_Total)\RPC Requests sent</li>
+        <li>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length</li>
+        <li>\MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec</li>
       </ul>
     </section>
   </refbody>

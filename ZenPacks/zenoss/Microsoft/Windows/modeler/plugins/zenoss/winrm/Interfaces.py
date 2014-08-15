@@ -135,10 +135,7 @@ class Interfaces(WinRMPlugin):
             broadcomresults = ''.join(broadcomresults.stdout).split('|')
 
         # Performance Counters for Windows 2012
-        counters = results.get('counters2012')
-        if counters:
-            counters = dict([(elem.split(':')[0], elem.split(':')[1]) for elem
-                            in ''.join(counters.stdout).split('|')[:-1]])
+        counters = self.sanitize_counters(results.get('counters2012'))
 
         # Interface Map
         mapInter = []
@@ -211,9 +208,6 @@ class Interfaces(WinRMPlugin):
                     "No configuration found for %s on %s",
                     inter.Description, device.id)
 
-                continue
-
-            if interconf.MACAddress is None:
                 continue
 
             if getattr(interconf, 'ServiceName', None) is not None:
@@ -358,6 +352,25 @@ class Interfaces(WinRMPlugin):
         rm.maps = list(filter_maps(rm.maps, device, log))
 
         return rm
+
+    def sanitize_counters(self, counters):
+        """
+        Converts raw windows 2012 counters to dictionary
+        """
+        if not counters:
+            return None
+
+        res = {}
+        for elem in ''.join(counters.stdout).split('|')[:-1]:
+            k, v = elem.split(':')[0], elem.split(':')[1]
+            if k in res:
+                # on Windows 2012R2 interfaces with #N has duplicate
+                # counters, one with normal name and other like isatap.{...}
+                if not 'isatap' in v:
+                    res[k] = v
+            else:
+                res[k] = v
+        return res
 
     # builds a dictionary of perfmon instance paths for each network adapter
     # found in the WMI results query, keyed by the Index attribute

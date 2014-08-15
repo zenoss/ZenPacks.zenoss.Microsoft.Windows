@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE task PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:task" "task.dtd">
+<task id="taskid">
+  <title>Changing IIS Sites event severity</title>
+  <taskbody>
+    <prereq></prereq>
+    <context>This ZenPack generates an event with severity 
+      <codeph>Info</codeph> when an IIS Site is stopped. 
+      Perform this procedure to create a transform for the
+      event that assigns a different severity level.</context>
+    <steps>
+      <step>
+        <cmd></cmd>
+      </step>
+    </steps>
+  </taskbody>
+</task>

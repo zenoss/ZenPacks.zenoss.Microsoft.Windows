@@ -16,7 +16,8 @@ import logging
 from zope.component import adapts
 from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
-from twisted.internet import defer
+from twisted.internet import defer, error
+from twisted.python.failure import Failure
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -71,7 +72,7 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
         {'id': 'defaultgraph', 'type': 'boolean', 'mode': 'w'},
-        )
+    )
 
 
 class IServiceDataSourceInfo(IRRDDataSourceInfo):
@@ -89,7 +90,7 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
     defaultgraph = schema.Bool(
         group=_t('Service Status'),
         title=_t('Monitor by Default')
-        )
+    )
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
@@ -100,7 +101,8 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
     """
-    Pull in proxy values so they can be utilized within the WinRS Service plugin.
+    Pull in proxy values so they can be utilized
+    within the WinRS Service plugin.
     """
     implements(IServiceDataSourceInfo)
     adapts(ServiceDataSource)
@@ -125,7 +127,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             datasource.plugin_classname,
             params.get('servicename'),
             params.get('alertifnot'),
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
@@ -148,8 +150,11 @@ class ServicePlugin(PythonDataSourcePlugin):
         servicename = ds0.params['servicename']
 
         WinRMQueries = [
-            create_enum_info('select name, state, status, displayname'\
-             ' from Win32_Service where name = "{0}"'.format(servicename))]
+            create_enum_info(
+                'select name, state, status, displayname'
+                ' from Win32_Service where name = "{0}"'.format(servicename)
+            )
+        ]
 
         conn_info = createConnectionInfo(ds0)
 
@@ -164,52 +169,67 @@ class ServicePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         ds0 = config.datasources[0]
         serviceinfo = results[results.keys()[0]]
+        eventClass = ds0.eventClass if ds0.eventClass else "/Status"
 
         if serviceinfo[0].State != ds0.params['alertifnot']:
 
-            evtmessage = 'Service Alert: {0} has changed to {1} state'.format(
-                        serviceinfo[0].Name,
-                        serviceinfo[0].State)
+            evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
+                serviceinfo[0].Name,
+                serviceinfo[0].State
+            )
 
             data['events'].append({
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': 'WindowsService',
-                    'severity': ds0.severity,
-                    'summary': evtmessage,
-                    'component': prepId(serviceinfo[0].Name),
-                    'device': config.id,
-                    })
+                'eventClass': eventClass,
+                'eventClassKey': 'WindowsServiceLog',
+                'eventKey': 'WindowsService',
+                'severity': ds0.severity,
+                'summary': evtmsg,
+                'component': prepId(serviceinfo[0].Name),
+                'device': config.id,
+            })
         else:
 
-            evtmessage = 'Service Recoverd: {0} has changed to {1} state'.format(
-                        serviceinfo[0].Name,
-                        serviceinfo[0].State)
+            evtmsg = 'Service Recoverd: {0} has changed to {1} state'.format(
+                serviceinfo[0].Name,
+                serviceinfo[0].State
+            )
 
             data['events'].append({
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': 'WindowsService',
-                    'severity': ZenEventClasses.Clear,
-                    'summary': evtmessage,
-                    'component': prepId(serviceinfo[0].Name),
-                    'device': config.id,
-                    })
+                'eventClass': eventClass,
+                'eventClassKey': 'WindowsServiceLog',
+                'eventKey': 'WindowsService',
+                'severity': ZenEventClasses.Clear,
+                'summary': evtmsg,
+                'component': prepId(serviceinfo[0].Name),
+                'device': config.id,
+            })
 
         # Event to provide notification that check has completed
         data['events'].append({
+            'eventClass': eventClass,
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
-            'severity': ZenEventClasses.Info,
+            'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
             'eventClassKey': 'WindowsServiceLogSuccess',
-            })
+        })
 
         return data
 
     def onError(self, result, config):
-        msg = 'WindowsServiceLog: failed collection {0} {1}'.format(result, config)
+        ds0 = config.datasources[0]
+        eventClass = ds0.eventClass if ds0.eventClass else "/Status"
+        prefix = 'failed collection - '
+        if isinstance(result, Failure):
+            result = result.value
+            if isinstance(result, error.TimeoutError):
+                result = 'Timeout while connecting to host'
+                prefix = ''
+        msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         log.error(msg)
         data = self.new_data()
         data['events'].append({
+            'eventClass': eventClass,
             'severity': ZenEventClasses.Warning,
             'eventClassKey': 'WindowsServiceCollectionError',
             'eventKey': 'WindowsServiceCollection',

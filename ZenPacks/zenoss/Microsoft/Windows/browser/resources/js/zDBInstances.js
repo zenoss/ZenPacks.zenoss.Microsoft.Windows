@@ -146,6 +146,10 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
 
     // --- Value handling ---
     setValue: function(values) {
+        if(typeof values != 'string'){
+            values = '[{"instance":"MSSQLSERVER","user":"","passwd":""}]';
+        }
+
         var data = [];
         try {
             values = JSON.parse(values);
@@ -188,10 +192,14 @@ if (Ext.version === undefined) {
 var zDBInstancesRender = function(value) {
     var result = [];
     try {
-        var v = JSON.parse(value);
-        Ext.each(v, function(val) {
-            result.push(val.instance + ":" + val.user + ":" + "*".repeat(val.passwd.length));
-        });
+         if(typeof value == 'string'){
+            var v = JSON.parse(value);
+            Ext.each(v, function(val) {
+                result.push(val.instance + ":" + val.user + ":" + "*".repeat(val.passwd.length));
+            });
+         } else {
+            result.push("MSSQLSERVER" + ":" + "" + ":" + "");
+         }
     } catch (err) {
         result.push(ERROR_MESSAGE);
     }

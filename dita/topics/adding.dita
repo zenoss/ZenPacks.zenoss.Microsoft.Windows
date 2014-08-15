@@ -3,7 +3,9 @@
 <task id="taskid">
   <title>Adding a Windows device</title>
   <taskbody>
-    <context>Follow these steps to add a Windows device through the <ph conkeyref="names/platform"/> user interface.</context>
+    <context>Follow these steps to add a Windows device using local authentication, through the 
+      <ph conkeyref="names/platform"/> user interface. To monitor other environments, see
+      <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-options"/>.</context>
     <steps>
       <step>
         <cmd>Log in to <ph conkeyref="names/platform"/> user interface <ph conkeyref="login-as/zm-or-m"/>.</cmd>

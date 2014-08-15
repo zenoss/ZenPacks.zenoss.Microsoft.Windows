@@ -43,9 +43,10 @@
     </data>
   </bookmeta>
   <frontmatter>
-      <mapref href="../../../../../../docs.common/keydefs-misc.ditamap"/>
-      <mapref href="../../../../../../docs.common/keydefs-topics.ditamap"/>
-      <mapref href="../../../../../../docs.extmon/keydefs-topics.ditamap"/>
+      <mapref href="../../docs.common/vars/keydefs-zsd.ditamap"/>
+      <mapref href="../../docs.common/keydefs-topics.ditamap"/>
+      <mapref href="../../docs.extmon/keydefs-topics.ditamap"/>
+      <mapref href="../../docs.extmon/keydefs-urls.ditamap"/>
   </frontmatter>
 
   <chapter href="Microsoft.Windows.ditamap" format="ditamap"/>

@@ -53,6 +53,9 @@ clean:
 	@rm -Rf $(LIB_DIR)/txwinrm
 	@rm -rf build dist *.egg-info
 
+test:
+	runtests ZenPacks.zenoss.Microsoft.Windows
+
 
 ## setuptools Targets ########################################################
 

@@ -88,7 +88,7 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
     dblogins = {}
     login_as_user = False
     try:
-        dbinstance = json.loads(dbinstances)
+        dbinstance = json.loads(prepare_zDBInstances(dbinstances))
         users = [el.get('user') for el in filter(None, dbinstance)]
         # a) MSSQL auth
         if ''.join(users):
@@ -236,3 +236,22 @@ def check_for_network_error(result, config):
     )
 
     return msg, '/Unknown'
+
+
+def prepare_zDBInstances(inst):
+    '''
+    Workaround for ZEN-11424
+    '''
+    dbinstance = inst
+    if isinstance(inst, list):
+        if inst[0].get('instance'):
+            dbinstance = inst[0].get('instance')
+            # checks if the pre_parced is list
+            if isinstance(dbinstance, list):
+                # check if the first element is dict
+                if isinstance(dbinstance[0], dict):
+                    # Convert dict to string
+                    prep_inst = str(dbinstance[0])
+                    prep_inst = prep_inst.replace('\'', '"')
+                    dbinstance = '[' + prep_inst + ']'
+    return dbinstance

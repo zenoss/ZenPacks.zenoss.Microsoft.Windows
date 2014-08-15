@@ -154,15 +154,8 @@ class DeviceRelationsProvider(BaseRelationsProvider):
 
         # Interfaces
         for obj in self._object.os.interfaces():
-            yield edge(guid(obj), self.guid())
-
-        # # IIS Sites
-        # for obj in self._object.os.winrmiis():
-        #     yield edge(guid(obj), self.guid())
-
-        # DB Instances
-        for obj in self._object.os.winsqlinstances():
-            yield edge(guid(obj), self.guid())
+            if obj.adminStatus == 1:
+                yield edge(guid(obj), self.guid())
 
         # Cluster Services
         for obj in self._object.os.clusterservices():
@@ -170,50 +163,42 @@ class DeviceRelationsProvider(BaseRelationsProvider):
 
         # Look up for HyperV server with same IP
         try:
-            dc = self._object.getDmdRoot('Devices').getOrganizer('/Server/Microsoft/HyperV')
+            dc = self._object.getDmdRoot('Devices').getOrganizer(
+                '/Server/Microsoft/HyperV'
+            )
         except Exception:
             return
 
-        results = ICatalogTool(dc).search()
+        results = ICatalogTool(dc).search(types=(
+            'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
+        ))
 
         for brain in results:
             obj = brain.getObject()
-            if hasattr(obj, 'ip'):
-                if obj.ip == self._object.id:
-                    yield edge(self.guid(), guid(obj))
+            if obj.ip == self._object.id:
+                yield edge(self.guid(), guid(obj))
 
 
 class FileSystemRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
 
 
 class CPURelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))
 
 
 class InterfaceRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
-
-
-# class IISRelationsProvider(BaseRelationsProvider):
-
-#     def getEdges(self):
-#         yield edge(self.guid(), guid(self.device()))
-
-
-class SQLRelationsProvider(BaseRelationsProvider):
-
-    def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        if self._object.adminStatus == 1:
+            yield edge(self.guid(), guid(self._object.device()))
 
 
 class ClusterRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
-        yield edge(self.guid(), guid(self.device()))
+        yield edge(self.guid(), guid(self._object.device()))

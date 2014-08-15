@@ -60,7 +60,7 @@ class ClusterDevice(BaseDevice):
                 clusterhostip = getHostByName(clusterhostdnsname)
             except(gaierror):
                 log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
-                return
+                continue
 
             device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
             if device:
@@ -91,6 +91,15 @@ class ClusterDevice(BaseDevice):
         self.clusterhostdevices = clusterhostdnsnames
 
     def getClusterHostMachines(self):
+        return self.clusterhostdevices
+
+    def setClusterHostMachinesList(self, value):
+        '''
+        Don't do anything.
+        '''
+        pass
+
+    def getClusterHostMachinesList(self):
         '''
         Get hostnames of servers belonging to this cluster.
         '''

@@ -204,7 +204,11 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-
+                    if(record.data.cacheSpeedL2 === null){
+                            return '<span title="Size">'+
+                                record.data.cacheSizeL2 + ' KB' +
+                                '</span>';
+                    }
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL2 + ' KB @ ' +
                         record.data.cacheSpeedL2 + ' MHz' +
@@ -219,7 +223,11 @@ ZC.WindowsCPUPanel = Ext.extend(ZC.WINComponentGridPanel, {
                     if (value === null) {
                         return 'n/a';
                     }
-
+                    if(record.data.cacheSpeedL3 === null){
+                            return '<span title="Size">'+
+                                record.data.cacheSizeL3 + ' KB' +
+                                '</span>';
+                    }
                     return '<span title="Size @ Speed">' +
                         record.data.cacheSizeL3 + ' KB @ ' +
                         record.data.cacheSpeedL3 + ' MHz' +
@@ -855,7 +863,7 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('IP Interface'),
-                width: 150
+                width: 200
             },{
                 id: 'ipAddresses',
                 dataIndex: 'ipAddressObjs',
@@ -962,7 +970,7 @@ ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 id: 'name',
                 dataIndex: 'name',
                 header: _t('IP Interface'),
-                width: 150
+                width: 200
             },{
                 id: 'ipAddresses',
                 dataIndex: 'ipAddressObjs',

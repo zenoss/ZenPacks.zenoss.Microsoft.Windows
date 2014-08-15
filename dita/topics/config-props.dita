@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
+<reference id="referenceid">
+  <title>Configuration properties</title>
+  <refbody>
+    <section>
+      <dl>
+        <dlentry>
+          <dt>zWinRMUser</dt>
+          <dd>
+            <p>The username of a local or domain user account. The value of this 
+              property determines whether <ph conkeyref="names/platform"/> uses 
+              local Windows authentication or domain (Kerberos) authentication 
+              to gain access to a Windows device.</p>
+            <ul>
+              <li>If the value does not include a domain name (for example, 
+                <codeph>username</codeph>) local authentication is used.</li>
+              <li>If the value does include a domain name (for example,  
+                <codeph>username@example.com</codeph>) domain authentication is used.</li>
+            </ul>
+            <p>For domain authentication, the zWinKDC property is required and the zWinRMServerName 
+              property may be necessary.</p>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMPassword</dt>
+          <dd>The password of the user specified with the zWinRMUser property.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinKDC</dt>
+          <dd>The IP address of a domain controller in your Windows environment. This property 
+            is required to use domain authentication.</dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMServerName</dt>
+          <dd>
+            <p>The fully-qualified domain name (FQDN) that Active Directory uses to identify a Windows device.</p>
+            
+            <p>This property is required when both of the following statements are true.</p>
+            <ul>
+              <li>Domain authentication is specified (with the zWinRMUser property).</li>
+              <li>The DNS PTR record of a device's IP address is not identical to
+                the FQDN that Active Directory uses to identify a device. (Stated differently, the IP addresss
+                of a device does not resolve to the FQDN Active Directory uses to identify the device.)</li>
+            </ul>
+            
+            <p>For example, if Active Directory uses <codeph>myserver1.ad.example.com</codeph> to 
+              identify <codeph>myserver1</codeph>, and its IP address resolves to <codeph>www.example.com</codeph>, 
+              the value of this property must be <codeph>myserver1.ad.example.com</codeph> for
+              successful domain authentication.</p>
+            
+            <p>If multiple Windows devices in your environment do not have DNS PTR records that
+              match their Active Directory records, set the name of Windows devices to monitor to
+              the FQDN Active Directory uses, and set this property to
+                <codeph>${here/titleOrId}</codeph> at the /Server/Microsoft/Windows device class
+              level. This avoids the need to set this property on every device.</p>
+            
+            <p>If local authentication is used, or the DNS PTR records of all Windows devices in your 
+              environment match the FQDN that Active Directory uses to identify a Windows device,  
+              <ph conkeyref="names/company"/> recommends not specifying a value for this property.
+              This allows <ph conkeyref="names/platform"/> to avoid reliance on DNS resolution
+              during monitoring, and simplifies administration of Windows devices.</p>
+           </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinScheme</dt>
+          <dd>The protocol to use for communications between <ph conkeyref="names/platform"/>
+            and a Windows device. The value may be <codeph>http</codeph> or <codeph>https</codeph>.
+            The default is <codeph>http</codeph>. </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinRMPort</dt>
+          <dd>The port at which the Windows device listens for WinRM or WS-Management connections. 
+            The default is 5985, and is rarely a different value.</dd> 
+        </dlentry>
+        <dlentry>
+          <dt>zWinPerfmonInterval</dt>
+          <dd>
+            <p>The interval at which Windows Perfmon metrics are collected, in seconds. 
+            The default is 300 (5 minutes).</p> 
+            <note>You may specify different intervals for individual metrics.</note>
+          </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zWinKeyTabFilePath</dt>
+          <dd>This property is reserved for future use (to support keytab files). </dd>
+        </dlentry>
+        <dlentry>
+          <dt>zDBInstances</dt>
+          <dd>
+            <p>The names and access credentials of one or more SQL Server instances. This property
+              is only relevant when the zenoss.winrm.WinMSSQL modeler plugin is enabled.</p>
+            <p>When you double-click this property name in the web interface, the <wintitle>Edit
+                Config Property</wintitle> dialog displays.</p>
+            <fig>
+              <title>Edit Config Property dialog</title>
+              <image href="../images/zDBInstances.png" scale="60"/>
+            </fig>
+            <p>Use the dialog to specify one or more SQL Server instances to monitor.</p>
+            <ul>
+              <li>To use SQL authentication, enter a username and password.</li>
+              <li>To use the Windows authentication method specified with the zWinRMUser property, leave the
+                User and Password fields empty.</li>
+            </ul>
+            <p>The default SQL Server instance is MSSQLSERVER, with Windows authentication.</p>
+          </dd>
+        </dlentry>
+      </dl>
+    </section>
+  </refbody>
+</reference>

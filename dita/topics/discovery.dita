@@ -7,11 +7,11 @@
       <p>The components. properties, and relationships that this ZenPack discovers and updates during modeling.
         Discovery and modeling are enabled by specifying server addresses, usernames, and passwords.</p>
       <dl>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Server (Device)</dt>
           <dd>Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Total Memory, Total Swap, Operating System, Cluster</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Cluster (Device)</dt>
           <dd>Attributes: Name, Contact, Description, Total Memory, Total Swap, Operating System, Member Servers</dd>
         </dlentry>
@@ -19,7 +19,7 @@
           <dt>Processors</dt>
           <dd>Attributes: Name, Description, Model, Socket, Cores, Threads, Clock Speed, External Speed, Voltage, L1 Cache Size, L2 Cache Size and Speed, L3 Cache Size and Speed</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>File System</dt>
           <dd>Attributes: Mount Point, Status, Storage Device, Type, Block Size, Total Blocks, Total Bytes, Maximum Name Length</dd>
         </dlentry>
@@ -27,52 +27,52 @@
           <dt>Interfaces</dt>
           <dd>Attributes: Name, Description, MAC Address, MTU, Speed, Duplex, Type, Administrative Status, Operational Status, IP Addresses</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Network Routes</dt>
           <dd>Attributes: Destination, Next Hop, Interface, Protocol, Type</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Process Sets</dt>
           <dd>Attributes: Name, Recent Matches, Process Class</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Software</dt>
           <dd>Attributes: Name, Vendor, Installation Date</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Services</dt>
           <dd>Attributes: Name, Display Name, Start Mode, Account</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Cluster Services</dt>
           <dd>Attributes: Name, Core Group, Owner Node, State, Description, Priority</dd>
           <dd>Relationships: Cluster Resources</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>Cluster Resources</dt>
           <dd>Attributes: Name, Owner Node, Description, Owner Group, State</dd>
           <dd>Relationships: Cluster Service</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>IIS Sites</dt>
           <dd>Attributes: Name, Status, App Pool</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>SQL Server Instances</dt>
           <dd>Attributes: Name</dd>
           <dd>Relationships: SQL Server Databases</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>SQL Server Databases</dt>
           <dd>Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path</dd>
           <dd>Relationships: SQL Server Instance</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>SQL Server Backups</dt>
           <dd>Attributes: Name, Device Type, Physical Allocation, Status</dd>
           <dd>Relationships: SQL Server Instance</dd>
         </dlentry>
-        <dlentry>
+        <dlentry product="not-ucs">
           <dt>SQL Server Jobs</dt>
           <dd>Attributes: Name, Job ID, Description, Enabled, Date Created, Username</dd>
           <dd>Relationships: SQL Server Instance</dd>

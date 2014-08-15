@@ -137,6 +137,18 @@
         factory=".global_catalog.InterfaceWrapper"
         />
 
+    <!-- Custom Actions -->
+    <utility
+        name="wincommand"
+        provides="Products.ZenModel.interfaces.IAction"
+        factory=".actions.WinCommandAction"
+        />
+
+    <adapter
+        provides=".actions.IWinCommandActionContentInfo"
+        for="Products.ZenModel.NotificationSubscription.NotificationSubscription"
+        factory=".actions.WinCommandActionContentInfo"
+        />
 
     <!-- Custom Path Reporters -->
     <adapter factory=".catalog.paths.InterfacePathReporter"
@@ -181,20 +193,6 @@
             for=".Interface.Interface"
             factory=".impact.InterfaceRelationsProvider"
             />
-            
-        <!--
-        <subscriber
-            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".WinIIS.WinIIS"
-            factory=".impact.IISRelationsProvider"
-            />
-        -->
-
-        <subscriber
-            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".WinSQLInstance.WinSQLInstance"
-            factory=".impact.SQLRelationsProvider"
-            />
 
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
@@ -203,6 +201,11 @@
             />
 
     </configure>
+
+    <!-- Analytics -->
+    <include file="reportable.zcml"
+        xmlns:zcml="http://namespaces.zope.org/zcml"
+        zcml:condition="installed ZenPacks.zenoss.ZenETL" />
 
     <!-- Browser -->
     <include package=".browser"/>

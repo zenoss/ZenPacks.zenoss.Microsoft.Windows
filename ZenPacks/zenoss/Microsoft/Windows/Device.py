@@ -49,13 +49,13 @@ class Device(BaseDevice):
                 log.warning(
                     'Unable to resolve hostname {0}'.format(clusterdnsname)
                 )
-                return
+                continue
 
             device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
-                return
+                continue
 
             @transact
             def create_device():
@@ -87,6 +87,15 @@ class Device(BaseDevice):
         self.clusterdevices = clusterdnsnames
 
     def getClusterMachines(self):
+        return self.clusterdevices
+
+    def setClusterMachinesList(self, value):
+        '''
+        Don't do anything.
+        '''
+        pass
+
+    def getClusterMachinesList(self):
         '''
         Get cluster hostnames of which this server is a member.
         '''
@@ -106,17 +115,24 @@ class Device(BaseDevice):
     def getRRDTemplates(self):
         """
         Returns all the templates bound to this Device and
-        add MSExchangeIS template if needed.
+        add MSExchangeIS or Active Directory template according to version.
         """
-        result = BaseDevice.getRRDTemplates(self)
+        result = super(Device, self).getRRDTemplates()
+        # Check if version of the system
+        # modeled by OperatingSystem plugin is Windows 2003.
+        # https://jira.hyperic.com/browse/HHQ-5553
+        if '2003' in self.getOSProductName():
+            for template in result:
+                ad = self.getRRDTemplateByName('Active Directory 2003')
+                if ad:
+                    if 'Active Directory' in template.id:
+                        result[result.index(template)] = ad
         if self.msexchangeversion:
-            templates = [
-                x for x in (self.zDeviceTemplates or [])
-                if not 'MSExchange' in x
-            ] + [self.msexchangeversion]
-            if [x for x in (self.zDeviceTemplates or [])
-                    if 'MSExchange' in x]:
-                self.setZenProperty('zDeviceTemplates', templates)
+            for template in result:
+                exchange = self.getRRDTemplateByName(self.msexchangeversion)
+                if exchange:
+                    if 'MSExchange' in template.id:
+                        result[result.index(template)] = exchange
         return result
 
 
@@ -130,7 +146,7 @@ class DeviceLinkProvider(object):
     def getExpandedLinks(self):
         links = []
         try:
-            hosts = self.device.getClusterHostMachines()
+            hosts = self.device.getClusterHostMachinesList()
             if hosts:
                 for host in hosts:
                     links.append(
@@ -143,7 +159,7 @@ class DeviceLinkProvider(object):
             pass
 
         try:
-            clusters = self.device.getClusterMachines()
+            clusters = self.device.getClusterMachinesList()
             if clusters:
                 for cluster in clusters:
                     links.append(
