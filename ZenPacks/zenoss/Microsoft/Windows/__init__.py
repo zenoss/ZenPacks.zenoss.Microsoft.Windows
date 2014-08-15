@@ -182,7 +182,7 @@ class ZenPack(ZenPackBase):
             pass
         # workaround for ZEN-13662
         devices._properties = tuple(
-            [x for x in devices._properties if x[0] != 'zDBInstancesPassword']
+            [x for x in devices._properties if x['id'] != 'zDBInstancesPassword']
         )
 
 
