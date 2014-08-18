@@ -759,6 +759,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+;2.1.2
+* Added WinCommand notification action
+* Extended MSSQL monitoring (supporting SQL Server 2005, 2008, 2008R2, and 2012)
+* Support for monitoring clustered MSSQL services
+* Numerous bugfixes
 
 ;2.1.0
 * Support for Service Impact
