@@ -689,6 +689,10 @@ The following are the most common errors:
 * ''KRB5KRB_AP_ERR_SKEW'': As shown in the above example. A clock synchronization issue.
 * ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.
 
+== Troubleshooting on Resource Manager 4.1.1 ===
+
+In some cases updating ZenPack on Zenoss Resource Manager 4.1.1 may result in ''zenhub'' to not start. Error message will contain ''AttributeError: zDBInstancesPassword'' line. If you encountered this issue try to install ZenPack again.
+
 == Installed Items ==
 
 Installing this ZenPack will add the following items to your Zenoss system.
