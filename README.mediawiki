@@ -693,6 +693,8 @@ The following are the most common errors:
 
 In some cases updating ZenPack on Zenoss Resource Manager 4.1.1 may result in ''zenhub'' to not start. Error message will contain ''AttributeError: zDBInstancesPassword'' line. If you encountered this issue try to install ZenPack again.
 
+If there is existing SQL server instances being monitored, please reconfigure ''zDBInstances'' property since ''zDBInstancesPassword'' property no longer exists.
+
 == Installed Items ==
 
 Installing this ZenPack will add the following items to your Zenoss system.
