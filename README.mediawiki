@@ -441,6 +441,51 @@ This allows for the following example uses.
 
 <br clear=all>
 
+=== Configuring MSSQL Server Modeling/Monitoring ===
+
+; Supported SQL Server versions:
+: SQL Server 2005
+: SQL Server 2008
+: SQL Server 2008 R2
+: SQL Server 2012
+
+; Support for SQL Server and Windows Authentication:
+* Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
+* SQL Server Authentication: In ''zDBInstances'' property provide user name and password for each SQL instance.
+
+Use the following steps to configure SQL Server Authentication on your SQL Server:
+# Connect to SQL Instance using MSSQL Management Studio.
+# Select instance ''Properties'' > ''Security'' and make sure that ''SQL Server and Windows Authentication mode'' is enabled.
+# Open ''Security'' > ''Logins'', select the user, you specified in ''zDBInstances'' property.
+# Check user ''Properties'' > ''Status'' and make sure that the user is Enabled.
+# Check user ''Properties'' > ''Server Roles'' and make sure that the user has ''sysadmin'' and ''public'' roles.
+
+; Support for Local and Failover Cluster SQL instances:
+
+This ZenPack adds support for both local and failover cluster SQL Server instances.
+Local SQL Server instances can be modeled/monitored within windows devices (devices in ''Server/Microsoft/Windows'' device class).
+SQL Server failover cluster instances can be modeled/monitored within cluster devices (devices in ''Server/Microsoft/Cluster'' device class).
+
+: Use the following steps to model/monitor SQL Server instances:
+# Create a device in ''Server/Microsoft/Windows'' device class if you intend to model local SQL instances, or in ''Server/Microsoft/Cluster'' device class if you intend to model failover cluster instances.
+# Specify the instance names to be modeled in ''zDBInstances'' zProperty. Provide user names and passwords if SQL Server Authentication is to be used.
+# Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
+# Remodel device.
+
+=== Working with WinCommand Notification Action ===
+
+This ZenPack adds a new event notification action that can be used by the zenactiond daemon to allow an arbitrary command to be executed on the remote windows machine.
+
+Use the following steps to set up a notification:
+# Select ''Events'' > ''Triggers'' from the Navigation Menu.
+# Create a trigger, selecting the rules that define it.
+# Select ''Notifications'' from the left panel. Add a new notification, enter a name for it and select ''WinCommand'' Action from the drop-down menu. Click Submit.
+# In the ''Edit Notification'' dialog on the ''Notification'' tab associate the trigger with the notification and optionally select the notification properties (Enabled, Send Clear, Send only on Initial Occurrence, Delay, Repeat).
+On the ''Content'' tab of the notification specify the 'Windows CMD Command'' to run when configured triggers are matched. You may optionally specify ''Clear Windows CMD Command'' to run when the triggering event clears.
+# Submit changes.
+
+For more information please refer to [http://community.zenoss.org/docs/DOC-10690 Working with Triggers and Notifications]
+
 == <span id="winrm_setup">Setting up WinRM Service for Target Windows Machines</span> ==
 
 Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
