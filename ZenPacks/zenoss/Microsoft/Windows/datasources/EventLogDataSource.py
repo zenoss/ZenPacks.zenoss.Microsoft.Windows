@@ -118,6 +118,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventlog=te(datasource.eventlog), 
             query=te(' '.join(string_to_lines(datasource.query))),
             max_age=te(datasource.max_age), 
+            eventid=te(datasource.id)
         )
 
     @defer.inlineCallbacks
@@ -133,8 +134,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
         eventlog = ds0.params['eventlog']
         select = ds0.params['query']
         max_age = ds0.params['max_age']
+        eventid = ds0.params['eventid']
 
-        res = yield query.run(eventlog, select, max_age)
+        res = yield query.run(eventlog, select, max_age, eventid)
         if res.stderr:
             raise EventLogException('\n'.join(res.stderr))
         output = '\n'.join(res.stdout)
@@ -217,7 +219,7 @@ class EventLogQuery(object):
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
         function sstring($s) {
-            return "$($s)".replace('"', '\"').trim();
+            return "$($s)".replace('"', '\"').replace("\'","'").replace('\n','`n').replace('\','\\').trim();
         };
         function EventLogToJSON {
             begin {
@@ -247,19 +249,19 @@ class EventLogQuery(object):
             }
         };
 
-        function get_new_recent_entries($logname, $selector, $max_age) {
+        function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
             <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
             
             <# check the time of last read log entry #>
-            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -ErrorAction SilentlyContinue;
+            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
             
             <# If last log entry was older that 24 hours - read only for last 24 hours #>
             [DateTime]$yesterday = (Get-Date).AddHours(-24);
             [DateTime]$after = $yesterday;
             if ($last_read) {
-                $last_read = [DateTime]$last_read.$logname;
+                $last_read = [DateTime]$last_read.$eventid;
                 if ($last_read -gt $yesterday) {
                     $after = $last_read;
                 };
@@ -270,15 +272,15 @@ class EventLogQuery(object):
             
             if($events) { <# update the time of last read log entry #>
                 [DateTime]$last_read = (@($events)[0]).TimeGenerated; 
-                Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -Value ([String]$last_read);
+                Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
             }
             
             @($events | ? $selector) | EventLogToJSON
         };
-        get_new_recent_entries -logname %s -selector %s -max_age %s;
+        get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
     '''
 
-    def run(self, eventlog, selector, max_age):
+    def run(self, eventlog, selector, max_age, eventid):
         if selector.strip() == '*':
             selector = '{$True}'
         command = "{0} \"& {{{1}}}\"".format(
@@ -286,7 +288,8 @@ class EventLogQuery(object):
             self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (
                 eventlog or 'System',
                 selector or '{$True}',
-                max_age or '24'
+                max_age or '24',
+                eventid
             )
         )
         return self.winrs.run_command(command)
