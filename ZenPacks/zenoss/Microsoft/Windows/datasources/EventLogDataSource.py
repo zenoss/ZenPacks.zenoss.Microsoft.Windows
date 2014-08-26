@@ -74,7 +74,7 @@ class IEventLogInfo(IRRDDataSourceInfo):
     )
     max_age = schema.Text(
         group=_t(u'WindowsEventLog'),
-        title=_t('Max age of events to get'),
+        title=_t('Max age of events to get (hours)'),
     )
 
 
