@@ -219,8 +219,22 @@ class EventLogQuery(object):
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
         function sstring($s) {
-            return "$($s)".replace('"', '\"').replace("\'","'").replace('\n','`n').replace('\','\\').trim();
+            if ($s -eq $null) {
+                return "";
+            };
+            if ($s.GetType() -eq [System.Security.Principal.SecurityIdentifier]) {
+				[String]$s = $s.Translate( [System.Security.Principal.NTAccount]);
+            } elseif ($s.GetType() -ne [String]) {
+                [String]$s = $s;
+            };
+            
+            <# Remove control characters #>
+            $s = $s.replace("`r`n"," ");
+            $s = $s.replace('"', '\"').replace("\'","'");
+            <# Hope remaining escapes are the actual slash char #>
+            return "$($s)".replace('\','\\').trim();
         };
+        <# Function to convert EventRecord from Get-EventLog cmdlet#>
         function EventLogToJSON {
             begin {
                 $first = $True;
@@ -248,6 +262,34 @@ class EventLogQuery(object):
                 ']'
             }
         };
+        <# Function to convert EventRecord from Get-WinEvent cmdlet#>
+        function EventLogRecordToJSON {
+            begin {
+                $first = $True;
+                '['
+            }
+            process {
+                if ($first) {
+                    $separator = "";
+                    $first = $False;
+                } else {
+                    $separator = ",";
+                }
+                $separator + "{
+                    `"EntryType`": `"$(sstring($_.LevelDisplayName))`",
+                    `"TimeGenerated`": `"$(sstring($_.TimeCreated))`",
+                    `"Source`": `"$(sstring($_.ProviderName))`",
+                    `"InstanceId`": `"$(sstring($_.Id))`",
+                    `"Message`": `"$(sstring($_.Message))`",
+                    `"UserName`": `"$(sstring($_.UserId))`",
+                    `"MachineName`": `"$(sstring($_.MachineName))`",
+                    `"EventID`": `"$(sstring($_.Id))`"
+                }"
+            }
+            end {
+                ']'
+            }
+        };
 
         function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
             <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
@@ -267,15 +309,26 @@ class EventLogQuery(object):
                 };
             };
             
-            <# Fetch events #>
-            $events = Get-EventLog -After $after -LogName $logname;
+            <# Fetch events
+			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
+			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
+            if ($win2003 -eq $false) {
+                $events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
+            } else { 
+				$events = Get-EventLog -After $after -LogName $logname;
+			};
             
             if($events) { <# update the time of last read log entry #>
-                [DateTime]$last_read = (@($events)[0]).TimeGenerated; 
-                Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
-            }
+                [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
+				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            };
             
-            @($events | ? $selector) | EventLogToJSON
+            <# EventLog has different attributes than EventLogRecord #>
+            if ($win2003) {
+                @($events | ? $selector) | EventLogToJSON
+            } else {
+			    @($events | ? $selector) | EventLogRecordToJSON
+			}
         };
         get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
     '''
