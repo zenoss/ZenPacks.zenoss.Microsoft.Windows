@@ -74,7 +74,7 @@ class IEventLogInfo(IRRDDataSourceInfo):
     )
     max_age = schema.Text(
         group=_t(u'WindowsEventLog'),
-        title=_t('Max age of events to get'),
+        title=_t('Max age of events to get (hours)'),
     )
 
 
@@ -118,6 +118,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventlog=te(datasource.eventlog), 
             query=te(' '.join(string_to_lines(datasource.query))),
             max_age=te(datasource.max_age), 
+            eventid=te(datasource.id)
         )
 
     @defer.inlineCallbacks
@@ -133,8 +134,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
         eventlog = ds0.params['eventlog']
         select = ds0.params['query']
         max_age = ds0.params['max_age']
+        eventid = ds0.params['eventid']
 
-        res = yield query.run(eventlog, select, max_age)
+        res = yield query.run(eventlog, select, max_age, eventid)
         if res.stderr:
             raise EventLogException('\n'.join(res.stderr))
         output = '\n'.join(res.stdout)
@@ -217,8 +219,22 @@ class EventLogQuery(object):
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
         function sstring($s) {
-            return "$($s)".replace('"', '\"').trim();
+            if ($s -eq $null) {
+                return "";
+            };
+            if ($s.GetType() -eq [System.Security.Principal.SecurityIdentifier]) {
+				[String]$s = $s.Translate( [System.Security.Principal.NTAccount]);
+            } elseif ($s.GetType() -ne [String]) {
+                [String]$s = $s;
+            };
+            
+            <# Remove control characters #>
+            $s = $s.replace("`r`n"," ");
+            $s = $s.replace('"', '\"').replace("\'","'");
+            <# Hope remaining escapes are the actual slash char #>
+            return "$($s)".replace('\','\\').trim();
         };
+        <# Function to convert EventRecord from Get-EventLog cmdlet#>
         function EventLogToJSON {
             begin {
                 $first = $True;
@@ -246,39 +262,78 @@ class EventLogQuery(object):
                 ']'
             }
         };
+        <# Function to convert EventRecord from Get-WinEvent cmdlet#>
+        function EventLogRecordToJSON {
+            begin {
+                $first = $True;
+                '['
+            }
+            process {
+                if ($first) {
+                    $separator = "";
+                    $first = $False;
+                } else {
+                    $separator = ",";
+                }
+                $separator + "{
+                    `"EntryType`": `"$(sstring($_.LevelDisplayName))`",
+                    `"TimeGenerated`": `"$(sstring($_.TimeCreated))`",
+                    `"Source`": `"$(sstring($_.ProviderName))`",
+                    `"InstanceId`": `"$(sstring($_.Id))`",
+                    `"Message`": `"$(sstring($_.Message))`",
+                    `"UserName`": `"$(sstring($_.UserId))`",
+                    `"MachineName`": `"$(sstring($_.MachineName))`",
+                    `"EventID`": `"$(sstring($_.Id))`"
+                }"
+            }
+            end {
+                ']'
+            }
+        };
 
-        function get_new_recent_entries($logname, $selector, $max_age) {
+        function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
             <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
             
             <# check the time of last read log entry #>
-            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -ErrorAction SilentlyContinue;
+            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
             
             <# If last log entry was older that 24 hours - read only for last 24 hours #>
             [DateTime]$yesterday = (Get-Date).AddHours(-24);
             [DateTime]$after = $yesterday;
             if ($last_read) {
-                $last_read = [DateTime]$last_read.$logname;
+                $last_read = [DateTime]$last_read.$eventid;
                 if ($last_read -gt $yesterday) {
                     $after = $last_read;
                 };
             };
             
-            <# Fetch events #>
-            $events = Get-EventLog -After $after -LogName $logname;
+            <# Fetch events
+			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
+			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
+            if ($win2003 -eq $false) {
+                $events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
+            } else { 
+				$events = Get-EventLog -After $after -LogName $logname;
+			};
             
             if($events) { <# update the time of last read log entry #>
-                [DateTime]$last_read = (@($events)[0]).TimeGenerated; 
-                Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $logname -Value ([String]$last_read);
-            }
+                [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
+				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            };
             
-            @($events | ? $selector) | EventLogToJSON
+            <# EventLog has different attributes than EventLogRecord #>
+            if ($win2003) {
+                @($events | ? $selector) | EventLogToJSON
+            } else {
+			    @($events | ? $selector) | EventLogRecordToJSON
+			}
         };
-        get_new_recent_entries -logname %s -selector %s -max_age %s;
+        get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
     '''
 
-    def run(self, eventlog, selector, max_age):
+    def run(self, eventlog, selector, max_age, eventid):
         if selector.strip() == '*':
             selector = '{$True}'
         command = "{0} \"& {{{1}}}\"".format(
@@ -286,7 +341,8 @@ class EventLogQuery(object):
             self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (
                 eventlog or 'System',
                 selector or '{$True}',
-                max_age or '24'
+                max_age or '24',
+                eventid
             )
         )
         return self.winrs.run_command(command)

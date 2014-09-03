@@ -17,135 +17,124 @@ var ERROR_MESSAGE = "ERROR: Invalid connection string!";
 Ext.ns('Zenoss.form');
 
 /* zDBInstances property */
-Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
+Zenoss.form.InstanceCredentials = Ext.extend(Ext.panel.Panel, {
     constructor: function(config) {
+        var me = this;
+        config.width = 450;
         config = Ext.applyIf(config || {}, {
-            editable: true,
-            allowBlank: true,
-            submitValue: true,
-            triggerAction: 'all'
+            title: _t("DB Instances (leave user/password blank to use Windows authentication)"),
+            id: 'creds',
+            layout: 'fit',
+            listeners: {
+                afterrender: function() {
+                    this.setValue(config.value);
+                },
+                scope: this
+            },
+            items: [ {
+                xtype: 'hidden',
+                name: config.name,
+                itemId: 'hiddenInput',
+                value: config.value
+            },{
+                xtype: 'grid',
+                hideHeaders: true,
+                columns: [{
+                    dataIndex: 'value',
+                    flex: 1,
+                    renderer: function(value) {
+                        try {
+                            return Ext.String.format(
+                                "{0}:{1}:{2}", value.instance, value.user, "*".repeat(value.passwd.length)
+                            );
+                        } catch (err) {
+                            return ERROR_MESSAGE;
+                        }
+                    }
+                }],
+
+                store: {
+                    fields: ['value'],
+                    data: []
+                },
+
+                height: this.height || 150,
+                width: 450,
+
+                tbar: [{
+                    itemId: 'instance',
+                    xtype: "textfield",
+                    ref: "editConfig",
+                    scope: this,
+                    width: 90,
+                    emptyText:'DB Instance'
+                },{
+                    itemId: 'user',
+                    xtype: "textfield",
+                    scope: this,
+                    width: 70,
+                    emptyText:'User',
+                    value: '' //to avoid undefined value
+                },{
+                    itemId: 'passwd',
+                    xtype: "password",
+                    scope: this,
+                    width: 80,
+                    emptyText:'Password',
+                    value: '' //to avoid undefined value
+                },{
+                    text: 'Add',
+                    scope: this,
+                    handler: function() {
+                        var instance = this.down("textfield[itemId='instance']");
+                        var user = this.down("textfield[itemId='user']");
+                        var passwd = this.down("textfield[itemId='passwd']");
+                        var grid = this.down('grid');
+                        var value = {
+                            'instance': instance.getValue(),
+                            'user': user.getValue(),
+                            'passwd': passwd.getValue()
+                        };
+                        if (instance.value) {
+                            grid.getStore().add({value: value});
+                        }
+
+                        instance.setValue("");
+                        user.setValue("");
+                        passwd.setValue("");
+                        this.updateHiddenField();
+                    }
+                },{
+                    text: "Remove",
+                    itemId: 'removeButton',
+                    disabled: true, // initial state
+                    scope: this,
+                    handler: function() {
+                        var grid = this.down('grid'),
+                            selModel = grid.getSelectionModel(),
+                            store = grid.getStore();
+                        store.remove(selModel.getSelection());
+                        this.updateHiddenField();
+                    }
+                }],
+
+                listeners: {
+                    scope: this,
+                    selectionchange: function(selModel, selection) {
+                        var removeButton = me.down('button[itemId="removeButton"]');
+                        removeButton.setDisabled(Ext.isEmpty(selection));
+                    }
+                }
+            }]
         });
-        config.fieldLabel = "DB Instances (leave user/password blank to use Windows authentication)";
         Zenoss.form.InstanceCredentials.superclass.constructor.apply(this, arguments);
     },
-
-    initComponent: function() {
-        this.grid = this.childComponent = Ext.create('Ext.grid.Panel', {
-            hideHeaders: true,
-            columns: [{
-                dataIndex: 'value',
-                flex: 1,
-                renderer: function(value) {
-                    try {
-                        return Ext.String.format(
-                            "{0}:{1}:{2}", value.instance, value.user, "*".repeat(value.passwd.length)
-                        );
-                    } catch (err) {
-                        return ERROR_MESSAGE;
-                    }
-                }
-            }],
-
-            store: {
-                fields: ['value'],
-                data: []
-            },
-
-            height: this.height || 150,
-            width: 350,
-
-            tbar: [{
-                itemId: 'instance',
-                xtype: "textfield",
-                scope: this,
-                width: 90,
-                emptyText:'DB Instance'
-            },{
-                itemId: 'user',
-                xtype: "textfield",
-                scope: this,
-                width: 70,
-                emptyText:'User',
-                value: '' //to avoid undefined value
-            },{
-                itemId: 'passwd',
-                xtype: "password",
-                scope: this,
-                width: 80,
-                emptyText:'Password',
-                value: '' //to avoid undefined value
-            },{
-                text: 'Add',
-                scope: this,
-                handler: function() {
-                    var instance = this.grid.down('#instance');
-                    var user = this.grid.down('#user');
-                    var passwd = this.grid.down('#passwd');
-
-                    var value = {
-                        'instance': instance.value,
-                        'user': user.value,
-                        'passwd': passwd.value
-                    };
-                    if (instance.value) {
-                        this.grid.getStore().add({value: value});
-                    }
-
-                    instance.setValue("");
-                    user.setValue("");
-                    passwd.setValue("");
-
-                    this.checkChange();
-                }
-            },{
-                text: "Remove",
-                itemId: 'removeButton',
-                disabled: true, // initial state
-                scope: this,
-                handler: function() {
-                    var grid = this.grid,
-                        selModel = grid.getSelectionModel(),
-                        store = grid.getStore();
-                    store.remove(selModel.getSelection());
-                    this.checkChange();
-                }
-            }],
-
-            listeners: {
-                scope: this,
-                selectionchange: function(selModel, selection) {
-                    var removeButton = this.grid.down('#removeButton');
-                    removeButton.setDisabled(Ext.isEmpty(selection));
-                }
-            }
-        });
-        Zenoss.form.InstanceCredentials.superclass.initComponent.call(this);
+    updateHiddenField: function() {
+        this.down('hidden').setValue(this.getValue());        
     },
-
-    // --- Rendering ---
-    // Generates the child component markup
-    getSubTplMarkup: function() {
-        // generateMarkup will append to the passed empty array and return it
-        var buffer = Ext.DomHelper.generateMarkup(this.childComponent.getRenderTree(), []);
-        // but we want to return a single string
-        return buffer.join('');
-    },
-
-    // Regular containers implements this method to call finishRender for each of their
-    // child, and we need to do the same for the component to display smoothly
-    finishRenderChildren: function() {
-        this.callParent(arguments);
-        this.childComponent.finishRender();
-    },
-
-    // --- Resizing ---
-    onResize: function(w, h) {
-        this.callParent(arguments);
-        this.childComponent.setSize(w - this.getLabelWidth(), h);
-    },
-
     // --- Value handling ---
     setValue: function(values) {
+        var grid = this.down('grid');
         if(typeof values != 'string'){
             values = '[{"instance":"MSSQLSERVER","user":"","passwd":""}]';
         }
@@ -159,20 +148,17 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.form.TextField, {
                     data.push({value: value});
                 });
             }
-            this.grid.getStore().loadData(data);
+            grid.getStore().loadData(data);
         } catch(e) {}
     },
 
     getValue: function() {
+        var grid = this.down('grid');
         var data = [];
-        this.grid.getStore().each(function(record) {
+        grid.getStore().each(function(record) {
             data.push(record.get('value'));
         });
         return JSON.stringify(data);
-    },
-
-    getSubmitValue: function() {
-        return this.getValue();
     }
 });
 
