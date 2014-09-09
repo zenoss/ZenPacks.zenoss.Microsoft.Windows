@@ -446,7 +446,10 @@ def standardizeInstance(rawInstance):
 
 
 def lookup_operstatus(value):
-    if value == 'true':
+    """
+    Check operational status.  If None, assume LPU and ok to monitor
+    """
+    if value == 'true' or value == None:
         return 1
     else:
         return 2
