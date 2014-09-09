@@ -14216,7 +14216,7 @@ True
 500
 </property>
 <property type="string" id="units" mode="w" >
-errors/sec
+# of errors
 </property>
 <property type="boolean" id="log" mode="w" >
 False
