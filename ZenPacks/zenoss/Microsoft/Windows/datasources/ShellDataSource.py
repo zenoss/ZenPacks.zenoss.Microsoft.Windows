@@ -294,7 +294,8 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection.append("$db = $server.Databases[0];")
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append("$ds.Tables | Format-List;")
-
+        counters_sqlConnection.append("if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}" \
+        "else { Write-Host 'databasename:{dbname}'}".replace('{dbname}', database))
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
             ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
@@ -641,38 +642,43 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 severity = ZenEventClasses.Warning
                 msg = cmdResult
         else:
-            checked_result = False
-            for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-                checked_result = True
-                if dsconf.datasource == 'state':
-                    currentstate = {
-                        'Online': ZenEventClasses.Clear,
-                        'Offline': ZenEventClasses.Critical,
-                        'PartialOnline': ZenEventClasses.Error,
-                        'Failed': ZenEventClasses.Critical
-                    }.get(value[1], ZenEventClasses.Info)
+            if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
+                db_name = result.stdout[0].split(':')[1]
+                msg = 'There are no monitoring data for the database "{0}"'.format(db_name)
+                severity = ZenEventClasses.Info
+            else:
+                checked_result = False
+                for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                    checked_result = True
+                    if dsconf.datasource == 'state':
+                        currentstate = {
+                            'Online': ZenEventClasses.Clear,
+                            'Offline': ZenEventClasses.Critical,
+                            'PartialOnline': ZenEventClasses.Error,
+                            'Failed': ZenEventClasses.Critical
+                        }.get(value[1], ZenEventClasses.Info)
 
-                    data['events'].append(dict(
-                        eventClassKey='winrs{0}'.format(strategy.key),
-                        eventKey=strategy.key,
-                        severity=currentstate,
-                        summary='Last state of component was {0}'.format(value[1]),
-                        device=config.id,
-                        component=prepId(dsconf.component)
-                    ))
+                        data['events'].append(dict(
+                            eventClassKey='winrs{0}'.format(strategy.key),
+                            eventKey=strategy.key,
+                            severity=currentstate,
+                            summary='Last state of component was {0}'.format(value[1]),
+                            device=config.id,
+                            component=prepId(dsconf.component)
+                        ))
 
-                    data['maps'].append(
-                        value[2]
-                    )
-                else:
-                    data['values'][dsconf.component][dsconf.datasource] = value, timestamp
-            if not checked_result:
-                msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
-                    ' datasource'.format(
-                        dsconf0.params['strategy'],
-                        dsconf0.datasource,
-                    )
-                severity = ZenEventClasses.Warning
+                        data['maps'].append(
+                            value[2]
+                        )
+                    else:
+                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                if not checked_result:
+                    msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
+                        ' datasource'.format(
+                            dsconf0.params['strategy'],
+                            dsconf0.datasource,
+                        )
+                    severity = ZenEventClasses.Warning
 
         data['events'].append(dict(
             severity=severity,
