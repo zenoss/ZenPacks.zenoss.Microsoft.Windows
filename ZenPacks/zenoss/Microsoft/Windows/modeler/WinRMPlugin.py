@@ -150,6 +150,8 @@ class WinRMPlugin(PythonPlugin):
             args.append(error.message)
         elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
+        elif type(error) == Exception and "Credentials cache file" in error.message:
+            message = "Credentials cache file not found. Please make sure that this file exist and server has  access to it."
         elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
             message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
         elif isinstance(error, ResponseFailed):

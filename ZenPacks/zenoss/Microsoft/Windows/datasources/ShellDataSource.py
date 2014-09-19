@@ -613,6 +613,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             results = yield command.run_command(command_line)
         except UnauthorizedError:
             results = ShellResult()
+        except Exception, e:
+            if "Credentials cache file" in str(e):
+                results = ShellResult()
+                results.stderr = ['Credentials cache file not found']
+            else:
+                raise e
+
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
