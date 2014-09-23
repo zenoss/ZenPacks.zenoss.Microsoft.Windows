@@ -299,7 +299,7 @@ The following metrics are collected directly via WMI.
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
-To monitor EventLog events you should add to monitoring template "Windows EventLog" datasource, and in the Event Log field put the name of event log, that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object comandlet. 
+To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object commandlet. 
 
 For example, here is Event Query for error events only:
 
@@ -436,6 +436,8 @@ This allows for the following example uses.
 # Follow steps 1-5 from the previous section.
 # Choose your new device class as the target then click submit.
 # Expand the ''WinService'' tree then select the copy in your device class.
+# Choose ''View and Edit Details'' from the gear menu.
+# Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
 # Put a check mark in ''Monitor by Default'' then click save.
 
@@ -761,9 +763,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 ;2.1.2
 * Added WinCommand notification action
-* Extended MSSQL monitoring (supporting SQL Server 2005, 2008, 2008R2, and 2012)
-* Support for monitoring clustered MSSQL services
-* Numerous bugfixes
+* Support for monitoring fail-over clustered MSSQL instances
+* Support for monitoring Windows event logs
+* Numerous bug fixes
 
 ;2.1.0
 * Support for Service Impact
