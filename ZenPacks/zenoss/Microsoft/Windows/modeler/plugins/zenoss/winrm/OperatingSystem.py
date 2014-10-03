@@ -90,7 +90,7 @@ class OperatingSystem(WinRMPlugin):
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
-        hw_om.serialNumber = sysEnclosure.SerialNumber
+        hw_om.serialNumber = operatingSystem.SerialNumber
         hw_om.tag = sysEnclosure.Tag
         hw_om.setProductKey = MultiArgs(
             computerSystem.Model,
