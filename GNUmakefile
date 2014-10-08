@@ -56,6 +56,15 @@ clean:
 test:
 	runtests ZenPacks.zenoss.Microsoft.Windows
 
+analytics:
+	rm -f ZenPacks/zenoss/Microsoft/Windows/analytics/analytics-bundle.zip
+	mkdir -p analytics/resources/public/Microsoft_Windows_ZenPack
+	./create-analytics-bundle \
+		--folder="Microsoft Windows ZenPack" \
+		--domain="Microsoft Windows Domain" \
+		--device=ostack
+	cd analytics; zip -r ../ZenPacks/zenoss/Microsoft/Windows/analytics/analytics-bundle.zip *
+
 
 ## setuptools Targets ########################################################
 
