@@ -62,7 +62,7 @@ analytics:
 	./create-analytics-bundle \
 		--folder="Microsoft Windows ZenPack" \
 		--domain="Microsoft Windows Domain" \
-		--device=ostack
+		--device="10.87.207.148"
 	cd analytics; zip -r ../ZenPacks/zenoss/Microsoft/Windows/analytics/analytics-bundle.zip *
 
 

@@ -769,12 +769,12 @@ after installing the ZenPack.
 # Copy analytics-bundle.zip from $ZENHOME/ZenPacks/ZenPacks.zenoss.Microsoft.Windows*/ZenPacks/zenoss/Microsoft/Windows/analytics/ on your Zenoss server.
 # Navigate to Zenoss Analytics in your browser.
 # Login as superuser.
-# Remove any existing ''MicrosoftWindows ZenPack'' folder.
+# Remove any existing ''Microsoft Windows ZenPack'' folder.
 ## Choose ''Repository'' from the ''View'' menu at the top of the page.
 ## Expand ''Public'' in the list of folders.
-## Right-click on ''MicrosoftWindows ZenPack'' folder and choose ''Delete''.
+## Right-click on ''Microsoft Windows ZenPack'' folder and choose ''Delete''.
 ## Confirm deletion by clicking ''OK''.
-# Add the new ''MicrosoftWindows ZenPack'' folder.
+# Add the new ''Microsoft Windows ZenPack'' folder.
 ## Choose ''Server Settings'' from the ''Manage' menu at the top of the page.
 ## Choose ''Import'' in the left page.
 ## Remove checks from all check boxes.
@@ -782,10 +782,10 @@ after installing the ZenPack.
 ## Choose the analytics-bundle.zip file copied from your Zenoss server.
 ## Click ''Import''.
 
-You can now navigate back to the ''MicrosoftWindows ZenPack'' folder in the repository to see the following resources added by the bundle.
+You can now navigate back to the ''Microsoft Windows ZenPack'' folder in the repository to see the following resources added by the bundle.
 
 ;Domains
-* MicrosoftWindows Domain
+* Microsoft Windows Domain
 
 ;Ad Hoc Views
 * TBD
