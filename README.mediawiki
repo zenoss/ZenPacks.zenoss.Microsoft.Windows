@@ -787,9 +787,6 @@ You can now navigate back to the ''Microsoft Windows ZenPack'' folder in the rep
 ;Domains
 * Microsoft Windows Domain
 
-;Ad Hoc Views
-* TBD
-
 Domains can be used to create ad hoc views using the following steps.
 
 # Choose ''Ad Hoc View'' from the ''Create'' menu.
