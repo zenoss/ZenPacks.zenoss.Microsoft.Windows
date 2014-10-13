@@ -16,6 +16,9 @@ var ERROR_MESSAGE = "ERROR: Invalid connection string!";
 
 Ext.ns('Zenoss.form');
 
+/* Ext.version will be defined in ExtJS3 and undefined in ExtJS4. */
+/* Ext.panel throws an error in ExtJS3. */
+if (Ext.version === undefined) {
 /* zDBInstances property */
 Zenoss.form.InstanceCredentials = Ext.extend(Ext.panel.Panel, {
     constructor: function(config) {
@@ -162,12 +165,11 @@ Zenoss.form.InstanceCredentials = Ext.extend(Ext.panel.Panel, {
     }
 });
 
-/* Ext.version will be defined in ExtJS3 and undefined in ExtJS4. */
-if (Ext.version === undefined) {
-    Zenoss.zproperties.registerZPropertyType('instancecredentials', {
-        xtype: 'instancecredentials'
-    });
-    Ext.reg('instancecredentials', 'Zenoss.form.InstanceCredentials');
+
+Zenoss.zproperties.registerZPropertyType('instancecredentials', {
+    xtype: 'instancecredentials'
+});
+Ext.reg('instancecredentials', 'Zenoss.form.InstanceCredentials');
 } else {
     // The form does not work in ExtJS3
     // Ext.reg('instancecredentials', Zenoss.form.InstanceCredentials);
@@ -178,13 +180,14 @@ if (Ext.version === undefined) {
 var zDBInstancesRender = function(value) {
     var result = [];
     try {
-         if(typeof value == 'string'){
+         if (typeof value == 'string'){
             var v = JSON.parse(value);
             Ext.each(v, function(val) {
-                result.push(val.instance + ":" + val.user + ":" + "*".repeat(val.passwd.length));
+                result.push(val.instance + ":" + val.user + ":" + "*".repeat(
+                    val.passwd.length));
             });
          } else {
-            result.push("MSSQLSERVER" + ":" + "" + ":" + "");
+            result.push("MSSQLSERVER::");
          }
     } catch (err) {
         result.push(ERROR_MESSAGE);
@@ -192,69 +195,60 @@ var zDBInstancesRender = function(value) {
     return result.join(';');
 };
 
-/* Override function for configpanel */
-var panelOverride = function(configpanel, gridID) {
-    try {
-    var columns = configpanel.configGrid.columns;
-    for (var el in columns) {
-        if (columns[el].id === 'value') {
-            // make backup for the existing renderer
-            // done in configGrid to maintain a proper 'this'
-            configpanel.configGrid.rend_func = columns[el].renderer;
-            // override renderer
-            columns[el].renderer = function(v, row, record){
-                // renderer for zDBInstances
-                if (record.internalId == 'zDBInstances' && record.get('value') !== "") {
-                    return zDBInstancesRender(record.get('value'));
-                }
-                try {
-                    // return the default renderer vor the value
-                    return configpanel.configGrid.rend_func(v, row, record);
-                } catch (err) {
-                    return v;
-                }
-            };
+/* Find a velue column and override a renderer for it */
+var overrideRenderer = function(configpanel, columns) {
+    var value_column = false;
+    for (el in columns) {
+        if ((/^value/).test(columns[el].dataIndex)) {
+            value_column = columns[el];
         }
     }
-    } catch (err) {
+    if (!value_column) {
+        return false;
+    }
+    // make backup for the existing renderer
+    // done in configpanel to maintain a proper 'this'
+    configpanel.rend_func = value_column.renderer;
+    // override renderer
+    value_column.renderer = function(v, row, record){
+        // renderer for zDBInstances
+        if ((record.internalId == 'zDBInstances' || record.id == 'zDBInstances')
+            && record.get('value') !== "") {
+            return zDBInstancesRender(record.get('value'));
+        }
         try {
-        /* workaround for zenoss 4.1.1 */
-        var configGrid = Ext.getCmp(gridID);
-        var columns = configGrid.colModel.columns;
-        // var columns = configpanel.items[0].colModel.columns;
-        for (var el in columns) {
-            if (columns[el].id === 'value') {
-                // make backup for the existing renderer
-                var rend_func = columns[el].renderer;
-                // override renderer
-                columns[el].renderer = function(v, row, record){
-                    // renderer for zDBInstances
-                    if (record.id == 'zDBInstances' && record.get('value') !== "") {
-                        return zDBInstancesRender(record.get('value'));
-                    }
-                    try {
-                        // return the default renderer vor the value
-                        return rend_func(v, row, record);
-                    } catch (err) {
-                        return v;
-                    }
-                };
-            }
+            // return the default renderer vor the value
+            return configpanel.rend_func(v, row, record);
+        } catch (err) {
+            return v;
         }
-        } catch (err) {}
-    }
+    };
+};
+
+/* Override function for configpanel */
+var panelOverride = function(configpanel) {
+    try {
+        if (Ext.version === undefined) {
+            var columns = configpanel.configGrid.columns;
+            overrideRenderer(configpanel, columns);
+        } else {
+            /* workaround for zenoss 4.1.1 */
+            var columns = configpanel.items[0].colModel.columns;
+            overrideRenderer(configpanel, columns);
+        }
+    } catch (err) {}
 };
 
 /* Zenoss.ConfigProperty.Grid override (for device) */
 Ext.ComponentMgr.onAvailable('device_config_properties', function(){
     var configpanel = Ext.getCmp('device_config_properties');
-    panelOverride(configpanel, 'ext-comp-1112');
+    panelOverride(configpanel);
 });
 
 /* Zenoss.ConfigProperty.Grid override (for zenoss details) */
 Ext.ComponentMgr.onAvailable('configuration_properties', function(){
     var configpanel = Ext.getCmp('configuration_properties');
-    panelOverride(configpanel, 'ext-comp-1157');
+    panelOverride(configpanel);
 });
 
 }());
