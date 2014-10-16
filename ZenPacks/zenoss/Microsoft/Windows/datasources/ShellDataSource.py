@@ -203,9 +203,6 @@ class CustomCommandStrategy(object):
         return pscommand.format(script) if usePowershell else script
 
     def parse_result(self, config, result):
-        check = check_datasource(config, result)
-        if not isinstance(check, bool):
-            return check
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
         log.debug('Trying to use the %s parser' % parserLoader.pluginName)
@@ -601,6 +598,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(resource, componenttype)
 
         elif dsconf0.params['strategy'] == 'Custom Command':
+            check_datasource(dsconf0)
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
             command_line = strategy.build_command_line(script, usePowershell)
@@ -634,20 +632,17 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         strategy, dsconfs, result = results
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
-            if not cmdResult:
-                raise WindowsShellException(
-                    "No parser chosen for {0}".format(dsconf0.datasource)
-                )
-            if not isinstance(cmdResult, str):
+            if result.exit_code == 0:
                 dsconf = dsconfs[0]
                 data['events'] = cmdResult.events
                 data['maps'] = cmdResult.maps
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
             else:
-                log.warn(cmdResult)
+                msg = 'No output from script for {0} on {1}'.format(
+                    dsconf0.datasource, config)
+                log.warn(msg)
                 severity = ZenEventClasses.Warning
-                msg = cmdResult
         else:
             if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
                 db_name = result.stdout[0].split(':')[1]
@@ -704,6 +699,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             summary='winrs: successful collection',
             device=config.id))
 
+        # Clear warning events created for specific datasources,
+        # e.g. when paster/script not chosen.
+        data['events'].append(dict(
+            severity=ZenEventClasses.Clear,
+            eventClassKey='winrsCollectionError',
+            eventKey='datasourceWarning_{0}'.format(dsconf0.datasource),
+            summary='Monitoring ok',
+            device=config.id))
+
         # Clear previous error event
         data['events'].append(dict(
             eventClass='/Status',
@@ -743,27 +747,22 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             device=config.id))
         return data
 
-def check_datasource(config, result):
+
+def check_datasource(dsconf):
     '''
     Check whether the data is correctly filled in datasource.
     '''
-    dsconf = config.datasources[0]
-
-    # Return None if no parser chosen.
+    # Check if the parser is chosen.
     if not dsconf.params['parser']:
-        return None
-    # Return message if script was not inputted.
-    elif not dsconf.params['script']:
-        return 'There is no script inputted for {0} on {1}'.format(
-            dsconf.datasource, config
+        raise WindowsShellException(
+            "No parser chosen for {0}".format(dsconf.datasource)
         )
-    # Return message if was inputted invalid script.
-    elif not result.exit_code == 0:
-        return 'No output from script for {0} on {1}'.format(
-            dsconf.datasource, config
+    # Check if script was inputted.
+    if not dsconf.params['script']:
+        raise WindowsShellException(
+            'No script inputted for {0}'.format(
+                dsconf.datasource)
         )
-    else:
-        return True
 
 
 def parse_stdout(result, check_stderr=False):
