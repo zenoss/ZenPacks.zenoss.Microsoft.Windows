@@ -44,7 +44,11 @@ from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
+<<<<<<< HEAD
 from txwinrm.shell import create_long_running_command, create_single_shot_command
+=======
+from txwinrm.shell import create_long_running_command
+>>>>>>> release/2.1.1_ucsx
 import codecs
 
 
