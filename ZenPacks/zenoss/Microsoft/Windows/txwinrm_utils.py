@@ -64,7 +64,7 @@ def createConnectionInfo(device_proxy):
             "zWinKDC must be configured for domain authentication")
 
     ip_pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
-    if re.match(ip_pattern, device_proxy.id) and auth_type == 'kerberos':
+    if re.match(ip_pattern, hostname) and auth_type == 'kerberos':
         raise UnauthorizedError(
             "Use device domain hostname for domain authentication, and please verify if hostname is correct and resolvable")
 
