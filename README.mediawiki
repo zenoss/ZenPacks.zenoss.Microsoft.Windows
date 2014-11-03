@@ -795,6 +795,10 @@ Domains can be used to create ad hoc views using the following steps.
 # Choose the ''MicrosoftWindows Domain'' domain
 
 == Changes ==
+
+;2.1.3
+* Zenoss 5 compatibility fixes.
+
 ;2.1.2
 * Added WinCommand notification action
 * Support for monitoring fail-over clustered MSSQL instances

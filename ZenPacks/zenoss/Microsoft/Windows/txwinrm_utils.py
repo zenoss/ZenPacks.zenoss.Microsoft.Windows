@@ -10,6 +10,7 @@
 import re
 
 from .utils import addLocalLibPath
+from Products.ZenUtils.IpUtil import isip
 addLocalLibPath()
 
 # Requires that addLocalLibPath be called above.
@@ -63,10 +64,11 @@ def createConnectionInfo(device_proxy):
         raise UnauthorizedError(
             "zWinKDC must be configured for domain authentication")
 
-    ip_pattern = r"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$"
-    if re.match(ip_pattern, device_proxy.id) and auth_type == 'kerberos':
-        raise UnauthorizedError(
-            "Use device domain hostname for domain authentication, and please verify if hostname is correct and resolvable")
+    if hasattr(device_proxy, 'id'):
+        if isip(device_proxy.id) and auth_type == 'kerberos':
+            raise UnauthorizedError(
+                "Use device domain hostname for domain authentication, "
+                "and please verify if hostname is correct and resolvable")
 
     scheme = device_proxy.zWinScheme.lower()
     if scheme not in ('http', 'https'):
