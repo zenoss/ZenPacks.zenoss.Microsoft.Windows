@@ -697,6 +697,17 @@ In some cases updating the Microsoft Windows ZenPack on Zenoss Resource Manager 
 
 If there are existing SQL server instances being monitored, make sure to reconfigure ''zDBInstances'' property since the ''zDBInstancesPassword'' property no longer exists.
 
+=== Troubleshooting Services ===
+
+If you see an event error that shows "The maximum number of concurrent operations for this user has been exceeded", you will need to increase the number of concurrent operations per user in the winrm config.
+For example:
+* winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="5000"}'
+
+If you see an "Index out of range" error, this could indicate a low number of available file handles in Linux.  The default is 1024.  To view this information on your system, enter 'ulimit -n'.  To increase this limit, edit your /etc/sysctl.conf file and set fs.file-max to a sufficently large number.
+For example:
+* vi /etc/sysctl.conf
+* fs.file-max=10000
+
 == Installed Items ==
 
 Installing this ZenPack will add the following items to your Zenoss system.
