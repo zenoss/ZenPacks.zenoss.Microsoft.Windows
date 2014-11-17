@@ -24,12 +24,12 @@ class CPU(BaseCPU):
     cacheSpeedL3 = None
 
     _properties = BaseCPU._properties + (
-        {'id': 'description', 'type': 'string', 'mode': 'w'},
-        {'id': 'cores', 'type': 'int', 'mode': 'w'},
-        {'id': 'threads', 'type': 'int', 'mode': 'w'},
-        {'id': 'cacheSpeedL2', 'type': 'int', 'mode': 'w'},
-        {'id': 'cacheSizeL3', 'type': 'int', 'mode': 'w'},
-        {'id': 'cacheSpeedL3', 'type': 'int', 'mode': 'w'},
+        {'id': 'description', 'label': 'Description', 'type': 'string', 'mode': 'w'},
+        {'id': 'cores', 'label': 'Cores', 'type': 'int', 'mode': 'w'},
+        {'id': 'threads', 'label': 'Threads', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSpeedL2', 'label': 'L2 Cache Speed', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSizeL3', 'label': 'L3 Cache Size', 'type': 'int', 'mode': 'w'},
+        {'id': 'cacheSpeedL3', 'label': 'L3 Cache Speed', 'type': 'int', 'mode': 'w'},
         )
 
     def getRRDTemplateName(self):

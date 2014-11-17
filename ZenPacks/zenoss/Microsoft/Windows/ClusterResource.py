@@ -30,10 +30,10 @@ class ClusterResource(OSComponent):
     state = None
 
     _properties = OSComponent._properties + (
-        {'id': 'ownernode', 'type': 'string'},
-        {'id': 'description', 'type': 'string'},
-        {'id': 'ownergroup', 'type': 'string'},
-        {'id': 'state', 'type': 'string'},
+        {'id': 'ownernode', 'label': 'Owner Node', 'type': 'string'},
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'ownergroup', 'label': 'Owner Group', 'type': 'string'},
+        {'id': 'state', 'label': 'State', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

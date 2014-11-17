@@ -26,12 +26,12 @@ class WinIIS(OSComponent):
     statusname = None
 
     _properties = OSComponent._properties + (
-        {'id': 'sitename', 'type': 'string'},
-        {'id': 'apppool', 'type': 'string'},
-        {'id': 'caption', 'type': 'string'},
-        {'id': 'status', 'type': 'string'},
-        {'id': 'statusname', 'type': 'string'},
-                )
+        {'id': 'sitename', 'label': 'Site Name', 'type': 'string'},
+        {'id': 'apppool', 'label': 'Application Pool', 'type': 'string'},
+        {'id': 'caption', 'label': 'Caption', 'type': 'string'},
+        {'id': 'status', 'label': 'Status', 'type': 'string'},
+        {'id': 'statusname', 'label': 'Status Name', 'type': 'string'},
+    )
 
     _relations = OSComponent._relations + (
         ("os", ToOne(ToManyCont,

@@ -30,11 +30,11 @@ class ClusterService(OSComponent):
     state = None
 
     _properties = OSComponent._properties + (
-        {'id': 'ownernode', 'type': 'string'},
-        {'id': 'description', 'type': 'string'},
-        {'id': 'coregroup', 'type': 'boolean'},
-        {'id': 'priority', 'type': 'integer'},
-        {'id': 'state', 'type': 'string'},
+        {'id': 'ownernode', 'label': 'Owner Node', 'type': 'string'},
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'coregroup', 'label': 'Core Group', 'type': 'boolean'},
+        {'id': 'priority', 'label': 'Priority', 'type': 'integer'},
+        {'id': 'state', 'label': 'State', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
