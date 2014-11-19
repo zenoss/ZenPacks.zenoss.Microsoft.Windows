@@ -64,12 +64,6 @@ def createConnectionInfo(device_proxy):
         raise UnauthorizedError(
             "zWinKDC must be configured for domain authentication")
 
-    if hasattr(device_proxy, 'id'):
-        if isip(device_proxy.id) and auth_type == 'kerberos':
-            raise UnauthorizedError(
-                "Use device domain hostname for domain authentication, "
-                "and please verify if hostname is correct and resolvable")
-
     scheme = device_proxy.zWinScheme.lower()
     if scheme not in ('http', 'https'):
         raise UnauthorizedError(
