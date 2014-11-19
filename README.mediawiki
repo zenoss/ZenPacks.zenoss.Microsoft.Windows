@@ -658,6 +658,19 @@ Please refer the the Zenoss Service Dynamics documentation if you run into any o
 
 If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [https://support.zenoss.com Zenoss Customer Support]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
 
+=== Troubleshooting Kerberos Error Messages ====
+
+<blockquote>Cannot determine realm for numeric host address</blockquote>
+
+* If you enter an IP address for the device id, make sure that the address is resolvable to a name.
+
+<blockquote>Server not found in Kerberos database</blockquote>
+
+* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.
+
+example:
+setspn -s HTTP/hostname1.zenoss.com hostname1
+
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
 There are many reasons for kerberos authentication not to work, and a lot of them result in the following unhelpful error message.
@@ -690,20 +703,6 @@ You'll also see other kerberos messages that are normal. You should ignore these
 The following are the most common errors:
 * ''KRB5KRB_AP_ERR_SKEW'': As shown in the above example. A clock synchronization issue.
 * ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.
-
-=== Troubleshooting Kerberos error messages ====
-
-<blockquote>Cannot determine realm for numeric host address</blockquote>
-
-* If you enter an IP address for the device id, make sure that the address is resolvable to a name.
-
-<blockquote>Server not found in Kerberos database</blockquote>
-
-* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.  
-
-example:
-setspn -s HTTP/hostname1.zenoss.com hostname1
-
 
 === Troubleshooting on Resource Manager 4.1.1 ===
 
