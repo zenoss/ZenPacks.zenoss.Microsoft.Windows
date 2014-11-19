@@ -32,9 +32,9 @@ class Device(BaseDevice):
     msexchangeversion = None
 
     _properties = BaseDevice._properties + (
-        {'id': 'clusterdevices', 'type': 'string', 'mode': 'w'},
-        {'id': 'sqlhostname', 'type': 'string', 'mode': 'w'},
-        {'id': 'msexchangeversion', 'type': 'string', 'mode': 'w'},
+        {'id': 'clusterdevices', 'label': 'Cluster Devices', 'type': 'string', 'mode': 'w'},
+        {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
     )
 
     def setClusterMachines(self, clusterdnsnames):

@@ -14,7 +14,8 @@ class FileSystem(BaseFileSystem):
     mediatype = None
 
     _properties = BaseFileSystem._properties + (
-        {'id': 'mediatype', 'type': 'string', 'mode': 'w'},
+        {'id': 'mediatype', 'label': 'Media Type',
+            'type': 'string', 'mode': 'w'},
         )
 
     def monitored(self):

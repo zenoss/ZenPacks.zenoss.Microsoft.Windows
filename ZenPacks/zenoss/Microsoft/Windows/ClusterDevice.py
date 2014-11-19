@@ -32,9 +32,12 @@ class ClusterDevice(BaseDevice):
     creatingdc = None
 
     _properties = BaseDevice._properties + (
-        {'id': 'clusterhostdevices', 'type': 'string', 'mode': 'w'},
-        {'id': 'guid', 'type': 'string', 'mode': 'w'},
-        {'id': 'creatingdc', 'type': 'string', 'mode': 'w'},
+        {'id': 'clusterhostdevices', 'label': 'Cluster Host Devices',
+            'type': 'string', 'mode': 'w'},
+        {'id': 'guid', 'label': 'GUID',
+            'type': 'string', 'mode': 'w'},
+        {'id': 'creatingdc', 'label': 'Creating DC',
+            'type': 'string', 'mode': 'w'},
         )
 
     def setClusterMachines(self, clusterdnsnames):

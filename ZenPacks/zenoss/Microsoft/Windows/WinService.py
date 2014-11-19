@@ -35,13 +35,14 @@ class WinService(OSComponent):
     globalset = False
 
     _properties = OSComponent._properties + (
-        {'id': 'servicename', 'type': 'string'},
-        {'id': 'caption', 'type': 'string'},
-        {'id': 'description', 'type': 'string'},
-        {'id': 'startmode', 'type': 'string'},
-        {'id': 'account', 'type': 'string'},
-        {'id': 'usermonitor', 'type': 'boolean'},
-        {'id': 'globalset', 'type': 'boolean'},
+        {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
+        {'id': 'caption', 'label': 'Caption', 'type': 'string'},
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'startmode', 'label': 'Start Mode', 'type': 'string'},
+        {'id': 'account', 'label': 'Account', 'type': 'string'},
+        {'id': 'usermonitor', 'label': 'User Selected Monitor State',
+            'type': 'boolean'},
+        {'id': 'globalset', 'label': 'Global Set', 'type': 'boolean'},
         )
 
     _relations = OSComponent._relations + (
