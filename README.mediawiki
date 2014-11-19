@@ -691,6 +691,20 @@ The following are the most common errors:
 * ''KRB5KRB_AP_ERR_SKEW'': As shown in the above example. A clock synchronization issue.
 * ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.
 
+=== Troubleshooting Kerberos error messages ====
+
+<blockquote>Cannot determine realm for numeric host address</blockquote>
+
+* If you enter an IP address for the device id, make sure that the address is resolvable to a name.
+
+<blockquote>Server not found in Kerberos database</blockquote>
+
+* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.  
+
+example:
+setspn -s HTTP/hostname1.zenoss.com hostname1
+
+
 === Troubleshooting on Resource Manager 4.1.1 ===
 
 In some cases updating the Microsoft Windows ZenPack on Zenoss Resource Manager 4.1.1 may result in the ''zenhub'' daemon not starting. The error message will contain ''AttributeError: zDBInstancesPassword''. If you encounter this issue, install the ZenPack again.
@@ -772,6 +786,13 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.2.0
+* Payload encryption over kerberos connections
+* Updated Events to use Get-WinEvent cmdlet
+* Updated Software modeler to query registry instead of Win32_Product
+* Updated FileSystems to show mapped network drives and mounted volumes
+* Numerous bug fixes
 
 ;2.1.3
 * Zenoss 5 compatibility fixes.
