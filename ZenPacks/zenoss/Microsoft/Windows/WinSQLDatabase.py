@@ -32,16 +32,17 @@ class WinSQLDatabase(OSComponent):
     cluster_node_server = None
 
     _properties = OSComponent._properties + (
-        {'id': 'instancename', 'type': 'string'},
-        {'id': 'version', 'type': 'string'},
-        {'id': 'owner', 'type': 'string'},
-        {'id': 'lastbackupdate', 'type': 'string'},
-        {'id': 'lastlogbackupdate', 'type': 'string'},
-        {'id': 'isaccessible', 'type': 'string'},
-        {'id': 'collation', 'type': 'string'},
-        {'id': 'createdate', 'type': 'string'},
-        {'id': 'defaultfilegroup', 'type': 'string'},
-        {'id': 'primaryfilepath', 'type': 'string'},
+        {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
+        {'id': 'version', 'label': 'Version', 'type': 'string'},
+        {'id': 'owner', 'label': 'Owner', 'type': 'string'},
+        {'id': 'lastbackupdate', 'label': 'Last Backup', 'type': 'string'},
+        {'id': 'lastlogbackupdate', 'label': 'Last Log Backup',
+            'type': 'string'},
+        {'id': 'isaccessible', 'label': 'Accessible', 'type': 'string'},
+        {'id': 'collation', 'label': 'Collation', 'type': 'string'},
+        {'id': 'createdate', 'label': 'Created On', 'type': 'string'},
+        {'id': 'defaultfilegroup', 'label': 'File Group', 'type': 'string'},
+        {'id': 'primaryfilepath', 'label': 'File Path', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

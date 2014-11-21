@@ -20,3 +20,5 @@ ZenPacks/zenoss/Microsoft/Windows/lib/*.egg-link
 .DS_Store
 
 .idea/
+.pydevproject
+.project

@@ -27,12 +27,12 @@ class WinSQLJob(OSComponent):
     datecreated = None
 
     _properties = OSComponent._properties + (
-        {'id': 'instancename', 'type': 'string'},
-        {'id': 'jobid', 'type': 'string'},
-        {'id': 'enabled', 'type': 'string'},
-        {'id': 'description', 'type': 'string'},
-        {'id': 'username', 'type': 'string'},
-        {'id': 'datecreated', 'type': 'string'},
+        {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
+        {'id': 'jobid', 'label': 'Job ID', 'type': 'string'},
+        {'id': 'enabled', 'label': 'Enabled', 'type': 'string'},
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'username', 'label': 'User', 'type': 'string'},
+        {'id': 'datecreated', 'label': 'Date Created', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
