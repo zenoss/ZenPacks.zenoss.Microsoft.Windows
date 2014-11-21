@@ -194,6 +194,12 @@
             factory=".impact.ClusterRelationsProvider"
             />
 
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinService.WinService"
+            factory=".impact.WinServiceRelationsProvider"
+            />
+
     </configure>
 
     <!-- Analytics -->
