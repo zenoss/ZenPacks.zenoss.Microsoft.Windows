@@ -10,6 +10,9 @@
 
       datapoints:
         iisBytesReceived: GAUGE
+          rrdmin: 0
+          aliases:
+            iisReceived__bytes: ""
 
     iisBytesSent:
       type: Windows Perfmon
@@ -18,6 +21,9 @@
 
       datapoints:
         iisBytesSent: GAUGE
+          rrdmin: 0
+          aliases:
+            iisSent__bytes: ""
 
     iisCGIRequests:
       type: Windows Perfmon
