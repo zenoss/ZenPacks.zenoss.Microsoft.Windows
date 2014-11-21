@@ -179,7 +179,7 @@ class FileSystems(WinRMPlugin):
                 'totalFiles': 0,
                 }))
 
-            return rm
+        return rm
 
 
 def Win32_volume_mount(disk):
