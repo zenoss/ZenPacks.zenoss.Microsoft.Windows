@@ -156,6 +156,9 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
 
+        for obj in self._object.os.winrmservices():
+            yield edge(self.guid(), guid(obj))
+
         # Look up for HyperV server with same IP
         try:
             dc = self._object.getDmdRoot('Devices').getOrganizer(
@@ -190,3 +193,8 @@ class ClusterRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
         yield edge(self.guid(), guid(self._object.device()))
+
+class WinServiceRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
