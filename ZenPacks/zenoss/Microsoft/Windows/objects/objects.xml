@@ -11709,6 +11709,10 @@ True
 <property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='cacheHitRatio__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -11835,6 +11839,10 @@ True
 <property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='fileSize__kbytes' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>

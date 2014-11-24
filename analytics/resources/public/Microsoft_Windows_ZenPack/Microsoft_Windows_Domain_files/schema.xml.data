@@ -26,6 +26,26 @@
             <item resourceId="JoinTree_1.hourly_cpu__pct.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cpu__pct_fct_avg" label="cpu__pct / hourly / Average"/>
             <item resourceId="JoinTree_1.hourly_cpu__pct.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cpu__pct_fct_max" label="cpu__pct / hourly / Highest"/>
             <item resourceId="JoinTree_1.hourly_cpu__pct.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cpu__pct_fct_min" label="cpu__pct / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts" label="iisreceived__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_avg" label="iisreceived__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_max" label="iisreceived__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_min" label="iisreceived__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts" label="iisreceived__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_avg" label="iisreceived__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_max" label="iisreceived__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_min" label="iisreceived__bytes / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts" label="iissent__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts_gmt" label="iissent__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_avg" label="iissent__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_max" label="iissent__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_min" label="iissent__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts" label="iissent__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts_gmt" label="iissent__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_avg" label="iissent__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_max" label="iissent__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_min" label="iissent__bytes / hourly / Lowest"/>
           </items>
         </itemGroup>
       </itemGroups>
@@ -37,6 +57,62 @@
         <item resourceId="JoinTree_1.dim_device.device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_device_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_device.device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_device_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_device.device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_device_device_msexchangeversion" label="MS Exchange Version"/>
+      </items>
+    </itemGroup>
+    <itemGroup resourceId="JoinTree_1" label="IpRouteEntrys" id="set_ip_route_entry" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_ip_route_entry_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
+      <items>
+        <item resourceId="JoinTree_1.dim_ip_route_entry.id" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_id" label="IpRouteEntry ID"/>
+        <item resourceId="JoinTree_1.dim_ip_route_entry.nexthopip" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_nexthopip" label="Next Hop"/>
+        <item resourceId="JoinTree_1.dim_ip_route_entry.routeproto" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routeproto" label="Protocol"/>
+        <item resourceId="JoinTree_1.dim_ip_route_entry.routetype" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routetype" label="Type"/>
+      </items>
+    </itemGroup>
+    <itemGroup resourceId="JoinTree_1" label="WinDatabases" id="set_win_database" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_database_measures" description="">
+          <itemGroups/>
+          <items>
+            <item resourceId="JoinTree_1.daily_cachehitratio__pct.fct_ts" dimensionOrMeasure="Dimension" id="daily_cachehitratio__pct_fct_ts" label="cachehitratio__pct / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_cachehitratio__pct.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_cachehitratio__pct_fct_ts_gmt" label="cachehitratio__pct / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_cachehitratio__pct.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_cachehitratio__pct_fct_avg" label="cachehitratio__pct / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_cachehitratio__pct.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_cachehitratio__pct_fct_max" label="cachehitratio__pct / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_cachehitratio__pct.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_cachehitratio__pct_fct_min" label="cachehitratio__pct / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_cachehitratio__pct.fct_ts" dimensionOrMeasure="Dimension" id="hourly_cachehitratio__pct_fct_ts" label="cachehitratio__pct / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_cachehitratio__pct.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_cachehitratio__pct_fct_ts_gmt" label="cachehitratio__pct / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_cachehitratio__pct.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cachehitratio__pct_fct_avg" label="cachehitratio__pct / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_cachehitratio__pct.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cachehitratio__pct_fct_max" label="cachehitratio__pct / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_cachehitratio__pct.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_cachehitratio__pct_fct_min" label="cachehitratio__pct / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_filesize__kbytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_filesize__kbytes_fct_ts" label="filesize__kbytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_filesize__kbytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_filesize__kbytes_fct_ts_gmt" label="filesize__kbytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_filesize__kbytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_filesize__kbytes_fct_avg" label="filesize__kbytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_filesize__kbytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_filesize__kbytes_fct_max" label="filesize__kbytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_filesize__kbytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_filesize__kbytes_fct_min" label="filesize__kbytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_filesize__kbytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_filesize__kbytes_fct_ts" label="filesize__kbytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_filesize__kbytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_filesize__kbytes_fct_ts_gmt" label="filesize__kbytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_filesize__kbytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_filesize__kbytes_fct_avg" label="filesize__kbytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_filesize__kbytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_filesize__kbytes_fct_max" label="filesize__kbytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_filesize__kbytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_filesize__kbytes_fct_min" label="filesize__kbytes / hourly / Lowest"/>
+          </items>
+        </itemGroup>
+      </itemGroups>
+      <items>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_name" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_name" label="WinDatabase Name"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_instancename" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_instancename" label="Instance Name"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_version" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_version" label="Version"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_owner" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_owner" label="Owner"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_lastbackupdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_lastbackupdate" label="Last Backup"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_lastlogbackupdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_lastlogbackupdate" label="Last Log Backup"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_isaccessible" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_isaccessible" label="Accessible"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_collation" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_collation" label="Collation"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_createdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_createdate" label="Created On"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_defaultfilegroup" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_defaultfilegroup" label="File Group"/>
+        <item resourceId="JoinTree_1.dim_win_database.win_database_primaryfilepath" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_primaryfilepath" label="File Path"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="WindowsInterfaces" id="set_windows_interface" description="">
@@ -91,11 +167,47 @@
         <item resourceId="JoinTree_1.dim_windows_interface.windows_interface_name" dimensionOrMeasure="Dimension" id="dim_windows_interface_windows_interface_name" label="WindowsInterface Name"/>
       </items>
     </itemGroup>
+    <itemGroup resourceId="JoinTree_1" label="WinBackupDevices" id="set_win_backup_device" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_backup_device_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
+      <items>
+        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_name" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_name" label="WinBackupDevice Name"/>
+        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_devicetype" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_devicetype" label="Device Type"/>
+        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_physicallocation" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_physicallocation" label="Physical Location"/>
+        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_status" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_status" label="Status"/>
+        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_instancename" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_instancename" label="Instance Name"/>
+      </items>
+    </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="WinRMIISs" id="set_win_rmiis" description="">
       <itemGroups>
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_rmiis_measures" description="">
           <itemGroups/>
-          <items/>
+          <items>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts" label="iisreceived__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_avg" label="iisreceived__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_max" label="iisreceived__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_min" label="iisreceived__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts" label="iisreceived__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_avg" label="iisreceived__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_max" label="iisreceived__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_min" label="iisreceived__bytes / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts" label="iissent__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts_gmt" label="iissent__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_avg" label="iissent__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_max" label="iissent__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_min" label="iissent__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts" label="iissent__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts_gmt" label="iissent__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_avg" label="iissent__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_max" label="iissent__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_min" label="iissent__bytes / hourly / Lowest"/>
+          </items>
         </itemGroup>
       </itemGroups>
       <items>
@@ -105,6 +217,35 @@
         <item resourceId="JoinTree_1.dim_win_rmiis.win_rmiis_caption" dimensionOrMeasure="Dimension" id="dim_win_rmiis_win_rmiis_caption" label="Caption"/>
         <item resourceId="JoinTree_1.dim_win_rmiis.win_rmiis_status" dimensionOrMeasure="Dimension" id="dim_win_rmiis_win_rmiis_status" label="Status"/>
         <item resourceId="JoinTree_1.dim_win_rmiis.win_rmiis_statusname" dimensionOrMeasure="Dimension" id="dim_win_rmiis_win_rmiis_statusname" label="Status Name"/>
+      </items>
+    </itemGroup>
+    <itemGroup resourceId="JoinTree_1" label="WinSQLJobs" id="set_win_sql_job" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_job_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
+      <items>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_name" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_name" label="WinSQLJob Name"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_instancename" label="Instance Name"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_jobid" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_jobid" label="Job ID"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_enabled" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_enabled" label="Enabled"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_description" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_username" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_username" label="User"/>
+        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_datecreated" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_datecreated" label="Date Created"/>
+      </items>
+    </itemGroup>
+    <itemGroup resourceId="JoinTree_1" label="WinDBInstances" id="set_win_db_instance" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_db_instance_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
+      <items>
+        <item resourceId="JoinTree_1.dim_win_db_instance.win_db_instance_name" dimensionOrMeasure="Dimension" id="dim_win_db_instance_win_db_instance_name" label="WinDBInstance Name"/>
+        <item resourceId="JoinTree_1.dim_win_db_instance.win_db_instance_instancename" dimensionOrMeasure="Dimension" id="dim_win_db_instance_win_db_instance_instancename" label="Instance Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="WinRMServices" id="set_win_rm_service" description="">
@@ -145,85 +286,6 @@
         <item resourceId="JoinTree_1.dim_windows_cpu.windows_cpu_cache_speed_l2" dimensionOrMeasure="Dimension" id="dim_windows_cpu_windows_cpu_cache_speed_l2" label="L2 Cache Speed"/>
         <item resourceId="JoinTree_1.dim_windows_cpu.windows_cpu_cache_size_l3" dimensionOrMeasure="Dimension" id="dim_windows_cpu_windows_cpu_cache_size_l3" label="L3 Cache Size"/>
         <item resourceId="JoinTree_1.dim_windows_cpu.windows_cpu_cache_speed_l3" dimensionOrMeasure="Dimension" id="dim_windows_cpu_windows_cpu_cache_speed_l3" label="L3 Cache Speed"/>
-      </items>
-    </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="IpRouteEntrys" id="set_ip_route_entry" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_ip_route_entry_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
-      <items>
-        <item resourceId="JoinTree_1.dim_ip_route_entry.id" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_id" label="IpRouteEntry ID"/>
-        <item resourceId="JoinTree_1.dim_ip_route_entry.nexthopip" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_nexthopip" label="Next Hop"/>
-        <item resourceId="JoinTree_1.dim_ip_route_entry.routeproto" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routeproto" label="Protocol"/>
-        <item resourceId="JoinTree_1.dim_ip_route_entry.routetype" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routetype" label="Type"/>
-      </items>
-    </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="WinBackupDevices" id="set_win_backup_device" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_backup_device_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
-      <items>
-        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_name" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_name" label="WinBackupDevice Name"/>
-        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_devicetype" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_devicetype" label="Device Type"/>
-        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_physicallocation" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_physicallocation" label="Physical Location"/>
-        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_status" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_status" label="Status"/>
-        <item resourceId="JoinTree_1.dim_win_backup_device.win_backup_device_instancename" dimensionOrMeasure="Dimension" id="dim_win_backup_device_win_backup_device_instancename" label="Instance Name"/>
-      </items>
-    </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="WinDBInstances" id="set_win_db_instance" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_db_instance_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
-      <items>
-        <item resourceId="JoinTree_1.dim_win_db_instance.win_db_instance_name" dimensionOrMeasure="Dimension" id="dim_win_db_instance_win_db_instance_name" label="WinDBInstance Name"/>
-        <item resourceId="JoinTree_1.dim_win_db_instance.win_db_instance_instancename" dimensionOrMeasure="Dimension" id="dim_win_db_instance_win_db_instance_instancename" label="Instance Name"/>
-      </items>
-    </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="WinSQLJobs" id="set_win_sql_job" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_job_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
-      <items>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_name" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_name" label="WinSQLJob Name"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_instancename" label="Instance Name"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_jobid" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_jobid" label="Job ID"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_enabled" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_enabled" label="Enabled"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_description" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_description" label="Description"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_username" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_username" label="User"/>
-        <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_datecreated" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_datecreated" label="Date Created"/>
-      </items>
-    </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="WinDatabases" id="set_win_database" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_database_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
-      <items>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_name" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_name" label="WinDatabase Name"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_instancename" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_instancename" label="Instance Name"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_version" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_version" label="Version"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_owner" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_owner" label="Owner"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_lastbackupdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_lastbackupdate" label="Last Backup"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_lastlogbackupdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_lastlogbackupdate" label="Last Log Backup"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_isaccessible" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_isaccessible" label="Accessible"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_collation" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_collation" label="Collation"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_createdate" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_createdate" label="Created On"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_defaultfilegroup" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_defaultfilegroup" label="File Group"/>
-        <item resourceId="JoinTree_1.dim_win_database.win_database_primaryfilepath" dimensionOrMeasure="Dimension" id="dim_win_database_win_database_primaryfilepath" label="File Path"/>
       </items>
     </itemGroup>
   </itemGroups>
@@ -331,6 +393,153 @@
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="hourly_cpu__pct" datasourceId="zenoss_reporting" id="hourly_cpu__pct">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iisreceived__bytes" datasourceId="zenoss_reporting" id="daily_iisreceived__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iisreceived__bytes" datasourceId="zenoss_reporting" id="hourly_iisreceived__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissent__bytes" datasourceId="zenoss_reporting" id="daily_iissent__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissent__bytes" datasourceId="zenoss_reporting" id="hourly_iissent__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="dim_ip_route_entry" datasourceId="zenoss_reporting" id="dim_ip_route_entry">
+      <fieldList>
+        <field type="java.lang.Integer" id="ip_route_entry_key"/>
+        <field type="java.sql.Timestamp" id="ip_route_entry_deleted_at" dataSetExpression="if(ip_route_entry_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="id"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="routemask"/>
+        <field type="java.lang.String" id="nexthopip"/>
+        <field type="java.lang.String" id="routeproto"/>
+        <field type="java.lang.String" id="routeage"/>
+        <field type="java.lang.String" id="routetype"/>
+        <field type="java.lang.Double" id="metric1"/>
+        <field type="java.lang.Double" id="metric2"/>
+        <field type="java.lang.Double" id="metric3"/>
+        <field type="java.lang.Double" id="metric4"/>
+        <field type="java.lang.Double" id="metric5"/>
+        <field type="java.lang.Integer" id="os_key"/>
+        <field type="java.lang.Integer" id="interface_key"/>
+        <field type="java.lang.Integer" id="nexthop_key"/>
+        <field type="java.lang.Integer" id="target_key"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="dim_win_database" datasourceId="zenoss_reporting" id="dim_win_database">
+      <fieldList>
+        <field type="java.lang.Integer" id="win_database_key"/>
+        <field type="java.sql.Timestamp" id="win_database_deleted_at" dataSetExpression="if(win_database_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="win_database_name"/>
+        <field type="java.lang.String" id="win_database_id"/>
+        <field type="java.lang.String" id="win_database_type"/>
+        <field type="java.lang.String" id="win_database_uid"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="win_database_snmpindex"/>
+        <field type="java.lang.Boolean" id="win_database_monitor"/>
+        <field type="java.lang.String" id="win_database_production_state"/>
+        <field type="java.lang.String" id="win_database_pre_mw_production_state"/>
+        <field type="java.lang.String" id="win_database_instancename"/>
+        <field type="java.lang.String" id="win_database_version"/>
+        <field type="java.lang.String" id="win_database_owner"/>
+        <field type="java.lang.String" id="win_database_lastbackupdate"/>
+        <field type="java.lang.String" id="win_database_lastlogbackupdate"/>
+        <field type="java.lang.String" id="win_database_isaccessible"/>
+        <field type="java.lang.String" id="win_database_collation"/>
+        <field type="java.lang.String" id="win_database_createdate"/>
+        <field type="java.lang.String" id="win_database_defaultfilegroup"/>
+        <field type="java.lang.String" id="win_database_primaryfilepath"/>
+        <field type="java.lang.Double" id="dependencies_count"/>
+        <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="links_count"/>
+        <field type="java.lang.Integer" id="win_db_instance_key"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_cachehitratio__pct" datasourceId="zenoss_reporting" id="daily_cachehitratio__pct">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_cachehitratio__pct" datasourceId="zenoss_reporting" id="hourly_cachehitratio__pct">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_filesize__kbytes" datasourceId="zenoss_reporting" id="daily_filesize__kbytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_filesize__kbytes" datasourceId="zenoss_reporting" id="hourly_filesize__kbytes">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -472,6 +681,29 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
+    <jdbcTable tableName="dim_win_backup_device" datasourceId="zenoss_reporting" id="dim_win_backup_device">
+      <fieldList>
+        <field type="java.lang.Integer" id="win_backup_device_key"/>
+        <field type="java.sql.Timestamp" id="win_backup_device_deleted_at" dataSetExpression="if(win_backup_device_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="win_backup_device_name"/>
+        <field type="java.lang.String" id="win_backup_device_id"/>
+        <field type="java.lang.String" id="win_backup_device_type"/>
+        <field type="java.lang.String" id="win_backup_device_uid"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="win_backup_device_snmpindex"/>
+        <field type="java.lang.Boolean" id="win_backup_device_monitor"/>
+        <field type="java.lang.String" id="win_backup_device_production_state"/>
+        <field type="java.lang.String" id="win_backup_device_pre_mw_production_state"/>
+        <field type="java.lang.String" id="win_backup_device_devicetype"/>
+        <field type="java.lang.String" id="win_backup_device_physicallocation"/>
+        <field type="java.lang.String" id="win_backup_device_status"/>
+        <field type="java.lang.String" id="win_backup_device_instancename"/>
+        <field type="java.lang.Double" id="dependencies_count"/>
+        <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="links_count"/>
+        <field type="java.lang.Integer" id="win_db_instance_key"/>
+      </fieldList>
+    </jdbcTable>
     <jdbcTable tableName="dim_win_rmiis" datasourceId="zenoss_reporting" id="dim_win_rmiis">
       <fieldList>
         <field type="java.lang.Integer" id="win_rmiis_key"/>
@@ -494,6 +726,54 @@
         <field type="java.lang.Double" id="dependents_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="software_key"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="dim_win_sql_job" datasourceId="zenoss_reporting" id="dim_win_sql_job">
+      <fieldList>
+        <field type="java.lang.Integer" id="win_sql_job_key"/>
+        <field type="java.sql.Timestamp" id="win_sql_job_deleted_at" dataSetExpression="if(win_sql_job_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="win_sql_job_name"/>
+        <field type="java.lang.String" id="win_sql_job_id"/>
+        <field type="java.lang.String" id="win_sql_job_type"/>
+        <field type="java.lang.String" id="win_sql_job_uid"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="win_sql_job_snmpindex"/>
+        <field type="java.lang.Boolean" id="win_sql_job_monitor"/>
+        <field type="java.lang.String" id="win_sql_job_production_state"/>
+        <field type="java.lang.String" id="win_sql_job_pre_mw_production_state"/>
+        <field type="java.lang.String" id="win_sql_job_instancename"/>
+        <field type="java.lang.String" id="win_sql_job_jobid"/>
+        <field type="java.lang.String" id="win_sql_job_enabled"/>
+        <field type="java.lang.String" id="win_sql_job_description"/>
+        <field type="java.lang.String" id="win_sql_job_username"/>
+        <field type="java.lang.String" id="win_sql_job_datecreated"/>
+        <field type="java.lang.Double" id="dependencies_count"/>
+        <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="links_count"/>
+        <field type="java.lang.Integer" id="win_db_instance_key"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="dim_win_db_instance" datasourceId="zenoss_reporting" id="dim_win_db_instance">
+      <fieldList>
+        <field type="java.lang.Integer" id="win_db_instance_key"/>
+        <field type="java.sql.Timestamp" id="win_db_instance_deleted_at" dataSetExpression="if(win_db_instance_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="win_db_instance_name"/>
+        <field type="java.lang.String" id="win_db_instance_id"/>
+        <field type="java.lang.String" id="win_db_instance_type"/>
+        <field type="java.lang.String" id="win_db_instance_uid"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="win_db_instance_snmpindex"/>
+        <field type="java.lang.Boolean" id="win_db_instance_monitor"/>
+        <field type="java.lang.String" id="win_db_instance_production_state"/>
+        <field type="java.lang.String" id="win_db_instance_pre_mw_production_state"/>
+        <field type="java.lang.String" id="win_db_instance_instancename"/>
+        <field type="java.lang.Double" id="dependencies_count"/>
+        <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="links_count"/>
+        <field type="java.lang.Integer" id="software_key"/>
+        <field type="java.lang.Double" id="win_backup_device_count"/>
+        <field type="java.lang.Double" id="win_sql_job_count"/>
+        <field type="java.lang.Double" id="win_database_count"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_win_rm_service" datasourceId="zenoss_reporting" id="dim_win_rm_service">
@@ -547,128 +827,6 @@
         <field type="java.lang.Double" id="dependents_count"/>
         <field type="java.lang.Integer" id="product_class_key"/>
         <field type="java.lang.Integer" id="device_hw_key"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_ip_route_entry" datasourceId="zenoss_reporting" id="dim_ip_route_entry">
-      <fieldList>
-        <field type="java.lang.Integer" id="ip_route_entry_key"/>
-        <field type="java.sql.Timestamp" id="ip_route_entry_deleted_at" dataSetExpression="if(ip_route_entry_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="id"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="routemask"/>
-        <field type="java.lang.String" id="nexthopip"/>
-        <field type="java.lang.String" id="routeproto"/>
-        <field type="java.lang.String" id="routeage"/>
-        <field type="java.lang.String" id="routetype"/>
-        <field type="java.lang.Double" id="metric1"/>
-        <field type="java.lang.Double" id="metric2"/>
-        <field type="java.lang.Double" id="metric3"/>
-        <field type="java.lang.Double" id="metric4"/>
-        <field type="java.lang.Double" id="metric5"/>
-        <field type="java.lang.Integer" id="os_key"/>
-        <field type="java.lang.Integer" id="interface_key"/>
-        <field type="java.lang.Integer" id="nexthop_key"/>
-        <field type="java.lang.Integer" id="target_key"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_win_backup_device" datasourceId="zenoss_reporting" id="dim_win_backup_device">
-      <fieldList>
-        <field type="java.lang.Integer" id="win_backup_device_key"/>
-        <field type="java.sql.Timestamp" id="win_backup_device_deleted_at" dataSetExpression="if(win_backup_device_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="win_backup_device_name"/>
-        <field type="java.lang.String" id="win_backup_device_id"/>
-        <field type="java.lang.String" id="win_backup_device_type"/>
-        <field type="java.lang.String" id="win_backup_device_uid"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="win_backup_device_snmpindex"/>
-        <field type="java.lang.Boolean" id="win_backup_device_monitor"/>
-        <field type="java.lang.String" id="win_backup_device_production_state"/>
-        <field type="java.lang.String" id="win_backup_device_pre_mw_production_state"/>
-        <field type="java.lang.String" id="win_backup_device_devicetype"/>
-        <field type="java.lang.String" id="win_backup_device_physicallocation"/>
-        <field type="java.lang.String" id="win_backup_device_status"/>
-        <field type="java.lang.String" id="win_backup_device_instancename"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="win_db_instance_key"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_win_db_instance" datasourceId="zenoss_reporting" id="dim_win_db_instance">
-      <fieldList>
-        <field type="java.lang.Integer" id="win_db_instance_key"/>
-        <field type="java.sql.Timestamp" id="win_db_instance_deleted_at" dataSetExpression="if(win_db_instance_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="win_db_instance_name"/>
-        <field type="java.lang.String" id="win_db_instance_id"/>
-        <field type="java.lang.String" id="win_db_instance_type"/>
-        <field type="java.lang.String" id="win_db_instance_uid"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="win_db_instance_snmpindex"/>
-        <field type="java.lang.Boolean" id="win_db_instance_monitor"/>
-        <field type="java.lang.String" id="win_db_instance_production_state"/>
-        <field type="java.lang.String" id="win_db_instance_pre_mw_production_state"/>
-        <field type="java.lang.String" id="win_db_instance_instancename"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="software_key"/>
-        <field type="java.lang.Double" id="win_backup_device_count"/>
-        <field type="java.lang.Double" id="win_sql_job_count"/>
-        <field type="java.lang.Double" id="win_database_count"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_win_sql_job" datasourceId="zenoss_reporting" id="dim_win_sql_job">
-      <fieldList>
-        <field type="java.lang.Integer" id="win_sql_job_key"/>
-        <field type="java.sql.Timestamp" id="win_sql_job_deleted_at" dataSetExpression="if(win_sql_job_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="win_sql_job_name"/>
-        <field type="java.lang.String" id="win_sql_job_id"/>
-        <field type="java.lang.String" id="win_sql_job_type"/>
-        <field type="java.lang.String" id="win_sql_job_uid"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="win_sql_job_snmpindex"/>
-        <field type="java.lang.Boolean" id="win_sql_job_monitor"/>
-        <field type="java.lang.String" id="win_sql_job_production_state"/>
-        <field type="java.lang.String" id="win_sql_job_pre_mw_production_state"/>
-        <field type="java.lang.String" id="win_sql_job_instancename"/>
-        <field type="java.lang.String" id="win_sql_job_jobid"/>
-        <field type="java.lang.String" id="win_sql_job_enabled"/>
-        <field type="java.lang.String" id="win_sql_job_description"/>
-        <field type="java.lang.String" id="win_sql_job_username"/>
-        <field type="java.lang.String" id="win_sql_job_datecreated"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="win_db_instance_key"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_win_database" datasourceId="zenoss_reporting" id="dim_win_database">
-      <fieldList>
-        <field type="java.lang.Integer" id="win_database_key"/>
-        <field type="java.sql.Timestamp" id="win_database_deleted_at" dataSetExpression="if(win_database_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="win_database_name"/>
-        <field type="java.lang.String" id="win_database_id"/>
-        <field type="java.lang.String" id="win_database_type"/>
-        <field type="java.lang.String" id="win_database_uid"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="win_database_snmpindex"/>
-        <field type="java.lang.Boolean" id="win_database_monitor"/>
-        <field type="java.lang.String" id="win_database_production_state"/>
-        <field type="java.lang.String" id="win_database_pre_mw_production_state"/>
-        <field type="java.lang.String" id="win_database_instancename"/>
-        <field type="java.lang.String" id="win_database_version"/>
-        <field type="java.lang.String" id="win_database_owner"/>
-        <field type="java.lang.String" id="win_database_lastbackupdate"/>
-        <field type="java.lang.String" id="win_database_lastlogbackupdate"/>
-        <field type="java.lang.String" id="win_database_isaccessible"/>
-        <field type="java.lang.String" id="win_database_collation"/>
-        <field type="java.lang.String" id="win_database_createdate"/>
-        <field type="java.lang.String" id="win_database_defaultfilegroup"/>
-        <field type="java.lang.String" id="win_database_primaryfilepath"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="win_db_instance_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_device" datasourceId="zenoss_reporting" id="JoinTree_1">
@@ -759,6 +917,113 @@
         <field type="java.lang.Double" id="hourly_cpu__pct.fct_avg"/>
         <field type="java.lang.Double" id="hourly_cpu__pct.fct_max"/>
         <field type="java.lang.Double" id="hourly_cpu__pct.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iisreceived__bytes.device_key"/>
+        <field type="java.lang.Integer" id="daily_iisreceived__bytes.component_key"/>
+        <field type="java.util.Date" id="daily_iisreceived__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iisreceived__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iisreceived__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iisreceived__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iisreceived__bytes.fct_max"/>
+        <field type="java.lang.Double" id="daily_iisreceived__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iisreceived__bytes.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iisreceived__bytes.component_key"/>
+        <field type="java.util.Date" id="hourly_iisreceived__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iisreceived__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iisreceived__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iisreceived__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iisreceived__bytes.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iisreceived__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissent__bytes.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissent__bytes.component_key"/>
+        <field type="java.util.Date" id="daily_iissent__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissent__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissent__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissent__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissent__bytes.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissent__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissent__bytes.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissent__bytes.component_key"/>
+        <field type="java.util.Date" id="hourly_iissent__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissent__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissent__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissent__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissent__bytes.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissent__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.ip_route_entry_key"/>
+        <field type="ip_route_entry_deleted_at" id="dim_ip_route_entry.ip_route_entry_deleted_at" dataSetExpression="if(dim_ip_route_entry.ip_route_entry_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.id"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.device_key"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.routemask"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.nexthopip"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.routeproto"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.routeage"/>
+        <field type="java.lang.String" id="dim_ip_route_entry.routetype"/>
+        <field type="java.lang.Double" id="dim_ip_route_entry.metric1"/>
+        <field type="java.lang.Double" id="dim_ip_route_entry.metric2"/>
+        <field type="java.lang.Double" id="dim_ip_route_entry.metric3"/>
+        <field type="java.lang.Double" id="dim_ip_route_entry.metric4"/>
+        <field type="java.lang.Double" id="dim_ip_route_entry.metric5"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.os_key"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.interface_key"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.nexthop_key"/>
+        <field type="java.lang.Integer" id="dim_ip_route_entry.target_key"/>
+        <field type="java.lang.Integer" id="dim_win_database.win_database_key"/>
+        <field type="win_database_deleted_at" id="dim_win_database.win_database_deleted_at" dataSetExpression="if(dim_win_database.win_database_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_name"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_id"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_type"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_uid"/>
+        <field type="java.lang.Integer" id="dim_win_database.device_key"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_win_database.win_database_monitor"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_production_state"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_instancename"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_version"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_owner"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_lastbackupdate"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_lastlogbackupdate"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_isaccessible"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_collation"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_createdate"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_defaultfilegroup"/>
+        <field type="java.lang.String" id="dim_win_database.win_database_primaryfilepath"/>
+        <field type="java.lang.Double" id="dim_win_database.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_win_database.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_database.links_count"/>
+        <field type="java.lang.Integer" id="dim_win_database.win_db_instance_key"/>
+        <field type="java.lang.Integer" id="daily_cachehitratio__pct.device_key"/>
+        <field type="java.lang.Integer" id="daily_cachehitratio__pct.component_key"/>
+        <field type="java.util.Date" id="daily_cachehitratio__pct.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_cachehitratio__pct.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_cachehitratio__pct.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_cachehitratio__pct.fct_avg"/>
+        <field type="java.lang.Double" id="daily_cachehitratio__pct.fct_max"/>
+        <field type="java.lang.Double" id="daily_cachehitratio__pct.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_cachehitratio__pct.device_key"/>
+        <field type="java.lang.Integer" id="hourly_cachehitratio__pct.component_key"/>
+        <field type="java.util.Date" id="hourly_cachehitratio__pct.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_cachehitratio__pct.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_cachehitratio__pct.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_cachehitratio__pct.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_cachehitratio__pct.fct_max"/>
+        <field type="java.lang.Double" id="hourly_cachehitratio__pct.fct_min"/>
+        <field type="java.lang.Integer" id="daily_filesize__kbytes.device_key"/>
+        <field type="java.lang.Integer" id="daily_filesize__kbytes.component_key"/>
+        <field type="java.util.Date" id="daily_filesize__kbytes.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_filesize__kbytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_filesize__kbytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_filesize__kbytes.fct_avg"/>
+        <field type="java.lang.Double" id="daily_filesize__kbytes.fct_max"/>
+        <field type="java.lang.Double" id="daily_filesize__kbytes.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_filesize__kbytes.device_key"/>
+        <field type="java.lang.Integer" id="hourly_filesize__kbytes.component_key"/>
+        <field type="java.util.Date" id="hourly_filesize__kbytes.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_filesize__kbytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_filesize__kbytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_filesize__kbytes.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_filesize__kbytes.fct_max"/>
+        <field type="java.lang.Double" id="hourly_filesize__kbytes.fct_min"/>
         <field type="java.lang.Integer" id="dim_windows_interface.windows_interface_key"/>
         <field type="windows_interface_deleted_at" id="dim_windows_interface.windows_interface_deleted_at" dataSetExpression="if(dim_windows_interface.windows_interface_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_windows_interface.windows_interface_name"/>
@@ -853,6 +1118,25 @@
         <field type="java.lang.Double" id="hourly_ifouterrors.fct_avg"/>
         <field type="java.lang.Double" id="hourly_ifouterrors.fct_max"/>
         <field type="java.lang.Double" id="hourly_ifouterrors.fct_min"/>
+        <field type="java.lang.Integer" id="dim_win_backup_device.win_backup_device_key"/>
+        <field type="win_backup_device_deleted_at" id="dim_win_backup_device.win_backup_device_deleted_at" dataSetExpression="if(dim_win_backup_device.win_backup_device_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_name"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_id"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_type"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_uid"/>
+        <field type="java.lang.Integer" id="dim_win_backup_device.device_key"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_win_backup_device.win_backup_device_monitor"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_production_state"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_devicetype"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_physicallocation"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_status"/>
+        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_instancename"/>
+        <field type="java.lang.Double" id="dim_win_backup_device.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_win_backup_device.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_backup_device.links_count"/>
+        <field type="java.lang.Integer" id="dim_win_backup_device.win_db_instance_key"/>
         <field type="java.lang.Integer" id="dim_win_rmiis.win_rmiis_key"/>
         <field type="win_rmiis_deleted_at" id="dim_win_rmiis.win_rmiis_deleted_at" dataSetExpression="if(dim_win_rmiis.win_rmiis_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_rmiis.win_rmiis_name"/>
@@ -873,6 +1157,46 @@
         <field type="java.lang.Double" id="dim_win_rmiis.dependents_count"/>
         <field type="java.lang.Double" id="dim_win_rmiis.links_count"/>
         <field type="java.lang.Integer" id="dim_win_rmiis.software_key"/>
+        <field type="java.lang.Integer" id="dim_win_sql_job.win_sql_job_key"/>
+        <field type="win_sql_job_deleted_at" id="dim_win_sql_job.win_sql_job_deleted_at" dataSetExpression="if(dim_win_sql_job.win_sql_job_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_name"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_id"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_type"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_uid"/>
+        <field type="java.lang.Integer" id="dim_win_sql_job.device_key"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_win_sql_job.win_sql_job_monitor"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_production_state"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_instancename"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_jobid"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_enabled"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_description"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_username"/>
+        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_datecreated"/>
+        <field type="java.lang.Double" id="dim_win_sql_job.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_job.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_job.links_count"/>
+        <field type="java.lang.Integer" id="dim_win_sql_job.win_db_instance_key"/>
+        <field type="java.lang.Integer" id="dim_win_db_instance.win_db_instance_key"/>
+        <field type="win_db_instance_deleted_at" id="dim_win_db_instance.win_db_instance_deleted_at" dataSetExpression="if(dim_win_db_instance.win_db_instance_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_name"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_id"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_type"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_uid"/>
+        <field type="java.lang.Integer" id="dim_win_db_instance.device_key"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_win_db_instance.win_db_instance_monitor"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_production_state"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_instancename"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.links_count"/>
+        <field type="java.lang.Integer" id="dim_win_db_instance.software_key"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.win_backup_device_count"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.win_sql_job_count"/>
+        <field type="java.lang.Double" id="dim_win_db_instance.win_database_count"/>
         <field type="java.lang.Integer" id="dim_win_rm_service.win_rm_service_key"/>
         <field type="win_rm_service_deleted_at" id="dim_win_rm_service.win_rm_service_deleted_at" dataSetExpression="if(dim_win_rm_service.win_rm_service_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_rm_service.win_rm_service_name"/>
@@ -918,108 +1242,6 @@
         <field type="java.lang.Double" id="dim_windows_cpu.dependents_count"/>
         <field type="java.lang.Integer" id="dim_windows_cpu.product_class_key"/>
         <field type="java.lang.Integer" id="dim_windows_cpu.device_hw_key"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.ip_route_entry_key"/>
-        <field type="ip_route_entry_deleted_at" id="dim_ip_route_entry.ip_route_entry_deleted_at" dataSetExpression="if(dim_ip_route_entry.ip_route_entry_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.id"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.device_key"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.routemask"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.nexthopip"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.routeproto"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.routeage"/>
-        <field type="java.lang.String" id="dim_ip_route_entry.routetype"/>
-        <field type="java.lang.Double" id="dim_ip_route_entry.metric1"/>
-        <field type="java.lang.Double" id="dim_ip_route_entry.metric2"/>
-        <field type="java.lang.Double" id="dim_ip_route_entry.metric3"/>
-        <field type="java.lang.Double" id="dim_ip_route_entry.metric4"/>
-        <field type="java.lang.Double" id="dim_ip_route_entry.metric5"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.os_key"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.interface_key"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.nexthop_key"/>
-        <field type="java.lang.Integer" id="dim_ip_route_entry.target_key"/>
-        <field type="java.lang.Integer" id="dim_win_backup_device.win_backup_device_key"/>
-        <field type="win_backup_device_deleted_at" id="dim_win_backup_device.win_backup_device_deleted_at" dataSetExpression="if(dim_win_backup_device.win_backup_device_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_name"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_id"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_type"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_uid"/>
-        <field type="java.lang.Integer" id="dim_win_backup_device.device_key"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_win_backup_device.win_backup_device_monitor"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_production_state"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_devicetype"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_physicallocation"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_status"/>
-        <field type="java.lang.String" id="dim_win_backup_device.win_backup_device_instancename"/>
-        <field type="java.lang.Double" id="dim_win_backup_device.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_win_backup_device.dependents_count"/>
-        <field type="java.lang.Double" id="dim_win_backup_device.links_count"/>
-        <field type="java.lang.Integer" id="dim_win_backup_device.win_db_instance_key"/>
-        <field type="java.lang.Integer" id="dim_win_db_instance.win_db_instance_key"/>
-        <field type="win_db_instance_deleted_at" id="dim_win_db_instance.win_db_instance_deleted_at" dataSetExpression="if(dim_win_db_instance.win_db_instance_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_name"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_id"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_type"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_uid"/>
-        <field type="java.lang.Integer" id="dim_win_db_instance.device_key"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_win_db_instance.win_db_instance_monitor"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_production_state"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_win_db_instance.win_db_instance_instancename"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.dependents_count"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.links_count"/>
-        <field type="java.lang.Integer" id="dim_win_db_instance.software_key"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.win_backup_device_count"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.win_sql_job_count"/>
-        <field type="java.lang.Double" id="dim_win_db_instance.win_database_count"/>
-        <field type="java.lang.Integer" id="dim_win_sql_job.win_sql_job_key"/>
-        <field type="win_sql_job_deleted_at" id="dim_win_sql_job.win_sql_job_deleted_at" dataSetExpression="if(dim_win_sql_job.win_sql_job_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_name"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_id"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_type"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_uid"/>
-        <field type="java.lang.Integer" id="dim_win_sql_job.device_key"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_win_sql_job.win_sql_job_monitor"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_production_state"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_instancename"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_jobid"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_enabled"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_description"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_username"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_datecreated"/>
-        <field type="java.lang.Double" id="dim_win_sql_job.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_win_sql_job.dependents_count"/>
-        <field type="java.lang.Double" id="dim_win_sql_job.links_count"/>
-        <field type="java.lang.Integer" id="dim_win_sql_job.win_db_instance_key"/>
-        <field type="java.lang.Integer" id="dim_win_database.win_database_key"/>
-        <field type="win_database_deleted_at" id="dim_win_database.win_database_deleted_at" dataSetExpression="if(dim_win_database.win_database_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_name"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_id"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_type"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_uid"/>
-        <field type="java.lang.Integer" id="dim_win_database.device_key"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_win_database.win_database_monitor"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_production_state"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_instancename"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_version"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_owner"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_lastbackupdate"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_lastlogbackupdate"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_isaccessible"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_collation"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_createdate"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_defaultfilegroup"/>
-        <field type="java.lang.String" id="dim_win_database.win_database_primaryfilepath"/>
-        <field type="java.lang.Double" id="dim_win_database.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_win_database.dependents_count"/>
-        <field type="java.lang.Double" id="dim_win_database.links_count"/>
-        <field type="java.lang.Integer" id="dim_win_database.win_db_instance_key"/>
       </fieldList>
       <filterString>contains(dim_device.device_class, 'Microsoft/Windows')</filterString>
       <joinInfo alias="dim_device" referenceId="dim_device"/>
@@ -1035,6 +1257,36 @@
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join hourly_cpu__pct hourly_cpu__pct on (dim_device.device_key == hourly_cpu__pct.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iisreceived__bytes daily_iisreceived__bytes on (dim_win_rmiis.win_rmiis_key == daily_iisreceived__bytes.component_key and dim_device.device_key == daily_iisreceived__bytes.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iisreceived__bytes hourly_iisreceived__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iisreceived__bytes.component_key and dim_device.device_key == hourly_iisreceived__bytes.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissent__bytes daily_iissent__bytes on (dim_device.device_key == daily_iissent__bytes.device_key and dim_win_rmiis.win_rmiis_key == daily_iissent__bytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissent__bytes hourly_iissent__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iissent__bytes.component_key and dim_device.device_key == hourly_iissent__bytes.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join dim_ip_route_entry dim_ip_route_entry on (dim_ip_route_entry.device_key == dim_device.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join dim_win_database dim_win_database on (dim_win_database.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_cachehitratio__pct daily_cachehitratio__pct on (dim_win_database.win_database_key == daily_cachehitratio__pct.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_cachehitratio__pct hourly_cachehitratio__pct on (dim_win_database.win_database_key == hourly_cachehitratio__pct.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_filesize__kbytes daily_filesize__kbytes on (dim_win_database.win_database_key == daily_filesize__kbytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_filesize__kbytes hourly_filesize__kbytes on (dim_win_database.win_database_key == hourly_filesize__kbytes.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_windows_interface dim_windows_interface on (dim_windows_interface.device_key == dim_device.device_key)</joinString>
@@ -1064,7 +1316,16 @@
           <joinString>left outer join hourly_ifouterrors hourly_ifouterrors on (dim_windows_interface.windows_interface_key == hourly_ifouterrors.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
+          <joinString>left outer join dim_win_backup_device dim_win_backup_device on (dim_win_backup_device.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
           <joinString>left outer join dim_win_rmiis dim_win_rmiis on (dim_win_rmiis.software_key == dim_software.software_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join dim_win_sql_job dim_win_sql_job on (dim_win_sql_job.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join dim_win_db_instance dim_win_db_instance on (dim_win_db_instance.software_key == dim_software.software_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_win_rm_service dim_win_rm_service on (dim_win_rm_service.software_key == dim_software.software_key)</joinString>
@@ -1073,22 +1334,7 @@
           <joinString>left outer join dim_windows_cpu dim_windows_cpu on (dim_windows_cpu.device_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_ip_route_entry dim_ip_route_entry on (dim_ip_route_entry.device_key == dim_device.device_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_backup_device dim_win_backup_device on (dim_win_backup_device.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_db_instance dim_win_db_instance on (dim_win_db_instance.software_key == dim_software.software_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_sql_job dim_win_sql_job on (dim_win_sql_job.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_database dim_win_database on (dim_win_database.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_date dim_date on (daily_memoryavailable__bytes.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key)</joinString>
+          <joinString>left outer join dim_date dim_date on (daily_filesize__kbytes.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key)</joinString>
         </joinedDataSetRef>
       </joinedDataSetList>
     </jdbcTable>
