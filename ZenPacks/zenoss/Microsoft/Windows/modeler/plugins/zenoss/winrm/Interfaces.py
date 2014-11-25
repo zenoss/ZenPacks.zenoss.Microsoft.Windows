@@ -272,6 +272,24 @@ class Interfaces(WinRMPlugin):
             int_om.type = inter.AdapterType
 
             try:
+                int_om.adminStatus = 0
+                '''
+                ZEN-15493: workaround LPU cannot access NetEnabled property
+                Check IPEnabled property of configuration
+                '''
+                if inter.NetEnabled is None:
+                    if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
+                        int_om.adminStatus = 1
+                    elif inter.NetConnectionStatus is None:
+                        int_om.adminStatus = int(lookup_adminstatus(interconf.IPEnabled))
+                else:
+                    int_om.adminStatus = int(lookup_adminstatus(inter.NetEnabled))
+            except (AttributeError):
+                # Workaround for 2003 / XP
+                if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
+                    int_om.adminStatus = 1
+
+            try:
                 int_om.ifindex = inter.InterfaceIndex
             except (AttributeError, TypeError):
                 int_om.ifindex = inter.Index
@@ -433,6 +451,17 @@ def standardizeInstance(rawInstance):
     unfriendly characters with one that Windows expects.
     """
     return rawInstance.translate(_transTable)
+
+
+def lookup_adminstatus(value):
+    """
+    return number value for adminstatus.  used to determine monitoring.
+    """
+    if value == 'true':
+        return 1
+    else:
+        return 2
+
 
 def filter_maps(objectmaps, device, log):
     '''

@@ -21,11 +21,6 @@ class Interface(IpInterface):
             'teaminterfaces')),
         )
 
-    def __init__(self, *args, **kwargs):
-        super(IpInterface, self).__init__(*args, **kwargs)
-        # Default to False for monitoring
-        self.monitor = False
-
     def monitored(self):
         '''
         Return the monitored status of this component.
@@ -33,7 +28,7 @@ class Interface(IpInterface):
         Overridden from IpInterface to prevent monitoring
         administratively down interfaces.
         '''
-        return self.monitor
+        return self.monitor and self.adminStatus == 1
 
     def getIconPath(self):
         '''
