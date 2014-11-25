@@ -273,10 +273,8 @@ class Interfaces(WinRMPlugin):
 
             try:
                 int_om.adminStatus = 0
-                '''
-                ZEN-15493: workaround LPU cannot access NetEnabled property
-                Check IPEnabled property of configuration
-                '''
+                # ZEN-15493: workaround LPU cannot access NetEnabled property
+                # Check IPEnabled property of configuration
                 if inter.NetEnabled is None:
                     if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                         int_om.adminStatus = 1
