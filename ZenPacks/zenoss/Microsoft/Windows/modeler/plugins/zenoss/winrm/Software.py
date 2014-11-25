@@ -14,7 +14,7 @@ Models list of installed software by querying registry.
 Querying Win32_Product causes Windows installer to run a consistency check, 
 possibly causing other problems to appear.
 '''
-
+import re
 from Products.DataCollector.plugins.DataMaps import MultiArgs
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
@@ -62,12 +62,20 @@ class Software(WinRMPlugin):
                         om.Vendor = 'Unknown'
                         
                     om.setProductKey = MultiArgs(softwareDict['DisplayName'], softwareDict['Vendor'])
-                        
+
                     if softwareDict['InstallDate'] is not '':
-                        om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
-                           softwareDict['InstallDate'][0:4],
-                           softwareDict['InstallDate'][4:6],
-                           softwareDict['InstallDate'][6:8])
+                        installdate = softwareDict['InstallDate']
+                        datematch = re.match('(\d{2}/\d{2}/\d{4})', installdate)
+                        if datematch:
+                            om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
+                               softwareDict['InstallDate'][6:10],
+                               softwareDict['InstallDate'][3:5],
+                               softwareDict['InstallDate'][0:2])
+                        else:
+                            om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
+                               softwareDict['InstallDate'][0:4],
+                               softwareDict['InstallDate'][4:6],
+                               softwareDict['InstallDate'][6:8])
                     rm.append(om)
                     
                 except (KeyError, ValueError):
