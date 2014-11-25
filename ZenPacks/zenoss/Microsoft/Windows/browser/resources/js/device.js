@@ -842,8 +842,6 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'network'},//, mapping:'network.uid'},
                 {name: 'macaddress'},
                 {name: 'usesMonitorAttribute'},
-                {name: 'operStatus'},
-                {name: 'adminStatus'},
                 {name: 'nic_count'},
                 {name: 'status'},
                 {name: 'monitor'},
@@ -900,18 +898,8 @@ ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'status',
                 dataIndex: 'status',
-                header: _t('Monitored'),
+                header: _t('Status'),
                 renderer: Zenoss.render.pingStatus,
-                width: 80
-            },{
-                id: 'operStatus',
-                dataIndex: 'operStatus',
-                header: _t('Operational Status'),
-                width: 110
-            },{
-                id: 'adminStatus',
-                dataIndex: 'adminStatus',
-                header: _t('Admin Status'),
                 width: 80
             },{
                 id: 'monitored',
@@ -950,8 +938,6 @@ ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'network'},//, mapping:'network.uid'},
                 {name: 'macaddress'},
                 {name: 'usesMonitorAttribute'},
-                {name: 'operStatus'},
-                {name: 'adminStatus'},
                 {name: 'status'},
                 {name: 'monitor'},
                 {name: 'monitored'},
@@ -1002,18 +988,8 @@ ZC.WindowsInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
             },{
                 id: 'status',
                 dataIndex: 'status',
-                header: _t('Monitored'),
+                header: _t('Status'),
                 renderer: Zenoss.render.pingStatus,
-                width: 80
-            },{
-                id: 'operStatus',
-                dataIndex: 'operStatus',
-                header: _t('Operational Status'),
-                width: 110
-            },{
-                id: 'adminStatus',
-                dataIndex: 'adminStatus',
-                header: _t('Admin Status'),
                 width: 80
             },{
                 id: 'monitored',
