@@ -272,16 +272,6 @@ class Interfaces(WinRMPlugin):
             int_om.type = inter.AdapterType
 
             try:
-                int_om.adminStatus = int(lookup_operstatus(inter.NetEnabled))
-            except (AttributeError):
-                int_om.adminStatus = 0
-                # Workaround for 2003 / XP
-                if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
-                    int_om.adminStatus = 1
-
-            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
-
-            try:
                 int_om.ifindex = inter.InterfaceIndex
             except (AttributeError, TypeError):
                 int_om.ifindex = inter.Index
@@ -443,17 +433,6 @@ def standardizeInstance(rawInstance):
     unfriendly characters with one that Windows expects.
     """
     return rawInstance.translate(_transTable)
-
-
-def lookup_operstatus(value):
-    """
-    Check operational status.  If None, assume LPU and ok to monitor
-    """
-    if value == 'true' or value == None:
-        return 1
-    else:
-        return 2
-
 
 def filter_maps(objectmaps, device, log):
     '''
