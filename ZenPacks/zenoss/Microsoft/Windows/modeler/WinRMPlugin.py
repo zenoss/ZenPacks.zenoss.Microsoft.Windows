@@ -139,7 +139,7 @@ class WinRMPlugin(PythonPlugin):
             message = "Query error on %s: %s"
             args.append(error[0])
             if isinstance(error, UnauthorizedError):
-                message += '\n Please refer to txwinrm documentation at '\
+                message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
                             'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"

@@ -272,14 +272,20 @@ class Interfaces(WinRMPlugin):
             int_om.type = inter.AdapterType
 
             try:
-                int_om.adminStatus = int(lookup_operstatus(inter.NetEnabled))
-            except (AttributeError):
                 int_om.adminStatus = 0
+                # ZEN-15493: workaround LPU cannot access NetEnabled property
+                # Check IPEnabled property of configuration
+                if inter.NetEnabled is None:
+                    if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
+                        int_om.adminStatus = 1
+                    elif inter.NetConnectionStatus is None:
+                        int_om.adminStatus = int(lookup_adminstatus(interconf.IPEnabled))
+                else:
+                    int_om.adminStatus = int(lookup_adminstatus(inter.NetEnabled))
+            except (AttributeError):
                 # Workaround for 2003 / XP
                 if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                     int_om.adminStatus = 1
-
-            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:
                 int_om.ifindex = inter.InterfaceIndex
@@ -445,11 +451,11 @@ def standardizeInstance(rawInstance):
     return rawInstance.translate(_transTable)
 
 
-def lookup_operstatus(value):
+def lookup_adminstatus(value):
     """
-    Check operational status.  If None, assume LPU and ok to monitor
+    return number value for adminstatus.  used to determine monitoring.
     """
-    if value == 'true' or value == None:
+    if value == 'true':
         return 1
     else:
         return 2

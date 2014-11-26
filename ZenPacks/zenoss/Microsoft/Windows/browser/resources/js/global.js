@@ -123,7 +123,7 @@ Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
             xtype: 'displayfield',
             id: 'memory-displayfield',
             name: 'memory',
-            fieldLabel: _t('Physical/Total Memory')
+            fieldLabel: _t('Physical/Total Virutal Memory')
         });
     }
 
