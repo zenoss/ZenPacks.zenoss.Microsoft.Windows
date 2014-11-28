@@ -58,11 +58,11 @@ class Software(WinRMPlugin):
                         continue                   
                     om = self.objectMap()
                     om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName']))
-                    if softwareDict['Vendor'] == '':
+                    if softwareDict['Vendor'].strip() == '':
                         om.Vendor = 'Unknown'
-                        
+
                     om.setProductKey = MultiArgs(softwareDict['DisplayName'], softwareDict['Vendor'])
-                        
+
                     if softwareDict['InstallDate'] is not '':
                         installdate = softwareDict['InstallDate']
                         datematch = re.match('(\d{2}/\d{2}/\d{4})', installdate)
