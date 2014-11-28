@@ -52,9 +52,6 @@
       <items>
         <item resourceId="JoinTree_1.dim_device.device_name" dimensionOrMeasure="Dimension" id="dim_device_device_name" label="Device Name"/>
         <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="manageIp"/>
-        <item resourceId="JoinTree_1.dim_device.device_parent_cluster" dimensionOrMeasure="Dimension" id="dim_device_device_parent_cluster" label="Parent Cluster"/>
-        <item resourceId="JoinTree_1.dim_device.device_ldomhostdevices" dimensionOrMeasure="Dimension" id="dim_device_device_ldomhostdevices" label="LDOM Host Devices"/>
-        <item resourceId="JoinTree_1.dim_device.device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_device_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_device.device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_device_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_device.device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_device_device_msexchangeversion" label="MS Exchange Version"/>
       </items>
@@ -187,26 +184,6 @@
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_rmiis_measures" description="">
           <itemGroups/>
           <items>
-            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts" label="iisreceived__bytes / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_avg" label="iisreceived__bytes / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_max" label="iisreceived__bytes / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iisreceived__bytes_fct_min" label="iisreceived__bytes / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts" label="iisreceived__bytes / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iisreceived__bytes_fct_ts_gmt" label="iisreceived__bytes / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_avg" label="iisreceived__bytes / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_max" label="iisreceived__bytes / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_iisreceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iisreceived__bytes_fct_min" label="iisreceived__bytes / hourly / Lowest"/>
-            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts" label="iissent__bytes / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissent__bytes_fct_ts_gmt" label="iissent__bytes / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_avg" label="iissent__bytes / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_max" label="iissent__bytes / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissent__bytes_fct_min" label="iissent__bytes / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts" label="iissent__bytes / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissent__bytes_fct_ts_gmt" label="iissent__bytes / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_avg" label="iissent__bytes / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_max" label="iissent__bytes / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_iissent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissent__bytes_fct_min" label="iissent__bytes / hourly / Lowest"/>
           </items>
         </itemGroup>
       </itemGroups>
@@ -301,6 +278,7 @@
         <field type="java.lang.String" id="device_name"/>
         <field type="java.lang.String" id="device_type"/>
         <field type="java.lang.String" id="device_uid"/>
+        <field type="java.lang.String" id="device_class"/>
         <field type="java.lang.String" id="device_snmpindex"/>
         <field type="java.lang.Boolean" id="device_monitor"/>
         <field type="java.lang.String" id="device_production_state"/>
@@ -318,9 +296,6 @@
         <field type="java.lang.String" id="device_comments"/>
         <field type="java.lang.String" id="device_sysedge_license_mode"/>
         <field type="java.lang.Double" id="device_priority"/>
-        <field type="java.lang.String" id="device_parent_cluster"/>
-        <field type="java.lang.String" id="device_ldomhostdevices"/>
-        <field type="java.lang.String" id="device_clusterdevices"/>
         <field type="java.lang.String" id="device_sqlhostname"/>
         <field type="java.lang.String" id="device_msexchangeversion"/>
         <field type="java.lang.String" id="device_z_win_rm_user"/>
@@ -330,23 +305,6 @@
         <field type="java.lang.Integer" id="device_class_key"/>
         <field type="java.lang.Integer" id="performance_conf_key"/>
         <field type="java.lang.Integer" id="location_key"/>
-        <field type="java.lang.Double" id="system_count"/>
-        <field type="java.lang.Double" id="device_group_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Double" id="administrative_role_count"/>
-        <field type="java.lang.Double" id="user_command_count"/>
-        <field type="java.lang.Double" id="status_monitor_conf_count"/>
-        <field type="java.lang.Double" id="ldom_count"/>
-        <field type="java.lang.Double" id="zone_container_count"/>
-        <field type="java.lang.Double" id="processor_pool_count"/>
-        <field type="java.lang.Double" id="cluster_node_count"/>
-        <field type="java.lang.Double" id="cluster_transport_path_count"/>
-        <field type="java.lang.Double" id="cluster_ipmp_group_count"/>
-        <field type="java.lang.Double" id="cluster_switch_count"/>
-        <field type="java.lang.Double" id="cluster_device_group_count"/>
-        <field type="java.lang.Double" id="cluster_nas_device_count"/>
-        <field type="java.lang.Double" id="neighbor_switch_count"/>
-        <field type="java.lang.Double" id="docker_container_count"/>
       </fieldList>
       <filterString>contains(device_class, 'Microsoft/Windows')</filterString>
     </jdbcTable>
@@ -839,6 +797,7 @@
         <field type="java.lang.String" id="dim_device.device_name"/>
         <field type="java.lang.String" id="dim_device.device_type"/>
         <field type="java.lang.String" id="dim_device.device_uid"/>
+        <field type="java.lang.String" id="dim_device.device_class"/>
         <field type="java.lang.String" id="dim_device.device_snmpindex"/>
         <field type="java.lang.Boolean" id="dim_device.device_monitor"/>
         <field type="java.lang.String" id="dim_device.device_production_state"/>
@@ -856,9 +815,6 @@
         <field type="java.lang.String" id="dim_device.device_comments"/>
         <field type="java.lang.String" id="dim_device.device_sysedge_license_mode"/>
         <field type="java.lang.Double" id="dim_device.device_priority"/>
-        <field type="java.lang.String" id="dim_device.device_parent_cluster"/>
-        <field type="java.lang.String" id="dim_device.device_ldomhostdevices"/>
-        <field type="java.lang.String" id="dim_device.device_clusterdevices"/>
         <field type="java.lang.String" id="dim_device.device_sqlhostname"/>
         <field type="java.lang.String" id="dim_device.device_msexchangeversion"/>
         <field type="java.lang.String" id="dim_device.device_z_win_rm_user"/>
@@ -868,23 +824,6 @@
         <field type="java.lang.Integer" id="dim_device.device_class_key"/>
         <field type="java.lang.Integer" id="dim_device.performance_conf_key"/>
         <field type="java.lang.Integer" id="dim_device.location_key"/>
-        <field type="java.lang.Double" id="dim_device.system_count"/>
-        <field type="java.lang.Double" id="dim_device.device_group_count"/>
-        <field type="java.lang.Double" id="dim_device.maintenance_window_count"/>
-        <field type="java.lang.Double" id="dim_device.administrative_role_count"/>
-        <field type="java.lang.Double" id="dim_device.user_command_count"/>
-        <field type="java.lang.Double" id="dim_device.status_monitor_conf_count"/>
-        <field type="java.lang.Double" id="dim_device.ldom_count"/>
-        <field type="java.lang.Double" id="dim_device.zone_container_count"/>
-        <field type="java.lang.Double" id="dim_device.processor_pool_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_node_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_transport_path_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_ipmp_group_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_switch_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_device_group_count"/>
-        <field type="java.lang.Double" id="dim_device.cluster_nas_device_count"/>
-        <field type="java.lang.Double" id="dim_device.neighbor_switch_count"/>
-        <field type="java.lang.Double" id="dim_device.docker_container_count"/>
         <field type="java.lang.Integer" id="daily_memoryavailable__bytes.device_key"/>
         <field type="java.lang.Integer" id="daily_memoryavailable__bytes.component_key"/>
         <field type="java.util.Date" id="daily_memoryavailable__bytes.date_key"/>
@@ -1259,34 +1198,19 @@
           <joinString>left outer join hourly_cpu__pct hourly_cpu__pct on (dim_device.device_key == hourly_cpu__pct.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_iisreceived__bytes daily_iisreceived__bytes on (dim_win_rmiis.win_rmiis_key == daily_iisreceived__bytes.component_key and dim_device.device_key == daily_iisreceived__bytes.device_key)</joinString>
+          <joinString>left outer join daily_iisreceived__bytes daily_iisreceived__bytes on (dim_device.device_key == daily_iisreceived__bytes.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_iisreceived__bytes hourly_iisreceived__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iisreceived__bytes.component_key and dim_device.device_key == hourly_iisreceived__bytes.device_key)</joinString>
+          <joinString>left outer join hourly_iisreceived__bytes hourly_iisreceived__bytes on (dim_device.device_key == hourly_iisreceived__bytes.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_iissent__bytes daily_iissent__bytes on (dim_device.device_key == daily_iissent__bytes.device_key and dim_win_rmiis.win_rmiis_key == daily_iissent__bytes.component_key)</joinString>
+          <joinString>left outer join daily_iissent__bytes daily_iissent__bytes on (dim_device.device_key == daily_iissent__bytes.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_iissent__bytes hourly_iissent__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iissent__bytes.component_key and dim_device.device_key == hourly_iissent__bytes.device_key)</joinString>
+          <joinString>left outer join hourly_iissent__bytes hourly_iissent__bytes on (dim_device.device_key == hourly_iissent__bytes.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_ip_route_entry dim_ip_route_entry on (dim_ip_route_entry.device_key == dim_device.device_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_database dim_win_database on (dim_win_database.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join daily_cachehitratio__pct daily_cachehitratio__pct on (dim_win_database.win_database_key == daily_cachehitratio__pct.component_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join hourly_cachehitratio__pct hourly_cachehitratio__pct on (dim_win_database.win_database_key == hourly_cachehitratio__pct.component_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join daily_filesize__kbytes daily_filesize__kbytes on (dim_win_database.win_database_key == daily_filesize__kbytes.component_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join hourly_filesize__kbytes hourly_filesize__kbytes on (dim_win_database.win_database_key == hourly_filesize__kbytes.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_windows_interface dim_windows_interface on (dim_windows_interface.device_key == dim_device.device_key)</joinString>
@@ -1316,25 +1240,10 @@
           <joinString>left outer join hourly_ifouterrors hourly_ifouterrors on (dim_windows_interface.windows_interface_key == hourly_ifouterrors.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_win_backup_device dim_win_backup_device on (dim_win_backup_device.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_rmiis dim_win_rmiis on (dim_win_rmiis.software_key == dim_software.software_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_sql_job dim_win_sql_job on (dim_win_sql_job.win_db_instance_key == dim_win_db_instance.win_db_instance_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_db_instance dim_win_db_instance on (dim_win_db_instance.software_key == dim_software.software_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_rm_service dim_win_rm_service on (dim_win_rm_service.software_key == dim_software.software_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
           <joinString>left outer join dim_windows_cpu dim_windows_cpu on (dim_windows_cpu.device_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_date dim_date on (daily_filesize__kbytes.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key)</joinString>
+          <joinString>left outer join dim_date dim_date on (daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key)</joinString>
         </joinedDataSetRef>
       </joinedDataSetList>
     </jdbcTable>
