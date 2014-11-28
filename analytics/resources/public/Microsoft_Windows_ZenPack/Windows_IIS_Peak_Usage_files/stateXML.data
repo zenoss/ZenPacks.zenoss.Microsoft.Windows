@@ -1,0 +1,125 @@
+<unifiedState filterPanelShowing="true" hasMargins="true" ignoreMaxRows="false" initedSubFilterList="true" launchType="ADH_045a_DOMAIN" maxDisplayColumns="0" maxDisplayRows="0" maxRowChoices="0" maxRows="15" mode="table" pageOrientation="Portrait" paperSize="content" showTableDetails="true" showTableTotals="false" summaryRowTitle="Totals" theme="default" titleBarShowing="true" titleHeight="40" topicName="Microsoft Windows Domain">
+  <chartState availableChartHeight="0" availableChartWidth="0" backgroundFilled="false" chartHeight="0" chartIsVertical="true" chartWidth="0" displayXAxisLabel="true" displayYAxisLabel="false" offsetX="0" offsetY="0">
+    <chartTitle />
+    <chartType>1_bar</chartType>
+    <displayLegendMap>
+      <entry key="5_scatter">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="2_pie">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="6_timeSeries">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="3_line">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="1_bar">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="4_area">
+        <boolean>true</boolean>
+      </entry>
+    </displayLegendMap>
+    <gradient>topDown</gradient>
+    <hasLinesMap>
+      <entry key="5_scatter">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="2_pie">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="6_timeSeries">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="3_line">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="1_bar">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="4_area">
+        <boolean>false</boolean>
+      </entry>
+    </hasLinesMap>
+    <hasPointsMap>
+      <entry key="5_scatter">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="2_pie">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="6_timeSeries">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="3_line">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="1_bar">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="4_area">
+        <boolean>false</boolean>
+      </entry>
+    </hasPointsMap>
+    <stackedMap>
+      <entry key="5_scatter">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="2_pie">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="6_timeSeries">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="3_line">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="1_bar">
+        <boolean>false</boolean>
+      </entry>
+      <entry key="4_area">
+        <boolean>false</boolean>
+      </entry>
+    </stackedMap>
+    <threeDMap>
+      <entry key="5_scatter">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="2_pie">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="6_timeSeries">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="3_line">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="1_bar">
+        <boolean>true</boolean>
+      </entry>
+      <entry key="4_area">
+        <boolean>true</boolean>
+      </entry>
+    </threeDMap>
+  </chartState>
+  <crosstabState numberOfColumns="0" safeColumnMode="true" safeRowMode="true" showLabels="true">
+    <sortingState />
+  </crosstabState>
+  <intelligentChartState XAxisRotation="-45" XAxisStep="1" YAxisRotation="0" YAxisStep="1" showDataPoints="true" showMeasureOnValueAxis="true" typeString="column" />
+  <measures>
+    <measure function="Count" labelOverride="Device IP Address" name="set_device.dim_device_device_manage_ip" showSummary="false" type="java.lang.String" width="137" />
+    <measure function="Average" functionMask="#,##0.00" labelOverride="IIS Received Bytes / Daily" mask="#,##0.00" measure="true" name="set_device.set_device_measures.daily_iisreceived__bytes_fct_max" showSummary="false" type="java.lang.Double" width="137" />
+    <measure function="Average" functionMask="#,##0.00" labelOverride="IIS Sent Bytes / Daily" mask="#,##0.00" measure="true" name="set_device.set_device_measures.daily_iissent__bytes_fct_max" showSummary="false" type="java.lang.Double" width="137" />
+  </measures>
+  <propertyMap>
+    <entry key="modFlags">
+      <string />
+    </entry>
+    <entry key="typeOfViewChange">
+      <string>wontReflectChanges</string>
+    </entry>
+  </propertyMap>
+  <title>Windows IIS Peak Usage</title>
+</unifiedState>

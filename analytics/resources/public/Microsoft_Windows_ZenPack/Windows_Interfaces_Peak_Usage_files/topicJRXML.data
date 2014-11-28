@@ -1,0 +1,2106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="adhocReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="30" bottomMargin="30" uuid="6f3ab6b5-a06c-4f2e-a98b-2e929644bfa8">
+	<property name="com.jaspersoft.jasperserver.api.metadata.jasperreports.domain.TopicReportUnit" value="/temp/sl_topic_963aba59-7930-4a95-b54c-6ab8c0cb0de2"/>
+	<queryString language="domain">
+		<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<query xmlns="http://www.jaspersoft.com/2007/SL/XMLSchema">
+  <queryFields>
+    <queryField id="set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts" />
+    <queryField id="set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts_gmt" />
+    <queryField id="set_device.set_device_measures.daily_memoryavailable__bytes_fct_avg" />
+    <queryField id="set_device.set_device_measures.daily_memoryavailable__bytes_fct_max" />
+    <queryField id="set_device.set_device_measures.daily_memoryavailable__bytes_fct_min" />
+    <queryField id="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts" />
+    <queryField id="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts_gmt" />
+    <queryField id="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_avg" />
+    <queryField id="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_max" />
+    <queryField id="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_min" />
+    <queryField id="set_device.set_device_measures.daily_cpu__pct_fct_ts" />
+    <queryField id="set_device.set_device_measures.daily_cpu__pct_fct_ts_gmt" />
+    <queryField id="set_device.set_device_measures.daily_cpu__pct_fct_avg" />
+    <queryField id="set_device.set_device_measures.daily_cpu__pct_fct_max" />
+    <queryField id="set_device.set_device_measures.daily_cpu__pct_fct_min" />
+    <queryField id="set_device.set_device_measures.hourly_cpu__pct_fct_ts" />
+    <queryField id="set_device.set_device_measures.hourly_cpu__pct_fct_ts_gmt" />
+    <queryField id="set_device.set_device_measures.hourly_cpu__pct_fct_avg" />
+    <queryField id="set_device.set_device_measures.hourly_cpu__pct_fct_max" />
+    <queryField id="set_device.set_device_measures.hourly_cpu__pct_fct_min" />
+    <queryField id="set_device.dim_device_device_name" />
+    <queryField id="set_device.dim_device_device_manage_ip" />
+    <queryField id="set_device.dim_device_device_sqlhostname" />
+    <queryField id="set_device.dim_device_device_msexchangeversion" />
+    <queryField id="set_ip_route_entry.dim_ip_route_entry_id" />
+    <queryField id="set_ip_route_entry.dim_ip_route_entry_nexthopip" />
+    <queryField id="set_ip_route_entry.dim_ip_route_entry_routeproto" />
+    <queryField id="set_ip_route_entry.dim_ip_route_entry_routetype" />
+    <queryField id="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts" />
+    <queryField id="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts_gmt" />
+    <queryField id="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_avg" />
+    <queryField id="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_max" />
+    <queryField id="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_min" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts_gmt" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_avg" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_max" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_min" />
+    <queryField id="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts" />
+    <queryField id="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts_gmt" />
+    <queryField id="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_avg" />
+    <queryField id="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_max" />
+    <queryField id="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_min" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts_gmt" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_avg" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_max" />
+    <queryField id="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_min" />
+    <queryField id="set_win_database.dim_win_database_win_database_name" />
+    <queryField id="set_win_database.dim_win_database_win_database_instancename" />
+    <queryField id="set_win_database.dim_win_database_win_database_version" />
+    <queryField id="set_win_database.dim_win_database_win_database_owner" />
+    <queryField id="set_win_database.dim_win_database_win_database_lastbackupdate" />
+    <queryField id="set_win_database.dim_win_database_win_database_lastlogbackupdate" />
+    <queryField id="set_win_database.dim_win_database_win_database_isaccessible" />
+    <queryField id="set_win_database.dim_win_database_win_database_collation" />
+    <queryField id="set_win_database.dim_win_database_win_database_createdate" />
+    <queryField id="set_win_database.dim_win_database_win_database_defaultfilegroup" />
+    <queryField id="set_win_database.dim_win_database_win_database_primaryfilepath" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_min" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts_gmt" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_avg" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_max" />
+    <queryField id="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_min" />
+    <queryField id="set_windows_interface.dim_windows_interface_windows_interface_name" />
+    <queryField id="set_win_backup_device.dim_win_backup_device_win_backup_device_name" />
+    <queryField id="set_win_backup_device.dim_win_backup_device_win_backup_device_devicetype" />
+    <queryField id="set_win_backup_device.dim_win_backup_device_win_backup_device_physicallocation" />
+    <queryField id="set_win_backup_device.dim_win_backup_device_win_backup_device_status" />
+    <queryField id="set_win_backup_device.dim_win_backup_device_win_backup_device_instancename" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts_gmt" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_avg" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_max" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_min" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts_gmt" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_avg" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_max" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_min" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts_gmt" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_avg" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_max" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_min" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts_gmt" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_avg" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_max" />
+    <queryField id="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_min" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_name" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_sitename" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_apppool" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_caption" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_status" />
+    <queryField id="set_win_rmiis.dim_win_rmiis_win_rmiis_statusname" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_name" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_instancename" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_jobid" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_enabled" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_description" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_username" />
+    <queryField id="set_win_sql_job.dim_win_sql_job_win_sql_job_datecreated" />
+    <queryField id="set_win_db_instance.dim_win_db_instance_win_db_instance_name" />
+    <queryField id="set_win_db_instance.dim_win_db_instance_win_db_instance_instancename" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_name" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_servicename" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_caption" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_description" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_startmode" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_account" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_usermonitor" />
+    <queryField id="set_win_rm_service.dim_win_rm_service_win_rm_service_globalset" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_socket" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_clockspeed" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_extspeed" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_voltage" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l1" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l2" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_description" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cores" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_threads" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l2" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l3" />
+    <queryField id="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l3" />
+    <queryField id="dim_date_date_date" />
+  </queryFields>
+</query>]]>
+	</queryString>
+	<field name="set_device.dim_device_device_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_device/dim_device_device_name"/>
+		<property name="semantic.tree.uri" value="/set_device/dim_device_device_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="{&quot;dim_device_device_msexchangeversion&quot;:5,&quot;dim_win_backup_device_win_backup_device_name&quot;:109,&quot;hourly_cpu__pct_fct_ts_gmt&quot;:23,&quot;set_win_sql_job&quot;:142,&quot;daily_cachehitratio__pct_fct_avg&quot;:47,&quot;dim_win_database_win_database_createdate&quot;:41,&quot;hourly_memoryavailable__bytes_fct_max&quot;:15,&quot;hourly_cpu__pct_fct_ts&quot;:22,&quot;dim_win_rm_service_win_rm_service_globalset&quot;:161,&quot;dim_win_db_instance_win_db_instance_instancename&quot;:152,&quot;hourly_outputoctets__bytes_fct_ts&quot;:83,&quot;dim_windows_cpu_windows_cpu_voltage&quot;:166,&quot;dim_win_sql_job_win_sql_job_jobid&quot;:145,&quot;dim_win_database_win_database_lastlogbackupdate&quot;:38,&quot;dim_windows_cpu_windows_cpu_cache_size_l3&quot;:173,&quot;dim_windows_cpu_windows_cpu_cache_size_l2&quot;:168,&quot;daily_memoryavailable__bytes_fct_ts_gmt&quot;:8,&quot;daily_filesize__kbytes_fct_ts_gmt&quot;:56,&quot;dim_windows_cpu_windows_cpu_cache_size_l1&quot;:167,&quot;dim_win_sql_job_win_sql_job_username&quot;:148,&quot;hourly_iissent__bytes_fct_ts_gmt&quot;:138,&quot;dim_ip_route_entry_routeproto&quot;:30,&quot;hourly_inputoctets__bytes_fct_min&quot;:77,&quot;daily_memoryavailable__bytes_fct_avg&quot;:9,&quot;hourly_memoryavailable__bytes_fct_min&quot;:16,&quot;dim_win_backup_device_win_backup_device_status&quot;:112,&quot;hourly_iissent__bytes_fct_max&quot;:140,&quot;hourly_iissent__bytes_fct_avg&quot;:139,&quot;set_windows_cpu&quot;:162,&quot;daily_cpu__pct_fct_min&quot;:21,&quot;hourly_ifinerrors_fct_ts&quot;:93,&quot;dim_win_backup_device_win_backup_device_instancename&quot;:113,&quot;hourly_iisreceived__bytes_fct_avg&quot;:129,&quot;set_win_rm_service&quot;:153,&quot;hourly_filesize__kbytes_fct_ts&quot;:60,&quot;dim_windows_cpu_windows_cpu_extspeed&quot;:165,&quot;daily_ifinerrors_fct_max&quot;:91,&quot;dim_device_device_manage_ip&quot;:3,&quot;dim_date_date_date&quot;:175,&quot;dim_ip_route_entry_routetype&quot;:31,&quot;hourly_inputoctets__bytes_fct_max&quot;:76,&quot;daily_ifinerrors_fct_avg&quot;:90,&quot;hourly_cpu__pct_fct_avg&quot;:24,&quot;dim_windows_cpu_windows_cpu_cores&quot;:170,&quot;dim_win_rm_service_win_rm_service_name&quot;:154,&quot;hourly_ifinerrors_fct_ts_gmt&quot;:94,&quot;dim_win_sql_job_win_sql_job_instancename&quot;:144,&quot;daily_iissent__bytes_fct_ts&quot;:132,&quot;hourly_ifouterrors_fct_avg&quot;:105,&quot;set_windows_interface_measures&quot;:67,&quot;daily_iisreceived__bytes_fct_min&quot;:126,&quot;dim_win_rm_service_win_rm_service_startmode&quot;:158,&quot;dim_windows_cpu_windows_cpu_socket&quot;:163,&quot;set_win_db_instance&quot;:150,&quot;dim_win_backup_device_win_backup_device_physicallocation&quot;:111,&quot;daily_cpu__pct_fct_ts_gmt&quot;:18,&quot;daily_cpu__pct_fct_max&quot;:20,&quot;dim_win_rmiis_win_rmiis_caption&quot;:118,&quot;daily_filesize__kbytes_fct_max&quot;:58,&quot;hourly_iisreceived__bytes_fct_ts&quot;:127,&quot;daily_inputoctets__bytes_fct_max&quot;:71,&quot;hourly_filesize__kbytes_fct_ts_gmt&quot;:61,&quot;daily_inputoctets__bytes_fct_min&quot;:72,&quot;dim_win_database_win_database_version&quot;:35,&quot;hourly_cachehitratio__pct_fct_avg&quot;:52,&quot;dim_windows_cpu_windows_cpu_clockspeed&quot;:164,&quot;daily_ifouterrors_fct_ts_gmt&quot;:99,&quot;set_win_database_measures&quot;:44,&quot;daily_filesize__kbytes_fct_min&quot;:59,&quot;daily_cachehitratio__pct_fct_min&quot;:49,&quot;hourly_filesize__kbytes_fct_min&quot;:64,&quot;hourly_cachehitratio__pct_fct_max&quot;:53,&quot;hourly_cachehitratio__pct_fct_min&quot;:54,&quot;dim_win_database_win_database_primaryfilepath&quot;:43,&quot;daily_iisreceived__bytes_fct_ts&quot;:122,&quot;dim_win_db_instance_win_db_instance_name&quot;:151,&quot;daily_iisreceived__bytes_fct_max&quot;:125,&quot;dim_win_sql_job_win_sql_job_name&quot;:143,&quot;dim_win_backup_device_win_backup_device_devicetype&quot;:110,&quot;set_device&quot;:1,&quot;dim_windows_cpu_windows_cpu_cache_speed_l2&quot;:172,&quot;dim_win_rm_service_win_rm_service_servicename&quot;:155,&quot;dim_windows_cpu_windows_cpu_cache_speed_l3&quot;:174,&quot;daily_inputoctets__bytes_fct_ts_gmt&quot;:69,&quot;hourly_outputoctets__bytes_fct_ts_gmt&quot;:84,&quot;dim_win_rmiis_win_rmiis_status&quot;:119,&quot;hourly_outputoctets__bytes_fct_avg&quot;:85,&quot;hourly_cpu__pct_fct_min&quot;:26,&quot;dim_win_rm_service_win_rm_service_caption&quot;:156,&quot;daily_cachehitratio__pct_fct_ts&quot;:45,&quot;hourly_iisreceived__bytes_fct_ts_gmt&quot;:128,&quot;daily_filesize__kbytes_fct_ts&quot;:55,&quot;daily_ifinerrors_fct_ts_gmt&quot;:89,&quot;daily_cachehitratio__pct_fct_ts_gmt&quot;:46,&quot;dim_win_sql_job_win_sql_job_datecreated&quot;:149,&quot;set_win_database&quot;:32,&quot;set_windows_interface&quot;:65,&quot;dim_win_sql_job_win_sql_job_enabled&quot;:146,&quot;daily_iissent__bytes_fct_max&quot;:135,&quot;daily_cpu__pct_fct_avg&quot;:19,&quot;daily_outputoctets__bytes_fct_ts&quot;:78,&quot;dim_win_rm_service_win_rm_service_usermonitor&quot;:160,&quot;dim_win_database_win_database_isaccessible&quot;:39,&quot;daily_memoryavailable__bytes_fct_ts&quot;:7,&quot;hourly_inputoctets__bytes_fct_ts&quot;:73,&quot;daily_inputoctets__bytes_fct_avg&quot;:70,&quot;set_win_backup_device&quot;:108,&quot;hourly_outputoctets__bytes_fct_max&quot;:86,&quot;hourly_ifinerrors_fct_avg&quot;:95,&quot;daily_memoryavailable__bytes_fct_min&quot;:11,&quot;daily_ifinerrors_fct_min&quot;:92,&quot;daily_cachehitratio__pct_fct_max&quot;:48,&quot;dim_windows_interface_windows_interface_name&quot;:66,&quot;daily_inputoctets__bytes_fct_ts&quot;:68,&quot;hourly_outputoctets__bytes_fct_min&quot;:87,&quot;daily_iissent__bytes_fct_ts_gmt&quot;:133,&quot;set_win_rmiis_measures&quot;:121,&quot;hourly_cpu__pct_fct_max&quot;:25,&quot;hourly_cachehitratio__pct_fct_ts&quot;:50,&quot;hourly_filesize__kbytes_fct_max&quot;:63,&quot;daily_memoryavailable__bytes_fct_max&quot;:10,&quot;hourly_memoryavailable__bytes_fct_ts_gmt&quot;:13,&quot;daily_iissent__bytes_fct_avg&quot;:134,&quot;hourly_memoryavailable__bytes_fct_ts&quot;:12,&quot;dim_win_rmiis_win_rmiis_apppool&quot;:117,&quot;dim_win_database_win_database_lastbackupdate&quot;:37,&quot;daily_ifouterrors_fct_avg&quot;:100,&quot;daily_iissent__bytes_fct_min&quot;:136,&quot;daily_ifouterrors_fct_min&quot;:102,&quot;hourly_inputoctets__bytes_fct_avg&quot;:75,&quot;dim_win_database_win_database_collation&quot;:40,&quot;hourly_ifouterrors_fct_ts&quot;:103,&quot;daily_iisreceived__bytes_fct_ts_gmt&quot;:123,&quot;dim_win_sql_job_win_sql_job_description&quot;:147,&quot;daily_outputoctets__bytes_fct_ts_gmt&quot;:79,&quot;hourly_ifinerrors_fct_max&quot;:96,&quot;dim_ip_route_entry_id&quot;:28,&quot;dim_device_device_name&quot;:2,&quot;hourly_ifouterrors_fct_ts_gmt&quot;:104,&quot;hourly_filesize__kbytes_fct_avg&quot;:62,&quot;daily_iisreceived__bytes_fct_avg&quot;:124,&quot;set_win_rmiis&quot;:114,&quot;hourly_inputoctets__bytes_fct_ts_gmt&quot;:74,&quot;dim_win_rmiis_win_rmiis_sitename&quot;:116,&quot;dim_win_database_win_database_instancename&quot;:34,&quot;set_ip_route_entry&quot;:27,&quot;hourly_ifinerrors_fct_min&quot;:97,&quot;hourly_ifouterrors_fct_min&quot;:107,&quot;hourly_memoryavailable__bytes_fct_avg&quot;:14,&quot;daily_ifinerrors_fct_ts&quot;:88,&quot;dim_win_database_win_database_name&quot;:33,&quot;daily_ifouterrors_fct_max&quot;:101,&quot;daily_ifouterrors_fct_ts&quot;:98,&quot;daily_outputoctets__bytes_fct_avg&quot;:80,&quot;hourly_iisreceived__bytes_fct_min&quot;:131,&quot;dim_win_rm_service_win_rm_service_account&quot;:159,&quot;dim_ip_route_entry_nexthopip&quot;:29,&quot;daily_cpu__pct_fct_ts&quot;:17,&quot;hourly_iissent__bytes_fct_min&quot;:141,&quot;dim_win_database_win_database_owner&quot;:36,&quot;daily_outputoctets__bytes_fct_max&quot;:81,&quot;daily_outputoctets__bytes_fct_min&quot;:82,&quot;daily_filesize__kbytes_fct_avg&quot;:57,&quot;dim_win_rmiis_win_rmiis_statusname&quot;:120,&quot;set_device_measures&quot;:6,&quot;dim_win_database_win_database_defaultfilegroup&quot;:42,&quot;hourly_iissent__bytes_fct_ts&quot;:137,&quot;dim_device_device_sqlhostname&quot;:4,&quot;dim_windows_cpu_windows_cpu_description&quot;:169,&quot;dim_win_rmiis_win_rmiis_name&quot;:115,&quot;dim_win_rm_service_win_rm_service_description&quot;:157,&quot;hourly_ifouterrors_fct_max&quot;:106,&quot;hourly_iisreceived__bytes_fct_max&quot;:130,&quot;dim_windows_cpu_windows_cpu_threads&quot;:171,&quot;hourly_cachehitratio__pct_fct_ts_gmt&quot;:51}"/>
+		<property name="resourceId" value="JoinTree_1.dim_device.device_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Device Name"/>
+		<property name="defaultMask"/>
+		<property name="slIsTableAsList" value="false"/>
+		<property name="adhoc.tree.labels" value="[{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;Devices&quot;,&quot;uri&quot;:&quot;/set_device&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;Measures&quot;,&quot;uri&quot;:&quot;/set_device/set_device_measures&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;IpRouteEntrys&quot;,&quot;uri&quot;:&quot;/set_ip_route_entry&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinDatabases&quot;,&quot;uri&quot;:&quot;/set_win_database&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;Measures&quot;,&quot;uri&quot;:&quot;/set_win_database/set_win_database_measures&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WindowsInterfaces&quot;,&quot;uri&quot;:&quot;/set_windows_interface&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;Measures&quot;,&quot;uri&quot;:&quot;/set_windows_interface/set_windows_interface_measures&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinBackupDevices&quot;,&quot;uri&quot;:&quot;/set_win_backup_device&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinRMIISs&quot;,&quot;uri&quot;:&quot;/set_win_rmiis&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;Measures&quot;,&quot;uri&quot;:&quot;/set_win_rmiis/set_win_rmiis_measures&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinSQLJobs&quot;,&quot;uri&quot;:&quot;/set_win_sql_job&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinDBInstances&quot;,&quot;uri&quot;:&quot;/set_win_db_instance&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WinRMServices&quot;,&quot;uri&quot;:&quot;/set_win_rm_service&quot;,&quot;labelId&quot;:&quot;&quot;},{&quot;resourceId&quot;:&quot;JoinTree_1&quot;,&quot;label&quot;:&quot;WindowsCPUs&quot;,&quot;uri&quot;:&quot;/set_windows_cpu&quot;,&quot;labelId&quot;:&quot;&quot;}]"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.dim_device_device_name]]></fieldDescription>
+	</field>
+	<field name="set_device.dim_device_device_manage_ip" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_device/dim_device_device_manage_ip"/>
+		<property name="semantic.tree.uri" value="/set_device/dim_device_device_manage_ip"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_device.device_manage_ip"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="manageIp"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.dim_device_device_manage_ip]]></fieldDescription>
+	</field>
+	<field name="set_device.dim_device_device_sqlhostname" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_device/dim_device_device_sqlhostname"/>
+		<property name="semantic.tree.uri" value="/set_device/dim_device_device_sqlhostname"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_device.device_sqlhostname"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="SQL Host Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.dim_device_device_sqlhostname]]></fieldDescription>
+	</field>
+	<field name="set_device.dim_device_device_msexchangeversion" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_device/dim_device_device_msexchangeversion"/>
+		<property name="semantic.tree.uri" value="/set_device/dim_device_device_msexchangeversion"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_device.device_msexchangeversion"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="MS Exchange Version"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.dim_device_device_msexchangeversion]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.daily_memoryavailable__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.daily_memoryavailable__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_memoryavailable__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_memoryavailable__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.daily_memoryavailable__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_memoryavailable__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_memoryavailable__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.daily_memoryavailable__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_memoryavailable__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_memoryavailable__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_memoryavailable__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.daily_memoryavailable__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_memoryavailable__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.hourly_memoryavailable__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.hourly_memoryavailable__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_memoryavailable__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.hourly_memoryavailable__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_memoryavailable__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.hourly_memoryavailable__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_memoryavailable__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_memoryavailable__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_memoryavailable__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.hourly_memoryavailable__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="memoryavailable__bytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_memoryavailable__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_cpu__pct_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.daily_cpu__pct.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cpu__pct / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_cpu__pct_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_cpu__pct_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="11"/>
+		<property name="resourceId" value="JoinTree_1.daily_cpu__pct.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cpu__pct / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_cpu__pct_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_cpu__pct_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="12"/>
+		<property name="resourceId" value="JoinTree_1.daily_cpu__pct.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_cpu__pct_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_cpu__pct_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="13"/>
+		<property name="resourceId" value="JoinTree_1.daily_cpu__pct.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_cpu__pct_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.daily_cpu__pct_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/daily_cpu__pct_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="14"/>
+		<property name="resourceId" value="JoinTree_1.daily_cpu__pct.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.daily_cpu__pct_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_cpu__pct_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="15"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cpu__pct.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cpu__pct / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_cpu__pct_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_cpu__pct_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="16"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cpu__pct.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cpu__pct / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_cpu__pct_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_cpu__pct_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="17"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cpu__pct.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_cpu__pct_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_cpu__pct_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="18"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cpu__pct.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_cpu__pct_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_device.set_device_measures.hourly_cpu__pct_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_device/set_device_measures/hourly_cpu__pct_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="19"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cpu__pct.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cpu__pct / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_device.set_device_measures.hourly_cpu__pct_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_ip_route_entry.dim_ip_route_entry_id" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_id"/>
+		<property name="semantic.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_id"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_ip_route_entry.id"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="IpRouteEntry ID"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_ip_route_entry.dim_ip_route_entry_id]]></fieldDescription>
+	</field>
+	<field name="set_ip_route_entry.dim_ip_route_entry_nexthopip" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_nexthopip"/>
+		<property name="semantic.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_nexthopip"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_ip_route_entry.nexthopip"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Next Hop"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_ip_route_entry.dim_ip_route_entry_nexthopip]]></fieldDescription>
+	</field>
+	<field name="set_ip_route_entry.dim_ip_route_entry_routeproto" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_routeproto"/>
+		<property name="semantic.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_routeproto"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_ip_route_entry.routeproto"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Protocol"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_ip_route_entry.dim_ip_route_entry_routeproto]]></fieldDescription>
+	</field>
+	<field name="set_ip_route_entry.dim_ip_route_entry_routetype" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_routetype"/>
+		<property name="semantic.tree.uri" value="/set_ip_route_entry/dim_ip_route_entry_routetype"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_ip_route_entry.routetype"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Type"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_ip_route_entry.dim_ip_route_entry_routetype]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_name"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinDatabase Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_name]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_instancename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_instancename"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_instancename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_instancename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Instance Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_instancename]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_version" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_version"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_version"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_version"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Version"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_version]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_owner" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_owner"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_owner"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_owner"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Owner"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_owner]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_lastbackupdate" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_lastbackupdate"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_lastbackupdate"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_lastbackupdate"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Last Backup"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_lastbackupdate]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_lastlogbackupdate" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_lastlogbackupdate"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_lastlogbackupdate"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_lastlogbackupdate"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Last Log Backup"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_lastlogbackupdate]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_isaccessible" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_isaccessible"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_isaccessible"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_isaccessible"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Accessible"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_isaccessible]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_collation" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_collation"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_collation"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_collation"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Collation"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_collation]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_createdate" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_createdate"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_createdate"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_createdate"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Created On"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_createdate]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_defaultfilegroup" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_defaultfilegroup"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_defaultfilegroup"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_defaultfilegroup"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="File Group"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_defaultfilegroup]]></fieldDescription>
+	</field>
+	<field name="set_win_database.dim_win_database_win_database_primaryfilepath" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_database/dim_win_database_win_database_primaryfilepath"/>
+		<property name="semantic.tree.uri" value="/set_win_database/dim_win_database_win_database_primaryfilepath"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_database.win_database_primaryfilepath"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="File Path"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.dim_win_database_win_database_primaryfilepath]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.daily_cachehitratio__pct.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cachehitratio__pct / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.daily_cachehitratio__pct.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cachehitratio__pct / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.daily_cachehitratio__pct.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.daily_cachehitratio__pct.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_cachehitratio__pct_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.daily_cachehitratio__pct.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_cachehitratio__pct_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cachehitratio__pct.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cachehitratio__pct / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cachehitratio__pct.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="cachehitratio__pct / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cachehitratio__pct.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cachehitratio__pct.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_cachehitratio__pct_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.hourly_cachehitratio__pct.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="cachehitratio__pct / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_cachehitratio__pct_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.daily_filesize__kbytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="filesize__kbytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="11"/>
+		<property name="resourceId" value="JoinTree_1.daily_filesize__kbytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="filesize__kbytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="12"/>
+		<property name="resourceId" value="JoinTree_1.daily_filesize__kbytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="13"/>
+		<property name="resourceId" value="JoinTree_1.daily_filesize__kbytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/daily_filesize__kbytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="14"/>
+		<property name="resourceId" value="JoinTree_1.daily_filesize__kbytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.daily_filesize__kbytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="15"/>
+		<property name="resourceId" value="JoinTree_1.hourly_filesize__kbytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="filesize__kbytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="16"/>
+		<property name="resourceId" value="JoinTree_1.hourly_filesize__kbytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="filesize__kbytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="17"/>
+		<property name="resourceId" value="JoinTree_1.hourly_filesize__kbytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="18"/>
+		<property name="resourceId" value="JoinTree_1.hourly_filesize__kbytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_database/set_win_database_measures/hourly_filesize__kbytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="19"/>
+		<property name="resourceId" value="JoinTree_1.hourly_filesize__kbytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="filesize__kbytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_database.set_win_database_measures.hourly_filesize__kbytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.dim_windows_interface_windows_interface_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/dim_windows_interface_windows_interface_name"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/dim_windows_interface_windows_interface_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_interface.windows_interface_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WindowsInterface Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.dim_windows_interface_windows_interface_name]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.daily_inputoctets__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="inputoctets__bytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.daily_inputoctets__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="inputoctets__bytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.daily_inputoctets__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.daily_inputoctets__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_inputoctets__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.daily_inputoctets__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.hourly_inputoctets__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="inputoctets__bytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.hourly_inputoctets__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="inputoctets__bytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.hourly_inputoctets__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.hourly_inputoctets__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_inputoctets__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.hourly_inputoctets__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="inputoctets__bytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_inputoctets__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.daily_outputoctets__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="outputoctets__bytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="11"/>
+		<property name="resourceId" value="JoinTree_1.daily_outputoctets__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="outputoctets__bytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="12"/>
+		<property name="resourceId" value="JoinTree_1.daily_outputoctets__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="13"/>
+		<property name="resourceId" value="JoinTree_1.daily_outputoctets__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_outputoctets__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="14"/>
+		<property name="resourceId" value="JoinTree_1.daily_outputoctets__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="15"/>
+		<property name="resourceId" value="JoinTree_1.hourly_outputoctets__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="outputoctets__bytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="16"/>
+		<property name="resourceId" value="JoinTree_1.hourly_outputoctets__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="outputoctets__bytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="17"/>
+		<property name="resourceId" value="JoinTree_1.hourly_outputoctets__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="18"/>
+		<property name="resourceId" value="JoinTree_1.hourly_outputoctets__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_outputoctets__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="19"/>
+		<property name="resourceId" value="JoinTree_1.hourly_outputoctets__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="outputoctets__bytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_outputoctets__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="20"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifinerrors.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifinerrors / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="21"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifinerrors.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifinerrors / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="22"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifinerrors.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="23"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifinerrors.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifinerrors_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="24"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifinerrors.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifinerrors_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="25"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifinerrors.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifinerrors / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="26"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifinerrors.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifinerrors / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="27"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifinerrors.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="28"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifinerrors.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifinerrors_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="29"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifinerrors.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifinerrors / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifinerrors_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="30"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifouterrors.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifouterrors / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="31"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifouterrors.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifouterrors / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="32"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifouterrors.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="33"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifouterrors.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/daily_ifouterrors_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="34"/>
+		<property name="resourceId" value="JoinTree_1.daily_ifouterrors.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.daily_ifouterrors_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="35"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifouterrors.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifouterrors / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="36"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifouterrors.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="ifouterrors / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="37"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifouterrors.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="38"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifouterrors.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_windows_interface/set_windows_interface_measures/hourly_ifouterrors_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="39"/>
+		<property name="resourceId" value="JoinTree_1.hourly_ifouterrors.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="ifouterrors / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_windows_interface.set_windows_interface_measures.hourly_ifouterrors_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_backup_device.dim_win_backup_device_win_backup_device_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_name"/>
+		<property name="semantic.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_backup_device.win_backup_device_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinBackupDevice Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_backup_device.dim_win_backup_device_win_backup_device_name]]></fieldDescription>
+	</field>
+	<field name="set_win_backup_device.dim_win_backup_device_win_backup_device_devicetype" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_devicetype"/>
+		<property name="semantic.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_devicetype"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_backup_device.win_backup_device_devicetype"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Device Type"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_backup_device.dim_win_backup_device_win_backup_device_devicetype]]></fieldDescription>
+	</field>
+	<field name="set_win_backup_device.dim_win_backup_device_win_backup_device_physicallocation" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_physicallocation"/>
+		<property name="semantic.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_physicallocation"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_backup_device.win_backup_device_physicallocation"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Physical Location"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_backup_device.dim_win_backup_device_win_backup_device_physicallocation]]></fieldDescription>
+	</field>
+	<field name="set_win_backup_device.dim_win_backup_device_win_backup_device_status" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_status"/>
+		<property name="semantic.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_status"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_backup_device.win_backup_device_status"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Status"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_backup_device.dim_win_backup_device_win_backup_device_status]]></fieldDescription>
+	</field>
+	<field name="set_win_backup_device.dim_win_backup_device_win_backup_device_instancename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_instancename"/>
+		<property name="semantic.tree.uri" value="/set_win_backup_device/dim_win_backup_device_win_backup_device_instancename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_backup_device.win_backup_device_instancename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Instance Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_backup_device.dim_win_backup_device_win_backup_device_instancename]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_name"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinRMIIS Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_name]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_sitename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_sitename"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_sitename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_sitename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Site Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_sitename]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_apppool" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_apppool"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_apppool"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_apppool"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Application Pool"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_apppool]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_caption" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_caption"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_caption"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_caption"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Caption"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_caption]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_status" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_status"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_status"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_status"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Status"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_status]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.dim_win_rmiis_win_rmiis_statusname" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_statusname"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/dim_win_rmiis_win_rmiis_statusname"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rmiis.win_rmiis_statusname"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Status Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.dim_win_rmiis_win_rmiis_statusname]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.daily_iisreceived__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iisreceived__bytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.daily_iisreceived__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iisreceived__bytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.daily_iisreceived__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.daily_iisreceived__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iisreceived__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.daily_iisreceived__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iisreceived__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iisreceived__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iisreceived__bytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iisreceived__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iisreceived__bytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iisreceived__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iisreceived__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iisreceived__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iisreceived__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iisreceived__bytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iisreceived__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.daily_iissent__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iissent__bytes / daily / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="11"/>
+		<property name="resourceId" value="JoinTree_1.daily_iissent__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iissent__bytes / daily / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="12"/>
+		<property name="resourceId" value="JoinTree_1.daily_iissent__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / daily / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="13"/>
+		<property name="resourceId" value="JoinTree_1.daily_iissent__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / daily / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/daily_iissent__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="14"/>
+		<property name="resourceId" value="JoinTree_1.daily_iissent__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / daily / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.daily_iissent__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_ts"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_ts"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="15"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iissent__bytes.fct_ts"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iissent__bytes / hourly / TS"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts_gmt" class="java.sql.Timestamp">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_ts_gmt"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_ts_gmt"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="16"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iissent__bytes.fct_ts_gmt"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="iissent__bytes / hourly / TS GMT"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_ts_gmt]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_avg" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_avg"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_avg"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="17"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iissent__bytes.fct_avg"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / hourly / Average"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_avg]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_max" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_max"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_max"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="18"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iissent__bytes.fct_max"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / hourly / Highest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_max]]></fieldDescription>
+	</field>
+	<field name="set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_min" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_min"/>
+		<property name="semantic.tree.uri" value="/set_win_rmiis/set_win_rmiis_measures/hourly_iissent__bytes_fct_min"/>
+		<property name="dimensionOrMeasure" value="Measure"/>
+		<property name="semantic.tree.sort.order" value="19"/>
+		<property name="resourceId" value="JoinTree_1.hourly_iissent__bytes.fct_min"/>
+		<property name="defaultAgg" value="Average"/>
+		<property name="adhoc.display" value="iissent__bytes / hourly / Lowest"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="MEASURE"/>
+		<fieldDescription><![CDATA[set_win_rmiis.set_win_rmiis_measures.hourly_iissent__bytes_fct_min]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_name"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinSQLJob Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_name]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_instancename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_instancename"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_instancename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_instancename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Instance Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_instancename]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_jobid" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_jobid"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_jobid"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_jobid"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Job ID"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_jobid]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_enabled" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_enabled"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_enabled"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_enabled"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Enabled"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_enabled]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_description" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_description"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_description"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_description"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Description"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_description]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_username" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_username"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_username"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_username"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="User"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_username]]></fieldDescription>
+	</field>
+	<field name="set_win_sql_job.dim_win_sql_job_win_sql_job_datecreated" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_datecreated"/>
+		<property name="semantic.tree.uri" value="/set_win_sql_job/dim_win_sql_job_win_sql_job_datecreated"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_sql_job.win_sql_job_datecreated"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Date Created"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_sql_job.dim_win_sql_job_win_sql_job_datecreated]]></fieldDescription>
+	</field>
+	<field name="set_win_db_instance.dim_win_db_instance_win_db_instance_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_db_instance/dim_win_db_instance_win_db_instance_name"/>
+		<property name="semantic.tree.uri" value="/set_win_db_instance/dim_win_db_instance_win_db_instance_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_db_instance.win_db_instance_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinDBInstance Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_db_instance.dim_win_db_instance_win_db_instance_name]]></fieldDescription>
+	</field>
+	<field name="set_win_db_instance.dim_win_db_instance_win_db_instance_instancename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_db_instance/dim_win_db_instance_win_db_instance_instancename"/>
+		<property name="semantic.tree.uri" value="/set_win_db_instance/dim_win_db_instance_win_db_instance_instancename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_db_instance.win_db_instance_instancename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Instance Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_db_instance.dim_win_db_instance_win_db_instance_instancename]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_name" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_name"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_name"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_name"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="WinRMService Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_name]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_servicename" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_servicename"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_servicename"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_servicename"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Service Name"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_servicename]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_caption" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_caption"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_caption"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_caption"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Caption"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_caption]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_description" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_description"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_description"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_description"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Description"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_description]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_startmode" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_startmode"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_startmode"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_startmode"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Start Mode"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_startmode]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_account" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_account"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_account"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_account"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Account"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_account]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_usermonitor" class="java.lang.Boolean">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_usermonitor"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_usermonitor"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_usermonitor"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="User Selected Monitor State"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_usermonitor]]></fieldDescription>
+	</field>
+	<field name="set_win_rm_service.dim_win_rm_service_win_rm_service_globalset" class="java.lang.Boolean">
+		<property name="adhoc.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_globalset"/>
+		<property name="semantic.tree.uri" value="/set_win_rm_service/dim_win_rm_service_win_rm_service_globalset"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.dim_win_rm_service.win_rm_service_globalset"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Global Set"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_win_rm_service.dim_win_rm_service_win_rm_service_globalset]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_socket" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_socket"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_socket"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="0"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_socket"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Socket"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_socket]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_clockspeed" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_clockspeed"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_clockspeed"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="1"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_clockspeed"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Clock Speed"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_clockspeed]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_extspeed" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_extspeed"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_extspeed"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="2"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_extspeed"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Ext Speed"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_extspeed]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_voltage" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_voltage"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_voltage"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="3"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_voltage"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Voltage"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_voltage]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l1" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l1"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l1"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="4"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cache_size_l1"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="L1"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l1]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l2" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l2"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l2"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="5"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cache_size_l2"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="L2"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l2]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_description" class="java.lang.String">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_description"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_description"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="6"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_description"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Description"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_description]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cores" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cores"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cores"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="7"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cores"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Cores"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cores]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_threads" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_threads"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_threads"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="8"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_threads"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Threads"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_threads]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l2" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_speed_l2"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_speed_l2"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="9"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cache_speed_l2"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="L2 Cache Speed"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l2]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l3" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l3"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_size_l3"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cache_size_l3"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="L3 Cache Size"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cache_size_l3]]></fieldDescription>
+	</field>
+	<field name="set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l3" class="java.lang.Double">
+		<property name="adhoc.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_speed_l3"/>
+		<property name="semantic.tree.uri" value="/set_windows_cpu/dim_windows_cpu_windows_cpu_cache_speed_l3"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="11"/>
+		<property name="resourceId" value="JoinTree_1.dim_windows_cpu.windows_cpu_cache_speed_l3"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="L3 Cache Speed"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[set_windows_cpu.dim_windows_cpu_windows_cpu_cache_speed_l3]]></fieldDescription>
+	</field>
+	<field name="dim_date_date_date" class="java.util.Date">
+		<property name="adhoc.tree.uri" value="/dim_date_date_date"/>
+		<property name="semantic.tree.uri" value="/dim_date_date_date"/>
+		<property name="dimensionOrMeasure" value="Dimension"/>
+		<property name="semantic.tree.sort.order" value="10"/>
+		<property name="resourceId" value="JoinTree_1.dim_date.date_date"/>
+		<property name="defaultAgg"/>
+		<property name="adhoc.display" value="Date"/>
+		<property name="defaultMask"/>
+		<property name="kind" value="DIMENSION"/>
+		<fieldDescription><![CDATA[dim_date_date_date]]></fieldDescription>
+	</field>
+</jasperReport>

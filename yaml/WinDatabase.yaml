@@ -65,6 +65,9 @@
 
       datapoints:
         CacheHitRatio: DERIVE_MIN_0
+          rrdmin: 0
+          aliases:
+            cacheHitRatio__pct: ""
 
     CacheHitRatioBase:
       type: WinRS
@@ -83,6 +86,9 @@
 
       datapoints:
         DataFileSize: GAUGE_MIN_0
+          rrdmin: 0
+          aliases:
+            fileSize__kbytes: ""
 
     DBCCLogicalScanBytesSec:
       type: WinRS
