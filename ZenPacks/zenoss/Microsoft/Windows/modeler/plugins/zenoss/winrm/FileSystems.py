@@ -94,6 +94,10 @@ class FileSystems(WinRMPlugin):
         for disk in results.get('Win32_Volume', ()):
             mount = Win32_volume_mount(disk)
 
+            # ignore system volume.  cannot be monitored
+            if disk.Label == 'System Reserved':
+                continue
+
             if ignore_names and ignore_names_search(mount):
                 log.info(
                     "Ignoring %s on %s because it matches "
