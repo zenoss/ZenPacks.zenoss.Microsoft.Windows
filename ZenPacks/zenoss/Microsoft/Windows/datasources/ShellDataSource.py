@@ -518,6 +518,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         contexttitle = context.title
 
         servername = context.device().title
+        if contexttitle == servername and resource == 'get-clustergroup':
+            contexttitle = ''
+
         if len(servername) == 0:
             servername = ''
 
