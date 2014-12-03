@@ -127,4 +127,42 @@ Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
         });
     }
 
+var check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+
+var check_dp_name = function(){
+    var dp_dialog = Ext.getCmp("addDataPointDialog");
+
+    // Check if dialog window is appeared
+    if(dp_dialog){
+        // Clear interval
+        clearInterval(check_datapoint_name);
+
+        var grid = Ext.getCmp('dataSourceTreeGrid');
+        // Getting selected Data Source
+        var selectedNode = grid.getSelectionModel().getSelectedNode();
+        // Getting Data Source name
+        var ds_name = grid.getSelectionModel().getSelectedNode().data.name;
+
+        // Submit button
+        submit_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[0];
+        // Cancel button
+        cancel_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[1];
+
+        submit_bt.on('click', function(e){
+            // Getting inserted Data Point name
+            var dp_name = Ext.getCmp('metricName').getValue();
+            if(dp_name != ds_name){
+                Ext.getCmp('metricName').focus(false, 300);
+                new Zenoss.dialog.ErrorDialog({message: _t('The name chosen for Data Point must be the same as the Data Source')});
+                return false;
+            } else {
+                check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+            }
+        });
+        cancel_bt.on('click', function(e){
+            check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+        });
+    }
+}
+
 });
