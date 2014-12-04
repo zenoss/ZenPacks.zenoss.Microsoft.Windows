@@ -14539,7 +14539,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
+['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
