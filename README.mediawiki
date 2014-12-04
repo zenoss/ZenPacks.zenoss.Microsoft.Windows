@@ -343,6 +343,7 @@ Use the following steps to start monitoring a Windows server using local authent
 
 # Navigate to the Infrastructure page.
 # Select the Server/Microsoft/Windows device class.
+#* The Windows server must be added to this class or to a child of this class.
 # Click Details and set the configuration properties for zWinRMUser and zWinRMPassword.
 # Click See All.
 # Choose ''Add Single Device'' from the add device button.
@@ -599,8 +600,7 @@ There are also circumstances where you may currently be using the old Windows Ze
 The current release is known to have the following limitations.
 
 * Support for team NICs is limited to Intel and Broadcom interfaces.
-* The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property
-in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
+* The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
