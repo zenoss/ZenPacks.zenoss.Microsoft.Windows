@@ -66,7 +66,7 @@ class IIS(WinRMPlugin):
                     om.status = 'Running'
 
                 for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
-                    if iisVirt.Name == iisSite.Name + "/ROOT":
+                    if iisVirt.Name == iisSite.Name + "/ROOT" or iisSite.Name + "/root":
                         om.apppool = iisVirt.AppPoolId
 
                 rm.append(om)
