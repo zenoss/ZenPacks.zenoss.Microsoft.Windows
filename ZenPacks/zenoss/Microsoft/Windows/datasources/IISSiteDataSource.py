@@ -139,16 +139,24 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         conn_info = createConnectionInfo(ds0)
         winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        results = None
+        try:
+            results = yield winrm.do_collect(conn_info, WinRMQueries)
+        except Exception as e:
+            log.error("IISSiteDataSource error on %s: %s",
+                    config.id,
+                    e)
         log.debug(WinRMQueries)
-
         defer.returnValue(results)
 
     def onSuccess(self, results, config):
 
         data = self.new_data()
         ds0 = config.datasources[0]
-        sitestatusinfo = results[results.keys()[0]]
+        try:
+            sitestatusinfo = results[results.keys()[0]]
+        except (IndexError, AttributeError):
+            sitestatusinfo = None
         sitestatus = 'Unknown'
 
         if sitestatusinfo:
