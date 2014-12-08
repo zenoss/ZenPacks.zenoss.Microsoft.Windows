@@ -653,10 +653,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 for line in result.stderr:
                     db_match = re.search('failed for Database \'(.+?)\'', line)
                     if db_match:
-                        try:
-                            db_name = db_match.group(1)
-                        except IndexError:
-                            db_name = 'Unknown'
+                        db_name = db_match.group(1)
                         break
                 msg = "There was an error monitoring database {0}".format(db_name)
                 severity = ZenEventClasses.Error
