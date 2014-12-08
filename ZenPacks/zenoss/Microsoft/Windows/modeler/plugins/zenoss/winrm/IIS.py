@@ -83,7 +83,7 @@ class IIS(WinRMPlugin):
 
                     for iisVirt in results.get('IIs7VirtualDirectory', ()):
                         if iisVirt.SiteName == iisSite.Name:
-                            om.apppool = iisVirt.Path
+                            om.apppool = iisSite.Name
 
                     rm.append(om)
                 except AttributeError:
