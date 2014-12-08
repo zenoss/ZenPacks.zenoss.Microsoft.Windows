@@ -288,11 +288,13 @@ class PowershellMSSQLStrategy(object):
         ) and " \
         "counter_name in ({1})".format(database, counters_args)
         """
+        counters_sqlConnection.append("if ($server.Databases -ne $null) {")
         counters_sqlConnection.append("$db = $server.Databases[0];")
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append("$ds.Tables | Format-List;")
         counters_sqlConnection.append("if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}" \
-        "else { Write-Host 'databasename:{dbname}'}".replace('{dbname}', database))
+        "else { Write-Host 'databasename:{dbname}';}".replace('{dbname}', database))
+        counters_sqlConnection.append("}")
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
             ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
@@ -647,9 +649,21 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 log.warn(msg)
                 severity = ZenEventClasses.Warning
         else:
-            if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
-                db_name = result.stdout[0].split(':')[1]
-                msg = 'There are no monitoring data for the database "{0}"'.format(db_name)
+            if len(result.stderr) > 0 and strategy.key == "PowershellMSSQL":
+                db_name = 'Unknown'
+                for line in result.stderr:
+                    db_match = re.search('failed for Database \'(.+?)\'', line)
+                    if db_match:
+                        db_name = db_match.group(1)
+                        break
+                msg = "There was an error monitoring database {0}".format(db_name)
+                severity = ZenEventClasses.Error
+            elif len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
+                try:
+                    db_name = result.stdout[0].split(':')[1]
+                except Exception:
+                    db_name = 'Unknown'
+                msg = 'There is no monitoring data for the database "{0}"'.format(db_name)
                 severity = ZenEventClasses.Info
             else:
                 checked_result = False
