@@ -4,7 +4,7 @@
   <title>Adding a Windows device</title>
   <taskbody>
     <context>Follow these steps to add a Windows device using local authentication, through the 
-      <ph conkeyref="names/platform"/> user interface. To monitor other environments, see
+      <ph conkeyref="names/platform"/> interface. To monitor other environments, see
       <xref keyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-options"/>.</context>
     <steps>
       <step>
