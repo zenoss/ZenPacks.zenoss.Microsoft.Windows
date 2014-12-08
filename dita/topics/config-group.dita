@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
-<reference id="winrm-group">
+<reference product="not-ucs" id="winrm-group">
   <title>Configuring systems with Windows Group Policy</title>
   <refbody>
     <section>
@@ -81,7 +81,7 @@
               maximum number of processes per Shell</xref>
           </p>
           <p>Set the value to 4294967295.</p>
-          <note id="winrm-max">This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
+          <note>This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
             opens concurrent requests for each WQL query and set of Perfmon counters. If the maximum value is inappropriate
             for your environment, 50 should be adequate.</note>
         </li>
@@ -92,7 +92,9 @@
               maximum number of remote shells per user</xref>
           </p>
           <p>Set the value to 2147483647.</p>
-          <note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/>
+          <note>This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
+            opens concurrent requests for each WQL query and set of Perfmon counters. If the maximum value is inappropriate
+            for your environment, 50 should be adequate.</note>
         </li>
         
         <li>
