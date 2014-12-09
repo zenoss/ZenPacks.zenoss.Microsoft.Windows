@@ -59,6 +59,7 @@ class Software(WinRMPlugin):
                     om = self.objectMap()
                     om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName']))
                     if softwareDict['Vendor'].strip() == '':
+                        softwareDict['Vendor'] = 'Unknown'
                         om.Vendor = 'Unknown'
 
                     om.setProductKey = MultiArgs(softwareDict['DisplayName'], softwareDict['Vendor'])
