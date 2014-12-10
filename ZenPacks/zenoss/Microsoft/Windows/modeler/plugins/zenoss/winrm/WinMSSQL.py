@@ -46,29 +46,28 @@ class SQLCommander(object):
         $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);
         $baseKeys = 'SOFTWARE\Microsoft\Microsoft SQL Server',
             'SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server';
-        If ($reg.OpenSubKey($basekeys[0])) {
-            $regPath = $basekeys[0];
-        } ElseIf ($reg.OpenSubKey($basekeys[1])) {
-            $regPath = $basekeys[1];
-        } Else {Continue};
-        $regKey= $reg.OpenSubKey($regPath);
+        foreach ($regPath in $baseKeys) {
+            $regKey= $reg.OpenSubKey($regPath);
+            If ($regKey -eq $null) {Continue};
 
-        <# Get installed instances' names (both cluster and local) #>
-        If ($regKey.GetSubKeyNames() -contains 'Instance Names') {
-            $regKey = $reg.OpenSubKey($regpath+'\Instance Names\SQL');
-            $instances = @($regkey.GetValueNames());
-        } ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {
-            $instances = $regKey.GetValue('InstalledInstances');
-        } Else {Continue};
+            <# Get installed instances' names (both cluster and local) #>
+            If ($regKey.GetSubKeyNames() -contains 'Instance Names') {
+                $regKey = $reg.OpenSubKey($regpath+'\Instance Names\SQL');
+                $instances = @($regkey.GetValueNames());
+            } ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {
+                $instances = $regKey.GetValue('InstalledInstances');
+            } Else {Continue};
 
-        <# Get only local instances' names #>
-        $local_instances = New-Object System.Collections.Arraylist;
-        $instances | % {
-            $instanceValue = $regKey.GetValue($_);
-            $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
-            If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
-                $local_instances += $_;
+            <# Get only local instances' names #>
+            $local_instances = New-Object System.Collections.Arraylist;
+            $instances | % {
+                $instanceValue = $regKey.GetValue($_);
+                $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
+                If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
+                    $local_instances += $_;
+                };
             };
+            break;
         };
         $local_instances | % {write-host \"instances:\"$_};
     '''
