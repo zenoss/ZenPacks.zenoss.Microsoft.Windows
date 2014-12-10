@@ -67,7 +67,6 @@ class SQLCommander(object):
                     $local_instances += $_;
                 };
             };
-            break;
         };
         $local_instances | % {write-host \"instances:\"$_};
     '''
