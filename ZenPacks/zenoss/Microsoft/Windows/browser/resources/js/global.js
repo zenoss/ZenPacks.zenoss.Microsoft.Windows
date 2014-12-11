@@ -127,41 +127,89 @@ Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){
         });
     }
 
-var check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+var check_datapoint_name = false;
+
+var handler_timeout = setInterval(function(){
+    var dp_dialog = Ext.getCmp("addDataPointDialog");
+
+    // Check if need to restart check_dp_name setInterval
+    if(!dp_dialog && !check_datapoint_name){
+        check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+    }
+
+    // Check if dialog window is appeared
+    if(dp_dialog){
+        var field = Ext.getCmp('metricName');
+        submit_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[0];
+
+        if(field.getValue()){
+            if(field.getEl().getAttribute('isEqual') === 'true'){
+                submit_bt.setDisabled(false);
+                Ext.getCmp('metricName').clearInvalid();
+            } else {
+                submit_bt.setDisabled(true);
+                field.markInvalid('The name chosen for Data Point must be the same as the Data Source');
+            }
+        }
+    }
+}, 500);
 
 var check_dp_name = function(){
     var dp_dialog = Ext.getCmp("addDataPointDialog");
 
     // Check if dialog window is appeared
     if(dp_dialog){
+
         // Clear interval
         clearInterval(check_datapoint_name);
+        check_datapoint_name = false;
 
         var grid = Ext.getCmp('dataSourceTreeGrid');
         // Getting selected Data Source
         var selectedNode = grid.getSelectionModel().getSelectedNode();
-        // Getting Data Source name
-        var ds_name = grid.getSelectionModel().getSelectedNode().data.name;
+        console.log(selectedNode.data.type);
 
-        // Submit button
-        submit_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[0];
-        // Cancel button
-        cancel_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[1];
+        // Getting Data point filed
+        var field = Ext.getCmp('metricName');
+        field.getEl().set({isEqual: true});
 
-        submit_bt.on('click', function(e){
-            // Getting inserted Data Point name
-            var dp_name = Ext.getCmp('metricName').getValue();
-            if(dp_name != ds_name){
-                Ext.getCmp('metricName').focus(false, 300);
-                new Zenoss.dialog.ErrorDialog({message: _t('The name chosen for Data Point must be the same as the Data Source')});
-                return false;
-            } else {
-                check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
-            }
-        });
-        cancel_bt.on('click', function(e){
-            check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
-        });
+        if(selectedNode.data.type == "Windows Perfmon"){
+            // Getting Data Source name
+            var ds_name = selectedNode.data.name;
+
+            // Submit button
+            submit_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[0];
+            // Cancel button
+            cancel_bt = Ext.getCmp('addDataPointDialog').query('DialogButton')[1];
+
+            submit_bt.on('click', function(e){
+                // Getting inserted Data Point name
+                if(field.getValue() != ds_name){
+                    Ext.getCmp('metricName').focus(false, 300);
+                    new Zenoss.dialog.ErrorDialog({message: _t('The name chosen for Data Point must be the same as the Data Source')});
+                    return false;
+                } else {
+                    if(!check_datapoint_name){
+                        check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+                    }
+                }
+            });
+
+            cancel_bt.on('click', function(e){
+                if(!check_datapoint_name){
+                    check_datapoint_name = setInterval(function(){ check_dp_name() }, 1000);
+                }
+            });
+
+            field.getEl().on('keyup', function (el, e) {
+                field.getEl().set({isEqual: false});
+                if(field.getValue() != ds_name ){
+                    field.getEl().set({isEqual: false});
+                } else {
+                    field.getEl().set({isEqual: true});
+                }
+            });
+        }
     }
 }
 
