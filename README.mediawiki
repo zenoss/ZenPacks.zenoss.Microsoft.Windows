@@ -34,10 +34,10 @@ The following components will be automatically discovered through the Windows se
 [[File:windows_interfaces.png|thumb|320px|Interfaces]]
 
 ;Server (Device)
-: Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Total Memory, Total Swap, Operating System, Cluster
+: Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory, Operating System, Cluster
 
 ;Cluster (Device)
-: Attributes: Name, Contact, Description, Total Memory, Total Swap, Operating System, Member Servers
+: Attributes: Name, Contact, Description, Physical Memory, Total Virtual Memory, Operating System, Member Servers
 
 ;Processors
 : Attributes: Name, Description, Model, Socket, Cores, Threads, Clock Speed, External Speed, Voltage, L1 Cache Size, L2 Cache Size and Speed, L3 Cache Size and Speed
@@ -526,19 +526,17 @@ Individual Machine configuration
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
 
-HTTP (Windows default is HTTPS see note below for more information)
-* winrm s winrm/config/service @{AllowUnencrypted="true"}
-
 Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth @{Basic="true"}
+* winrm s winrm/config/service @{AllowUnencrypted="true"}
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
 
-{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients and you don't mind sending the payload in clear text but require the user name and password to be encrypted then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended.
+{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
-{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on tbe client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
+{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
 Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
 
@@ -646,7 +644,7 @@ This is an example of what would be required if you had two domains: example1.co
 When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact capability for services running on Microsoft Windows. The following service impact relationships are automatically added. These will be included in any services that contain one or more of the explicitly mentioned entities.
 
 ;Service Impact Relationships
-* The Windows server is impacted by the Processors, Interfaces and File Systems.
+* The Windows server is impacted by the Processors and File Systems.
 
 == Troubleshooting ==
 
@@ -703,7 +701,7 @@ You'll also see other kerberos messages that are normal. You should ignore these
 
 The following are the most common errors:
 * ''KRB5KRB_AP_ERR_SKEW'': As shown in the above example. A clock synchronization issue.
-* ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.
+* ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.  Typical solutions to this are to add the name to the /etc/hosts file or to directly use the IP address of the server.
 
 === Troubleshooting on Resource Manager 4.1.1 ===
 
@@ -721,6 +719,45 @@ If you see an "Index out of range" error, this could indicate a low number of av
 For example:
 * vi /etc/sysctl.conf
 * fs.file-max=10000
+
+== Zenoss Analytics ==
+
+This ZenPack provides additional support for Zenoss Analytics. Perform the
+following steps to install extra reporting resources into Zenoss Analytics
+after installing the ZenPack.
+
+# Copy analytics-bundle.zip from <tt>$ZENHOME/ZenPacks/ZenPacks.zenoss.Microsoft.Windows*/ZenPacks/zenoss/Microsoft/Windows/analytics/</tt> on your Zenoss server.
+# Navigate to Zenoss Analytics in your browser.
+# Login as superuser.
+# Remove any existing ''Microsoft Windows ZenPack'' folder.
+## Choose ''Repository'' from the ''View'' menu at the top of the page.
+## Expand ''Public'' in the list of folders.
+## Right-click on ''Microsoft Windows ZenPack'' folder and choose ''Delete''.
+## Confirm deletion by clicking ''OK''.
+# Add the new ''Microsoft Windows ZenPack'' folder.
+## Choose ''Server Settings'' from the ''Manage'' menu at the top of the page.
+## Choose ''Import'' in the left page.
+## Remove checks from all check boxes.
+## Click ''Choose File'' to import a data file.
+## Choose the analytics-bundle.zip file copied from your Zenoss server.
+## Click ''Import''.
+
+You can now navigate back to the ''Microsoft Windows ZenPack'' folder in the repository to see the following resources added by the bundle.
+
+;Domains
+* Microsoft Windows Domain
+* Microsoft Cluster Domain
+
+;Ad Hoc Views
+* Windows IIS Peak Usage
+* Windows Interfaces Peak Usage
+
+Domains can be used to create Ad Hoc views using the following steps.
+
+# Choose ''Ad Hoc View'' from the ''Create'' menu.
+# Click ''Domains'' at the top of the data chooser dialog.
+# Expand ''Public'' then ''Microsoft Windows ZenPack''.
+# Choose the ''Microsoft Windows Domain'' domain
 
 == Installed Items ==
 
@@ -793,6 +830,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Updated Software modeler to query registry instead of Win32_Product
 * Updated FileSystems to show mapped network drives and mounted volumes
 * Numerous bug fixes
+* Support for Zenoss Analytics
 
 ;2.1.3
 * Zenoss 5 compatibility fixes.

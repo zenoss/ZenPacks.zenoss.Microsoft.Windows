@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE reference PUBLIC "urn:pubid:zenoss.com:doctypes:dita:dtd:reference" "reference.dtd">
-<reference id="referenceid">
+<reference product="not-ucs" id="referenceid">
   <title>Authentication and transport options</title>
   <refbody>
     <section>
@@ -30,7 +30,7 @@
             Windows systems to monitor must be configured to support HTTPS individually.</dd>
         </dlentry>
       </dl>
-      <note>NTLMv2 is not supported, and cannot be configured to work with this ZenPack.</note>
+      <note>NTLMv2 is not supported, and can not be configured to work with this ZenPack.</note>
     </section>
   </refbody>
 </reference>

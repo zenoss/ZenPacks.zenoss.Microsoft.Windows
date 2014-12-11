@@ -38,12 +38,16 @@
       <step>
         <cmd>Configure the maximum number of concurrent operations per user.</cmd>
         <stepxmp><userinput>winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}</userinput></stepxmp>
-        <info><note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/></info>
+        <info><note>This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
+          opens concurrent requests for each WQL query and set of Perfmon counters. If the maximum value is inappropriate
+          for your environment, 50 should be adequate.</note></info>
       </step>
       <step>
         <cmd>Configure the maximum number of shells per user.</cmd>
         <stepxmp><userinput>winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}</userinput></stepxmp>
-        <info><note conkeyref="reference-ZenPacks.zenoss.Microsoft.Windows-config-group/winrm-max"/></info>
+        <info><note>This is the maximum value. The default (5) is inadequate, because <ph conkeyref="names/platform"/>
+          opens concurrent requests for each WQL query and set of Perfmon counters. If the maximum value is inappropriate
+          for your environment, 50 should be adequate.</note></info>
       </step>
       <step>
         <cmd>Configure the idle timeout.</cmd>
