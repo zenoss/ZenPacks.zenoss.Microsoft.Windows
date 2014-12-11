@@ -506,6 +506,86 @@
             <item resourceId="JoinTree_1.hourly_ntlmauthentications.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_ntlmauthentications_fct_avg" label="ntlmauthentications / hourly / Average"/>
             <item resourceId="JoinTree_1.hourly_ntlmauthentications.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_ntlmauthentications_fct_max" label="ntlmauthentications / hourly / Highest"/>
             <item resourceId="JoinTree_1.hourly_ntlmauthentications.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_ntlmauthentications_fct_min" label="ntlmauthentications / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxfolderopens__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseismailboxfolderopens__sec_fct_ts" label="mseismailboxfolderopens__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxfolderopens__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseismailboxfolderopens__sec_fct_ts_gmt" label="mseismailboxfolderopens__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxfolderopens__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxfolderopens__sec_fct_avg" label="mseismailboxfolderopens__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxfolderopens__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxfolderopens__sec_fct_max" label="mseismailboxfolderopens__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxfolderopens__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxfolderopens__sec_fct_min" label="mseismailboxfolderopens__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxfolderopens__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseismailboxfolderopens__sec_fct_ts" label="mseismailboxfolderopens__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxfolderopens__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseismailboxfolderopens__sec_fct_ts_gmt" label="mseismailboxfolderopens__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxfolderopens__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxfolderopens__sec_fct_avg" label="mseismailboxfolderopens__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxfolderopens__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxfolderopens__sec_fct_max" label="mseismailboxfolderopens__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxfolderopens__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxfolderopens__sec_fct_min" label="mseismailboxfolderopens__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxlocaldeliveryrate.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseismailboxlocaldeliveryrate_fct_ts" label="mseismailboxlocaldeliveryrate / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxlocaldeliveryrate.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseismailboxlocaldeliveryrate_fct_ts_gmt" label="mseismailboxlocaldeliveryrate / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxlocaldeliveryrate.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxlocaldeliveryrate_fct_avg" label="mseismailboxlocaldeliveryrate / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxlocaldeliveryrate.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxlocaldeliveryrate_fct_max" label="mseismailboxlocaldeliveryrate / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxlocaldeliveryrate.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxlocaldeliveryrate_fct_min" label="mseismailboxlocaldeliveryrate / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxlocaldeliveryrate.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseismailboxlocaldeliveryrate_fct_ts" label="mseismailboxlocaldeliveryrate / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxlocaldeliveryrate.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseismailboxlocaldeliveryrate_fct_ts_gmt" label="mseismailboxlocaldeliveryrate / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxlocaldeliveryrate.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxlocaldeliveryrate_fct_avg" label="mseismailboxlocaldeliveryrate / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxlocaldeliveryrate.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxlocaldeliveryrate_fct_max" label="mseismailboxlocaldeliveryrate / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxlocaldeliveryrate.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxlocaldeliveryrate_fct_min" label="mseismailboxlocaldeliveryrate / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxmessageopens__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseismailboxmessageopens__sec_fct_ts" label="mseismailboxmessageopens__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxmessageopens__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseismailboxmessageopens__sec_fct_ts_gmt" label="mseismailboxmessageopens__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxmessageopens__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxmessageopens__sec_fct_avg" label="mseismailboxmessageopens__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxmessageopens__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxmessageopens__sec_fct_max" label="mseismailboxmessageopens__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseismailboxmessageopens__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseismailboxmessageopens__sec_fct_min" label="mseismailboxmessageopens__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxmessageopens__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseismailboxmessageopens__sec_fct_ts" label="mseismailboxmessageopens__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxmessageopens__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseismailboxmessageopens__sec_fct_ts_gmt" label="mseismailboxmessageopens__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxmessageopens__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxmessageopens__sec_fct_avg" label="mseismailboxmessageopens__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxmessageopens__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxmessageopens__sec_fct_max" label="mseismailboxmessageopens__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseismailboxmessageopens__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseismailboxmessageopens__sec_fct_min" label="mseismailboxmessageopens__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcaveragedlatency.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseisrpcaveragedlatency_fct_ts" label="mseisrpcaveragedlatency / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcaveragedlatency.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseisrpcaveragedlatency_fct_ts_gmt" label="mseisrpcaveragedlatency / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcaveragedlatency.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcaveragedlatency_fct_avg" label="mseisrpcaveragedlatency / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcaveragedlatency.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcaveragedlatency_fct_max" label="mseisrpcaveragedlatency / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcaveragedlatency.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcaveragedlatency_fct_min" label="mseisrpcaveragedlatency / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcaveragedlatency.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseisrpcaveragedlatency_fct_ts" label="mseisrpcaveragedlatency / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcaveragedlatency.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseisrpcaveragedlatency_fct_ts_gmt" label="mseisrpcaveragedlatency / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcaveragedlatency.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcaveragedlatency_fct_avg" label="mseisrpcaveragedlatency / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcaveragedlatency.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcaveragedlatency_fct_max" label="mseisrpcaveragedlatency / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcaveragedlatency.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcaveragedlatency_fct_min" label="mseisrpcaveragedlatency / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcoperations__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseisrpcoperations__sec_fct_ts" label="mseisrpcoperations__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcoperations__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseisrpcoperations__sec_fct_ts_gmt" label="mseisrpcoperations__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcoperations__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcoperations__sec_fct_avg" label="mseisrpcoperations__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcoperations__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcoperations__sec_fct_max" label="mseisrpcoperations__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcoperations__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcoperations__sec_fct_min" label="mseisrpcoperations__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcoperations__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseisrpcoperations__sec_fct_ts" label="mseisrpcoperations__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcoperations__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseisrpcoperations__sec_fct_ts_gmt" label="mseisrpcoperations__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcoperations__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcoperations__sec_fct_avg" label="mseisrpcoperations__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcoperations__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcoperations__sec_fct_max" label="mseisrpcoperations__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcoperations__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcoperations__sec_fct_min" label="mseisrpcoperations__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcrequests.fct_ts" dimensionOrMeasure="Dimension" id="daily_mseisrpcrequests_fct_ts" label="mseisrpcrequests / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcrequests.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_mseisrpcrequests_fct_ts_gmt" label="mseisrpcrequests / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcrequests.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcrequests_fct_avg" label="mseisrpcrequests / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcrequests.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcrequests_fct_max" label="mseisrpcrequests / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_mseisrpcrequests.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_mseisrpcrequests_fct_min" label="mseisrpcrequests / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcrequests.fct_ts" dimensionOrMeasure="Dimension" id="hourly_mseisrpcrequests_fct_ts" label="mseisrpcrequests / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcrequests.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_mseisrpcrequests_fct_ts_gmt" label="mseisrpcrequests / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcrequests.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcrequests_fct_avg" label="mseisrpcrequests / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcrequests.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcrequests_fct_max" label="mseisrpcrequests / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_mseisrpcrequests.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_mseisrpcrequests_fct_min" label="mseisrpcrequests / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_smtpserverlocalqueuelength.fct_ts" dimensionOrMeasure="Dimension" id="daily_smtpserverlocalqueuelength_fct_ts" label="smtpserverlocalqueuelength / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_smtpserverlocalqueuelength.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_smtpserverlocalqueuelength_fct_ts_gmt" label="smtpserverlocalqueuelength / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_smtpserverlocalqueuelength.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpserverlocalqueuelength_fct_avg" label="smtpserverlocalqueuelength / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_smtpserverlocalqueuelength.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpserverlocalqueuelength_fct_max" label="smtpserverlocalqueuelength / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_smtpserverlocalqueuelength.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpserverlocalqueuelength_fct_min" label="smtpserverlocalqueuelength / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_smtpserverlocalqueuelength.fct_ts" dimensionOrMeasure="Dimension" id="hourly_smtpserverlocalqueuelength_fct_ts" label="smtpserverlocalqueuelength / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_smtpserverlocalqueuelength.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_smtpserverlocalqueuelength_fct_ts_gmt" label="smtpserverlocalqueuelength / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_smtpserverlocalqueuelength.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpserverlocalqueuelength_fct_avg" label="smtpserverlocalqueuelength / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_smtpserverlocalqueuelength.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpserverlocalqueuelength_fct_max" label="smtpserverlocalqueuelength / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_smtpserverlocalqueuelength.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpserverlocalqueuelength_fct_min" label="smtpserverlocalqueuelength / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_smtpservermessagesdelivered__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_smtpservermessagesdelivered__sec_fct_ts" label="smtpservermessagesdelivered__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_smtpservermessagesdelivered__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_smtpservermessagesdelivered__sec_fct_ts_gmt" label="smtpservermessagesdelivered__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_smtpservermessagesdelivered__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpservermessagesdelivered__sec_fct_avg" label="smtpservermessagesdelivered__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_smtpservermessagesdelivered__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpservermessagesdelivered__sec_fct_max" label="smtpservermessagesdelivered__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_smtpservermessagesdelivered__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_smtpservermessagesdelivered__sec_fct_min" label="smtpservermessagesdelivered__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_smtpservermessagesdelivered__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_smtpservermessagesdelivered__sec_fct_ts" label="smtpservermessagesdelivered__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_smtpservermessagesdelivered__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_smtpservermessagesdelivered__sec_fct_ts_gmt" label="smtpservermessagesdelivered__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_smtpservermessagesdelivered__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpservermessagesdelivered__sec_fct_avg" label="smtpservermessagesdelivered__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_smtpservermessagesdelivered__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpservermessagesdelivered__sec_fct_max" label="smtpservermessagesdelivered__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_smtpservermessagesdelivered__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_smtpservermessagesdelivered__sec_fct_min" label="smtpservermessagesdelivered__sec / hourly / Lowest"/>
           </items>
         </itemGroup>
       </itemGroups>
@@ -1814,6 +1894,198 @@
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="hourly_iisunlockrequests__sec" datasourceId="zenoss_reporting" id="hourly_iisunlockrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseismailboxfolderopens__sec" datasourceId="zenoss_reporting" id="daily_mseismailboxfolderopens__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseismailboxfolderopens__sec" datasourceId="zenoss_reporting" id="hourly_mseismailboxfolderopens__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseismailboxlocaldeliveryrate" datasourceId="zenoss_reporting" id="daily_mseismailboxlocaldeliveryrate">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseismailboxlocaldeliveryrate" datasourceId="zenoss_reporting" id="hourly_mseismailboxlocaldeliveryrate">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseismailboxmessageopens__sec" datasourceId="zenoss_reporting" id="daily_mseismailboxmessageopens__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseismailboxmessageopens__sec" datasourceId="zenoss_reporting" id="hourly_mseismailboxmessageopens__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseisrpcaveragedlatency" datasourceId="zenoss_reporting" id="daily_mseisrpcaveragedlatency">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseisrpcaveragedlatency" datasourceId="zenoss_reporting" id="hourly_mseisrpcaveragedlatency">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseisrpcoperations__sec" datasourceId="zenoss_reporting" id="daily_mseisrpcoperations__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseisrpcoperations__sec" datasourceId="zenoss_reporting" id="hourly_mseisrpcoperations__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_mseisrpcrequests" datasourceId="zenoss_reporting" id="daily_mseisrpcrequests">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_mseisrpcrequests" datasourceId="zenoss_reporting" id="hourly_mseisrpcrequests">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_smtpserverlocalqueuelength" datasourceId="zenoss_reporting" id="daily_smtpserverlocalqueuelength">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_smtpserverlocalqueuelength" datasourceId="zenoss_reporting" id="hourly_smtpserverlocalqueuelength">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_smtpservermessagesdelivered__sec" datasourceId="zenoss_reporting" id="daily_smtpservermessagesdelivered__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_smtpservermessagesdelivered__sec" datasourceId="zenoss_reporting" id="hourly_smtpservermessagesdelivered__sec">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.Integer" id="component_key"/>
@@ -3735,6 +4007,134 @@
         <field type="java.lang.Double" id="hourly_iisunlockrequests__sec.fct_avg"/>
         <field type="java.lang.Double" id="hourly_iisunlockrequests__sec.fct_max"/>
         <field type="java.lang.Double" id="hourly_iisunlockrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxfolderopens__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxfolderopens__sec.component_key"/>
+        <field type="java.util.Date" id="daily_mseismailboxfolderopens__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxfolderopens__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxfolderopens__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseismailboxfolderopens__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseismailboxfolderopens__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseismailboxfolderopens__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxfolderopens__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxfolderopens__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_mseismailboxfolderopens__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxfolderopens__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxfolderopens__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxfolderopens__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxfolderopens__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxfolderopens__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxlocaldeliveryrate.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxlocaldeliveryrate.component_key"/>
+        <field type="java.util.Date" id="daily_mseismailboxlocaldeliveryrate.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxlocaldeliveryrate.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxlocaldeliveryrate.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseismailboxlocaldeliveryrate.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseismailboxlocaldeliveryrate.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseismailboxlocaldeliveryrate.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxlocaldeliveryrate.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxlocaldeliveryrate.component_key"/>
+        <field type="java.util.Date" id="hourly_mseismailboxlocaldeliveryrate.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxlocaldeliveryrate.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxlocaldeliveryrate.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxlocaldeliveryrate.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxlocaldeliveryrate.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxlocaldeliveryrate.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxmessageopens__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseismailboxmessageopens__sec.component_key"/>
+        <field type="java.util.Date" id="daily_mseismailboxmessageopens__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxmessageopens__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseismailboxmessageopens__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseismailboxmessageopens__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseismailboxmessageopens__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseismailboxmessageopens__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxmessageopens__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseismailboxmessageopens__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_mseismailboxmessageopens__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxmessageopens__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseismailboxmessageopens__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxmessageopens__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxmessageopens__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseismailboxmessageopens__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcaveragedlatency.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcaveragedlatency.component_key"/>
+        <field type="java.util.Date" id="daily_mseisrpcaveragedlatency.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcaveragedlatency.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcaveragedlatency.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseisrpcaveragedlatency.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseisrpcaveragedlatency.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseisrpcaveragedlatency.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcaveragedlatency.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcaveragedlatency.component_key"/>
+        <field type="java.util.Date" id="hourly_mseisrpcaveragedlatency.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcaveragedlatency.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcaveragedlatency.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcaveragedlatency.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcaveragedlatency.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcaveragedlatency.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcoperations__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcoperations__sec.component_key"/>
+        <field type="java.util.Date" id="daily_mseisrpcoperations__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcoperations__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcoperations__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseisrpcoperations__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseisrpcoperations__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseisrpcoperations__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcoperations__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcoperations__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_mseisrpcoperations__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcoperations__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcoperations__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcoperations__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcoperations__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcoperations__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcrequests.device_key"/>
+        <field type="java.lang.Integer" id="daily_mseisrpcrequests.component_key"/>
+        <field type="java.util.Date" id="daily_mseisrpcrequests.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcrequests.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_mseisrpcrequests.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_mseisrpcrequests.fct_avg"/>
+        <field type="java.lang.Double" id="daily_mseisrpcrequests.fct_max"/>
+        <field type="java.lang.Double" id="daily_mseisrpcrequests.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcrequests.device_key"/>
+        <field type="java.lang.Integer" id="hourly_mseisrpcrequests.component_key"/>
+        <field type="java.util.Date" id="hourly_mseisrpcrequests.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcrequests.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_mseisrpcrequests.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcrequests.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcrequests.fct_max"/>
+        <field type="java.lang.Double" id="hourly_mseisrpcrequests.fct_min"/>
+        <field type="java.lang.Integer" id="daily_smtpserverlocalqueuelength.device_key"/>
+        <field type="java.lang.Integer" id="daily_smtpserverlocalqueuelength.component_key"/>
+        <field type="java.util.Date" id="daily_smtpserverlocalqueuelength.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_smtpserverlocalqueuelength.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_smtpserverlocalqueuelength.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_smtpserverlocalqueuelength.fct_avg"/>
+        <field type="java.lang.Double" id="daily_smtpserverlocalqueuelength.fct_max"/>
+        <field type="java.lang.Double" id="daily_smtpserverlocalqueuelength.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_smtpserverlocalqueuelength.device_key"/>
+        <field type="java.lang.Integer" id="hourly_smtpserverlocalqueuelength.component_key"/>
+        <field type="java.util.Date" id="hourly_smtpserverlocalqueuelength.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_smtpserverlocalqueuelength.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_smtpserverlocalqueuelength.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_smtpserverlocalqueuelength.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_smtpserverlocalqueuelength.fct_max"/>
+        <field type="java.lang.Double" id="hourly_smtpserverlocalqueuelength.fct_min"/>
+        <field type="java.lang.Integer" id="daily_smtpservermessagesdelivered__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_smtpservermessagesdelivered__sec.component_key"/>
+        <field type="java.util.Date" id="daily_smtpservermessagesdelivered__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_smtpservermessagesdelivered__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_smtpservermessagesdelivered__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_smtpservermessagesdelivered__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_smtpservermessagesdelivered__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_smtpservermessagesdelivered__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_smtpservermessagesdelivered__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_smtpservermessagesdelivered__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_smtpservermessagesdelivered__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_smtpservermessagesdelivered__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_smtpservermessagesdelivered__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_smtpservermessagesdelivered__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_smtpservermessagesdelivered__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_smtpservermessagesdelivered__sec.fct_min"/>
         <field type="java.lang.Integer" id="daily_dsclientbinds__sec.device_key"/>
         <field type="java.lang.Integer" id="daily_dsclientbinds__sec.component_key"/>
         <field type="java.util.Date" id="daily_dsclientbinds__sec.date_key"/>
@@ -5001,6 +5401,54 @@
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join hourly_iisunlockrequests__sec hourly_iisunlockrequests__sec on (dim_device.device_key == hourly_iisunlockrequests__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseismailboxfolderopens__sec daily_mseismailboxfolderopens__sec on (dim_device.device_key == daily_mseismailboxfolderopens__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseismailboxfolderopens__sec hourly_mseismailboxfolderopens__sec on (dim_device.device_key == hourly_mseismailboxfolderopens__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseismailboxlocaldeliveryrate daily_mseismailboxlocaldeliveryrate on (dim_device.device_key == daily_mseismailboxlocaldeliveryrate.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseismailboxlocaldeliveryrate hourly_mseismailboxlocaldeliveryrate on (dim_device.device_key == hourly_mseismailboxlocaldeliveryrate.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseismailboxmessageopens__sec daily_mseismailboxmessageopens__sec on (dim_device.device_key == daily_mseismailboxmessageopens__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseismailboxmessageopens__sec hourly_mseismailboxmessageopens__sec on (dim_device.device_key == hourly_mseismailboxmessageopens__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseisrpcaveragedlatency daily_mseisrpcaveragedlatency on (dim_device.device_key == daily_mseisrpcaveragedlatency.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseisrpcaveragedlatency hourly_mseisrpcaveragedlatency on (dim_device.device_key == hourly_mseisrpcaveragedlatency.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseisrpcoperations__sec daily_mseisrpcoperations__sec on (dim_device.device_key == daily_mseisrpcoperations__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseisrpcoperations__sec hourly_mseisrpcoperations__sec on (dim_device.device_key == hourly_mseisrpcoperations__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_mseisrpcrequests daily_mseisrpcrequests on (dim_device.device_key == daily_mseisrpcrequests.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_mseisrpcrequests hourly_mseisrpcrequests on (dim_device.device_key == hourly_mseisrpcrequests.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_smtpserverlocalqueuelength daily_smtpserverlocalqueuelength on (dim_device.device_key == daily_smtpserverlocalqueuelength.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_smtpserverlocalqueuelength hourly_smtpserverlocalqueuelength on (dim_device.device_key == hourly_smtpserverlocalqueuelength.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_smtpservermessagesdelivered__sec daily_smtpservermessagesdelivered__sec on (dim_device.device_key == daily_smtpservermessagesdelivered__sec.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_smtpservermessagesdelivered__sec hourly_smtpservermessagesdelivered__sec on (dim_device.device_key == hourly_smtpservermessagesdelivered__sec.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_dsclientbinds__sec daily_dsclientbinds__sec on (dim_device.device_key == daily_dsclientbinds__sec.device_key)</joinString>

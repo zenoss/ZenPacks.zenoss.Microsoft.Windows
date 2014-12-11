@@ -9409,6 +9409,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxFolderOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9442,6 +9446,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9475,6 +9483,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxMessageOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9508,6 +9520,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9541,6 +9557,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCOperations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9574,6 +9594,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9607,6 +9631,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -9640,6 +9668,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerMessagesDelivered__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10115,6 +10147,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxFolderOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10154,6 +10190,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10193,6 +10233,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxMessageOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10232,6 +10276,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10271,6 +10319,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCOperations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10310,6 +10362,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10349,6 +10405,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10388,6 +10448,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerMessagesDelivered__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10863,6 +10927,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxFolderOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10902,6 +10970,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxLocalDeliveryRate' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10941,6 +11013,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisMailboxMessageOpens__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -10980,6 +11056,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCAveragedLatency' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -11019,6 +11099,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCOperations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -11058,6 +11142,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='mseisRPCRequests' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -11097,6 +11185,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerLocalQueueLength' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -11136,6 +11228,10 @@ True
 <property type="string" id="description" mode="w" >
 Microsoft Exchange monitoring.
 </property>
+<tomanycont id='aliases'>
+<object id='smtpServerMessagesDelivered__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
