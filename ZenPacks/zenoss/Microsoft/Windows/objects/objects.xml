@@ -1968,1946 +1968,2042 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object class="RRDTemplate" id="Active Directory" module="Products.ZenModel.RRDTemplate">
-<property id="zendoc" type="string">
+<object id='Active Directory' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
 Microsoft Active Directory
 </property>
-<property id="description" mode="w" type="text">
+<property type="text" id="description" mode="w" >
 Microsoft Active Directory
 </property>
-<property id="targetPythonClass" mode="w" type="string">
+<property type="string" id="targetPythonClass" mode="w" >
 Products.ZenModel.Device
 </property>
-<tomanycont id="datasources">
-<object class="PerfmonDataSource" id="dsClientBindsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+<tomanycont id='datasources'>
+<object id='dsClientBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Client Binds/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsClientBindsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsClientBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsClientBinds__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsDirectoryReadsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsDirectoryReadsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Directory Reads/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsDirectoryReadsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsDirectoryReadsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsDirectoryReads__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsDirectorySearchesSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsDirectorySearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Directory Searches/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsDirectorySearchesSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsDirectorySearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsDirectorySearches__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsDirectoryWritesSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsDirectoryWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Directory Writes/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsDirectoryWritesSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsDirectoryWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsDirectoryWrites__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsNameCacheHitRate" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsNameCacheHitRate' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Name Cache hit rate
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsNameCacheHitRate" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsNameCacheHitRate' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsNameCacheHitRate__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsNotifyQueueSize" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsNotifyQueueSize' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Notify Queue Size
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsNotifyQueueSize" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsNotifyQueueSize' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsNotifyQueueSize' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsSearchSuboperationsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsSearchSuboperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Search sub-operations/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsSearchSuboperationsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsSearchSuboperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsSearchSuboperations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsServerBindsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsServerBindsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Server Binds/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsServerBindsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsServerBindsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsServerBinds__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsServerNameTranslationsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsServerNameTranslationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Server Name Translations/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsServerNameTranslationsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsServerNameTranslationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsServerNameTranslations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="dsThreadsInUse" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='dsThreadsInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\DS Threads in Use
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="dsThreadsInUse" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='dsThreadsInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsThreadsInUse' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="kdcAsRequests" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='kdcAsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \Security System-Wide Statistics\KDC AS Requests
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="kdcAsRequests" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='kdcAsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='kdcAsRequests' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="kdcTgsRequests" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='kdcTgsRequests' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \Security System-Wide Statistics\KDC TGS Requests
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="kdcTgsRequests" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='kdcTgsRequests' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='kdcTgsRequests' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="kerberosAuthentications" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='kerberosAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \Security System-Wide Statistics\Kerberos Authentications
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="kerberosAuthentications" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='kerberosAuthentications' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='kerberosAuthentications' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapActiveThreads" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapActiveThreads' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Active Threads
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapActiveThreads" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapActiveThreads' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapActiveThreads' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapBindTime" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapBindTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Bind Time
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapBindTime" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapBindTime' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapBindTime' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapClientSessions" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapClientSessions' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Client Sessions
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapClientSessions" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapClientSessions' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapClientSessions' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapClosedConnectionsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapClosedConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Closed Connections/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapClosedConnectionsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapClosedConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapClosedConnections__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapNewConnectionsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapNewConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP New Connections/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapNewConnectionsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapNewConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapNewConnections__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapNewSSLConnectionsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapNewSSLConnectionsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP New SSL Connections/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapNewSSLConnectionsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapNewSSLConnectionsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapNewSSLConnections__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapSearchesSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapSearchesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Searches/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapSearchesSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapSearchesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapSearches__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapSuccessfulBinds" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapSuccessfulBinds' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Successful Binds/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapSuccessfulBinds" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapSuccessfulBinds' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapSuccessfulBinds' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapUdpOperationsSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapUdpOperationsSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP UDP operations/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapUdpOperationsSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapUdpOperationsSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapUdpOperations__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ldapWritesSec" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ldapWritesSec' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \NTDS\LDAP Writes/sec
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ldapWritesSec" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ldapWritesSec' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ldapWrites__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
-<object class="PerfmonDataSource" id="ntlmAuthentications" module="ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource">
-<property id="sourcetype" mode="w" select_variable="sourcetypes" type="selection">
+</tomanycont>
+</object>
+<object id='ntlmAuthentications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
 </property>
-<property id="enabled" mode="w" type="boolean">
+<property type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="component" mode="w" type="string">
+<property type="string" id="component" mode="w" >
 NTDS
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="cycletime" mode="w" type="string">
+<property type="string" id="cycletime" mode="w" >
 ${here/zWinPerfmonInterval}
 </property>
-<property id="plugin_classname" mode="w" type="string">
+<property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
 </property>
-<property id="counter" type="string">
+<property type="string" id="counter" >
 \Security System-Wide Statistics\NTLM Authentications
 </property>
-<tomanycont id="datapoints">
-<object class="RRDDataPoint" id="ntlmAuthentications" module="Products.ZenModel.RRDDataPoint">
-<property id="rrdtype" mode="w" select_variable="rrdtypes" type="selection">
+<tomanycont id='datapoints'>
+<object id='ntlmAuthentications' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
 GAUGE
 </property>
-<property id="isrow" mode="w" type="boolean">
+<property type="boolean" id="isrow" mode="w" >
 True
 </property>
-<property id="rrdmin" mode="w" type="string">
+<property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='ntlmAuthentications' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
 </object>
 </tomanycont>
 </object>
 </tomanycont>
-<tomanycont id="thresholds">
-<object class="MinMaxThreshold" id="ldapBindTimeCrit" module="Products.ZenModel.MinMaxThreshold">
-<property id="eventClass" mode="w" type="string">
+</object>
+</tomanycont>
+<tomanycont id='thresholds'>
+<object id='ldapBindTimeCrit' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
 /Perf
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 5
 </property>
-<property id="dsnames" label="DataPoints" mode="w" type="lines">
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
 ['ldapBindTime_ldapBindTime']
 </property>
-<property id="enabled" label="Enabled" mode="w" type="boolean">
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="maxval" mode="w" type="string">
+<property type="string" id="maxval" mode="w" >
 30
 </property>
-<property id="escalateCount" mode="w" type="int">
+<property type="int" id="escalateCount" mode="w" >
 0
 </property>
 </object>
-<object class="MinMaxThreshold" id="ldapBindTimeErr" module="Products.ZenModel.MinMaxThreshold">
-<property id="eventClass" mode="w" type="string">
+<object id='ldapBindTimeErr' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
 /Perf
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 4
 </property>
-<property id="dsnames" label="DataPoints" mode="w" type="lines">
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
 ['ldapBindTime_ldapBindTime']
 </property>
-<property id="enabled" label="Enabled" mode="w" type="boolean">
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="maxval" mode="w" type="string">
+<property type="string" id="maxval" mode="w" >
 15
 </property>
-<property id="escalateCount" mode="w" type="int">
+<property type="int" id="escalateCount" mode="w" >
 0
 </property>
 </object>
-<object class="MinMaxThreshold" id="ldapBindTimeWarn" module="Products.ZenModel.MinMaxThreshold">
-<property id="eventClass" mode="w" type="string">
+<object id='ldapBindTimeWarn' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
 /Perf
 </property>
-<property id="severity" mode="w" type="int">
+<property type="int" id="severity" mode="w" >
 3
 </property>
-<property id="dsnames" label="DataPoints" mode="w" type="lines">
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
 ['ldapBindTime_ldapBindTime']
 </property>
-<property id="enabled" label="Enabled" mode="w" type="boolean">
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property id="maxval" mode="w" type="string">
+<property type="string" id="maxval" mode="w" >
 5
 </property>
-<property id="escalateCount" mode="w" type="int">
+<property type="int" id="escalateCount" mode="w" >
 0
 </property>
 </object>
 </tomanycont>
-<tomanycont id="graphDefs">
-<object class="GraphDefinition" id="Authentication Rate" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<tomanycont id='graphDefs'>
+<object id='Authentication Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 auths/sec
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="Kerberos" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='Kerberos' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 kerberosAuthentications_kerberosAuthentications
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="NTLM" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='NTLM' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ntlmAuthentications_ntlmAuthentications
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Bind Rate" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Bind Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 binds/sec
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 4
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="DS Client" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='DS Client' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsClientBindsSec_dsClientBindsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="DS Server" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='DS Server' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsServerBindsSec_dsServerBindsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP Success" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP Success' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 2
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapSuccessfulBinds_ldapSuccessfulBinds
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Bind Time" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Bind Time' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 ms
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 3
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="LDAP" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='LDAP' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapBindTime_ldapBindTime
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Cache Hit Rate" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Cache Hit Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 percent
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 100
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 8
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="DS Name" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='DS Name' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%%
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsNameCacheHitRate_dsNameCacheHitRate
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Connection Rate" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Connection Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 connections/sec
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="LDAP Closed" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='LDAP Closed' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 2
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapClosedConnectionsSec_ldapClosedConnectionsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP New" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP New' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapNewConnectionsSec_ldapNewConnectionsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP New SSL" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP New SSL' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapNewSSLConnectionsSec_ldapNewSSLConnectionsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="KDC Requests" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='KDC Requests' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 requests
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 2
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="AS" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='AS' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 kdcAsRequests_kdcAsRequests
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="TGS" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='TGS' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 kdcTgsRequests_kdcTgsRequests
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Operation Rate" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Operation Rate' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 operations/sec
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 5
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="DS Name Translations" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='DS Name Translations' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 2
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsServerNameTranslationsSec_dsServerNameTranslationsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="DS Reads            " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='DS Reads            ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 3
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsDirectoryReadsSec_dsDirectoryReadsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="DS Searches         " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='DS Searches         ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsDirectorySearchesSec_dsDirectorySearchesSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="DS Sub-Search       " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='DS Sub-Search       ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsSearchSuboperationsSec_dsSearchSuboperationsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="DS Writes           " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='DS Writes           ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 4
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsDirectoryWritesSec_dsDirectoryWritesSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP Searches       " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP Searches       ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 5
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapSearchesSec_ldapSearchesSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP UDP            " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP UDP            ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 6
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapUdpOperationsSec_ldapUdpOperationsSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP Writes         " module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP Writes         ' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 7
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapWritesSec_ldapWritesSec
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Queue Size" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Queue Size' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 notifications
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 7
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="DS Notify" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='DS Notify' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsNotifyQueueSize_dsNotifyQueueSize
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Sessions" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Sessions' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 sessions
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 6
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="LDAP Client" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='LDAP Client' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapClientSessions_ldapClientSessions
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
 </tomanycont>
 </object>
-<object class="GraphDefinition" id="Threads" module="Products.ZenModel.GraphDefinition">
-<property id="height" mode="w" type="int">
+<object id='Threads' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
 100
 </property>
-<property id="width" mode="w" type="int">
+<property type="int" id="width" mode="w" >
 500
 </property>
-<property id="units" mode="w" type="string">
+<property type="string" id="units" mode="w" >
 threads
 </property>
-<property id="log" mode="w" type="boolean">
+<property type="boolean" id="log" mode="w" >
 False
 </property>
-<property id="base" mode="w" type="boolean">
+<property type="boolean" id="base" mode="w" >
 False
 </property>
-<property id="miny" mode="w" type="int">
+<property type="int" id="miny" mode="w" >
 0
 </property>
-<property id="maxy" mode="w" type="int">
+<property type="int" id="maxy" mode="w" >
 -1
 </property>
-<property id="hasSummary" mode="w" type="boolean">
+<property type="boolean" id="hasSummary" mode="w" >
 True
 </property>
-<property id="sequence" mode="w" type="long">
+<property type="long" id="sequence" mode="w" >
 9
 </property>
-<tomanycont id="graphPoints">
-<object class="DataPointGraphPoint" id="DS In Use" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<tomanycont id='graphPoints'>
+<object id='DS In Use' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 0
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 dsThreadsInUse_dsThreadsInUse
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
-<object class="DataPointGraphPoint" id="LDAP Active" module="Products.ZenModel.DataPointGraphPoint">
-<property id="sequence" mode="w" type="long">
+<object id='LDAP Active' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
 1
 </property>
-<property id="lineType" mode="w" select_variable="lineTypes" type="selection">
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
 LINE
 </property>
-<property id="lineWidth" mode="w" type="long">
+<property type="long" id="lineWidth" mode="w" >
 1
 </property>
-<property id="stacked" mode="w" type="boolean">
+<property type="boolean" id="stacked" mode="w" >
 False
 </property>
-<property id="format" mode="w" type="string">
+<property type="string" id="format" mode="w" >
 %7.2lf%s
 </property>
-<property id="legend" mode="w" type="string">
+<property type="string" id="legend" mode="w" >
 ${graphPoint/id}
 </property>
-<property id="limit" mode="w" type="long">
+<property type="long" id="limit" mode="w" >
 -1
 </property>
-<property id="dpName" mode="w" type="string">
+<property type="string" id="dpName" mode="w" >
 ldapActiveThreads_ldapActiveThreads
 </property>
-<property id="cFunc" mode="w" type="string">
+<property type="string" id="cFunc" mode="w" >
 AVERAGE
 </property>
 </object>
@@ -4678,6 +4774,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='diskReadBytes__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -4711,6 +4811,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='diskReadTime' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -4744,6 +4848,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='diskWriteBytes__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -4777,6 +4885,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='diskWriteTime' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
