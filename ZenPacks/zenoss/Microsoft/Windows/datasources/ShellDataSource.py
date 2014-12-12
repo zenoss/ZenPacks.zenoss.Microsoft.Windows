@@ -683,7 +683,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     else:
                         data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if not checked_result:
-                    msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
+                    msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
                             dsconf0.params['strategy'],
                             dsconf0.datasource,
