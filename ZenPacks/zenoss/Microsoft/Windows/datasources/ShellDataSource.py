@@ -649,16 +649,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 log.warn(msg)
                 severity = ZenEventClasses.Warning
         else:
-            if len(result.stderr) > 0 and strategy.key == "PowershellMSSQL":
-                db_name = 'Unknown'
-                for line in result.stderr:
-                    db_match = re.search('failed for Database \'(.+?)\'', line)
-                    if db_match:
-                        db_name = db_match.group(1)
-                        break
-                msg = "There was an error monitoring database {0}".format(db_name)
-                severity = ZenEventClasses.Error
-            elif len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
+            if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
                 try:
                     db_name = result.stdout[0].split(':')[1]
                 except Exception:

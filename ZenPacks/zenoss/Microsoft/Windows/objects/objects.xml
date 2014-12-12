@@ -15065,6 +15065,10 @@ True
 <property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='packetsReceived__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -15138,6 +15142,10 @@ True
 <property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='packetsSent__sec' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
