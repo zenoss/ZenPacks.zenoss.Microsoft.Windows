@@ -167,6 +167,8 @@ def getSQLAssembly():
         ASSEMBLY_2012,
         ASSEMBLY)
 
+    ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
+
     sqlConnection = []
     sqlConnection.append("try{")
     sqlConnection.append(MSSQL2012_CONNECTION_INFO)
@@ -174,8 +176,11 @@ def getSQLAssembly():
     sqlConnection.append("try{")
     sqlConnection.append(MSSQL2008_CONNECTION_INFO)
     sqlConnection.append("}catch{")
+    sqlConnection.append("try{")
     sqlConnection.append(MSSQL2005_CONNECTION_INFO)
-    sqlConnection.append("}};")
+    sqlConnection.append("}catch{")
+    sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+    sqlConnection.append("}}}")
 
     sqlConnection.append("try{")
     sqlConnection.append(MSSQL2012_SMO)
@@ -183,8 +188,11 @@ def getSQLAssembly():
     sqlConnection.append("try{")
     sqlConnection.append(MSSQL2008_SMO)
     sqlConnection.append("}catch{")
+    sqlConnection.append("try{")
     sqlConnection.append(MSSQL2005_SMO)
-    sqlConnection.append("}};")
+    sqlConnection.append("}catch{")
+    sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+    sqlConnection.append("}}}")
 
     return sqlConnection
 
