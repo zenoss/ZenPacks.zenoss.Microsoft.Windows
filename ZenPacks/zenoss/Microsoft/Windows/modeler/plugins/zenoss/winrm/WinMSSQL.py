@@ -222,7 +222,7 @@ class WinMSSQL(WinRMPlugin):
                     sqlserver = '{0}\{1}'.format(sqlhostname, instance)
 
                 if isCluster:
-                    sqlserver = sql_server.strip()
+                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
 
                 sqlusername = dblogins[instance]['username']
                 sqlpassword = dblogins[instance]['password']
@@ -269,6 +269,8 @@ class WinMSSQL(WinRMPlugin):
                 )
                 check_username(databases, instance, log)
                 for dbobj in filter_sql_stdout(databases.stdout):
+                    if dbobj == 'assembly load error':
+                        continue
                     db = dbobj.split('\t')
                     dbdict = {}
 
@@ -472,6 +474,7 @@ class WinMSSQL(WinRMPlugin):
 
 def check_username(databases, instance, log):
     stderr = ''.join(databases.stderr)
+    stdout = ' '.join(databases.stdout)
     if not databases.stdout and\
         (('Exception calling "Connect" with "0" argument(s): '
             '"Failed to connect to server'
@@ -489,3 +492,6 @@ def check_username(databases, instance, log):
             'Incorrect username/password for the {0} instance.'.format(
                 instance
             ))
+    if databases.stdout and 'assembly load error' in stdout:
+        log.error('SQL Server Management Object Assemblies were not found on the server. '
+                  'Please be sure they are installed.')
