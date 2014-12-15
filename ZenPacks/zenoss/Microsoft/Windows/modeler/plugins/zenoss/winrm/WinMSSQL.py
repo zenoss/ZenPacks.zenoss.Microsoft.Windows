@@ -222,7 +222,7 @@ class WinMSSQL(WinRMPlugin):
                     sqlserver = '{0}\{1}'.format(sqlhostname, instance)
 
                 if isCluster:
-                    sqlserver = sql_server.strip()
+                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
 
                 sqlusername = dblogins[instance]['username']
                 sqlpassword = dblogins[instance]['password']
