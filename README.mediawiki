@@ -301,11 +301,18 @@ Events could be collected from the Windows event log using a WinRM subscription.
 
 To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object commandlet. 
 
-For example, here is Event Query for error events only:
+To target all events with a Warning or higher severity:
 
-    { $$_.EntryType -eq 'Error' }
+For Windows 2003: { $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+
+Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
+
+For Windows 2008 & Later: { $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}, or
+{ $$_.LevelDisplayName -Contains “Information” }
+
+The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
 
@@ -829,8 +836,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Updated Events to use Get-WinEvent cmdlet
 * Updated Software modeler to query registry instead of Win32_Product
 * Updated FileSystems to show mapped network drives and mounted volumes
-* Numerous bug fixes
 * Support for Zenoss Analytics
+* Numerous bug fixes
 
 ;2.1.3
 * Zenoss 5 compatibility fixes.
