@@ -167,7 +167,6 @@ var check_dp_name = function(){
         var grid = Ext.getCmp('dataSourceTreeGrid');
         // Getting selected Data Source
         var selectedNode = grid.getSelectionModel().getSelectedNode();
-        console.log(selectedNode.data.type);
 
         // Getting Data point filed
         var field = Ext.getCmp('metricName');
