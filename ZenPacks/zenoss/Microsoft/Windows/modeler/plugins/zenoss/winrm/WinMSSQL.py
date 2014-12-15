@@ -493,4 +493,5 @@ def check_username(databases, instance, log):
                 instance
             ))
     if databases.stdout and 'assembly load error' in stdout:
-        log.error('Make sure that the correct Assembly version is loaded on the server.')
+        log.error('SQL Server Management Object Assemblies were not found on the server. '
+                  'Please be sure they are installed.')
