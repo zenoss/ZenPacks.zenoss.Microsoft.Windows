@@ -45,7 +45,6 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command, create_single_shot_command
-from txwinrm.util import RequestError
 import codecs
 
 
