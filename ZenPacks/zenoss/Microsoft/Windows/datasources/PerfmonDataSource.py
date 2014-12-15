@@ -449,7 +449,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Receive results from continuous command.
         '''
-        deferreds = [cmd.receive() for cmd in self.complex_command.commands]
+        deferreds = []
+        for cmd in self.complex_command.commands:
+            try:
+                deferreds.append(cmd.receive())
+            except Exception as err:
+                LOG.error('Receive error {0}'.format(err))
 
         self.receive_deferreds = add_timeout(
             defer.DeferredList(deferreds, consumeErrors=True),
