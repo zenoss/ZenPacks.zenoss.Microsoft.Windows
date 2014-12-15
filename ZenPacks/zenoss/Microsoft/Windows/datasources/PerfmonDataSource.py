@@ -45,6 +45,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command, create_single_shot_command
+from txwinrm.util import RequestError
 import codecs
 
 
@@ -449,7 +450,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Receive results from continuous command.
         '''
-        deferreds = [cmd.receive() for cmd in self.complex_command.commands]
+        deferreds = []
+        for cmd in self.complex_command.commands:
+            try:
+                deferreds.append(cmd.receive())
+            except Exception as err:
+                LOG.error('Receive error {0}'.format(err))
 
         self.receive_deferreds = add_timeout(
             defer.DeferredList(deferreds, consumeErrors=True),
