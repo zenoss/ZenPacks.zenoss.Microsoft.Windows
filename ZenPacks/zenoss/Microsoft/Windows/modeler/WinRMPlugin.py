@@ -139,7 +139,7 @@ class WinRMPlugin(PythonPlugin):
             message = "Query error on %s: %s"
             args.append(error[0])
             if isinstance(error, UnauthorizedError):
-                message += '\n Please refer to txwinrm documentation at '\
+                message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
                             'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
@@ -150,6 +150,8 @@ class WinRMPlugin(PythonPlugin):
             args.append(error.message)
         elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
+        elif type(error) == Exception and "Credentials cache file" in error.message:
+            message = "Credentials cache file not found. Please make sure that this file exist and server has  access to it."
         elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
             message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
         elif isinstance(error, ResponseFailed):

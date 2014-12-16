@@ -203,9 +203,6 @@ class CustomCommandStrategy(object):
         return pscommand.format(script) if usePowershell else script
 
     def parse_result(self, config, result):
-        check = check_datasource(config, result)
-        if not isinstance(check, bool):
-            return check
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
         log.debug('Trying to use the %s parser' % parserLoader.pluginName)
@@ -291,10 +288,13 @@ class PowershellMSSQLStrategy(object):
         ) and " \
         "counter_name in ({1})".format(database, counters_args)
         """
+        counters_sqlConnection.append("if ($server.Databases -ne $null) {")
         counters_sqlConnection.append("$db = $server.Databases[0];")
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append("$ds.Tables | Format-List;")
-
+        counters_sqlConnection.append("if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}" \
+        "else { Write-Host 'databasename:{dbname}';}".replace('{dbname}', database))
+        counters_sqlConnection.append("}")
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
             ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
@@ -520,6 +520,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         contexttitle = context.title
 
         servername = context.device().title
+        if contexttitle == servername and resource == 'get-clustergroup':
+            contexttitle = ''
+
         if len(servername) == 0:
             servername = ''
 
@@ -600,6 +603,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(resource, componenttype)
 
         elif dsconf0.params['strategy'] == 'Custom Command':
+            check_datasource(dsconf0)
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
             command_line = strategy.build_command_line(script, usePowershell)
@@ -612,6 +616,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             results = yield command.run_command(command_line)
         except UnauthorizedError:
             results = ShellResult()
+        except Exception, e:
+            if "Credentials cache file" in str(e):
+                results = ShellResult()
+                results.stderr = ['Credentials cache file not found']
+            else:
+                raise e
+
         defer.returnValue((strategy, config.datasources, results))
 
     def onSuccess(self, results, config):
@@ -626,53 +637,58 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         strategy, dsconfs, result = results
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
-            if not cmdResult:
-                raise WindowsShellException(
-                    "No parser chosen for {0}".format(dsconf0.datasource)
-                )
-            if not isinstance(cmdResult, str):
+            if result.exit_code == 0:
                 dsconf = dsconfs[0]
                 data['events'] = cmdResult.events
                 data['maps'] = cmdResult.maps
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
             else:
-                log.warn(cmdResult)
+                msg = 'No output from script for {0} on {1}'.format(
+                    dsconf0.datasource, config)
+                log.warn(msg)
                 severity = ZenEventClasses.Warning
-                msg = cmdResult
         else:
-            checked_result = False
-            for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-                checked_result = True
-                if dsconf.datasource == 'state':
-                    currentstate = {
-                        'Online': ZenEventClasses.Clear,
-                        'Offline': ZenEventClasses.Critical,
-                        'PartialOnline': ZenEventClasses.Error,
-                        'Failed': ZenEventClasses.Critical
-                    }.get(value[1], ZenEventClasses.Info)
+            if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
+                try:
+                    db_name = result.stdout[0].split(':')[1]
+                except Exception:
+                    db_name = 'Unknown'
+                msg = 'There is no monitoring data for the database "{0}"'.format(db_name)
+                severity = ZenEventClasses.Info
+            else:
+                checked_result = False
+                for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                    checked_result = True
+                    if dsconf.datasource == 'state':
+                        currentstate = {
+                            'Online': ZenEventClasses.Clear,
+                            'Offline': ZenEventClasses.Critical,
+                            'PartialOnline': ZenEventClasses.Error,
+                            'Failed': ZenEventClasses.Critical
+                        }.get(value[1], ZenEventClasses.Info)
 
-                    data['events'].append(dict(
-                        eventClassKey='winrs{0}'.format(strategy.key),
-                        eventKey=strategy.key,
-                        severity=currentstate,
-                        summary='Last state of component was {0}'.format(value[1]),
-                        device=config.id,
-                        component=prepId(dsconf.component)
-                    ))
+                        data['events'].append(dict(
+                            eventClassKey='winrs{0}'.format(strategy.key),
+                            eventKey=strategy.key,
+                            severity=currentstate,
+                            summary='Last state of component was {0}'.format(value[1]),
+                            device=config.id,
+                            component=prepId(dsconf.component)
+                        ))
 
-                    data['maps'].append(
-                        value[2]
-                    )
-                else:
-                    data['values'][dsconf.component][dsconf.datasource] = value, timestamp
-            if not checked_result:
-                msg = 'Error parsing cluster data in {0} strategy for "{1}"'\
-                    ' datasource'.format(
-                        dsconf0.params['strategy'],
-                        dsconf0.datasource,
-                    )
-                severity = ZenEventClasses.Warning
+                        data['maps'].append(
+                            value[2]
+                        )
+                    else:
+                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                if not checked_result:
+                    msg = 'Error parsing data in {0} strategy for "{1}"'\
+                        ' datasource'.format(
+                            dsconf0.params['strategy'],
+                            dsconf0.datasource,
+                        )
+                    severity = ZenEventClasses.Warning
 
         data['events'].append(dict(
             severity=severity,
@@ -689,6 +705,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             eventClassKey='winrsCollectionSuccess',
             eventKey='winrsCollection',
             summary='winrs: successful collection',
+            device=config.id))
+
+        # Clear warning events created for specific datasources,
+        # e.g. when paster/script not chosen.
+        data['events'].append(dict(
+            severity=ZenEventClasses.Clear,
+            eventClassKey='winrsCollectionError',
+            eventKey='datasourceWarning_{0}'.format(dsconf0.datasource),
+            summary='Monitoring ok',
             device=config.id))
 
         # Clear previous error event
@@ -730,27 +755,22 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             device=config.id))
         return data
 
-def check_datasource(config, result):
+
+def check_datasource(dsconf):
     '''
     Check whether the data is correctly filled in datasource.
     '''
-    dsconf = config.datasources[0]
-
-    # Return None if no parser chosen.
+    # Check if the parser is chosen.
     if not dsconf.params['parser']:
-        return None
-    # Return message if script was not inputted.
-    elif not dsconf.params['script']:
-        return 'There is no script inputted for {0} on {1}'.format(
-            dsconf.datasource, config
+        raise WindowsShellException(
+            "No parser chosen for {0}".format(dsconf.datasource)
         )
-    # Return message if was inputted invalid script.
-    elif not result.exit_code == 0:
-        return 'No output from script for {0} on {1}'.format(
-            dsconf.datasource, config
+    # Check if script was inputted.
+    if not dsconf.params['script']:
+        raise WindowsShellException(
+            'No script inputted for {0}'.format(
+                dsconf.datasource)
         )
-    else:
-        return True
 
 
 def parse_stdout(result, check_stderr=False):

@@ -30,9 +30,7 @@ class FileSystems(WinRMPlugin):
 
     queries = {
         'Win32_LogicalDisk': "SELECT * FROM Win32_LogicalDisk",
-
-        # TODO: Do we need to support these too?
-        # 'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
+        'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
         'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
         }
 
@@ -96,6 +94,10 @@ class FileSystems(WinRMPlugin):
         for disk in results.get('Win32_Volume', ()):
             mount = Win32_volume_mount(disk)
 
+            # ignore system volume.  cannot be monitored
+            if disk.Label == 'System Reserved':
+                continue
+
             if ignore_names and ignore_names_search(mount):
                 log.info(
                     "Ignoring %s on %s because it matches "
@@ -137,6 +139,50 @@ class FileSystems(WinRMPlugin):
                 'totalFiles': 0,
                 }))
         
+        for disk in results.get('Win32_MappedLogicalDisk', ()):
+            mount = win32_mapped_logicaldisk_mount(disk)
+
+            if ignore_names and ignore_names_search(mount):
+                log.info(
+                    "Ignoring %s on %s because it matches "
+                    "zFileSystemMapIgnoreNames",
+                    mount, device.id)
+
+                continue
+
+            if ignore_types:
+                zentypes = set(lookup_zendrivetypes(4))
+                if zentypes.intersection(ignore_types):
+                    log.info(
+                        "Ignoring %s on %s because it matches "
+                        "zFileSystemMapIgnoreTypes",
+                        mount, device.id)
+
+                    continue
+
+            if not disk.Size:
+                disk.Size = 0
+            if not disk.BlockSize:
+                disk.BlockSize = guess_block_size(disk.Size)
+
+            perfmonInstance = '\\LogicalDisk({})'.format(
+                disk.Name.rstrip('\\'))
+
+            rm.append(self.objectMap({
+                'id': self.prepId(disk.DeviceID),
+                'title': mount,
+                'mount': mount,
+                'storageDevice': disk.Name,
+                'drivetype': lookup_drivetype(4),
+                'mediatype': lookup_mediatype(12),
+                'type': disk.FileSystem,
+                'blockSize': int(disk.BlockSize),
+                'totalBlocks': int(disk.Size) / int(disk.BlockSize),
+                'maxNameLen': disk.MaximumComponentLength,
+                'perfmonInstance': perfmonInstance,
+                'totalFiles': 0,
+                }))
+
         return rm
 
 
@@ -158,6 +204,24 @@ def Win32_volume_mount(disk):
     return ' '.join(mount_parts)
 
 def win32_logicaldisk_mount(disk):
+    '''
+    Return a FileSystem.mount property given a Win32_LogicalDisk.
+    '''
+    mount_parts = []
+    if disk.Name:
+        mount_parts.append(disk.Name)
+
+    if disk.VolumeSerialNumber:
+        mount_parts.append(
+            '(Serial Number: {})'.format(disk.VolumeSerialNumber))
+
+    if disk.VolumeName:
+        mount_parts.append(
+            '- {}'.format(disk.VolumeName))
+
+    return ' '.join(mount_parts)
+
+def win32_mapped_logicaldisk_mount(disk):
     '''
     Return a FileSystem.mount property given a Win32_LogicalDisk.
     '''

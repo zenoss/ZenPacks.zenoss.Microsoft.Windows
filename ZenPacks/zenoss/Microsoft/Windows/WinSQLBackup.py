@@ -25,10 +25,11 @@ class WinSQLBackup(OSComponent):
     instancename = None
 
     _properties = OSComponent._properties + (
-        {'id': 'devicetype', 'type': 'string'},
-        {'id': 'physicallocation', 'type': 'string'},
-        {'id': 'status', 'type': 'string'},
-        {'id': 'instancename', 'type': 'string'},
+        {'id': 'devicetype', 'label': 'Device Type', 'type': 'string'},
+        {'id': 'physicallocation', 'label': 'Physical Location',
+            'type': 'string'},
+        {'id': 'status', 'label': 'Status', 'type': 'string'},
+        {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

@@ -190,14 +190,14 @@
 
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".Interface.Interface"
-            factory=".impact.InterfaceRelationsProvider"
+            for=".ClusterService.ClusterService"
+            factory=".impact.ClusterRelationsProvider"
             />
 
         <subscriber
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
-            for=".ClusterService.ClusterService"
-            factory=".impact.ClusterRelationsProvider"
+            for=".WinService.WinService"
+            factory=".impact.WinServiceRelationsProvider"
             />
 
     </configure>

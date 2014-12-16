@@ -152,14 +152,12 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         for obj in self._object.hw.cpus():
             yield edge(guid(obj), self.guid())
 
-        # Interfaces
-        for obj in self._object.os.interfaces():
-            if obj.adminStatus == 1:
-                yield edge(guid(obj), self.guid())
-
         # Cluster Services
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
+
+        for obj in self._object.os.winrmservices():
+            yield edge(self.guid(), guid(obj))
 
         # Look up for HyperV server with same IP
         try:
@@ -191,14 +189,12 @@ class CPURelationsProvider(BaseRelationsProvider):
         yield edge(self.guid(), guid(self._object.device()))
 
 
-class InterfaceRelationsProvider(BaseRelationsProvider):
-
-    def getEdges(self):
-        if self._object.adminStatus == 1:
-            yield edge(self.guid(), guid(self._object.device()))
-
-
 class ClusterRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
         yield edge(self.guid(), guid(self._object.device()))
+
+class WinServiceRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())

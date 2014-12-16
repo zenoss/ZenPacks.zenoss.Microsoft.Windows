@@ -10,6 +10,7 @@
 import re
 
 from .utils import addLocalLibPath
+from Products.ZenUtils.IpUtil import isip
 addLocalLibPath()
 
 # Requires that addLocalLibPath be called above.
@@ -68,10 +69,10 @@ def createConnectionInfo(device_proxy):
         raise UnauthorizedError(
             "zWinScheme must be either 'http' or 'https'")
 
-    if int(device_proxy.zWinRMPort) == 5985 and scheme == 'https':
+    if int(device_proxy.zWinRMPort) != 5986 and scheme == 'https':
         raise UnauthorizedError("zWinRMPort must be 5986 if zWinScheme is https")
 
-    if int(device_proxy.zWinRMPort) == 5986 and scheme == 'http':
+    if int(device_proxy.zWinRMPort) != 5985 and scheme == 'http':
         raise UnauthorizedError("zWinRMPort must be 5985 if zWinScheme is http")
 
     return ConnectionInfo(

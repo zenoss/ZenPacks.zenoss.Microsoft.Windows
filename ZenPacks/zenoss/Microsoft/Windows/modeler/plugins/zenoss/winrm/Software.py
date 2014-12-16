@@ -10,9 +10,11 @@
 '''
 Windows Installed Software
 
-Models list of installed software by querying Win32_Product via WMI.
+Models list of installed software by querying registry.
+Querying Win32_Product causes Windows installer to run a consistency check, 
+possibly causing other problems to appear.
 '''
-
+import re
 from Products.DataCollector.plugins.DataMaps import MultiArgs
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
@@ -23,9 +25,13 @@ class Software(WinRMPlugin):
     relname = 'software'
     modname = 'Products.ZenModel.Software'
 
-    queries = {
-        'Win32_Product': "SELECT Name, InstallDate, Vendor FROM Win32_Product",
-    }
+    powershell_commands = dict(
+        software=(
+            "Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
+            " | ForEach-Object {'DisplayName='+$_.GetValue('DisplayName')+';InstallDate='+"
+            " $_.GetValue('InstallDate')+';Vendor='+$_.GetValue('Publisher'), '|'}; "
+        )
+    )
 
     def process(self, device, results, log):
         log.info(
@@ -33,28 +39,49 @@ class Software(WinRMPlugin):
             self.name(), device.id)
 
         rm = self.relMap()
+        
+        software_results = results.get('software')
+        if software_results:
+            software_results = ''.join(software_results.stdout).split('|')
 
-        for item in results.values()[0]:
-            if not item.Name:
-                continue
+        # Registry Software formatting
+        if software_results:
+            for sw in software_results:
+                softwareDict = {}
+                try:
+                    for keyvalues in sw.split(';'):
+                        key, value = keyvalues.split('=')
+                        softwareDict[key] = value
+     
+                    # skip over empty entries
+                    if softwareDict['DisplayName'] == '':
+                        continue                   
+                    om = self.objectMap()
+                    om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName']))
+                    if softwareDict['Vendor'].strip() == '':
+                        softwareDict['Vendor'] = 'Unknown'
+                        om.Vendor = 'Unknown'
 
-            om = self.objectMap()
-            # prepId don't care about __ in resulting id
-            # this results OFS ObjectManaget checkValidId() to fail
-            om.id = self.eliminate_underscores(self.prepId(item.Name))
-            om.title = item.Name
-            if not item.Vendor:
-                item.Vendor = 'Unknown'
-            om.setProductKey = MultiArgs(item.Name, item.Vendor)
+                    om.setProductKey = MultiArgs(softwareDict['DisplayName'], softwareDict['Vendor'])
 
-            if item.InstallDate:
-                om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
-                    item.InstallDate[0:4],
-                    item.InstallDate[4:6],
-                    item.InstallDate[6:8])
-
-            rm.append(om)
-
+                    if softwareDict['InstallDate'] is not '':
+                        installdate = softwareDict['InstallDate']
+                        datematch = re.match('(\d{2}/\d{2}/\d{4})', installdate)
+                        if datematch:
+                            om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
+                               softwareDict['InstallDate'][6:10],
+                               softwareDict['InstallDate'][3:5],
+                               softwareDict['InstallDate'][0:2])
+                        else:
+                            om.setInstallDate = '{0}/{1}/{2} 00:00:00'.format(
+                               softwareDict['InstallDate'][0:4],
+                               softwareDict['InstallDate'][4:6],
+                               softwareDict['InstallDate'][6:8])
+                    rm.append(om)
+                    
+                except (KeyError, ValueError):
+                    pass
+                
         return rm
 
     def eliminate_underscores(self, val):

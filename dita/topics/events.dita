@@ -5,7 +5,7 @@
   <refbody>
     <section>
       <p>Events are collected from Windows event logs through a WinRM subscription. Information encoded in 
-        Windows event classes is used to populate the following, standard Zenoss event fields.</p>
+        Windows event classes is used to populate the following, standard <ph conkeyref="names/platform"/> event fields.</p>
         <ul>
           <li>device</li>
           <li>component</li>

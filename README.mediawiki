@@ -34,10 +34,10 @@ The following components will be automatically discovered through the Windows se
 [[File:windows_interfaces.png|thumb|320px|Interfaces]]
 
 ;Server (Device)
-: Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Total Memory, Total Swap, Operating System, Cluster
+: Attributes: Name, Contact, Description, Serial Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory, Operating System, Cluster
 
 ;Cluster (Device)
-: Attributes: Name, Contact, Description, Total Memory, Total Swap, Operating System, Member Servers
+: Attributes: Name, Contact, Description, Physical Memory, Total Virtual Memory, Operating System, Member Servers
 
 ;Processors
 : Attributes: Name, Description, Model, Socket, Cores, Threads, Clock Speed, External Speed, Voltage, L1 Cache Size, L2 Cache Size and Speed, L3 Cache Size and Speed
@@ -299,13 +299,20 @@ The following metrics are collected directly via WMI.
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
-To monitor EventLog events you should add to monitoring template "Windows EventLog" datasource, and in the Event Log field put the name of event log, that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object comandlet. 
+To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object commandlet. 
 
-For example, here is Event Query for error events only:
+To target all events with a Warning or higher severity:
 
-    { $$_.EntryType -eq 'Error' }
+For Windows 2003: { $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+
+Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
+
+For Windows 2008 & Later: { $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}, or
+{ $$_.LevelDisplayName -Contains “Information” }
+
+The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
 
@@ -343,6 +350,7 @@ Use the following steps to start monitoring a Windows server using local authent
 
 # Navigate to the Infrastructure page.
 # Select the Server/Microsoft/Windows device class.
+#* The Windows server must be added to this class or to a child of this class.
 # Click Details and set the configuration properties for zWinRMUser and zWinRMPassword.
 # Click See All.
 # Choose ''Add Single Device'' from the add device button.
@@ -436,10 +444,57 @@ This allows for the following example uses.
 # Follow steps 1-5 from the previous section.
 # Choose your new device class as the target then click submit.
 # Expand the ''WinService'' tree then select the copy in your device class.
+# Choose ''View and Edit Details'' from the gear menu.
+# Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
 # Put a check mark in ''Monitor by Default'' then click save.
 
 <br clear=all>
+
+=== Configuring MSSQL Server Modeling/Monitoring ===
+
+; Supported SQL Server versions:
+: SQL Server 2005
+: SQL Server 2008
+: SQL Server 2008 R2
+: SQL Server 2012
+
+; Support for SQL Server and Windows Authentication:
+* Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
+* SQL Server Authentication: In ''zDBInstances'' property provide user name and password for each SQL instance.
+
+Use the following steps to configure SQL Server Authentication on your SQL Server:
+# Connect to SQL Instance using MSSQL Management Studio.
+# Select instance ''Properties'' > ''Security'' and make sure that ''SQL Server and Windows Authentication mode'' is enabled.
+# Open ''Security'' > ''Logins'', select the user, you specified in ''zDBInstances'' property.
+# Check user ''Properties'' > ''Status'' and make sure that the user is Enabled.
+# Check user ''Properties'' > ''Server Roles'' and make sure that the user has ''sysadmin'' and ''public'' roles.
+
+; Support for Local and Failover Cluster SQL instances:
+
+This ZenPack adds support for both local and failover cluster SQL Server instances.
+Local SQL Server instances can be modeled/monitored within windows devices (devices in ''Server/Microsoft/Windows'' device class).
+SQL Server failover cluster instances can be modeled/monitored within cluster devices (devices in ''Server/Microsoft/Cluster'' device class).
+
+: Use the following steps to model/monitor SQL Server instances:
+# Create a device in ''Server/Microsoft/Windows'' device class if you intend to model local SQL instances, or in ''Server/Microsoft/Cluster'' device class if you intend to model failover cluster instances.
+# Specify the instance names to be modeled in ''zDBInstances'' zProperty. Provide user names and passwords if SQL Server Authentication is to be used.
+# Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
+# Remodel device.
+
+=== Working with WinCommand Notification Action ===
+
+This ZenPack adds a new event notification action that can be used by the zenactiond daemon to allow an arbitrary command to be executed on the remote windows machine.
+
+Use the following steps to set up a notification:
+# Select ''Events'' > ''Triggers'' from the Navigation Menu.
+# Create a trigger, selecting the rules that define it.
+# Select ''Notifications'' from the left panel. Add a new notification, enter a name for it and select ''WinCommand'' Action from the drop-down menu. Click Submit.
+# In the ''Edit Notification'' dialog on the ''Notification'' tab associate the trigger with the notification and optionally select the notification properties (Enabled, Send Clear, Send only on Initial Occurrence, Delay, Repeat).
+On the ''Content'' tab of the notification specify the 'Windows CMD Command'' to run when configured triggers are matched. You may optionally specify ''Clear Windows CMD Command'' to run when the triggering event clears.
+# Submit changes.
+
+For more information please refer to [http://community.zenoss.org/docs/DOC-10690 Working with Triggers and Notifications]
 
 == <span id="winrm_setup">Setting up WinRM Service for Target Windows Machines</span> ==
 
@@ -478,19 +533,17 @@ Individual Machine configuration
 * winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
 * winrm s winrm/config/winrs @{IdleTimeout="7200000"}
 
-HTTP (Windows default is HTTPS see note below for more information)
-* winrm s winrm/config/service @{AllowUnencrypted="true"}
-
 Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth @{Basic="true"}
+* winrm s winrm/config/service @{AllowUnencrypted="true"}
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
 
-{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients and you don't mind sending the payload in clear text but require the user name and password to be encrypted then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended.
+{{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
-{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on tbe client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
+{{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
 Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
 
@@ -552,8 +605,8 @@ There are also circumstances where you may currently be using the old Windows Ze
 The current release is known to have the following limitations.
 
 * Support for team NICs is limited to Intel and Broadcom interfaces.
-* The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property
-in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
+* The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
+* When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -598,7 +651,7 @@ This is an example of what would be required if you had two domains: example1.co
 When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact capability for services running on Microsoft Windows. The following service impact relationships are automatically added. These will be included in any services that contain one or more of the explicitly mentioned entities.
 
 ;Service Impact Relationships
-* The Windows server is impacted by the Processors, Interfaces and File Systems.
+* The Windows server is impacted by the Processors and File Systems.
 
 == Troubleshooting ==
 
@@ -610,6 +663,19 @@ Please refer the the Zenoss Service Dynamics documentation if you run into any o
 * Don't understand how to model a device
 
 If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [https://support.zenoss.com Zenoss Customer Support]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
+
+=== Troubleshooting Kerberos Error Messages ====
+
+<blockquote>Cannot determine realm for numeric host address</blockquote>
+
+* If you enter an IP address for the device id, make sure that the address is resolvable to a name.
+
+<blockquote>Server not found in Kerberos database</blockquote>
+
+* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.
+
+example:
+setspn -s HTTP/hostname1.zenoss.com hostname1
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
@@ -642,7 +708,63 @@ You'll also see other kerberos messages that are normal. You should ignore these
 
 The following are the most common errors:
 * ''KRB5KRB_AP_ERR_SKEW'': As shown in the above example. A clock synchronization issue.
-* ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.
+* ''KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN'': This can happen if ''zWinRMServerName'' resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a ''zWinRMServerName'' and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory.  Typical solutions to this are to add the name to the /etc/hosts file or to directly use the IP address of the server.
+
+=== Troubleshooting on Resource Manager 4.1.1 ===
+
+In some cases updating the Microsoft Windows ZenPack on Zenoss Resource Manager 4.1.1 may result in the ''zenhub'' daemon not starting. The error message will contain ''AttributeError: zDBInstancesPassword''. If you encounter this issue, install the ZenPack again.
+
+If there are existing SQL server instances being monitored, make sure to reconfigure ''zDBInstances'' property since the ''zDBInstancesPassword'' property no longer exists.
+
+=== Troubleshooting Services ===
+
+If you see an event error that shows "The maximum number of concurrent operations for this user has been exceeded", you will need to increase the number of concurrent operations per user in the winrm config.
+For example:
+* winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="5000"}'
+
+If you see an "Index out of range" error, this could indicate a low number of available file handles in Linux.  The default is 1024.  To view this information on your system, enter 'ulimit -n'.  To increase this limit, edit your /etc/sysctl.conf file and set fs.file-max to a sufficently large number.
+For example:
+* vi /etc/sysctl.conf
+* fs.file-max=10000
+
+== Zenoss Analytics ==
+
+This ZenPack provides additional support for Zenoss Analytics. Perform the
+following steps to install extra reporting resources into Zenoss Analytics
+after installing the ZenPack.
+
+# Copy analytics-bundle.zip from <tt>$ZENHOME/ZenPacks/ZenPacks.zenoss.Microsoft.Windows*/ZenPacks/zenoss/Microsoft/Windows/analytics/</tt> on your Zenoss server.
+# Navigate to Zenoss Analytics in your browser.
+# Login as superuser.
+# Remove any existing ''Microsoft Windows ZenPack'' folder.
+## Choose ''Repository'' from the ''View'' menu at the top of the page.
+## Expand ''Public'' in the list of folders.
+## Right-click on ''Microsoft Windows ZenPack'' folder and choose ''Delete''.
+## Confirm deletion by clicking ''OK''.
+# Add the new ''Microsoft Windows ZenPack'' folder.
+## Choose ''Server Settings'' from the ''Manage'' menu at the top of the page.
+## Choose ''Import'' in the left page.
+## Remove checks from all check boxes.
+## Click ''Choose File'' to import a data file.
+## Choose the analytics-bundle.zip file copied from your Zenoss server.
+## Click ''Import''.
+
+You can now navigate back to the ''Microsoft Windows ZenPack'' folder in the repository to see the following resources added by the bundle.
+
+;Domains
+* Microsoft Windows Domain
+* Microsoft Cluster Domain
+
+;Ad Hoc Views
+* Windows IIS Peak Usage
+* Windows Interfaces Peak Usage
+
+Domains can be used to create Ad Hoc views using the following steps.
+
+# Choose ''Ad Hoc View'' from the ''Create'' menu.
+# Click ''Domains'' at the top of the data chooser dialog.
+# Expand ''Public'' then ''Microsoft Windows ZenPack''.
+# Choose the ''Microsoft Windows Domain'' domain
 
 == Installed Items ==
 
@@ -708,6 +830,23 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.2.0
+* Payload encryption over kerberos connections
+* Updated Events to use Get-WinEvent cmdlet
+* Updated Software modeler to query registry instead of Win32_Product
+* Updated FileSystems to show mapped network drives and mounted volumes
+* Support for Zenoss Analytics
+* Numerous bug fixes
+
+;2.1.3
+* Zenoss 5 compatibility fixes.
+
+;2.1.2
+* Added WinCommand notification action
+* Support for monitoring fail-over clustered MSSQL instances
+* Support for monitoring Windows event logs
+* Numerous bug fixes
 
 ;2.1.0
 * Support for Service Impact

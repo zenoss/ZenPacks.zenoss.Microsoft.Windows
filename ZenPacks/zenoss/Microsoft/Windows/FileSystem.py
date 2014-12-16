@@ -12,9 +12,13 @@ from Products.ZenModel.FileSystem import FileSystem as BaseFileSystem
 
 class FileSystem(BaseFileSystem):
     mediatype = None
+    total_bytes = 0
 
     _properties = BaseFileSystem._properties + (
-        {'id': 'mediatype', 'type': 'string', 'mode': 'w'},
+        {'id': 'mediatype', 'label': 'Media Type',
+            'type': 'string', 'mode': 'w'},
+        {'id':'total_bytes', '': 'Total Bytes',
+            'type':'long', 'mode':''},
         )
 
     def monitored(self):
@@ -37,3 +41,10 @@ class FileSystem(BaseFileSystem):
         Return the path to an icon for this component.
         '''
         return '/++resource++mswindows/img/FileSystem.png'
+
+    @property
+    def total_bytes(self):
+        """
+        Return the total bytes of a filesytem for analytics
+        """
+        return self.blockSize * self.totalBlocks
