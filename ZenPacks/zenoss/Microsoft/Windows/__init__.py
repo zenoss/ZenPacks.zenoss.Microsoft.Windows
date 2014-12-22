@@ -14,11 +14,13 @@ import os
 import platform
 import shutil
 import re
+import logging
 
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import monkeypatch, zenPath
 
+log = logging.getlogger("zen.MicrosoftWindows")
 # unused
 Globals
 
@@ -89,7 +91,7 @@ class ZenPack(ZenPackBase):
         super(ZenPack, self).install(app)
 
         self.register_devtype(app.zport.dmd)
-
+        log.info("If a Segmentation fault occurs, then run the installation once more.  This is a known issue.")
         # copy kerberos.so file to python path
         osrelease = platform.release()
         kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')

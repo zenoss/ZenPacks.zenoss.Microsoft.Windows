@@ -303,16 +303,19 @@ To monitor EventLog events you should add to monitoring template with "Windows E
 
 To target all events with a Warning or higher severity:
 
-For Windows 2003: { $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}
+<code>For Windows 2003: { $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
 Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
-For Windows 2008 & Later: { $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}, or
-{ $$_.LevelDisplayName -Contains “Information” }
+For Windows 2008 & Later: 
+
+<code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
+
+For more information about the System.Diagnostics.Eventing.Reader class, you could read http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader(v=vs.110).aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
 
@@ -541,6 +544,8 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 
 {{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
+{{note}} If you are using kerberos to connect to your Windows Server, your data will now be encrypted over HTTP.
+
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
 {{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
@@ -553,7 +558,6 @@ If you do not see a record with HTTPS/ at the beginning of the hostname you will
 
 example:
 setspn -s HTTPS/hostname1.zenoss.com hostname1
-
 
 == Transitioning from WindowsMonitor ==
 
@@ -664,7 +668,7 @@ Please refer the the Zenoss Service Dynamics documentation if you run into any o
 
 If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [https://support.zenoss.com Zenoss Customer Support]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
 
-=== Troubleshooting Kerberos Error Messages ====
+=== Troubleshooting Kerberos Error Messages ===
 
 <blockquote>Cannot determine realm for numeric host address</blockquote>
 
