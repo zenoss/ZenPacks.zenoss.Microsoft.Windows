@@ -20,7 +20,7 @@ from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import monkeypatch, zenPath
 
-log = logging.getlogger("zen.MicrosoftWindows")
+log = logging.getLogger("zen.MicrosoftWindows")
 # unused
 Globals
 
