@@ -136,10 +136,19 @@ class EventLogPlugin(PythonDataSourcePlugin):
         max_age = ds0.params['max_age']
         eventid = ds0.params['eventid']
 
-        res = yield query.run(eventlog, select, max_age, eventid)
-        if res.stderr:
-            raise EventLogException('\n'.join(res.stderr))
-        output = '\n'.join(res.stdout)
+        res = None
+        output = []
+
+        try:
+            res = yield query.run(eventlog, select, max_age, eventid)
+        except Exception as e:
+            log.error(e)
+        try:
+            if res.stderr:
+                raise EventLogException('\n'.join(res.stderr))
+            output = '\n'.join(res.stdout)
+        except AttributeError:
+            pass
         try:
             value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
             if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
