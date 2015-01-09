@@ -3,13 +3,13 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
-VERSION = "2.2.0"
+VERSION = "2.2.1"
 AUTHOR = "Zenoss"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft']
 PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft', 'ZenPacks.zenoss.Microsoft.Windows']
 INSTALL_REQUIRES = ['ZenPacks.zenoss.PythonCollector>=1.4']
-COMPAT_ZENOSS_VERS = ">=4.1"
+COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
 ################################
