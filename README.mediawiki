@@ -834,6 +834,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+;2.2.1
+* Fix Windows 2003 modeling/monitoring
+* Add log message during install
+* Re-authenticate through kerberos if connection is broken
+* Small bug fixes
 
 ;2.2.0
 * Payload encryption over kerberos connections

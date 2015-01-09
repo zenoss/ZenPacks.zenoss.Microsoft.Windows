@@ -606,7 +606,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 False,
                 logging.WARN,
                 "receive failure on {}: {}"
-                .format(self.config.id, failure))
+                .format(self.config.id, e))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.errback(failure)
