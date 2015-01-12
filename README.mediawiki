@@ -616,6 +616,8 @@ A current list of known issues related to this ZenPack can be found with [https:
 
 === Manually Establishing Kerberos Tickets ===
 
+In version 2.2.0 of the ZenPack it is now possible to add custom kerberos configurations if your settings differ from the default settings used by Zenoss.  To use a custom configuration file, place it in the $ZENHOME/var/krb5/config/ directory.  This option requires kerberos 5 release 1.10 and higher.
+
 In version 2.0.0 of the ZenPack there is a problem in the automatic establishment of kerberos tickets required for monitoring Windows devices using kerberos authentication. This is only a problem on Enterprise Linux 5 (Red Hat or CentOS). It is not a problem on Enterprise Linux 6. The problem will typically manifest as the following error when attempting to model a Windows device.
 
 {{note}} Note that these manual steps are not necessary in version 2.0.1 and later of the ZenPack.
