@@ -92,6 +92,8 @@ class WinService(OSComponent):
 
         if best_template == True:
             return True
+        elif self.zWinRMMonitorAutoService == True and self.startmode == 'Auto':
+            return True
         # 3 - Default to what the current monitor status is
         else:
             return self.monitor
