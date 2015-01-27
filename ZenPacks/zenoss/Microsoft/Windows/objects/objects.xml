@@ -7639,8 +7639,8 @@ ${here/servicename}
 <property type="string" id="alertifnot" >
 Running
 </property>
-<property type="boolean" id="defaultgraph" mode="w" >
-True
+<property type="string" id="startmode">
+None
 </property>
 </object>
 </tomanycont>
@@ -15545,8 +15545,8 @@ ${here/id}
 <property type="string" id="alertifnot" >
 Running
 </property>
-<property type="boolean" id="defaultgraph" mode="w" >
-False
+<property type="string" id="startmode">
+None
 </property>
 </object>
 </tomanycont>

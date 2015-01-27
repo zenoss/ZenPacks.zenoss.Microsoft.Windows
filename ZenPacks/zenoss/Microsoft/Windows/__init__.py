@@ -40,7 +40,6 @@ _PACK_Z_PROPS = [
     ('zWinKeyTabFilePath', '', 'string'),
     ('zWinScheme', 'http', 'string'),
     ('zWinPerfmonInterval', 300, 'int'),
-    ('zWinRMMonitorAutoService', 'True', 'boolean'),
     ]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
