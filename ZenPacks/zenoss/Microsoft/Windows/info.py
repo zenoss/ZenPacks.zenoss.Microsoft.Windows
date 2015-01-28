@@ -37,6 +37,7 @@ class DeviceInfo(BaseDeviceInfo):
     clusterdevices = ProxyProperty('clusterdevices')
     sqlhostname = ProxyProperty('sqlhostname')
     msexchangeversion = ProxyProperty('msexchangeversion')
+    ip_and_hostname = ProxyProperty('ip_and_hostname')
 
 
 class ClusterDeviceInfo(BaseDeviceInfo):

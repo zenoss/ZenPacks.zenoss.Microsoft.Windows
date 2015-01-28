@@ -30,11 +30,13 @@ class Device(BaseDevice):
     clusterdevices = ''
     sqlhostname = None
     msexchangeversion = None
+    ip_and_hostname = None
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'label': 'Cluster Devices', 'type': 'string', 'mode': 'w'},
         {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
         {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
+        {'id': 'ip_and_hostname', 'type': 'string'},
     )
 
     def setClusterMachines(self, clusterdnsnames):
@@ -181,10 +183,10 @@ class DeviceLinkProvider(object):
                     'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
                 )
             )
-
             for brain in results:
                 obj = brain.getObject()
-                if obj.ip == self.device.id:
+                id_list = self.device.ip_and_hostname or [self.device.id]
+                if obj.ip in id_list:
                     links.append(
                         'Hyper-V Server: <a href="{}">{}</a>'.format(
                             obj.getPrimaryUrlPath(),

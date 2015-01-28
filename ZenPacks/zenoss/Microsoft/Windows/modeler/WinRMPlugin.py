@@ -9,6 +9,7 @@
 
 import logging
 import types
+import socket
 
 from xml.etree.cElementTree import ParseError as cParseError
 
@@ -170,6 +171,22 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
+
+    def get_ip_and_hostname(self, ip_or_hostname):
+        """
+        Return a list which contains hostname and IP
+
+        socket.gethostbyaddr('127.0.0.1')
+        ('localhost.localdomain', ['localhost'], ['127.0.0.1'])
+        socket.gethostbyaddr('localhost.localdomain')
+        ('localhost.localdomain', ['localhost'], ['127.0.0.1'])
+        """
+        try:
+            hostbyaddr = socket.gethostbyaddr(ip_or_hostname)
+            hostbyaddr[2].append(hostbyaddr[0])
+            return hostbyaddr[2]
+        except socket.error:
+            return []
 
     @defer.inlineCallbacks
     def collect(self, device, log):
