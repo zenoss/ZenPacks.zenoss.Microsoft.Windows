@@ -85,9 +85,9 @@ class WinService(OSComponent):
         try:
             if best_template == True:
                 return self.monitor
-            elif self.startmode == self.getRRDTemplate().datasources.DefaultService.startmode:
+            elif self.startmode == self.getRRDTemplate().datasources.DefaultService.startmode \
+                 or self.getRRDTemplate().datasources.DefaultService.startmode == 'Any':
                 self.monitor = True
-                self.usermonitor = True
                 return True
             # 3 - Default to what the current monitor status is
             else:

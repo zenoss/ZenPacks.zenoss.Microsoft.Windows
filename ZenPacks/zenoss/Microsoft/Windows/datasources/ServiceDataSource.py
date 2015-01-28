@@ -45,6 +45,7 @@ MODE_NONE = 'None'
 MODE_AUTO = 'Auto'
 MODE_DISABLED = 'Disabled'
 MODE_MANUAL = 'Manual'
+MODE_ANY = 'Any'
 
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
@@ -95,7 +96,7 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Start mode of service to monitor (None disables monitoring)'),
         vocabulary=SimpleVocabulary.fromValues(
-            [MODE_NONE,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
+            [MODE_NONE,MODE_ANY,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
