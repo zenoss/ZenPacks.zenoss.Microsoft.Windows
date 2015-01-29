@@ -56,43 +56,22 @@ class WinService(OSComponent):
             pass
         return 'WinService'
 
-    def getBest(self):
-        # Method to find template that matches this service
-        # Gets the monitor value
-        self.monitor = False
-        self.usermonitor = False
-        try:
-            template = self.getRRDTemplateByName(self.servicename)
-            if template is not None:
-                if template.datasources.DefaultService.startmode != 'None':
-                    self.monitor = True
-                    self.usermonitor = True
-                    self.index_object()
-                return True
-        except: #DefaultService not defined.
-            pass
-        return False
-
     def monitored(self):
+        """Return True if this service should be monitored. False otherwise."""
 
         # 1 - Check to see if the user has manually set monitor status
-        if self.usermonitor == True:
+        if self.usermonitor is True:
             return self.monitor
 
-        # 2 - Check to see if a default template exists with default set
-        best_template = self.getBest()
+        # 2 - Check what our template says to do.
+        template = self.getRRDTemplate()
+        if template:
+            datasource = template.datasources._getOb('DefaultService', None)
+            if datasource:
+                if datasource.startmode in (self.startmode, 'Any'):
+                    return True
 
-        try:
-            if best_template == True:
-                return self.monitor
-            elif self.startmode == self.getRRDTemplate().datasources.DefaultService.startmode \
-                 or self.getRRDTemplate().datasources.DefaultService.startmode == 'Any':
-                self.monitor = True
-                return True
-            # 3 - Default to what the current monitor status is
-            else:
-                return self.monitor
-        except:
-            return self.monitor
+        return False
+
 
 InitializeClass(WinService)
