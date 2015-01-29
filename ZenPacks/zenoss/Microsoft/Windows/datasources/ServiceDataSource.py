@@ -19,7 +19,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer, error
 from twisted.python.failure import Failure
 from Products.Zuul.infos.template import RRDDataSourceInfo
-from Products.Zuul.interfaces import IRRDDataSourceInfo
+from Products.Zuul.interfaces import ICatalogTool, IRRDDataSourceInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
@@ -28,6 +28,8 @@ from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
+
+from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -79,6 +81,26 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'startmode', 'type': 'string'},
     )
 
+    def getAffectedServices(self):
+        """Generate WinService instances to which this datasource is bound."""
+        template = self.rrdTemplate().primaryAq()
+        deviceclass = template.deviceClass().primaryAq()
+        # Template is local to a specific service.
+        if deviceclass is None:
+            yield template.getPrimaryParent()
+
+        # Template is in a device class.
+        else:
+            results = ICatalogTool(deviceclass).search(WinService)
+            for result in results:
+                try:
+                    service = result.getObject()
+                except Exception:
+                    continue
+
+                if service.getRRDTemplate() == template:
+                    yield service
+
 
 class IServiceDataSourceInfo(IRRDDataSourceInfo):
     """
@@ -104,6 +126,7 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
 
+
 class ServiceDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized
@@ -116,7 +139,17 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
-    startmode = ProxyProperty('startmode')
+
+    def get_startmode(self):
+        return self._object.startmode
+
+    def set_startmode(self, value):
+        if self._object.startmode != value:
+            self._object.startmode = value
+            for service in self._object.getAffectedServices():
+                service.index_object()
+
+    startmode = property(get_startmode, set_startmode)
 
 
 class ServicePlugin(PythonDataSourcePlugin):
@@ -147,6 +180,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         params['startmode'] = datasource.talesEval(
             datasource.startmode, context)
+
+
 
         return params
 
