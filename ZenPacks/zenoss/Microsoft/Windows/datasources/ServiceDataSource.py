@@ -41,6 +41,11 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 STATE_RUNNING = 'Running'
 STATE_STOPPED = 'Stopped'
 
+MODE_NONE = 'None'
+MODE_AUTO = 'Auto'
+MODE_DISABLED = 'Disabled'
+MODE_MANUAL = 'Manual'
+MODE_ANY = 'Any'
 
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
@@ -61,9 +66,9 @@ class ServiceDataSource(PythonDataSource):
     cycletime = 300
     sourcetypes = ('Windows Service',)
     sourcetype = sourcetypes[0]
-    servicename = '${here/servicename}'
+    servicename = '${here/id}'
     alertifnot = 'Running'
-    defaultgraph = False
+    startmode = MODE_NONE
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -71,7 +76,7 @@ class ServiceDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
-        {'id': 'defaultgraph', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'startmode', 'type': 'string'},
     )
 
 
@@ -87,17 +92,17 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
-    defaultgraph = schema.Bool(
+    startmode = schema.Choice(
         group=_t('Service Status'),
-        title=_t('Monitor by Default')
-    )
+        title=_t('Start mode of service to monitor (None disables monitoring)'),
+        vocabulary=SimpleVocabulary.fromValues(
+            [MODE_NONE,MODE_ANY,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
-
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
     """
@@ -111,7 +116,7 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
-    defaultgraph = ProxyProperty('defaultgraph')
+    startmode = ProxyProperty('startmode')
 
 
 class ServicePlugin(PythonDataSourcePlugin):
@@ -127,6 +132,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             datasource.plugin_classname,
             params.get('servicename'),
             params.get('alertifnot'),
+            params.get('startmode'),
         )
 
     @classmethod
@@ -139,15 +145,18 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['alertifnot'] = datasource.talesEval(
             datasource.alertifnot, context)
 
+        params['startmode'] = datasource.talesEval(
+            datasource.startmode, context)
+
         return params
 
     @defer.inlineCallbacks
     def collect(self, config):
 
-        log.info('{0}:Start Collection of Services'.format(config.id))
         ds0 = config.datasources[0]
 
         servicename = ds0.params['servicename']
+        log.info('{0}:Start Collection of Service {1}'.format(config.id, servicename))
 
         WinRMQueries = [
             create_enum_info(

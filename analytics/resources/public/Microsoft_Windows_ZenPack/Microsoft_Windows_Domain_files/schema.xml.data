@@ -1389,7 +1389,6 @@
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_startmode" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_startmode" label="Start Mode"/>
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_account" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_account" label="Account"/>
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_usermonitor" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_usermonitor" label="User Selected Monitor State"/>
-        <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_globalset" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_globalset" label="Global Set"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="WindowsCPUs" id="set_windows_cpu" description="">
@@ -4608,7 +4607,6 @@
         <field type="java.lang.String" id="win_rm_service_startmode"/>
         <field type="java.lang.String" id="win_rm_service_account"/>
         <field type="java.lang.Boolean" id="win_rm_service_usermonitor"/>
-        <field type="java.lang.Boolean" id="win_rm_service_globalset"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
         <field type="java.lang.Double" id="links_count"/>
@@ -6814,7 +6812,6 @@
         <field type="java.lang.String" id="dim_win_rm_service.win_rm_service_startmode"/>
         <field type="java.lang.String" id="dim_win_rm_service.win_rm_service_account"/>
         <field type="java.lang.Boolean" id="dim_win_rm_service.win_rm_service_usermonitor"/>
-        <field type="java.lang.Boolean" id="dim_win_rm_service.win_rm_service_globalset"/>
         <field type="java.lang.Double" id="dim_win_rm_service.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_rm_service.dependents_count"/>
         <field type="java.lang.Double" id="dim_win_rm_service.links_count"/>
