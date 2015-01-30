@@ -459,6 +459,8 @@ See the following examples:
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode other than 'None'.  Choosing 'None' disables monitoring by default.
 
+{{note}} If EnterpriseCollector is installed, then you may need to "Push Changes" to the collectors to see immediate results on a device.  From the device's gear icon, choose "Push Changes" to do this.
+
 <br clear=all>
 
 === Configuring MSSQL Server Modeling/Monitoring ===
