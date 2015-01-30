@@ -843,6 +843,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+;2.3.0
+* Update Windows Service monitoring template to allow for monitoring by start mode
+* Fix memory leak with kerberos
+* Fix moving device to a different class
+
 ;2.2.1
 * Fix Windows 2003 modeling/monitoring
 * Add log message during install
