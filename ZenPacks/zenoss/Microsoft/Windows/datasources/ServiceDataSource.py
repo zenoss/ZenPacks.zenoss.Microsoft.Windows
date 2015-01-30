@@ -19,7 +19,7 @@ from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer, error
 from twisted.python.failure import Failure
 from Products.Zuul.infos.template import RRDDataSourceInfo
-from Products.Zuul.interfaces import IRRDDataSourceInfo
+from Products.Zuul.interfaces import ICatalogTool, IRRDDataSourceInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
@@ -28,6 +28,8 @@ from Products.ZenUtils.Utils import prepId
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
+
+from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -41,6 +43,11 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 STATE_RUNNING = 'Running'
 STATE_STOPPED = 'Stopped'
 
+MODE_NONE = 'None'
+MODE_AUTO = 'Auto'
+MODE_DISABLED = 'Disabled'
+MODE_MANUAL = 'Manual'
+MODE_ANY = 'Any'
 
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
@@ -61,9 +68,9 @@ class ServiceDataSource(PythonDataSource):
     cycletime = 300
     sourcetypes = ('Windows Service',)
     sourcetype = sourcetypes[0]
-    servicename = '${here/servicename}'
+    servicename = '${here/id}'
     alertifnot = 'Running'
-    defaultgraph = False
+    startmode = MODE_NONE
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -71,8 +78,28 @@ class ServiceDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
-        {'id': 'defaultgraph', 'type': 'boolean', 'mode': 'w'},
+        {'id': 'startmode', 'type': 'string'},
     )
+
+    def getAffectedServices(self):
+        """Generate WinService instances to which this datasource is bound."""
+        template = self.rrdTemplate().primaryAq()
+        deviceclass = template.deviceClass().primaryAq()
+        # Template is local to a specific service.
+        if deviceclass is None:
+            yield template.getPrimaryParent()
+
+        # Template is in a device class.
+        else:
+            results = ICatalogTool(deviceclass).search(WinService)
+            for result in results:
+                try:
+                    service = result.getObject()
+                except Exception:
+                    continue
+
+                if service.getRRDTemplate() == template:
+                    yield service
 
 
 class IServiceDataSourceInfo(IRRDDataSourceInfo):
@@ -87,10 +114,11 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
-    defaultgraph = schema.Bool(
+    startmode = schema.Choice(
         group=_t('Service Status'),
-        title=_t('Monitor by Default')
-    )
+        title=_t('Start mode of service to monitor (None disables monitoring)'),
+        vocabulary=SimpleVocabulary.fromValues(
+            [MODE_NONE,MODE_ANY,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
@@ -111,7 +139,17 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
-    defaultgraph = ProxyProperty('defaultgraph')
+
+    def get_startmode(self):
+        return self._object.startmode
+
+    def set_startmode(self, value):
+        if self._object.startmode != value:
+            self._object.startmode = value
+            for service in self._object.getAffectedServices():
+                service.index_object()
+
+    startmode = property(get_startmode, set_startmode)
 
 
 class ServicePlugin(PythonDataSourcePlugin):
@@ -127,6 +165,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             datasource.plugin_classname,
             params.get('servicename'),
             params.get('alertifnot'),
+            params.get('startmode'),
         )
 
     @classmethod
@@ -139,15 +178,20 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['alertifnot'] = datasource.talesEval(
             datasource.alertifnot, context)
 
+        params['startmode'] = datasource.talesEval(
+            datasource.startmode, context)
+
+
+
         return params
 
     @defer.inlineCallbacks
     def collect(self, config):
 
-        log.info('{0}:Start Collection of Services'.format(config.id))
         ds0 = config.datasources[0]
 
         servicename = ds0.params['servicename']
+        log.debug('{0}:Start Collection of Service {1}'.format(config.id, servicename))
 
         WinRMQueries = [
             create_enum_info(

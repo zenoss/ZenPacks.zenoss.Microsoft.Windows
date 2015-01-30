@@ -1093,6 +1093,246 @@
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_rmiis_measures" description="">
           <itemGroups/>
           <items>
+            <item resourceId="JoinTree_1.daily_iissitereceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitereceived__bytes_fct_ts" label="iissitereceived__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitereceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitereceived__bytes_fct_ts_gmt" label="iissitereceived__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitereceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitereceived__bytes_fct_avg" label="iissitereceived__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitereceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitereceived__bytes_fct_max" label="iissitereceived__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitereceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitereceived__bytes_fct_min" label="iissitereceived__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitereceived__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitereceived__bytes_fct_ts" label="iissitereceived__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitereceived__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitereceived__bytes_fct_ts_gmt" label="iissitereceived__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitereceived__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitereceived__bytes_fct_avg" label="iissitereceived__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitereceived__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitereceived__bytes_fct_max" label="iissitereceived__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitereceived__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitereceived__bytes_fct_min" label="iissitereceived__bytes / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitesent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitesent__bytes_fct_ts" label="iissitesent__bytes / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitesent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitesent__bytes_fct_ts_gmt" label="iissitesent__bytes / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitesent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesent__bytes_fct_avg" label="iissitesent__bytes / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitesent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesent__bytes_fct_max" label="iissitesent__bytes / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitesent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesent__bytes_fct_min" label="iissitesent__bytes / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitesent__bytes.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitesent__bytes_fct_ts" label="iissitesent__bytes / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitesent__bytes.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitesent__bytes_fct_ts_gmt" label="iissitesent__bytes / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitesent__bytes.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesent__bytes_fct_avg" label="iissitesent__bytes / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitesent__bytes.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesent__bytes_fct_max" label="iissitesent__bytes / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitesent__bytes.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesent__bytes_fct_min" label="iissitesent__bytes / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitecgirequests.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitecgirequests_fct_ts" label="iissitecgirequests / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitecgirequests.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitecgirequests_fct_ts_gmt" label="iissitecgirequests / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitecgirequests.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecgirequests_fct_avg" label="iissitecgirequests / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitecgirequests.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecgirequests_fct_max" label="iissitecgirequests / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitecgirequests.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecgirequests_fct_min" label="iissitecgirequests / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecgirequests.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitecgirequests_fct_ts" label="iissitecgirequests / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitecgirequests.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitecgirequests_fct_ts_gmt" label="iissitecgirequests / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitecgirequests.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecgirequests_fct_avg" label="iissitecgirequests / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitecgirequests.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecgirequests_fct_max" label="iissitecgirequests / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecgirequests.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecgirequests_fct_min" label="iissitecgirequests / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteconnectionattempts__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteconnectionattempts__sec_fct_ts" label="iissiteconnectionattempts__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteconnectionattempts__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteconnectionattempts__sec_fct_ts_gmt" label="iissiteconnectionattempts__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteconnectionattempts__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteconnectionattempts__sec_fct_avg" label="iissiteconnectionattempts__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteconnectionattempts__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteconnectionattempts__sec_fct_max" label="iissiteconnectionattempts__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteconnectionattempts__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteconnectionattempts__sec_fct_min" label="iissiteconnectionattempts__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteconnectionattempts__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteconnectionattempts__sec_fct_ts" label="iissiteconnectionattempts__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteconnectionattempts__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteconnectionattempts__sec_fct_ts_gmt" label="iissiteconnectionattempts__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteconnectionattempts__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteconnectionattempts__sec_fct_avg" label="iissiteconnectionattempts__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteconnectionattempts__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteconnectionattempts__sec_fct_max" label="iissiteconnectionattempts__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteconnectionattempts__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteconnectionattempts__sec_fct_min" label="iissiteconnectionattempts__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitecopyrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitecopyrequests__sec_fct_ts" label="iissitecopyrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitecopyrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitecopyrequests__sec_fct_ts_gmt" label="iissitecopyrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitecopyrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecopyrequests__sec_fct_avg" label="iissitecopyrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitecopyrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecopyrequests__sec_fct_max" label="iissitecopyrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitecopyrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecopyrequests__sec_fct_min" label="iissitecopyrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecopyrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitecopyrequests__sec_fct_ts" label="iissitecopyrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitecopyrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitecopyrequests__sec_fct_ts_gmt" label="iissitecopyrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitecopyrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecopyrequests__sec_fct_avg" label="iissitecopyrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitecopyrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecopyrequests__sec_fct_max" label="iissitecopyrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecopyrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecopyrequests__sec_fct_min" label="iissitecopyrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitecurrentconnections.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitecurrentconnections_fct_ts" label="iissitecurrentconnections / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitecurrentconnections.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitecurrentconnections_fct_ts_gmt" label="iissitecurrentconnections / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitecurrentconnections.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecurrentconnections_fct_avg" label="iissitecurrentconnections / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitecurrentconnections.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecurrentconnections_fct_max" label="iissitecurrentconnections / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitecurrentconnections.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitecurrentconnections_fct_min" label="iissitecurrentconnections / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecurrentconnections.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitecurrentconnections_fct_ts" label="iissitecurrentconnections / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitecurrentconnections.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitecurrentconnections_fct_ts_gmt" label="iissitecurrentconnections / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitecurrentconnections.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecurrentconnections_fct_avg" label="iissitecurrentconnections / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitecurrentconnections.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecurrentconnections_fct_max" label="iissitecurrentconnections / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitecurrentconnections.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitecurrentconnections_fct_min" label="iissitecurrentconnections / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitedeleterequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitedeleterequests__sec_fct_ts" label="iissitedeleterequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitedeleterequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitedeleterequests__sec_fct_ts_gmt" label="iissitedeleterequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitedeleterequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitedeleterequests__sec_fct_avg" label="iissitedeleterequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitedeleterequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitedeleterequests__sec_fct_max" label="iissitedeleterequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitedeleterequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitedeleterequests__sec_fct_min" label="iissitedeleterequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitedeleterequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitedeleterequests__sec_fct_ts" label="iissitedeleterequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitedeleterequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitedeleterequests__sec_fct_ts_gmt" label="iissitedeleterequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitedeleterequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitedeleterequests__sec_fct_avg" label="iissitedeleterequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitedeleterequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitedeleterequests__sec_fct_max" label="iissitedeleterequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitedeleterequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitedeleterequests__sec_fct_min" label="iissitedeleterequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitefilesreceived__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitefilesreceived__sec_fct_ts" label="iissitefilesreceived__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitefilesreceived__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitefilesreceived__sec_fct_ts_gmt" label="iissitefilesreceived__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitefilesreceived__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilesreceived__sec_fct_avg" label="iissitefilesreceived__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitefilesreceived__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilesreceived__sec_fct_max" label="iissitefilesreceived__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitefilesreceived__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilesreceived__sec_fct_min" label="iissitefilesreceived__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilesreceived__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitefilesreceived__sec_fct_ts" label="iissitefilesreceived__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilesreceived__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitefilesreceived__sec_fct_ts_gmt" label="iissitefilesreceived__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilesreceived__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilesreceived__sec_fct_avg" label="iissitefilesreceived__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilesreceived__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilesreceived__sec_fct_max" label="iissitefilesreceived__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilesreceived__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilesreceived__sec_fct_min" label="iissitefilesreceived__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitefilessent__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitefilessent__sec_fct_ts" label="iissitefilessent__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitefilessent__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitefilessent__sec_fct_ts_gmt" label="iissitefilessent__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitefilessent__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilessent__sec_fct_avg" label="iissitefilessent__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitefilessent__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilessent__sec_fct_max" label="iissitefilessent__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitefilessent__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitefilessent__sec_fct_min" label="iissitefilessent__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilessent__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitefilessent__sec_fct_ts" label="iissitefilessent__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilessent__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitefilessent__sec_fct_ts_gmt" label="iissitefilessent__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilessent__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilessent__sec_fct_avg" label="iissitefilessent__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilessent__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilessent__sec_fct_max" label="iissitefilessent__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitefilessent__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitefilessent__sec_fct_min" label="iissitefilessent__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitegetrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitegetrequests__sec_fct_ts" label="iissitegetrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitegetrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitegetrequests__sec_fct_ts_gmt" label="iissitegetrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitegetrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitegetrequests__sec_fct_avg" label="iissitegetrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitegetrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitegetrequests__sec_fct_max" label="iissitegetrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitegetrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitegetrequests__sec_fct_min" label="iissitegetrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitegetrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitegetrequests__sec_fct_ts" label="iissitegetrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitegetrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitegetrequests__sec_fct_ts_gmt" label="iissitegetrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitegetrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitegetrequests__sec_fct_avg" label="iissitegetrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitegetrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitegetrequests__sec_fct_max" label="iissitegetrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitegetrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitegetrequests__sec_fct_min" label="iissitegetrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteheadrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteheadrequests__sec_fct_ts" label="iissiteheadrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteheadrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteheadrequests__sec_fct_ts_gmt" label="iissiteheadrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteheadrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteheadrequests__sec_fct_avg" label="iissiteheadrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteheadrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteheadrequests__sec_fct_max" label="iissiteheadrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteheadrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteheadrequests__sec_fct_min" label="iissiteheadrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteheadrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteheadrequests__sec_fct_ts" label="iissiteheadrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteheadrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteheadrequests__sec_fct_ts_gmt" label="iissiteheadrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteheadrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteheadrequests__sec_fct_avg" label="iissiteheadrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteheadrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteheadrequests__sec_fct_max" label="iissiteheadrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteheadrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteheadrequests__sec_fct_min" label="iissiteheadrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteisapiextensionrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteisapiextensionrequests__sec_fct_ts" label="iissiteisapiextensionrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteisapiextensionrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteisapiextensionrequests__sec_fct_ts_gmt" label="iissiteisapiextensionrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteisapiextensionrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteisapiextensionrequests__sec_fct_avg" label="iissiteisapiextensionrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteisapiextensionrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteisapiextensionrequests__sec_fct_max" label="iissiteisapiextensionrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteisapiextensionrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteisapiextensionrequests__sec_fct_min" label="iissiteisapiextensionrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteisapiextensionrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteisapiextensionrequests__sec_fct_ts" label="iissiteisapiextensionrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteisapiextensionrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteisapiextensionrequests__sec_fct_ts_gmt" label="iissiteisapiextensionrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteisapiextensionrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteisapiextensionrequests__sec_fct_avg" label="iissiteisapiextensionrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteisapiextensionrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteisapiextensionrequests__sec_fct_max" label="iissiteisapiextensionrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteisapiextensionrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteisapiextensionrequests__sec_fct_min" label="iissiteisapiextensionrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitelockrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitelockrequests__sec_fct_ts" label="iissitelockrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitelockrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitelockrequests__sec_fct_ts_gmt" label="iissitelockrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitelockrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitelockrequests__sec_fct_avg" label="iissitelockrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitelockrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitelockrequests__sec_fct_max" label="iissitelockrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitelockrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitelockrequests__sec_fct_min" label="iissitelockrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitelockrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitelockrequests__sec_fct_ts" label="iissitelockrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitelockrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitelockrequests__sec_fct_ts_gmt" label="iissitelockrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitelockrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitelockrequests__sec_fct_avg" label="iissitelockrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitelockrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitelockrequests__sec_fct_max" label="iissitelockrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitelockrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitelockrequests__sec_fct_min" label="iissitelockrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitemkcolrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitemkcolrequests__sec_fct_ts" label="iissitemkcolrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitemkcolrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitemkcolrequests__sec_fct_ts_gmt" label="iissitemkcolrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitemkcolrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemkcolrequests__sec_fct_avg" label="iissitemkcolrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitemkcolrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemkcolrequests__sec_fct_max" label="iissitemkcolrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitemkcolrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemkcolrequests__sec_fct_min" label="iissitemkcolrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitemkcolrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitemkcolrequests__sec_fct_ts" label="iissitemkcolrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitemkcolrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitemkcolrequests__sec_fct_ts_gmt" label="iissitemkcolrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitemkcolrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemkcolrequests__sec_fct_avg" label="iissitemkcolrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitemkcolrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemkcolrequests__sec_fct_max" label="iissitemkcolrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitemkcolrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemkcolrequests__sec_fct_min" label="iissitemkcolrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitemoverequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitemoverequests__sec_fct_ts" label="iissitemoverequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitemoverequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitemoverequests__sec_fct_ts_gmt" label="iissitemoverequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitemoverequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemoverequests__sec_fct_avg" label="iissitemoverequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitemoverequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemoverequests__sec_fct_max" label="iissitemoverequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitemoverequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitemoverequests__sec_fct_min" label="iissitemoverequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitemoverequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitemoverequests__sec_fct_ts" label="iissitemoverequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitemoverequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitemoverequests__sec_fct_ts_gmt" label="iissitemoverequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitemoverequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemoverequests__sec_fct_avg" label="iissitemoverequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitemoverequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemoverequests__sec_fct_max" label="iissitemoverequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitemoverequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitemoverequests__sec_fct_min" label="iissitemoverequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteoptionsrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteoptionsrequests__sec_fct_ts" label="iissiteoptionsrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteoptionsrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteoptionsrequests__sec_fct_ts_gmt" label="iissiteoptionsrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteoptionsrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteoptionsrequests__sec_fct_avg" label="iissiteoptionsrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteoptionsrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteoptionsrequests__sec_fct_max" label="iissiteoptionsrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteoptionsrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteoptionsrequests__sec_fct_min" label="iissiteoptionsrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteoptionsrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteoptionsrequests__sec_fct_ts" label="iissiteoptionsrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteoptionsrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteoptionsrequests__sec_fct_ts_gmt" label="iissiteoptionsrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteoptionsrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteoptionsrequests__sec_fct_avg" label="iissiteoptionsrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteoptionsrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteoptionsrequests__sec_fct_max" label="iissiteoptionsrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteoptionsrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteoptionsrequests__sec_fct_min" label="iissiteoptionsrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteotherrequestmethods__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteotherrequestmethods__sec_fct_ts" label="iissiteotherrequestmethods__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteotherrequestmethods__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteotherrequestmethods__sec_fct_ts_gmt" label="iissiteotherrequestmethods__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteotherrequestmethods__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteotherrequestmethods__sec_fct_avg" label="iissiteotherrequestmethods__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteotherrequestmethods__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteotherrequestmethods__sec_fct_max" label="iissiteotherrequestmethods__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteotherrequestmethods__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteotherrequestmethods__sec_fct_min" label="iissiteotherrequestmethods__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteotherrequestmethods__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteotherrequestmethods__sec_fct_ts" label="iissiteotherrequestmethods__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteotherrequestmethods__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteotherrequestmethods__sec_fct_ts_gmt" label="iissiteotherrequestmethods__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteotherrequestmethods__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteotherrequestmethods__sec_fct_avg" label="iissiteotherrequestmethods__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteotherrequestmethods__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteotherrequestmethods__sec_fct_max" label="iissiteotherrequestmethods__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteotherrequestmethods__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteotherrequestmethods__sec_fct_min" label="iissiteotherrequestmethods__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitepostrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitepostrequests__sec_fct_ts" label="iissitepostrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitepostrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitepostrequests__sec_fct_ts_gmt" label="iissitepostrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitepostrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepostrequests__sec_fct_avg" label="iissitepostrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitepostrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepostrequests__sec_fct_max" label="iissitepostrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitepostrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepostrequests__sec_fct_min" label="iissitepostrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitepostrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitepostrequests__sec_fct_ts" label="iissitepostrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitepostrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitepostrequests__sec_fct_ts_gmt" label="iissitepostrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitepostrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepostrequests__sec_fct_avg" label="iissitepostrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitepostrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepostrequests__sec_fct_max" label="iissitepostrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitepostrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepostrequests__sec_fct_min" label="iissitepostrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitepropfindrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitepropfindrequests__sec_fct_ts" label="iissitepropfindrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitepropfindrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitepropfindrequests__sec_fct_ts_gmt" label="iissitepropfindrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitepropfindrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepropfindrequests__sec_fct_avg" label="iissitepropfindrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitepropfindrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepropfindrequests__sec_fct_max" label="iissitepropfindrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitepropfindrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitepropfindrequests__sec_fct_min" label="iissitepropfindrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitepropfindrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitepropfindrequests__sec_fct_ts" label="iissitepropfindrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitepropfindrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitepropfindrequests__sec_fct_ts_gmt" label="iissitepropfindrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitepropfindrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepropfindrequests__sec_fct_avg" label="iissitepropfindrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitepropfindrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepropfindrequests__sec_fct_max" label="iissitepropfindrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitepropfindrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitepropfindrequests__sec_fct_min" label="iissitepropfindrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteproppatchrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteproppatchrequests__sec_fct_ts" label="iissiteproppatchrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteproppatchrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteproppatchrequests__sec_fct_ts_gmt" label="iissiteproppatchrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteproppatchrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteproppatchrequests__sec_fct_avg" label="iissiteproppatchrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteproppatchrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteproppatchrequests__sec_fct_max" label="iissiteproppatchrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteproppatchrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteproppatchrequests__sec_fct_min" label="iissiteproppatchrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteproppatchrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteproppatchrequests__sec_fct_ts" label="iissiteproppatchrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteproppatchrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteproppatchrequests__sec_fct_ts_gmt" label="iissiteproppatchrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteproppatchrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteproppatchrequests__sec_fct_avg" label="iissiteproppatchrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteproppatchrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteproppatchrequests__sec_fct_max" label="iissiteproppatchrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteproppatchrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteproppatchrequests__sec_fct_min" label="iissiteproppatchrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteputrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteputrequests__sec_fct_ts" label="iissiteputrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteputrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteputrequests__sec_fct_ts_gmt" label="iissiteputrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteputrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteputrequests__sec_fct_avg" label="iissiteputrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteputrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteputrequests__sec_fct_max" label="iissiteputrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteputrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteputrequests__sec_fct_min" label="iissiteputrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteputrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteputrequests__sec_fct_ts" label="iissiteputrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteputrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteputrequests__sec_fct_ts_gmt" label="iissiteputrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteputrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteputrequests__sec_fct_avg" label="iissiteputrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteputrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteputrequests__sec_fct_max" label="iissiteputrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteputrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteputrequests__sec_fct_min" label="iissiteputrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitesearchrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitesearchrequests__sec_fct_ts" label="iissitesearchrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitesearchrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitesearchrequests__sec_fct_ts_gmt" label="iissitesearchrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitesearchrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesearchrequests__sec_fct_avg" label="iissitesearchrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitesearchrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesearchrequests__sec_fct_max" label="iissitesearchrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitesearchrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitesearchrequests__sec_fct_min" label="iissitesearchrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitesearchrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitesearchrequests__sec_fct_ts" label="iissitesearchrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitesearchrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitesearchrequests__sec_fct_ts_gmt" label="iissitesearchrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitesearchrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesearchrequests__sec_fct_avg" label="iissitesearchrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitesearchrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesearchrequests__sec_fct_max" label="iissitesearchrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitesearchrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitesearchrequests__sec_fct_min" label="iissitesearchrequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissitetracerequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissitetracerequests__sec_fct_ts" label="iissitetracerequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissitetracerequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissitetracerequests__sec_fct_ts_gmt" label="iissitetracerequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissitetracerequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitetracerequests__sec_fct_avg" label="iissitetracerequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissitetracerequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitetracerequests__sec_fct_max" label="iissitetracerequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissitetracerequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissitetracerequests__sec_fct_min" label="iissitetracerequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissitetracerequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissitetracerequests__sec_fct_ts" label="iissitetracerequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissitetracerequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissitetracerequests__sec_fct_ts_gmt" label="iissitetracerequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissitetracerequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitetracerequests__sec_fct_avg" label="iissitetracerequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissitetracerequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitetracerequests__sec_fct_max" label="iissitetracerequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissitetracerequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissitetracerequests__sec_fct_min" label="iissitetracerequests__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_iissiteunlockrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_iissiteunlockrequests__sec_fct_ts" label="iissiteunlockrequests__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_iissiteunlockrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_iissiteunlockrequests__sec_fct_ts_gmt" label="iissiteunlockrequests__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_iissiteunlockrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteunlockrequests__sec_fct_avg" label="iissiteunlockrequests__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_iissiteunlockrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteunlockrequests__sec_fct_max" label="iissiteunlockrequests__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_iissiteunlockrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_iissiteunlockrequests__sec_fct_min" label="iissiteunlockrequests__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteunlockrequests__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_iissiteunlockrequests__sec_fct_ts" label="iissiteunlockrequests__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_iissiteunlockrequests__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_iissiteunlockrequests__sec_fct_ts_gmt" label="iissiteunlockrequests__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_iissiteunlockrequests__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteunlockrequests__sec_fct_avg" label="iissiteunlockrequests__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_iissiteunlockrequests__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteunlockrequests__sec_fct_max" label="iissiteunlockrequests__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_iissiteunlockrequests__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_iissiteunlockrequests__sec_fct_min" label="iissiteunlockrequests__sec / hourly / Lowest"/>
           </items>
         </itemGroup>
       </itemGroups>
@@ -1149,7 +1389,6 @@
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_startmode" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_startmode" label="Start Mode"/>
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_account" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_account" label="Account"/>
         <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_usermonitor" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_usermonitor" label="User Selected Monitor State"/>
-        <item resourceId="JoinTree_1.dim_win_rm_service.win_rm_service_globalset" dimensionOrMeasure="Dimension" id="dim_win_rm_service_win_rm_service_globalset" label="Global Set"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="WindowsCPUs" id="set_windows_cpu" description="">
@@ -3725,6 +3964,582 @@
         <field type="java.lang.Integer" id="software_key"/>
       </fieldList>
     </jdbcTable>
+    <jdbcTable tableName="daily_iissitereceived__bytes" datasourceId="zenoss_reporting" id="daily_iissitereceived__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitereceived__bytes" datasourceId="zenoss_reporting" id="hourly_iissitereceived__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitesent__bytes" datasourceId="zenoss_reporting" id="daily_iissitesent__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitesent__bytes" datasourceId="zenoss_reporting" id="hourly_iissitesent__bytes">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitecgirequests" datasourceId="zenoss_reporting" id="daily_iissitecgirequests">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitecgirequests" datasourceId="zenoss_reporting" id="hourly_iissitecgirequests">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteconnectionattempts__sec" datasourceId="zenoss_reporting" id="daily_iissiteconnectionattempts__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteconnectionattempts__sec" datasourceId="zenoss_reporting" id="hourly_iissiteconnectionattempts__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitecopyrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitecopyrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitecopyrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitecopyrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitecurrentconnections" datasourceId="zenoss_reporting" id="daily_iissitecurrentconnections">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitecurrentconnections" datasourceId="zenoss_reporting" id="hourly_iissitecurrentconnections">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitedeleterequests__sec" datasourceId="zenoss_reporting" id="daily_iissitedeleterequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitedeleterequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitedeleterequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitefilesreceived__sec" datasourceId="zenoss_reporting" id="daily_iissitefilesreceived__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitefilesreceived__sec" datasourceId="zenoss_reporting" id="hourly_iissitefilesreceived__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitefilessent__sec" datasourceId="zenoss_reporting" id="daily_iissitefilessent__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitefilessent__sec" datasourceId="zenoss_reporting" id="hourly_iissitefilessent__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitegetrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitegetrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitegetrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitegetrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteheadrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteheadrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteheadrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteheadrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteisapiextensionrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteisapiextensionrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteisapiextensionrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteisapiextensionrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitelockrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitelockrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitelockrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitelockrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitemkcolrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitemkcolrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitemkcolrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitemkcolrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitemoverequests__sec" datasourceId="zenoss_reporting" id="daily_iissitemoverequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitemoverequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitemoverequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteoptionsrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteoptionsrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteoptionsrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteoptionsrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteotherrequestmethods__sec" datasourceId="zenoss_reporting" id="daily_iissiteotherrequestmethods__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteotherrequestmethods__sec" datasourceId="zenoss_reporting" id="hourly_iissiteotherrequestmethods__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitepostrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitepostrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitepostrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitepostrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitepropfindrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitepropfindrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitepropfindrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitepropfindrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteproppatchrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteproppatchrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteproppatchrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteproppatchrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteputrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteputrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteputrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteputrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitesearchrequests__sec" datasourceId="zenoss_reporting" id="daily_iissitesearchrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitesearchrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitesearchrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissitetracerequests__sec" datasourceId="zenoss_reporting" id="daily_iissitetracerequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissitetracerequests__sec" datasourceId="zenoss_reporting" id="hourly_iissitetracerequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_iissiteunlockrequests__sec" datasourceId="zenoss_reporting" id="daily_iissiteunlockrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_iissiteunlockrequests__sec" datasourceId="zenoss_reporting" id="hourly_iissiteunlockrequests__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
     <jdbcTable tableName="dim_win_sql_job" datasourceId="zenoss_reporting" id="dim_win_sql_job">
       <fieldList>
         <field type="java.lang.Integer" id="win_sql_job_key"/>
@@ -3792,7 +4607,6 @@
         <field type="java.lang.String" id="win_rm_service_startmode"/>
         <field type="java.lang.String" id="win_rm_service_account"/>
         <field type="java.lang.Boolean" id="win_rm_service_usermonitor"/>
-        <field type="java.lang.Boolean" id="win_rm_service_globalset"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
         <field type="java.lang.Double" id="links_count"/>
@@ -5557,6 +6371,390 @@
         <field type="java.lang.Double" id="dim_win_rmiis.dependents_count"/>
         <field type="java.lang.Double" id="dim_win_rmiis.links_count"/>
         <field type="java.lang.Integer" id="dim_win_rmiis.software_key"/>
+        <field type="java.lang.Integer" id="daily_iissitereceived__bytes.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitereceived__bytes.component_key"/>
+        <field type="java.util.Date" id="daily_iissitereceived__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitereceived__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitereceived__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitereceived__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitereceived__bytes.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitereceived__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitereceived__bytes.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitereceived__bytes.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitereceived__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitereceived__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitereceived__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitereceived__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitereceived__bytes.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitereceived__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitesent__bytes.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitesent__bytes.component_key"/>
+        <field type="java.util.Date" id="daily_iissitesent__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitesent__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitesent__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitesent__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitesent__bytes.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitesent__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitesent__bytes.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitesent__bytes.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitesent__bytes.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitesent__bytes.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitesent__bytes.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitesent__bytes.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitesent__bytes.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitesent__bytes.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitecgirequests.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitecgirequests.component_key"/>
+        <field type="java.util.Date" id="daily_iissitecgirequests.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecgirequests.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecgirequests.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitecgirequests.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitecgirequests.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitecgirequests.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitecgirequests.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitecgirequests.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitecgirequests.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecgirequests.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecgirequests.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitecgirequests.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitecgirequests.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitecgirequests.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteconnectionattempts__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteconnectionattempts__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteconnectionattempts__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteconnectionattempts__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteconnectionattempts__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteconnectionattempts__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteconnectionattempts__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteconnectionattempts__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteconnectionattempts__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteconnectionattempts__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteconnectionattempts__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteconnectionattempts__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteconnectionattempts__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteconnectionattempts__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteconnectionattempts__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteconnectionattempts__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitecopyrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitecopyrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitecopyrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecopyrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecopyrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitecopyrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitecopyrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitecopyrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitecopyrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitecopyrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitecopyrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecopyrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecopyrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitecopyrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitecopyrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitecopyrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitecurrentconnections.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitecurrentconnections.component_key"/>
+        <field type="java.util.Date" id="daily_iissitecurrentconnections.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecurrentconnections.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitecurrentconnections.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitecurrentconnections.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitecurrentconnections.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitecurrentconnections.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitecurrentconnections.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitecurrentconnections.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitecurrentconnections.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecurrentconnections.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitecurrentconnections.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitecurrentconnections.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitecurrentconnections.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitecurrentconnections.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitedeleterequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitedeleterequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitedeleterequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitedeleterequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitedeleterequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitedeleterequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitedeleterequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitedeleterequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitedeleterequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitedeleterequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitedeleterequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitedeleterequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitedeleterequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitedeleterequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitedeleterequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitedeleterequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitefilesreceived__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitefilesreceived__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitefilesreceived__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitefilesreceived__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitefilesreceived__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitefilesreceived__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitefilesreceived__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitefilesreceived__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitefilesreceived__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitefilesreceived__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitefilesreceived__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitefilesreceived__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitefilesreceived__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitefilesreceived__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitefilesreceived__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitefilesreceived__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitefilessent__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitefilessent__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitefilessent__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitefilessent__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitefilessent__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitefilessent__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitefilessent__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitefilessent__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitefilessent__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitefilessent__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitefilessent__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitefilessent__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitefilessent__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitefilessent__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitefilessent__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitefilessent__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitegetrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitegetrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitegetrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitegetrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitegetrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitegetrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitegetrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitegetrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitegetrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitegetrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitegetrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitegetrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitegetrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitegetrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitegetrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitegetrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteheadrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteheadrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteheadrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteheadrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteheadrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteheadrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteheadrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteheadrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteheadrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteheadrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteheadrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteheadrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteheadrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteheadrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteheadrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteheadrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteisapiextensionrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteisapiextensionrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteisapiextensionrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteisapiextensionrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteisapiextensionrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteisapiextensionrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteisapiextensionrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteisapiextensionrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteisapiextensionrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteisapiextensionrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteisapiextensionrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteisapiextensionrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteisapiextensionrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteisapiextensionrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteisapiextensionrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteisapiextensionrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitelockrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitelockrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitelockrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitelockrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitelockrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitelockrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitelockrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitelockrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitelockrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitelockrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitelockrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitelockrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitelockrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitelockrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitelockrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitelockrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitemkcolrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitemkcolrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitemkcolrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitemkcolrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitemkcolrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitemkcolrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitemkcolrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitemkcolrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitemkcolrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitemkcolrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitemkcolrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitemkcolrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitemkcolrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitemkcolrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitemkcolrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitemkcolrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitemoverequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitemoverequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitemoverequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitemoverequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitemoverequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitemoverequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitemoverequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitemoverequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitemoverequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitemoverequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitemoverequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitemoverequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitemoverequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitemoverequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitemoverequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitemoverequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteoptionsrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteoptionsrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteoptionsrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteoptionsrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteoptionsrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteoptionsrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteoptionsrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteoptionsrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteoptionsrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteoptionsrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteoptionsrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteoptionsrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteoptionsrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteoptionsrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteoptionsrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteoptionsrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteotherrequestmethods__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteotherrequestmethods__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteotherrequestmethods__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteotherrequestmethods__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteotherrequestmethods__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteotherrequestmethods__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteotherrequestmethods__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteotherrequestmethods__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteotherrequestmethods__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteotherrequestmethods__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteotherrequestmethods__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteotherrequestmethods__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteotherrequestmethods__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteotherrequestmethods__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteotherrequestmethods__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteotherrequestmethods__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitepostrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitepostrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitepostrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitepostrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitepostrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitepostrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitepostrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitepostrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitepostrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitepostrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitepostrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitepostrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitepostrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitepostrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitepostrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitepostrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitepropfindrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitepropfindrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitepropfindrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitepropfindrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitepropfindrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitepropfindrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitepropfindrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitepropfindrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitepropfindrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitepropfindrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitepropfindrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitepropfindrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitepropfindrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitepropfindrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitepropfindrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitepropfindrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteproppatchrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteproppatchrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteproppatchrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteproppatchrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteproppatchrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteproppatchrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteproppatchrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteproppatchrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteproppatchrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteproppatchrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteproppatchrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteproppatchrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteproppatchrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteproppatchrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteproppatchrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteproppatchrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteputrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteputrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteputrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteputrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteputrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteputrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteputrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteputrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteputrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteputrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteputrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteputrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteputrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteputrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteputrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteputrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitesearchrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitesearchrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitesearchrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitesearchrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitesearchrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitesearchrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitesearchrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitesearchrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitesearchrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitesearchrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitesearchrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitesearchrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitesearchrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitesearchrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitesearchrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitesearchrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissitetracerequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissitetracerequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissitetracerequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissitetracerequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissitetracerequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissitetracerequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissitetracerequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissitetracerequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissitetracerequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissitetracerequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissitetracerequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitetracerequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissitetracerequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissitetracerequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissitetracerequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissitetracerequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_iissiteunlockrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_iissiteunlockrequests__sec.component_key"/>
+        <field type="java.util.Date" id="daily_iissiteunlockrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteunlockrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_iissiteunlockrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_iissiteunlockrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_iissiteunlockrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_iissiteunlockrequests__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_iissiteunlockrequests__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_iissiteunlockrequests__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_iissiteunlockrequests__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteunlockrequests__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_iissiteunlockrequests__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_iissiteunlockrequests__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_iissiteunlockrequests__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_iissiteunlockrequests__sec.fct_min"/>
         <field type="java.lang.Integer" id="dim_win_sql_job.win_sql_job_key"/>
         <field type="win_sql_job_deleted_at" id="dim_win_sql_job.win_sql_job_deleted_at" dataSetExpression="if(dim_win_sql_job.win_sql_job_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_name"/>
@@ -5614,7 +6812,6 @@
         <field type="java.lang.String" id="dim_win_rm_service.win_rm_service_startmode"/>
         <field type="java.lang.String" id="dim_win_rm_service.win_rm_service_account"/>
         <field type="java.lang.Boolean" id="dim_win_rm_service.win_rm_service_usermonitor"/>
-        <field type="java.lang.Boolean" id="dim_win_rm_service.win_rm_service_globalset"/>
         <field type="java.lang.Double" id="dim_win_rm_service.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_rm_service.dependents_count"/>
         <field type="java.lang.Double" id="dim_win_rm_service.links_count"/>
@@ -6254,6 +7451,150 @@
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_win_rmiis dim_win_rmiis on (dim_win_rmiis.device_key == dim_device.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitereceived__bytes daily_iissitereceived__bytes on (dim_win_rmiis.win_rmiis_key == daily_iissitereceived__bytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitereceived__bytes hourly_iissitereceived__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iissitereceived__bytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitesent__bytes daily_iissitesent__bytes on (dim_win_rmiis.win_rmiis_key == daily_iissitesent__bytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitesent__bytes hourly_iissitesent__bytes on (dim_win_rmiis.win_rmiis_key == hourly_iissitesent__bytes.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitecgirequests daily_iissitecgirequests on (dim_win_rmiis.win_rmiis_key == daily_iissitecgirequests.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitecgirequests hourly_iissitecgirequests on (dim_win_rmiis.win_rmiis_key == hourly_iissitecgirequests.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteconnectionattempts__sec daily_iissiteconnectionattempts__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteconnectionattempts__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteconnectionattempts__sec hourly_iissiteconnectionattempts__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteconnectionattempts__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitecopyrequests__sec daily_iissitecopyrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitecopyrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitecopyrequests__sec hourly_iissitecopyrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitecopyrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitecurrentconnections daily_iissitecurrentconnections on (dim_win_rmiis.win_rmiis_key == daily_iissitecurrentconnections.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitecurrentconnections hourly_iissitecurrentconnections on (dim_win_rmiis.win_rmiis_key == hourly_iissitecurrentconnections.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitedeleterequests__sec daily_iissitedeleterequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitedeleterequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitedeleterequests__sec hourly_iissitedeleterequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitedeleterequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitefilesreceived__sec daily_iissitefilesreceived__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitefilesreceived__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitefilesreceived__sec hourly_iissitefilesreceived__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitefilesreceived__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitefilessent__sec daily_iissitefilessent__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitefilessent__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitefilessent__sec hourly_iissitefilessent__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitefilessent__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitegetrequests__sec daily_iissitegetrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitegetrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitegetrequests__sec hourly_iissitegetrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitegetrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteheadrequests__sec daily_iissiteheadrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteheadrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteheadrequests__sec hourly_iissiteheadrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteheadrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteisapiextensionrequests__sec daily_iissiteisapiextensionrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteisapiextensionrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteisapiextensionrequests__sec hourly_iissiteisapiextensionrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteisapiextensionrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitelockrequests__sec daily_iissitelockrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitelockrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitelockrequests__sec hourly_iissitelockrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitelockrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitemkcolrequests__sec daily_iissitemkcolrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitemkcolrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitemkcolrequests__sec hourly_iissitemkcolrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitemkcolrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitemoverequests__sec daily_iissitemoverequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitemoverequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitemoverequests__sec hourly_iissitemoverequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitemoverequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteoptionsrequests__sec daily_iissiteoptionsrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteoptionsrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteoptionsrequests__sec hourly_iissiteoptionsrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteoptionsrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteotherrequestmethods__sec daily_iissiteotherrequestmethods__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteotherrequestmethods__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteotherrequestmethods__sec hourly_iissiteotherrequestmethods__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteotherrequestmethods__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitepostrequests__sec daily_iissitepostrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitepostrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitepostrequests__sec hourly_iissitepostrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitepostrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitepropfindrequests__sec daily_iissitepropfindrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitepropfindrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitepropfindrequests__sec hourly_iissitepropfindrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitepropfindrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteproppatchrequests__sec daily_iissiteproppatchrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteproppatchrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteproppatchrequests__sec hourly_iissiteproppatchrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteproppatchrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteputrequests__sec daily_iissiteputrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteputrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteputrequests__sec hourly_iissiteputrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteputrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitesearchrequests__sec daily_iissitesearchrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitesearchrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitesearchrequests__sec hourly_iissitesearchrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitesearchrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissitetracerequests__sec daily_iissitetracerequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissitetracerequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissitetracerequests__sec hourly_iissitetracerequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissitetracerequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_iissiteunlockrequests__sec daily_iissiteunlockrequests__sec on (dim_win_rmiis.win_rmiis_key == daily_iissiteunlockrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_iissiteunlockrequests__sec hourly_iissiteunlockrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteunlockrequests__sec.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_date dim_date on (hourly_transactions__sec.date_key == dim_date.date_key and daily_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iismoverequests__sec.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_diskreadtime.date_key == dim_date.date_key and daily_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_logsize__kbytes.date_key == dim_date.date_key and hourly_diskwritetime.date_key == dim_date.date_key and daily_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_cacheentriespinned.date_key == dim_date.date_key and daily_logsize__kbytes.date_key == dim_date.date_key and hourly_iiscgirequests.date_key == dim_date.date_key and daily_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and hourly_iiscopyrequests__sec.date_key == dim_date.date_key and daily_memorypagesoutput__sec.date_key == dim_date.date_key and daily_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logcachehitratio__pct.date_key == dim_date.date_key and hourly_iismoverequests__sec.date_key == dim_date.date_key and daily_logsizeused__kbytes.date_key == dim_date.date_key and daily_iiscgirequests.date_key == dim_date.date_key and hourly_logtruncations__sec.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and hourly_packetssent__sec.date_key == dim_date.date_key and hourly_packetsreceived__sec.date_key == dim_date.date_key and daily_packetsreceived__sec.date_key == dim_date.date_key and daily_packetssent__sec.date_key == dim_date.date_key and hourly_iisotherrequestmethods__sec.date_key == dim_date.date_key and daily_bulkcopyrows__sec.date_key == dim_date.date_key and daily_filesize__kbytes.date_key == dim_date.date_key and daily_diskreadbytes__sec.date_key == dim_date.date_key and hourly_iispostrequests__sec.date_key == dim_date.date_key and hourly_memorypagesoutput__sec.date_key == dim_date.date_key and hourly_logflushes__sec.date_key == dim_date.date_key and daily_transactions__sec.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and daily_iisputrequests__sec.date_key == dim_date.date_key and hourly_iislockrequests__sec.date_key == dim_date.date_key and hourly_bulkcopyrows__sec.date_key == dim_date.date_key and hourly_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_cpuuser__pct.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_iisgetrequests__sec.date_key == dim_date.date_key and daily_iisfilessent__sec.date_key == dim_date.date_key and hourly_paging__pct.date_key == dim_date.date_key and hourly_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_diskwritetime.date_key == dim_date.date_key and hourly_iisproppatchrequests__sec.date_key == dim_date.date_key and hourly_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_diskreadbytes__sec.date_key == dim_date.date_key and hourly_logshrinks__sec.date_key == dim_date.date_key and daily_iisotherrequestmethods__sec.date_key == dim_date.date_key and hourly_backuprestorethroughput__sec.date_key == dim_date.date_key and hourly_repltransactions__sec.date_key == dim_date.date_key and daily_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissearchrequests__sec.date_key == dim_date.date_key and daily_iisoptionsrequests__sec.date_key == dim_date.date_key and daily_cacheentries.date_key == dim_date.date_key and hourly_activetransactions.date_key == dim_date.date_key and daily_diskreadtime.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_smtpservermessagesdelivered__sec.date_key == dim_date.date_key and daily_iiscurrentconnections.date_key == dim_date.date_key and hourly_iisputrequests__sec.date_key == dim_date.date_key and hourly_loggrowths__sec.date_key == dim_date.date_key and hourly_diskwritebytes__sec.date_key == dim_date.date_key and daily_logused__pct.date_key == dim_date.date_key and daily_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_cpupriv__pct.date_key == dim_date.date_key and daily_paging__pct.date_key == dim_date.date_key and hourly_logused__pct.date_key == dim_date.date_key and hourly_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and daily_activetransactions.date_key == dim_date.date_key and hourly_mseismailboxfolderopens__sec.date_key == dim_date.date_key and daily_logbytesflushed__sec.date_key == dim_date.date_key and hourly_logsizeused__kbytes.date_key == dim_date.date_key and hourly_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_iisfilessent__sec.date_key == dim_date.date_key and daily_iistracerequests__sec.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_iisunlockrequests__sec.date_key == dim_date.date_key and daily_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_logflushwaittime__sec.date_key == dim_date.date_key and hourly_memorypagesinput__sec.date_key == dim_date.date_key and daily_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iiscurrentconnections.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and daily_repltransactions__sec.date_key == dim_date.date_key and daily_memorypagesinput__sec.date_key == dim_date.date_key and hourly_memorycommitted__bytes.date_key == dim_date.date_key and hourly_iistracerequests__sec.date_key == dim_date.date_key and daily_logflushwaittime__sec.date_key == dim_date.date_key and daily_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_memorycommitted__bytes.date_key == dim_date.date_key and daily_iisgetrequests__sec.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iismkcolrequests__sec.date_key == dim_date.date_key and daily_cpuuser__pct.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and daily_iisunlockrequests__sec.date_key == dim_date.date_key and daily_mseisrpcrequests.date_key == dim_date.date_key and daily_iispostrequests__sec.date_key == dim_date.date_key and daily_smtpserverlocalqueuelength.date_key == dim_date.date_key and daily_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_smtpservermessagesdelivered__sec.date_key == dim_date.date_key and hourly_smtpserverlocalqueuelength.date_key == dim_date.date_key and daily_logflushes__sec.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_loggrowths__sec.date_key == dim_date.date_key and hourly_mseisrpcrequests.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and hourly_logbytesflushed__sec.date_key == dim_date.date_key and hourly_bulkcopythroughput__sec.date_key == dim_date.date_key and daily_iisconnectionattempts__sec.date_key == dim_date.date_key and daily_iislockrequests__sec.date_key == dim_date.date_key and hourly_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and daily_diskwritebytes__sec.date_key == dim_date.date_key and hourly_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_cacheentries.date_key == dim_date.date_key and hourly_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissearchrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxmessageopens__sec.date_key == dim_date.date_key and daily_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_logshrinks__sec.date_key == dim_date.date_key and daily_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and daily_logtruncations__sec.date_key == dim_date.date_key and daily_iispropfindrequests__sec.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and daily_cpupriv__pct.date_key == dim_date.date_key and hourly_iispropfindrequests__sec.date_key == dim_date.date_key and daily_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and hourly_logcachehitratio__pct.date_key == dim_date.date_key and daily_cacheentriespinned.date_key == dim_date.date_key and daily_mseismailboxmessageopens__sec.date_key == dim_date.date_key)</joinString>

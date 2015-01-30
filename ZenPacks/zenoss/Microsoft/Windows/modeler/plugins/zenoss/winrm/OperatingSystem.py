@@ -71,6 +71,7 @@ class OperatingSystem(WinRMPlugin):
         device_om.snmpSysName = computerSystem.Name
         device_om.snmpContact = computerSystem.PrimaryOwnerName
         device_om.snmpDescr = computerSystem.Caption
+        device_om.ip_and_hostname = self.get_ip_and_hostname(device.manageIp)
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
         if exchange_version:

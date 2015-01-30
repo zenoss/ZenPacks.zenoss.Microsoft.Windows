@@ -17,7 +17,7 @@ class FileSystem(BaseFileSystem):
     _properties = BaseFileSystem._properties + (
         {'id': 'mediatype', 'label': 'Media Type',
             'type': 'string', 'mode': 'w'},
-        {'id':'total_bytes', '': 'Total Bytes',
+        {'id':'total_bytes', 'label': 'Total Bytes',
             'type':'long', 'mode':''},
         )
 
