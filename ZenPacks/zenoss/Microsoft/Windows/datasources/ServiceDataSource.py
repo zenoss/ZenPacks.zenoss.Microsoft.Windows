@@ -191,7 +191,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         ds0 = config.datasources[0]
 
         servicename = ds0.params['servicename']
-        log.info('{0}:Start Collection of Service {1}'.format(config.id, servicename))
+        log.debug('{0}:Start Collection of Service {1}'.format(config.id, servicename))
 
         WinRMQueries = [
             create_enum_info(
