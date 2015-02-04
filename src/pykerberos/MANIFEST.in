@@ -1,0 +1,4 @@
+recursive-include src *.h
+recursive-include pysrc *
+recursive-include bin *
+include LICENSE

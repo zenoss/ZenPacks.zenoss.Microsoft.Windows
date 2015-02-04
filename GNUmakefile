@@ -11,11 +11,9 @@
 #
 # The kerberos.so file needs to be built on the OS platform it is intended to support
 # To build:
-# Download kerberos 1.1.1 from pipi
-# 	https://pypi.python.org/pypi/kerberos
 #
 # yum install gcc krb5-devel python-devel -y
-# untar kerberos source
+# cd src/pykerberos
 # python setup.py build
 #
 # kerberos.so will be located in the build directory
