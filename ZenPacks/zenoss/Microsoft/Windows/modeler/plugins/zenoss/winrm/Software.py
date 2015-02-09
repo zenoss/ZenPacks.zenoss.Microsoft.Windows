@@ -30,6 +30,9 @@ class Software(WinRMPlugin):
             "Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall"
             " | ForEach-Object {'DisplayName='+$_.GetValue('DisplayName')+';InstallDate='+"
             " $_.GetValue('InstallDate')+';Vendor='+$_.GetValue('Publisher'), '|'}; "
+            "Get-ChildItem -Path HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+            " | ForEach-Object {'DisplayName='+$_.GetValue('DisplayName')+';InstallDate='+"
+            " $_.GetValue('InstallDate')+';Vendor='+$_.GetValue('Publisher'), '|'}; "
         )
     )
 
