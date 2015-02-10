@@ -846,6 +846,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ;2.3.1
 * Fix significant memory leak when using kerberos authentication. (ZEN-16261)
+* Support "Wow6432Node" uninstall key for software inventory. (ZEN-16574)
 
 ;2.3.0
 * Update Windows Service monitoring template to allow for monitoring by start mode
