@@ -17,7 +17,6 @@ possibly causing other problems to appear.
 import re
 from DateTime import DateTime
 from Products.DataCollector.plugins.DataMaps import MultiArgs
-from Products.ZenModel.ZenDate import ZenDate
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
