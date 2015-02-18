@@ -270,7 +270,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         for dsconf in config.datasources:
             counter = dsconf.params['counter'].lower()
             ps_counter = convert_to_ps_counter(counter)
-            self.counter_map[counter] = (dsconf.component, dsconf.datasource)
+            self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
 
         self._build_commandlines()
@@ -526,7 +526,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if ',' in value:
                     value = value.replace(',', '.', 1)
 
-                component, datasource = self.counter_map.get(counter, (None, None))
+                component, datasource, event_class = self.counter_map.get(counter, (None, None, None))
                 if datasource:
                     self.collected_counters.add(counter)
 
@@ -683,6 +683,28 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Emit logs and events for counters requested but not returned.
         '''
         missing_counters = set(requested).difference(returned)
+
+        events = {}
+        for req_counter in requested:
+            if req_counter in missing_counters:
+                component, datasource, event_class = requested.get(req_counter, (None, None, None))
+                if event_class:
+                    if not event_class in events:
+                        events[event_class] = []
+                    events[event_class].append(req_counter)
+                    missing_counters.remove(req_counter)
+
+        if events:
+            for event in events:
+                PERSISTER.add_event(self.config.id, {
+                'device': self.config.id,
+                'severity': ZenEventClasses.Info,
+                'eventClass': event,
+                'eventKey': 'Windows Perfmon Missing Counters',
+                'summary': self.missing_counters_summary(len(events[event])),
+                'missing_counters': self.missing_counters_str(events[event]).decode('UTF-8'),
+                })
+
         if missing_counters:
             missing_counter_count = len(missing_counters)
 
@@ -691,7 +713,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 missing_counter_count,
                 self.config.id)
 
-            missing_counters_str = ', '.join(missing_counters)
+            missing_counters_str = self.missing_counters_str(missing_counters)
 
             LOG.debug(
                 "%s missing counters for %s: %s",
@@ -699,15 +721,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 missing_counters_str)
 
-            summary = (
-                '{} counters missing in collection - see details'
-                .format(missing_counter_count))
-
             PERSISTER.add_event(self.config.id, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Info,
                 'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': summary,
+                'summary': self.missing_counters_summary(missing_counter_count),
                 'missing_counters': missing_counters_str.decode('UTF-8'),
                 })
         else:
@@ -717,6 +735,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'eventKey': 'Windows Perfmon Missing Counters',
                 'summary': '0 counters missing in collection',
                 })
+
+    def missing_counters_summary(self, count):
+        return (
+            '{} counters missing in collection - see details'.format(count))
+
+    def missing_counters_str(self, counters):
+        return ', '.join(counters)
 
     def cleanup(self, config):
         '''
