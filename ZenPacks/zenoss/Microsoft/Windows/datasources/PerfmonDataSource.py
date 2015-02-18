@@ -721,12 +721,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 missing_counters_str)
 
-            #summary = (
-            #    '{} counters missing in collection - see details'
-            #    .format(missing_counter_count))
-
-            summary = self.missing_counters_summary(missing_counter_count)
-
             PERSISTER.add_event(self.config.id, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Info,
