@@ -238,8 +238,9 @@ class EventLogQuery(object):
             };
             
             <# Remove control characters #>
-            $s = $s.replace("`r`n"," ");
+            $s = $s.replace("`r","").replace("`n"," ");
             $s = $s.replace('"', '\"').replace("\'","'");
+            $s = $s.replace("`t", " ");
             <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
         };
