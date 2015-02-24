@@ -77,6 +77,7 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
             },{
                 xtype: 'textarea',
                 width: 300,
+                height: 200,
                 fieldLabel: _t('Script'),
                 name: 'script',
                 ref: 'ScriptTextarea',

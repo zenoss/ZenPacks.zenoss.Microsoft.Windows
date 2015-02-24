@@ -199,7 +199,7 @@ class CustomCommandStrategy(object):
 
     def build_command_line(self, script, usePowershell):
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
-                    '-Command "%s"' % script
+                    '-Command "{0}"'
         return pscommand.format(script) if usePowershell else script
 
     def parse_result(self, config, result):
@@ -528,11 +528,17 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         parser = getParserLoader(context.dmd, datasource.parser)
 
+        try:
+            script = datasource.talesEval(datasource.script, context)
+        except:
+            script = ''
+            log.error('Invalid tales expression in custom command script')
+
         return dict(resource=resource,
             strategy=datasource.strategy,
             instancename=instancename,
             servername=servername,
-            script=datasource.talesEval(datasource.script, context),
+            script=script,
             parser=parser,
             usePowershell=datasource.usePowershell,
             contextrelname=contextrelname,
@@ -607,7 +613,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
             command_line = strategy.build_command_line(script, usePowershell)
-
         else:
             command_line = strategy.build_command_line(counters)
 
@@ -765,10 +770,10 @@ def check_datasource(dsconf):
         raise WindowsShellException(
             "No parser chosen for {0}".format(dsconf.datasource)
         )
-    # Check if script was inputted.
+    # Check if script was entered.  if not, could be bad syntax
     if not dsconf.params['script']:
         raise WindowsShellException(
-            'No script inputted for {0}'.format(
+            'Either no script was entered or script has invalid syntax on {0}'.format(
                 dsconf.datasource)
         )
 
