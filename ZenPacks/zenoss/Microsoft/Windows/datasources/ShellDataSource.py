@@ -590,6 +590,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 if owner_node:
                     conn_info = conn_info._replace(hostname=owner_node)
                     sqlserver = server
+                else:
+                    if instance == 'MSSQLSERVER':
+                        sqlserver = dsconf0.sqlhostname
+                    else:
+                        sqlserver = '{0}\{1}'.format(dsconf0.sqlhostname, instance)
 
             command_line = strategy.build_command_line(
                 counters,
