@@ -30,10 +30,13 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
 import txwinrm
 import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
-import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1 
+import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1
+import zope.component
 
 from txwinrm.util import UnauthorizedError
+from Products.ZenCollector.interfaces import IEventService
 
+log = logging.getLogger("zen.MicrosoftWindows")
 
 # Format string for a resource URI.
 RESOURCE_URI_FORMAT = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{}/*'
@@ -52,6 +55,7 @@ class WinRMPlugin(PythonPlugin):
     queries = {}
     commands = {}
     powershell_commands = {}
+    _eventService = zope.component.queryUtility(IEventService)
 
     def get_queries(self):
         '''
@@ -144,6 +148,8 @@ class WinRMPlugin(PythonPlugin):
                             'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
+            evt_message = "Connection refused on %s: Verify WinRM setup" % device.id
+            self._send_event(evt_message, device.id, 5)
         elif isinstance(error, TimeoutError):
             message = "Timeout on %s: Verify WinRM and firewall setup"
         elif isinstance(error, ConnectError):
@@ -171,6 +177,23 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
+
+    def _send_event(self, reason, id, severity, force=False,
+                    key='ConnectionError'):
+        """
+        Send event for device with specified id, severity and
+        error message.
+        """
+        log.debug('sending event: %s %s' % (reason, id))
+        if self._eventService:
+            self._eventService.sendEvent(dict(
+                summary=reason,
+                eventClass='/Status',
+                device=id,
+                eventKey=key,
+                severity=severity,
+            ))
+            return True
 
     def get_ip_and_hostname(self, ip_or_hostname):
         """
@@ -212,6 +235,8 @@ class WinRMPlugin(PythonPlugin):
             try:
                 query_results = yield client.do_collect(
                     conn_info, query_map.iterkeys())
+                msg = "connection for %s is established" % device.id
+                self._send_event(msg, device.id, 0)
             except Exception as e:
                 self.log_error(log, device, e)
             else:
