@@ -68,12 +68,9 @@ class OperatingSystem(WinRMPlugin):
 
         # Device Map
         device_om = ObjectMap()
-        try:
-            device_om.snmpSysName = computerSystem.Name
-            device_om.snmpContact = computerSystem.PrimaryOwnerName
-            device_om.snmpDescr = computerSystem.Caption
-        except AttributeError:
-            log.warn('No results returned for Win32_ComputerSystem.  Check WMI namespace and DCOM permissions.')
+        device_om.snmpSysName = computerSystem.Name
+        device_om.snmpContact = computerSystem.PrimaryOwnerName
+        device_om.snmpDescr = computerSystem.Caption
         device_om.ip_and_hostname = self.get_ip_and_hostname(device.manageIp)
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
@@ -94,17 +91,11 @@ class OperatingSystem(WinRMPlugin):
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
-        try:
-            hw_om.serialNumber = operatingSystem.SerialNumber if operatingSystem else ''
-        except AttributeError:
-            log.warn('No results returned for Win32_OperatingSystem.  Check WMI namespace and DCOM permissions.')
-        try:
-            hw_om.tag = sysEnclosure.Tag
-            hw_om.setProductKey = MultiArgs(
-                computerSystem.Model,
-                computerSystem.Manufacturer)
-        except AttributeError:
-            log.warn('No results returned for Win32_SystemEnclosure.  Check WMI namespace and DCOM permissions.')
+        hw_om.serialNumber = operatingSystem.SerialNumber
+        hw_om.tag = sysEnclosure.Tag
+        hw_om.setProductKey = MultiArgs(
+            computerSystem.Model,
+            computerSystem.Manufacturer)
 
         if hasattr(operatingSystem, 'TotalVisibleMemorySize'):
             hw_om.totalMemory = 1024 * int(operatingSystem.TotalVisibleMemorySize)
@@ -118,21 +109,19 @@ class OperatingSystem(WinRMPlugin):
 
         # Operating System Map
         os_om = ObjectMap(compname='os')
-        try:
-            os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
+        os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
 
-            operatingSystem.Caption = re.sub(
-                r'\s*\S*Microsoft\S*\s*', '', operatingSystem.Caption)
+        operatingSystem.Caption = re.sub(
+            r'\s*\S*Microsoft\S*\s*', '', operatingSystem.Caption)
 
-            osCaption = '{} - {}'.format(
-                operatingSystem.Caption,
-                operatingSystem.CSDVersion)
+        osCaption = '{} - {}'.format(
+            operatingSystem.Caption,
+            operatingSystem.CSDVersion)
 
-            os_om.setProductKey = MultiArgs(
-                osCaption,
-                operatingSystem.Manufacturer)
-        except AttributeError:
-            pass
+        os_om.setProductKey = MultiArgs(
+            osCaption,
+            operatingSystem.Manufacturer)
+
         maps.append(os_om)
 
         return maps
