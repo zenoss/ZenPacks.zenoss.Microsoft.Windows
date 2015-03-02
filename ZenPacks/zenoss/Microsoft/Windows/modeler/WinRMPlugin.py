@@ -148,8 +148,7 @@ class WinRMPlugin(PythonPlugin):
                             'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
-            evt_message = "Connection refused on %s: Verify WinRM setup" % device.id
-            self._send_event(evt_message, device.id, 5)
+            self._send_event(message, device.id, 5)
         elif isinstance(error, TimeoutError):
             message = "Timeout on %s: Verify WinRM and firewall setup"
         elif isinstance(error, ConnectError):
@@ -187,7 +186,7 @@ class WinRMPlugin(PythonPlugin):
         log.debug('sending event: %s %s' % (reason, id))
         if self._eventService:
             self._eventService.sendEvent(dict(
-                summary=reason,
+                summary=reason % id,
                 eventClass='/Status',
                 device=id,
                 eventKey=key,
@@ -235,7 +234,7 @@ class WinRMPlugin(PythonPlugin):
             try:
                 query_results = yield client.do_collect(
                     conn_info, query_map.iterkeys())
-                msg = "connection for %s is established" % device.id
+                msg = "connection for %s is established"
                 self._send_event(msg, device.id, 0)
             except Exception as e:
                 self.log_error(log, device, e)
