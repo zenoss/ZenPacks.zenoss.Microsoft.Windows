@@ -24,6 +24,7 @@ The features added by this ZenPack can be summarized as follows. They are each d
 * Initial discovery and periodic remodeling of relevant components.
 * Performance monitoring.
 * Event management.
+* Custom Commands
 
 === Discovery ===
 
@@ -231,18 +232,6 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Web Service(_Total)\Trace Requests/sec
 * \Web Service(_Total)\Unlock Requests/sec
 
-;SQLServer
-* \SQLServer:Access Methods\Full Scans/sec
-* \SQLServer:Buffer Manager\Buffer cache hit ratio
-* \SQLServer:Buffer Manager\Free pages
-* \SQLServer:Databases(_Total)\Data File(s) Size (KB)
-* \SQLServer:General Statistics\User Connections
-* \SQLServer:Latches\Latch Waits/sec
-* \SQLServer:Locks(_Total)\Average Wait Time (ms)
-* \SQLServer:Locks(_Total)\Lock Requests/sec
-* \SQLServer:Locks(_Total)\Number of Deadlocks/sec
-* \SQLServer:SQL Statistics\Batch Requests/sec
-
 ;File Systems
 * \Disk Read Bytes/sec
 * \% Disk Read Time
@@ -303,7 +292,7 @@ To monitor EventLog events you should add to monitoring template with "Windows E
 
 To target all events with a Warning or higher severity:
 
-<code>For Windows 2003: { $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
+For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
@@ -326,6 +315,72 @@ To change event severity follow the steps:
 # click the ''Edit'' button
 # in the 'Transform' section, add "<code>evt.severity = <severity number(see link http://community.zenoss.org/docs/DOC-3923 in the '#7.1.1.3. severity Field' section)></code>" at the bottom
 # click the ''Save'' button
+
+=== Custom Commands ===
+You can use the custom command datasource in the Windows ZenPack to create custom data points, graphs and thresholds.
+
+* Use either DOS shell commands or Powershell script
+** Use any valid Windows executable or Powershell cmdlet
+** Powershell commands separated by ';'.  Always end script with ';'
+** For tales eval, surround by single quotes.  e.g. '${here/id}'
+** For Powershell variables, use 2 '$'.  e.g. $$myvar = 10
+** There is a character limit of 8192 imposed by Microsoft.  Zenoss header is ~450 characters so you have about 7500 characters for your script.
+* Use standard parser to parse the output or create your own
+** Nagios have the form <key>=<value>
+** JSON - script must put data into JSON format
+** Auto will save a returned value into a data point.
+** Create custom parser in $ZENOSS_HOME/Products/ZenRRD/parsers/
+* Viewing script output
+** Create datapoint(s) to collect the data for graphing
+** Create custom parser to send event or transform data
+
+==== Example usage ====
+
+;Script with TALES expression
+# Select a windows target device
+# Navigate to Device (/Server/Microsoft)
+# On the right side panel, click '+' to add a 'Windows Shell' datasource
+# Provide name (eg. custom) and type (Windows Shell) for the datasource
+# View Edit and Details
+# Set strategy to custom command
+# Set parser to Nagios
+# Uncheck Use Powershell
+# Set script to echo 'OK^|value1=${here/zWinPerfmonInterval}'
+# Add data point to data source called value1 which can be graphed
+
+;Using a custom parser
+Logon to the zenoss server and create a python file called test1.py in /opt/zenoss/Products/ZenRRD/parsers and restart zenoss
+
+The content of test1.py
+
+ <nowiki>
+from Products.ZenRRD.CommandParser import CommandParser
+ class test1(CommandParser):
+    def processResults(self, cmd, result):
+        result.events.append({
+            'summary':'test1 parser event',
+            'severity': 5,
+            'test1.detail': cmd.deviceConfig.name,
+            })
+</nowiki>
+
+# Select a windows target device
+# Navigate to Device (/Server/Microsoft)
+# On the rigt side panel, click '+' to add a 'Windows Shell' datasource
+# Provide name (eg. custom) and type (Windows Shell) for the datasource
+# View Edit and Details : strategy ->custom command and parser is test1
+# Run zenpython to collect the data zenpython run -v10 -d <devicename>
+# Check events after 5 minutes for the test1 event
+
+;Powershell Scripting using Auto parser
+
+# Select a windows target device
+# Navigate to Device (/Server/Microsoft)
+# On the right side panel, click '+' to add a 'Windows Shell' datasource
+# Provide name (eg. custom) and type (Windows Shell) for the datasource
+# View Edit and Details : strategy ->custom command, parser is Auto, and tick the Use Powershell box
+# Enter script.  Be sure to use a double dollar sign, '$$', in order to distinguish any powershell specific variables from a TALES expression.
+# Add a datapoint to collect the return value from the script which you can then graph
 
 == Requirements ==
 
@@ -843,6 +898,14 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.3.2
+* Fix traceback during Software modeling (ZEN-16224)
+* Fix Event Log datasource ignoring max age field (ZEN-16564)
+* Fix Event log datasource does not escapte tab characters (ZEN-15911)
+* Fix wrong number of arguments given (ZEN-16790)
+* Fix Powershell script not showing feedback on Custom Command datasource (ZEN-16834)
+* Fix traceback during Operating System modeling (ZEN-16799)
 
 ;2.3.1
 * Fix significant memory leak when using kerberos authentication. (ZEN-16261)
