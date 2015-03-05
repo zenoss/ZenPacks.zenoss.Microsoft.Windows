@@ -238,8 +238,9 @@ class EventLogQuery(object):
             };
             
             <# Remove control characters #>
-            $s = $s.replace("`r`n"," ");
+            $s = $s.replace("`r","").replace("`n"," ");
             $s = $s.replace('"', '\"').replace("\'","'");
+            $s = $s.replace("`t", " ");
             <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
         };
@@ -308,8 +309,8 @@ class EventLogQuery(object):
             <# check the time of last read log entry #>
             $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
             
-            <# If last log entry was older that 24 hours - read only for last 24 hours #>
-            [DateTime]$yesterday = (Get-Date).AddHours(-24);
+            <# If last log entry was older that $max_age hours - read only for last $max_age hours #>
+            [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
             if ($last_read) {
                 $last_read = [DateTime]$last_read.$eventid;
