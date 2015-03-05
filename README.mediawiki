@@ -232,18 +232,6 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Web Service(_Total)\Trace Requests/sec
 * \Web Service(_Total)\Unlock Requests/sec
 
-;SQLServer
-* \SQLServer:Access Methods\Full Scans/sec
-* \SQLServer:Buffer Manager\Buffer cache hit ratio
-* \SQLServer:Buffer Manager\Free pages
-* \SQLServer:Databases(_Total)\Data File(s) Size (KB)
-* \SQLServer:General Statistics\User Connections
-* \SQLServer:Latches\Latch Waits/sec
-* \SQLServer:Locks(_Total)\Average Wait Time (ms)
-* \SQLServer:Locks(_Total)\Lock Requests/sec
-* \SQLServer:Locks(_Total)\Number of Deadlocks/sec
-* \SQLServer:SQL Statistics\Batch Requests/sec
-
 ;File Systems
 * \Disk Read Bytes/sec
 * \% Disk Read Time
