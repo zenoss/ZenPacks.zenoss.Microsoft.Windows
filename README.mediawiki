@@ -353,7 +353,7 @@ Logon to the zenoss server and create a python file called test1.py in /opt/zeno
 
 The content of test1.py
 
-<code>
+ <nowiki>
 from Products.ZenRRD.CommandParser import CommandParser
  class test1(CommandParser):
     def processResults(self, cmd, result):
@@ -362,7 +362,7 @@ from Products.ZenRRD.CommandParser import CommandParser
             'severity': 5,
             'test1.detail': cmd.deviceConfig.name,
             })
-</code>
+</nowiki>
 
 # Select a windows target device
 # Navigate to Device (/Server/Microsoft)
