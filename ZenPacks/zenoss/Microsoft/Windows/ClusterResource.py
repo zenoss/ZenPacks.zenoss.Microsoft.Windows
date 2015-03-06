@@ -11,7 +11,7 @@ from Globals import InitializeClass
 from socket import gaierror
 import logging
 
-log = logging.getLogger("ClusterResource")
+log = logging.getLogger("zen.MicrosoftWindows")
 
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
