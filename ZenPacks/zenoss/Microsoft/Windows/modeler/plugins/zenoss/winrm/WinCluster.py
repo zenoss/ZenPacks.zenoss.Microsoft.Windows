@@ -105,7 +105,6 @@ class WinCluster(WinRMPlugin):
         # Cluster Resource Maps
 
         resources = results['resources']
-        domain = '.' + results['domain']
 
         # This section is for ClusterService class
         for resource in resources:
@@ -115,10 +114,11 @@ class WinCluster(WinRMPlugin):
             res_om.id = self.prepId(resourceline[5])
             res_om.title = resourceline[0]
             res_om.coregroup = resourceline[1]
-            res_om.ownernode = resourceline[2] + domain
+            res_om.ownernode = resourceline[2]
             res_om.state = resourceline[3]
             res_om.description = resourceline[4]
             res_om.priority = resourceline[6]
+            res_om.domain = results['domain']
 
             if res_om.title not in ownergroups:
                 ownergroups[res_om.title] = res_om.id
@@ -134,10 +134,11 @@ class WinCluster(WinRMPlugin):
             app_om = ObjectMap()
             app_om.id = self.prepId('res-{0}'.format(appline[0]))
             app_om.title = appline[0]
-            app_om.ownernode = appline[2] + domain
+            app_om.ownernode = appline[2]
             app_om.description = appline[4]
             app_om.ownergroup = appline[1]
             app_om.state = appline[3]
+            app_om.domain = results['domain']
 
             groupid = ownergroups[app_om.ownergroup]
             appsom = []

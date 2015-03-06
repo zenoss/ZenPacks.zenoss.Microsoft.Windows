@@ -11,7 +11,7 @@ from Globals import InitializeClass
 from socket import gaierror
 import logging
 
-log = logging.getLogger("zen.MicrosoftWindows")
+log = logging.getLogger("ClusterResource")
 
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
@@ -28,12 +28,14 @@ class ClusterResource(OSComponent):
     description = None
     ownergroup = None
     state = None
+    domain = ""
 
     _properties = OSComponent._properties + (
         {'id': 'ownernode', 'label': 'Owner Node', 'type': 'string'},
         {'id': 'description', 'label': 'Description', 'type': 'string'},
         {'id': 'ownergroup', 'label': 'Owner Group', 'type': 'string'},
         {'id': 'state', 'label': 'State', 'type': 'string'},
+        {'id': 'domain', 'label': 'Domain', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
@@ -45,10 +47,10 @@ class ClusterResource(OSComponent):
     def ownernodeentity(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         try:
-            clusterhostip = getHostByName(self.ownernode)
+            clusterhostip = getHostByName(self.ownernode + "." + self.domain)
             return deviceRoot.findDeviceByIdOrIp(clusterhostip)
         except(gaierror):
-            log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
+            log.warning('Unable to resolve hostname {0}'.format(self.ownernode + "." + self.domain))
             return
 
     def getRRDTemplateName(self):
