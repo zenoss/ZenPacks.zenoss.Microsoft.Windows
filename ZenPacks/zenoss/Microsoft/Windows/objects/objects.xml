@@ -9,7 +9,7 @@ Microsoft Software
 Microsoft Software
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
+['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS', 'DFS Replication']
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 []
@@ -895,6 +895,557 @@ True
 </property>
 </object>
 </tomanycont>
+</object>
+<object id='Advertising' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Advertising
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='Replications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Replications
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='NetLogons' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+NetLogons
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='MachineAccount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+MachineAccount
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='FrsEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+FrsEvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+DFSREvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+DFSREvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='SysVolCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+SysVolCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='KccEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+KccEvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='KnowsOfRoleHolders' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+KnowsOfRoleHolders
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='NCSecDesc' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+NCSecDesc
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='ObjectsReplicated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+ObjectsReplicated
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='RidManager' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+RidManager
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='Services' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Services
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='SystemLog' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+SystemLog
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='VerifyReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+VerifyReferences
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='CheckSDRefDom' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+CheckSDRefDom
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='CrossRefValidation' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+CrossRefValidation
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='LocatorCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+LocatorCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
 </object>
 </tomanycont>
 <tomanycont id='thresholds'>
@@ -2939,6 +3490,557 @@ True
 </object>
 </tomanycont>
 </object>
+<object id='Advertising' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Advertising
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='Replications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Replications
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='NetLogons' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+NetLogons
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='MachineAccount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+MachineAccount
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='FrsEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+FrsEvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+DFSREvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+DFSREvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='SysVolCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+SysVolCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='KccEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+KccEvent
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='KnowsOfRoleHolders' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+KnowsOfRoleHolders
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='NCSecDesc' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+NCSecDesc
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='ObjectsReplicated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+ObjectsReplicated
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='RidManager' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+RidManager
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='Services' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+Services
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='SystemLog' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+SystemLog
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='VerifyReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+VerifyReferences
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='CheckSDRefDom' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+CheckSDRefDom
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='CrossRefValidation' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+CrossRefValidation
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+<object id='LocatorCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+LocatorCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
 </tomanycont>
 <tomanycont id='thresholds'>
 <object id='ldapBindTimeCrit' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
@@ -4005,6 +5107,352 @@ ldapActiveThreads_ldapActiveThreads
 </property>
 <property type="string" id="cFunc" mode="w" >
 AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='DFS Replication' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft DFS Replication
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft DFS Replication
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='dsBandwidthSavingsDFSReplication' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replication Connections
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replication Connections\Bandwidth Savings Using DFS Replication
+</property>
+<tomanycont id='datapoints'>
+<object id='dsBandwidthSavingsDFSReplication' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="rrdmin" mode="w" >
+0
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsConflictFilesCleanedUp' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Conflict Files Cleaned Up
+</property>
+<tomanycont id='datapoints'>
+<object id='dsConflictFilesCleanedUp' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDeletedFilesCleanedUp' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Deleted Files Cleaned up
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDeletedFilesCleanedUp' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsConflictFilesGenerated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Conflict Files Generated
+</property>
+<tomanycont id='datapoints'>
+<object id='dsConflictFilesGenerated' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDeletedFilesGenerated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Deleted Files Generated
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDeletedFilesGenerated' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsConflictSpaceInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Conflict Space In Use
+</property>
+<tomanycont id='datapoints'>
+<object id='dsConflictSpaceInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsDeletedSpaceInUse' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Deleted Space In Use
+</property>
+<tomanycont id='datapoints'>
+<object id='dsDeletedSpaceInUse' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsConflictFolderCleanupsCompleted' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Conflict Folder Cleanups Completed
+</property>
+<tomanycont id='datapoints'>
+<object id='dsConflictFolderCleanupsCompleted' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsStagingBytesCleaned' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Staging Bytes Cleaned up
+</property>
+<tomanycont id='datapoints'>
+<object id='dsStagingBytesCleaned' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='dsStagingBytesGenerated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Perfmon
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+DFS Replicated Folders
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin
+</property>
+<property type="string" id="counter" >
+\DFS Replicated Folders\Staging Bytes Generated
+</property>
+<tomanycont id='datapoints'>
+<object id='dsStagingBytesGenerated' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
 </property>
 </object>
 </tomanycont>
