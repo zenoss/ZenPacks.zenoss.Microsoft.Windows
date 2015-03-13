@@ -200,6 +200,12 @@
             factory=".impact.WinServiceRelationsProvider"
             />
 
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Interface.Interface"
+            factory=".impact.InterfaceRelationsProvider"
+            />
+
     </configure>
 
     <!-- Analytics -->

@@ -194,7 +194,14 @@ class ClusterRelationsProvider(BaseRelationsProvider):
     def getEdges(self):
         yield edge(self.guid(), guid(self._object.device()))
 
+
 class WinServiceRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
         yield edge(guid(self._object.device()),self.guid())
+
+
+class InterfaceRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(self.guid(), guid(self._object.device()))
