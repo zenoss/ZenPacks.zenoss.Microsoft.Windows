@@ -194,7 +194,40 @@ class ClusterRelationsProvider(BaseRelationsProvider):
     def getEdges(self):
         yield edge(self.guid(), guid(self._object.device()))
 
+
 class WinServiceRelationsProvider(BaseRelationsProvider):
 
     def getEdges(self):
         yield edge(guid(self._object.device()),self.guid())
+
+
+class WinIISRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
+
+
+class WinSQLJobRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
+
+
+class WinSQLDatabaseRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
+
+
+class WinSQLJobRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
+
+
+class ClusterResourceRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(guid(self._object.device()),self.guid())
+
+
