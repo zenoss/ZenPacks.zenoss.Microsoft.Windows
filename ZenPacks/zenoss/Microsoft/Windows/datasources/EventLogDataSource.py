@@ -343,7 +343,14 @@ class EventLogQuery(object):
 			    @($events | ? $selector) | EventLogRecordToJSON
 			}
         };
-        get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
+        function Use-en-US ([ScriptBlock]$script= (throw))
+        {
+            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
+            Invoke-Command $script;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
+        };
+        Use-en-US {get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s"};
     '''
 
     def run(self, eventlog, selector, max_age, eventid):
