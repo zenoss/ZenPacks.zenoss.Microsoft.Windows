@@ -199,6 +199,7 @@ class DCDiagStrategy(object):
     key = 'DCDiag'
 
     def build_command_line(self, tests):
+        self.run_tests = set(tests)
         return 'dcdiag /q /test:' + ' /test:'.join(tests)
 
     def parse_result(self, config, result):
@@ -208,20 +209,24 @@ class DCDiagStrategy(object):
         dsconf = config.datasources[0]
         output = result.stdout
         collectedResults = ParsedResults()
+        tests_in_error = set()
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if output:
             error_str = ''
             for line in output:
+                # Failure of a test shows the error message first followed by:
+                # "......................... <dc> failed test <testname>"
                 if line.startswith('........'):
                     #create err event
-                    eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
                     match = re.match('.*test (.*)', line)
                     if not match:
                         test = 'Unknown'
                     else:
                         test = match.group(1)
+                        tests_in_error.add(test)
                     if not error_str:
                         error_str = 'Unknown'
-                    msg = "'DCDiag /test:{0}' failed: {1}".format(test, error_str)
+                    msg = "'DCDiag /test:{}' failed: {}".format(test, error_str)
                     eventkey = 'WindowsActiveDirectory{}'.format(test)
 
                     collectedResults.events.append({
@@ -234,7 +239,18 @@ class DCDiagStrategy(object):
                     error_str = ''
                 else:
                     error_str += line if not error_str else ' ' + line
+        for diag_test in self.run_tests.difference(tests_in_error):
+            # Clear events
+            msg = "'DCDiag /test:{}' passed".format(diag_test)
+            eventkey = 'WindowsActiveDirectory{}'.format(diag_test)
 
+            collectedResults.events.append({
+                'eventClass': eventClass,
+                'severity': ZenEventClasses.Clear,
+                'eventClassKey': 'WindowsActiveDirectoryStatus',
+                'eventKey': eventkey,
+                'summary': msg,
+                'device': config.id})
         return collectedResults
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
