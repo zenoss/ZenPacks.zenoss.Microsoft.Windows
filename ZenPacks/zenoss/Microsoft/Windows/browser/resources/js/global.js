@@ -114,6 +114,151 @@ if (Ext.version === undefined) {
 
 }());
 
+(function(){
+
+var ERROR_MESSAGE = "ERROR: Invalid port/description!";
+
+Zenoss.form.PortCheck = Ext.extend(Ext.panel.Panel, {
+    constructor: function(config) {
+        var me = this;
+        config = Ext.applyIf(config || {}, {
+            title: _t("Ports to test if listening."),
+            id: 'windowsPortScan',
+            layout: 'fit',
+            listeners: {
+                afterrender: function() {
+                    this.setValue(config.record.ports);
+                },
+                scope: this
+            },
+            items: [ {
+                xtype: 'hidden',
+                name: 'ports',
+                itemId: 'hiddenInput',
+                value: config.record.ports
+            },{
+                xtype: 'grid',
+                width: 500,
+                hideHeaders: true,
+                columns: [{
+                    dataIndex: 'value',
+                    flex: 1,
+                    renderer: function(value) {
+                        try {
+                            return Ext.String.format(
+                                "{0}:{1}", value.port, value.desc
+                            );
+                        } catch (err) {
+                            return ERROR_MESSAGE;
+                        }
+                    }
+                }],
+
+                store: {
+                    fields: ['value'],
+                    data: []
+                },
+
+                height: this.height || 200,
+                width: 500,
+
+                tbar: [{
+                    itemId: 'port',
+                    xtype: "numberfield",
+                    ref: "editConfig",
+                    scope: this,
+                    width: 60,
+                    emptyText:'Port #'
+                },{
+                    itemId: 'desc',
+                    xtype: "textfield",
+                    scope: this,
+                    width: 120,
+                    emptyText:'Description',
+                    value: '' //to avoid undefined value
+                },{
+                    text: 'Add',
+                    scope: this,
+                    handler: function() {
+                        var port = this.down("textfield[itemId='port']");
+                        var desc = this.down("textfield[itemId='desc']");
+                        var grid = this.down('grid');
+                        var value = {
+                            'port': port.getValue(),
+                            'desc': desc.getValue(),
+                        };
+                        if (port.value) {
+                            grid.getStore().add({value: value});
+                        }
+
+                        port.setValue("");
+                        desc.setValue("");
+                        this.updateHiddenField();
+                    }
+                },{
+                    text: "Remove",
+                    itemId: 'removeButton',
+                    disabled: true, // initial state
+                    scope: this,
+                    handler: function() {
+                        var grid = this.down('grid'),
+                            selModel = grid.getSelectionModel(),
+                            store = grid.getStore();
+                        store.remove(selModel.getSelection());
+                        this.updateHiddenField();
+                    }
+                }],
+
+                listeners: {
+                    scope: this,
+                    selectionchange: function(selModel, selection) {
+                        var removeButton = me.down('button[itemId="removeButton"]');
+                        removeButton.setDisabled(Ext.isEmpty(selection));
+                    }
+                }
+            }]
+        });
+        Zenoss.form.PortCheck.superclass.constructor.apply(this, arguments);
+    },
+    updateHiddenField: function() {
+        this.down('hidden').setValue(this.getValue());
+    },
+    // --- Value handling ---
+    setValue: function(values) {
+        var grid = this.down('grid');
+
+        var data = [];
+        try {
+            values = JSON.parse(values);
+
+            if (values) {
+                Ext.each(values, function(value) {
+                    data.push({value: value});
+                });
+            }
+            grid.getStore().loadData(data);
+        } catch(e) {}
+    },
+
+    getValue: function() {
+        var grid = this.down('grid');
+        var data = [];
+        grid.getStore().each(function(record) {
+            data.push(record.get('value'));
+        });
+        return JSON.stringify(data);
+    }
+});
+
+// Ext.version will be defined in ExtJS3 and undefined in ExtJS4.
+if (Ext.version === undefined) {
+    Ext.reg('portcheck', 'Zenoss.form.PortCheck');
+} else {
+    Ext.reg('portcheck', Zenoss.form.PortCheck);
+}
+
+}());
+
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 
 Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){

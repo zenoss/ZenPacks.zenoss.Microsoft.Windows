@@ -936,7 +936,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -965,7 +965,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -994,7 +994,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1023,7 +1023,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1052,7 +1052,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1081,7 +1081,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1110,7 +1110,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1139,7 +1139,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1168,7 +1168,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1197,7 +1197,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1226,7 +1226,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1255,7 +1255,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1284,7 +1284,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1313,7 +1313,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1342,7 +1342,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1371,7 +1371,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1400,7 +1400,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1429,7 +1429,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1445,6 +1445,29 @@ DCDiag
 </property>
 <property type="boolean" id="usePowershell" >
 True
+</property>
+</object>
+<object id='PortCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource' class='PortCheckDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Active Directory PortCheck
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource.PortCheckDataSourcePlugin
+</property>
+<property type='string' id="ports" >
+[{"port": "9389", "desc": "Traffic:SOAP. Usage:Web Services"},{"port": "3268", "desc": "Traffic:LDAP GC; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "3269", "desc": "Traffic:LDAP GC SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "88", "desc": "Traffic:Kerberos; Usage:User and Computer Authentication, Forest Level Trusts"},{"port": "464", "desc": "Traffic:Kerberos change/set password. Usage:Replication, User and Computer Authentication, Trusts"}]
 </property>
 </object>
 </tomanycont>
@@ -4023,7 +4046,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -4039,6 +4062,29 @@ DCDiag
 </property>
 <property type="boolean" id="usePowershell" >
 True
+</property>
+</object>
+<object id='PortCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource' class='PortCheckDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Active Directory PortCheck
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource.PortCheckDataSourcePlugin
+</property>
+<property type='string' id="ports" >
+[{"port": "9389", "desc": "Traffic:SOAP. Usage:Web Services"},{"port": "3268", "desc": "Traffic:LDAP GC; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "3269", "desc": "Traffic:LDAP GC SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "88", "desc": "Traffic:Kerberos; Usage:User and Computer Authentication, Forest Level Trusts"},{"port": "464", "desc": "Traffic:Kerberos change/set password. Usage:Replication, User and Computer Authentication, Trusts"}]
 </property>
 </object>
 </tomanycont>
