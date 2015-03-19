@@ -323,16 +323,19 @@ class EventLogQuery(object):
 			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
 			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
             if ($win2003 -eq $false) {
-                $events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
+                [Array]$events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
             } else { 
-				$events = Get-EventLog -After $after -LogName $logname;
+                [Array]$events = Get-EventLog -After $after -LogName $logname;
 			};
             
             if($events) { <# update the time of last read log entry #>
                 [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
 				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
             };
-            
+
+            <# Reverse sort so oldest events are processed first #>
+            [Array]::Reverse($events);
+
             <# EventLog has different attributes than EventLogRecord #>
             if ($win2003) {
                 @($events | ? $selector) | EventLogToJSON
@@ -340,7 +343,14 @@ class EventLogQuery(object):
 			    @($events | ? $selector) | EventLogRecordToJSON
 			}
         };
-        get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
+        function Use-en-US ([ScriptBlock]$script= (throw))
+        {
+            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
+            Invoke-Command $script;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
+        };
+        Use-en-US {get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s"};
     '''
 
     def run(self, eventlog, selector, max_age, eventid):
