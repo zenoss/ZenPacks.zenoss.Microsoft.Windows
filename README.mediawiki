@@ -177,6 +177,19 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
+;DFS Replication
+* \DFS Replication Connections\Bandwidth Savings Using DFS Replication
+* \DFS Replicated Folders\Conflict Files Generated
+* \DFS Replicated Folders\Deleted Files Cleaned up
+* \DFS Replicated Folders\Deleted Files Generated
+* \DFS Replicated Folders\Conflict Space In Use
+* \DFS Replicated Folders\Deleted Space In Use
+* \DFS Replicated Folders\Conflict Folder Cleanups Completed
+* \DFS Replicated Folders\Conflict Files Cleaned Up
+* \DFS Replicated Folders\Staging Bytes Cleaned up
+* \DFS Replicated Folders\Staging Bytes Generated
+* \DFS Replicated Folders\Staging Bytes Generated
+
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 * \MSExchangeIS Mailbox(_Total)\Local delivery rate
@@ -381,6 +394,18 @@ from Products.ZenRRD.CommandParser import CommandParser
 # View Edit and Details : strategy ->custom command, parser is Auto, and tick the Use Powershell box
 # Enter script.  Be sure to use a double dollar sign, '$$', in order to distinguish any powershell specific variables from a TALES expression.
 # Add a datapoint to collect the return value from the script which you can then graph
+
+== DCDiag ==
+
+You can now monitor the output of DCDiag.  By default all dcdiag tests are enabled in the Active Directory monitoring template.  If a test fails an error event is issued.
+
+See https://technet.microsoft.com/en-us/library/cc731968.aspx for more information on DCDiag.
+
+== PortCheck ==
+
+You can now monitor specific ports in the Windows Zenpack.  By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, which are important ports to Active Directory.
+
+You can add and remove any port you wish to be monitored by editing the PortCheck datasource in the Active Directory monitoring template.
 
 == Requirements ==
 
@@ -903,6 +928,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.4.0
+* Added DFS Replication performance counter monitoring
+* Added DCDiag tests
+* Added Port checking ability
 
 ;2.3.2
 * Fix traceback during Software modeling (ZEN-16224)

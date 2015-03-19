@@ -1,0 +1,156 @@
+/Server/Microsoft/DFS Replication:
+  description: "Microsoft DFS Replication"
+  targetPythonClass: "Products.ZenModel.Device"
+
+  datasources:
+    dsBandwidthSavingsDFSReplication:
+      type: Windows Perfmon
+      counter: \DFS Replication Connections\Bandwidth Savings Using DFS Replication
+      component: DFS Replication Connections
+
+      datapoints:
+        dsBandwidthSavingsDFSReplication: GAUGE_MIN_0
+
+    dsConflictFilesCleanedUp:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Conflict Files Cleaned Up
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsConflictFilesCleanedUp: GAUGE
+
+    dsConflictFilesGenerated:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Conflict Files Generated
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsConflictFilesGenerated: GAUGE
+
+    dsDeletedFilesCleanedUp:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Deleted Files Cleaned up
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsDeletedFilesCleanedUp: GAUGE
+
+    dsDeletedFilesGenerated:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Deleted Files Generated 
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsDeletedFilesGenerated: GAUGE
+
+    dsConflictSpaceInUse:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Conflict Space In Use
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsConflictSpaceInUse: GAUGE
+
+    dsDeletedSpaceInUse:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Deleted Space In Use 
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsDeletedSpaceInUse: GAUGE
+
+    dsConflictFolderCleanupsCompleted:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Conflict Folder Cleanups Completed
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsConflictFolderCleanupsCompleted: GAUGE
+
+    dsStagingBytesCleaned:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Staging Bytes Cleaned up
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsStagingBytesCleaned: GAUGE
+
+    dsStagingBytesGenerated:
+      type: Windows Perfmon
+      counter: \DFS Replicated Folders\Staging Bytes Generated
+      component: DFS Replicated Folders
+
+      datapoints:
+        dsStagingBytesGenerated: GAUGE
+
+  graphs:
+    Conflict Files:
+      units: files
+      miny: 0
+
+      graphpoints:
+        Cleaned:
+          dpName: dsConflictFilesCleanedUp
+          format: "%7.0lf"
+
+        Generated:
+          dpName: dsConflictFilesGenerated
+          format: "%7.0lf"
+
+    Space Usage:
+      units: bytes
+      miny: 0
+
+      graphpoints:
+        Cleaned:
+          dpName: dsConflictSpaceInUse
+          format: "%7.0lf"
+
+        Deleted:
+          dpName: dsDeletedSpaceInUse
+          format: "%7.0lf"
+
+    Conflict Folders:
+      units: folders
+      miny: 0
+
+      graphpoints:
+        Completed:
+          dpName: dsConflictFolderCleanupsCompleted
+          format: "%7.0lf"
+
+    Deleted Files:
+      units: files
+      miny: 0
+
+      graphpoints:
+        Cleaned:
+          dpName: dsDeletedFilesCleanedUp
+          format: "%7.0lf"
+
+        Generated:
+          dpName: dsDeletedFilesGenerated
+          format: "%7.0lf"
+
+    Staging Files:
+      units: bytes
+      miny: 0
+
+      graphpoints:
+        Cleaned:
+          dpName: dsStagingBytesCleaned
+          format: "%7.0lf"
+
+        Generated:
+          dpName: dsStagingBytesGenerated
+          format: "%7.0lf"
+
+	Bandwidth Savings:
+	  units: percent
+      miny: 0
+      maxy: 100
+
+	  graphpoints:
+	    Bandwidth:
+	      dpName: dsBandwidthSavingsDFSReplication
+	      format: "%7.2lf%%"

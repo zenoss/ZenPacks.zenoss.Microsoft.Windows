@@ -62,6 +62,7 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL',
     'powershell Cluster Services',
     'powershell Cluster Resources',
+    'DCDiag'
     ]
 
 gsm = getGlobalSiteManager()
@@ -191,6 +192,68 @@ class WinCmd(object):
 
 class IStrategy(Interface):
     ''' Interface for strategy '''
+
+class DCDiagStrategy(object):
+    implements(IStrategy)
+
+    key = 'DCDiag'
+
+    def build_command_line(self, tests):
+        self.run_tests = set(tests)
+        return 'dcdiag /q /test:' + ' /test:'.join(tests)
+
+    def parse_result(self, config, result):
+        if result.stderr:
+            log.debug('DCDiag error: {0}' + ''.join(result.stderr))
+
+        dsconf = config.datasources[0]
+        output = result.stdout
+        collectedResults = ParsedResults()
+        tests_in_error = set()
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
+        if output:
+            error_str = ''
+            for line in output:
+                # Failure of a test shows the error message first followed by:
+                # "......................... <dc> failed test <testname>"
+                if line.startswith('........'):
+                    #create err event
+                    match = re.match('.*test (.*)', line)
+                    if not match:
+                        test = 'Unknown'
+                    else:
+                        test = match.group(1)
+                        tests_in_error.add(test)
+                    if not error_str:
+                        error_str = 'Unknown'
+                    msg = "'DCDiag /test:{}' failed: {}".format(test, error_str)
+                    eventkey = 'WindowsActiveDirectory{}'.format(test)
+
+                    collectedResults.events.append({
+                        'eventClass': eventClass,
+                        'severity': dsconf.severity,
+                        'eventClassKey': 'WindowsActiveDirectoryStatus',
+                        'eventKey': eventkey,
+                        'summary': msg,
+                        'device': config.id})
+                    error_str = ''
+                else:
+                    error_str += line if not error_str else ' ' + line
+        for diag_test in self.run_tests.difference(tests_in_error):
+            # Clear events
+            msg = "'DCDiag /test:{}' passed".format(diag_test)
+            eventkey = 'WindowsActiveDirectory{}'.format(diag_test)
+
+            collectedResults.events.append({
+                'eventClass': eventClass,
+                'severity': ZenEventClasses.Clear,
+                'eventClassKey': 'WindowsActiveDirectoryStatus',
+                'eventKey': eventkey,
+                'summary': msg,
+                'device': config.id})
+        return collectedResults
+
+gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
 
 class CustomCommandStrategy(object):
     implements(IStrategy)
@@ -494,7 +557,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             datasource.strategy not in ('powershell MSSQL',
                 'powershell Cluster Services',
                 'powershell Cluster Resources',
-                'Custom Command'):
+                'Custom Command',
+                'DCDiag'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
@@ -658,6 +722,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     dsconf0.datasource, config)
                 log.warn(msg)
                 severity = ZenEventClasses.Warning
+        elif strategy.key == 'DCDiag':
+            diagResult = strategy.parse_result(config, result)
+            dsconf = dsconfs[0]
+            data['events'] = diagResult.events
         else:
             if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
                 try:
