@@ -102,6 +102,12 @@
         />
 
     <adapter
+        provides=".datasources.PortCheckDataSource.IPortCheckDataSourceInfo"
+        for=".datasources.PortCheckDataSource.PortCheckDataSource"
+        factory=".datasources.PortCheckDataSource.PortCheckDataSourceInfo"
+        />
+
+    <adapter
         provides=".datasources.EventLogDataSource.IEventLogInfo"
         for=".datasources.EventLogDataSource.EventLogDataSource"
         factory=".datasources.EventLogDataSource.EventLogInfo"
