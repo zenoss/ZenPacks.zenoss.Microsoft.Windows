@@ -296,6 +296,17 @@ class CustomCommandStrategy(object):
         collectedResult = ParsedResults()
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
+        # Give error feedback to user
+        if result.stderr:
+            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
+            msg = 'Custom Command error: ' + ''.join(result.stderr)
+            collectedResult.events.append({
+                'eventClass': eventClass,
+                'severity': ZenEventClasses.Warning,
+                'eventClassKey': 'WindowsCommandCollectionError',
+                'eventKey': 'WindowsCommandCollection',
+                'summary': msg,
+                'device': config.id})
         return collectedResult
 
 gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
@@ -711,9 +722,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         strategy, dsconfs, result = results
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
+            data['events'] = cmdResult.events
             if result.exit_code == 0:
                 dsconf = dsconfs[0]
-                data['events'] = cmdResult.events
                 data['maps'] = cmdResult.maps
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
