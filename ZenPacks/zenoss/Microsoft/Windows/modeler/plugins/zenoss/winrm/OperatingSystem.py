@@ -43,7 +43,8 @@ class OperatingSystem(WinRMPlugin):
     powershell_commands = dict(
         exchange_version=(
             'Get-Command exsetup |%{$_.Fileversioninfo.ProductVersion}'
-        )
+        ),
+        dc = ('dcdiag /q /test:Advertising')
     )
 
     def process(self, device, results, log):
@@ -56,6 +57,7 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
+        domainController = results.get('dc')
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
@@ -88,6 +90,14 @@ class OperatingSystem(WinRMPlugin):
                 clusterlist.append(cluster.Name + '.' + computerSystem.Domain)
             device_om.setClusterMachines = clusterlist
         except (AttributeError):
+            pass
+
+        try:
+            # we'll see an error if dcdiag is not installed.
+            # if no stderr then this is a DC
+            if not domainController.stderr:
+                device_om.domain_controller = True
+        except:
             pass
 
         maps.append(device_om)

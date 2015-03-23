@@ -20,6 +20,8 @@ from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
 from ZenPacks.zenoss.Microsoft.Windows.zope_utils import BaseDevice
+from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
+from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 
 
 class Device(BaseDevice):
@@ -31,12 +33,14 @@ class Device(BaseDevice):
     sqlhostname = None
     msexchangeversion = None
     ip_and_hostname = None
+    domain_controller = False
 
     _properties = BaseDevice._properties + (
         {'id': 'clusterdevices', 'label': 'Cluster Devices', 'type': 'string', 'mode': 'w'},
         {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
         {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
         {'id': 'ip_and_hostname', 'type': 'string'},
+        {'id': 'domain_controller', 'label': 'Domain Controller','type': 'boolean'},
     )
 
     def setClusterMachines(self, clusterdnsnames):
@@ -123,19 +127,40 @@ class Device(BaseDevice):
         # Check if version of the system
         # modeled by OperatingSystem plugin is Windows 2003.
         # https://jira.hyperic.com/browse/HHQ-5553
-        if '2003' in self.getOSProductName():
-            for template in result:
-                ad = self.getRRDTemplateByName('Active Directory 2003')
-                if ad:
-                    if 'Active Directory' in template.id:
-                        result[result.index(template)] = ad
-        if self.msexchangeversion:
-            for template in result:
+        bIIS = False
+        bAD = False
+        for component in self.getDeviceComponents():
+            if bIIS and bAD:
+                break
+            if isinstance(component, WinIIS):
+                bIIS = True
+            if isinstance(component, WinService) and component.servicename == 'NTDS':
+                bAD = True
+        # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
+        if not bAD and self.domain_controller:
+            bAD = True
+        templates = []
+        for template in result:
+            if 'IIS' in template.id and not bIIS:
+                continue
+            elif 'Active Directory' in template.id:
+                if not bAD:
+                    continue
+                if '2003' in self.getOSProductName():
+                    ad = self.getRRDTemplateByName('Active Directory 2003')
+                    if ad:
+                        templates.append(ad)
+                        continue
+            elif 'MSExchange' in template.id:
+                if not self.msexchangeversion:
+                    continue
                 exchange = self.getRRDTemplateByName(self.msexchangeversion)
                 if exchange:
-                    if 'MSExchange' in template.id:
-                        result[result.index(template)] = exchange
-        return result
+                    templates.append(exchange)
+                    continue
+            templates.append(template)
+
+        return templates
 
 
 class DeviceLinkProvider(object):
