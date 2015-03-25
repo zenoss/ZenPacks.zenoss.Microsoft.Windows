@@ -82,7 +82,7 @@ class OperatingSystem(WinRMPlugin):
         if exchange_version:
             device_om.msexchangeversion = 'MSExchange%sIS' % (exchange_version if exchange_version in ['2010', '2013'] else "")
         else:
-            device_om.msexchangeversion = 'MSExchangeIS'
+            device_om.msexchangeversion = ''
         # Cluster Information
         try:
             clusterlist = []
