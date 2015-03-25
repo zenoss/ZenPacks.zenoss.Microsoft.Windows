@@ -907,7 +907,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -921,8 +921,57 @@ Advertising
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
+</object>
+<object id='FSMOCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
 True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+FSMOCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+</object>
+<object id='VerifyEnterpriseReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+VerifyEnterpriseReferences
+</property>
+<property type="string" id="strategy" >
+DCDiag
 </property>
 </object>
 <object id='Replications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -950,9 +999,6 @@ Replications
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='NetLogons' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -978,9 +1024,6 @@ NetLogons
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='MachineAccount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1008,9 +1051,6 @@ MachineAccount
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='FrsEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1037,9 +1077,6 @@ FrsEvent
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1066,9 +1103,6 @@ DFSREvent
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1094,9 +1128,6 @@ DFSREvent
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='SysVolCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1124,9 +1155,6 @@ SysVolCheck
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='KccEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1152,9 +1180,6 @@ KccEvent
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='KnowsOfRoleHolders' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1182,9 +1207,6 @@ KnowsOfRoleHolders
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='NCSecDesc' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1210,9 +1232,6 @@ NCSecDesc
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='ObjectsReplicated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1240,9 +1259,6 @@ ObjectsReplicated
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='RidManager' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1255,7 +1271,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -1268,9 +1284,6 @@ RidManager
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='Services' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1298,9 +1311,6 @@ Services
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='SystemLog' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1326,9 +1336,6 @@ SystemLog
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='VerifyReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1356,9 +1363,6 @@ VerifyReferences
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='CheckSDRefDom' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1384,9 +1388,6 @@ CheckSDRefDom
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='CrossRefValidation' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -1414,9 +1415,6 @@ CrossRefValidation
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='LocatorCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1443,9 +1441,6 @@ LocatorCheck
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='PortCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource' class='PortCheckDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -1461,7 +1456,7 @@ ${here/id}
 4
 </property>
 <property type="string" id="cycletime" mode="w" >
-300
+1800
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource.PortCheckDataSourcePlugin
@@ -3524,7 +3519,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3538,8 +3533,57 @@ Advertising
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
+</object>
+<object id='FSMOCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
 True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+FSMOCheck
+</property>
+<property type="string" id="strategy" >
+DCDiag
+</property>
+</object>
+<object id='VerifyEnterpriseReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+4
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+VerifyEnterpriseReferences
+</property>
+<property type="string" id="strategy" >
+DCDiag
 </property>
 </object>
 <object id='Replications' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -3553,7 +3597,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3567,9 +3611,6 @@ Replications
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='NetLogons' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3582,7 +3623,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3596,9 +3637,6 @@ NetLogons
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='MachineAccount' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3611,7 +3649,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3625,9 +3663,6 @@ MachineAccount
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='FrsEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3640,7 +3675,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3654,9 +3689,6 @@ FrsEvent
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3669,7 +3701,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3683,9 +3715,6 @@ DFSREvent
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='DFSREvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3698,7 +3727,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3711,9 +3740,6 @@ DFSREvent
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='SysVolCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -3727,7 +3753,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3741,9 +3767,6 @@ SysVolCheck
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='KccEvent' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3756,7 +3779,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3770,9 +3793,6 @@ KccEvent
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='KnowsOfRoleHolders' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3785,7 +3805,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3799,9 +3819,6 @@ KnowsOfRoleHolders
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='NCSecDesc' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3814,7 +3831,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3828,9 +3845,6 @@ NCSecDesc
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='ObjectsReplicated' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3843,7 +3857,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3857,9 +3871,6 @@ ObjectsReplicated
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='RidManager' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3872,7 +3883,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3886,9 +3897,6 @@ RidManager
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='Services' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3901,7 +3909,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3915,9 +3923,6 @@ Services
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='SystemLog' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3930,7 +3935,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3944,9 +3949,6 @@ SystemLog
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='VerifyReferences' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3959,7 +3961,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -3973,9 +3975,6 @@ VerifyReferences
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='CheckSDRefDom' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -3988,7 +3987,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -4002,9 +4001,6 @@ CheckSDRefDom
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='CrossRefValidation' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -4017,7 +4013,7 @@ True
 ${here/id}
 </property>
 <property type="int" id="severity" mode="w" >
-5
+4
 </property>
 <property type="string" id="cycletime" mode="w" >
 300
@@ -4030,9 +4026,6 @@ CrossRefValidation
 </property>
 <property type="string" id="strategy" >
 DCDiag
-</property>
-<property type="boolean" id="usePowershell" >
-True
 </property>
 </object>
 <object id='LocatorCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
@@ -4060,9 +4053,6 @@ LocatorCheck
 <property type="string" id="strategy" >
 DCDiag
 </property>
-<property type="boolean" id="usePowershell" >
-True
-</property>
 </object>
 <object id='PortCheck' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource' class='PortCheckDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
@@ -4078,13 +4068,13 @@ ${here/id}
 4
 </property>
 <property type="string" id="cycletime" mode="w" >
-300
+1800
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.PortCheckDataSource.PortCheckDataSourcePlugin
 </property>
 <property type='string' id="ports" >
-[{"port": "9389", "desc": "Traffic:SOAP. Usage:Web Services"},{"port": "3268", "desc": "Traffic:LDAP GC; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "3269", "desc": "Traffic:LDAP GC SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "88", "desc": "Traffic:Kerberos; Usage:User and Computer Authentication, Forest Level Trusts"},{"port": "464", "desc": "Traffic:Kerberos change/set password. Usage:Replication, User and Computer Authentication, Trusts"},{"port": "389", "desc": "Traffic:LDAP; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "636", "desc": "Traffic:LDAP SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "445", "desc": "Traffic:SMB,CIFS,SMB2, DFSN, LSARPC, NbtSS, NetLogonR, SamR, SrvSvc; Usage:Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "135", "desc": "Traffic:RPC, EPM; Usage:Replication"},{"port": "5722", "desc": "Traffic:RPC, DFSR (SYSVOL); Usage:File Replication"}]
+[{"port": "9389", "desc": "Traffic:SOAP. Usage:Web Services"},{"port": "3268", "desc": "Traffic:LDAP GC; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "3269", "desc": "Traffic:LDAP GC SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "88", "desc": "Traffic:Kerberos; Usage:User and Computer Authentication, Forest Level Trusts"},{"port": "464", "desc": "Traffic:Kerberos change/set password. Usage:Replication, User and Computer Authentication, Trusts"},{"port": "389", "desc": "Traffic:LDAP; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "636", "desc": "Traffic:LDAP SSL; Usage:Directory, Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "445", "desc": "Traffic:SMB,CIFS,SMB2, DFSN, LSARPC, NbtSS, NetLogonR, SamR, SrvSvc; Usage:Replication, User and Computer Authentication, Group Policy, Trusts"},{"port": "135", "desc": "Traffic:RPC, EPM; Usage:Replication"}]
 </property>
 </object>
 </tomanycont>
@@ -5203,6 +5193,10 @@ True
 <property type="string" id="rrdmin" mode="w" >
 0
 </property>
+<tomanycont id='aliases'>
+<object id='dsBandwidthSavingsDFSReplication__pct' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5236,6 +5230,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsConflictFilesCleanedUp' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5269,6 +5267,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsDeletedFilesCleanedUp' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5302,6 +5304,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsConflictFilesGenerated' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5335,6 +5341,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsDeletedFilesGenerated' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5368,6 +5378,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsConflictSpaceInUse' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5401,6 +5415,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsDeletedSpaceInUse' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5434,6 +5452,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsConflictFolderCleanupsCompleted' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5467,6 +5489,10 @@ GAUGE
 <property type="boolean" id="isrow" mode="w" >
 True
 </property>
+<tomanycont id='aliases'>
+<object id='dsStagingBytesCleaned' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
 </object>
 </tomanycont>
 </object>
@@ -5499,6 +5525,488 @@ GAUGE
 </property>
 <property type="boolean" id="isrow" mode="w" >
 True
+</property>
+<tomanycont id='aliases'>
+<object id='dsStagingBytesGenerated' module='Products.ZenModel.RRDDataPointAlias' class='RRDDataPointAlias'>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+<tomanycont id='graphDefs'>
+<object id='Conflict Files' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+files
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsConflictFilesCleanedUp' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsConflictFilesCleanedUp_dsConflictFilesCleanedUp
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='dsConflictFilesGenerated' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsConflictFilesGenerated_dsConflictFilesGenerated
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Space Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+bytes
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsConflictSpaceInUse' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsConflictSpaceInUse_dsConflictSpaceInUse
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='dsDeletedSpaceInUse' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsDeletedSpaceInUse_dsDeletedSpaceInUse
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Conflict Folders' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+folders
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsConflictFolderCleanupsCompleted' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsConflictFolderCleanupsCompleted_dsConflictFolderCleanupsCompleted
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Deleted Files' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+files
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsDeletedFilesGenerated' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsDeletedFilesGenerated_dsDeletedFilesGenerated
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='dsDeletedFilesCleanedUp' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsDeletedFilesCleanedUp_dsDeletedFilesCleanedUp
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Staging Bytes' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+bytes
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+-1
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsStagingBytesCleaned' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsStagingBytesCleaned_dsStagingBytesCleaned
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+<object id='dsStagingBytesGenerated' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.0lf%s
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsStagingBytesGenerated_dsStagingBytesGenerated
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Bandwidth Savings' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
+<property type="int" id="height" mode="w" >
+100
+</property>
+<property type="int" id="width" mode="w" >
+500
+</property>
+<property type="string" id="units" mode="w" >
+percent
+</property>
+<property type="boolean" id="log" mode="w" >
+False
+</property>
+<property type="boolean" id="base" mode="w" >
+False
+</property>
+<property type="int" id="miny" mode="w" >
+0
+</property>
+<property type="int" id="maxy" mode="w" >
+100
+</property>
+<property type="boolean" id="hasSummary" mode="w" >
+True
+</property>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<tomanycont id='graphPoints'>
+<object id='dsBandwidthSavingsDFSReplication' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+1
+</property>
+<property select_variable="lineTypes" type="selection" id="lineType" mode="w" >
+LINE
+</property>
+<property type="long" id="lineWidth" mode="w" >
+1
+</property>
+<property type="boolean" id="stacked" mode="w" >
+False
+</property>
+<property type="string" id="format" mode="w" >
+%7.2lf%%
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+<property type="long" id="limit" mode="w" >
+-1
+</property>
+<property type="string" id="dpName" mode="w" >
+dsBandwidthSavingsDFSReplication_dsBandwidthSavingsDFSReplication
+</property>
+<property type="string" id="cFunc" mode="w" >
+AVERAGE
 </property>
 </object>
 </tomanycont>

@@ -198,9 +198,12 @@ class DCDiagStrategy(object):
 
     key = 'DCDiag'
 
-    def build_command_line(self, tests):
+    def build_command_line(self, tests, testparms):
         self.run_tests = set(tests)
-        return 'dcdiag /q /test:' + ' /test:'.join(tests)
+        dcdiagcommand = 'dcdiag /q /test:' + ' /test:'.join(tests)
+        if testparms:
+            dcdiagcommand += ' ' + ' '.join(testparms)
+        return dcdiagcommand
 
     def parse_result(self, config, result):
         if result.stderr:
@@ -693,6 +696,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
             command_line = strategy.build_command_line(script, usePowershell)
+        elif dsconf0.params['strategy'] == 'DCDiag':
+            testparms = [dsconf.params['script'] for dsconf in config.datasources if dsconf.params['script']]
+            command_line = strategy.build_command_line(counters, testparms)
         else:
             command_line = strategy.build_command_line(counters)
 

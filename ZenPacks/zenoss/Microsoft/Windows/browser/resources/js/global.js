@@ -30,6 +30,12 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
     constructor: function(config) {
         config = config || {};
         var record = config.record;
+        var textareaLabel = _t('Script');
+        var textareaEmptyText = _t('Powershell or DOS command');
+        if (record.strategy == 'DCDiag') {
+            textareaLabel = _t('Test Parameters');
+            textareaEmptyText = _t('DCDiag test parameters');
+        }
 
         Ext.apply(config, {
             border: false,
@@ -78,11 +84,12 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
                 xtype: 'textarea',
                 width: 300,
                 height: 200,
-                fieldLabel: _t('Script'),
+                fieldLabel: textareaLabel,
                 name: 'script',
                 ref: 'ScriptTextarea',
                 value: record.script,
-                hidden: record.strategy != 'Custom Command'
+                emptyText: textareaEmptyText,
+                hidden: (record.strategy != 'Custom Command' && record.strategy != 'DCDiag')
             }]
         });
 
@@ -95,6 +102,18 @@ Zenoss.form.WinRSStrategy = Ext.extend(Ext.Panel, {
             this.ParserCombo.show();
             this.UsePowershellCheckbox.show();
             this.ScriptTextarea.show();
+            this.ScriptTextarea.labelEl.update('Script');
+            this.ScriptTextarea.emptyText = _t('Powershell or DOS command');
+            this.ScriptTextarea.applyEmptyText();
+        }
+        else if (this.StrategyCombo.value == 'DCDiag') {
+            this.ResourceTextfield.show();
+            this.ParserCombo.hide();
+            this.UsePowershellCheckbox.hide();
+            this.ScriptTextarea.show();
+            this.ScriptTextarea.labelEl.update('Test Parameters');
+            this.ScriptTextarea.emptyText = _t('DCDiag test parameters');
+            this.ScriptTextarea.applyEmptyText();
         }
         else {
             this.ResourceTextfield.show();
