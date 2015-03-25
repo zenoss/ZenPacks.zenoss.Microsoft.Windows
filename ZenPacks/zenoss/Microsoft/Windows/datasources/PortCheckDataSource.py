@@ -80,7 +80,7 @@ class PortCheckScanner(PortScan.Scanner):
     def recordFailure(self, failure, host, port):
         hostData = self.data['failure'].setdefault(host, [])
         data = (port, failure.getErrorMessage())
-        log.debug('Failed to connect to {}:{} -- {}'.format(host, port, data[1]))
+        logging.getLogger('zen.Portscanner').debug('Failed to connect to {}:{} -- {}'.format(host, port, data[1]))
         hostData.append(data)
 
 class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
