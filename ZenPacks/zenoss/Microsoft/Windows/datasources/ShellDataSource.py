@@ -310,6 +310,16 @@ class CustomCommandStrategy(object):
                 'eventKey': 'WindowsCommandCollection',
                 'summary': msg,
                 'device': config.id})
+        else:
+            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
+            msg = 'Custom Command success'
+            collectedResult.events.append({
+                'eventClass': eventClass,
+                'severity': ZenEventClasses.Clear,
+                'eventClassKey': 'WindowsCommandCollectionError',
+                'eventKey': 'WindowsCommandCollection',
+                'summary': msg,
+                'device': config.id})
         return collectedResult
 
 gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
