@@ -255,7 +255,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
-            'eventKey': eventKey,
+            'eventKey': 'WindowsServiceCollection',
             'eventClassKey': 'WindowsServiceLogSuccess',
         })
 
