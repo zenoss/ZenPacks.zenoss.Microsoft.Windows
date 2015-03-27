@@ -160,8 +160,6 @@ class Device(BaseDevice):
                     continue
             templates.append(template)
 
-        self.zDeviceTemplates = [template.id for template in templates]
-
         return templates
 
 
