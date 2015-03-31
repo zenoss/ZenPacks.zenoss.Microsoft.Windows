@@ -95,6 +95,8 @@ class OperatingSystem(WinRMPlugin):
         # if NTDS service present then this is a DC
         if domainController:
             device_om.domain_controller = True
+        else:
+            device_om.domain_controller = False
 
         maps.append(device_om)
 
