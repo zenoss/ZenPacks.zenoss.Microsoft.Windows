@@ -39,12 +39,12 @@ class OperatingSystem(WinRMPlugin):
             'query': 'SELECT * FROM mscluster_cluster',
             'namespace': 'mscluster',
         },
+        'ActiveDirectory': 'SELECT * FROM Win32_Service where Name = "NTDS"',
     }
     powershell_commands = dict(
         exchange_version=(
             'Get-Command exsetup |%{$_.Fileversioninfo.ProductVersion}'
         ),
-        dc = ('dcdiag /q /test:Advertising')
     )
 
     def process(self, device, results, log):
@@ -57,7 +57,7 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
-        domainController = results.get('dc')
+        domainController = results.get('ActiveDirectory', (None,))
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
@@ -92,13 +92,9 @@ class OperatingSystem(WinRMPlugin):
         except (AttributeError):
             pass
 
-        try:
-            # we'll see an error if dcdiag is not installed.
-            # if no stderr then this is a DC
-            if not domainController.stderr:
-                device_om.domain_controller = True
-        except:
-            pass
+        # if NTDS service present then this is a DC
+        if domainController:
+            device_om.domain_controller = True
 
         maps.append(device_om)
 
