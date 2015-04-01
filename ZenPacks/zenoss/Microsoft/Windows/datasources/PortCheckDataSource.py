@@ -43,6 +43,8 @@ class PortCheckDataSource(PythonDataSource):
     component = '${here/id}'
     cycletime = 300
     ports = ''
+    sourcetypes = ('Windows PortCheck',)
+    sourcetype = sourcetypes[0]
 
     _properties = PythonDataSource._properties + (
         {'id': 'ports', 'type': 'string'},

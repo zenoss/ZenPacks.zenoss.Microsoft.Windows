@@ -207,6 +207,16 @@ Zenoss.form.PortCheck = Ext.extend(Ext.panel.Panel, {
                             'desc': desc.getValue(),
                         };
                         if (port.value) {
+                            var canAdd = true;
+                            grid.getStore().each(function(record){
+                                if (record.get('value').port == port.value) {
+                                    canAdd = false;
+                                }
+                            });
+                            if (!canAdd){
+                                new Zenoss.dialog.ErrorDialog({message: _t('Port {port} already being tested.  Please enter a unique port number.'.replace("{port}",port.value))});
+                                return false;
+                            }
                             grid.getStore().add({value: value});
                         }
 
