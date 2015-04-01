@@ -156,7 +156,7 @@ class WinServiceInfo(WinComponentInfo):
             self._object.description)
 
     def getMonitor(self):
-        monitorstatus = self._object.getMonitor()
+        monitorstatus = self._object.monitored()
         return monitorstatus
 
     def setMonitor(self, value):
