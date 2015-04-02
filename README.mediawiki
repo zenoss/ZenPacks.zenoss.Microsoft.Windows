@@ -405,6 +405,8 @@ Beginning with version 2.4.0, you can now monitor the output of DCDiag.  By defa
 
 See https://technet.microsoft.com/en-us/library/cc731968.aspx for more information on DCDiag.
 
+{{note}} DCDiag must be run as a user with Administrator permissions.
+
 == PortCheck ==
 
 Beginning with version 2.4.0, you can now monitor specific ports in the Windows Zenpack.  By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.
