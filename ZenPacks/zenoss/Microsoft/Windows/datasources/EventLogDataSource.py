@@ -323,7 +323,7 @@ class EventLogQuery(object):
 			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
 			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
             if ($win2003 -eq $false) {
-                [Array]$events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
+                [Array]$events = Get-WinEvent -LogName $logname | Where-Object {$_.TimeCreated -ge $after};
             } else { 
                 [Array]$events = Get-EventLog -After $after -LogName $logname;
 			};
