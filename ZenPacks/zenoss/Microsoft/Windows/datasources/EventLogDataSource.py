@@ -331,10 +331,9 @@ class EventLogQuery(object):
             if($events) { <# update the time of last read log entry #>
                 [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
 				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+				<# Reverse sort so oldest events are processed first #>
+				[Array]::Reverse($events);
             };
-
-            <# Reverse sort so oldest events are processed first #>
-            [Array]::Reverse($events);
 
             <# EventLog has different attributes than EventLogRecord #>
             if ($win2003) {
