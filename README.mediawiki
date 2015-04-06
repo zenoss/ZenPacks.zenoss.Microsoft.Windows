@@ -194,19 +194,6 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 
 {{note}} The Active Directory monitoring template will only be used when the NTDS service is found during modeling.
 
-;DFS Replication
-* \DFS Replication Connections\Bandwidth Savings Using DFS Replication
-* \DFS Replicated Folders\Conflict Files Generated
-* \DFS Replicated Folders\Deleted Files Cleaned up
-* \DFS Replicated Folders\Deleted Files Generated
-* \DFS Replicated Folders\Conflict Space In Use
-* \DFS Replicated Folders\Deleted Space In Use
-* \DFS Replicated Folders\Conflict Folder Cleanups Completed
-* \DFS Replicated Folders\Conflict Files Cleaned Up
-* \DFS Replicated Folders\Staging Bytes Cleaned up
-* \DFS Replicated Folders\Staging Bytes Generated
-* \DFS Replicated Folders\Staging Bytes Generated
-
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 * \MSExchangeIS Mailbox(_Total)\Local delivery rate
@@ -309,13 +296,13 @@ To monitor EventLog events you should add to monitoring template with "Windows E
 
 To target all events with a Warning or higher severity:
 
-For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
+For Windows 2003 and 2008: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
 Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
-For Windows 2008 & Later: 
+For Windows 2008 R2 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
@@ -413,7 +400,7 @@ Beginning with version 2.4.0, you can now monitor specific ports in the Windows 
 
 You can add and remove any port you wish to be monitored by editing the PortCheck datasource in the Active Directory monitoring template.
 
-To monitor ports on a Windows server that is not a domain controller, simply create a new datasource and choose Windows PortCheck as the type.
+To monitor ports on a Windows server that is not a domain controller, simply create a new datasource and choose Windows PortCheck as the type.  Then add the ports you wish to monitor with a short description of each.
 
 See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more information on Active Directory port usage.
 
@@ -939,14 +926,12 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
-* DFS Replication (in /Server/Microsoft)
 
 == Changes ==
 
 ;2.4.0
-* Added DFS Replication performance counter monitoring
-* Added DCDiag tests
-* Added Port checking ability
+* Added DCDiag tests for Active Directory monitoring
+* Added Port checking ability for Active Directory and other monitoring
 * Improved Kerberos error messages
 * Improved Custom Command feedback from Powershell scripts (ZEN-16834)
 * Improved selection of monitoring templates to be run
