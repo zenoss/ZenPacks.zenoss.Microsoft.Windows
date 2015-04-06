@@ -153,6 +153,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
             value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
             if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
                 value = [value]
+        except UnicodeDecodeError:
+            # replace unknown characters with '?'
+            value = json.loads(unicode(output.decode("utf-8", "replace")))
+            if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
+                value = [value]
         except ValueError as e:
             log.error('Could not parse json: %r\n%s' % (output, e))
             raise
