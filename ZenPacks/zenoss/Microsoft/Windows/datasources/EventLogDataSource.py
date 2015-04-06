@@ -244,7 +244,6 @@ class EventLogQuery(object):
             <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
         };
-        <# Function to convert EventRecord from Get-EventLog cmdlet#>
         function EventLogToJSON {
             begin {
                 $first = $True;
@@ -272,7 +271,6 @@ class EventLogQuery(object):
                 ']'
             }
         };
-        <# Function to convert EventRecord from Get-WinEvent cmdlet#>
         function EventLogRecordToJSON {
             begin {
                 $first = $True;
@@ -302,14 +300,11 @@ class EventLogQuery(object):
         };
 
         function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
-            <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
             
-            <# check the time of last read log entry #>
             $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
             
-            <# If last log entry was older that $max_age hours - read only for last $max_age hours #>
             [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
             if ($last_read) {
@@ -319,11 +314,10 @@ class EventLogQuery(object):
                 };
             };
             
-            <# Fetch events
-			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
-			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
+            $win2003 = [environment]::OSVersion.Version.Major -lt 6;
             if ($win2003 -eq $false) {
-                [Array]$events = Get-WinEvent -LogName $logname | Where-Object {$_.TimeCreated -ge $after};
+                $query = '<QueryList><Query Id="0" Path="{logname}"><Select Path="{logname}">*[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select></Query></QueryList>';
+                [Array]$events = Get-WinEvent -FilterXml $query.replace("{logname}",$logname).replace("{time}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
             } else { 
                 [Array]$events = Get-EventLog -After $after -LogName $logname;
 			};
@@ -331,11 +325,9 @@ class EventLogQuery(object):
             if($events) { <# update the time of last read log entry #>
                 [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
 				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
-				<# Reverse sort so oldest events are processed first #>
 				[Array]::Reverse($events);
             };
 
-            <# EventLog has different attributes than EventLogRecord #>
             if ($win2003) {
                 @($events | ? $selector) | EventLogToJSON
             } else {
