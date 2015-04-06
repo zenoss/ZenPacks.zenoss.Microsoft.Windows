@@ -296,13 +296,13 @@ To monitor EventLog events you should add to monitoring template with "Windows E
 
 To target all events with a Warning or higher severity:
 
-For Windows 2003 and 2008: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
+For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
 <code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
 Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
-For Windows 2008 R2 & Later:
+For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
