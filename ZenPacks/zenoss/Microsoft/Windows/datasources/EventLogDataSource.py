@@ -327,9 +327,9 @@ class EventLogQuery(object):
                 [Array]$events = Get-EventLog -After $after -LogName $logname;
 			};
             
-            if($events) { <# update the time of last read log entry #>
-                [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
-				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            [DateTime]$last_read = get-date;
+            Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            if($events) {
 				[Array]::Reverse($events);
             };
 

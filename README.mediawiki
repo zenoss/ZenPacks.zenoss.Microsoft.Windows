@@ -538,6 +538,7 @@ See the following examples:
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode other than 'None'.  Choosing 'None' disables monitoring by default.
 {{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
+{{note}} Do not change the datasource name of 'DefaultService'.  The WinService datasource depends on this name.
 
 <br clear=all>
 
@@ -934,10 +935,12 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added Port checking ability for Active Directory and other monitoring
 * Improved Kerberos error messages
 * Improved Custom Command feedback from Powershell scripts (ZEN-16834)
-* Improved selection of monitoring templates to be run
+* Improved automatic selection of device class monitoring templates to be run (ZEN-17059)
 * Fix Windows service datasource does not clear collection errors (ZEN-16802)
 * Fix EventLogDatasource ignores $max_age (ZEN-16564)
 * Fix Event Log Datasource does not escape tab characters (ZEN-15911)
+* Fix EventLogDataSource processes events from newest to oldest (ZEN-16565)
+* Fix WindowsEventLog will continuously fetch the same events generating false positives if the last event doesn't contain a message/summary (ZEN-17366)
 * Fix IIS-Request Rate graph should be removed from Graphs as it was divided into two (ZEN-17045)
 * Fix txwinrm:  Wrong number of arguments given (ZEN-16790)
 * Fix Some software is missing after model (ZEN-16574)
@@ -948,6 +951,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix No event generated for failed modeling of Windows Device (ZEN-16195)
 * Fix Microsoft Windows bad counter events in wrong event class (ZEN-16558)
 * Fix link is absent on Owner Node for Cluster/Services and Resources components (ZEN-15784)
+* Fix Microsoft Windows bad counter events in wrong event class (ZEN-16558)
+* Fix No event generated for failed modeling of Windows Device (ZEN-16195)
+* Fix WinRM ZenPack missing thresholds which should be available out-of-box (ZEN-16024)
+* Fix Microsoft.Windows - link is absent on Owner Node for Cluster/Services and Resources components (ZEN-15784)
 
 ;2.3.2
 * Fix traceback during Software modeling (ZEN-16224)
