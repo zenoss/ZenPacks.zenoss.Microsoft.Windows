@@ -989,6 +989,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix No event generated for failed modeling of Windows Device (ZEN-16195)
 * Fix WinRM ZenPack missing thresholds which should be available out-of-box (ZEN-16024)
 * Fix Microsoft.Windows - link is absent on Owner Node for Cluster/Services and Resources components (ZEN-15784)
+* Fix New Windows ZenPack - Working with templates throws 'NoneType' exception (ZEN-17318)
 
 ;2.3.2
 * Fix traceback during Software modeling (ZEN-16224)
