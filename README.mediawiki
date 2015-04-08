@@ -289,6 +289,40 @@ The following metrics are collected directly via WMI.
 {{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
 {{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
 
+=== SQL Server ===
+The following performance counters are monitored via Powershell script per database:
+
+\SQLServer:Databases(<dbname>)\Active Transactions
+\SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
+\SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
+\SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
+\SQLServer:Databases(<dbname>)\Cache Entries Count
+\SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
+\SQLServer:Databases(<dbname>)\Cache Hit Ratio
+\SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
+\SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
+\SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
+\SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
+\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
+\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
+\SQLServer:Databases(<dbname>)\Log Cache Reads/sec
+\SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
+\SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
+\SQLServer:Databases(<dbname>)\Log Flush Wait Time
+\SQLServer:Databases(<dbname>)\Log Flush Waits/sec
+\SQLServer:Databases(<dbname>)\Log Flushes/sec
+\SQLServer:Databases(<dbname>)\Log Growths
+\SQLServer:Databases(<dbname>)\Percent Log Used
+\SQLServer:Databases(<dbname>)\Log Shrinks
+\SQLServer:Databases(<dbname>)\Log Truncations
+\SQLServer:Databases(<dbname>)\Percent Log Used
+\SQLServer:Databases(<dbname>)\Repl. Pending Xacts
+\SQLServer:Databases(<dbname>)\Repl. Trans. Rate
+\SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
+\SQLServer:Databases(<dbname>)\Transactions/sec
+
+You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
+
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 

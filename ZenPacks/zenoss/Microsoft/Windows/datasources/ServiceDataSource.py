@@ -84,14 +84,14 @@ class ServiceDataSource(PythonDataSource):
     def getAffectedServices(self):
         """Generate WinService instances to which this datasource is bound."""
         template = self.rrdTemplate().primaryAq()
-        deviceclass = template.deviceClass().primaryAq()
+        deviceclass = template.deviceClass()
         # Template is local to a specific service.
         if deviceclass is None:
             yield template.getPrimaryParent()
 
         # Template is in a device class.
         else:
-            results = ICatalogTool(deviceclass).search(WinService)
+            results = ICatalogTool(deviceclass.primaryAq()).search(WinService)
             for result in results:
                 try:
                     service = result.getObject()
