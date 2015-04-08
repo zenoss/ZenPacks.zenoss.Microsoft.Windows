@@ -825,6 +825,11 @@ For example:
 * vi /etc/sysctl.conf
 * fs.file-max=10000
 
+=== Troubleshooting monitoring ===
+
+While monitoring, possible network connectivity issues may occur while trying to complete the Get-Counter command.
+If you experience OperationTimeout errors, it may be a solution to decrease value of ''zWinPerfmonInterval'' property to 30 seconds.
+
 == Zenoss Analytics ==
 
 This ZenPack provides additional support for Zenoss Analytics. Perform the
