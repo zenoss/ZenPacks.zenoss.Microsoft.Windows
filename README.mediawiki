@@ -666,7 +666,7 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 
 {{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
-{{note}} If you are using kerberos to connect to your Windows Server, your data will now be encrypted over HTTP.
+{{note}} If you are using kerberos on EL6 and higher to connect to your Windows Server, your data will be encrypted over HTTP.  For kerberos on EL5, encryption is not supported so you must set the winrm AllowUnencrypted option to true.
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
