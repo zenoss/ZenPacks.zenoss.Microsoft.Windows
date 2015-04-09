@@ -47,7 +47,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     eventlog = ''
     query = ''
-    max_age = 24.0
+    max_age = '24.0'
 
     plugin_classname = ZENPACKID + \
         '.datasources.EventLogDataSource.EventLogPlugin'
@@ -55,7 +55,7 @@ class EventLogDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
         {'id': 'query', 'type': 'lines'},
-        {'id': 'max_age', 'type': 'float'},
+        {'id': 'max_age', 'type': 'string'},
     )
 
 
