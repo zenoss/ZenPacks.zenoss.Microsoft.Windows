@@ -102,6 +102,12 @@
         />
 
     <adapter
+        provides=".datasources.PortCheckDataSource.IPortCheckDataSourceInfo"
+        for=".datasources.PortCheckDataSource.PortCheckDataSource"
+        factory=".datasources.PortCheckDataSource.PortCheckDataSourceInfo"
+        />
+
+    <adapter
         provides=".datasources.EventLogDataSource.IEventLogInfo"
         for=".datasources.EventLogDataSource.EventLogDataSource"
         factory=".datasources.EventLogDataSource.EventLogInfo"
@@ -198,6 +204,36 @@
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for=".WinService.WinService"
             factory=".impact.WinServiceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinIIS.WinIIS"
+            factory=".impact.WinIISRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLJob.WinSQLJob"
+            factory=".impact.WinSQLJobRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLDatabase.WinSQLDatabase"
+            factory=".impact.WinSQLDatabaseRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLJob.WinSQLJob"
+            factory=".impact.WinSQLJobRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterResource.ClusterResource"
+            factory=".impact.ClusterResourceRelationsProvider"
             />
 
     </configure>

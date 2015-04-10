@@ -39,11 +39,12 @@ class OperatingSystem(WinRMPlugin):
             'query': 'SELECT * FROM mscluster_cluster',
             'namespace': 'mscluster',
         },
+        'ActiveDirectory': 'SELECT * FROM Win32_Service where Name = "NTDS"',
     }
     powershell_commands = dict(
         exchange_version=(
             'Get-Command exsetup |%{$_.Fileversioninfo.ProductVersion}'
-        )
+        ),
     )
 
     def process(self, device, results, log):
@@ -56,6 +57,7 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
+        domainController = results.get('ActiveDirectory', (None,))
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
@@ -80,7 +82,7 @@ class OperatingSystem(WinRMPlugin):
         if exchange_version:
             device_om.msexchangeversion = 'MSExchange%sIS' % (exchange_version if exchange_version in ['2010', '2013'] else "")
         else:
-            device_om.msexchangeversion = 'MSExchangeIS'
+            device_om.msexchangeversion = ''
         # Cluster Information
         try:
             clusterlist = []
@@ -89,6 +91,12 @@ class OperatingSystem(WinRMPlugin):
             device_om.setClusterMachines = clusterlist
         except (AttributeError):
             pass
+
+        # if NTDS service present then this is a DC
+        if domainController:
+            device_om.domain_controller = True
+        else:
+            device_om.domain_controller = False
 
         maps.append(device_om)
 

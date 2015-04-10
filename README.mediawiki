@@ -108,6 +108,21 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Processor(_Total)\% User Time
 * \System\System Up Time
 
+;File Systems
+* \Disk Read Bytes/sec
+* \% Disk Read Time
+* \Disk Write Bytes/sec
+* \% Disk Write Time
+* \Free Megabytes
+
+;Interfaces
+* \Bytes Received/sec
+* \Bytes Sent/sec
+* \Packets Received Errors
+* \Packets Received/sec
+* \Packets Outbound Errors
+* \Packets Sent/sec
+
 ;Active Directory
 * \NTDS\DS Client Binds/sec
 * \NTDS\DS Directory Reads/sec
@@ -177,6 +192,8 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
+{{note}} The Active Directory monitoring template will only be used when the NTDS service is found during modeling.
+
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
 * \MSExchangeIS Mailbox(_Total)\Local delivery rate
@@ -232,21 +249,6 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Web Service(_Total)\Trace Requests/sec
 * \Web Service(_Total)\Unlock Requests/sec
 
-;File Systems
-* \Disk Read Bytes/sec
-* \% Disk Read Time
-* \Disk Write Bytes/sec
-* \% Disk Write Time
-* \Free Megabytes
-
-;Interfaces
-* \Bytes Received/sec
-* \Bytes Sent/sec
-* \Packets Received Errors
-* \Packets Received/sec
-* \Packets Outbound Errors
-* \Packets Sent/sec
-
 ;IIS Sites
 * \Bytes Received/sec
 * \Bytes Sent/sec
@@ -273,6 +275,8 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Trace Requests/sec
 * \Unlock Requests/sec
 
+{{note}} The IIS monitoring template will only be used when the NTDS service is found during modeling.
+
 The following metrics are collected directly via WMI.
 
 ;Processes (Win32_PerfFormattedData_PerfProc_Process)
@@ -284,6 +288,40 @@ The following metrics are collected directly via WMI.
 
 {{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
 {{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
+
+=== SQL Server ===
+The following performance counters are monitored via Powershell script per database:
+
+\SQLServer:Databases(<dbname>)\Active Transactions
+\SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
+\SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
+\SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
+\SQLServer:Databases(<dbname>)\Cache Entries Count
+\SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
+\SQLServer:Databases(<dbname>)\Cache Hit Ratio
+\SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
+\SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
+\SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
+\SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
+\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
+\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
+\SQLServer:Databases(<dbname>)\Log Cache Reads/sec
+\SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
+\SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
+\SQLServer:Databases(<dbname>)\Log Flush Wait Time
+\SQLServer:Databases(<dbname>)\Log Flush Waits/sec
+\SQLServer:Databases(<dbname>)\Log Flushes/sec
+\SQLServer:Databases(<dbname>)\Log Growths
+\SQLServer:Databases(<dbname>)\Percent Log Used
+\SQLServer:Databases(<dbname>)\Log Shrinks
+\SQLServer:Databases(<dbname>)\Log Truncations
+\SQLServer:Databases(<dbname>)\Percent Log Used
+\SQLServer:Databases(<dbname>)\Repl. Pending Xacts
+\SQLServer:Databases(<dbname>)\Repl. Trans. Rate
+\SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
+\SQLServer:Databases(<dbname>)\Transactions/sec
+
+You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
 
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
@@ -298,7 +336,7 @@ For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryTyp
 
 Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
-For Windows 2008 & Later: 
+For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
@@ -381,6 +419,24 @@ from Products.ZenRRD.CommandParser import CommandParser
 # View Edit and Details : strategy ->custom command, parser is Auto, and tick the Use Powershell box
 # Enter script.  Be sure to use a double dollar sign, '$$', in order to distinguish any powershell specific variables from a TALES expression.
 # Add a datapoint to collect the return value from the script which you can then graph
+
+== DCDiag ==
+
+Beginning with version 2.4.0, you can now monitor the output of DCDiag.  By default all dcdiag tests are enabled in the Active Directory monitoring template.  If a test fails an error event is issued.  You can also add other tests, such as DNS, and supply specific test parameters.
+
+See https://technet.microsoft.com/en-us/library/cc731968.aspx for more information on DCDiag.
+
+{{note}} DCDiag must be run as a user with Administrator permissions.
+
+== PortCheck ==
+
+Beginning with version 2.4.0, you can now monitor specific ports in the Windows Zenpack.  By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.
+
+You can add and remove any port you wish to be monitored by editing the PortCheck datasource in the Active Directory monitoring template.
+
+To monitor ports on a Windows server that is not a domain controller, simply create a new datasource and choose Windows PortCheck as the type.  Then add the ports you wish to monitor with a short description of each.
+
+See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more information on Active Directory port usage.
 
 == Requirements ==
 
@@ -468,6 +524,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 ;zDBInstances
 : This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server. The default instance is ''MSSQLSERVER''. Fill in the user and password to use SQL authentication. Leave the user and password blank to use Windows authentication.
 
+{{note}} HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.
+
 === Configuring Service Monitoring ===
 
 There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, all 'Auto' start services, or somewhere in between.
@@ -513,6 +571,8 @@ See the following examples:
 # Change ''Start mode of service to monitor'' from 'None' to 'Auto' then click save.
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode other than 'None'.  Choosing 'None' disables monitoring by default.
+{{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
+{{note}} Do not change the datasource name of 'DefaultService'.  The WinService datasource depends on this name.
 
 <br clear=all>
 
@@ -606,7 +666,7 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 
 {{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
-{{note}} If you are using kerberos to connect to your Windows Server, your data will now be encrypted over HTTP.
+{{note}} If you are using kerberos on EL6 and higher to connect to your Windows Server, your data will be encrypted over HTTP.  For kerberos on EL5, encryption is not supported so you must set the winrm AllowUnencrypted option to true.
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
@@ -614,12 +674,15 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
 Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
 
-setspn -l hostname1
+<console>
+c:\>setspn -l hostname1
+</console>
 
 If you do not see a record with HTTPS/ at the beginning of the hostname you will need to create the record.
 
-example:
-setspn -s HTTPS/hostname1.zenoss.com hostname1
+<console>
+c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
+</console>
 
 == Transitioning from WindowsMonitor ==
 
@@ -673,6 +736,7 @@ The current release is known to have the following limitations.
 * Support for team NICs is limited to Intel and Broadcom interfaces.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
+* Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos libary on EL5 systems does not contain the necessary functionality. 
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -795,6 +859,11 @@ For example:
 * vi /etc/sysctl.conf
 * fs.file-max=10000
 
+=== Troubleshooting monitoring ===
+
+While monitoring, possible network connectivity issues may occur while trying to complete the Get-Counter command.
+If you experience OperationTimeout errors, it may be a solution to decrease value of ''zWinPerfmonInterval'' property to 30 seconds.
+
 == Zenoss Analytics ==
 
 This ZenPack provides additional support for Zenoss Analytics. Perform the
@@ -874,6 +943,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Windows Process
 * Windows Service
 * Windows Shell
+* Windows PortCheck
 
 ;Monitoring Templates
 * Device (in /Server/Microsoft)
@@ -898,6 +968,35 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.4.0
+* Added DCDiag tests for Active Directory monitoring
+* Added Port checking ability for Active Directory and other monitoring
+* Improved Kerberos error messages
+* Improved Custom Command feedback from Powershell scripts (ZEN-16834)
+* Improved automatic selection of device class monitoring templates to be run (ZEN-17059)
+* Fix Windows service datasource does not clear collection errors (ZEN-16802)
+* Fix EventLogDatasource ignores $max_age (ZEN-16564)
+* Fix Event Log Datasource does not escape tab characters (ZEN-15911)
+* Fix EventLogDataSource processes events from newest to oldest (ZEN-16565)
+* Fix WindowsEventLog will continuously fetch the same events generating false positives if the last event doesn't contain a message/summary (ZEN-17366)
+* Fix IIS-Request Rate graph should be removed from Graphs as it was divided into two (ZEN-17045)
+* Fix txwinrm:  Wrong number of arguments given (ZEN-16790)
+* Fix Some software is missing after model (ZEN-16574)
+* Fix OperatingSystem Modeler Broken (ZEN-16799)
+* Fix WinRM Software Modeler Parsing Traceback (ZEN-16224)
+* Fix Windows Zenpack Impact relationships are inconsistent (ZEN-16796)
+* Fix WinRM ZenPack missing thresholds which should be available out-of-box (ZEN-16024)
+* Fix No event generated for failed modeling of Windows Device (ZEN-16195)
+* Fix Microsoft Windows bad counter events in wrong event class (ZEN-16558)
+* Fix link is absent on Owner Node for Cluster/Services and Resources components (ZEN-15784)
+* Fix Microsoft Windows bad counter events in wrong event class (ZEN-16558)
+* Fix No event generated for failed modeling of Windows Device (ZEN-16195)
+* Fix WinRM ZenPack missing thresholds which should be available out-of-box (ZEN-16024)
+* Fix Microsoft.Windows - link is absent on Owner Node for Cluster/Services and Resources components (ZEN-15784)
+* Fix New Windows ZenPack - Working with templates throws 'NoneType' exception (ZEN-17318)
+* Fix Microsoft.Windows - unable to model device using Kerberos authen on Centos 5 (ZEN-16546)
+* Fix Cannot "View and edit details"  on datasource Windows Eventlog (ZEN-17240)
 
 ;2.3.2
 * Fix traceback during Software modeling (ZEN-16224)

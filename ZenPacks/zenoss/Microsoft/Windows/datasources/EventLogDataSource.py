@@ -47,7 +47,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     eventlog = ''
     query = ''
-    max_age = 24.0
+    max_age = '24.0'
 
     plugin_classname = ZENPACKID + \
         '.datasources.EventLogDataSource.EventLogPlugin'
@@ -55,7 +55,7 @@ class EventLogDataSource(PythonDataSource):
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
         {'id': 'query', 'type': 'lines'},
-        {'id': 'max_age', 'type': 'float'},
+        {'id': 'max_age', 'type': 'string'},
     )
 
 
@@ -153,6 +153,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
             value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
             if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
                 value = [value]
+        except UnicodeDecodeError:
+            # replace unknown characters with '?'
+            value = json.loads(unicode(output.decode("utf-8", "replace")))
+            if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
+                value = [value]
         except ValueError as e:
             log.error('Could not parse json: %r\n%s' % (output, e))
             raise
@@ -244,7 +249,6 @@ class EventLogQuery(object):
             <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
         };
-        <# Function to convert EventRecord from Get-EventLog cmdlet#>
         function EventLogToJSON {
             begin {
                 $first = $True;
@@ -272,7 +276,6 @@ class EventLogQuery(object):
                 ']'
             }
         };
-        <# Function to convert EventRecord from Get-WinEvent cmdlet#>
         function EventLogRecordToJSON {
             begin {
                 $first = $True;
@@ -302,14 +305,11 @@ class EventLogQuery(object):
         };
 
         function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
-            <# create HKLM:\SOFTWARE\zenoss\logs if not exists #>
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
             
-            <# check the time of last read log entry #>
             $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
             
-            <# If last log entry was older that $max_age hours - read only for last $max_age hours #>
             [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
             if ($last_read) {
@@ -319,28 +319,34 @@ class EventLogQuery(object):
                 };
             };
             
-            <# Fetch events
-			   Win2003 uses Get-EventLog.  2008 and above uses Get-WinEvent #>
-			$win2003 = [environment]::OSVersion.Version.Major -lt 6;
+            $win2003 = [environment]::OSVersion.Version.Major -lt 6;
             if ($win2003 -eq $false) {
-                $events = Get-WinEvent -FilterHashTable @{LogName=$logname; StartTime=$after};
+                $query = '<QueryList><Query Id="0" Path="{logname}"><Select Path="{logname}">*[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select></Query></QueryList>';
+                [Array]$events = Get-WinEvent -FilterXml $query.replace("{logname}",$logname).replace("{time}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
             } else { 
-				$events = Get-EventLog -After $after -LogName $logname;
+                [Array]$events = Get-EventLog -After $after -LogName $logname;
 			};
             
-            if($events) { <# update the time of last read log entry #>
-                [DateTime]$last_read = @{$true=(@($events)[0]).TimeGenerated;$false=(@($events)[0]).TimeCreated}[$win2003];
-				Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            [DateTime]$last_read = get-date;
+            Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            if($events) {
+				[Array]::Reverse($events);
             };
-            
-            <# EventLog has different attributes than EventLogRecord #>
+
             if ($win2003) {
                 @($events | ? $selector) | EventLogToJSON
             } else {
 			    @($events | ? $selector) | EventLogRecordToJSON
 			}
         };
-        get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s";
+        function Use-en-US ([ScriptBlock]$script= (throw))
+        {
+            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
+            Invoke-Command $script;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
+        };
+        Use-en-US {get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s"};
     '''
 
     def run(self, eventlog, selector, max_age, eventid):

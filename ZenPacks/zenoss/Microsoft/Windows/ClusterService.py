@@ -28,6 +28,7 @@ class ClusterService(OSComponent):
     coregroup = False
     priority = 0
     state = None
+    domain = ""
 
     _properties = OSComponent._properties + (
         {'id': 'ownernode', 'label': 'Owner Node', 'type': 'string'},
@@ -35,6 +36,7 @@ class ClusterService(OSComponent):
         {'id': 'coregroup', 'label': 'Core Group', 'type': 'boolean'},
         {'id': 'priority', 'label': 'Priority', 'type': 'integer'},
         {'id': 'state', 'label': 'State', 'type': 'string'},
+        {'id': 'domain', 'label': 'Domain', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
@@ -49,10 +51,10 @@ class ClusterService(OSComponent):
     def ownernodeentity(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         try:
-            clusterhostip = getHostByName(self.ownernode)
+            clusterhostip = getHostByName(self.ownernode + "." + self.domain)
             return deviceRoot.findDeviceByIdOrIp(clusterhostip)
         except(gaierror):
-            log.warning('Unable to resolve hostname {0}'.format(self.ownernode))
+            log.warning('Unable to resolve hostname {0}'.format(self.ownernode + "." + self.domain))
             return
 
     def getRRDTemplateName(self):
