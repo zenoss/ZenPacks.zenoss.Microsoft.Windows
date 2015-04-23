@@ -969,6 +969,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.4.1
+* Fixed Data from MS Exchange monitoring template is written to MSExchangeIS service component (ZEN-17566)
+
 ;2.4.0
 * Added DCDiag tests for Active Directory monitoring
 * Added Port checking ability for Active Directory and other monitoring
