@@ -80,7 +80,11 @@ class OperatingSystem(WinRMPlugin):
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
         if exchange_version:
-            device_om.msexchangeversion = 'MSExchange%sIS' % (exchange_version if exchange_version in ['2010', '2013'] else "")
+            if exchange_version in ['2010', '2013']:
+                device_om.msexchangeversion = 'MSExchange%sIS' % exchange_version
+            else:
+                # We use this attr to find the correct monitoring template
+                device_om.msexchangeversion = 'MSExchangeInformationStore'
         else:
             device_om.msexchangeversion = ''
         # Cluster Information
