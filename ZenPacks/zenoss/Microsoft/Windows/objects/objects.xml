@@ -17860,9 +17860,6 @@ powershell Cluster Resources
 <property type="boolean" id="usePowershell" >
 True
 </property>
-<property visible="True" type="string" id="counter" >
-get-clusterresource
-</property>
 <tomanycont id='datapoints'>
 <object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
 <property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
@@ -17914,9 +17911,6 @@ powershell Cluster Services
 </property>
 <property type="boolean" id="usePowershell" >
 True
-</property>
-<property visible="True" type="string" id="counter" >
-get-clustergroup
 </property>
 <tomanycont id='datapoints'>
 <object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
