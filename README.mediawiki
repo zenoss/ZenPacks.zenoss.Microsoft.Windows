@@ -275,7 +275,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Trace Requests/sec
 * \Unlock Requests/sec
 
-{{note}} The IIS monitoring template will only be used when the NTDS service is found during modeling.
+{{note}} The IIS monitoring template will only be used when IIS is found during modeling.
 
 The following metrics are collected directly via WMI.
 
