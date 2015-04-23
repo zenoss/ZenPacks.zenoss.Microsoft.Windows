@@ -34,19 +34,23 @@ class TestMonitoringTemplates(BaseTestCase):
 
         # Active Directory
         found_wrong, found_right = False, False
+        ad_is_set = False
         for template in server.getRRDTemplates():
-            if template.id == 'Active Directory':
-                found_wrong = True
-            elif template.id == 'Active Directory 2003':
-                found_right = True
+            if 'Active Directory' in template.id:
+                ad_is_set = True
+                if template.id == 'Active Directory':
+                    found_wrong = True
+                elif template.id == 'Active Directory 2003':
+                    found_right = True
 
-        self.assertFalse(
-            found_wrong,
-            "wrong 'Active Directory' template bound to server2003")
+        if ad_is_set:
+            self.assertFalse(
+                found_wrong,
+                "wrong 'Active Directory' template bound to server2003")
 
-        self.assertTrue(
-            found_right,
-            "correct 'Active Directory 2003' template not bound to server2003")
+            self.assertTrue(
+                found_right,
+                "correct 'Active Directory 2003' template not bound to server2003")
 
         # Exchange
         server.msexchangeversion = 'MSExchangeIS'
