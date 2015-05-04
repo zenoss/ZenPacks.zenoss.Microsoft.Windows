@@ -725,6 +725,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 if owner_node:
                     conn_info = conn_info._replace(hostname=owner_node)
             instance = dsconf0.params['instancename']
+            instance_login = {}
             try:
                 instance_login = dblogins[instance]
             except KeyError:
@@ -734,6 +735,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 try:
                     instance_login = dblogins['MSSQLSERVER']
                 except KeyError:
+                    pass
+                if 'username' not in instance_login or not instance_login['username']:
+                    login_as_user = True
                     instance_login = {'username':dsconf0.windows_user, \
                                       'password':dsconf0.windows_password}
                  
