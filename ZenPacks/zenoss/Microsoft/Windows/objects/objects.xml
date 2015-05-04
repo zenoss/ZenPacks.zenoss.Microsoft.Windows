@@ -17449,14 +17449,6 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 <property visible="True" type="instancecredentials" id="zDBInstances" >
 [{'passwd': '', 'instance': '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'user': ''}]
 </property>
-<property visible="True" type="string" id="zWinRMUser" >
-zenny@solad.loc
-</property>
-<property visible="True" type="password" id="zWinRMPassword" >
-</property>
-<property visible="True" type="string" id="zWinKDC" >
-10.111.5.53
-</property>
 <tomanycont id='rrdTemplates'>
 <object id='ShellTests' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
