@@ -20,6 +20,7 @@ import urllib
 from urlparse import urlparse
 from traceback import format_exc
 import re
+import json
 
 from zope.component import adapts
 from zope.component import getGlobalSiteManager
@@ -389,7 +390,7 @@ class PowershellMSSQLStrategy(object):
         # Need to modify query where clause.
         # Currently all counters are retrieved for each database
 
-        sqlConnection.append("foreach ($instance in $instances){")
+        sqlConnection.append('foreach ($instance in $instances){write-host "instancename:"$instance;')
         # DB Connection Object
         sqlConnection.append("$con = new-object " \
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
@@ -443,15 +444,24 @@ class PowershellMSSQLStrategy(object):
         valuemap = {}
         for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':', 1)
-            if key.strip() == 'ckey':
+            if key.strip() == 'instancename':
+                instancename = value.split('\\')[-1].strip()
+                valuemap[instancename] = {}
+            elif key.strip() == 'databasename':
+                databasename = value.strip()
+                if databasename not in valuemap[instancename]:
+                    valuemap[instancename][databasename] = {}
+            elif key.strip() == 'ckey':
                 _counter = value.strip().lower()
             elif key.strip() == 'cvalue':
-                valuemap[_counter] = value.strip()
+                valuemap[instancename][databasename][_counter] = value.strip()
 
         for dsconf in dsconfs:
             try:
                 key = dsconf.params['resource'].lower()
-                value = float(valuemap[key])
+                instancename = dsconf.params['instancename']
+                databasename = dsconf.params['contexttitle']
+                value = float(valuemap[instancename][databasename][key])
                 timestamp = int(time.mktime(time.localtime()))
                 yield dsconf, value, timestamp
             except:
@@ -607,10 +617,22 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 datasource.id,
                 context.id)
         elif datasource.strategy == 'powershell MSSQL':
-            return (context.device().id,
-                    datasource.getCycleTime(context),
-                    datasource.strategy
-                    )
+            # allow for existing zDBInstances
+            try:
+                zDBInstances = json.loads(context.device().zDBInstances)
+            except:
+                return (context.device().id,
+                        datasource.getCycleTime(context),
+                        datasource.strategy)
+            if context.instancename in [dbin['instance'] for dbin in zDBInstances]:
+                return (context.device().id,
+                        datasource.getCycleTime(context),
+                        datasource.strategy,
+                        context.instancename)
+            else:
+                return (context.device().id,
+                        datasource.getCycleTime(context),
+                        datasource.strategy)
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
@@ -694,7 +716,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             dbinstances = dsconf0.zDBInstances
             username = dsconf0.windows_user
             password = dsconf0.windows_password
-
             dblogins, login_as_user = parseDBUserNamePass(
                 dbinstances, username, password
             )
@@ -707,9 +728,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 instance_login = dblogins[instance]
             except KeyError:
-                raise WindowsShellException(
-                    "zDBInstances does not contain credentials for %s" % instance
+                log.debug("zDBInstances does not contain credentials for %s.  " \
+                          "Using default credentials" % instance
                 )
+                try:
+                    instance_login = dblogins['MSSQLSERVER']
+                except KeyError:
+                    instance_login = {'username':dsconf0.windows_user, \
+                                      'password':dsconf0.windows_password}
+                 
             command_line = strategy.build_command_line(
                 sqlusername=instance_login['username'],
                 sqlpassword=instance_login['password'],
