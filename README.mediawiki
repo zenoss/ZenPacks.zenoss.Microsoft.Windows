@@ -973,6 +973,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ;2.4.2
 * Fix poor performance of SQL Server monitoring of large number of databases. (ZEN-17535)
+* Fix poor performance of SQL Server modeling of large number of databases. (ZEN-17669)
 
 ;2.4.1
 * Fixed Data from MS Exchange monitoring template is written to MSExchangeIS service component (ZEN-17566)
