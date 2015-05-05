@@ -367,7 +367,7 @@ class PowershellMSSQLStrategy(object):
             @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
             @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
         $instances = New-Object System.Collections.Arraylist;
-        $cluster_instances | % {$instances += "($_).OwnerNode\($_).SQLInstance}";
+        $cluster_instances | % {$instances += "($_).SQLInstance}";
     '''
 
     HOSTNAME_PS_SCRIPT = '''

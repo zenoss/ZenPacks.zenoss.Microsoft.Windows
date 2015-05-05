@@ -308,7 +308,12 @@ class WinMSSQL(WinRMPlugin):
             )
 
             check_username(instance_info, instance, log)
+            in_databases=False
+            in_backups = False
+            in_jobs = False
             for stdout_line in filter_sql_stdout(instance_info.stdout):
+                if stdout_line == 'assembly load error':
+                    break
                 if stdout_line == '====Databases':
                     in_databases = True
                     in_backups = False
@@ -327,8 +332,6 @@ class WinMSSQL(WinRMPlugin):
                 if in_databases:
                     dbobj = stdout_line
                     #for dbobj in filter_sql_stdout(databases.stdout):
-                    if dbobj == 'assembly load error':
-                        continue
                     db = dbobj.split('\t')
                     dbdict = {}
 
