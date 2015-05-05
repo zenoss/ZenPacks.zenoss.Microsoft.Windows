@@ -17730,14 +17730,6 @@ AVERAGE
 </object>
 </tomanycont>
 <object id='servicetest' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
-<property visible="True" type="string" id="zWinRMUser" >
-zenny@solad.loc
-</property>
-<property visible="True" type="password" id="zWinRMPassword" >
-</property>
-<property visible="True" type="string" id="zWinKDC" >
-10.111.5.53
-</property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
 ['Device']
 </property>
