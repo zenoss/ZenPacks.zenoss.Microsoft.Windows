@@ -5714,35 +5714,6 @@ True
 </object>
 </tomanycont>
 </object>
-<object id='apps' module='ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource' class='EventLogDataSource'>
-<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-Windows EventLog
-</property>
-<property type="boolean" id="enabled" mode="w" >
-True
-</property>
-<property type="string" id="component" mode="w" >
-${here/id}
-</property>
-<property type="int" id="severity" mode="w" >
-3
-</property>
-<property type="string" id="cycletime" mode="w" >
-300
-</property>
-<property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource.EventLogPlugin
-</property>
-<property type="string" id="eventlog" >
-Application
-</property>
-<property type="lines" id="query" >
-*
-</property>
-<property type="string" id="max_age" >
-24.0
-</property>
-</object>
 <object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon
@@ -16888,6 +16859,48 @@ None
 </object>
 </tomanycont>
 </object>
+<object id='copy_of_WinService' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft Windows per-service monitoring.
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft Windows per-service monitoring.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.Winservice
+</property>
+<tomanycont id='datasources'>
+<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Service
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property type="string" id="cycletime" mode="w" >
+60
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
+</property>
+<property type="string" id="servicename" >
+${here/id}
+</property>
+<property type="string" id="alertifnot" >
+Running
+</property>
+<property type="string" id="startmode" >
+None
+</property>
+</object>
+</tomanycont>
+</object>
 <object id='ethernetCsmacd' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Microsoft Windows network interface monitoring.
@@ -17437,17 +17450,17 @@ Windows Operating System
 <property type="lines" id="devtypes" mode="w" >
 [('Windows Server', 'WMI')]
 </property>
+<property visible="True" type="lines" id="zCollectorPlugins" >
+['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
+</property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.Device
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'IIS', 'Active Directory', 'MSExchange2010IS']
-</property>
-<property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
+['Device', 'Active Directory', 'IIS', 'MSExchange2010IS']
 </property>
 <property visible="True" type="instancecredentials" id="zDBInstances" >
-[{'passwd': '', 'instance': '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'user': ''}]
+[{"instance":"MSSQLSERVER","user":"","passwd":""}]
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ShellTests' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
@@ -17730,6 +17743,14 @@ AVERAGE
 </object>
 </tomanycont>
 <object id='servicetest' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
+<property visible="True" type="string" id="zWinRMUser" >
+zenny@solad.loc
+</property>
+<property visible="True" type="password" id="zWinRMPassword" >
+</property>
+<property visible="True" type="string" id="zWinKDC" >
+10.111.5.53
+</property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
 ['Device']
 </property>
@@ -17799,10 +17820,10 @@ Windows Cluster
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'IIS', 'Active Directory', 'MSExchange2010IS']
+['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
 </property>
 <property visible="True" type="instancecredentials" id="zDBInstances" >
-[{'passwd': '', 'instance': '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'user': ''}]
+[{"instance":"MSSQLSERVER","user":"","passwd":""}]
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
@@ -17843,6 +17864,9 @@ powershell Cluster Resources
 </property>
 <property type="boolean" id="usePowershell" >
 True
+</property>
+<property visible="True" type="string" id="counter" >
+get-clusterresource
 </property>
 <tomanycont id='datapoints'>
 <object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
@@ -17895,6 +17919,9 @@ powershell Cluster Services
 </property>
 <property type="boolean" id="usePowershell" >
 True
+</property>
+<property visible="True" type="string" id="counter" >
+get-clustergroup
 </property>
 <tomanycont id='datapoints'>
 <object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
