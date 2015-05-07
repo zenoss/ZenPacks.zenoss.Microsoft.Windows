@@ -17453,6 +17453,15 @@ Windows Operating System
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software', 'zenoss.winrm.IIS']
 </property>
+<property visible="True" type="string" id="zPythonClass" >
+ZenPacks.zenoss.Microsoft.Windows.Device
+</property>
+<property visible="True" type="lines" id="zDeviceTemplates" >
+['Device', 'Active Directory', 'IIS', 'MSExchange2010IS']
+</property>
+<property visible="True" type="instancecredentials" id="zDBInstances" >
+[{"instance":"MSSQLSERVER","user":"","passwd":""}]
+</property>
 <tomanycont id='rrdTemplates'>
 <object id='ShellTests' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property type="string" id="targetPythonClass" mode="w" >
@@ -17811,10 +17820,10 @@ Windows Cluster
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'IIS', 'Active Directory', 'MSExchange2010IS']
+['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
 </property>
 <property visible="True" type="instancecredentials" id="zDBInstances" >
-[{'passwd': '', 'instance': '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'user': ''}]
+[{"instance":"MSSQLSERVER","user":"","passwd":""}]
 </property>
 <tomanycont id='rrdTemplates'>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
