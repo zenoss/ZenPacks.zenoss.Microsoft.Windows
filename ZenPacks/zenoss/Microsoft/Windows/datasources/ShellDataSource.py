@@ -648,7 +648,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
 
         if dsconf0.params['strategy'] == 'powershell MSSQL':
-            import pdb; pdb.set_trace()
             dbinstances = dsconf0.zDBInstances
             username = dsconf0.windows_user
             password = dsconf0.windows_password
