@@ -114,12 +114,23 @@ class EventLogPlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         te = lambda x: datasource.talesEval(x, context)
+        query = ""
+        query_error = True
+
+        if datasource.query.strip() != '$':
+            try:
+                query = te(' '.join(string_to_lines(datasource.query)))
+                query_error = False
+            except Exception:
+                pass
+
         return dict(
-            eventlog=te(datasource.eventlog), 
-            query=te(' '.join(string_to_lines(datasource.query))),
-            max_age=te(datasource.max_age), 
-            eventid=te(datasource.id)
-        )
+                eventlog=te(datasource.eventlog), 
+                query=query,
+                query_error=query_error,
+                max_age=te(datasource.max_age), 
+                eventid=te(datasource.id)
+            )
 
     @defer.inlineCallbacks
     def collect(self, config):
@@ -127,6 +138,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
         log.info('Start Collection of Events')
 
         ds0 = config.datasources[0]
+
+        try:
+            if ds0.params['query_error']:
+                raise EventLogException('Please verify EventQuery on datasource %s' 
+                    % ds0.params['eventid'])
+        except EventLogException as e:
+            value = [e]
+            raise
+        
         conn_info = createConnectionInfo(ds0)
 
         query = EventLogQuery(conn_info)
