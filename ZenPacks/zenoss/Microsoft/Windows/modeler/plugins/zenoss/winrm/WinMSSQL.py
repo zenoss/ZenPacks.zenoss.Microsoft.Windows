@@ -128,7 +128,6 @@ class WinMSSQL(WinRMPlugin):
         dbinstance = prepare_zDBInstances(device.zDBInstances)
         username = device.windows_user
         password = device.windows_password
-        login_as_user = False
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'
 
@@ -139,14 +138,15 @@ class WinMSSQL(WinRMPlugin):
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=el.get('user'),
-                        password=el.get('passwd')
+                        password=el.get('passwd'),
+                        login_as_user=False
                     )
             else:
-                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=username,
-                        password=password
+                        password=password,
+                        login_as_user=True
                     )
             results = {'clear': eventmessage}
         except (ValueError, TypeError, IndexError):
@@ -227,15 +227,18 @@ class WinMSSQL(WinRMPlugin):
             try:
                 sqlusername = dblogins[instance]['username']
                 sqlpassword = dblogins[instance]['password']
+                login_as_user = dblogins[instance]['login_as_user']
             except KeyError:
                 # Try default MSSQLSERVER creds
                 try:
                     sqlusername = dblogins['MSSQLSERVER']['username']
                     sqlpassword = dblogins['MSSQLSERVER']['password']
+                    login_as_user = dblogins['MSSQLSERVER']['login_as_user']
                 except KeyError:
                     # Use windows auth
                     sqlusername = username
                     sqlpassword = password
+                    login_as_user = True
 
             # DB Connection Object
             sqlConnection.append("$con = new-object " \
