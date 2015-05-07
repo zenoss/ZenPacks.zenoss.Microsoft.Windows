@@ -330,71 +330,21 @@ class PowershellMSSQLStrategy(object):
 
     key = 'PowershellMSSQL'
 
-    LOCAL_INSTANCES_PS_SCRIPT = '''
-        $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);
-        $baseKeys = 'SOFTWARE\Microsoft\Microsoft SQL Server',
-            'SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server';
-        foreach ($regPath in $baseKeys) {
-            $regKey= $reg.OpenSubKey($regPath);
-            If ($regKey -eq $null) {Continue};
-            If ($regKey.GetSubKeyNames() -contains 'Instance Names') {
-                $regKey = $reg.OpenSubKey($regpath+'\Instance Names\SQL');
-                $instances = @($regkey.GetValueNames());
-            } ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {
-                $instances = $regKey.GetValue('InstalledInstances');
-            } Else {Continue};
-            $local_instances = New-Object System.Collections.Arraylist;
-            $instances | % {
-                $instanceValue = $regKey.GetValue($_);
-                $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
-                If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
-                    $local_instances += $hostname+'\\'+$_;
-                };
-            };
-            break;
-        };
-        $instances=$local_instances;
-    '''
-
-    CLUSTER_INSTANCES_PS_SCRIPT = '''
-        $domain = (gwmi WIN32_ComputerSystem).Domain;
-        Import-Module FailoverClusters;
-        $cluster_instances = Get-ClusterResource
-            | ? {$_.ResourceType -like 'SQL Server'}
-            | % {$ownernode = $_.OwnerNode; $_
-            | Get-ClusterParameter -Name VirtualServerName,InstanceName
-            | Group ClusterObject | Select
-            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
-            @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
-        $instances = New-Object System.Collections.Arraylist;
-        $cluster_instances | % {$instances += "($_).SQLInstance}";
-    '''
-
-    HOSTNAME_PS_SCRIPT = '''
-        $hostname = hostname;
-    '''
-    def build_command_line(self, sqlusername, sqlpassword, login_as_user, is_cluster):
+    def build_command_line(self, instance, sqlusername, sqlpassword, login_as_user, is_cluster):
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
 
         # We should not be running this per database.  Bad performance problems when there are
-        # a lot of databases.  However, we can't run against every monitored database at once
-        # because of cmd shell line limit of 8192.  But, what we can do is to run it on every
-        # database and let the collector throw out what is not necessary
-
-        psinstance_script = self.CLUSTER_INSTANCES_PS_SCRIPT if is_cluster \
-            else self.LOCAL_INSTANCES_PS_SCRIPT
-        psinstance_script = self.HOSTNAME_PS_SCRIPT + psinstance_script.replace('\n', ' ')
+        # a lot of databases.  Run script per instance
 
         sqlConnection = []
         # Need to modify query where clause.
         # Currently all counters are retrieved for each database
 
-        sqlConnection.append('foreach ($instance in $instances){write-host "instancename:"$instance;')
         # DB Connection Object
         sqlConnection.append("$con = new-object " \
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
-            " \"$instance\", '{0}', '{1}';".format(sqlusername, sqlpassword))
+            "'{}', '{}', '{}';".format(instance, sqlusername, sqlpassword))
 
         if login_as_user:
             # Login using windows credentials
@@ -420,10 +370,10 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}' \
         'else { Write-Host "databasename:"$db.Name};}')
-        counters_sqlConnection.append("}}")
+        counters_sqlConnection.append("}")
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
-            ''.join(getSQLAssembly() + psinstance_script.split('\n') + sqlConnection + counters_sqlConnection))
+            ''.join(getSQLAssembly() + sqlConnection + counters_sqlConnection))
         return command
 
     def parse_result(self, dsconfs, result):
@@ -444,24 +394,20 @@ class PowershellMSSQLStrategy(object):
         valuemap = {}
         for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':', 1)
-            if key.strip() == 'instancename':
-                instancename = value.split('\\')[-1].strip()
-                valuemap[instancename] = {}
-            elif key.strip() == 'databasename':
+            if key.strip() == 'databasename':
                 databasename = value.strip()
-                if databasename not in valuemap[instancename]:
-                    valuemap[instancename][databasename] = {}
+                if databasename not in valuemap:
+                    valuemap[databasename] = {}
             elif key.strip() == 'ckey':
                 _counter = value.strip().lower()
             elif key.strip() == 'cvalue':
-                valuemap[instancename][databasename][_counter] = value.strip()
+                valuemap[databasename][_counter] = value.strip()
 
         for dsconf in dsconfs:
             try:
                 key = dsconf.params['resource'].lower()
-                instancename = dsconf.params['instancename']
                 databasename = dsconf.params['contexttitle']
-                value = float(valuemap[instancename][databasename][key])
+                value = float(valuemap[databasename][key])
                 timestamp = int(time.mktime(time.localtime()))
                 yield dsconf, value, timestamp
             except:
@@ -618,21 +564,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 context.id)
         elif datasource.strategy == 'powershell MSSQL':
             # allow for existing zDBInstances
-            try:
-                zDBInstances = json.loads(context.device().zDBInstances)
-            except:
-                return (context.device().id,
-                        datasource.getCycleTime(context),
-                        datasource.strategy)
-            if context.instancename in [dbin['instance'] for dbin in zDBInstances]:
-                return (context.device().id,
-                        datasource.getCycleTime(context),
-                        datasource.strategy,
-                        context.instancename)
-            else:
-                return (context.device().id,
-                        datasource.getCycleTime(context),
-                        datasource.strategy)
+            return (context.device().id,
+                    datasource.getCycleTime(context),
+                    datasource.strategy,
+                    context.instancename)
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
@@ -713,6 +648,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         counters = [dsconf.params['resource'] for dsconf in config.datasources]
 
         if dsconf0.params['strategy'] == 'powershell MSSQL':
+            import pdb; pdb.set_trace()
             dbinstances = dsconf0.zDBInstances
             username = dsconf0.windows_user
             password = dsconf0.windows_password
@@ -720,12 +656,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 dbinstances, username, password
             )
 
-            if dsconf0.cluster_node_server:
-                owner_node, server = dsconf.cluster_node_server.split('//')
-                if owner_node:
-                    conn_info = conn_info._replace(hostname=owner_node)
             instance = dsconf0.params['instancename']
-            instance_login = {}
             try:
                 instance_login = dblogins[instance]
             except KeyError:
@@ -735,16 +666,31 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 try:
                     instance_login = dblogins['MSSQLSERVER']
                 except KeyError:
-                    pass
-                if 'username' not in instance_login or not instance_login['username']:
-                    login_as_user = True
                     instance_login = {'username':dsconf0.windows_user, \
-                                      'password':dsconf0.windows_password}
+                                      'password':dsconf0.windows_password,
+                                      'login_as_user':True}
                  
+            if instance == 'MSSQLSERVER':
+                instance_name = dsconf0.sqlhostname
+            else:
+                instance_name = '{0}\{1}'.format(dsconf0.sqlhostname, instance)
+
+            if dsconf0.cluster_node_server:
+                owner_node, server = dsconf.cluster_node_server.split('//')
+                if owner_node:
+                    conn_info = conn_info._replace(hostname=owner_node)
+                    instance_name = server
+                else:
+                    if instance == 'MSSQLSERVER':
+                        instance_name = dsconf0.sqlhostname
+                    else:
+                        instance_name = '{0}\{1}'.format(dsconf0.sqlhostname, instance)
+
             command_line = strategy.build_command_line(
+                instance=instance_name,
                 sqlusername=instance_login['username'],
                 sqlpassword=instance_login['password'],
-                login_as_user=login_as_user,
+                login_as_user=instance_login['login_as_user'],
                 is_cluster=True if owner_node else False)
 
 
