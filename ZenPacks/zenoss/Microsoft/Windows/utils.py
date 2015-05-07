@@ -95,7 +95,8 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username=el.get('user'),
-                    password=el.get('passwd')
+                    password=el.get('passwd'),
+                    login_as_user=False
                 )
         # b) Windows auth
         else:
@@ -104,14 +105,16 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username=username,
-                    password=password
+                    password=password,
+                    login_as_user=True
                 )
 
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
                 dblogins['MSSQLSERVER'] = {
                     'username': username, # 'sa',
-                    'password': password
+                    'password': password,
+                    'login_as_user':True
                 }
     except (ValueError, TypeError, IndexError):
         pass
