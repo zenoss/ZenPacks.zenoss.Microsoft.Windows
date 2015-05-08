@@ -137,9 +137,9 @@ class WinMSSQL(WinRMPlugin):
             if ''.join(users):
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
-                        username=el.get('user'),
-                        password=el.get('passwd'),
-                        login_as_user=False
+                        username=el.get('user') if el.get('user') else username,
+                        password=el.get('passwd') if el.get('passwd') else password,
+                        login_as_user=False if el.get('user') else True
                     )
             else:
                 for el in filter(None, dbinstance):
