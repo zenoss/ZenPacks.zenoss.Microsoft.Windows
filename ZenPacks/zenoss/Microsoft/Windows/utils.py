@@ -255,14 +255,15 @@ def prepare_zDBInstances(inst):
     '''
     dbinstance = inst
     if isinstance(inst, list):
-        if inst[0].get('instance'):
+        if inst[0].get('instance') and isinstance(inst[0].get('instance'), list):
             dbinstance = inst[0].get('instance')
             # checks if the pre_parced is list
-            if isinstance(dbinstance, list):
-                # check if the first element is dict
-                if isinstance(dbinstance[0], dict):
-                    # Convert dict to string
-                    prep_inst = str(dbinstance[0])
-                    prep_inst = prep_inst.replace('\'', '"')
-                    dbinstance = '[' + prep_inst + ']'
+            # check if the first element is dict
+            if isinstance(dbinstance[0], dict):
+                # Convert dict to string
+                prep_inst = str(dbinstance[0])
+                prep_inst = prep_inst.replace('\'', '"')
+                dbinstance = '[' + prep_inst + ']'
+        else:
+            dbinstance = str(dbinstance).replace('\'', '"')
     return dbinstance
