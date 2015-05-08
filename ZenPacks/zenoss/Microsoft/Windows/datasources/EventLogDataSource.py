@@ -117,12 +117,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
         query = ""
         query_error = True
 
-        if datasource.query.strip() != '$':
-            try:
-                query = te(' '.join(string_to_lines(datasource.query)))
-                query_error = False
-            except Exception:
-                pass
+        try:
+            query = te(' '.join(string_to_lines(datasource.query)))
+            query_error = False
+        except Exception:
+            pass
 
         return dict(
                 eventlog=te(datasource.eventlog), 
@@ -139,14 +138,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        try:
-            if ds0.params['query_error']:
-                raise EventLogException('Please verify EventQuery on datasource %s' 
-                    % ds0.params['eventid'])
-        except EventLogException as e:
+        if ds0.params['query_error']:
+            e = EventLogException('Please verify EventQuery on datasource %s' 
+                % ds0.params['eventid'])
             value = [e]
-            raise
-        
+            raise e
+
         conn_info = createConnectionInfo(ds0)
 
         query = EventLogQuery(conn_info)
