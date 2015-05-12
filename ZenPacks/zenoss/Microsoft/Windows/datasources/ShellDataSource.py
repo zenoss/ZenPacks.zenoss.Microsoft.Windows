@@ -651,7 +651,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             dbinstances = dsconf0.zDBInstances
             username = dsconf0.windows_user
             password = dsconf0.windows_password
-            dblogins, login_as_user = parseDBUserNamePass(
+            dblogins = parseDBUserNamePass(
                 dbinstances, username, password
             )
 
