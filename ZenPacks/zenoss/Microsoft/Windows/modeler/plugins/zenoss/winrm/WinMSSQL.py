@@ -128,7 +128,6 @@ class WinMSSQL(WinRMPlugin):
         dbinstance = prepare_zDBInstances(device.zDBInstances)
         username = device.windows_user
         password = device.windows_password
-        login_as_user = False
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'
 
@@ -138,15 +137,16 @@ class WinMSSQL(WinRMPlugin):
             if ''.join(users):
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
-                        username=el.get('user'),
-                        password=el.get('passwd')
+                        username=el.get('user') if el.get('user') else username,
+                        password=el.get('passwd') if el.get('passwd') else password,
+                        login_as_user=False if el.get('user') else True
                     )
             else:
-                login_as_user = True
                 for el in filter(None, dbinstance):
                     dblogins[el.get('instance')] = dict(
                         username=username,
-                        password=password
+                        password=password,
+                        login_as_user=True
                     )
             results = {'clear': eventmessage}
         except (ValueError, TypeError, IndexError):
@@ -204,73 +204,137 @@ class WinMSSQL(WinRMPlugin):
                     continue
 
             if instance not in dblogins:
-                log.info("DB Instance {0} found but was not set in zDBInstances".format(
-                    instance))
-                continue
+                log.info("DB Instance {0} found but was not set in zDBInstances.  " \
+                         "Using default credentials.".format(instance))
 
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
             om_instance.title = instance
             om_instance.instancename = instance
             instance_oms.append(om_instance)
-            if instance in dblogins:
-                sqlConnection = []
 
-                if instance == 'MSSQLSERVER':
-                    sqlserver = sqlhostname
-                else:
-                    sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+            sqlConnection = []
 
-                if isCluster:
-                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+            if instance == 'MSSQLSERVER':
+                sqlserver = sqlhostname
+            else:
+                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
 
+            if isCluster:
+                sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+
+            # Look for specific instance creds first
+            try:
                 sqlusername = dblogins[instance]['username']
                 sqlpassword = dblogins[instance]['password']
+                login_as_user = dblogins[instance]['login_as_user']
+            except KeyError:
+                # Try default MSSQLSERVER creds
+                try:
+                    sqlusername = dblogins['MSSQLSERVER']['username']
+                    sqlpassword = dblogins['MSSQLSERVER']['password']
+                    login_as_user = dblogins['MSSQLSERVER']['login_as_user']
+                except KeyError:
+                    # Use windows auth
+                    sqlusername = username
+                    sqlpassword = password
+                    login_as_user = True
 
-                # DB Connection Object
-                sqlConnection.append("$con = new-object " \
-                    "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
-                    "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
+            # DB Connection Object
+            sqlConnection.append("$con = new-object " \
+                "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
+                "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
-                if login_as_user:
-                    log.debug("Windows auth %s / %s" % (sqlusername, sqlpassword))
-                    # Login using windows credentials
-                    sqlConnection.append("$con.LoginSecure=$true;")
-                    sqlConnection.append("$con.ConnectAsUser=$true;")
-                    # Omit domain part of username
-                    sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
-                    sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
-                else:
-                    log.debug("DB auth %s / %s" % (sqlusername, sqlpassword))
-                    sqlConnection.append("$con.Connect();")
+            if login_as_user:
+                log.debug("Windows auth %s / %s" % (sqlusername, sqlpassword))
+                # Login using windows credentials
+                sqlConnection.append("$con.LoginSecure=$true;")
+                sqlConnection.append("$con.ConnectAsUser=$true;")
+                # Omit domain part of username
+                sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
+                sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+            else:
+                log.debug("DB auth %s / %s" % (sqlusername, sqlpassword))
+                sqlConnection.append("$con.Connect();")
 
-                # Connect to Database Server
-                sqlConnection.append("$server = new-object " \
-                    "('Microsoft.SqlServer.Management.Smo.Server') $con;")
+            # Connect to Database Server
+            sqlConnection.append("$server = new-object " \
+                "('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
-                db_sqlConnection = []
-                # Get database information
-                db_sqlConnection.append('$server.Databases | foreach {' \
-                    'write-host \"Name---\" $_,' \
-                    '\"`tVersion---\" $_.Version,' \
-                    '\"`tIsAccessible---\" $_.IsAccessible,' \
-                    '\"`tID---\" $_.ID,' \
-                    '\"`tOwner---\" $_.Owner,' \
-                    '\"`tLastBackupDate---\" $_.LastBackupDate,'\
-                    '\"`tCollation---\" $_.Collation,'\
-                    '\"`tCreateDate---\" $_.CreateDate,'\
-                    '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
-                    '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
-                    '\"`tLastLogBackupDate---\" $_.LastLogBackupDate' \
-                    '};')
+            db_sqlConnection = []
+            # Get database information
+            db_sqlConnection.append('write-host "====Databases";')
+            db_sqlConnection.append('$server.Databases | foreach {' \
+                'write-host \"Name---\" $_,' \
+                '\"`tVersion---\" $_.Version,' \
+                '\"`tIsAccessible---\" $_.IsAccessible,' \
+                '\"`tID---\" $_.ID,' \
+                '\"`tOwner---\" $_.Owner,' \
+                '\"`tLastBackupDate---\" $_.LastBackupDate,'\
+                '\"`tCollation---\" $_.Collation,'\
+                '\"`tCreateDate---\" $_.CreateDate,'\
+                '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
+                '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
+                '\"`tLastLogBackupDate---\" $_.LastLogBackupDate' \
+                '};')
 
-                databases = yield winrs.run_command(
-                    ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection)
-                )
-                check_username(databases, instance, log)
-                for dbobj in filter_sql_stdout(databases.stdout):
-                    if dbobj == 'assembly load error':
-                        continue
+            # Get SQL Backup Jobs information
+            backup_sqlConnection = []
+            backup_sqlConnection.append('write-host "====Backups";')
+            # Get database information
+            backup_sqlConnection.append('$server.BackupDevices | foreach {' \
+                'write-host \"Name---\" $_.Name,' \
+                '\"`tDeviceType---\" $_.BackupDeviceType,' \
+                '\"`tPhysicalLocation---\" $_.PhysicalLocation,' \
+                '\"`tStatus---\" $_.State' \
+                '};')
+
+            # Get SQL Jobs information
+            jobsquery = (
+                "select s.name as jobname, s.job_id as jobid, "
+                "s.enabled as enabled, s.date_created as datecreated, "
+                # Replace each new line with a space in description.
+                "replace(replace(s.description, char(13), char(32)), "
+                "char(10), char(32)) as description, "
+                "l.name as username from msdb..sysjobs s left join "
+                "master.sys.syslogins l on s.owner_sid = l.sid"
+            )
+            job_sqlConnection = []
+            job_sqlConnection.append('write-host "====Jobs";')
+            job_sqlConnection.append("$db = $server.Databases[0];")
+            job_sqlConnection.append("$ds = $db.ExecuteWithResults('{0}');".format(jobsquery))
+            job_sqlConnection.append('$ds.Tables | Format-List;')
+
+            instance_info = yield winrs.run_command(
+                ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection + \
+                        backup_sqlConnection + job_sqlConnection)
+            )
+
+            check_username(instance_info, instance, log)
+            in_databases=False
+            in_backups = False
+            in_jobs = False
+            for stdout_line in filter_sql_stdout(instance_info.stdout):
+                if stdout_line == 'assembly load error':
+                    break
+                if stdout_line == '====Databases':
+                    in_databases = True
+                    in_backups = False
+                    in_jobs = False
+                    continue
+                elif stdout_line == '====Backups':
+                    in_databases = False
+                    in_backups = True
+                    in_jobs = False
+                    continue
+                elif stdout_line == '====Jobs':
+                    in_databases = False
+                    in_backups = False
+                    in_jobs = True
+                    continue
+                if in_databases:
+                    dbobj = stdout_line
+                    #for dbobj in filter_sql_stdout(databases.stdout):
                     db = dbobj.split('\t')
                     dbdict = {}
 
@@ -310,22 +374,8 @@ class WinMSSQL(WinRMPlugin):
                             owner_node.strip(), sqlserver)
 
                         database_oms.append(om_database)
-
-                # Get SQL Backup Jobs information
-                backup_sqlConnection = []
-                # Get database information
-                backup_sqlConnection.append('$server.BackupDevices | foreach {' \
-                    'write-host \"Name---\" $_.Name,' \
-                    '\"`tDeviceType---\" $_.BackupDeviceType,' \
-                    '\"`tPhysicalLocation---\" $_.PhysicalLocation,' \
-                    '\"`tStatus---\" $_.State' \
-                    '};')
-
-                backuplist = winrs.run_command(
-                    ''.join(getSQLAssembly() + sqlConnection + backup_sqlConnection)
-                )
-                backups = yield backuplist
-                for backupobj in filter_sql_stdout(backups.stdout):
+                elif in_backups:
+                    backupobj = stdout_line
                     backup = backupobj.split('\t')
                     backupdict = {}
 
@@ -342,27 +392,8 @@ class WinMSSQL(WinRMPlugin):
                     om_backup.instancename = om_instance.id
                     backup_oms.append(om_backup)
 
-                # Get SQL Jobs information
-                jobsquery = (
-                    "select s.name as jobname, s.job_id as jobid, "
-                    "s.enabled as enabled, s.date_created as datecreated, "
-                    # Replace each new line with a space in description.
-                    "replace(replace(s.description, char(13), char(32)), "
-                    "char(10), char(32)) as description, "
-                    "l.name as username from msdb..sysjobs s left join "
-                    "master.sys.syslogins l on s.owner_sid = l.sid"
-                )
-
-                job_sqlConnection = []
-                job_sqlConnection.append("$db = $server.Databases[0];")
-                job_sqlConnection.append("$ds = $db.ExecuteWithResults('{0}');".format(jobsquery))
-                job_sqlConnection.append('$ds.Tables | Format-List;')
-
-                jobslist = winrs.run_command(
-                    ''.join(getSQLAssembly() + sqlConnection + job_sqlConnection)
-                )
-                jobs = yield jobslist
-                for job in filter_sql_stdout(jobs.stdout):
+                elif in_jobs:
+                    job = stdout_line
                     # Make sure that the job description length does not go 
                     # beyond the buffer size (4096 characters).
                     if ':' not in job:

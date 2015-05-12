@@ -86,7 +86,6 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
     if not - uses WinRM credentials.
     """
     dblogins = {}
-    login_as_user = False
     try:
         dbinstance = json.loads(prepare_zDBInstances(dbinstances))
         users = [el.get('user') for el in filter(None, dbinstance)]
@@ -94,8 +93,9 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
         if ''.join(users):
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
-                    username=el.get('user'),
-                    password=el.get('passwd')
+                    username=el.get('user') if el.get('user') else username,
+                    password=el.get('passwd') if el.get('passwd') else password,
+                    login_as_user=False if el.get('user') else True
                 )
         # b) Windows auth
         else:
@@ -104,19 +104,21 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username=username,
-                    password=password
+                    password=password,
+                    login_as_user=True
                 )
 
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
                 dblogins['MSSQLSERVER'] = {
                     'username': username, # 'sa',
-                    'password': password
+                    'password': password,
+                    'login_as_user':True
                 }
     except (ValueError, TypeError, IndexError):
         pass
 
-    return dblogins, login_as_user
+    return dblogins
 
 
 def filter_sql_stdout(val):
@@ -252,14 +254,15 @@ def prepare_zDBInstances(inst):
     '''
     dbinstance = inst
     if isinstance(inst, list):
-        if inst[0].get('instance'):
+        if inst[0].get('instance') and isinstance(inst[0].get('instance'), list):
             dbinstance = inst[0].get('instance')
             # checks if the pre_parced is list
-            if isinstance(dbinstance, list):
-                # check if the first element is dict
-                if isinstance(dbinstance[0], dict):
-                    # Convert dict to string
-                    prep_inst = str(dbinstance[0])
-                    prep_inst = prep_inst.replace('\'', '"')
-                    dbinstance = '[' + prep_inst + ']'
+            # check if the first element is dict
+            if isinstance(dbinstance[0], dict):
+                # Convert dict to string
+                prep_inst = str(dbinstance[0])
+                prep_inst = prep_inst.replace('\'', '"')
+                dbinstance = '[' + prep_inst + ']'
+        else:
+            dbinstance = str(dbinstance).replace('\'', '"')
     return dbinstance
