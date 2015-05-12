@@ -587,6 +587,7 @@ See the following examples:
 ; Support for SQL Server and Windows Authentication:
 * Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
 * SQL Server Authentication: In ''zDBInstances'' property provide user name and password for each SQL instance.
+* Specifying authentication per instance is no longer required with version 2.4.2 and above.  We will use the credentials specified for the MSSQLSERVER instance by default. 
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 # Connect to SQL Instance using MSSQL Management Studio.
@@ -607,8 +608,6 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 # Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
 # Remodel device.
 
-{{note}} For best performance with large numbers of databases, limit the number of instances specified in the zDBInstances property.  The ZenPack will poll data for each item listed in zDBInstances.
- 
 === Working with WinCommand Notification Action ===
 
 This ZenPack adds a new event notification action that can be used by the zenactiond daemon to allow an arbitrary command to be executed on the remote windows machine.
