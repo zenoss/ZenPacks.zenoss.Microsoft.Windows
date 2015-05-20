@@ -19,7 +19,7 @@ class RemoveObjects(ZenPackMigration):
         # Remove unnecessary objects that were inadvertently added.
         organizer = dmd.Devices.getOrganizer('/Server/Microsoft')
         if organizer:
-            organizer.manage_deleteRRDTemplates(['ALG','AppInfo','Appinfo','BFE','EventLog', 'Ec2Config','copy_of_WinService'])
+            organizer.manage_deleteRRDTemplates(['ALG','AppInfo','Appinfo','BFE','EventLog', 'Ec2Config','copy_of_WinService','IISADMIN'])
         organizer = dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
         if organizer:
             organizer.manage_deleteRRDTemplates(['ShellTests'])
