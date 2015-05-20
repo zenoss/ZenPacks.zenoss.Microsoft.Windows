@@ -8460,42 +8460,6 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
-<object id='IISADMIN' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
-<property type="string" id="targetPythonClass" mode="w" >
-Products.ZenModel.Device
-</property>
-<tomanycont id='datasources'>
-<object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
-<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
-Windows Service
-</property>
-<property type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="string" id="component" mode="w" >
-${here/id}
-</property>
-<property type="int" id="severity" mode="w" >
-3
-</property>
-<property type="string" id="cycletime" mode="w" >
-300
-</property>
-<property type="string" id="plugin_classname" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
-</property>
-<property type="string" id="servicename" >
-${here/servicename}
-</property>
-<property type="string" id="alertifnot" >
-Running
-</property>
-<property type="string" id="startmode" >
-None
-</property>
-</object>
-</tomanycont>
-</object>
 <object id='IISSites' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Microsoft IIS site monitoring.
