@@ -183,11 +183,14 @@ class WinCmd(object):
     eventKey = None
     lastStart = 0
     lastStop = 0
-    points = []
+    points = None
     result = CmdResult()
     severity = 3
     usePowershell = False
     deviceConfig = None
+    
+    def __init__(self):
+        self.points = []
 
 
 class IStrategy(Interface):
@@ -722,7 +725,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 results = ShellResult()
                 results.stderr = ['Credentials cache file not found']
             else:
-                raise e
+                raise
 
         defer.returnValue((strategy, config.datasources, results))
 
