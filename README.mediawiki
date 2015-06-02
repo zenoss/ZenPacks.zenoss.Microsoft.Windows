@@ -972,6 +972,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.4.4
+* Fix extra points being sent into "Windows Shell" datasource parsers. (ZEN-18049)
+
 ;2.4.3
 * Fix Port Checker in Microsoft Windows ZP 2.4.2 Results in Errors (ZEN-17893)
 
