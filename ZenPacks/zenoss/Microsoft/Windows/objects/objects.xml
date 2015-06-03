@@ -5586,7 +5586,7 @@ True
 /Perf/Memory
 </property>
 <property type="int" id="severity" mode="w" >
-5
+3
 </property>
 <property label="DataPoints" type="lines" id="dsnames" mode="w" >
 ['MemoryAvailableBytes_MemoryAvailableBytes']
