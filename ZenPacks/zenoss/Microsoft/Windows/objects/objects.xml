@@ -5581,6 +5581,29 @@ True
 </object>
 </tomanycont>
 <tomanycont id='thresholds'>
+<object id='Low Available Memory' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
+<property type="string" id="eventClass" mode="w" >
+/Perf/Memory
+</property>
+<property type="int" id="severity" mode="w" >
+5
+</property>
+<property label="DataPoints" type="lines" id="dsnames" mode="w" >
+['MemoryAvailableBytes_MemoryAvailableBytes']
+</property>
+<property label="Enabled" type="boolean" id="enabled" mode="w" >
+False
+</property>
+<property type="string" id="minval" mode="w" >
+here.hw.totalMemory * .1
+</property>
+<property type="int" id="escalateCount" mode="w" >
+0
+</property>
+<property type="string" id="description" mode="rw" >
+Low Memory Available
+</property>
+</object>
 <object id='CPU Utilization Critical' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
 <property id='zendoc' type='string'>
 CPU Utilization Critical
