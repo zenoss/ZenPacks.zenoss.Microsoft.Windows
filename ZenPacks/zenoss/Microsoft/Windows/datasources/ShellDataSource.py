@@ -366,13 +366,15 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection = []
         counters_sqlConnection.append("if ($server.Databases -ne $null) {")
         counters_sqlConnection.append("foreach ($db in $server.Databases){")
+        counters_sqlConnection.append("if ($db.IsAccessible) {")
         counters_sqlConnection.append("$query = 'select instance_name as databasename, " \
         "counter_name as ckey, cntr_value as cvalue from " \
         "sys.dm_os_performance_counters where instance_name = '" \
         " +[char]39+$db.Name+[char]39;")
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}' \
-        'else { Write-Host "databasename:"$db.Name};}')
+        'else { Write-Host "databasename:"$db.Name;}}')
+        counters_sqlConnection.append("else { Write-Host 'databasename:'$db.name; Write-Host 'status:offline';}}")
         counters_sqlConnection.append("}")
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
@@ -405,16 +407,21 @@ class PowershellMSSQLStrategy(object):
                 _counter = value.strip().lower()
             elif key.strip() == 'cvalue':
                 valuemap[databasename][_counter] = value.strip()
+            elif key.strip() == 'status':
+                valuemap[databasename]['status'] = value.strip()
 
         for dsconf in dsconfs:
+            timestamp = int(time.mktime(time.localtime()))
+            databasename = dsconf.params['contexttitle']
             try:
                 key = dsconf.params['resource'].lower()
-                databasename = dsconf.params['contexttitle']
                 value = float(valuemap[databasename][key])
-                timestamp = int(time.mktime(time.localtime()))
                 yield dsconf, value, timestamp
             except:
-                log.debug("No value was returned for {0}".format(dsconf.params['resource']))
+                log.debug("No value was returned for counter {0} on {1}".format(dsconf.params['resource'], databasename))
+                if valuemap[databasename].has_key('status'):
+                    value = valuemap[databasename]['status']
+                    yield dsconf, value, timestamp
 
 gsm.registerUtility(PowershellMSSQLStrategy(), IStrategy, 'powershell MSSQL')
 
@@ -767,6 +774,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 severity = ZenEventClasses.Info
             else:
                 checked_result = False
+                db_statuses = {}
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                     checked_result = True
                     if dsconf.datasource == 'state':
@@ -790,7 +798,25 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             value[2]
                         )
                     else:
-                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                        if value == 'offline' and strategy.key == 'PowershellMSSQL':
+                            db_statuses[dsconf.component] = False
+                        else:
+                            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                            if strategy.key == 'PowershellMSSQL':
+                                db_statuses[dsconf.component] = True
+                for db in db_statuses:
+                    dsconf = get_dsconf(dsconfs, db)
+                    if not dsconf:
+                        continue
+                    summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
+                    data['events'].append(dict(
+                        eventClassKey='winrsCollection'.format(strategy.key),
+                        eventKey=strategy.key,
+                        severity=ZenEventClasses.Clear if db_statuses[db] else dsconf.severity,
+                        device=config.id,
+                        summary=summary,
+                        component=prepId(db)
+                    ))
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
@@ -864,6 +890,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             device=config.id))
         return data
 
+def get_dsconf(dsconfs, component):
+    for dsconf in dsconfs:
+        if component == dsconf.component:
+            return dsconf
 
 def check_datasource(dsconf):
     '''
