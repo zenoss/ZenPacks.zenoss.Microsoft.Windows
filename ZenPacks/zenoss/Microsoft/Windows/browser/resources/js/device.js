@@ -490,7 +490,14 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Instance Name'),
                 renderer: Zenoss.render.win_entityLinkFromGrid,
                 sortable: true,
-                width: 200
+                width: 200,
+                doSort: function(state) {
+                    var ds = this.up('tablepanel').store;
+                    ds.sort({
+                        property: 'instancename',
+                        direction: state,
+                    });
+                }
             },{
                 id: 'owner',
                 dataIndex: 'owner',
@@ -639,7 +646,14 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Instance Name'),
                 sortable: true,
                 renderer: Zenoss.render.win_entityLinkFromGrid,
-                width: 200
+                width: 200,
+                doSort: function(state) {
+                    var ds = this.up('tablepanel').store;
+                    ds.sort({
+                        property: 'instancename',
+                        direction: state,
+                    });
+                }
             },{
                 id: 'enabled',
                 dataIndex: 'enabled',
