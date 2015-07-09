@@ -5614,8 +5614,8 @@ True
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property type="string" id="minval" mode="w" >
-here.hw.totalMemory * 0.1
+<property type="string" id="maxval" mode="w" >
+here.hw.totalMemory * 0.9
 </property>
 <property type="int" id="escalateCount" mode="w" >
 0
