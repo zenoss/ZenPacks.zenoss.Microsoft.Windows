@@ -5609,12 +5609,12 @@ True
 3
 </property>
 <property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['MemoryAvailableBytes_MemoryAvailableBytes']
+['MemoryCommittedBytes_MemoryCommittedBytes']
 </property>
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
 True
 </property>
-<property type="string" id="minval" mode="w" >
+<property type="string" id="maxval" mode="w" >
 here.hw.totalMemory * 0.9
 </property>
 <property type="int" id="escalateCount" mode="w" >
