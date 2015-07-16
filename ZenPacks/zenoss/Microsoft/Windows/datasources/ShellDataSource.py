@@ -48,7 +48,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error
+from ..utils import check_for_network_error, prepare_instance
 
 
 # Requires that txwinrm_utils is already imported.
@@ -63,7 +63,8 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL',
     'powershell Cluster Services',
     'powershell Cluster Resources',
-    'DCDiag'
+    'DCDiag',
+    'powershell MSSQL Instance'
     ]
 
 gsm = getGlobalSiteManager()
@@ -347,7 +348,7 @@ class PowershellMSSQLStrategy(object):
         # DB Connection Object
         sqlConnection.append("$con = new-object " \
             "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
-            "'{}', '{}', '{}';".format(instance, sqlusername, sqlpassword))
+            "'{}', '{}', '{}';".format(prepare_instance(instance), sqlusername, sqlpassword))
 
         if login_as_user:
             # Login using windows credentials
@@ -554,6 +555,62 @@ class PowershellClusterServiceStrategy(object):
 gsm.registerUtility(PowershellClusterServiceStrategy(), IStrategy, 'powershell Cluster Services')
 
 
+class PowershellMSSQLInstanceStrategy(object):
+    implements(IStrategy)
+
+    key = 'MSSQLInstance'
+
+    def build_command_line(self, instance):
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
+            "-OutputFormat TEXT -Command "
+
+        psInstanceCommands = []
+        psInstanceCommands.append("$inst = Get-Service -displayname 'SQL Server ({0})';" \
+            "write-host $inst.Status'|'$inst.Name".format(prepare_instance(instance)))
+
+        command = "{0} \"& {{{1}}}\"".format(
+            pscommand,
+            ''.join(psInstanceCommands))
+        return command
+
+    def parse_result(self, dsconfs, result):
+        if result.exit_code != 0:
+            counters = [dsconf.params['resource'] for dsconf in dsconfs]
+            log.info(
+                'Non-zero exit code ({0}) for counters, {1}, on {2}'
+                .format(
+                    result.exit_code, counters, dsconf.device))
+            return
+
+        # Parse values
+        stdout = parse_stdout(result)
+        if stdout:
+            status, name = stdout
+            dsconf0 = dsconfs[0]
+
+            compObject = ObjectMap()
+            compObject.id = dsconf0.params['instanceid']
+            compObject.title = prepare_instance(dsconf0.params['instancename'])
+            compObject.compname = dsconf0.params['contextcompname']
+            compObject.modname = dsconf0.params['contextmodname']
+            compObject.relname = dsconf0.params['contextrelname']
+
+            for dsconf in dsconfs:
+                value = (
+                    dsconf0.params['instanceid'],
+                    status.strip(),
+                    compObject
+                )
+                timestamp = int(time.mktime(time.localtime()))
+                yield dsconf, value, timestamp
+        else:
+            log.debug('Error in parsing mssql instance data')
+
+gsm.registerUtility(PowershellMSSQLInstanceStrategy(), IStrategy, 'powershell MSSQL Instance')
+
+
+
+
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties + (
@@ -572,12 +629,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 datasource.strategy,
                 datasource.id,
                 context.id)
-        elif datasource.strategy == 'powershell MSSQL':
+        elif datasource.strategy == 'powershell MSSQL' or datasource.strategy == 'powershell MSSQL Instance':
             # allow for existing zDBInstances
             return (context.device().id,
                     datasource.getCycleTime(context),
                     datasource.strategy,
-                    context.instancename)
+                    context.instancename,
+                    context.id)
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.strategy,
@@ -591,15 +649,18 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 'powershell Cluster Services',
                 'powershell Cluster Resources',
                 'Custom Command',
-                'DCDiag'):
+                'DCDiag',
+                'powershell MSSQL Instance'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
 
         if safe_hasattr(context, 'instancename'):
             instancename = context.instancename
+            instanceid = context.id
         else:
             instancename = ''
+            instanceid = ''
 
         try:
             contextURL = context.getPrimaryUrlPath()
@@ -634,6 +695,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         return dict(resource=resource,
             strategy=datasource.strategy,
             instancename=instancename,
+            instanceid=instanceid,
             servername=servername,
             script=script,
             parser=parser,
@@ -702,7 +764,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 login_as_user=instance_login['login_as_user'],
                 is_cluster=True if owner_node else False)
 
-
+        elif dsconf0.params['strategy'] == 'powershell MSSQL Instance':
+            instance = dsconf0.params['instanceid']
+            command_line = strategy.build_command_line(instance=instance)
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
                 'powershell Cluster Resources'):
 
@@ -764,14 +828,44 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             diagResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
             data['events'] = diagResult.events
+        elif strategy.key == 'MSSQLInstance':
+            for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                currentstate = {
+                    'Running': ZenEventClasses.Clear,
+                    'Stopped': ZenEventClasses.Critical
+                }.get(value[1], ZenEventClasses.Info)
+
+                summary = 'MSSQL Instance {0} is {1}.'.format(
+                        prepare_instance(dsconf.component),
+                        value[1].strip()
+                    )
+
+                data['events'].append(dict(
+                    eventClassKey='winrsCollection {0}'.format(strategy.key),
+                    eventKey=strategy.key,
+                    severity=currentstate,
+                    summary=summary,
+                    device=config.id,
+                    component=prepId(dsconf.component)
+                ))
         else:
             if len(result.stdout) < 2 and strategy.key == "PowershellMSSQL":
                 try:
                     db_name = result.stdout[0].split(':')[1]
                 except Exception:
                     db_name = 'Unknown'
-                msg = 'There is no monitoring data for the database "{0}"'.format(db_name)
+                msg = 'There is no monitoring data for the database "{0}" \
+                    '.format(db_name)
                 severity = ZenEventClasses.Info
+
+                if result.stderr:
+                    inst_err = prepare_instance(
+                        dsconfs[0].params['instancename']
+                    )
+                    for err in result.stderr:
+                        if inst_err in err:
+                            msg = re.sub('[".]', '', err)
+                            severity = ZenEventClasses.Critical
             else:
                 checked_result = False
                 db_statuses = {}
