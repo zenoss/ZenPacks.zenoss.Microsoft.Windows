@@ -609,8 +609,6 @@ class PowershellMSSQLInstanceStrategy(object):
 gsm.registerUtility(PowershellMSSQLInstanceStrategy(), IStrategy, 'powershell MSSQL Instance')
 
 
-
-
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties + (
