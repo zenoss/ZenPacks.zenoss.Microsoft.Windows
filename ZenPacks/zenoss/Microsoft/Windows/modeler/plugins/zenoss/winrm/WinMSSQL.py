@@ -23,7 +23,7 @@ from Products.DataCollector.plugins.DataMaps \
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
-    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
+    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, prepare_instance
 
 addLocalLibPath()
 
@@ -64,7 +64,7 @@ class SQLCommander(object):
                 $instanceValue = $regKey.GetValue($_);
                 $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
                 If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
-                    $local_instances += $_;
+                    $local_instances += $_ +'$instance';
                 };
             };
             break;
@@ -82,7 +82,7 @@ class SQLCommander(object):
             | Group ClusterObject | Select
             @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
             @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
-        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance};
+        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance +'$instance'};
     '''
 
     HOSTNAME_PS_SCRIPT = '''
@@ -189,45 +189,47 @@ class WinMSSQL(WinRMPlugin):
         device_om = ObjectMap()
         device_om.sqlhostname = sqlhostname
         for instance in server_config['instances']:
+            clear_inst = prepare_instance(instance)
             owner_node = ''  # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
             if isCluster:
                 try:
-                    owner_node, sql_server, instance = instance.split('\\') 
+                    owner_node, sql_server, instance = clear_inst.split('\\') 
                     device.windows_servername = owner_node.strip()
                     conn_info = self.conn_info(device)
                     winrs = SQLCommander(conn_info)
                 except ValueError:
                     log.error('Owner node for DB Instance {0} was not found'.format(
-                        instance))
+                        clear_inst))
                     continue
 
-            if instance not in dblogins:
+            if clear_inst not in dblogins:
                 log.info("DB Instance {0} found but was not set in zDBInstances.  " \
-                         "Using default credentials.".format(instance))
+                         "Using default credentials.".format(clear_inst))
 
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance)
-            om_instance.title = instance
-            om_instance.instancename = instance
+            om_instance.title = clear_inst
+            om_instance.instancename = clear_inst
             instance_oms.append(om_instance)
 
             sqlConnection = []
 
-            if instance == 'MSSQLSERVER':
+
+            if clear_inst == 'MSSQLSERVER':
                 sqlserver = sqlhostname
             else:
-                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+                sqlserver = '{0}\{1}'.format(sqlhostname, clear_inst)
 
             if isCluster:
-                sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+                sqlserver = '{0}\{1}'.format(sql_server.strip(), clear_inst)
 
             # Look for specific instance creds first
             try:
-                sqlusername = dblogins[instance]['username']
-                sqlpassword = dblogins[instance]['password']
-                login_as_user = dblogins[instance]['login_as_user']
+                sqlusername = dblogins[clear_inst]['username']
+                sqlpassword = dblogins[clear_inst]['password']
+                login_as_user = dblogins[clear_inst]['login_as_user']
             except KeyError:
                 # Try default MSSQLSERVER creds
                 try:
@@ -310,7 +312,7 @@ class WinMSSQL(WinRMPlugin):
                         backup_sqlConnection + job_sqlConnection)
             )
 
-            check_username(instance_info, instance, log)
+            check_username(instance_info, clear_inst, log)
             in_databases=False
             in_backups = False
             in_jobs = False

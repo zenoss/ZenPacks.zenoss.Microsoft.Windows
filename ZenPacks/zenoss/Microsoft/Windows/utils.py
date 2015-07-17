@@ -266,3 +266,7 @@ def prepare_zDBInstances(inst):
         else:
             dbinstance = str(dbinstance).replace('\'', '"')
     return dbinstance
+
+
+def prepare_instance(inst):
+        return inst.replace('$instance', '')

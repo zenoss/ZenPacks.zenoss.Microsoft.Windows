@@ -13056,6 +13056,48 @@ AVERAGE
 </object>
 </tomanycont>
 </object>
+<object id='WinDBInstance' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property id='zendoc' type='string'>
+Microsoft SQL Server per-instance monitoring.
+</property>
+<property type="text" id="description" mode="w" >
+Microsoft SQL Server per-instance monitoring.
+</property>
+<property type="string" id="targetPythonClass" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance
+</property>
+<tomanycont id='datasources'>
+<object id='InstanceStatus' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+status
+</property>
+<property type="string" id="strategy" >
+powershell MSSQL Instance
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+</object>
+</tomanycont>
+</object>
 <object id='WinDatabase' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Microsoft SQL Server per-database monitoring.
