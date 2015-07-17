@@ -221,7 +221,10 @@ class WinMSSQL(WinRMPlugin):
                 sqlserver = '{0}\{1}'.format(sqlhostname, instance)
 
             if isCluster:
-                sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+                if instance == 'MSSQLSERVER':
+                    sqlserver = sql_server.strip()
+                else:
+                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
 
             # Look for specific instance creds first
             try:
