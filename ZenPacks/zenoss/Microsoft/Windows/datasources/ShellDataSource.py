@@ -623,12 +623,18 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         """
         if datasource.strategy == 'Custom Command':
             return (context.device().id,
-                datasource.getCycleTime(context),
-                datasource.strategy,
-                datasource.id,
-                context.id)
-        elif datasource.strategy == 'powershell MSSQL' or datasource.strategy == 'powershell MSSQL Instance':
+                    datasource.getCycleTime(context),
+                    datasource.strategy,
+                    datasource.id,
+                    context.id)
+        elif datasource.strategy == 'powershell MSSQL':
             # allow for existing zDBInstances
+            return (context.device().id,
+                    datasource.getCycleTime(context),
+                    datasource.strategy,
+                    context.instancename,
+                    context.id)
+        elif datasource.strategy == 'powershell MSSQL Instance':
             return (context.device().id,
                     datasource.getCycleTime(context),
                     datasource.strategy,
@@ -652,12 +658,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
-
+        
         if safe_hasattr(context, 'instancename'):
             instancename = context.instancename
-            instanceid = context.id
         else:
             instancename = ''
+
+        if safe_hasattr(context, 'id'):
+            instanceid = context.id
+        else:
             instanceid = ''
 
         try:
