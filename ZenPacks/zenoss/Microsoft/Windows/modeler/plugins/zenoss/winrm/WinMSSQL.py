@@ -171,6 +171,8 @@ class WinMSSQL(WinRMPlugin):
         for serverconfig in instances.stdout:
             key, value = serverconfig.split(':', 1)
             serverlist = []
+            if not value:
+                continue
             if key in server_config:
                 serverlist = server_config[key]
                 serverlist.append(value.strip())
@@ -221,7 +223,10 @@ class WinMSSQL(WinRMPlugin):
                 sqlserver = '{0}\{1}'.format(sqlhostname, instance)
 
             if isCluster:
-                sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+                if instance == 'MSSQLSERVER':
+                    sqlserver = sql_server.strip()
+                else:
+                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
 
             # Look for specific instance creds first
             try:
@@ -506,8 +511,7 @@ class WinMSSQL(WinRMPlugin):
 def check_username(databases, instance, log):
     stderr = ''.join(databases.stderr)
     stdout = ' '.join(databases.stdout)
-    if not databases.stdout and\
-        (('Exception calling "Connect" with "0" argument(s): '
+    if (('Exception calling "Connect" with "0" argument(s): '
             '"Failed to connect to server'
             in stderr) or (
             'The following exception was thrown when trying to enumerate the '

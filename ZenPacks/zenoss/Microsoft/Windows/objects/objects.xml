@@ -5581,36 +5581,7 @@ True
 </object>
 </tomanycont>
 <tomanycont id='thresholds'>
-<object id='CPU Utilization Critical' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-CPU Utilization Critical
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Perf/CPU
-</property>
-<property type="int" id="severity" mode="w" >
-5
-</property>
-<property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime', 'ProcessorTotalProcessorTime_ProcessorTotalProcessorTime', 'ProcessorTotalUserTime_ProcessorTotalUserTime']
-</property>
-<property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="string" id="maxval" mode="w" >
-95
-</property>
-<property type="int" id="escalateCount" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="rw" >
-CPU Utilization Critical
-</property>
-</object>
-<object id='CPU Utilization Warning' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-CPU Utilization Warning
-</property>
+<object id='CPU Utilization' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
 <property type="string" id="eventClass" mode="w" >
 /Perf/CPU
 </property>
@@ -5618,48 +5589,19 @@ CPU Utilization Warning
 3
 </property>
 <property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime', 'ProcessorTotalProcessorTime_ProcessorTotalProcessorTime', 'ProcessorTotalUserTime_ProcessorTotalUserTime']
+['ProcessorTotalProcessorTime_ProcessorTotalProcessorTime']
 </property>
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
+True
 </property>
 <property type="string" id="maxval" mode="w" >
-85
+90
 </property>
 <property type="int" id="escalateCount" mode="w" >
 0
 </property>
-<property type="string" id="description" mode="rw" >
-CPU Utilization Warning
-</property>
 </object>
-<object id='Memory Paging Critical' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Memory Paging Critical
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Perf/Memory
-</property>
-<property type="int" id="severity" mode="w" >
-5
-</property>
-<property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['MemoryPagesInputSec_MemoryPagesInputSec', 'MemoryPagesOutputSec_MemoryPagesOutputSec']
-</property>
-<property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="int" id="escalateCount" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="rw" >
-Memory Paging Critical
-</property>
-</object>
-<object id='Memory Paging Warning' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Memory Paging Warning
-</property>
+<object id='Memory' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
 <property type="string" id="eventClass" mode="w" >
 /Perf/Memory
 </property>
@@ -5667,94 +5609,19 @@ Memory Paging Warning
 3
 </property>
 <property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['MemoryPagesInputSec_MemoryPagesInputSec', 'MemoryPagesOutputSec_MemoryPagesOutputSec']
+['MemoryCommittedBytes_MemoryCommittedBytes']
 </property>
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="int" id="escalateCount" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="rw" >
-Memory Paging Warning
-</property>
-</object>
-<object id='Memory Usage Critical' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Memory Usage Critical
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Perf/Memory
-</property>
-<property type="int" id="severity" mode="w" >
-5
-</property>
-<property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['MemoryAvailableBytes_MemoryAvailableBytes']
-</property>
-<property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="int" id="escalateCount" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="rw" >
-Memory Usage Critical
-</property>
-</object>
-<object id='Memory Usage Warning' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Memory Usage Warning
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Perf/Memory
-</property>
-<property type="int" id="severity" mode="w" >
-3
-</property>
-<property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['MemoryAvailableBytes_MemoryAvailableBytes']
-</property>
-<property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
-</property>
-<property type="int" id="escalateCount" mode="w" >
-0
-</property>
-<property type="string" id="description" mode="rw" >
-Memory Usage Warning
-</property>
-</object>
-<object id='Paging File Usage Critical' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Paging File Usage Critical
-</property>
-<property type="string" id="eventClass" mode="w" >
-/Perf
-</property>
-<property type="int" id="severity" mode="w" >
-5
-</property>
-<property label="DataPoints" type="lines" id="dsnames" mode="w" >
-['PagingFileTotalUsage_PagingFileTotalUsage']
-</property>
-<property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
+True
 </property>
 <property type="string" id="maxval" mode="w" >
-95
+here.hw.totalMemory * 0.9
 </property>
 <property type="int" id="escalateCount" mode="w" >
 0
 </property>
-<property type="string" id="description" mode="rw" >
-Paging File Usage Critical
-</property>
 </object>
-<object id='Paging File Usage Warning' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
-<property id='zendoc' type='string'>
-Paging File Usage Warning
-</property>
+<object id='Paging File Usage' module='Products.ZenModel.MinMaxThreshold' class='MinMaxThreshold'>
 <property type="string" id="eventClass" mode="w" >
 /Perf
 </property>
@@ -5765,16 +5632,13 @@ Paging File Usage Warning
 ['PagingFileTotalUsage_PagingFileTotalUsage']
 </property>
 <property label="Enabled" type="boolean" id="enabled" mode="w" >
-False
+True
 </property>
 <property type="string" id="maxval" mode="w" >
-85
+95
 </property>
 <property type="int" id="escalateCount" mode="w" >
 0
-</property>
-<property type="string" id="description" mode="rw" >
-Paging File Usage Warning
 </property>
 </object>
 </tomanycont>
@@ -5808,6 +5672,17 @@ True
 0
 </property>
 <tomanycont id='graphPoints'>
+<object id='CPU Utilization' module='Products.ZenModel.ThresholdGraphPoint' class='ThresholdGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property type="string" id="threshId" mode="w" >
+CPU Utilization
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+</object>
 <object id='Privileged' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 1
@@ -6073,6 +5948,17 @@ MemoryCommittedBytes_MemoryCommittedBytes
 AVERAGE
 </property>
 </object>
+<object id='Memory' module='Products.ZenModel.ThresholdGraphPoint' class='ThresholdGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property type="string" id="threshId" mode="w" >
+Memory
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+</object>
 </tomanycont>
 </object>
 <object id='Paging File Usage' module='Products.ZenModel.GraphDefinition' class='GraphDefinition'>
@@ -6104,6 +5990,17 @@ True
 3
 </property>
 <tomanycont id='graphPoints'>
+<object id='Paging File Usage' module='Products.ZenModel.ThresholdGraphPoint' class='ThresholdGraphPoint'>
+<property type="long" id="sequence" mode="w" >
+0
+</property>
+<property type="string" id="threshId" mode="w" >
+Paging File Usage
+</property>
+<property type="string" id="legend" mode="w" >
+${graphPoint/id}
+</property>
+</object>
 <object id='Total Usage' module='Products.ZenModel.DataPointGraphPoint' class='DataPointGraphPoint'>
 <property type="long" id="sequence" mode="w" >
 0
@@ -16374,8 +16271,6 @@ ZenPacks.zenoss.Microsoft.Windows.Device
 <property visible="True" type="instancecredentials" id="zDBInstances" >
 [{'passwd': '', 'instance': 'MSSQLSERVER', 'user': ''}]
 </property>
-<tomanycont id='rrdTemplates'>
-</tomanycont>
 </object>
 <object id='Cluster' module='Products.ZenModel.DeviceClass' class='DeviceClass'>
 <property id='zendoc' type='string'>
