@@ -325,6 +325,14 @@ The following performance counters are monitored via Powershell script per datab
 
 You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
 
+=== Thresholds ===
+
+The following thresholds are set by default on the device monitoring template and will trigger an alert if they are reached
+
+* CPU Utilization - 90% used
+* Paging File Usage - 95% used
+* Memory - 90% of total memory used
+
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
@@ -740,6 +748,7 @@ The current release is known to have the following limitations.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos libary on EL5 systems does not contain the necessary functionality. 
+* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -972,8 +981,16 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.4.5
+* Fix MSSQL Components Generate Clear Event When PowerShell Script Fails (ZEN-18234)
+* Fix WinRM ZenPack missing thresholds which should be available out-of-box (ZEN-16024)
+* Fix Microsoft Windows - modeling MSSQLSERVER instance on 2012 cluster does not return databases, jobs, backups (ZEN-18811)
+* Fix Microsoft Windows ZenPack - WinMSSQL plugin breaks modeling (ZEN-18533)
+* Windows 2003 will no longer be supported
+
 ;2.4.4
 * Fix extra points being sent into "Windows Shell" datasource parsers. (ZEN-18049)
+* With the ending of support by Microsoft for Windows 2003, this is the last version of the ZenPack to support Windows 2003.
 
 ;2.4.3
 * Fix Port Checker in Microsoft Windows ZP 2.4.2 Results in Errors (ZEN-17893)
