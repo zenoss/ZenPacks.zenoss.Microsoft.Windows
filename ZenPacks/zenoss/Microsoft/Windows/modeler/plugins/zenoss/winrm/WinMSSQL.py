@@ -171,6 +171,8 @@ class WinMSSQL(WinRMPlugin):
         for serverconfig in instances.stdout:
             key, value = serverconfig.split(':', 1)
             serverlist = []
+            if not value:
+                continue
             if key in server_config:
                 serverlist = server_config[key]
                 serverlist.append(value.strip())
