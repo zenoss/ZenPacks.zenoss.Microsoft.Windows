@@ -346,6 +346,9 @@ class EventLogQuery(object):
             
             [DateTime]$last_read = get-date;
             Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            if ($events -eq $null) {
+                return;
+            };
             if($events) {
 				[Array]::Reverse($events);
             };
@@ -363,7 +366,7 @@ class EventLogQuery(object):
             Invoke-Command $script;
             [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
         };
-        Use-en-US {get_new_recent_entries -logname %s -selector %s -max_age %s -eventid "%s"};
+        Use-en-US {get_new_recent_entries -logname "%s" -selector %s -max_age %s -eventid "%s"};
     '''
 
     def run(self, eventlog, selector, max_age, eventid):
