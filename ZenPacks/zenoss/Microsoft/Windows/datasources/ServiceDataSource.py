@@ -211,7 +211,17 @@ class ServicePlugin(PythonDataSourcePlugin):
         return services
 
     def onSuccess(self, results, config):
-
+        '''
+        Examples:
+            {   'DisplayName': 'Wired AutoConfig',
+                'Name': 'dot3svc',
+                'State': 'Stopped',
+                'Status': 'OK'},
+            {   'DisplayName': 'Diagnostic Policy Service',
+                'Name': 'DPS',
+                'State': 'Running',
+                'Status': 'OK'}
+        '''
         data = self.new_data()
         services = self.buildServicesDict(config.datasources)
         log.debug('Windows services query results: {}'.format(results))
@@ -220,15 +230,15 @@ class ServicePlugin(PythonDataSourcePlugin):
         except:
             data['events'].append({
                                 'eventClass': "/Status",
-                                'severity': ZenEventClasses.Warning,
+                                'severity': ZenEventClasses.Error,
                                 'eventClassKey': 'WindowsServiceCollectionError',
                                 'eventKey': 'WindowsServiceCollection',
                                 'summary': 'No results returned for service query',
                                 'device': config.id})
             return data
 
-        for index in range(0, len(serviceinfo)):
-            if serviceinfo[index].State not in services.keys():
+        for index in range(len(serviceinfo)):
+            if serviceinfo[index].Name not in services.keys():
                 continue
 
             service = services[serviceinfo[index].Name]
@@ -243,6 +253,10 @@ class ServicePlugin(PythonDataSourcePlugin):
                 )
 
                 data['events'].append({
+                    'component': serviceinfo[index].Name,
+                    'service_name': serviceinfo[index].Name,
+                    'service_state': serviceinfo[index].State,
+                    'service_status': serviceinfo[index].Status,
                     'eventClass': eventClass,
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': eventKey,
@@ -259,6 +273,10 @@ class ServicePlugin(PythonDataSourcePlugin):
                 )
 
                 data['events'].append({
+                    'component': serviceinfo[index].Name,
+                    'service_name': serviceinfo[index].Name,
+                    'service_state': serviceinfo[index].State,
+                    'service_status': serviceinfo[index].Status,
                     'eventClass': eventClass,
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': eventKey,
@@ -293,7 +311,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         data['events'].append({
             'eventClass': eventClass,
-            'severity': ZenEventClasses.Warning,
+            'severity': ZenEventClasses.Error,
             'eventClassKey': 'WindowsServiceCollectionError',
             'eventKey': 'WindowsServiceCollection',
             'summary': msg,
