@@ -163,9 +163,6 @@ class ServicePlugin(PythonDataSourcePlugin):
             datasource.getCycleTime(context),
             datasource.id,
             datasource.plugin_classname,
-            params.get('servicename'),
-            params.get('alertifnot'),
-            params.get('startmode'),
         )
 
     @classmethod
@@ -181,8 +178,6 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['startmode'] = datasource.talesEval(
             datasource.startmode, context)
 
-
-
         return params
 
     @defer.inlineCallbacks
@@ -190,13 +185,11 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        servicename = ds0.params['servicename']
-        log.debug('{0}:Start Collection of Service {1}'.format(config.id, servicename))
+        log.debug('{0}:Start Collection of Services'.format(config.id))
 
         WinRMQueries = [
             create_enum_info(
-                'select name, state, status, displayname'
-                ' from Win32_Service where name = "{0}"'.format(servicename)
+                'select name, state, status, displayname from Win32_Service'
             )
         ]
 
@@ -208,50 +201,76 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(results)
 
+    def buildServicesDict(self, datasources):
+        services = {}
+        for ds in datasources:
+            services[ds.params['servicename']] = {'eventClass': ds.eventClass,
+                                                  'eventKey': ds.eventKey,
+                                                  'severity': ds.severity,
+                                                  'alertifnot': ds.params['alertifnot']}
+        return services
+
     def onSuccess(self, results, config):
 
         data = self.new_data()
-        ds0 = config.datasources[0]
-        serviceinfo = results[results.keys()[0]]
-        eventClass = ds0.eventClass if ds0.eventClass else "/Status"
-        eventKey = ds0.eventKey if ds0.eventKey else "WindowsService"
-
-        if serviceinfo[0].State != ds0.params['alertifnot']:
-
-            evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
-                serviceinfo[0].Name,
-                serviceinfo[0].State
-            )
-
+        services = self.buildServicesDict(config.datasources)
+        log.debug('Windows services query results: {}'.format(results))
+        try:
+            serviceinfo = results[results.keys()[0]]
+        except:
             data['events'].append({
-                'eventClass': eventClass,
-                'eventClassKey': 'WindowsServiceLog',
-                'eventKey': eventKey,
-                'severity': ds0.severity,
-                'summary': evtmsg,
-                'component': prepId(serviceinfo[0].Name),
-                'device': config.id,
-            })
-        else:
+                                'eventClass': "/Status",
+                                'severity': ZenEventClasses.Warning,
+                                'eventClassKey': 'WindowsServiceCollectionError',
+                                'eventKey': 'WindowsServiceCollection',
+                                'summary': 'No results returned for service query',
+                                'device': config.id})
+            return data
 
-            evtmsg = 'Service Recoverd: {0} has changed to {1} state'.format(
-                serviceinfo[0].Name,
-                serviceinfo[0].State
-            )
+        for index in range(0, len(serviceinfo)):
+            if serviceinfo[index].State not in services.keys():
+                continue
 
-            data['events'].append({
-                'eventClass': eventClass,
-                'eventClassKey': 'WindowsServiceLog',
-                'eventKey': eventKey,
-                'severity': ZenEventClasses.Clear,
-                'summary': evtmsg,
-                'component': prepId(serviceinfo[0].Name),
-                'device': config.id,
-            })
+            service = services[serviceinfo[index].Name]
+            eventClass = config.datasources[index].eventClass if service['eventClass'] else "/Status"
+            eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
+
+            if serviceinfo[index].State != service['alertifnot']:
+
+                evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
+                    serviceinfo[index].Name,
+                    serviceinfo[index].State
+                )
+
+                data['events'].append({
+                    'eventClass': eventClass,
+                    'eventClassKey': 'WindowsServiceLog',
+                    'eventKey': eventKey,
+                    'severity': service['severity'],
+                    'summary': evtmsg,
+                    'component': prepId(serviceinfo[index].Name),
+                    'device': config.id,
+                })
+            else:
+
+                evtmsg = 'Service Recovered: {0} has changed to {1} state'.format(
+                    serviceinfo[index].Name,
+                    serviceinfo[index].State
+                )
+
+                data['events'].append({
+                    'eventClass': eventClass,
+                    'eventClassKey': 'WindowsServiceLog',
+                    'eventKey': eventKey,
+                    'severity': ZenEventClasses.Clear,
+                    'summary': evtmsg,
+                    'component': prepId(serviceinfo[index].Name),
+                    'device': config.id,
+                })
 
         # Event to provide notification that check has completed
         data['events'].append({
-            'eventClass': eventClass,
+            'eventClass': "/Status",
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
@@ -262,8 +281,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
-        ds0 = config.datasources[0]
-        eventClass = ds0.eventClass if ds0.eventClass else "/Status"
+        eventClass = "/Status"
         prefix = 'failed collection - '
         if isinstance(result, Failure):
             result = result.value
