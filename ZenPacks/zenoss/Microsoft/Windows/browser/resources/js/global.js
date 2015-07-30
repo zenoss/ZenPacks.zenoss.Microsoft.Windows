@@ -288,6 +288,109 @@ if (Ext.version === undefined) {
 
 }());
 
+
+(function(){
+
+Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
+         constructor: function(config) {
+             var auto = false;
+             if (config.record.startmode.indexOf('Auto') > -1) {
+                 auto = true;
+             }
+             var manual = false;
+             if (config.record.startmode.indexOf('Manual') > -1) {
+                 manual = true;
+             }
+             var disabled = false;
+             if (config.record.startmode.indexOf('Disabled') > -1) {
+                 disabled = true;
+             }
+             config = Ext.applyIf(config || {}, {
+                 layout: 'fit',
+                   listeners: {
+                        afterrender: function() {
+                            this.setValue(config.record.startmode.split(','));
+                        },
+                        scope: this
+                 },
+                 items: [ {
+                     xtype: 'hidden',
+                     name: 'startmode',
+                     itemId: 'hiddenInput',
+                     value: config.record.startmode
+                 },{
+                     xtype: 'checkboxgroup',
+                     itemId: 'checkboxgroup',
+                     columns: 1,
+                     vertical: true,
+                     listeners: {
+                         change: function() { this.updateHiddenField();
+                         },
+                         scope: this
+                     },
+                     items: [{boxLabel: 'Auto', name: 'autostart', inputValue: 'Auto', checked: auto},
+                             {boxLabel: 'Manual', name: 'manualstart', inputValue: 'Manual', checked: manual},
+                             {boxLabel: 'Disabled', name: 'disabledstart', inputValue: 'Disabled', checked: disabled}]
+                 },]
+             });
+             Zenoss.form.StartModeGroup.superclass.constructor.apply(this, arguments);
+         },
+         updateHiddenField: function() {
+             this.down('hidden').setValue(this.getValue());
+         },
+         // --- Value handling ---
+         setValue: function(values) {
+             var group = this.down('checkboxgroup');
+             var auto = false;
+             if (values.indexOf('Auto') > -1) {
+                 auto = true;
+             }
+             var manual = false;
+             if (values.indexOf('Manual') > -1) {
+                 manual = true;
+             }
+             var disabled = false;
+             if (values.indexOf('Disabled') > -1) {
+                 disabled = true;
+             }
+             if (group) {
+                 group.setValue({autostart: auto, manualstart: manual, disabledstart: disabled});
+             }
+         },
+         // --- Value handling ---
+         getValue: function() {
+             var group = this.down("checkboxgroup");
+             if (group != null){
+             var startmodes = ['None',];
+             groupValues = group.getValue();
+             if (groupValues.hasOwnProperty('autostart')) {
+                 startmodes.push(groupValues.autostart);
+             }
+             if (groupValues.hasOwnProperty('manualstart')) {
+                 startmodes.push(groupValues.manualstart);
+             }
+             if (groupValues.hasOwnProperty('disabledstart')) {
+                 startmodes.push(groupValues.disabledstart);
+             }
+             if (startmodes.length > 1){
+                 startmodes.splice(startmodes.indexOf('None'),1);
+             }
+             return startmodes.toString();
+             }
+         }
+
+     });
+
+    // Ext.version will be defined in ExtJS3 and undefined in ExtJS4.
+    if (Ext.version === undefined) {
+        Ext.reg('startmodegroup', 'Zenoss.form.StartModeGroup');
+    } else {
+        Ext.reg('startmodegroup', Zenoss.form.StartModeGroup);
+    }
+})();
+
+
+
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 
 Ext.ComponentMgr.onAvailable(DEVICE_SUMMARY_PANEL, function(){

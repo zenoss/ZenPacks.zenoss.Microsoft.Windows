@@ -70,7 +70,7 @@ class ServiceDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     servicename = '${here/id}'
     alertifnot = 'Running'
-    startmode = MODE_NONE
+    startmode = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -114,17 +114,15 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
-    startmode = schema.Choice(
-        group=_t('Service Status'),
-        title=_t('Start mode of service to monitor (None disables monitoring)'),
-        vocabulary=SimpleVocabulary.fromValues(
-            [MODE_NONE,MODE_ANY,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
-
     alertifnot = schema.Choice(
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
+
+    startmode = schema.Text(
+        group=_t('Start Modes'),
+        xtype='startmodegroup')
 
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
@@ -157,7 +155,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
     @classmethod
     def config_key(cls, datasource, context):
-        params = cls.params(datasource, context)
         return(
             context.device().id,
             datasource.getCycleTime(context),
@@ -175,8 +172,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['alertifnot'] = datasource.talesEval(
             datasource.alertifnot, context)
 
-        params['startmode'] = datasource.talesEval(
-            datasource.startmode, context)
+        params['startmode'] = datasource.startmode
 
         return params
 
