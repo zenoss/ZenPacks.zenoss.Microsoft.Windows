@@ -68,8 +68,9 @@ class WinService(OSComponent):
         if template:
             datasource = template.datasources._getOb('DefaultService', None)
             if datasource:
-                if datasource.startmode in (self.startmode, 'Any'):
-                    return True
+                for startmode in datasource.startmode.split(','):
+                    if startmode in self.startmode.split(','):
+                        return True
 
         return False
 
