@@ -80,9 +80,9 @@ class SQLCommander(object):
             | % {$ownernode = $_.OwnerNode; $_
             | Get-ClusterParameter -Name VirtualServerName,InstanceName
             | Group ClusterObject | Select
-            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
+            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'+'$instance'}},
             @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
-        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance +'$instance'};
+        $cluster_instances | % {write-host 'instances:ownernode\\sqlinstance$instance'.Replace("{ownernode}",($_).OwnerNode).Replace("{sqlinstance}",($_).SQLInstance) };
     '''
 
     HOSTNAME_PS_SCRIPT = '''
@@ -197,7 +197,7 @@ class WinMSSQL(WinRMPlugin):
             # which owns network instances.
             if isCluster:
                 try:
-                    owner_node, sql_server, instance = clear_inst.split('\\') 
+                    owner_node, sql_server, instance = clear_inst.split('\\')
                     device.windows_servername = owner_node.strip()
                     conn_info = self.conn_info(device)
                     winrs = SQLCommander(conn_info)
@@ -317,6 +317,7 @@ class WinMSSQL(WinRMPlugin):
                         backup_sqlConnection + job_sqlConnection)
             )
 
+            log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
             check_username(instance_info, clear_inst, log)
             in_databases=False
             in_backups = False
@@ -412,6 +413,8 @@ class WinMSSQL(WinRMPlugin):
                         om_jobs = ObjectMap()
                         om_jobs.instancename = om_instance.id
                         om_jobs.title = value.strip()
+                        om_jobs.cluster_node_server = '{0}//{1}'.format(
+                            owner_node.strip(), sqlserver)
                     else:
                         if key.strip() == 'jobid':
                             om_jobs.jobid = value.strip()
