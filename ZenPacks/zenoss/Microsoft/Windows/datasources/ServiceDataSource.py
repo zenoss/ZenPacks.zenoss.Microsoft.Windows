@@ -71,6 +71,7 @@ class ServiceDataSource(PythonDataSource):
     servicename = '${here/id}'
     alertifnot = 'Running'
     startmode = ''
+    exclusions = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -79,6 +80,7 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
         {'id': 'startmode', 'type': 'string'},
+        {'id': 'exclusions', 'type': 'string'},
     )
 
     def getAffectedServices(self):
@@ -121,8 +123,12 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
             [STATE_RUNNING, STATE_STOPPED]),)
 
     startmode = schema.Text(
-        group=_t('Start Modes'),
+        group=_t('Service Options'),
         xtype='startmodegroup')
+
+    exclusions = schema.TextLine(
+        group=_t('Service Options'),
+        title=_t('Exclusions separated by commas'))
 
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
@@ -137,6 +143,7 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
+    exclusions = ProxyProperty('exclusions')
 
     def get_startmode(self):
         return self._object.startmode
