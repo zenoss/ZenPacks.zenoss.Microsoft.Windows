@@ -293,6 +293,7 @@ if (Ext.version === undefined) {
 
 Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
          constructor: function(config) {
+             width = 300;
              var auto = false;
              if (config.record.startmode.indexOf('Auto') > -1) {
                  auto = true;
@@ -309,7 +310,9 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
                  layout: 'fit',
                    listeners: {
                         afterrender: function() {
-                            this.setValue(config.record.startmode.split(','));
+                            if (config.record.startmode){
+                                this.setValue(config.record.startmode.split(','));
+                            }
                         },
                         scope: this
                  },
@@ -389,6 +392,42 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
     }
 })();
 
+Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
+    var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.')
+    var dlg = new Zenoss.FormDialog({
+        title: _t('Windows Services'),
+        modal: true,
+        items: [ {
+                    xtype: 'label',
+                    text: message,
+                    ref: 'messagelabel'
+                },
+                {
+                    xtype: 'checkboxfield',
+                    boxLabel  : 'Check if you no longer want to see this message.',
+                    name      : 'hidemessage',
+                    inputValue: '1',
+                    id        : 'checkbox1',
+                    stateful: true,
+                    stateEvents: ['change'],
+                    getState: function() {
+                        return {checked: this.getValue()}
+                    },
+                    applyState: function(state){
+                        this.setValue(state.checked);
+                    }
+                }],
+        buttons: [
+                    {
+                        xtype: 'HideDialogButton',
+                        text: _t('OK'),
+                    }
+                ],
+    });
+    if (dlg.down('checkboxfield').getValue() == false){
+        dlg.show();
+    }
+});
 
 
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';

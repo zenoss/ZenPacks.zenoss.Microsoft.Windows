@@ -56,6 +56,12 @@ class WinService(OSComponent):
             pass
         return 'WinService'
 
+    def getMonitored(self, datasource):
+        for startmode in datasource.startmode.split(','):
+            if startmode in self.startmode.split(',') and \
+               self.servicename.lower() not in [service.strip() for service in datasource.exclusions.split(',')]:
+                return True
+
     def monitored(self):
         """Return True if this service should be monitored. False otherwise."""
 
@@ -68,11 +74,14 @@ class WinService(OSComponent):
         if template:
             datasource = template.datasources._getOb('DefaultService', None)
             if datasource:
-                for startmode in datasource.startmode.split(','):
-                    if startmode in self.startmode.split(','):
+                if self.getMonitored(datasource):
+                    return True
+            # 3 - Allow for other datasources to be specified.
+            for datasource in template.getRRDDataSources():
+                if datasource.id != 'DefaultService':
+                    if self.getMonitored(datasource):
                         return True
 
         return False
-
 
 InitializeClass(WinService)
