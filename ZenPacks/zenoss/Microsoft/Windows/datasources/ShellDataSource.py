@@ -203,9 +203,13 @@ class DCDiagStrategy(object):
 
     key = 'DCDiag'
 
-    def build_command_line(self, tests, testparms):
+    def build_command_line(self, tests, testparms, username, password):
         self.run_tests = set(tests)
-        dcdiagcommand = 'dcdiag /q /test:' + ' /test:'.join(tests)
+        try:
+            dcuser = '{}\\{}'.format('.'.join(username.split('@')[1].split('.')[:-1]),username.split('@')[0])
+        except Exception:
+            raise WindowsShellException('Username invalid.  Must be in user@example.com format.  Check zWinRMUser: {}'.format(username))
+        dcdiagcommand = 'dcdiag /q /u:{} /p:{} /test:'.format(dcuser, password) + ' /test:'.join(tests)
         if testparms:
             dcdiagcommand += ' ' + ' '.join(testparms)
         return dcdiagcommand
@@ -898,7 +902,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line = strategy.build_command_line(script, usePowershell)
         elif dsconf0.params['strategy'] == 'DCDiag':
             testparms = [dsconf.params['script'] for dsconf in config.datasources if dsconf.params['script']]
-            command_line = strategy.build_command_line(counters, testparms)
+            command_line = strategy.build_command_line(counters, testparms, dsconf0.windows_user, dsconf0.windows_password)
+            conn_info = conn_info._replace(timeout=180)
         else:
             command_line = strategy.build_command_line(counters)
 
