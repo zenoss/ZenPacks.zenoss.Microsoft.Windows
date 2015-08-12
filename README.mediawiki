@@ -436,7 +436,7 @@ Beginning with version 2.4.0, you can now monitor the output of DCDiag.  By defa
 
 See https://technet.microsoft.com/en-us/library/cc731968.aspx for more information on DCDiag.
 
-{{note}} DCDiag must be run as a user with Administrator permissions.  If you be monitoring a Domain Controller with a non administrator user, you should disable these tests.
+{{note}} DCDiag must be run as a user with Administrator permissions.  If you will be monitoring a Domain Controller with a non administrator user, you should disable these tests.
 
 == PortCheck ==
 
