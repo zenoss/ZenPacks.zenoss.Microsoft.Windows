@@ -45,7 +45,7 @@ class IIS(WinRMPlugin):
             'query': "SELECT * FROM VirtualDirectory",
             'namespace': 'WebAdministration',
             },
-        }
+    }
 
     def process(self, device, results, log):
         log.info(
@@ -59,6 +59,7 @@ class IIS(WinRMPlugin):
                 om.id = self.prepId(iisSite.Name)
                 om.statusname = iisSite.Name
                 om.title = iisSite.ServerComment
+                om.iis_version = 6
                 om.sitename = iisSite.ServerComment  # Default Web Site
                 if iisSite.ServerAutoStart == 'false':
                     om.status = 'Stopped'
@@ -76,6 +77,7 @@ class IIS(WinRMPlugin):
                     om = self.objectMap()
                     om.id = self.prepId(iisSite.Id)
                     om.title = om.statusname = om.sitename = iisSite.Name
+                    om.iis_version = 7
                     if iisSite.ServerAutoStart == 'false':
                         om.status = 'Stopped'
                     else:

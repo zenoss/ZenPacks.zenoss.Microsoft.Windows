@@ -24,6 +24,7 @@ class WinIIS(OSComponent):
     caption = None
     status = None
     statusname = None
+    iis_version = None
 
     _properties = OSComponent._properties + (
         {'id': 'sitename', 'label': 'Site Name', 'type': 'string'},
@@ -31,6 +32,7 @@ class WinIIS(OSComponent):
         {'id': 'caption', 'label': 'Caption', 'type': 'string'},
         {'id': 'status', 'label': 'Status', 'type': 'string'},
         {'id': 'statusname', 'label': 'Status Name', 'type': 'string'},
+        {'id': 'iis_version', 'type': 'int'},
     )
 
     _relations = OSComponent._relations + (
