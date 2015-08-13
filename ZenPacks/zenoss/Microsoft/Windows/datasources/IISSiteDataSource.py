@@ -71,6 +71,7 @@ class IISSiteDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
+        {'id': 'iis_version', 'type': 'int'},
     )
 
 
@@ -111,6 +112,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             datasource.id,
             datasource.plugin_classname,
             params.get('statusname'),
+            params.get('iis_version'),
         )
 
     @classmethod
@@ -118,6 +120,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         params = {}
 
         params['statusname'] = context.statusname
+        params['iis_version'] = context.iis_version
 
         return params
 
@@ -132,10 +135,10 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         wql_iis7 = 'select ServerAutoStart from Site where name="{0}"'.format(
             ds0.params['statusname'])
 
-        WinRMQueries = [
-            create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),
-            create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),
-            ]
+        if ds0.params['iis_version'] == 6:
+            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),]
+        else:
+            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),]
 
         conn_info = createConnectionInfo(ds0)
         winrm = WinrmCollectClient()
