@@ -11,12 +11,14 @@
 Windows Cluster System Collection
 
 """
+from socket import gaierror
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
+from Products.ZenUtils.IpUtil import asyncIpLookup
 
 addLocalLibPath()
 
@@ -83,7 +85,14 @@ class WinCluster(WinRMPlugin):
 
         maps['apps'] = clusterapp.stdout
         maps['resources'] = resource.stdout
-        maps['nodes'] = clusternode.stdout
+        nodes = {}
+        for node in clusternode.stdout:
+            try:
+                nodes[node] = yield asyncIpLookup(node)
+            except(gaierror):
+                log.warning('Unable to resolve hostname {0}'.format(node))
+                continue
+        maps['nodes'] = nodes
         maps['domain'] = domain
 
         defer.returnValue(maps)
