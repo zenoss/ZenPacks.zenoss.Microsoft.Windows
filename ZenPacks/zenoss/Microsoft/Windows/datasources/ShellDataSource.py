@@ -458,6 +458,7 @@ class PowershellMSSQLJobStrategy(object):
 
     def parse_result(self, dsconfs, result):
         log.debug('MSSQLJob results: {}'.format(result))
+        collectedResults = ParsedResults()
         if result.stderr:
             log.debug('MSSQL error: {0}' + ''.join(result.stderr))
 
@@ -466,9 +467,8 @@ class PowershellMSSQLJobStrategy(object):
                 'Non-zero exit code ({}) for job query status on {}'
                 .format(
                     result.exit_code, dsconfs[0].device))
-            return
+            return collectedResults
 
-        collectedResults = ParsedResults()
         # Parse values
         valuemap = {}
         jobname = 'Unknown'
