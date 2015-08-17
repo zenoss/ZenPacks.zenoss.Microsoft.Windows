@@ -58,17 +58,21 @@ class ClusterDevice(BaseDevice):
         '''
         log.info('Hostnames {0}'.format(clusterhostdnsnames))
         deviceRoot = self.dmd.getDmdRoot("Devices")
-        for clusterhostdnsname in clusterhostdnsnames:
-            try:
-                clusterhostip = getHostByName(clusterhostdnsname)
-            except(gaierror):
-                log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
-                continue
+        for clusterhostdnsname in clusterhostdnsnames.keys():
+            clusterhostip = clusterhostdnsnames[clusterhostdnsname]
+
+            if not clusterhostip:
+                try:
+                    clusterhostip = getHostByName(clusterhostdnsname)
+                except(gaierror):
+                    log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
+                    continue
 
             device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
             if device:
                 # Server device in cluster already exists
-                self.clusterhostdevices = clusterhostdnsnames
+                self.clusterhostdevices = clusterhostdnsnames.keys()
+                self.clusterhostdevicesdict = clusterhostdnsnames
                 continue
 
             @transact
@@ -91,7 +95,8 @@ class ClusterDevice(BaseDevice):
             if clusterhost:
                 clusterhost.collectDevice(setlog=False, background=True)
 
-        self.clusterhostdevices = clusterhostdnsnames
+        self.clusterhostdevices = clusterhostdnsnames.keys()
+        self.clusterhostdevicesdict = clusterhostdnsnames
 
     def getClusterHostMachines(self):
         return self.clusterhostdevices
@@ -110,9 +115,14 @@ class ClusterDevice(BaseDevice):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in self.clusterhostdevices:
             try:
-                clusterhostip = getHostByName(clusterhostdnsname)
-                _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
-            except(gaierror):
-                _clusterhostdevice.append('Unable to resolve hostname {0}'.format(
-                    clusterhostdnsname))
+                clusterhostip = self.clusterhostdevicesdict[clusterhostdnsname]
+            except (KeyError, AttributeError):
+                if not hasattr(self, 'clusterhostdevicedict'):
+                    self.clusterhostdevicesdict = {}
+                try:
+                    clusterhostip = self.clusterhostdevicesdict[clusterhostdnsname] = getHostByName(clusterhostdnsname)
+                except(gaierror):
+                    _clusterhostdevice.append('Unable to resolve hostname {0}'.format(clusterhostdnsname))
+                    continue
+            _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
         return _clusterhostdevice
