@@ -335,11 +335,11 @@ gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
 
 
 class SqlConnection(object):
-    sqlConnection = []
 
     def __init__(self, instance, sqlusername, sqlpassword, login_as_user):
         # Need to modify query where clause.
         # Currently all counters are retrieved for each database
+        self.sqlConnection = []
 
         # DB Connection Object
         self.sqlConnection.append("$con = new-object "
