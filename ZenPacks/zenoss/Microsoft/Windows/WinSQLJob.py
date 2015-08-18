@@ -25,6 +25,7 @@ class WinSQLJob(OSComponent):
     description = None
     username = None
     datecreated = None
+    cluster_node_server = None
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
@@ -33,6 +34,7 @@ class WinSQLJob(OSComponent):
         {'id': 'description', 'label': 'Description', 'type': 'string'},
         {'id': 'username', 'label': 'User', 'type': 'string'},
         {'id': 'datecreated', 'label': 'Date Created', 'type': 'string'},
+        {'id': 'cluster_node_server', 'label': 'Cluster Node Server', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

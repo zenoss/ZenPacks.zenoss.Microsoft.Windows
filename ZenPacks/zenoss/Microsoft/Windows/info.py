@@ -282,6 +282,7 @@ class WinSQLJobInfo(WinComponentInfo):
     description = ProxyProperty('description')
     username = ProxyProperty('username')
     datecreated = ProxyProperty('datecreated')
+    cluster_node_server = ProxyProperty('cluster_node_server')
 
     @property
     @info
