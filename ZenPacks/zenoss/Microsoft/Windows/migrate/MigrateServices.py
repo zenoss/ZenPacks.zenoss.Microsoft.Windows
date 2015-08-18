@@ -11,7 +11,7 @@ from Products.ZenModel.ZenPack import ZenPackMigration
 from Products.ZenModel.migrate.Migrate import Version
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource import ServiceDataSource
 
-class RemoveObjects(ZenPackMigration):
+class MigrateServices(ZenPackMigration):
     # Main class that contains the migrate() method.
     # Note version setting.
     version = Version(2, 4, 6)
