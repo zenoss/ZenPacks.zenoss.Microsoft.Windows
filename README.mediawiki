@@ -979,6 +979,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.4.7
+* Fix Microsoft Windows ZenPack - no data returned for databases in MSSQLSERVER default instance (ZEN-19282)
+
 ;2.4.6
 * Fix Microsoft Windows ZenPack doesn't create events for MS SQL Jobs/Instances (ZEN-18680)
 * Fix WinRM Polling causing partial Event Creation (ZEN-18757)
