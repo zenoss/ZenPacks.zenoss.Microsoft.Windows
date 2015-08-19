@@ -15760,7 +15760,7 @@ Microsoft Windows per-service monitoring.
 Microsoft Windows per-service monitoring.
 </property>
 <property type="string" id="targetPythonClass" mode="w" >
-ZenPacks.zenoss.Microsoft.Windows.Winservice
+ZenPacks.zenoss.Microsoft.Windows.WinService
 </property>
 <tomanycont id='datasources'>
 <object id='DefaultService' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource' class='ServiceDataSource'>
