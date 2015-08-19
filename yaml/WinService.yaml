@@ -1,6 +1,6 @@
 /Server/Microsoft/WinService:
   description: "Microsoft Windows per-service monitoring."
-  targetPythonClass: "ZenPacks.zenoss.Microsoft.Windows.Winservice"
+  targetPythonClass: "ZenPacks.zenoss.Microsoft.Windows.WinService"
 
   datasources:
     DefaultService:
