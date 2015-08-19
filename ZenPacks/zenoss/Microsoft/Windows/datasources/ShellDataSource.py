@@ -824,7 +824,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             dbinstances, username, password
         )
 
-        instance = dsconf.params['instancename']
+        instance = prepare_instance(dsconf.params['instancename'])
         try:
             instance_login = dblogins[instance]
         except KeyError:
