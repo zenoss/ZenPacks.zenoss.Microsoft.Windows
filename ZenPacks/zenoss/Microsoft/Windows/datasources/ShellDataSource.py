@@ -375,10 +375,17 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection.append("if ($server.Databases -ne $null) {")
         counters_sqlConnection.append("foreach ($db in $server.Databases){")
         counters_sqlConnection.append("if ($db.IsAccessible) {")
+        counters_sqlConnection.append("$db_name = '';" \
+        "$sp = $db.Name.split($([char]39)); " \
+        "if($sp.length -ge 2){ " \
+        "foreach($i in $sp){ " \
+        "if($i -ne $sp[-1]){ $db_name += $i + [char]39 + [char]39;}" \
+        "else { $db_name += $i;}" \
+        "}} else { $db_name = $db.Name;}")
         counters_sqlConnection.append("$query = 'select instance_name as databasename, " \
         "counter_name as ckey, cntr_value as cvalue from " \
         "sys.dm_os_performance_counters where instance_name = '" \
-        " +[char]39+$db.Name+[char]39;")
+        " +[char]39+$db_name+[char]39;")
         counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}' \
         'else { Write-Host "databasename:"$db.Name;}}')
