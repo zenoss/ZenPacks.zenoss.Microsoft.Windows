@@ -111,6 +111,8 @@ class IWinSQLDatabaseInfo(IWinComponentInfo):
     createdate = schema.TextLine(title=_t(u'Created On'), readonly=True)
     defaultfilegroup = schema.TextLine(title=_t(u'File Group'), readonly=True)
     primaryfilepath = schema.TextLine(title=_t(u'File Path'), readonly=True)
+    recoverymodel = schema.TextLine(title=_t(u'Recovery Model'), readonly=True)
+    systemobject = schema.TextLine(title=_t(u'System Object'), readonly=True)
 
 
 class IWinSQLInstanceInfo(IWinComponentInfo):
