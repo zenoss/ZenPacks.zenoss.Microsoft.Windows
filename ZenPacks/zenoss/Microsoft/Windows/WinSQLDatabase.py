@@ -30,6 +30,8 @@ class WinSQLDatabase(OSComponent):
     defaultfilegroup = None
     primaryfilepath = None
     cluster_node_server = None
+    recoverymodel = None
+    systemobject = None
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
@@ -43,6 +45,8 @@ class WinSQLDatabase(OSComponent):
         {'id': 'createdate', 'label': 'Created On', 'type': 'string'},
         {'id': 'defaultfilegroup', 'label': 'File Group', 'type': 'string'},
         {'id': 'primaryfilepath', 'label': 'File Path', 'type': 'string'},
+        {'id': 'systemobject', 'label': 'System Object', 'type': 'string'},
+        {'id': 'recoverymodel', 'label': 'Recovery Model', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (
