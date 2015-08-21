@@ -77,7 +77,7 @@ The following components will be automatically discovered through the Windows se
 : Relationships: SQL Server Databases
 
 ;SQL Server Databases
-: Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path
+: Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path, Recovery Model, Is System Object
 : Relationships: SQL Server Instance
 
 ;SQL Server Backups
