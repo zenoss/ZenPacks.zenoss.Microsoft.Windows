@@ -72,12 +72,11 @@ class CPUs(WinRMPlugin):
             product_key = getManufacturerAndModel(
                 ', '.join((processor.Name, processor.Version)))
 
+            socket = None
             if processor.SocketDesignation:
                 socket_match = re.search(r'(\d+)', processor.SocketDesignation)
                 if socket_match:
                     socket = int_or_none(socket_match.group(1))
-                else:
-                    socket = None
 
             # Not available in Windows 2003 or XP.
             cores = int_or_none(getattr(processor, 'NumberOfCores', None))
