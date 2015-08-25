@@ -1011,6 +1011,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         }.get(value[1], ZenEventClasses.Info)
 
                         data['events'].append(dict(
+                            eventClass=dsconf.eventClass or "/Status",
                             eventClassKey='winrs{0}'.format(strategy.key),
                             eventKey=strategy.key,
                             severity=currentstate,
