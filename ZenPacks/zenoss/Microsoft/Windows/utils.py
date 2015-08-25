@@ -11,7 +11,6 @@
 Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
-import itertools
 import json
 
 
@@ -99,8 +98,6 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
                 )
         # b) Windows auth
         else:
-            login_as_user = True
-
             for el in filter(None, dbinstance):
                 dblogins[el.get('instance')] = dict(
                     username=username,
@@ -267,6 +264,3 @@ def prepare_zDBInstances(inst):
             dbinstance = str(dbinstance).replace('\'', '"')
     return dbinstance
 
-
-def prepare_instance(inst):
-        return inst.replace('$instance', '')
