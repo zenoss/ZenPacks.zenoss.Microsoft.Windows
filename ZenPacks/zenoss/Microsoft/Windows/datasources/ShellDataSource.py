@@ -663,7 +663,7 @@ class PowershellMSSQLInstanceStrategy(object):
 
     key = 'MSSQLInstance'
 
-    def build_command_line(self, instance, isCluster=False):
+    def build_command_line(self, instance):
         pscommand = "powershell -NoLogo -NonInteractive " \
             "-OutputFormat TEXT -Command "
 
