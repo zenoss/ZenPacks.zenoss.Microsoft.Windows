@@ -232,6 +232,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
 class WinSQLInstanceInfo(WinComponentInfo):
     implements(IWinSQLInstanceInfo)
     instancename = ProxyProperty('instancename')
+    cluster_node_server = ProxyProperty('cluster_node_server')
 
 
 class ClusterServiceInfo(WinComponentInfo):
