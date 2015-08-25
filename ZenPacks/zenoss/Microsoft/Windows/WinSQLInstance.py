@@ -22,9 +22,11 @@ class WinSQLInstance(OSComponent):
     instancename = None
     backupdevices = None
     roles = None
+    cluster_node_server = None
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
+        {'id': 'cluster_node_server', 'label': 'Cluster Node Server', 'type': 'string'},
         )
 
     _relations = OSComponent._relations + (

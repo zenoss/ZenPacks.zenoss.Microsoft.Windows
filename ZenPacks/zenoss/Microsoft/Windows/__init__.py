@@ -91,7 +91,7 @@ class ZenPack(ZenPackBase):
         super(ZenPack, self).install(app)
 
         self.register_devtype(app.zport.dmd)
-        log.info("If a Segmentation fault occurs, then run the installation once more.  This is a known issue.")
+        log.info("If a Segmentation fault occurs, then run the installation once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older.")
         # copy kerberos.so file to python path
         osrelease = platform.release()
         kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')
