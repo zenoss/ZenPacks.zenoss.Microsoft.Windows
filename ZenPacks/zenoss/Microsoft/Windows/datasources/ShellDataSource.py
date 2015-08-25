@@ -972,6 +972,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     )
 
                 data['events'].append(dict(
+                    eventClass=dsconf.eventClass or "/Status",
                     eventClassKey='winrsCollection {0}'.format(strategy.key),
                     eventKey=strategy.key,
                     severity=currentstate,
@@ -1036,6 +1037,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         continue
                     summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
                     data['events'].append(dict(
+                        eventClass=dsconf.eventClass or "/Status",
                         eventClassKey='winrsCollection'.format(strategy.key),
                         eventKey=strategy.key,
                         severity=ZenEventClasses.Clear if db_statuses[db] else dsconf.severity,
