@@ -418,10 +418,9 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             (c, p) for c, p in pids_by_component.iteritems() if p)
 
         # Win32_PerfFormattedData_PerfProc_Process: Datapoints.
-
-        try:
-            perf_key = [x for x in results if 'Win32_Perf' in x.wql][0]    
-            for item in results[perf_key]:
+        perf_keys = [x for x in results if 'Win32_Perf' in x.wql]
+        if perf_keys:
+            for item in results[perf_keys[0]]:
                 if item.IDProcess not in datasource_by_pid:
                     continue
                 datasource = datasource_by_pid[item.IDProcess]
@@ -442,8 +441,6 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                             datasource.device, datasource.component, point.id)
                     else:
                         metrics_by_component[datasource.component][point.id].append(value)
-        except Exception:
-            pass
 
         # Aggregate and store datapoint values.
         for component, points in metrics_by_component.iteritems():
