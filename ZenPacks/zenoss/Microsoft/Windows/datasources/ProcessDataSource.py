@@ -418,29 +418,32 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             (c, p) for c, p in pids_by_component.iteritems() if p)
 
         # Win32_PerfFormattedData_PerfProc_Process: Datapoints.
-        perf_key = [x for x in results if 'Win32_Perf' in x.wql][0]
-        for item in results[perf_key]:
-            if item.IDProcess not in datasource_by_pid:
-                continue
 
-            datasource = datasource_by_pid[item.IDProcess]
-            for point in datasource.points:
-                if point.id == COUNT_DATAPOINT:
+        try:
+            perf_key = [x for x in results if 'Win32_Perf' in x.wql][0]    
+            for item in results[perf_key]:
+                if item.IDProcess not in datasource_by_pid:
                     continue
+                datasource = datasource_by_pid[item.IDProcess]
+                for point in datasource.points:
+                    if point.id == COUNT_DATAPOINT:
+                        continue
 
-                try:
-                    value = int(getattr(item, point.id))
-                except (TypeError, ValueError):
-                    LOG.warn(
-                        "%s %s %s: Couldn't convert %r to integer",
-                        datasource.device, datasource.component, point.id,
-                        value)
-                except AttributeError:
-                    LOG.warn(
-                        "%s %s: %s not in result",
-                        datasource.device, datasource.component, point.id)
-                else:
-                    metrics_by_component[datasource.component][point.id].append(value)
+                    try:
+                        value = int(getattr(item, point.id))
+                    except (TypeError, ValueError):
+                        LOG.warn(
+                            "%s %s %s: Couldn't convert %r to integer",
+                            datasource.device, datasource.component, point.id,
+                            value)
+                    except AttributeError:
+                        LOG.warn(
+                            "%s %s: %s not in result",
+                            datasource.device, datasource.component, point.id)
+                    else:
+                        metrics_by_component[datasource.component][point.id].append(value)
+        except Exception:
+            pass
 
         # Aggregate and store datapoint values.
         for component, points in metrics_by_component.iteritems():
