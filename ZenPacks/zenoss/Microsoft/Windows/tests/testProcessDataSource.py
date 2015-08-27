@@ -9,7 +9,7 @@
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
-from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch
+from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource import ProcessDataSourcePlugin
@@ -21,8 +21,8 @@ class TestProcessDataSourcePlugin(BaseTestCase):
         self.config = load_pickle(self, 'config.pkl')
         self.plugin = ProcessDataSourcePlugin()
 
-    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.LOG')
-    def test_onError(self, _):
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.LOG', Mock())
+    def test_onError(self):
         data = self.plugin.onError(sentinel, sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['summary'], "process scan error: sentinel.value")
