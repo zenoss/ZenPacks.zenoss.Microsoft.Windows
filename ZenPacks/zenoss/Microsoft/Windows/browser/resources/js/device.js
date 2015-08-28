@@ -470,7 +470,8 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
-                {name: 'monitored'}
+                {name: 'monitored'},
+                {name: 'status'}
             ],
             columns: [{
                 id: 'severity',
@@ -509,6 +510,12 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Collation'),
                 sortable: true,
                 width: 180
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
