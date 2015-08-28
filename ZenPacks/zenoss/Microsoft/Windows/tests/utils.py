@@ -11,6 +11,11 @@ import os
 import pickle
 
 
+class StringAttributeObject(object):
+    def __getattr__(self, item):
+        return str(item)
+
+
 def load_pickle(self, filename):
     with open(os.path.join(
             os.path.dirname(__file__),
