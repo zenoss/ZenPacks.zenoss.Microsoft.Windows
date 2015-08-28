@@ -12,8 +12,15 @@ import pickle
 
 
 class StringAttributeObject(object):
-    def __getattr__(self, item):
+    @staticmethod
+    def get(item):
         return str(item)
+
+    def __getattr__(self, item):
+        return self.get(item)
+
+    def __getitem__(self, item):
+        return self.get(item)
 
 
 def load_pickle(self, filename):
