@@ -1030,6 +1030,16 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     dsconf = get_dsconf(dsconfs, db)
                     if not dsconf:
                         continue
+
+                    dbid = dsconf.params['instanceid']
+                    dbstatus = 'Up' if db_statuses[db] else 'Down'
+                    instname = dsconf.params['instancename']
+
+                    data['maps'].append(ObjectMap({
+                        "compname": "os/winsqlinstances/{0}/databases/{1}".format(instname, dbid),
+                        "status": dbstatus
+                    }))
+
                     summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
                     data['events'].append(dict(
                         eventClass=dsconf.eventClass or "/Status",

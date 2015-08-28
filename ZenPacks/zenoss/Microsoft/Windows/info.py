@@ -204,6 +204,7 @@ class WinSQLDatabaseInfo(WinComponentInfo):
     cluster_node_server = ProxyProperty('cluster_node_server')
     systemobject = ProxyProperty('systemobject')
     recoverymodel = ProxyProperty('recoverymodel')
+    status = ProxyProperty('status')
 
     @property
     def lastlogbackup(self):

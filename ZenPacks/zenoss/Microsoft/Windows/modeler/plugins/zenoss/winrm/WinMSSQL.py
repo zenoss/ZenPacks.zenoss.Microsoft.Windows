@@ -387,6 +387,7 @@ class WinMSSQL(WinRMPlugin):
                             owner_node.strip(), sqlserver)
                         om_database.systemobject = dbdict['systemobject']
                         om_database.recoverymodel = dbdict['recoverymodel']
+                        om_database.status= 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
 
                         database_oms.append(om_database)
                 elif in_backups:
