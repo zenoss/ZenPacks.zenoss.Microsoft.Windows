@@ -23,7 +23,7 @@ from Products.DataCollector.plugins.DataMaps \
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
-    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, prepare_instance
+    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
 
 addLocalLibPath()
 
@@ -64,7 +64,7 @@ class SQLCommander(object):
                 $instanceValue = $regKey.GetValue($_);
                 $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
                 If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
-                    $local_instances += $_ +'$instance';
+                    $local_instances += $_;
                 };
             };
             break;
@@ -80,9 +80,9 @@ class SQLCommander(object):
             | % {$ownernode = $_.OwnerNode; $_
             | Get-ClusterParameter -Name VirtualServerName,InstanceName
             | Group ClusterObject | Select
-            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'+'$instance'}},
+            @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
             @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
-        $cluster_instances | % {write-host 'instances:ownernode\\sqlinstance$instance'.Replace("{ownernode}",($_).OwnerNode).Replace("{sqlinstance}",($_).SQLInstance) };
+        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance};
     '''
 
     HOSTNAME_PS_SCRIPT = '''
@@ -191,50 +191,53 @@ class WinMSSQL(WinRMPlugin):
         device_om = ObjectMap()
         device_om.sqlhostname = sqlhostname
         for instance in server_config['instances']:
-            clear_inst = prepare_instance(instance)
+            #clear_inst = prepare_instance(instance)
             owner_node = ''  # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
             if isCluster:
                 try:
-                    owner_node, sql_server, instance = clear_inst.split('\\')
+                    owner_node, sql_server, instance = instance.split('\\')
                     device.windows_servername = owner_node.strip()
                     conn_info = self.conn_info(device)
                     winrs = SQLCommander(conn_info)
                 except ValueError:
                     log.error('Owner node for DB Instance {0} was not found'.format(
-                        clear_inst))
+                        instance))
                     continue
 
-            if clear_inst not in dblogins:
+            if instance not in dblogins:
                 log.info("DB Instance {0} found but was not set in zDBInstances.  " \
-                         "Using default credentials.".format(clear_inst))
+                         "Using default credentials.".format(instance))
+
+            instance_title = instance
+            if instance == 'MSSQLSERVER':
+                instance_title = sqlserver = sqlhostname
+            else:
+                sqlserver = '{0}\{1}'.format(sqlhostname, instance)
+
+            if isCluster:
+                if instance == 'MSSQLSERVER':
+                    instance_title = sqlserver = sql_server.strip()
+                else:
+                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
 
             om_instance = ObjectMap()
-            om_instance.id = self.prepId(instance)
-            om_instance.title = clear_inst
-            om_instance.instancename = clear_inst
+            om_instance.id = self.prepId(instance_title)
+            om_instance.title = instance_title
+            om_instance.instancename = instance_title
+            om_instance.cluster_node_server = '{0}//{1}'.format(
+                            owner_node.strip(), sqlserver)
             instance_oms.append(om_instance)
 
             sqlConnection = []
 
 
-            if clear_inst == 'MSSQLSERVER':
-                sqlserver = sqlhostname
-            else:
-                sqlserver = '{0}\{1}'.format(sqlhostname, clear_inst)
-
-            if isCluster:
-                if instance == 'MSSQLSERVER':
-                    sqlserver = sql_server.strip()
-                else:
-                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
-
             # Look for specific instance creds first
             try:
-                sqlusername = dblogins[clear_inst]['username']
-                sqlpassword = dblogins[clear_inst]['password']
-                login_as_user = dblogins[clear_inst]['login_as_user']
+                sqlusername = dblogins[instance]['username']
+                sqlpassword = dblogins[instance]['password']
+                login_as_user = dblogins[instance]['login_as_user']
             except KeyError:
                 # Try default MSSQLSERVER creds
                 try:
@@ -318,7 +321,7 @@ class WinMSSQL(WinRMPlugin):
             )
 
             log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
-            check_username(instance_info, clear_inst, log)
+            check_username(instance_info, instance, log)
             in_databases=False
             in_backups = False
             in_jobs = False

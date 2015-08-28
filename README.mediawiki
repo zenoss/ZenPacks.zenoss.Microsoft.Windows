@@ -616,6 +616,8 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 # Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
 # Remodel device.
 
+{{note}} The default instance of MSSQLSERVER will appear as only the server name starting with version 2.4.8.
+
 === Working with WinCommand Notification Action ===
 
 This ZenPack adds a new event notification action that can be used by the zenactiond daemon to allow an arbitrary command to be executed on the remote windows machine.
@@ -978,6 +980,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.4.8
+* Fix Microsoft Windows Zenpack - MSSQLSERVER service shows as down but received event saying db instance was down (ZEN-19323)
 
 ;2.4.7
 * Fix Microsoft Windows ZenPack - no data returned for databases in MSSQLSERVER default instance (ZEN-19282)
