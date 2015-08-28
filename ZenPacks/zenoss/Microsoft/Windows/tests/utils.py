@@ -11,16 +11,12 @@ import os
 import pickle
 
 
-class StringAttributeObject(object):
-    @staticmethod
-    def get(item):
-        return str(item)
+class StringAttributeObject(dict):
+    def __setattr__(self, k, v):
+        self.__setitem__(k, v)
 
-    def __getattr__(self, item):
-        return self.get(item)
-
-    def __getitem__(self, item):
-        return self.get(item)
+    def __getattr__(self, k):
+        return self.get(k, str(k))
 
 
 def load_pickle(self, filename):
