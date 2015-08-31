@@ -18,8 +18,8 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource import Serv
 
 class TestServiceDataSourcePlugin(BaseTestCase):
     def setUp(self):
-        self.success = load_pickle(self, 'results.pkl')
-        self.config = load_pickle(self, 'config.pkl')
+        self.success = load_pickle(self, 'results')
+        self.config = load_pickle(self, 'config')
         self.plugin = ServicePlugin()
 
     def test_onSuccess(self):

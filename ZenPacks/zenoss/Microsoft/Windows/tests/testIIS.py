@@ -7,7 +7,7 @@
 #
 ##############################################################################
 
-from mock import Mock, sentinel
+from mock import Mock
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject

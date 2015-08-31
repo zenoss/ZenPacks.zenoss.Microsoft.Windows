@@ -18,10 +18,10 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.Interfaces i
 )
 
 
-class TestIIS(BaseTestCase):
+class TestInterfaces(BaseTestCase):
     def setUp(self):
-        self.results = load_pickle(self, 'results.pkl')
-        self.device = load_pickle(self, 'device.pkl')
+        self.results = load_pickle(self, 'results')
+        self.device = load_pickle(self, 'device')
         self.plugin = Interfaces()
 
     def test_process(self):

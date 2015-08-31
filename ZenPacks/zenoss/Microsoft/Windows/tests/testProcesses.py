@@ -19,8 +19,8 @@ class TestProcesses(BaseTestCase):
 
     def setUp(self):
         self.plugin = Processes()
-        self.device = load_pickle(self, 'device.pkl')
-        self.results = load_pickle(self, 'results.pkl')
+        self.device = load_pickle(self, 'device')
+        self.results = load_pickle(self, 'results')
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())

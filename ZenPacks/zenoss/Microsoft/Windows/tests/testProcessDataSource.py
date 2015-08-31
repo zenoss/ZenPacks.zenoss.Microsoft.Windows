@@ -17,8 +17,8 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource import Proc
 
 class TestProcessDataSourcePlugin(BaseTestCase):
     def setUp(self):
-        self.success = load_pickle(self, 'result.pkl')
-        self.config = load_pickle(self, 'config.pkl')
+        self.success = load_pickle(self, 'result')
+        self.config = load_pickle(self, 'config')
         self.plugin = ProcessDataSourcePlugin()
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.LOG', Mock())

@@ -8,21 +8,22 @@
 ##############################################################################
 
 import os
+import gzip
 import pickle
 
 
 class StringAttributeObject(dict):
     def __setattr__(self, k, v):
-        self.__setitem__(k, v)
+        self[k] = v
 
     def __getattr__(self, k):
         return self.get(k, str(k))
 
 
 def load_pickle(self, filename):
-    with open(os.path.join(
+    with gzip.open(os.path.join(
             os.path.dirname(__file__),
             'data',
             self.__class__.__name__,
-            filename), 'rb') as f:
+            '{}.pkl.gz'.format(filename)), 'rb') as f:
         return pickle.load(f)
