@@ -9,7 +9,7 @@
 ##############################################################################
 
 """Script to create ZenPack Analytics bundle given a device.
-The script is applicable only for SolarisMonitor ZenPack.
+The script is applicable only for Microsoft Windows ZenPack.
 
 Example usage::
 
@@ -193,6 +193,8 @@ class AnalyticsBundleCreator(ZenScriptBase):
         update_schema(schema, self.device)
 
         for component in self.device.getDeviceComponents():
+            update_schema(schema, component)
+        for component in self.device.os.software():
             update_schema(schema, component)
 
         schema_path = os.path.join(domain_files_path, 'schema.xml.data')
