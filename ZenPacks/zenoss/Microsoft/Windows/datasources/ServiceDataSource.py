@@ -245,7 +245,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                 continue
 
             service = services[serviceinfo[index].Name]
-            eventClass = config.datasources[index].eventClass if service['eventClass'] else "/Status"
+            eventClass = service['eventClass'] if service['eventClass'] else "/Status"
             eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
 
             if serviceinfo[index].State != service['alertifnot']:
