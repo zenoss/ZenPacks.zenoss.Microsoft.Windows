@@ -17,9 +17,19 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
 
 class Services(WinRMPlugin):
-    compname = 'os'
-    relname = 'winrmservices'
-    modname = 'ZenPacks.zenoss.Microsoft.Windows.WinService'
+    compname = "os"
+    relname = "winservices"
+    modname = "Products.ZenModel.WinService"
+
+    attrs = (
+        "name",
+        "caption",
+        "pathName",
+        "serviceType",
+        "startMode",
+        "startName",
+        "state"
+    )
 
     queries = {
         'Win32_Service': "SELECT * FROM Win32_Service",
@@ -33,14 +43,21 @@ class Services(WinRMPlugin):
         rm = self.relMap()
 
         for service in results.get('Win32_Service', ()):
-            rm.append(self.objectMap({
-                'id': self.prepId(service.Name),
-                'title': service.Caption,
-                'servicename': service.Name,
-                'caption': service.Caption,
-                'description': service.Description,
-                'startmode': service.StartMode,
-                'account': service.StartName,
-                }))
-
+            om = self.objectMap()
+            om.id = self.prepId(service.Name)
+            om.serviceName = service.Name
+            om.caption = service.Caption
+            om.startMode = service.StartMode
+            om.startName = service.StartName
+            om.pathName = service.PathName
+            om.setServiceClass = {
+                'name': service.Name,
+                'description': service.Caption
+            }
+            for att in self.attrs:
+                if att in ("name", "caption", "state", "startMode",
+                           "startName", "pathName"):
+                    continue
+                setattr(om, att, getattr(service, att, ""))
+            rm.append(om)
         return rm
