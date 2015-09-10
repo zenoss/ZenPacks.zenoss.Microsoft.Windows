@@ -294,36 +294,40 @@ The following metrics are collected directly via WMI.
 === SQL Server ===
 The following performance counters are monitored via Powershell script per database:
 
-\SQLServer:Databases(<dbname>)\Active Transactions
-\SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
-\SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
-\SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
-\SQLServer:Databases(<dbname>)\Cache Entries Count
-\SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
-\SQLServer:Databases(<dbname>)\Cache Hit Ratio
-\SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
-\SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
-\SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
-\SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
-\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
-\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
-\SQLServer:Databases(<dbname>)\Log Cache Reads/sec
-\SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
-\SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
-\SQLServer:Databases(<dbname>)\Log Flush Wait Time
-\SQLServer:Databases(<dbname>)\Log Flush Waits/sec
-\SQLServer:Databases(<dbname>)\Log Flushes/sec
-\SQLServer:Databases(<dbname>)\Log Growths
-\SQLServer:Databases(<dbname>)\Percent Log Used
-\SQLServer:Databases(<dbname>)\Log Shrinks
-\SQLServer:Databases(<dbname>)\Log Truncations
-\SQLServer:Databases(<dbname>)\Percent Log Used
-\SQLServer:Databases(<dbname>)\Repl. Pending Xacts
-\SQLServer:Databases(<dbname>)\Repl. Trans. Rate
-\SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
-\SQLServer:Databases(<dbname>)\Transactions/sec
+* \SQLServer:Databases(<dbname>)\Active Transactions
+* \SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
+* \SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
+* \SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
+* \SQLServer:Databases(<dbname>)\Cache Entries Count
+* \SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
+* \SQLServer:Databases(<dbname>)\Cache Hit Ratio
+* \SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
+* \SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
+* \SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
+* \SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
+* \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
+* \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
+* \SQLServer:Databases(<dbname>)\Log Cache Reads/sec
+* \SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
+* \SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
+* \SQLServer:Databases(<dbname>)\Log Flush Wait Time
+* \SQLServer:Databases(<dbname>)\Log Flush Waits/sec
+* \SQLServer:Databases(<dbname>)\Log Flushes/sec
+* \SQLServer:Databases(<dbname>)\Log Growths
+* \SQLServer:Databases(<dbname>)\Percent Log Used
+* \SQLServer:Databases(<dbname>)\Log Shrinks
+* \SQLServer:Databases(<dbname>)\Log Truncations
+* \SQLServer:Databases(<dbname>)\Percent Log Used
+* \SQLServer:Databases(<dbname>)\Repl. Pending Xacts
+* \SQLServer:Databases(<dbname>)\Repl. Trans. Rate
+* \SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
+* \SQLServer:Databases(<dbname>)\Transactions/sec
 
 You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
+
+The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.
+
+The WinSQLJob monitoring template will monitor the status of a job on a SQL Server instance to inform the user if it has succeeded, failed, unknown, or other state.
 
 === Thresholds ===
 
@@ -342,20 +346,23 @@ To target all events with a Warning or higher severity:
 
 For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
-<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. You could find the full list at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
-Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
+{{note}} This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
 For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
+
+<code>{ $$_.Id -eq 4001}</code>
+
+<code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event.  <code>Id</code> is the property to compare for specific event ids.  You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.
 
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
 
 For more information about the System.Diagnostics.Eventing.Reader class, you could read http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader(v=vs.110).aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
-
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
@@ -540,6 +547,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, all 'Auto' start services, or somewhere in between.
 
+[[File:winservice.png|thumb|320px|WinService]]
+
 See the following examples:
 
 ;Enable or disable monitoring for a single service on a single server.
@@ -599,7 +608,7 @@ See the following examples:
 ; Support for SQL Server and Windows Authentication:
 * Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
 * SQL Server Authentication: In ''zDBInstances'' property provide user name and password for each SQL instance.
-* Specifying authentication per instance is no longer required with version 2.4.2 and above.  We will use the credentials specified for the MSSQLSERVER instance by default. 
+* Specifying authentication per instance is no longer required with version 2.4.2 and above.  We will use the credentials specified for the MSSQLSERVER instance by default.
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 # Connect to SQL Instance using MSSQL Management Studio.
@@ -620,7 +629,12 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 # Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
 # Remodel device.
 
+; SQL Server Monitoring
+
+The monitoring templates for SQL Server are component templates so there is no need to perform a bind.  They will automatically be used to monitor databases, instances, and jobs.
+
 {{note}} The default instance of MSSQLSERVER will appear as only the server name starting with version 2.4.8.
+{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
 
 === Working with WinCommand Notification Action ===
 
@@ -752,7 +766,7 @@ The current release is known to have the following limitations.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos libary on EL5 systems does not contain the necessary functionality. 
-* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.
+* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.  Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done around it.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -977,13 +991,26 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * MSExchangeInformationStore (in /Server/Microsoft)
 * MSExchange2010IS (in /Server/Microsoft)
 * MSExchange2013IS (in /Server/Microsoft)
-* MSSQLServer (in /Server/Microsoft)
+* WinDBInstance (in /Server/Microsoft)
+* WinSQLJob (in /Server/Microsoft)
 * WinDatabase (in /Server/Microsoft)
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.5.0
+* Windows Service monitoring improvements
+* Added State column for MSSQL Databases
+* Fix Analytics not extracting software data on windows devices (ZEN-19366)
+* Fix Zenoss Windows Monitoring Spawning Thousands of Processes on Monitored Hosts (ZEN-18770)
+* Fix Microsoft Windows ZenPack -> Blank page is displayed when open 'Instance name' link in new page for My SQL Device (ZEN-15464)
+* Fix WinRM - ProcessDataSource.py results in "list index out of range" (ZEN-18823)
+* Fix Microsoft Windows ZenPack - MSSQL Databases: Unable to monitor any databases if any databases have ' in name (ZEN-18838)
+* Fix Microsoft Windows - Remove file systems with 0.00B Used/Free Bytes in File Systems component (ZEN-19213)
+* Fix Microsoft Windows - Cluster event is in Unknown class (ZEN-18835)
+* Fix Microsoft Windows - Database event is in Unknown class (ZEN-18836)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
