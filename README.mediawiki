@@ -1011,6 +1011,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - Remove file systems with 0.00B Used/Free Bytes in File Systems component (ZEN-19213)
 * Fix Microsoft Windows - Cluster event is in Unknown class (ZEN-18835)
 * Fix Microsoft Windows - Database event is in Unknown class (ZEN-18836)
+* Fix Microsoft Windows - Provide a better message if using an event log that does not exist (ZEN-19270)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
