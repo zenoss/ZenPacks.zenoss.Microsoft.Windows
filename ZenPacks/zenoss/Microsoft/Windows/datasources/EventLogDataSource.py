@@ -162,7 +162,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
             log.error(e)
         try:
             if res.stderr:
-                raise EventLogException('\n'.join(res.stderr))
+                str_err = '\n'.join(res.stderr)
+                if str_err.startswith('Get-WinEvent : The specified channel could not be found.'):
+                    err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
+                    raise MissedEventLogException(err_msg)
+                else:
+                    raise EventLogException(str_err)
             output = '\n'.join(res.stdout)
         except AttributeError:
             pass
@@ -211,7 +216,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         data = self.new_data()
         for evt in results:
             data['events'].append(self._makeEvent(evt, config))
-        
+
         data['events'].append({
             'device': config.id,
             'summary': 'Windows EventLog: successful event collection',
@@ -225,7 +230,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
-        
+        if isinstance(result.value, MissedEventLogException):
+            msg = "WindowsEventLog: " + result.value.message
         log.error(msg)
         data = self.new_data()
         data['events'].append({
@@ -384,4 +390,7 @@ class EventLogQuery(object):
         return self.winrs.run_command(command)
 
 class EventLogException(Exception):
+    pass
+
+class MissedEventLogException(Exception):
     pass
