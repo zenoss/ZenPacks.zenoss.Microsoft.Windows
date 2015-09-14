@@ -18,8 +18,9 @@ from twisted.internet import defer
 
 from zope.component import adapts
 from zope.interface import implements
-from Products.Zuul.infos.template import RRDDataSourceInfo
-from Products.Zuul.interfaces import IRRDDataSourceInfo
+from Products.Zuul.infos import InfoBase
+from Products.Zuul.utils import severityId
+from Products.Zuul.interfaces import IInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
@@ -36,6 +37,7 @@ from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
+
 
 class EventLogDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
@@ -59,7 +61,30 @@ class EventLogDataSource(PythonDataSource):
     )
 
 
-class IEventLogInfo(IRRDDataSourceInfo):
+class IEventLogInfo(IInfo):
+    newId = schema.TextLine(
+        title=_t(u'Name'),
+        xtype="idfield",
+        description=_t(u'The name of this datasource')
+    )
+    type = schema.TextLine(
+        title=_t(u'Type'),
+        readonly=True
+    )
+    enabled = schema.Bool(
+        title=_t(u'Enabled')
+    )
+    severity = schema.TextLine(
+        title=_t(u'Severity'),
+        xtype='severity'
+    )
+    eventClass = schema.TextLine(
+        title=_t(u'Event Class'),
+        xtype='eventclass'
+    )
+    component = schema.TextLine(
+       title=_t(u'Component')
+    )
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)')
     )
@@ -78,10 +103,46 @@ class IEventLogInfo(IRRDDataSourceInfo):
     )
 
 
-class EventLogInfo(RRDDataSourceInfo):
+class EventLogInfo(InfoBase):
     implements(IEventLogInfo)
     adapts(EventLogDataSource)
 
+    def __init__(self, dataSource):
+        self._object = dataSource
+
+    @property
+    def id(self):
+        return '/'.join(self._object.getPrimaryPath())
+
+    @property
+    def source(self):
+        return self._object.getDescription()
+
+    @property
+    def type(self):
+        return self._object.sourcetype
+
+    # severity
+    def _setSeverity(self, value):
+        try:
+            if isinstance(value, str):
+                value = severityId(value)
+        except ValueError:
+            # they entered junk somehow (default to info if invalid)
+            value = severityId('info')
+        self._object.severity = value
+
+    def _getSeverity(self):
+        return self._object.severity
+
+    @property
+    def newId(self):
+        return self._object.id
+
+    severity = property(_getSeverity, _setSeverity)
+    enabled = ProxyProperty('enabled')
+    component = ProxyProperty('component')
+    eventClass = ProxyProperty('eventClass')
     testable = False
     cycletime = ProxyProperty('cycletime')
     eventlog = ProxyProperty('eventlog')
@@ -124,10 +185,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
             pass
 
         return dict(
-                eventlog=te(datasource.eventlog), 
+                eventlog=te(datasource.eventlog),
                 query=query,
                 query_error=query_error,
-                max_age=te(datasource.max_age), 
+                max_age=te(datasource.max_age),
                 eventid=te(datasource.id)
             )
 
