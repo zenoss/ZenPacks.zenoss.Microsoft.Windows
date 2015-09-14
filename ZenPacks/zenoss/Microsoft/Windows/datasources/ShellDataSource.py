@@ -516,7 +516,7 @@ class PowershellMSSQLJobStrategy(object):
                     'eventClass': eventClass,
                     'severity': currentstate,
                     'eventClassKey': 'winrsCollection MSSQLJob',
-                    'eventKey': dsconf.eventKey,
+                    'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
                     'component': dsconf.component})
