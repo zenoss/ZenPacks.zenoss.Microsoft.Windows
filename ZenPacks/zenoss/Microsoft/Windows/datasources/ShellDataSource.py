@@ -273,9 +273,12 @@ class CustomCommandStrategy(object):
     key = 'CustomCommand'
 
     def build_command_line(self, script, usePowershell):
+        if not usePowershell:
+            return script
+        script = script.replace('"', "'")
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command "{0}"'
-        return pscommand.format(script) if usePowershell else script
+        return pscommand.format(script)
 
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
