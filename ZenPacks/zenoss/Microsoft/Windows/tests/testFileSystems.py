@@ -24,6 +24,7 @@ class DiskObject(StringAttributeObject):
         for i in ("DriveType", "MediaType", "BlockSize", "Size",
                   "Capacity", "MaximumComponentLength"):
             setattr(self, i, 100)
+        setattr(self, "FreeSpace", 10)
 
 
 class TestFileSystems(BaseTestCase):
