@@ -317,7 +317,7 @@ class CustomCommandStrategy(object):
             msg = 'Custom Command error: ' + ''.join(result.stderr)
             collectedResult.events.append({
                 'eventClass': eventClass,
-                'severity': ZenEventClasses.Warning,
+                'severity': dsconf.severity or ZenEventClasses.Warning,
                 'eventClassKey': 'WindowsCommandCollectionError',
                 'eventKey': 'WindowsCommandCollection',
                 'summary': msg,
