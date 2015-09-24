@@ -312,18 +312,17 @@ class CustomCommandStrategy(object):
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         # Give error feedback to user
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
-            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             msg = 'Custom Command error: ' + ''.join(result.stderr)
             collectedResult.events.append({
                 'eventClass': eventClass,
-                'severity': ZenEventClasses.Warning,
+                'severity': dsconf.severity or ZenEventClasses.Warning,
                 'eventClassKey': 'WindowsCommandCollectionError',
                 'eventKey': 'WindowsCommandCollection',
                 'summary': msg,
                 'device': config.id})
         else:
-            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             msg = 'Custom Command success'
             collectedResult.events.append({
                 'eventClass': eventClass,
