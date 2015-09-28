@@ -13,6 +13,9 @@ A datasource that uses Powershell comandlet to collect Windows Event Logs
 
 import logging
 import json
+import re
+from xml.parsers.expat import ExpatError
+import xml.dom.minidom
 
 from twisted.internet import defer
 
@@ -37,6 +40,10 @@ from txwinrm.shell import create_single_shot_command
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
+
+FILTER_XML = '<QueryList><Query Id="0" Path="{logname}"><Select Path="{logname}">*[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select></Query></QueryList>'
+TIME_CREATED = '[timediff(@SystemTime) &lt;= {time}]'
+INSERT_TIME = 'TimeCreated[timediff(@SystemTime) &lt;= {time}] and '
 
 
 class EventLogDataSource(PythonDataSource):
@@ -74,10 +81,6 @@ class IEventLogInfo(IInfo):
     enabled = schema.Bool(
         title=_t(u'Enabled')
     )
-    severity = schema.TextLine(
-        title=_t(u'Severity'),
-        xtype='severity'
-    )
     eventClass = schema.TextLine(
         title=_t(u'Event Class'),
         xtype='eventclass'
@@ -94,10 +97,10 @@ class IEventLogInfo(IInfo):
     )
     query = schema.Text(
         group=_t(u'WindowsEventLog'),
-        title=_t('Event Query'),
+        title=_t('Event Query Powershell or XPath XML'),
         xtype='twocolumntextarea'
     )
-    max_age = schema.Text(
+    max_age = schema.TextLine(
         group=_t(u'WindowsEventLog'),
         title=_t('Max age of events to get (hours)'),
     )
@@ -122,32 +125,43 @@ class EventLogInfo(InfoBase):
     def type(self):
         return self._object.sourcetype
 
-    # severity
-    def _setSeverity(self, value):
-        try:
-            if isinstance(value, str):
-                value = severityId(value)
-        except ValueError:
-            # they entered junk somehow (default to info if invalid)
-            value = severityId('info')
-        self._object.severity = value
-
-    def _getSeverity(self):
-        return self._object.severity
-
     @property
     def newId(self):
         return self._object.id
 
-    severity = property(_getSeverity, _setSeverity)
+    # severity = property(_getSeverity, _setSeverity)
     enabled = ProxyProperty('enabled')
     component = ProxyProperty('component')
     eventClass = ProxyProperty('eventClass')
     testable = False
     cycletime = ProxyProperty('cycletime')
     eventlog = ProxyProperty('eventlog')
-    query = ProxyProperty('query')
     max_age = ProxyProperty('max_age')
+
+    def set_query(self, value):
+        if self._object.query != value:
+            try:
+                in_filter_xml = xml.dom.minidom.parseString(value)
+            except ExpatError:
+                self._object.query = value
+                return
+            for node in in_filter_xml.getElementsByTagName('Select'):
+                filter_text = node.childNodes[0].data
+                time_match = re.match('(.*TimeCreated)(\[.*?\])(.*)', filter_text)
+                if time_match:
+                    # easy to replace with our time filter
+                    filter_text = time_match.group(1)+TIME_CREATED+time_match.group(3)
+                else:
+                    # need to insert our time filter
+                    notime_match = re.match('(\*\[System\[)(.*)', filter_text)
+                    filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
+                node.childNodes[0].data = filter_text
+            self._object.query = in_filter_xml.toprettyxml(indent='', newl='').replace('<?xml version="1.0" ?>\n', '').replace('&amp;', '&')
+
+    def get_query(self):
+        return self._object.query
+
+    query = property(get_query, set_query)
 
 
 def string_to_lines(string):
@@ -183,25 +197,30 @@ class EventLogPlugin(PythonDataSourcePlugin):
             query_error = False
         except Exception:
             pass
+        try:
+            xml.dom.minidom.parseString(datasource.query)
+            use_xml = True
+        except ExpatError:
+            use_xml = False
 
         return dict(
                 eventlog=te(datasource.eventlog),
                 query=query,
                 query_error=query_error,
                 max_age=te(datasource.max_age),
-                eventid=te(datasource.id)
+                eventid=te(datasource.id),
+                use_xml=use_xml,
             )
 
     @defer.inlineCallbacks
     def collect(self, config):
-        results = []
         log.info('Start Collection of Events')
 
         ds0 = config.datasources[0]
 
         if ds0.params['query_error']:
-            e = EventLogException('Please verify EventQuery on datasource %s' 
-                % ds0.params['eventid'])
+            e = EventLogException('Please verify EventQuery on datasource %s'
+                                  % ds0.params['eventid'])
             value = [e]
             raise e
 
@@ -213,12 +232,13 @@ class EventLogPlugin(PythonDataSourcePlugin):
         select = ds0.params['query']
         max_age = ds0.params['max_age']
         eventid = ds0.params['eventid']
+        isxml = ds0.params['use_xml']
 
         res = None
         output = []
 
         try:
-            res = yield query.run(eventlog, select, max_age, eventid)
+            res = yield query.run(eventlog, select, max_age, eventid, isxml)
         except Exception as e:
             log.error(e)
         try:
@@ -233,13 +253,13 @@ class EventLogPlugin(PythonDataSourcePlugin):
         except AttributeError:
             pass
         try:
-            value = json.loads(output or '[]') # ConvertTo-Json for empty list returns nothing
-            if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
+            value = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
+            if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
         except UnicodeDecodeError:
             # replace unknown characters with '?'
             value = json.loads(unicode(output.decode("utf-8", "replace")))
-            if isinstance(value, dict): # ConvertTo-Json for list of one element returns just that element
+            if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
         except ValueError as e:
             log.error('Could not parse json: %r\n%s' % (output, e))
@@ -257,8 +277,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'FailureAudit': ZenEventClasses.Info,
         }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
 
+        eventClass = ds['eventClass'] if 'eventClass' in ds.keys() else '/Unknown'
         evt = dict(
             device=config.id,
+            eventClass=eventClass,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
             eventGroup=ds['eventlog'],
             component=evt['Source'],
@@ -271,7 +293,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventidentifier=evt['EventID'],
         )
         return evt
-
 
     def onSuccess(self, results, config):
         data = self.new_data()
@@ -310,21 +331,21 @@ class EventLogQuery(object):
         self.winrs = create_single_shot_command(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
+        "-OutputFormat TEXT -Command "
 
     PS_SCRIPT = r'''
         $FormatEnumerationLimit = -1;
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
 
-        function sstring($s) {
-            if ($s -eq $null) {
+        function sstring($s) {{
+            if ($s -eq $null) {{
                 return "";
-            };
-            if ($s.GetType() -eq [System.Security.Principal.SecurityIdentifier]) {
-				[String]$s = $s.Translate( [System.Security.Principal.NTAccount]);
-            } elseif ($s.GetType() -ne [String]) {
+            }};
+            if ($s.GetType() -eq [System.Security.Principal.SecurityIdentifier]) {{
+                [String]$s = $s.Translate( [System.Security.Principal.NTAccount]);
+            }} elseif ($s.GetType() -ne [String]) {{
                 [String]$s = $s;
-            };
+            }};
             
             <# Remove control characters #>
             $s = $s.replace("`r","").replace("`n"," ");
@@ -332,20 +353,20 @@ class EventLogQuery(object):
             $s = $s.replace("`t", " ");
             <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
-        };
-        function EventLogToJSON {
-            begin {
+        }};
+        function EventLogToJSON {{
+            begin {{
                 $first = $True;
                 '['
-            }
-            process {
-                if ($first) {
+            }}
+            process {{
+                if ($first) {{
                     $separator = "";
                     $first = $False;
-                } else {
+                }} else {{
                     $separator = ",";
-                }
-                $separator + "{
+                }}
+                $separator + "{{
                     `"EntryType`": `"$(sstring($_.EntryType))`",
                     `"TimeGenerated`": `"$(sstring($_.TimeGenerated))`",
                     `"Source`": `"$(sstring($_.Source))`",
@@ -354,25 +375,25 @@ class EventLogQuery(object):
                     `"UserName`": `"$(sstring($_.UserName))`",
                     `"MachineName`": `"$(sstring($_.MachineName))`",
                     `"EventID`": `"$(sstring($_.EventID))`"
-                }"
-            }
-            end {
+                }}"
+            }}
+            end {{
                 ']'
-            }
-        };
-        function EventLogRecordToJSON {
-            begin {
+            }}
+        }};
+        function EventLogRecordToJSON {{
+            begin {{
                 $first = $True;
                 '['
-            }
-            process {
-                if ($first) {
+            }}
+            process {{
+                if ($first) {{
                     $separator = "";
                     $first = $False;
-                } else {
+                }} else {{
                     $separator = ",";
-                }
-                $separator + "{
+                }}
+                $separator + "{{
                     `"EntryType`": `"$(sstring($_.LevelDisplayName))`",
                     `"TimeGenerated`": `"$(sstring($_.TimeCreated))`",
                     `"Source`": `"$(sstring($_.ProviderName))`",
@@ -381,14 +402,14 @@ class EventLogQuery(object):
                     `"UserName`": `"$(sstring($_.UserId))`",
                     `"MachineName`": `"$(sstring($_.MachineName))`",
                     `"EventID`": `"$(sstring($_.Id))`"
-                }"
-            }
-            end {
+                }}"
+            }}
+            end {{
                 ']'
-            }
-        };
+            }}
+        }};
 
-        function get_new_recent_entries($logname, $selector, $max_age, $eventid) {
+        function get_new_recent_entries($logname, $selector, $max_age, $eventid) {{
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
             
@@ -396,56 +417,62 @@ class EventLogQuery(object):
             
             [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
-            if ($last_read) {
+            if ($last_read) {{
                 $last_read = [DateTime]$last_read.$eventid;
-                if ($last_read -gt $yesterday) {
+                if ($last_read -gt $yesterday) {{
                     $after = $last_read;
-                };
-            };
-            
+                }};
+            }};
+
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ($win2003 -eq $false) {
-                $query = '<QueryList><Query Id="0" Path="{logname}"><Select Path="{logname}">*[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select></Query></QueryList>';
-                [Array]$events = Get-WinEvent -FilterXml $query.replace("{logname}",$logname).replace("{time}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
-            } else { 
+            if ($win2003 -eq $false) {{
+                $query = '{filter_xml}';
+                [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
+            }} else {{
                 [Array]$events = Get-EventLog -After $after -LogName $logname;
-			};
-            
+            }};
+
             [DateTime]$last_read = get-date;
             Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
-            if ($events -eq $null) {
+            if ($events -eq $null) {{
                 return;
-            };
-            if($events) {
-				[Array]::Reverse($events);
-            };
+            }};
+            if($events) {{
+                [Array]::Reverse($events);
+            }};
 
-            if ($win2003) {
+            if ($win2003) {{
                 @($events | ? $selector) | EventLogToJSON
-            } else {
-			    @($events | ? $selector) | EventLogRecordToJSON
-			}
-        };
+            }} else {{
+                @($events | ? $selector) | EventLogRecordToJSON
+            }}
+        }};
         function Use-en-US ([ScriptBlock]$script= (throw))
-        {
+        {{
             $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
             [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
             Invoke-Command $script;
             [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
-        };
-        Use-en-US {get_new_recent_entries -logname "%s" -selector %s -max_age %s -eventid "%s"};
+        }};
+        Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
     '''
 
-    def run(self, eventlog, selector, max_age, eventid):
+    def run(self, eventlog, selector, max_age, eventid, isxml):
         if selector.strip() == '*':
             selector = '{$True}'
+        if isxml:
+            filter_xml = selector.replace('\n', ' ').replace('"', r'\"')
+            selector = '{$True}'
+        else:
+            filter_xml = FILTER_XML
         command = "{0} \"& {{{1}}}\"".format(
             self.PS_COMMAND,
-            self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"') % (
-                eventlog or 'System',
-                selector or '{$True}',
-                max_age or '24',
-                eventid
+            self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"').format(
+                eventlog=eventlog or 'System',
+                selector=selector or '{$True}',
+                max_age=max_age or '24',
+                eventid=eventid,
+                filter_xml=filter_xml
             )
         )
         return self.winrs.run_command(command)
