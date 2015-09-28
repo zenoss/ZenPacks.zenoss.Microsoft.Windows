@@ -340,15 +340,18 @@ The following thresholds are set by default on the device monitoring template an
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
-To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object commandlet. 
+To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. The filter can be either a PowerShell Where-Object block or XPath XML taken from a Windows Event Viewer Custom View.
 
-To target all events with a Warning or higher severity:
+The default Get-WinEvent xml filter returns all events from the last polling cycle.  This list can be searched for specific Ids, severity, or specific words in the message using PowerShell.
 
+* To target all events with a Warning or higher severity:
+
+[[File:CustomViewOptions.png|thumb|250px|CustomViewOptions]]
 For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
-<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. You could find the full list at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit,<code> or</code> <code>FailureAudit</code>. Also it has such attributes as <code>Message, MachineName, TimeGenerated, Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
-{{note}} This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
+Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
 For Windows 2008 & Later:
 
@@ -358,11 +361,33 @@ For Windows 2008 & Later:
 
 <code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event.  <code>Id</code> is the property to compare for specific event ids.  You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.
 
+[[File:CustomViewXML.png|thumb|250px|CustomViewXML]]
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
 
 For more information about the System.Diagnostics.Eventing.Reader class, you could read http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader(v=vs.110).aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
+
+* To use the xml query from a custom view in Windows Event Viewer, simply copy the xml and paste into the Event Query field of the event data source.  Because we use a polling cycle to query the event log, any TimeCreated filter will be replaced by us to avoid duplicate events.
+
+For example, a custom view that searches for events in the last hour, with severity of Warning or Critical, and Ids of 104, 110-115, 155 will result in the following XPath query:
+[[File:EventDatasourceXML.PNG|thumb|250px|EventDatasourceXML]]
+    <QueryList>
+      <Query Id="0" Path="Application">
+        <Select Path="Application">*[System[(Level=1  or Level=3) and (EventID=104 or  (EventID &gt;= 110 and EventID &lt;= 115)  or EventID=155) and TimeCreated[timediff(@SystemTime) &lt;= 3600000]]]</Select>
+      </Query>
+    </QueryList>
+
+Simply copy this and paste into the eventlog datasource Event Query field and save.  We will convert the TimeCreated query and the following filter will be used:
+
+    <QueryList>
+      <Query Id="0" Path="Application">
+        <Select Path="Application">*[System[(Level=1  or Level=3) and (EventID=104 or  (EventID &gt;= 110 and EventID &lt;= 115)  or EventID=155) and TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select>
+      </Query>
+    </QueryList>
+
+'{time}' will be replaced by the number of milliseconds since the last query.
+
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
@@ -1003,6 +1028,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ;2.5.0
 * Windows Service monitoring improvements
 * Added State column for MSSQL Databases
+* Improved EventLog querying to allow use of XPath XML
 * Fix Analytics not extracting software data on windows devices (ZEN-19366)
 * Fix Zenoss Windows Monitoring Spawning Thousands of Processes on Monitored Hosts (ZEN-18770)
 * Fix Microsoft Windows ZenPack -> Blank page is displayed when open 'Instance name' link in new page for My SQL Device (ZEN-15464)
