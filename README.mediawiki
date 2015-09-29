@@ -69,6 +69,21 @@ The following components will be automatically discovered through the Windows se
 : Attributes: Name, Owner Node, Description, Owner Group, State
 : Relationships: Cluster Service
 
+;Cluster Nodes
+: Attributes: Name, Assigned Vote, Current Vote, State
+: Relationships: Cluster Disks, Cluster Interfaces
+
+;Cluster Networks
+: Attributes: Name, Description, State
+
+;Cluster Disks
+: Attributes: Name, Owner Node, Volume Path, Disk Number, Partition Number, Capacity, Free Space, State
+: Relationships: Cluster Nodes
+
+;Cluster Interfaces
+: Attributes: Name, Owner Node, Network, IP Addresses, Adapter, State
+: Relationships: Cluster Nodes
+
 ;IIS Sites
 : Attributes: Name, Status, App Pool
 
@@ -1022,6 +1037,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
+* ClusterNode (in /Server/Microsoft/Cluster)
+* ClusterNetwork (in /Server/Microsoft/Cluster)
+* ClusterDisk (in /Server/Microsoft/Cluster)
+* ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
 
@@ -1038,6 +1057,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - Cluster event is in Unknown class (ZEN-18835)
 * Fix Microsoft Windows - Database event is in Unknown class (ZEN-18836)
 * Fix Microsoft Windows - Provide a better message if using an event log that does not exist (ZEN-19270)
+* Enhancement Microsoft Windows - Update Cluster for failover cluster device (ZEN-18833)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
