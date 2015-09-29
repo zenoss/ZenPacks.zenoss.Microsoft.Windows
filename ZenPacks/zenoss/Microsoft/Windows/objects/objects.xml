@@ -9281,6 +9281,9 @@ ZenPacks.zenoss.Microsoft.Windows.datasources.IISSiteDataSource.IISSiteDataSourc
 <property type="string" id="statusname" >
 ${here/statusname}
 </property>
+<property type="int" id="iis_version" >
+None
+</property>
 </object>
 </tomanycont>
 <tomanycont id='graphDefs'>
@@ -16364,18 +16367,226 @@ Windows Cluster
 Windows Cluster
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
-['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.IIS']
+['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster']
 </property>
 <property visible="True" type="string" id="zPythonClass" >
 ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
 </property>
 <property visible="True" type="lines" id="zDeviceTemplates" >
-['Device', 'Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
+['Cluster', 'Active Directory', 'IIS', 'MSExchange2010IS']
 </property>
 <property visible="True" type="instancecredentials" id="zDBInstances" >
 [{'passwd': '', 'instance': 'MSSQLSERVER', 'user': ''}]
 </property>
 <tomanycont id='rrdTemplates'>
+<object id='ClusterDisk' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+get-clustersharedvolume
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Disks
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Used to monitor the state of the Cluster Disks.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Used to monitor the state of the Cluster Disks.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ClusterInterface' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+get-clusternetworkinterface
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Interface
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Used to monitor the state of the Cluster Interfaces.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Used to monitor the state of the Cluster Interfaces.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ClusterNetwork' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+get-clusternetwork
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Network
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Used to monitor the state of the Cluster Networks.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Used to monitor the state of the Cluster Networks.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
+<object id='ClusterNode' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
+<property type="string" id="targetPythonClass" mode="w" >
+Products.ZenModel.Device
+</property>
+<tomanycont id='datasources'>
+<object id='state' module='ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource' class='ShellDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+Windows Shell
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="string" id="component" mode="w" >
+${here/id}
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+300
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin
+</property>
+<property type="string" id="resource" >
+get-clusternode
+</property>
+<property type="string" id="strategy" >
+powershell Cluster Nodes
+</property>
+<property type="boolean" id="usePowershell" >
+True
+</property>
+<tomanycont id='datapoints'>
+<object id='state' module='Products.ZenModel.RRDDataPoint' class='RRDDataPoint'>
+<property id='zendoc' type='string'>
+Used to monitor the state of the Cluster Nodes.
+</property>
+<property select_variable="rrdtypes" type="selection" id="rrdtype" mode="w" >
+GAUGE
+</property>
+<property type="boolean" id="isrow" mode="w" >
+True
+</property>
+<property type="string" id="description" mode="w" >
+Used to monitor the state of the Cluster Nodes.
+</property>
+</object>
+</tomanycont>
+</object>
+</tomanycont>
+</object>
 <object id='ClusterResource' module='Products.ZenModel.RRDTemplate' class='RRDTemplate'>
 <property id='zendoc' type='string'>
 Used to monitor the state of the Cluster Resources.
