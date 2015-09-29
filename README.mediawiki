@@ -602,11 +602,11 @@ See the following examples:
 # Verify the list of templates is grouped by template.
 # Expand the ''WinService'' tree.
 # Click once to select the ''/Server/Microsoft'' copy.
-# Choose ''Copy / Override Template'' from the gear menu.
+# Choose ''Copy / Override Template'' from the Template gear menu at the bottom left of the page.
 # Select ''/Server/Microsoft (Create Copy)'' from the target list then click submit.
 # Expand the resulting ''copy_of_WinService'' tree.
 # Select the ''/Server/Microsoft'' copy.
-# Choose ''View and Edit Details'' from the gear menu.
+# Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM''.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
 
@@ -616,7 +616,7 @@ See the following examples:
 # Follow steps 1-5 from the previous section.
 # Choose your new device class as the target then click submit.
 # Expand the ''WinService'' tree then select the copy in your device class.
-# Choose ''View and Edit Details'' from the gear menu.
+# Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
 # Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
