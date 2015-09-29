@@ -277,9 +277,12 @@ class CustomCommandStrategy(object):
     key = 'CustomCommand'
 
     def build_command_line(self, script, usePowershell):
+        if not usePowershell:
+            return script
+        script = script.replace('"', "'")
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command "{0}"'
-        return pscommand.format(script) if usePowershell else script
+        return pscommand.format(script)
 
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
@@ -313,18 +316,17 @@ class CustomCommandStrategy(object):
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         # Give error feedback to user
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
-            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             msg = 'Custom Command error: ' + ''.join(result.stderr)
             collectedResult.events.append({
                 'eventClass': eventClass,
-                'severity': ZenEventClasses.Warning,
+                'severity': dsconf.severity or ZenEventClasses.Warning,
                 'eventClassKey': 'WindowsCommandCollectionError',
                 'eventKey': 'WindowsCommandCollection',
                 'summary': msg,
                 'device': config.id})
         else:
-            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             msg = 'Custom Command success'
             collectedResult.events.append({
                 'eventClass': eventClass,

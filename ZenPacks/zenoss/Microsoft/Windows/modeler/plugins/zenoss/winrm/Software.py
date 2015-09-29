@@ -7,16 +7,18 @@
 #
 ##############################################################################
 
-'''
+"""
 Windows Installed Software
 
 Models list of installed software by querying registry.
 Querying Win32_Product causes Windows installer to run a consistency check, 
 possibly causing other problems to appear.
-'''
-import re
+"""
+
 from DateTime import DateTime
 from Products.DataCollector.plugins.DataMaps import MultiArgs
+
+from OFS.ObjectManager import checkValidId, BadRequest
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 
@@ -43,7 +45,7 @@ class Software(WinRMPlugin):
             self.name(), device.id)
 
         rm = self.relMap()
-        
+
         software_results = results.get('software')
         if software_results:
             software_results = ''.join(software_results.stdout).split('|')
@@ -55,11 +57,16 @@ class Software(WinRMPlugin):
                 try:
                     for keyvalues in sw.split(';'):
                         key, value = keyvalues.split('=')
+                        try:
+                            if key == "Vendor":
+                                checkValidId(None, value, allow_dup=False)
+                        except BadRequest:
+                            value = str()
                         softwareDict[key] = value
-     
+
                     # skip over empty entries
                     if softwareDict['DisplayName'] == '':
-                        continue                   
+                        continue
                     om = self.objectMap()
                     om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName']))
                     if softwareDict['Vendor'].strip() == '':
@@ -76,12 +83,13 @@ class Software(WinRMPlugin):
                             # Date is unreadable, leave blank
                             pass
                     rm.append(om)
-                    
+
                 except (KeyError, ValueError):
                     pass
-                
+
         return rm
 
-    def eliminate_underscores(self, val):
+    @staticmethod
+    def eliminate_underscores(val):
         """Eliminates double underscores in object ID"""
         return val.replace('__', '')
