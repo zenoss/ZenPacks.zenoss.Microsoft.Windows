@@ -21,7 +21,7 @@ import collections
 import time
 
 from twisted.internet import defer, reactor
-from twisted.internet.error import ConnectError, TimeoutError
+from twisted.internet.error import ConnectError, TimeoutError, ConnectionRefusedError
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -352,9 +352,22 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 e.message or "timeout")
 
+            if isinstance(e, ConnectionRefusedError):
+                PERSISTER.add_event(self.config.id, {
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Critical,
+                    'eventClass': '/Status/Ping',
+                    'summary': 'Device is DOWN!'
+                    })
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
 
+        PERSISTER.add_event(self.config.id, {
+            'device': self.config.id,
+            'severity': ZenEventClasses.Clear,
+            'eventClass': '/Status/Ping',
+            'summary': 'Device is UP!'
+            })
         self.state = PluginStates.STARTED
         self.collected_samples = 0
         self.collected_counters = set()
@@ -377,6 +390,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         data = PERSISTER.pop(self.config.id)
         if data and data['values']:
             defer.returnValue(data)
+        if data and data['events']:
+            for evt in data['events']:
+                PERSISTER.add_event(self.config.id, evt)
 
         if hasattr(self, '_wait_for_data'):
             LOG.debug("waiting for %s Get-Counter data", self.config.id)
@@ -599,7 +615,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.WARN,
                 "network error on {}: {}"
                 .format(self.config.id, e.message or 'timeout'))
-
         # Handle errors on which we should start over.
         else:
             retry, level, msg = (
