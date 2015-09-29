@@ -276,6 +276,65 @@ class ClusterResourceInfo(WinComponentInfo):
         return self._object.ownernode
 
 
+class ClusterNodeInfo(WinComponentInfo):
+    implements(IClusterNodeInfo)
+    assignedvote = ProxyProperty('assignedvote')
+    currentvote = ProxyProperty('currentvote')
+    state = ProxyProperty('state')
+
+    @property
+    @info
+    def clusternode(self):
+        entity = self._object.ownernodeentity()
+        if entity:
+            return '<a class="z-entity" href="{}">{}</a>'.format(
+                entity.getPrimaryUrlPath(), self._object.title)
+        return self._object.title
+
+
+class ClusterDiskInfo(WinComponentInfo):
+    implements(IClusterDiskInfo)
+    volumepath = ProxyProperty('volumepath')
+    ownernode = ProxyProperty('ownernode')
+    disknumber = ProxyProperty('disknumber')
+    partitionnumber = ProxyProperty('partitionnumber')
+    size = ProxyProperty('size')
+    freespace = ProxyProperty('freespace')
+    state = ProxyProperty('state')
+
+    @property
+    @info
+    def clusternode(self):
+        return self._object.clusternode()
+
+
+class ClusterNetworkInfo(WinComponentInfo):
+    implements(IClusterNetworkInfo)
+    description = ProxyProperty('description')
+    state = ProxyProperty('state')
+
+
+class ClusterInterfaceInfo(WinComponentInfo):
+    implements(IClusterInterfaceInfo)
+    node = ProxyProperty('node')
+    network = ProxyProperty('network')
+    ipaddresses = ProxyProperty('ipaddresses')
+    adapter = ProxyProperty('adapter')
+    state = ProxyProperty('state')
+
+    @property
+    @info
+    def clusternode(self):
+        return self._object.clusternode()
+
+    @property
+    @info
+    def clusternetwork(self):
+        networks = self._object.clusternetworks()
+        for network in networks:
+            if network.title == self._object.network:
+                return network
+
 
 class WinSQLJobInfo(WinComponentInfo):
     implements(IWinSQLJobInfo)

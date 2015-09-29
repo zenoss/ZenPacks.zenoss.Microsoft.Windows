@@ -156,6 +156,14 @@ class DeviceRelationsProvider(BaseRelationsProvider):
         for obj in self._object.os.clusterservices():
             yield edge(guid(obj), self.guid())
 
+        # Cluster Nodes
+        for obj in self._object.os.clusternodes():
+            yield edge(guid(obj), self.guid())
+
+        # Cluster Networks
+        for obj in self._object.os.clusternetworks():
+            yield edge(guid(obj), self.guid())
+
         for obj in self._object.os.winrmservices():
             yield edge(self.guid(), guid(obj))
 
@@ -231,3 +239,33 @@ class ClusterResourceRelationsProvider(BaseRelationsProvider):
         yield edge(guid(self._object.device()),self.guid())
 
 
+class ClusterNodeRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(self.guid(), guid(self._object.device()))
+
+        # Cluster Disk
+        for obj in self._object.clusterdisks():
+            yield edge(guid(obj), self.guid())
+
+        # Cluster Interface
+        for obj in self._object.clusterinterfaces():
+            yield edge(guid(obj), self.guid())
+
+
+class ClusterNetworkRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(self.guid(), guid(self._object.device()))
+
+
+class ClusterDiskRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(self.guid(), guid(self._object.clusternode()))
+
+
+class ClusterInterfaceRelationsProvider(BaseRelationsProvider):
+
+    def getEdges(self):
+        yield edge(self.guid(), guid(self._object.clusternode()))

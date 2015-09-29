@@ -276,3 +276,15 @@ def check_low_disk_utilization(size, freespace):
         return True if round(percent, 1) < 1.0  else False
     else:
         return False
+
+
+def sizeof_fmt(byte=0):
+    byte = int(byte)
+    for unit in ['B','KB','MB','GB','TB','PB','EB','ZB']:
+        if abs(byte) < 1024.0:
+            return "%3.2f%s" % (byte, unit)
+        byte /= 1024.0
+
+
+def pipejoin(items):
+    return " + '|' + ".join(items.split())
