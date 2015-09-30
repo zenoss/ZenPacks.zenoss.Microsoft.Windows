@@ -22,3 +22,5 @@ ZenPacks/zenoss/Microsoft/Windows/lib/*.egg-link
 .idea/
 .pydevproject
 .project
+
+src/txwinrm-*/

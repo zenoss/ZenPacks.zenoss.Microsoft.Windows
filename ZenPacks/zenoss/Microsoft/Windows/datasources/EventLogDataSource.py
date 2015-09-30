@@ -49,14 +49,14 @@ INSERT_TIME = 'TimeCreated[timediff(@SystemTime) &lt;= {time}] and '
 class EventLogDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
-    cycletime = 300
+    cycletime = '${here/zWinPerfmonInterval}'
     counter = ''
-    strategy = ''
     sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]
     eventlog = ''
-    query = ''
+    query = '*'
     max_age = '24.0'
+    eventClass = '/Unknown'
 
     plugin_classname = ZENPACKID + \
         '.datasources.EventLogDataSource.EventLogPlugin'
