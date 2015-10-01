@@ -403,6 +403,8 @@ Simply copy this and paste into the eventlog datasource Event Query field and sa
 
 '{time}' will be replaced by the number of milliseconds since the last query.
 
+{{note}} The script to search for events and return relevant data is approximately 3700 characters.  Due to the Windows 8192 character limit on the shell, any XML or PowerShell queries will need to be less than 4400 characters.
+
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
@@ -535,7 +537,6 @@ Alternatively you can use zenbatchload to add Windows servers from the command l
 
 <syntaxhighlight lang="text">
 /Devices/Server/Microsoft/Windows
-win2003-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 </syntaxhighlight>
@@ -692,8 +693,6 @@ For more information please refer to [http://community.zenoss.org/docs/DOC-10690
 
 == <span id="winrm_setup">Setting up WinRM Service for Target Windows Machines</span> ==
 
-Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
-
 Group Policy
 
 Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management
@@ -705,7 +704,7 @@ WinRMService
 * Allow remote server management through WinRm
 
 - HTTP (Windows default is HTTPS see note below for more information)
-* Allow unencrypted Traffic
+* Allow unencrypted Traffic (Only necessary when using basic authentication)
 
 - Basic Authentication (Windows default is Kerberos see note below for more information)
 * Allow Basic Authentication 
@@ -747,7 +746,7 @@ Once the client has the correct certificate installed you only need to change th
 c:\>setspn -l hostname1
 </console>
 
-If you do not see a record with HTTPS/ at the beginning of the hostname you will need to create the record.
+If you do not see a record with HTTPS/ or HOST/ at the beginning of the hostname you will need to create the record.
 
 <console>
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
