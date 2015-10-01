@@ -210,6 +210,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 max_age=te(datasource.max_age),
                 eventid=te(datasource.id),
                 use_xml=use_xml,
+                is2003='2003' in context.device().getOSProductName(),
             )
 
     @defer.inlineCallbacks
@@ -233,12 +234,13 @@ class EventLogPlugin(PythonDataSourcePlugin):
         max_age = ds0.params['max_age']
         eventid = ds0.params['eventid']
         isxml = ds0.params['use_xml']
+        is2003 = ds0.params['is2003']
 
         res = None
         output = []
 
         try:
-            res = yield query.run(eventlog, select, max_age, eventid, isxml)
+            res = yield query.run(eventlog, select, max_age, eventid, isxml, is2003)
         except Exception as e:
             log.error(e)
         try:
@@ -333,10 +335,9 @@ class EventLogQuery(object):
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
-    PS_SCRIPT = r'''
+    PS_2003_SCRIPT = r'''
         $FormatEnumerationLimit = -1;
         $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
-
         function sstring($s) {{
             if ($s -eq $null) {{
                 return "";
@@ -346,12 +347,9 @@ class EventLogQuery(object):
             }} elseif ($s.GetType() -ne [String]) {{
                 [String]$s = $s;
             }};
-            
-            <# Remove control characters #>
             $s = $s.replace("`r","").replace("`n"," ");
             $s = $s.replace('"', '\"').replace("\'","'");
             $s = $s.replace("`t", " ");
-            <# Hope remaining escapes are the actual slash char #>
             return "$($s)".replace('\','\\').trim();
         }};
         function EventLogToJSON {{
@@ -381,7 +379,57 @@ class EventLogQuery(object):
                 ']'
             }}
         }};
-        function EventLogRecordToJSON {{
+        function get_new_recent_entries($logname, $selector, $max_age, $eventid) {{
+            New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
+            New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
+            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
+            [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
+            [DateTime]$after = $yesterday;
+            if ($last_read) {{
+                $last_read = [DateTime]$last_read.$eventid;
+                if ($last_read -gt $yesterday) {{
+                    $after = $last_read;
+                }};
+            }};
+            [Array]$events = Get-EventLog -After $after -LogName $logname;
+            [DateTime]$last_read = get-date;
+            Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            if ($events -eq $null) {{
+                return;
+            }};
+            if($events) {{
+                [Array]::Reverse($events);
+            }};
+            @($events | ? $selector) | EventLogToJSON
+        }};
+        function Use-en-US ([ScriptBlock]$script= (throw))
+        {{
+            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
+            Invoke-Command $script;
+            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
+        }};
+        Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
+    '''
+
+    PS_2008_SCRIPT = '''
+        $FormatEnumerationLimit = -1;
+        $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
+        function sstring($s) {{
+            if ($s -eq $null) {{
+                return "";
+            }};
+            if ($s.GetType() -eq [System.Security.Principal.SecurityIdentifier]) {{
+                [String]$s = $s.Translate( [System.Security.Principal.NTAccount]);
+            }} elseif ($s.GetType() -ne [String]) {{
+                [String]$s = $s;
+            }};
+            $s = $s.replace("`r","").replace("`n"," ");
+            $s = $s.replace('"', '\"').replace("\'","'");
+            $s = $s.replace("`t", " ");
+            return "$($s)".replace('\','\\').trim();
+        }};
+        function EventLogToJSON {{
             begin {{
                 $first = $True;
                 '['
@@ -408,13 +456,10 @@ class EventLogQuery(object):
                 ']'
             }}
         }};
-
         function get_new_recent_entries($logname, $selector, $max_age, $eventid) {{
             New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
             New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
-            
             $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
-            
             [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
             if ($last_read) {{
@@ -423,15 +468,8 @@ class EventLogQuery(object):
                     $after = $last_read;
                 }};
             }};
-
-            $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ($win2003 -eq $false) {{
-                $query = '{filter_xml}';
-                [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
-            }} else {{
-                [Array]$events = Get-EventLog -After $after -LogName $logname;
-            }};
-
+            $query = '{filter_xml}';
+            [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
             [DateTime]$last_read = get-date;
             Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
             if ($events -eq $null) {{
@@ -440,12 +478,7 @@ class EventLogQuery(object):
             if($events) {{
                 [Array]::Reverse($events);
             }};
-
-            if ($win2003) {{
-                @($events | ? $selector) | EventLogToJSON
-            }} else {{
-                @($events | ? $selector) | EventLogRecordToJSON
-            }}
+            @($events | ? $selector) | EventLogToJSON
         }};
         function Use-en-US ([ScriptBlock]$script= (throw))
         {{
@@ -457,7 +490,7 @@ class EventLogQuery(object):
         Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
     '''
 
-    def run(self, eventlog, selector, max_age, eventid, isxml):
+    def run(self, eventlog, selector, max_age, eventid, isxml, is2003):
         if selector.strip() == '*':
             selector = '{$True}'
         if isxml:
@@ -465,9 +498,13 @@ class EventLogQuery(object):
             selector = '{$True}'
         else:
             filter_xml = FILTER_XML.replace('"', r'\"')
+        if is2003:
+            ps_script = self.PS_2003_SCRIPT
+        else:
+            ps_script = self.PS_2008_SCRIPT
         command = "{0} \"& {{{1}}}\"".format(
             self.PS_COMMAND,
-            self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"').format(
+            ps_script.replace('\n', ' ').replace('"', r'\"').format(
                 eventlog=eventlog or 'System',
                 selector=selector or '{$True}',
                 max_age=max_age or '24',
