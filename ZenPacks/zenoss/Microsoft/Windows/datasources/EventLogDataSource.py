@@ -55,7 +55,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     eventlog = ''
     query = '*'
-    max_age = '24.0'
+    max_age = '24'
     eventClass = '/Unknown'
 
     plugin_classname = ZENPACKID + \
@@ -464,7 +464,7 @@ class EventLogQuery(object):
             filter_xml = selector.replace('\n', ' ').replace('"', r'\"')
             selector = '{$True}'
         else:
-            filter_xml = FILTER_XML
+            filter_xml = FILTER_XML.replace('"', r'\"')
         command = "{0} \"& {{{1}}}\"".format(
             self.PS_COMMAND,
             self.PS_SCRIPT.replace('\n', ' ').replace('"', r'\"').format(
