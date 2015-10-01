@@ -31,4 +31,4 @@ class RemoveBadClusterDS(ZenPackMigration):
                 if 'ClusterResource' == template.id:
                     self.replaceDataSource(template, 'powershell Cluster Resources', 'get-clusterresource')
                 elif 'ClusterService' == template.id:
-                    self.replaceDataSource(template, 'powershell Cluster Services', 'get-clusterservice')
+                    self.replaceDataSource(template, 'powershell Cluster Services', 'get-clustergroup')

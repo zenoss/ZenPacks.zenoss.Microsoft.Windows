@@ -1059,6 +1059,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - Provide a better message if using an event log that does not exist (ZEN-19270)
 * Enhancement Microsoft Windows - Update Cluster for failover cluster device (ZEN-18833)
 * Fix Microsoft Windows - Remove IIS from default selected list of plugins (ZEN-19620)
+* Fix Microsoft Windows - an event " WinRS: get-clusterservice : The term 'get-clusterservice' is not recognized..." (ZEN-20138)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
