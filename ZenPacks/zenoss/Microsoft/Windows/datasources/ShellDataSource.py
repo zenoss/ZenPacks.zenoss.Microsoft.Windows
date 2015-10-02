@@ -1362,6 +1362,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         data['events'].append(dict(
             severity=severity,
+            eventClass=dsconf.eventClass or "/Status",
             eventClassKey='winrsCollection',
             eventKey='winrsCollection {}'.format(
                 dsconf0.params['contexttitle']
