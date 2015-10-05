@@ -246,7 +246,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         try:
             if res.stderr:
                 str_err = '\n'.join(res.stderr)
-                if str_err.startswith('Get-WinEvent : The specified channel could not be found.'):
+                if (str_err.startswith('Get-WinEvent : The specified channel could not be found.')) \
+                    or "does not exist" in str_err:
                     err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
                     raise MissedEventLogException(err_msg)
                 else:
