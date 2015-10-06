@@ -418,6 +418,7 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
+            if ([single]($PSVersionTable.CLRVersion.Major.ToString()+'.'+$PSVersionTable.CLRVersion.Minor.ToString()) -lt 3.5) {{ $win2003 = $true}}
             if ($win2003 -eq $false) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;

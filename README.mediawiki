@@ -405,6 +405,7 @@ Simply copy this and paste into the eventlog datasource Event Query field and sa
 
 {{note}} The script to search for events and return relevant data is approximately 3700 characters.  Due to the Windows 8192 character limit on the shell, any XML or PowerShell queries will need to be less than 4400 characters.
 
+{{note}} The query for Windows 2008 and later uses the Get-WinEvent PowerShell cmdlet.  In order to use this cmdlet, PowerShell on your Windows server must use .NET 3.5 or higher.  If it does not, then we will revert to using the Get-EventLog cmdlet, which does not use an XML filter.
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
