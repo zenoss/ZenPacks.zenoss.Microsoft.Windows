@@ -347,9 +347,9 @@ class EventLogQuery(object):
                 [String]$s = $s;
             }};
             $s = $s.replace("`r","").replace("`n"," ");
-            $s = $s.replace('"', '\"').replace("\'","'");
+            $s = $s.replace('"', '\\"').replace("\\'","'");
             $s = $s.replace("`t", " ");
-            return "$($s)".replace('\','\\').trim();
+            return "$($s)".replace('\\','\\\\').trim();
         }};
         function EventLogToJSON {{
             begin {{
