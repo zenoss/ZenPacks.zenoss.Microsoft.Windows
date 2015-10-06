@@ -1291,10 +1291,14 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
                 if result.stderr:
                     inst_err = dsconfs[0].params['instancename']
-                    for err in result.stderr:
-                        if inst_err in err:
-                            msg = re.sub('[".]', '', err)
+                    msg = []
+                    for e in result.stderr:
+                        if inst_err in e:
                             severity = ZenEventClasses.Critical
+                        if 'At line:' in e:
+                            break
+                        msg.append(re.sub('[".]', '', e))
+                    msg = ''.join(msg)
             else:
                 checked_result = False
                 db_statuses = {}
@@ -1362,7 +1366,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         data['events'].append(dict(
             severity=severity,
-            eventClass=dsconf.eventClass or "/Status",
+            eventClass=dsconf0.eventClass or "/Status",
             eventClassKey='winrsCollection',
             eventKey='winrsCollection {}'.format(
                 dsconf0.params['contexttitle']
