@@ -210,6 +210,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 max_age=te(datasource.max_age),
                 eventid=te(datasource.id),
                 use_xml=use_xml,
+                eventClass=datasource.eventClass
             )
 
     @defer.inlineCallbacks
