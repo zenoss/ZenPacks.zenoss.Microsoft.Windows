@@ -25,11 +25,13 @@ class ClusterNetwork(OSComponent):
     meta_type = portal_type = 'MSClusterNetwork'
 
     description = None
+    role = None
     state = None
     domain = ""
 
     _properties = OSComponent._properties + (
         {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'role', 'label': 'Cluster Use', 'type': 'string'},
         {'id': 'state', 'label': 'State', 'type': 'string'},
         {'id': 'domain', 'label': 'Domain', 'type': 'string'},
         )

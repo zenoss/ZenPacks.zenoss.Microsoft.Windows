@@ -10,6 +10,29 @@
 
 (function(){
 
+    Ext.onReady(function() {
+        // Hide Software component for wondows cluster
+        if(Zenoss.env.PARENT_CONTEXT == "/zport/dmd/Devices/Server/Microsoft/Cluster/devices"){
+            var DEVICE_ELEMENTS = "subselecttreepaneldeviceDetailNav";
+            Ext.ComponentMgr.onAvailable(DEVICE_ELEMENTS, function(){
+                var DEVICE_PANEL = Ext.getCmp(DEVICE_ELEMENTS);
+                DEVICE_PANEL.on('afterrender', function() {
+                    var tree = Ext.getCmp(DEVICE_PANEL.items.items[0].id);
+                    var items = tree.store.data.items;
+                    for (i in items){
+                        console.log('Item:', items[i].data.id);
+                        if (items[i].data.id.match(/software*/)){
+                            try {
+                                tree.store.remove(items[i]);
+                                tree.store.sync();
+                            } catch(err){}
+                        }
+                    }
+                });
+            });
+        }
+    });
+
 var ZC = Ext.ns('Zenoss.component');
 
 function render_link(ob) {
@@ -941,6 +964,7 @@ ZC.MSClusterDiskPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'partitionnumber'},
                 {name: 'size'},
                 {name: 'freespace'},
+                {name: 'assignedto'},
                 {name: 'state'},
                 {name: 'clusternode'},
                 {name: 'usesMonitorAttribute'},
@@ -961,18 +985,18 @@ ZC.MSClusterDiskPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
+                id: 'assignedto',
+                dataIndex: 'assignedto',
+                header: _t('Assigned To'),
+                sortable: true,
+                width: 200
+            },{
                 id: 'clusternode',
                 dataIndex: 'clusternode',
                 header: _t('Owner Node'),
                 renderer: Zenoss.render.win_entityLinkFromGrid,
                 sortable: true,
                 width: 150
-            },{
-                id: 'volumepath',
-                dataIndex: 'volumepath',
-                header: _t('Volume Path'),
-                sortable: true,
-                width: 300
             },{
                 id: 'disknumber',
                 dataIndex: 'disknumber',
@@ -1037,6 +1061,7 @@ ZC.MSClusterNetworkPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'name'},
                 {name: 'title'},
                 {name: 'description'},
+                {name: 'role'},
                 {name: 'state'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
@@ -1055,6 +1080,12 @@ ZC.MSClusterNetworkPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'title',
                 header: _t('Name'),
                 sortable: true
+            },{
+                id: 'role',
+                dataIndex: 'role',
+                header: _t('Cluster Use'),
+                sortable: true,
+                width: 300
             },{
                 id: 'description',
                 dataIndex: 'description',

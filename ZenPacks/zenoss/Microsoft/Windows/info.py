@@ -300,6 +300,7 @@ class ClusterDiskInfo(WinComponentInfo):
     partitionnumber = ProxyProperty('partitionnumber')
     size = ProxyProperty('size')
     freespace = ProxyProperty('freespace')
+    assignedto = ProxyProperty('assignedto')
     state = ProxyProperty('state')
 
     @property
@@ -311,6 +312,7 @@ class ClusterDiskInfo(WinComponentInfo):
 class ClusterNetworkInfo(WinComponentInfo):
     implements(IClusterNetworkInfo)
     description = ProxyProperty('description')
+    role = ProxyProperty('role')
     state = ProxyProperty('state')
 
 
