@@ -147,16 +147,18 @@ class IClusterNodeInfo(IClusterInfo):
 
 class IClusterDiskInfo(IWinComponentInfo):
     clusternode = schema.Entity(title=_t(u'Owner Node'), readonly=True)
+    assignedto = schema.TextLine(title=_t(u'Assigned To'), readonly=True)
     volumepath = schema.TextLine(title=_t(u'Volume Path'), readonly=True)
     disknumber = schema.TextLine(title=_t(u'Disk Number'), readonly=True)
     partitionnumber = schema.TextLine(title=_t(u'Partition Number'), readonly=True)
     size = schema.TextLine(title=_t(u'Size'), readonly=True)
-    freespace = schema.TextLine(title=_t(u'Freespace'), readonly=True)
+    freespace = schema.TextLine(title=_t(u'Free Space'), readonly=True)
     state = schema.TextLine(title=_t(u'State'), readonly=True)
 
 
 class IClusterNetworkInfo(IWinComponentInfo):
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    role = schema.TextLine(title=_t(u'Cluster Use'), readonly=True)
     state = schema.TextLine(title=_t(u'State'), readonly=True)
 
 

@@ -101,9 +101,10 @@ class WinCluster(WinRMPlugin):
                 "Size = $volume.SharedVolumeInfo.Partition.Size;" \
                 "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;" \
                 "State = $volume.State;" \
-            "}; $csvtophysicaldisk | foreach { %s };}" % pipejoin(
+                "OwnerGroup = 'Cluster Shared Volume';};" \
+            "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State')
+                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
             )
 
         clusterdisk = yield cmd.run_command(
@@ -127,15 +128,16 @@ class WinCluster(WinRMPlugin):
             "Name = $disk.Name;VolumePath = $diskvolume;" \
             "OwnerNode = $diskowner;DiskNumber = $disknumber;" \
             "PartitionNumber = $diskpartition;Size = $disksize;" \
-            "FreeSpace = $disksizeremain;State = $disk.State;};" \
+            "FreeSpace = $disksizeremain;State = $disk.State;"\
+            "OwnerGroup = $disk.OwnerGroup.Name;};" \
             "$physicaldisk | foreach { %s };}" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State')
+                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
             )
 
         clusternetworks = yield cmd.run_command(
             'get-clusternetwork | foreach {%s};' % pipejoin(
-                '$_.Id $_.Name $_.Description $_.State')
+                '$_.Id $_.Name $_.Description $_.State $_.Role')
         )
 
         nodeinterfaces = yield cmd.run_command(
@@ -278,6 +280,7 @@ class WinCluster(WinRMPlugin):
             disk_om.partitionnumber = diskline[5]
             disk_om.size = sizeof_fmt(diskline[6])
             disk_om.freespace = sizeof_fmt(diskline[7])
+            disk_om.assignedto = diskline[9]
             disk_om.state = diskline[8]
             disk_om.domain = results['domain']
 
@@ -338,10 +341,17 @@ class WinCluster(WinRMPlugin):
 
         for network in clusternetworks:
             netline = network.split("|")
+            netrole = {
+                '0': 'Not allowed',
+                '1': 'Cluster only',
+                '3': 'Cluster and Client'
+            }.get(netline[4], '0')
+
             net_om = ObjectMap()
             net_om.id = self.prepId(netline[0])
             net_om.title = netline[1]
             net_om.description = netline[2]
+            net_om.role = netrole
             net_om.state = netline[3]
             net_om.domain = results['domain']
 

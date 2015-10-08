@@ -30,6 +30,7 @@ class ClusterDisk(OSComponent):
     partitionnumber = None
     size = None
     freespace = None
+    assignedto = None
     state = None
     domain = ""
 
@@ -39,8 +40,9 @@ class ClusterDisk(OSComponent):
         {'id': 'disknumber', 'label': 'Disk Number', 'type': 'string'},
         {'id': 'partitionnumber', 'label': 'Partition Number', 'type': 'string'},
         {'id': 'size', 'label': 'Size', 'type': 'string'},
-        {'id': 'freespace', 'label': 'Freespace', 'type': 'string'},
+        {'id': 'freespace', 'label': 'Free Space', 'type': 'string'},
         {'id': 'state', 'label': 'State', 'type': 'string'},
+        {'id': 'assignedto', 'label': 'Assigned To', 'type': 'string'},
         {'id': 'domain', 'label': 'Domain', 'type': 'string'},
         )
 

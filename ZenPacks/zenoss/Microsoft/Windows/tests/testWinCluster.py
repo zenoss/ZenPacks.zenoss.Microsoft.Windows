@@ -23,10 +23,10 @@ class TestProcesses(BaseTestCase):
         self.results = StringAttributeObject()
         self.results['nodes'] = ['node0', 'node1']
         self.results['nodes_data'] = ['node0|1|1|2|state0']
-        self.results['clusterdisk'] = ['2beb|disk1|Vol{2beb}|node0|1|1|2147199|1937045|Online']
-        self.results['clusternetworks'] = ['e4a2|Network1||Up']
+        self.results['clusterdisk'] = ['2beb|disk1|Vol{2beb}|node0|1|1|2147199|1937045|Online|service']
+        self.results['clusternetworks'] = ['e4a2|Network1||Up|3']
         self.results['nodeinterfaces'] = ['cffc|node0-Ethernet|node0|Network1|127.0.0.1|Intel(R)|Up']
-        self.results['csv'] = ['29df|CSV Disk|Volume1|node0|2|1|10734268|10672029|Online']
+        self.results['csv'] = ['29df|CSV Disk|Volume1|node0|2|1|10734268|10672029|Online|service']
         self.results['domain'] = 'domain0'
         self.results['resources'] = ["title0|coregroup0|node0|state0|description0|id0|priority0"]
         self.results['apps'] = ["title0|title0|state0|description0|"]
@@ -50,3 +50,4 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].title, 'disk1')
         self.assertEquals(data[4].maps[0].volumepath, 'Vol{2beb}')
         self.assertEquals(data[4].maps[0].state, 'Online')
+        self.assertEquals(data[4].maps[0].assignedto, 'service')
