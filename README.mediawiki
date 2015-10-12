@@ -942,7 +942,8 @@ after installing the ZenPack.
 
 # Copy analytics-bundle.zip from <tt>$ZENHOME/ZenPacks/ZenPacks.zenoss.Microsoft.Windows*/ZenPacks/zenoss/Microsoft/Windows/analytics/</tt> on your Zenoss server.
 # Navigate to Zenoss Analytics in your browser.
-# Login as superuser.
+# From the Zenoss Instance list of options, select Internal Authentication.
+# Login as an Analytics user with superuser privileges.
 # Remove any existing ''Microsoft Windows ZenPack'' folder.
 ## Choose ''Repository'' from the ''View'' menu at the top of the page.
 ## Expand ''Public'' in the list of folders.
