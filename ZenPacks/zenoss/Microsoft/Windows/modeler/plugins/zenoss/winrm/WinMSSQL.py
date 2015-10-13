@@ -287,7 +287,7 @@ class WinMSSQL(WinRMPlugin):
                 '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
                 '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,' \
                 '\"`tSystemObject---\" $_.IsSystemObject,' \
-                '\"`tRecoveryModel---\" $_.RecoveryModel' \
+                '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel' \
                 '};')
 
             # Get SQL Backup Jobs information
