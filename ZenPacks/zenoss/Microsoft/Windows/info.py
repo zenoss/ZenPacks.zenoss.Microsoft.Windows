@@ -348,8 +348,20 @@ class WinSQLJobInfo(WinComponentInfo):
     username = ProxyProperty('username')
     datecreated = ProxyProperty('datecreated')
     cluster_node_server = ProxyProperty('cluster_node_server')
+    usermonitor = ProxyProperty('usermonitor')
 
     @property
     @info
     def instance(self):
         return self._object.winsqlinstance()
+
+    def getMonitor(self):
+        monitorstatus = self._object.monitored()
+        return monitorstatus
+
+    def setMonitor(self, value):
+        self._object.usermonitor = True
+        self._object.monitor = value
+        self._object.index_object()
+
+    monitor = property(getMonitor, setMonitor)
