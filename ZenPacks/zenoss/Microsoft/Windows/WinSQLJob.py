@@ -46,4 +46,14 @@ class WinSQLJob(OSComponent):
     def getRRDTemplateName(self):
         return 'WinSQLJob'
 
+    def monitored(self):
+        """Return True if this service should be monitored. False otherwise."""
+
+        # 1 - Check to see if the user has manually set monitor status
+        if self.monitor is True:
+            return self.monitor
+
+        # 2 - return status of enabled. do not monitor disabled jobs
+        return self.enabled == 'Yes'
+
 InitializeClass(WinSQLJob)

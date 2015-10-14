@@ -353,3 +353,13 @@ class WinSQLJobInfo(WinComponentInfo):
     @info
     def instance(self):
         return self._object.winsqlinstance()
+
+    def getMonitor(self):
+        monitorstatus = self._object.monitored()
+        return monitorstatus
+
+    def setMonitor(self, value):
+        self._object.monitor = value
+        self._object.index_object()
+
+    monitor = property(getMonitor, setMonitor)
