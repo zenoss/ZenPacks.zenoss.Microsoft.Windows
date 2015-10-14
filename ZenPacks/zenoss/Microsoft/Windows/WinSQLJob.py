@@ -26,6 +26,7 @@ class WinSQLJob(OSComponent):
     username = None
     datecreated = None
     cluster_node_server = None
+    usermonitor = False
 
     _properties = OSComponent._properties + (
         {'id': 'instancename', 'label': 'Instance Name', 'type': 'string'},
@@ -35,6 +36,8 @@ class WinSQLJob(OSComponent):
         {'id': 'username', 'label': 'User', 'type': 'string'},
         {'id': 'datecreated', 'label': 'Date Created', 'type': 'string'},
         {'id': 'cluster_node_server', 'label': 'Cluster Node Server', 'type': 'string'},
+        {'id': 'usermonitor', 'label': 'User Selected Monitor State',
+            'type': 'boolean'},
         )
 
     _relations = OSComponent._relations + (
@@ -45,5 +48,15 @@ class WinSQLJob(OSComponent):
 
     def getRRDTemplateName(self):
         return 'WinSQLJob'
+
+    def monitored(self):
+        """Return True if this service should be monitored. False otherwise."""
+
+        # 1 - Check to see if the user has manually set monitor status
+        if self.usermonitor is True:
+            return self.monitor
+
+        # 2 - return status of enabled. do not monitor disabled jobs
+        return self.enabled == 'Yes'
 
 InitializeClass(WinSQLJob)
