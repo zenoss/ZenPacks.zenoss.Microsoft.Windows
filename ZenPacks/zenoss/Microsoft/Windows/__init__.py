@@ -18,7 +18,7 @@ import logging
 
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
-from Products.ZenUtils.Utils import monkeypatch, zenPath
+from Products.ZenUtils.Utils import zenPath
 
 log = logging.getLogger("zen.MicrosoftWindows")
 # unused
@@ -192,13 +192,5 @@ class ZenPack(ZenPackBase):
         )
 
 
-from Products.ZenModel.OSProcess import OSProcess
-if not hasattr(OSProcess, 'getMinProcessCount'):
-    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
-    def getMinProcessCount(self):
-        return None
-
-if not hasattr(OSProcess, 'getMaxProcessCount'):
-    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
-    def getMaxProcessCount(self):
-        return None
+# Patch last to avoid import recursion problems.
+from ZenPacks.zenoss.Microsoft.Windows import patches  # NOQA: imported for side effects.
