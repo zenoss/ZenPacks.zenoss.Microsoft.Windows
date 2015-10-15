@@ -1062,6 +1062,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - Remove IIS from default selected list of plugins (ZEN-19620)
 * Fix Microsoft Windows - an event " WinRS: get-clusterservice : The term 'get-clusterservice' is not recognized..." (ZEN-20138)
 * Fix Microsoft Windows - 'RecoveryModel' property is not displayed for SQL Enterprise 2005 (ZEN-20094)
+* Fix error when modeling hosts with IPv6 addresses. (ZEN-20474)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
