@@ -88,3 +88,17 @@ if hasattr(twisted.web.client, '_URI'):
 
     # Must monkeypatch by hand because it's a classmethod.
     twisted.web.client._URI.fromBytes = fromBytes
+
+
+@monkeypatch('Products.Zuul.facades.devicefacade.DeviceFacade')
+def getDevTypes(self, uid):
+    """
+    The purpose of this patch is to filter out legacy /Server/Microsoft device class
+    from 'Add infrastructure' page of quick setup wizard (ZEN-20431).
+    """
+    data = original(self, uid)
+    if not uid == '/zport/dmd/Devices/Server':
+        return data
+    return filter(lambda x: x['value'] != '/zport/dmd/Devices/Server/Microsoft',
+                  data)
+
