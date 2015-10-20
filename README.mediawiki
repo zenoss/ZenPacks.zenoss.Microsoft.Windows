@@ -559,7 +559,13 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : Password for user defined by ''zWinRMUser''.
 
 ;zWinKDC
-: The zWinKDC property must be set if domain authentication is used. It must be the IP address of a valid Windows domain controller.
+: The zWinKDC property must be set if domain authentication is used. It must be the IP address or resolvable name of a valid Windows domain controller.
+
+;zWinTrustedRealm
+: Enter the name of the domain which is trusted by the user's domain.  This can be a child or other domain which has a trust relationship with the user's domain.  For example, if zWinRMUser is ''username@example.com'', and austin.example.com is a child of the example domain, enter ''austin.example.com'' into zWinTrustedRealm.
+
+;zWinTrustedKDC
+: This property must be set if zWinTrustedRealm is set.  It must be the IP address or resolvable name of a valid Windows domain controller for the trusted realm.
 
 ;zWinRMServerName
 : This property should only be used in conjunction with domain authentication when the DNS PTR record for a monitored server's managed IP address does not resolve to the name by which the server is known in Active Directory. For example, if myserver1 is known as myserver1.ad.example.com by Active Directory and is being managed by IP address 192.51.100.21, but 192.51.100.21 resolves to www.example.com, you will have to set zWinRMServerName to ''myserver1.ad.example.com'' for domain authentication to work.
@@ -739,15 +745,17 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
+{{note}} In order to use a single domain user in a child domain or other trusted domain, set zWinKDC to the AD server of the user's domain.  Then enter the trusted domain name and associated AD server in the zWinTrustedRealm and zWinTrustedKDC properties, respectively.
+
 {{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
-Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
+Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate SPN record exists for Kerberos authentication.
 
 <console>
 c:\>setspn -l hostname1
 </console>
 
-If you do not see a record with HTTPS/ or HOST/ at the beginning of the hostname you will need to create the record.
+If you do not see a record with HTTPS/ at the beginning of the hostname you can create the record, but this is not typically necessary as Windows will use the HOST/ record as the default for most built in services.
 
 <console>
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
@@ -874,10 +882,7 @@ If you cannot find the answer in the documentation, then Resource Manager (Servi
 
 <blockquote>Server not found in Kerberos database</blockquote>
 
-* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.
-
-example:
-setspn -s HTTP/hostname1.zenoss.com hostname1
+* More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
@@ -1049,6 +1054,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Windows Service monitoring improvements
 * Added State column for MSSQL Databases
 * Improved EventLog querying to allow use of XPath XML
+* Enhancement Microsoft Windows - Update Cluster for failover cluster device (ZEN-18833)
+* Added ability to enter trusted domain information in order to use a single domain user
 * Fix Analytics not extracting software data on windows devices (ZEN-19366)
 * Fix Zenoss Windows Monitoring Spawning Thousands of Processes on Monitored Hosts (ZEN-18770)
 * Fix Microsoft Windows ZenPack -> Blank page is displayed when open 'Instance name' link in new page for My SQL Device (ZEN-15464)
@@ -1058,7 +1065,6 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - Cluster event is in Unknown class (ZEN-18835)
 * Fix Microsoft Windows - Database event is in Unknown class (ZEN-18836)
 * Fix Microsoft Windows - Provide a better message if using an event log that does not exist (ZEN-19270)
-* Enhancement Microsoft Windows - Update Cluster for failover cluster device (ZEN-18833)
 * Fix Microsoft Windows - Remove IIS from default selected list of plugins (ZEN-19620)
 * Fix Microsoft Windows - an event " WinRS: get-clusterservice : The term 'get-clusterservice' is not recognized..." (ZEN-20138)
 * Fix Microsoft Windows - 'RecoveryModel' property is not displayed for SQL Enterprise 2005 (ZEN-20094)
