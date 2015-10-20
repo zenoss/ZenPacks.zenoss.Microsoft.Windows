@@ -8,6 +8,7 @@
 ##############################################################################
 
 import re
+import logging
 
 from .utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import isip
@@ -17,6 +18,7 @@ addLocalLibPath()
 from txwinrm.collect import ConnectionInfo
 from txwinrm.util import UnauthorizedError
 
+log = logging.getLogger("zen.MicrosoftWindows")
 
 # Tuple of DeviceProxy properties required by createConnectionInfo.
 ConnectionInfoProperties = (
@@ -28,6 +30,8 @@ ConnectionInfoProperties = (
     'zWinKeyTabFilePath',
     'zWinScheme',
     'zDBInstances',
+    'zWinTrustedRealm',
+    'zWinTrustedKDC'
     )
 
 
@@ -75,6 +79,14 @@ def createConnectionInfo(device_proxy):
     if int(device_proxy.zWinRMPort) != 5985 and scheme == 'http':
         raise UnauthorizedError("zWinRMPort must be 5985 if zWinScheme is http")
 
+    trusted_realm = trusted_kdc = ''
+    if hasattr(device_proxy, 'zWinTrustedRealm') and hasattr(device_proxy, 'zWinTrustedKDC'):
+        trusted_realm = device_proxy.zWinTrustedRealm
+        trusted_kdc = device_proxy.zWinTrustedKDC
+        if device_proxy.zWinTrustedRealm and not device_proxy.zWinTrustedKDC or\
+           not device_proxy.zWinTrustedRealm and device_proxy.zWinTrustedKDC:
+            log.debug('zWinTrustedKDC and zWinTrustedRealm must both be populated in order to add a trusted realm.')
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -84,4 +96,6 @@ def createConnectionInfo(device_proxy):
         port=int(device_proxy.zWinRMPort),
         connectiontype='Keep-Alive',
         keytab=device_proxy.zWinKeyTabFilePath,
-        dcip=device_proxy.zWinKDC)
+        dcip=device_proxy.zWinKDC,
+        trusted_realm=trusted_realm,
+        trusted_kdc=trusted_kdc)

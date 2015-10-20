@@ -142,7 +142,9 @@ class WinCommandAction(IActionBase):
             port=int(device.zWinRMPort),
             connectiontype='Keep-Alive',
             keytab=device.zWinKeyTabFilePath,
-            dcip=device.zWinKDC)
+            dcip=device.zWinKDC,
+            trusted_realm=device.zWinRMTrustedRealm,
+            trusted_kdc=device.zWinRMTrustedKDC)
 
     def _execute_command(self, device, command):
         """
