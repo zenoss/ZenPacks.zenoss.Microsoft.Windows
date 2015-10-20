@@ -68,8 +68,8 @@ class ClusterDevice(BaseDevice):
                     log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
                     continue
 
-            device = deviceRoot.findDeviceByIdOrIp(clusterhostip)
-            if device:
+            if deviceRoot.findDeviceByIdOrIp(clusterhostip) or \
+                    deviceRoot.findDeviceByIdExact(clusterhostdnsname):
                 # Server device in cluster already exists
                 self.clusterhostdevices = clusterhostdnsnames.keys()
                 self.clusterhostdevicesdict = clusterhostdnsnames
