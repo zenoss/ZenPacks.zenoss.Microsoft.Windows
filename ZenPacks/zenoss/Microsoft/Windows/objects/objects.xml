@@ -5546,6 +5546,23 @@ True
 </object>
 </tomanycont>
 </object>
+<object id='WinRMPing' module='ZenPacks.zenoss.Microsoft.Windows.datasources.WinRMPingDataSource' class='WinRMPingDataSource'>
+<property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
+WinRM Ping
+</property>
+<property type="boolean" id="enabled" mode="w" >
+True
+</property>
+<property type="int" id="severity" mode="w" >
+3
+</property>
+<property type="string" id="cycletime" mode="w" >
+${here/zWinPerfmonInterval}
+</property>
+<property type="string" id="plugin_classname" mode="w" >
+ZenPacks.zenoss.Microsoft.Windows.datasources.WinRMPingDataSource.WinRMPingDataSourcePlugin
+</property>
+</object>
 <object id='sysUpTime' module='ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource' class='PerfmonDataSource'>
 <property select_variable="sourcetypes" type="selection" id="sourcetype" mode="w" >
 Windows Perfmon

@@ -144,6 +144,12 @@
         />
 
     <adapter
+        provides=".datasources.WinRMPingDataSource.IWinRMPingDataSourceInfo"
+        for=".datasources.WinRMPingDataSource.WinRMPingDataSource"
+        factory=".datasources.WinRMPingDataSource.WinRMPingDataSourceInfo"
+        />
+
+    <adapter
         provides=".datasources.IISSiteDataSource.IIISSiteDataSourceInfo"
         for=".datasources.IISSiteDataSource.IISSiteDataSource"
         factory=".datasources.IISSiteDataSource.IISSiteDataSourceInfo"

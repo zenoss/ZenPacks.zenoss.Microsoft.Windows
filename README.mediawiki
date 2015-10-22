@@ -498,6 +498,10 @@ To monitor ports on a Windows server that is not a domain controller, simply cre
 
 See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more information on Active Directory port usage.
 
+== WinRM Ping ==
+
+Device status relies on ping status, but if a target's IP has been reassigned to a non-Windows device, it is still pingable and will show as Up.  WinRM Ping is a simple datasource that will attempt to retrieve data over winrm.  If it fails, then we will send a Device Down message to '/Status/Ping', which will set the device status to down.
+
 == Requirements ==
 
 This ZenPack has the following requirements.
@@ -1069,6 +1073,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - an event " WinRS: get-clusterservice : The term 'get-clusterservice' is not recognized..." (ZEN-20138)
 * Fix Microsoft Windows - 'RecoveryModel' property is not displayed for SQL Enterprise 2005 (ZEN-20094)
 * Fix error when modeling hosts with IPv6 addresses. (ZEN-20474)
+* Fix WinRM for Windows server - Device Status should not use /Status/Ping (ZEN-19813)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
