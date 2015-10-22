@@ -352,22 +352,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 e.message or "timeout")
 
-            if isinstance(e, ConnectionRefusedError):
-                PERSISTER.add_event(self.config.id, {
-                    'device': self.config.id,
-                    'severity': ZenEventClasses.Critical,
-                    'eventClass': '/Status/Ping',
-                    'summary': 'Device is DOWN!'
-                    })
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
 
-        PERSISTER.add_event(self.config.id, {
-            'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClass': '/Status/Ping',
-            'summary': 'Device is UP!'
-            })
         self.state = PluginStates.STARTED
         self.collected_samples = 0
         self.collected_counters = set()
