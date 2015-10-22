@@ -15,13 +15,11 @@ via WinRS.
 '''
 
 import logging
-LOG = logging.getLogger('zen.windows')
-
 import collections
 import time
 
 from twisted.internet import defer, reactor
-from twisted.internet.error import ConnectError, TimeoutError, ConnectionRefusedError
+from twisted.internet.error import ConnectError, TimeoutError
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -47,6 +45,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
+LOG = logging.getLogger('zen.windows')
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
