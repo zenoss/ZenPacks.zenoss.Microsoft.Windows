@@ -15,13 +15,11 @@ via WinRS.
 '''
 
 import logging
-LOG = logging.getLogger('zen.windows')
-
 import collections
 import time
 
 from twisted.internet import defer, reactor
-from twisted.internet.error import ConnectError, TimeoutError, ConnectionRefusedError
+from twisted.internet.error import ConnectError, TimeoutError
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -47,6 +45,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
+LOG = logging.getLogger('zen.windows')
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
@@ -352,22 +351,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 e.message or "timeout")
 
-            if isinstance(e, ConnectionRefusedError):
-                PERSISTER.add_event(self.config.id, {
-                    'device': self.config.id,
-                    'severity': ZenEventClasses.Critical,
-                    'eventClass': '/Status/Ping',
-                    'summary': 'Device is DOWN!'
-                    })
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
 
-        PERSISTER.add_event(self.config.id, {
-            'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClass': '/Status/Ping',
-            'summary': 'Device is UP!'
-            })
         self.state = PluginStates.STARTED
         self.collected_samples = 0
         self.collected_counters = set()
