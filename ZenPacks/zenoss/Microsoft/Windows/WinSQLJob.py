@@ -39,8 +39,8 @@ class WinSQLJob(OSComponent):
 
     _relations = OSComponent._relations + (
         ("winsqlinstance", ToOne(ToManyCont,
-            "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
-            "jobs")),
+                                 "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+                                 "jobs")),
     )
 
     def getRRDTemplateName(self):
@@ -49,11 +49,6 @@ class WinSQLJob(OSComponent):
     def monitored(self):
         """Return True if this service should be monitored. False otherwise."""
 
-        # 1 - Check to see if the user has manually set monitor status
-        if self.monitor is True:
-            return self.monitor
-
-        # 2 - return status of enabled. do not monitor disabled jobs
-        return self.enabled == 'Yes'
+        return self.monitor and self.enabled == 'Yes'
 
 InitializeClass(WinSQLJob)
