@@ -294,6 +294,8 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 
 {{note}} The IIS monitoring template will only be used when IIS is found during modeling.
 
+{{note}} The IISAdmin service must be running in order to collect IIS data.
+
 The following metrics are collected directly via WMI.
 
 ;Processes (Win32_PerfFormattedData_PerfProc_Process)
@@ -304,6 +306,7 @@ The following metrics are collected directly via WMI.
 <br clear=all>
 
 {{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
+
 {{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
 
 === SQL Server ===
@@ -644,7 +647,9 @@ See the following examples:
 # You can optionally exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These must be the service names and are case insensitive.
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
+
 {{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
+
 {{note}} The WinService datasource no longer depends on the 'DefaultService' data source name.
 
 <br clear=all>
@@ -686,6 +691,7 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 The monitoring templates for SQL Server are component templates so there is no need to perform a bind.  They will automatically be used to monitor databases, instances, and jobs.
 
 {{note}} The default instance of MSSQLSERVER will appear as only the server name starting with version 2.4.8.
+
 {{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
 
 === Working with WinCommand Notification Action ===
@@ -1079,6 +1085,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - 'RecoveryModel' property is not displayed for SQL Enterprise 2005 (ZEN-20094)
 * Fix error when modeling hosts with IPv6 addresses. (ZEN-20474)
 * Fix WinRM for Windows server - Device Status should not use /Status/Ping (ZEN-19813)
+* Fix Wiki page for MicrosoftWindows ZenPack - IISAdmin service (ZEN-19300)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
