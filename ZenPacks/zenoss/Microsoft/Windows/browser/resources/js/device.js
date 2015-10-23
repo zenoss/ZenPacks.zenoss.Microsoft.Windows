@@ -385,6 +385,11 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
+                id: 'apppool',
+                dataIndex: 'apppool',
+                header: _t('Application Pool'),
+                sortable: true
+            },{
                 id: 'status',
                 dataIndex: 'status',
                 header: _t('Status'),
