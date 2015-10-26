@@ -249,6 +249,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
                     or "does not exist" in str_err:
                     err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
                     raise MissedEventLogException(err_msg)
+                elif str_err.startswith('Where-Object : Cannot bind parameter \'FilterScript\'. Cannot convert the'):
+                    err_msg = "EventQuery value provided in datasource '{}' is not valid".format(ds0.params['eventid'])
+                    raise InvalidEventQueryValue(err_msg)
                 else:
                     raise EventLogException(str_err)
             output = '\n'.join(res.stdout)
@@ -314,7 +317,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
-        if isinstance(result.value, MissedEventLogException):
+        if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
             msg = "WindowsEventLog: " + result.value.message
         log.error(msg)
         data = self.new_data()
@@ -473,8 +476,14 @@ class EventLogQuery(object):
         )
         return self.winrs.run_command(command)
 
+
 class EventLogException(Exception):
     pass
 
+
 class MissedEventLogException(Exception):
+    pass
+
+
+class InvalidEventQueryValue(Exception):
     pass
