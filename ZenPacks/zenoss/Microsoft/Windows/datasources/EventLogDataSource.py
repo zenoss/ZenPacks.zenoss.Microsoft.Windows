@@ -396,7 +396,7 @@ class EventLogQuery(object):
                     `"TimeGenerated`": `"$(sstring($_.TimeCreated))`",
                     `"Source`": `"$(sstring($_.ProviderName))`",
                     `"InstanceId`": `"$(sstring($_.Id))`",
-                    `"Message`": `"$(sstring($_.Message))`",
+                    `"Message`": `"$(if ($_.Message){{$(sstring($_.Message))}}else{{$(sstring($_.Properties.Value))}})`",
                     `"UserName`": `"$(sstring($_.UserId))`",
                     `"MachineName`": `"$(sstring($_.MachineName))`",
                     `"EventID`": `"$(sstring($_.Id))`"
