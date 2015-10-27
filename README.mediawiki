@@ -1086,6 +1086,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix error when modeling hosts with IPv6 addresses. (ZEN-20474)
 * Fix WinRM for Windows server - Device Status should not use /Status/Ping (ZEN-19813)
 * Fix Wiki page for MicrosoftWindows ZenPack - IISAdmin service (ZEN-19300)
+* Fix WinRM Leaves Connections Open When Collection Fails Due to Native Language (ZEN-20514)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
