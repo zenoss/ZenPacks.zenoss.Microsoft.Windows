@@ -237,14 +237,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     counter_map = None
 
     command_line = (
-        'powershell -NoLogo -NonInteractive -NoProfile -Command "'
+        'powershell -NoLogo -NonInteractive -NoProfile -Command "& {{'
+        '$CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;'
+        '[System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object \"System.Globalization.CultureInfo\" \"en-Us\";'
+        'Invoke-Command {{ '
         '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
         '$FormatEnumerationLimit = -1; '
         '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25); '
         'get-counter -ea silentlycontinue '
         '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
         '-counter @({Counters}) '
-        '| Format-List -Property Readings"'
+        '| Format-List -Property Readings; }};'
+        '[System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture; }}"'
     )
 
     def __init__(self, config):
@@ -282,9 +286,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Return a list of command lines needed to get data for all counters.
         '''
         # The max length of the cmd.exe command is 8192.
-        # The length of the powershell prefix is 399 chars.
-        # Thus the line containing counters should not go beyond 7600 limit.
-        counters_limit = 7600
+        # The length of the powershell prefix is ~ 680 chars.
+        # Thus the line containing counters should not go beyond 7500 limit.
+        counters_limit = 7500
 
         counters = sorted(self.ps_counter_map.keys())
 
