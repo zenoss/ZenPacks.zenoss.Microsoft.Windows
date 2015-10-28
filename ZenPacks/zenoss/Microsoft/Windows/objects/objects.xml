@@ -16446,6 +16446,9 @@ Windows Cluster
 <property type="string" id="description" mode="w" >
 Windows Cluster
 </property>
+<property type="lines" id="devtypes" mode="w" >
+[('Windows Cluster', 'WMI')]
+</property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster']
 </property>
