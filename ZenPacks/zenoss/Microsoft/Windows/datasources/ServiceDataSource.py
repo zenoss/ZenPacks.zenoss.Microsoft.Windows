@@ -234,7 +234,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             data['events'].append({
                                 'eventClass': "/Status",
                                 'severity': ZenEventClasses.Error,
-                                'eventClassKey': 'WindowsServiceCollectionError',
+                                'eventClassKey': 'WindowsServiceCollectionStatus',
                                 'eventKey': 'WindowsServiceCollection',
                                 'summary': 'No results returned for service query',
                                 'device': config.id})
@@ -296,7 +296,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
-            'eventClassKey': 'WindowsServiceLogSuccess',
+            'eventClassKey': 'WindowsServiceCollectionStatus',
         })
 
         return data
@@ -315,7 +315,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         data['events'].append({
             'eventClass': eventClass,
             'severity': ZenEventClasses.Error,
-            'eventClassKey': 'WindowsServiceCollectionError',
+            'eventClassKey': 'WindowsServiceCollectionStatus',
             'eventKey': 'WindowsServiceCollection',
             'summary': msg,
             'device': config.id})
