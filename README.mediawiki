@@ -1088,6 +1088,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Wiki page for MicrosoftWindows ZenPack - IISAdmin service (ZEN-19300)
 * Fix WinRM Leaves Connections Open When Collection Fails Due to Native Language (ZEN-20514)
 * Fix WinRM - "The referenced context has expired" (ZEN-18115)
+* Fix Microsoft Windows - Windows cluster fails modeling for Task Scheduler traceback (ZEN-20438)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)
