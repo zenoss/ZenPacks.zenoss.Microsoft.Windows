@@ -13,7 +13,6 @@ Windows Cluster System Collection
 """
 from socket import gaierror
 from twisted.internet import defer
-from itertools import groupby
 
 from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
 
