@@ -6446,7 +6446,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
-100
+-1
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
