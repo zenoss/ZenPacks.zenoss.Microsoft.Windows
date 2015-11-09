@@ -9,6 +9,7 @@
 
 import re
 import logging
+import string
 from Globals import InitializeClass
 
 from Products.ZenModel.OSComponent import OSComponent
@@ -60,6 +61,10 @@ class WinService(OSComponent):
         return 'WinService'
 
     def is_match(self, service_regex):
+        # can be actual name of service or a regex
+        allowed_chars = set(string.ascii_letters + string.digits + '_-')
+        if not set(service_regex) - allowed_chars:
+            return service_regex == self.servicename
         try:
             regx = re.compile(service_regex)
         except re.error as e:
