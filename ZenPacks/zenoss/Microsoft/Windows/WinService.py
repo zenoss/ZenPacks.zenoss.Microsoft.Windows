@@ -7,11 +7,15 @@
 #
 ##############################################################################
 
+import re
+import logging
+import string
 from Globals import InitializeClass
 
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 
+log = logging.getLogger('zen.MicrosoftWindows')
 
 class WinService(OSComponent):
     '''
@@ -45,7 +49,7 @@ class WinService(OSComponent):
     _relations = OSComponent._relations + (
         ("os", ToOne(ToManyCont,
          "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-         "winrmservices")),
+                     "winrmservices")),
     )
 
     def getRRDTemplateName(self):
@@ -56,11 +60,33 @@ class WinService(OSComponent):
             pass
         return 'WinService'
 
+    def is_match(self, service_regex):
+        # can be actual name of service or a regex
+        allowed_chars = set(string.ascii_letters + string.digits + '_-')
+        if not set(service_regex) - allowed_chars:
+            return service_regex == self.servicename
+        try:
+            regx = re.compile(service_regex)
+        except re.error as e:
+            log.warn(e)
+            return False
+        if regx.match(self.servicename):
+            return True
+        return False
+
     def getMonitored(self, datasource):
+        # match on start mode and include/exclude list of regex/service names
+        # exclusion will override an inclusion
+        rtn = False
         for startmode in datasource.startmode.split(','):
-            if startmode in self.startmode.split(',') and \
-               self.servicename.lower() not in [service.strip() for service in datasource.exclusions.split(',')]:
-                return True
+            if startmode in self.startmode.split(','):
+                for service in datasource.in_exclusions.split(','):
+                    service_regex = service.strip()
+                    if service_regex.startswith('+') and self.is_match(service_regex[1:]):
+                        rtn = True
+                    elif service_regex.startswith('-') and self.is_match(service_regex[1:]):
+                        return False
+        return rtn
 
     def monitored(self):
         """Return True if this service should be monitored. False otherwise."""
