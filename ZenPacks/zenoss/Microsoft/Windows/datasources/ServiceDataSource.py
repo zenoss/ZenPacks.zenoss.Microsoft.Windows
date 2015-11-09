@@ -49,6 +49,7 @@ MODE_DISABLED = 'Disabled'
 MODE_MANUAL = 'Manual'
 MODE_ANY = 'Any'
 
+
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
         return string
@@ -71,7 +72,7 @@ class ServiceDataSource(PythonDataSource):
     servicename = '${here/id}'
     alertifnot = 'Running'
     startmode = ''
-    exclusions = ''
+    in_exclusions = '+.*'
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -80,7 +81,7 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
         {'id': 'startmode', 'type': 'string'},
-        {'id': 'exclusions', 'type': 'string'},
+        {'id': 'in_exclusions', 'type': 'string'},
     )
 
     def getAffectedServices(self):
@@ -126,9 +127,9 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Options'),
         xtype='startmodegroup')
 
-    exclusions = schema.TextLine(
+    in_exclusions = schema.TextLine(
         group=_t('Service Options'),
-        title=_t('Exclusions separated by commas'))
+        title=_t('Inclusions(+)/Exclusions(-) separated by commas.  Regex accepted'))
 
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
@@ -143,7 +144,7 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
-    exclusions = ProxyProperty('exclusions')
+    in_exclusions = ProxyProperty('in_exclusions')
 
     def get_startmode(self):
         return self._object.startmode
