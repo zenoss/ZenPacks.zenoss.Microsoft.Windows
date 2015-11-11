@@ -60,6 +60,30 @@
         />
 
     <adapter
+        factory=".info.ClusterNodeInfo"
+        for=".ClusterNode.ClusterNode"
+        provides=".interfaces.IClusterNodeInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterDiskInfo"
+        for=".ClusterDisk.ClusterDisk"
+        provides=".interfaces.IClusterDiskInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterNetworkInfo"
+        for=".ClusterNetwork.ClusterNetwork"
+        provides=".interfaces.IClusterNetworkInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterInterfaceInfo"
+        for=".ClusterInterface.ClusterInterface"
+        provides=".interfaces.IClusterInterfaceInfo"
+        />
+
+    <adapter
         factory=".info.WinIISInfo"
         for=".WinIIS.WinIIS"
         provides=".interfaces.IWinIISInfo"
@@ -117,6 +141,12 @@
         provides=".datasources.ServiceDataSource.IServiceDataSourceInfo"
         for=".datasources.ServiceDataSource.ServiceDataSource"
         factory=".datasources.ServiceDataSource.ServiceDataSourceInfo"
+        />
+
+    <adapter
+        provides=".datasources.WinRMPingDataSource.IWinRMPingDataSourceInfo"
+        for=".datasources.WinRMPingDataSource.WinRMPingDataSource"
+        factory=".datasources.WinRMPingDataSource.WinRMPingDataSourceInfo"
         />
 
     <adapter
@@ -234,6 +264,30 @@
             provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
             for=".ClusterResource.ClusterResource"
             factory=".impact.ClusterResourceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterNode.ClusterNode"
+            factory=".impact.ClusterNodeRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterNetwork.ClusterNetwork"
+            factory=".impact.ClusterNetworkRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterDisk.ClusterDisk"
+            factory=".impact.ClusterDiskRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterInterface.ClusterInterface"
+            factory=".impact.ClusterInterfaceRelationsProvider"
             />
 
     </configure>

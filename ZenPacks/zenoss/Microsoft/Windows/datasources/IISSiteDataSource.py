@@ -32,6 +32,7 @@ from ..utils import check_for_network_error
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
+from txwinrm.shell import create_single_shot_command
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -54,6 +55,26 @@ def string_to_lines(string):
     return None
 
 
+class IISCommander(object):
+
+    def __init__(self, conn_info):
+        self.winrs = create_single_shot_command(conn_info)
+
+    PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
+        "-OutputFormat TEXT -Command "
+
+    IIS_COMMAND= '''
+        $iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;
+        If($iisversion -like '*Version 6*'){ Write-Host 6 };
+        If($iisversion -like '*Version 7*'){ Write-Host 7 };
+    '''
+
+    def get_iis_version(self):
+        command = '{0} "& {{{1}}}"'.format(
+            self.PS_COMMAND, self.IIS_COMMAND.replace('\n', ' '))
+        return self.winrs.run_command(command)
+
+
 class IISSiteDataSource(PythonDataSource):
     """
     Subclass PythonDataSource to put a new datasources into Zenoss
@@ -71,6 +92,7 @@ class IISSiteDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'statusname', 'type': 'string'},
+        {'id': 'iis_version', 'type': 'int'},
     )
 
 
@@ -111,6 +133,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             datasource.id,
             datasource.plugin_classname,
             params.get('statusname'),
+            params.get('iis_version'),
         )
 
     @classmethod
@@ -118,6 +141,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         params = {}
 
         params['statusname'] = context.statusname
+        params['iis_version'] = context.iis_version
 
         return params
 
@@ -125,6 +149,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
+        conn_info = createConnectionInfo(ds0)
 
         wql_iis6 = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
             ds0.params['statusname'])
@@ -132,12 +157,18 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         wql_iis7 = 'select ServerAutoStart from Site where name="{0}"'.format(
             ds0.params['statusname'])
 
-        WinRMQueries = [
-            create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),
-            create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),
-            ]
+        iis_version = ds0.params['iis_version']
 
-        conn_info = createConnectionInfo(ds0)
+        if not iis_version:
+            winrs = IISCommander(conn_info)
+            version = yield winrs.get_iis_version()
+            iis_version = version.stdout[0]
+
+        if iis_version == 6:
+            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),]
+        else:
+            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),]
+
         winrm = WinrmCollectClient()
         results = None
         try:

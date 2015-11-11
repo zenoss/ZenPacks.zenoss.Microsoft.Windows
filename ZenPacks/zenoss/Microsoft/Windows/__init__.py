@@ -18,7 +18,7 @@ import logging
 
 from Products.ZenModel.ZenPack import ZenPackBase
 from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
-from Products.ZenUtils.Utils import monkeypatch, zenPath
+from Products.ZenUtils.Utils import zenPath
 
 log = logging.getLogger("zen.MicrosoftWindows")
 # unused
@@ -40,6 +40,8 @@ _PACK_Z_PROPS = [
     ('zWinKeyTabFilePath', '', 'string'),
     ('zWinScheme', 'http', 'string'),
     ('zWinPerfmonInterval', 300, 'int'),
+    ('zWinTrustedRealm', '', 'string'),
+    ('zWinTrustedKDC', '', 'string'),
     ]
 
 for name, default_value, type_ in _PACK_Z_PROPS:
@@ -48,7 +50,7 @@ for name, default_value, type_ in _PACK_Z_PROPS:
 # General zProp for Instance logins
 # Format example:
 # zDBInstances = '[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
-#{"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
+# {"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
 
 setzPropertyCategory('zDBInstances', 'Misc')
 
@@ -57,6 +59,10 @@ productNames = (
     'ClusterDevice',
     'ClusterResource',
     'ClusterService',
+    'ClusterNode',
+    'ClusterDisk',
+    'ClusterNetwork',
+    'ClusterInterface',
     'CPU',
     'Device',
     'Interface',
@@ -188,13 +194,5 @@ class ZenPack(ZenPackBase):
         )
 
 
-from Products.ZenModel.OSProcess import OSProcess
-if not hasattr(OSProcess, 'getMinProcessCount'):
-    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
-    def getMinProcessCount(self):
-        return None
-
-if not hasattr(OSProcess, 'getMaxProcessCount'):
-    @monkeypatch("Products.ZenModel.OSProcess.OSProcess")
-    def getMaxProcessCount(self):
-        return None
+# Patch last to avoid import recursion problems.
+from ZenPacks.zenoss.Microsoft.Windows import patches  # NOQA: imported for side effects.

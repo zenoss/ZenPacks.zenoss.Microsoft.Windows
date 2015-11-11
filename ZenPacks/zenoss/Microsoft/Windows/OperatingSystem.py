@@ -29,6 +29,12 @@ class OperatingSystem(BaseOS):
         ("clusterservices", ToManyCont(ToOne,
          "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
           "os")),
+        ("clusternodes", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.ClusterNode",
+         "os")),
+        ("clusternetworks", ToManyCont(ToOne,
+         "ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork",
+         "os")),
         )
 
 InitializeClass(OperatingSystem)

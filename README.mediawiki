@@ -69,6 +69,21 @@ The following components will be automatically discovered through the Windows se
 : Attributes: Name, Owner Node, Description, Owner Group, State
 : Relationships: Cluster Service
 
+;Cluster Nodes
+: Attributes: Name, Assigned Vote, Current Vote, State
+: Relationships: Cluster Disks, Cluster Interfaces
+
+;Cluster Networks
+: Attributes: Name, Description, State
+
+;Cluster Disks
+: Attributes: Name, Owner Node, Volume Path, Disk Number, Partition Number, Capacity, Free Space, State
+: Relationships: Cluster Nodes
+
+;Cluster Interfaces
+: Attributes: Name, Owner Node, Network, IP Addresses, Adapter, State
+: Relationships: Cluster Nodes
+
 ;IIS Sites
 : Attributes: Name, Status, App Pool
 
@@ -77,7 +92,7 @@ The following components will be automatically discovered through the Windows se
 : Relationships: SQL Server Databases
 
 ;SQL Server Databases
-: Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path
+: Attributes: Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path, Recovery Model, Is System Object
 : Relationships: SQL Server Instance
 
 ;SQL Server Backups
@@ -224,6 +239,8 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
 * \MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
 
+{{note}} If monitoring Exchange with a non-administrator user, the user must be a member of the Active Directory group "Exchange View-Only Administrators" for pre-2010 Exchange installations or "View Only Organization Management" for 2010 and later installations.
+
 ; IIS
 * \Web Service(_Total)\Bytes Received/sec
 * \Web Service(_Total)\Bytes Sent/sec
@@ -277,6 +294,8 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 
 {{note}} The IIS monitoring template will only be used when IIS is found during modeling.
 
+{{note}} The IISAdmin service must be running in order to collect IIS data.
+
 The following metrics are collected directly via WMI.
 
 ;Processes (Win32_PerfFormattedData_PerfProc_Process)
@@ -287,41 +306,46 @@ The following metrics are collected directly via WMI.
 <br clear=all>
 
 {{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
+
 {{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
 
 === SQL Server ===
 The following performance counters are monitored via Powershell script per database:
 
-\SQLServer:Databases(<dbname>)\Active Transactions
-\SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
-\SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
-\SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
-\SQLServer:Databases(<dbname>)\Cache Entries Count
-\SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
-\SQLServer:Databases(<dbname>)\Cache Hit Ratio
-\SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
-\SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
-\SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
-\SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
-\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
-\SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
-\SQLServer:Databases(<dbname>)\Log Cache Reads/sec
-\SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
-\SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
-\SQLServer:Databases(<dbname>)\Log Flush Wait Time
-\SQLServer:Databases(<dbname>)\Log Flush Waits/sec
-\SQLServer:Databases(<dbname>)\Log Flushes/sec
-\SQLServer:Databases(<dbname>)\Log Growths
-\SQLServer:Databases(<dbname>)\Percent Log Used
-\SQLServer:Databases(<dbname>)\Log Shrinks
-\SQLServer:Databases(<dbname>)\Log Truncations
-\SQLServer:Databases(<dbname>)\Percent Log Used
-\SQLServer:Databases(<dbname>)\Repl. Pending Xacts
-\SQLServer:Databases(<dbname>)\Repl. Trans. Rate
-\SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
-\SQLServer:Databases(<dbname>)\Transactions/sec
+* \SQLServer:Databases(<dbname>)\Active Transactions
+* \SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
+* \SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
+* \SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
+* \SQLServer:Databases(<dbname>)\Cache Entries Count
+* \SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
+* \SQLServer:Databases(<dbname>)\Cache Hit Ratio
+* \SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
+* \SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
+* \SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
+* \SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
+* \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
+* \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
+* \SQLServer:Databases(<dbname>)\Log Cache Reads/sec
+* \SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
+* \SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
+* \SQLServer:Databases(<dbname>)\Log Flush Wait Time
+* \SQLServer:Databases(<dbname>)\Log Flush Waits/sec
+* \SQLServer:Databases(<dbname>)\Log Flushes/sec
+* \SQLServer:Databases(<dbname>)\Log Growths
+* \SQLServer:Databases(<dbname>)\Percent Log Used
+* \SQLServer:Databases(<dbname>)\Log Shrinks
+* \SQLServer:Databases(<dbname>)\Log Truncations
+* \SQLServer:Databases(<dbname>)\Percent Log Used
+* \SQLServer:Databases(<dbname>)\Repl. Pending Xacts
+* \SQLServer:Databases(<dbname>)\Repl. Trans. Rate
+* \SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
+* \SQLServer:Databases(<dbname>)\Transactions/sec
 
 You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
+
+The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.
+
+The WinSQLJob monitoring template will monitor the status of a job on a SQL Server instance to inform the user if it has succeeded, failed, unknown, or other state.
 
 === Thresholds ===
 
@@ -334,13 +358,16 @@ The following thresholds are set by default on the device monitoring template an
 === Event Management ===
 Events could be collected from the Windows event log using a WinRM subscription. Events collected through this mechanism will be timestamped based on the time they occurred within the Windows event log. Not by the time at which they were collected.
 
-To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. Filter is written as PowerShell scriptblock for Where-Object commandlet. 
+To monitor EventLog events you should add to monitoring template with "Windows EventLog" datasource. For the Event Log field put the name of event log (e.g. "System") that you are interested in, and in the EventQuery you could put the filter for events. The filter can be either a PowerShell Where-Object block or XPath XML taken from a Windows Event Viewer Custom View.
 
-To target all events with a Warning or higher severity:
+The default Get-WinEvent xml filter returns all events from the last polling cycle.  This list can be searched for specific Ids, severity, or specific words in the message using PowerShell.
 
+* To target all events with a Warning or higher severity:
+
+[[File:CustomViewOptions.png|thumb|250px|CustomViewOptions]]
 For Windows 2003: <code>{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}</code>
 
-<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> - is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit</code>, or <code>FailureAudit</code>. Also it has such attributes as <code>Message</code>, <code>MachineName</code>, <code>TimeGenerated</code>, <code>Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
+<code>$$_</code> is the event object of EventLogEntry class. <code>EntryType</code> is the attribute which determines severity, and could contain one of the following values: <code>Error, Warning, Information, SuccessAudit,<code> or</code> <code>FailureAudit</code>. Also it has such attributes as <code>Message, MachineName, TimeGenerated, Source</code>. Full list you could find at http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry .
 
 Note: This query is structured to look for "less than," although we are looking for events "greater than" in severity. This is because the EntryType is an enumeration where the integer values map to 1= Error, 2 = Warning, etc. This means lower numbers indicate higher severity.
 
@@ -348,12 +375,40 @@ For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
+<code>{ $$_.Id -eq 4001}</code>
+
+<code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event.  <code>Id</code> is the property to compare for specific event ids.  You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.
+
+[[File:CustomViewXML.png|thumb|250px|CustomViewXML]]
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
 
 For more information about the System.Diagnostics.Eventing.Reader class, you could read http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader(v=vs.110).aspx
 
 And to know more about writing PowerShell conditions, you could read http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/ 
 
+* To use the xml query from a custom view in Windows Event Viewer, simply copy the xml and paste into the Event Query field of the event data source.  Because we use a polling cycle to query the event log, any TimeCreated filter will be replaced by us to avoid duplicate events.
+
+For example, a custom view that searches for events in the last hour, with severity of Warning or Critical, and Ids of 104, 110-115, 155 will result in the following XPath query:
+[[File:EventDatasourceXML.PNG|thumb|250px|EventDatasourceXML]]
+    <QueryList>
+      <Query Id="0" Path="Application">
+        <Select Path="Application">*[System[(Level=1  or Level=3) and (EventID=104 or  (EventID &gt;= 110 and EventID &lt;= 115)  or EventID=155) and TimeCreated[timediff(@SystemTime) &lt;= 3600000]]]</Select>
+      </Query>
+    </QueryList>
+
+Simply copy this and paste into the eventlog datasource Event Query field and save.  We will convert the TimeCreated query and the following filter will be used:
+
+    <QueryList>
+      <Query Id="0" Path="Application">
+        <Select Path="Application">*[System[(Level=1  or Level=3) and (EventID=104 or  (EventID &gt;= 110 and EventID &lt;= 115)  or EventID=155) and TimeCreated[timediff(@SystemTime) &lt;= {time}]]]</Select>
+      </Query>
+    </QueryList>
+
+'{time}' will be replaced by the number of milliseconds since the last query.
+
+{{note}} The script to search for events and return relevant data is approximately 3700 characters.  Due to the Windows 8192 character limit on the shell, any XML or PowerShell queries will need to be less than 4400 characters.
+
+{{note}} The query for Windows 2008 and later uses the Get-WinEvent PowerShell cmdlet.  In order to use this cmdlet, PowerShell on your Windows server must use .NET 3.5 or higher.  If it does not, then we will revert to using the Get-EventLog cmdlet, which does not use an XML filter.
 
 To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
@@ -446,6 +501,10 @@ To monitor ports on a Windows server that is not a domain controller, simply cre
 
 See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more information on Active Directory port usage.
 
+== WinRM Ping ==
+
+Device status relies on ping status, but if a target's IP has been reassigned to a non-Windows device, it is still pingable and will show as Up.  WinRM Ping is a simple datasource that will attempt to retrieve data over winrm.  If it fails, then we will send a Device Down message to '/Status/Ping', which will set the device status to down.
+
 == Requirements ==
 
 This ZenPack has the following requirements.
@@ -486,7 +545,6 @@ Alternatively you can use zenbatchload to add Windows servers from the command l
 
 <syntaxhighlight lang="text">
 /Devices/Server/Microsoft/Windows
-win2003-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 </syntaxhighlight>
@@ -508,7 +566,13 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : Password for user defined by ''zWinRMUser''.
 
 ;zWinKDC
-: The zWinKDC property must be set if domain authentication is used. It must be the IP address of a valid Windows domain controller.
+: The zWinKDC property must be set if domain authentication is used. It must be the IP address or resolvable name of a valid Windows domain controller.
+
+;zWinTrustedRealm
+: Enter the name of the domain which is trusted by the user's domain.  This can be a child or other domain which has a trust relationship with the user's domain.  For example, if zWinRMUser is ''username@example.com'', and austin.example.com is a child of the example domain, enter ''austin.example.com'' into zWinTrustedRealm.
+
+;zWinTrustedKDC
+: This property must be set if zWinTrustedRealm is set.  It must be the IP address or resolvable name of a valid Windows domain controller for the trusted realm.
 
 ;zWinRMServerName
 : This property should only be used in conjunction with domain authentication when the DNS PTR record for a monitored server's managed IP address does not resolve to the name by which the server is known in Active Directory. For example, if myserver1 is known as myserver1.ad.example.com by Active Directory and is being managed by IP address 192.51.100.21, but 192.51.100.21 resolves to www.example.com, you will have to set zWinRMServerName to ''myserver1.ad.example.com'' for domain authentication to work.
@@ -538,6 +602,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, all 'Auto' start services, or somewhere in between.
 
+[[File:winservice.png|thumb|320px|WinService]]
+
 See the following examples:
 
 ;Enable or disable monitoring for a single service on a single server.
@@ -551,13 +617,13 @@ See the following examples:
 # Verify the list of templates is grouped by template.
 # Expand the ''WinService'' tree.
 # Click once to select the ''/Server/Microsoft'' copy.
-# Choose ''Copy / Override Template'' from the gear menu.
+# Choose ''Copy / Override Template'' from the Template gear menu at the bottom left of the page.
 # Select ''/Server/Microsoft (Create Copy)'' from the target list then click submit.
 # Expand the resulting ''copy_of_WinService'' tree.
 # Select the ''/Server/Microsoft'' copy.
-# Choose ''View and Edit Details'' from the gear menu.
+# Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM''.
-# Change ''Start mode of service to monitor'' from 'None' to 'Auto' then click save.
+# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Enable/Disable monitoring by default for the WinRM service for a select group of servers.
 # Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
@@ -565,22 +631,26 @@ See the following examples:
 # Follow steps 1-5 from the previous section.
 # Choose your new device class as the target then click submit.
 # Expand the ''WinService'' tree then select the copy in your device class.
-# Choose ''View and Edit Details'' from the gear menu.
+# Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
-# Change ''Start mode of service to monitor'' from 'None' to 'Auto' to enable or leave it as 'None' to disable monitoring by default then click save.
+# Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Enable monitoring of all services with a start mode of 'Auto'.
 # Navigate to Advanced -> Monitoring Templates.
 # Verify the list of templates is grouped by template.
 # Expand the ''WinService'' tree.
 # Select ''/Server/Microsoft''.
+# In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
-# Change ''Start mode of service to monitor'' from 'None' to 'Auto' then click save.
+# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
+# You can optionally exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These must be the service names and are case insensitive.
 
-{{note}} To enable monitoring by default of a service or services, you must choose a start mode other than 'None'.  Choosing 'None' disables monitoring by default.
+{{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
+
 {{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
-{{note}} Do not change the datasource name of 'DefaultService'.  The WinService datasource depends on this name.
+
+{{note}} The WinService datasource no longer depends on the 'DefaultService' data source name.
 
 <br clear=all>
 
@@ -595,7 +665,7 @@ See the following examples:
 ; Support for SQL Server and Windows Authentication:
 * Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
 * SQL Server Authentication: In ''zDBInstances'' property provide user name and password for each SQL instance.
-* Specifying authentication per instance is no longer required with version 2.4.2 and above.  We will use the credentials specified for the MSSQLSERVER instance by default. 
+* Specifying authentication per instance is no longer required with version 2.4.2 and above.  We will use the credentials specified for the MSSQLSERVER instance by default.
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 # Connect to SQL Instance using MSSQL Management Studio.
@@ -616,7 +686,13 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 # Enable ''zenoss.winrm.WinMSSQL'' modeler plugin.
 # Remodel device.
 
+; SQL Server Monitoring
+
+The monitoring templates for SQL Server are component templates so there is no need to perform a bind.  They will automatically be used to monitor databases, instances, and jobs.
+
 {{note}} The default instance of MSSQLSERVER will appear as only the server name starting with version 2.4.8.
+
+{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
 
 === Working with WinCommand Notification Action ===
 
@@ -634,8 +710,6 @@ For more information please refer to [http://community.zenoss.org/docs/DOC-10690
 
 == <span id="winrm_setup">Setting up WinRM Service for Target Windows Machines</span> ==
 
-Windows server operating systems from Windows 2003 SP1 are supported. The reason for this is that WinRM version 2 is required, and it was only added in Windows 2003 SP1.
-
 Group Policy
 
 Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management
@@ -647,7 +721,7 @@ WinRMService
 * Allow remote server management through WinRm
 
 - HTTP (Windows default is HTTPS see note below for more information)
-* Allow unencrypted Traffic
+* Allow unencrypted Traffic (Only necessary when using basic authentication)
 
 - Basic Authentication (Windows default is Kerberos see note below for more information)
 * Allow Basic Authentication 
@@ -681,15 +755,17 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 
 {{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
 
+{{note}} In order to use a single domain user in a child domain or other trusted domain, set zWinKDC to the AD server of the user's domain.  Then enter the trusted domain name and associated AD server in the zWinTrustedRealm and zWinTrustedKDC properties, respectively.
+
 {{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
-Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate  SPN record exists for Kerberos authentication.
+Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate SPN record exists for Kerberos authentication.
 
 <console>
 c:\>setspn -l hostname1
 </console>
 
-If you do not see a record with HTTPS/ at the beginning of the hostname you will need to create the record.
+If you do not see a record with HTTPS/ at the beginning of the hostname you can create the record, but this is not typically necessary as Windows will use the HOST/ record as the default for most built in services.
 
 <console>
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
@@ -748,7 +824,7 @@ The current release is known to have the following limitations.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos libary on EL5 systems does not contain the necessary functionality. 
-* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.
+* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.  Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done around it.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -816,10 +892,7 @@ If you cannot find the answer in the documentation, then Resource Manager (Servi
 
 <blockquote>Server not found in Kerberos database</blockquote>
 
-* Either the HTTP or HTTPS service principal name cannot be found on the device.  You can add it using the setspn program on the Windows Server.
-
-example:
-setspn -s HTTP/hostname1.zenoss.com hostname1
+* More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
@@ -873,8 +946,12 @@ For example:
 
 === Troubleshooting monitoring ===
 
+The first step in troubleshooting any monitoring issues is to scan the zenpython log for errors.
+
 While monitoring, possible network connectivity issues may occur while trying to complete the Get-Counter command.
 If you experience OperationTimeout errors, it may be a solution to decrease value of ''zWinPerfmonInterval'' property to 30 seconds.
+
+Other timeout issues on a domain could involve having a large Kerberos token.  This could be caused by the user belonging to a large number of groups.  See https://support.microsoft.com/en-us/kb/970875 for more information on the cause and resolution.  Possible side effects of a large token include high CPU usage on the Windows server.
 
 == Zenoss Analytics ==
 
@@ -884,7 +961,8 @@ after installing the ZenPack.
 
 # Copy analytics-bundle.zip from <tt>$ZENHOME/ZenPacks/ZenPacks.zenoss.Microsoft.Windows*/ZenPacks/zenoss/Microsoft/Windows/analytics/</tt> on your Zenoss server.
 # Navigate to Zenoss Analytics in your browser.
-# Login as superuser.
+# From the Zenoss Instance list of options, select Internal Authentication.
+# Login as an Analytics user with superuser privileges.
 # Remove any existing ''Microsoft Windows ZenPack'' folder.
 ## Choose ''Repository'' from the ''View'' menu at the top of the page.
 ## Expand ''Public'' in the list of folders.
@@ -970,16 +1048,47 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * IIS (in /Server/Microsoft)
 * IISADMIN (in /Server/Microsoft)
 * IISSites (in /Server/Microsoft)
-* MSExchangeIS (in /Server/Microsoft)
+* MSExchangeInformationStore (in /Server/Microsoft)
 * MSExchange2010IS (in /Server/Microsoft)
 * MSExchange2013IS (in /Server/Microsoft)
-* MSSQLServer (in /Server/Microsoft)
+* WinDBInstance (in /Server/Microsoft)
+* WinSQLJob (in /Server/Microsoft)
 * WinDatabase (in /Server/Microsoft)
 * Cluster (in /Server/Microsoft)
 * ClusterService (in /Server/Microsoft/Cluster)
 * ClusterResource (in /Server/Microsoft/Cluster)
+* ClusterNode (in /Server/Microsoft/Cluster)
+* ClusterNetwork (in /Server/Microsoft/Cluster)
+* ClusterDisk (in /Server/Microsoft/Cluster)
+* ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.5.0
+* Windows Service monitoring improvements
+* Added State column for MSSQL Databases
+* Improved EventLog querying to allow use of XPath XML
+* Enhancement Microsoft Windows - Update Cluster for failover cluster device (ZEN-18833)
+* Added ability to enter trusted domain information in order to use a single domain user
+* Documentation update:  Microsoft Windows - zenpython causes max cpu on target machine (ZEN-20542)
+* Fix Analytics not extracting software data on windows devices (ZEN-19366)
+* Fix Zenoss Windows Monitoring Spawning Thousands of Processes on Monitored Hosts (ZEN-18770)
+* Fix Microsoft Windows ZenPack -> Blank page is displayed when open 'Instance name' link in new page for My SQL Device (ZEN-15464)
+* Fix WinRM - ProcessDataSource.py results in "list index out of range" (ZEN-18823)
+* Fix Microsoft Windows ZenPack - MSSQL Databases: Unable to monitor any databases if any databases have ' in name (ZEN-18838)
+* Fix Microsoft Windows - Remove file systems with 0.00B Used/Free Bytes in File Systems component (ZEN-19213)
+* Fix Microsoft Windows - Cluster event is in Unknown class (ZEN-18835)
+* Fix Microsoft Windows - Database event is in Unknown class (ZEN-18836)
+* Fix Microsoft Windows - Provide a better message if using an event log that does not exist (ZEN-19270)
+* Fix Microsoft Windows - Remove IIS from default selected list of plugins (ZEN-19620)
+* Fix Microsoft Windows - an event " WinRS: get-clusterservice : The term 'get-clusterservice' is not recognized..." (ZEN-20138)
+* Fix Microsoft Windows - 'RecoveryModel' property is not displayed for SQL Enterprise 2005 (ZEN-20094)
+* Fix error when modeling hosts with IPv6 addresses. (ZEN-20474)
+* Fix WinRM for Windows server - Device Status should not use /Status/Ping (ZEN-19813)
+* Fix Wiki page for MicrosoftWindows ZenPack - IISAdmin service (ZEN-19300)
+* Fix WinRM Leaves Connections Open When Collection Fails Due to Native Language (ZEN-20514)
+* Fix WinRM - "The referenced context has expired" (ZEN-18115)
+* Fix Microsoft Windows - Windows cluster fails modeling for Task Scheduler traceback (ZEN-20438)
 
 ;2.4.9
 * Fix Windows ZenPack - Cluster device does not add cluster nodes as devices on model (ZEN-19085)

@@ -70,7 +70,8 @@ class ServiceDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     servicename = '${here/id}'
     alertifnot = 'Running'
-    startmode = MODE_NONE
+    startmode = ''
+    exclusions = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -79,6 +80,7 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'servicename', 'type': 'string'},
         {'id': 'alertifnot', 'type': 'string'},
         {'id': 'startmode', 'type': 'string'},
+        {'id': 'exclusions', 'type': 'string'},
     )
 
     def getAffectedServices(self):
@@ -114,17 +116,19 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Service Status'),
         title=_t('Service Name'))
 
-    startmode = schema.Choice(
-        group=_t('Service Status'),
-        title=_t('Start mode of service to monitor (None disables monitoring)'),
-        vocabulary=SimpleVocabulary.fromValues(
-            [MODE_NONE,MODE_ANY,MODE_AUTO,MODE_DISABLED,MODE_MANUAL]),)
-
     alertifnot = schema.Choice(
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
             [STATE_RUNNING, STATE_STOPPED]),)
+
+    startmode = schema.Text(
+        group=_t('Service Options'),
+        xtype='startmodegroup')
+
+    exclusions = schema.TextLine(
+        group=_t('Service Options'),
+        title=_t('Exclusions separated by commas'))
 
 
 class ServiceDataSourceInfo(RRDDataSourceInfo):
@@ -139,6 +143,7 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
     alertifnot = ProxyProperty('alertifnot')
+    exclusions = ProxyProperty('exclusions')
 
     def get_startmode(self):
         return self._object.startmode
@@ -157,7 +162,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
     @classmethod
     def config_key(cls, datasource, context):
-        params = cls.params(datasource, context)
         return(
             context.device().id,
             datasource.getCycleTime(context),
@@ -175,8 +179,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['alertifnot'] = datasource.talesEval(
             datasource.alertifnot, context)
 
-        params['startmode'] = datasource.talesEval(
-            datasource.startmode, context)
+        params['startmode'] = datasource.startmode
 
         return params
 
@@ -231,7 +234,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             data['events'].append({
                                 'eventClass': "/Status",
                                 'severity': ZenEventClasses.Error,
-                                'eventClassKey': 'WindowsServiceCollectionError',
+                                'eventClassKey': 'WindowsServiceCollectionStatus',
                                 'eventKey': 'WindowsServiceCollection',
                                 'summary': 'No results returned for service query',
                                 'device': config.id})
@@ -293,7 +296,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
-            'eventClassKey': 'WindowsServiceLogSuccess',
+            'eventClassKey': 'WindowsServiceCollectionStatus',
         })
 
         return data
@@ -312,7 +315,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         data['events'].append({
             'eventClass': eventClass,
             'severity': ZenEventClasses.Error,
-            'eventClassKey': 'WindowsServiceCollectionError',
+            'eventClassKey': 'WindowsServiceCollectionStatus',
             'eventKey': 'WindowsServiceCollection',
             'summary': msg,
             'device': config.id})

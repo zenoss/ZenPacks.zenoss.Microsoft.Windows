@@ -118,13 +118,16 @@ class OperatingSystem(WinRMPlugin):
         except AttributeError:
             log.warn('No results returned for Win32_SystemEnclosure.  Check WMI namespace and DCOM permissions.')
 
-        if hasattr(operatingSystem, 'TotalVisibleMemorySize'):
+        try:
+            assert operatingSystem is not None
             hw_om.totalMemory = 1024 * int(operatingSystem.TotalVisibleMemorySize)
-        else:
+        except AttributeError:
             log.warn(
                 "Win32_OperatingSystem query did not respond with "
                 "TotalVisibleMemorySize: {0}"
                 .format(pformat(sorted(vars(operatingSystem).keys()))))
+        except AssertionError:
+            log.warn('No results returned for Win32_OperatingSystem.  Check WMI namespace and DCOM permissions.')
 
         maps.append(hw_om)
 

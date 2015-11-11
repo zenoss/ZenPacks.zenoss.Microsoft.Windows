@@ -285,7 +285,9 @@ class WinMSSQL(WinRMPlugin):
                 '\"`tCreateDate---\" $_.CreateDate,'\
                 '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
                 '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
-                '\"`tLastLogBackupDate---\" $_.LastLogBackupDate' \
+                '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,' \
+                '\"`tSystemObject---\" $_.IsSystemObject,' \
+                '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel' \
                 '};')
 
             # Get SQL Backup Jobs information
@@ -383,6 +385,9 @@ class WinMSSQL(WinRMPlugin):
                         om_database.primaryfilepath = dbdict['primaryfilepath']
                         om_database.cluster_node_server = '{0}//{1}'.format(
                             owner_node.strip(), sqlserver)
+                        om_database.systemobject = dbdict['systemobject']
+                        om_database.recoverymodel = dbdict['recoverymodel']
+                        om_database.status= 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
 
                         database_oms.append(om_database)
                 elif in_backups:

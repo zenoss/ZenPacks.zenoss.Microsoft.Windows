@@ -10,6 +10,29 @@
 
 (function(){
 
+    Ext.onReady(function() {
+        // Hide Software component for wondows cluster
+        if(Zenoss.env.PARENT_CONTEXT == "/zport/dmd/Devices/Server/Microsoft/Cluster/devices"){
+            var DEVICE_ELEMENTS = "subselecttreepaneldeviceDetailNav";
+            Ext.ComponentMgr.onAvailable(DEVICE_ELEMENTS, function(){
+                var DEVICE_PANEL = Ext.getCmp(DEVICE_ELEMENTS);
+                DEVICE_PANEL.on('afterrender', function() {
+                    var tree = Ext.getCmp(DEVICE_PANEL.items.items[0].id);
+                    var items = tree.store.data.items;
+                    for (i in items){
+                        console.log('Item:', items[i].data.id);
+                        if (items[i].data.id.match(/software*/)){
+                            try {
+                                tree.store.remove(items[i]);
+                                tree.store.sync();
+                            } catch(err){}
+                        }
+                    }
+                });
+            });
+        }
+    });
+
 var ZC = Ext.ns('Zenoss.component');
 
 function render_link(ob) {
@@ -53,7 +76,7 @@ Ext.apply(Zenoss.render, {
         }
 
         if (isLink) {
-            return '<a href="javascript:Ext.getCmp(\'component_card\').componentgrid.jumpToEntity(\''+obj.uid+'\', \''+obj.meta_type+'\');">'+obj.title+'</a>';
+            return '<a href="'+obj.uid+'" onClick="Ext.getCmp(\'component_card\').componentgrid.jumpToEntity(\''+obj.uid +'\', \''+obj.meta_type+'\');return false;">'+obj.title+'</a>';            
         } else {
             return obj.title;
         }
@@ -362,6 +385,11 @@ ZC.WinRMIISPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Name'),
                 sortable: true
             },{
+                id: 'apppool',
+                dataIndex: 'apppool',
+                header: _t('Application Pool'),
+                sortable: true
+            },{
                 id: 'status',
                 dataIndex: 'status',
                 header: _t('Status'),
@@ -470,7 +498,8 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
-                {name: 'monitored'}
+                {name: 'monitored'},
+                {name: 'status'}
             ],
             columns: [{
                 id: 'severity',
@@ -490,7 +519,14 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Instance Name'),
                 renderer: Zenoss.render.win_entityLinkFromGrid,
                 sortable: true,
-                width: 200
+                width: 200,
+                doSort: function(state) {
+                    var ds = this.up('tablepanel').store;
+                    ds.sort({
+                        property: 'instancename',
+                        direction: state,
+                    });
+                }
             },{
                 id: 'owner',
                 dataIndex: 'owner',
@@ -502,6 +538,12 @@ ZC.WinDatabasePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Collation'),
                 sortable: true,
                 width: 180
+            },{
+                id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                renderer: Zenoss.render.pingStatus,
+                width: 80
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -639,7 +681,14 @@ ZC.WinSQLJobPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 header: _t('Instance Name'),
                 sortable: true,
                 renderer: Zenoss.render.win_entityLinkFromGrid,
-                width: 200
+                width: 200,
+                doSort: function(state) {
+                    var ds = this.up('tablepanel').store;
+                    ds.sort({
+                        property: 'instancename',
+                        direction: state,
+                    });
+                }
             },{
                 id: 'enabled',
                 dataIndex: 'enabled',
@@ -824,6 +873,345 @@ ZC.MSClusterResourcePanel = Ext.extend(ZC.WINComponentGridPanel, {
 });
 
 Ext.reg('MSClusterResourcePanel', ZC.MSClusterResourcePanel);
+
+
+ZC.MSClusterNodePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'MSClusterNode',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'assignedvote'},
+                {name: 'currentvote'},
+                {name: 'clusternode'},
+                {name: 'state'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'clusternode',
+                header: _t('Name'),
+                renderer: function (v) {
+                    return v;
+                },
+                sortable: true
+            },{
+                id: 'assignedvote',
+                dataIndex: 'assignedvote',
+                header: _t('Assigned Vote'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'currentvote',
+                dataIndex: 'currentvote',
+                header: _t('Current Vote'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.MSClusterNodePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('MSClusterNodePanel', ZC.MSClusterNodePanel);
+
+ZC.MSClusterDiskPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'MSClusterDisk',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'volumepath'},
+                {name: 'ownernode'},
+                {name: 'disknumber'},
+                {name: 'partitionnumber'},
+                {name: 'size'},
+                {name: 'freespace'},
+                {name: 'assignedto'},
+                {name: 'state'},
+                {name: 'clusternode'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'assignedto',
+                dataIndex: 'assignedto',
+                header: _t('Assigned To'),
+                sortable: true,
+                width: 200
+            },{
+                id: 'clusternode',
+                dataIndex: 'clusternode',
+                header: _t('Owner Node'),
+                renderer: Zenoss.render.win_entityLinkFromGrid,
+                sortable: true,
+                width: 150
+            },{
+                id: 'disknumber',
+                dataIndex: 'disknumber',
+                header: _t('Disk Number'),
+                sortable: true,
+                width: 75
+            },{
+                id: 'partitionnumber',
+                dataIndex: 'partitionnumber',
+                header: _t('Partition Number'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'size',
+                dataIndex: 'size',
+                header: _t('Capacity'),
+                sortable: true,
+                width: 75
+            },{
+                id: 'freespace',
+                dataIndex: 'freespace',
+                header: _t('Free Space'),
+                sortable: true,
+                width: 75
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.MSClusterDiskPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('MSClusterDiskPanel', ZC.MSClusterDiskPanel);
+
+ZC.MSClusterNetworkPanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'MSClusterNetwork',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'description'},
+                {name: 'role'},
+                {name: 'state'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'role',
+                dataIndex: 'role',
+                header: _t('Cluster Use'),
+                sortable: true,
+                width: 300
+            },{
+                id: 'description',
+                dataIndex: 'description',
+                header: _t('Description'),
+                sortable: true,
+                width: 300
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.MSClusterNetworkPanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('MSClusterNetworkPanel', ZC.MSClusterNetworkPanel);
+
+
+ZC.MSClusterInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
+    subComponentGridPanel: false,
+
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'title',
+            componentType: 'MSClusterInterface',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'node'},
+                {name: 'network'},
+                {name: 'clusternode'},
+                {name: 'clusternetwork'},
+                {name: 'ipaddresses'},
+                {name: 'adapter'},
+                {name: 'state'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'title',
+                dataIndex: 'title',
+                header: _t('Name'),
+                sortable: true
+            },{
+                id: 'clusternode',
+                dataIndex: 'clusternode',
+                header: _t('Owner Node'),
+                renderer: Zenoss.render.win_entityLinkFromGrid,
+                sortable: true,
+                width: 150
+            },{
+                id: 'clusternetwork',
+                dataIndex: 'clusternetwork',
+                header: _t('Network'),
+                renderer: Zenoss.render.win_entityLinkFromGrid,
+                sortable: true,
+                width: 150
+            },{
+                id: 'ipaddresses',
+                dataIndex: 'ipaddresses',
+                header: _t('IP Addresses'),
+                sortable: true,
+                width: 300
+            },{
+                id: 'adapter',
+                dataIndex: 'adapter',
+                header: _t('Adapter'),
+                sortable: true,
+                width: 300
+            },{
+                id: 'state',
+                dataIndex: 'state',
+                header: _t('State'),
+                sortable: true,
+                width: 100
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.MSClusterInterfacePanel.superclass.constructor.call(this, config);
+    }
+});
+
+Ext.reg('MSClusterInterfacePanel', ZC.MSClusterInterfacePanel);
 
 
 ZC.WinTeamInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
@@ -1079,6 +1467,41 @@ Zenoss.nav.appendTo('Component', [{
         ZC.MSClusterResourcePanel.superclass.setContext.apply(this, [uid]);
     }
 }]);
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_msclusterdisk',
+    text: _t('Disks'),
+    xtype: 'MSClusterDiskPanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'MSClusterNode') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.MSClusterDiskPanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
+
+Zenoss.nav.appendTo('Component', [{
+    id: 'component_msclusterinterface',
+    text: _t('Interfaces'),
+    xtype: 'MSClusterInterfacePanel',
+    subComponentGridPanel: true,
+    filterNav: function(navpanel) {
+        if (navpanel.refOwner.componentType == 'MSClusterNode') {
+            return true;
+        } else {
+            return false;
+        }
+    },
+    setContext: function(uid) {
+        ZC.MSClusterInterfacePanel.superclass.setContext.apply(this, [uid]);
+    }
+}]);
+
 
 Zenoss.nav.appendTo('Component', [{
     id: 'component_windatabase',

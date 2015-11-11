@@ -39,11 +39,16 @@ class WinSQLJob(OSComponent):
 
     _relations = OSComponent._relations + (
         ("winsqlinstance", ToOne(ToManyCont,
-            "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
-            "jobs")),
+                                 "ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
+                                 "jobs")),
     )
 
     def getRRDTemplateName(self):
         return 'WinSQLJob'
+
+    def monitored(self):
+        """Return True if this service should be monitored. False otherwise."""
+
+        return self.monitor and self.enabled == 'Yes'
 
 InitializeClass(WinSQLJob)

@@ -169,6 +169,8 @@ import logging
 LOG = logging.getLogger('zenpack.reportable')
 
 import sys
+from itertools import chain
+
 from zope.component import adapts, getGlobalSiteManager
 from zope.interface import implements, implementedBy
 
@@ -315,6 +317,11 @@ class BaseReportableFactory(ETLBaseReportableFactory):
                         yield BaseManyToManyReportable(
                             fromObject=self.context, toObject=remoteObject,
                             entity_class_name=entity_class_name)
+        if hasattr(self.context, 'os') \
+                and hasattr(self.context.os, 'software') \
+                and isinstance(self.context, Device):
+            for sw in chain((self.context.os,), self.context.os.software()):
+                yield IReportable(sw)
 
 
 class BaseReportable(ETLBaseReportable):

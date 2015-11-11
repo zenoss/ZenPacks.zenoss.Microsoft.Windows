@@ -19,6 +19,7 @@ from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import asyncIpLookup
+from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin
 
 addLocalLibPath()
 
@@ -45,8 +46,6 @@ class ClusterCommander(object):
         )
         return self.winrs.run_command(command)
 
-def pipejoin(items):
-    return " + '|' + ".join(items.split())
 
 class WinCluster(WinRMPlugin):
 
@@ -66,33 +65,107 @@ class WinCluster(WinRMPlugin):
         domain = yield cmd.run_command("(gwmi WIN32_ComputerSystem).Domain;")
         domain = domain.stdout[0]
 
-        clusternode = yield cmd.run_command(
-            "get-clusternode | foreach {$_.Name + '.%s'};" % domain
-        )
-
-        resource = yield cmd.run_command(
+        resourceCommand = []
+        resourceCommand.append(
             'get-clustergroup | foreach {%s};' % pipejoin(
                 '$_.Name $_.IsCoreGroup $_.OwnerNode '
                 '$_.State $_.Description $_.Id $_.Priority'
             )
         )
-
-        clusterapp = yield cmd.run_command(
+        resourceCommand.append('write-host "====";')
+        resourceCommand.append(
             'get-clusterresource | foreach {%s};' % pipejoin(
                 '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description'
             )
         )
+        resource = yield cmd.run_command("".join(resourceCommand))
 
-        maps['apps'] = clusterapp.stdout
+        clusternode = yield cmd.run_command(
+            "get-clusternode | foreach {%s};" % pipejoin(
+                '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State')
+            )
+
+        clusterDiskCommand = []
+        clusterDiskCommand.append(
+            "$clusterSharedVolume = Get-ClusterSharedVolume;" \
+            "foreach ($volume in $clusterSharedVolume) {" \
+            "$volumeowner = $volume.OwnerNode.Name;" \
+            "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;" \
+            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{" \
+            "Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}};"\
+            "$csvdisknumber = ($volumeinfo | where { $_.Volume -eq $csvVolume}).Disknumber;" \
+            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{" \
+                "Id = $csvVolume.substring(11, $csvVolume.length-13);" \
+                "Name = $volume.Name;" \
+                "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;" \
+                "OwnerNode = $volumeowner;" \
+                "DiskNumber = $csvdisknumber;" \
+                "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;" \
+                "Size = $volume.SharedVolumeInfo.Partition.Size;" \
+                "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;" \
+                "State = $volume.State;" \
+                "OwnerGroup = 'Cluster Shared Volume';};" \
+            "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
+                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
+                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            )
+
+        clusterDiskCommand.append(
+            "$clusterDisk = get-clusterresource | where { $_.ResourceType -eq 'Physical Disk'};" \
+            "foreach ($disk in $clusterDisk) {" \
+            "$diskowner = $disk.OwnerNode.Name;" \
+            "$diskVolume = $disk.Name;" \
+            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber," \
+            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};}," \
+            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};}," \
+            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};}," \
+            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};}," \
+            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};" \
+            "$disknumber = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).DiskNumber;" \
+            "$diskpartition = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).PartitionNumber;" \
+            "$disksize = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).Size;" \
+            "$disksizeremain = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).SizeRemaining;" \
+            "$diskvolume = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).Volume.substring(3);" \
+            "$physicaldisk = New-Object -TypeName PSObject -Property @{" \
+            "Id = $diskvolume.substring(8, $diskvolume.length-10);" \
+            "Name = $disk.Name;VolumePath = $diskvolume;" \
+            "OwnerNode = $diskowner;DiskNumber = $disknumber;" \
+            "PartitionNumber = $diskpartition;Size = $disksize;" \
+            "FreeSpace = $disksizeremain;State = $disk.State;"\
+            "OwnerGroup = $disk.OwnerGroup.Name;};" \
+            "$physicaldisk | foreach { %s };}" % pipejoin(
+                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
+                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            )
+        clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
+
+        clusterNetworkCommand = []
+        clusterNetworkCommand.append(
+            'get-clusternetwork | foreach {%s};' % pipejoin(
+                '$_.Id $_.Name $_.Description $_.State $_.Role')
+        )
+        clusterNetworkCommand.append('write-host "====";')
+        clusterNetworkCommand.append(
+            'get-clusternetworkInterface | foreach{%s}' % pipejoin(
+                '$_.Id $_.Name $_.Node $_.Network '
+                '$_.ipv4addresses $_.Adapter $_.State')
+        )
+        clusternetworks = yield cmd.run_command("".join(clusterNetworkCommand))
+
         maps['resources'] = resource.stdout
+
         nodes = {}
         for node in clusternode.stdout:
+            node_name = node.split('|')[0] + '.' + domain
             try:
-                nodes[node] = yield asyncIpLookup(node)
+                nodes[node_name] = yield asyncIpLookup(node_name)
             except(gaierror):
-                log.warning('Unable to resolve hostname {0}'.format(node))
+                log.warning('Unable to resolve hostname {0}'.format(node_name))
                 continue
         maps['nodes'] = nodes
+        maps['nodes_data'] = clusternode.stdout
+        maps['clusterdisk'] = clusterdisk.stdout
+        maps['clusternetworks'] = clusternetworks.stdout
         maps['domain'] = domain
 
         defer.returnValue(maps)
@@ -103,8 +176,13 @@ class WinCluster(WinRMPlugin):
         maps = []
 
         map_resources_oms = []
+        map_nodes_oms = []
+        map_networks_oms = []
         ownergroups = {}
         map_apps_to_resource = {}
+        node_ownergroups = {}
+        map_disks_to_node = {}
+        map_interfaces_to_node = {}
 
         nodes = results['nodes']
         cs_om = ObjectMap()
@@ -112,8 +190,9 @@ class WinCluster(WinRMPlugin):
         maps.append(cs_om)
 
         # Cluster Resource Maps
-
-        resources = results['resources']
+        res_spliter_index = results['resources'].index("====")
+        resources = results['resources'][:res_spliter_index]
+        applications = results['resources'][res_spliter_index+1:]
 
         # This section is for ClusterService class
         for resource in resources:
@@ -136,25 +215,27 @@ class WinCluster(WinRMPlugin):
         # Cluster Application and Services
 
         # This section is for ClusterResrouce class
-        applications = results['apps']
-
         for app in applications:
             appline = app.split("|")
-            app_om = ObjectMap()
-            app_om.id = self.prepId('res-{0}'.format(appline[0]))
-            app_om.title = appline[0]
-            app_om.ownernode = appline[2]
-            app_om.description = appline[4]
-            app_om.ownergroup = appline[1]
-            app_om.state = appline[3]
-            app_om.domain = results['domain']
+            app_ownergroup = appline[1]
 
-            groupid = ownergroups[app_om.ownergroup]
-            appsom = []
-            if groupid in map_apps_to_resource:
-                appsom = map_apps_to_resource[groupid]
-            appsom.append(app_om)
-            map_apps_to_resource[groupid] = appsom
+            if app_ownergroup in ownergroups:
+                app_om = ObjectMap()
+                app_om.id = self.prepId('res-{0}'.format(appline[0]))
+                app_om.title = appline[0]
+                app_om.ownernode = appline[2]
+                app_om.description = appline[4]
+                app_om.ownergroup = app_ownergroup
+                app_om.state = appline[3]
+                app_om.domain = results['domain']
+
+                groupid = ownergroups[app_om.ownergroup]
+
+                appsom = []
+                if groupid in map_apps_to_resource:
+                    appsom = map_apps_to_resource[groupid]
+                appsom.append(app_om)
+                map_apps_to_resource[groupid] = appsom
 
         maps.append(RelationshipMap(
             compname="os",
@@ -170,5 +251,128 @@ class WinCluster(WinRMPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.ClusterResource",
                 objmaps=apps
             ))
+
+        # This section is for ClusterNode class
+        nodes_data = results['nodes_data']
+
+        for node in nodes_data:
+            nodeline = node.split("|")
+            node_om = ObjectMap()
+            node_om.id = self.prepId('node-{0}'.format(nodeline[3]))
+            node_om.title = nodeline[0]
+            node_om.ownernode = nodeline[0]
+            node_om.assignedvote = nodeline[1]
+            node_om.currentvote = nodeline[2]
+            node_om.state = nodeline[4]
+            node_om.domain = results['domain']
+
+            if node_om.title not in node_ownergroups:
+                node_ownergroups[node_om.title] = node_om.id
+
+            map_nodes_oms.append(node_om)
+
+        # This section is for ClusterDisk class
+        clusterdisk = results['clusterdisk']
+
+        for disk in clusterdisk:
+            diskline = disk.split("|")
+            disk_ownernode = diskline[3]
+
+            if disk_ownernode in node_ownergroups:
+                disk_om = ObjectMap()
+                disk_om.id = self.prepId(diskline[0])
+                disk_om.title = diskline[1]
+                disk_om.volumepath = diskline[2]
+                disk_om.ownernode = disk_ownernode
+                disk_om.disknumber = diskline[4]
+                disk_om.partitionnumber = diskline[5]
+                disk_om.size = sizeof_fmt(diskline[6])
+                disk_om.freespace = sizeof_fmt(diskline[7])
+                disk_om.assignedto = diskline[9]
+                disk_om.state = diskline[8]
+                disk_om.domain = results['domain']
+
+                nodeid = node_ownergroups[disk_om.ownernode]
+                disksom = []
+                if nodeid in map_disks_to_node:
+                    disksom = map_disks_to_node[nodeid]
+                disksom.append(disk_om)
+                map_disks_to_node[nodeid] = disksom
+
+        # This section is for ClusterInterface class
+        net_spliter_index = results['clusternetworks'].index("====")
+        clusternetworks = results['clusternetworks'][:net_spliter_index]
+        nodeinterfaces = results['clusternetworks'][net_spliter_index+1:]
+
+        for interface in nodeinterfaces:
+            intfline = interface.split("|")
+            intf_node = intfline[2]
+
+            if intf_node in node_ownergroups:
+                interface_om = ObjectMap()
+                interface_om.id = self.prepId(intfline[0])
+                interface_om.title = intfline[1]
+                interface_om.node = intf_node
+                interface_om.network = intfline[3]
+                interface_om.ipaddresses = intfline[4]
+                interface_om.adapter = intfline[5]
+                interface_om.state = intfline[6]
+                disk_om.domain = results['domain']
+
+                intfnodeid = node_ownergroups[interface_om.node]
+                intfom = []
+                if intfnodeid in map_interfaces_to_node:
+                    intfom = map_interfaces_to_node[intfnodeid]
+                intfom.append(interface_om)
+                map_interfaces_to_node[intfnodeid] = intfom
+
+        maps.append(RelationshipMap(
+            compname="os",
+            relname="clusternodes",
+            modname="ZenPacks.zenoss.Microsoft.Windows.ClusterNode",
+            objmaps=map_nodes_oms
+        ))
+
+        for nodeid, disks in map_disks_to_node.items():
+            maps.append(RelationshipMap(
+                compname="os/clusternodes/" + nodeid,
+                relname="clusterdisks",
+                modname="ZenPacks.zenoss.Microsoft.Windows.ClusterDisk",
+                objmaps=disks
+            ))
+
+        for nodeid, interface in map_interfaces_to_node.items():
+            maps.append(RelationshipMap(
+                compname="os/clusternodes/" + nodeid,
+                relname="clusterinterfaces",
+                modname="ZenPacks.zenoss.Microsoft.Windows.ClusterInterface",
+                objmaps=interface
+            ))
+
+        # This section is for ClusterNetwork class
+        for network in clusternetworks:
+            netline = network.split("|")
+            netrole = {
+                '0': 'Not allowed',
+                '1': 'Cluster only',
+                '3': 'Cluster and Client'
+            }.get(netline[4], '0')
+
+            net_om = ObjectMap()
+            net_om.id = self.prepId(netline[0])
+            net_om.title = netline[1]
+            net_om.description = netline[2]
+            net_om.role = netrole
+            net_om.state = netline[3]
+            net_om.domain = results['domain']
+
+            map_networks_oms.append(net_om)
+
+        maps.append(RelationshipMap(
+            compname="os",
+            relname="clusternetworks",
+            modname="ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork",
+            objmaps=map_networks_oms
+        ))
 
         return maps

@@ -32,6 +32,10 @@ class IWinComponentInfo(IComponentInfo):
     title = schema.TextLine(title=_t(u'Title'), readonly=True)
 
 
+class IClusterInfo(IComponentInfo):
+    pass
+
+
 class ITeamInterfaceInfo(IBaseIpInterfaceInfo):
     pass
 
@@ -111,6 +115,8 @@ class IWinSQLDatabaseInfo(IWinComponentInfo):
     createdate = schema.TextLine(title=_t(u'Created On'), readonly=True)
     defaultfilegroup = schema.TextLine(title=_t(u'File Group'), readonly=True)
     primaryfilepath = schema.TextLine(title=_t(u'File Path'), readonly=True)
+    recoverymodel = schema.TextLine(title=_t(u'Recovery Model'), readonly=True)
+    systemobject = schema.TextLine(title=_t(u'System Object'), readonly=True)
 
 
 class IWinSQLInstanceInfo(IWinComponentInfo):
@@ -129,6 +135,38 @@ class IClusterResourceInfo(IWinComponentInfo):
     clusternode = schema.TextLine(title=_t(u'Owner Node'), readonly=True)
     description = schema.TextLine(title=_t(u'Description'), readonly=True)
     ownergroup = schema.TextLine(title=_t(u'Owner Group'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
+
+
+class IClusterNodeInfo(IClusterInfo):
+    clusternode = schema.TextLine(title=_t(u'Title'), readonly=True)
+    assignedvote = schema.TextLine(title=_t(u'Assigned Vote'), readonly=True)
+    currentvote = schema.TextLine(title=_t(u'Current Vote'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
+
+
+class IClusterDiskInfo(IWinComponentInfo):
+    clusternode = schema.Entity(title=_t(u'Owner Node'), readonly=True)
+    assignedto = schema.TextLine(title=_t(u'Assigned To'), readonly=True)
+    volumepath = schema.TextLine(title=_t(u'Volume Path'), readonly=True)
+    disknumber = schema.TextLine(title=_t(u'Disk Number'), readonly=True)
+    partitionnumber = schema.TextLine(title=_t(u'Partition Number'), readonly=True)
+    size = schema.TextLine(title=_t(u'Size'), readonly=True)
+    freespace = schema.TextLine(title=_t(u'Free Space'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
+
+
+class IClusterNetworkInfo(IWinComponentInfo):
+    description = schema.TextLine(title=_t(u'Description'), readonly=True)
+    role = schema.TextLine(title=_t(u'Cluster Use'), readonly=True)
+    state = schema.TextLine(title=_t(u'State'), readonly=True)
+
+
+class IClusterInterfaceInfo(IWinComponentInfo):
+    clusternode = schema.Entity(title=_t(u'Owner Node'), readonly=True)
+    clusternetwork = schema.Entity(title=_t(u'Network'), readonly=True)
+    ipaddresses = schema.TextLine(title=_t(u'IP Addresses'), readonly=True)
+    adapter = schema.TextLine(title=_t(u'Adapter'), readonly=True)
     state = schema.TextLine(title=_t(u'State'), readonly=True)
 
 

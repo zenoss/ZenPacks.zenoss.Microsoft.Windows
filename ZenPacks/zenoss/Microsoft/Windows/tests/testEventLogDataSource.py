@@ -9,10 +9,10 @@
 
 from mock import Mock, sentinel
 
-from Products.ZenEvents import ZenEventClasses
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource import EventLogPlugin
+
 
 class TestDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
@@ -36,6 +36,7 @@ class TestDataSourcePlugin(BaseTestCase):
         self.assertEquals(len(res['events']), 2)
         self.assertEquals(res['events'][0]['summary'], sentinel.message)
         self.assertEquals(res['events'][0]['eventGroup'], sentinel.eventlog)
+
 
 def test_suite():
     from unittest import TestSuite, makeSuite

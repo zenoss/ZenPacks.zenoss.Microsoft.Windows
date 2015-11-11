@@ -20,6 +20,10 @@ ZC.registerName('WinBackupDevice', _t('MSSQL Backup Device'), _t('MSSQL Backup D
 ZC.registerName('WinSQLJob', _t('MSSQL Job'), _t('MSSQL Jobs'));
 ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
 ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
+ZC.registerName('MSClusterNode', _t('Cluster Node'), _t('Cluster Nodes'));
+ZC.registerName('MSClusterDisk', _t('Cluster Disk'), _t('Cluster Disks'));
+ZC.registerName('MSClusterNetwork', _t('Cluster Network'), _t('Cluster Networks'));
+ZC.registerName('MSClusterInterface', _t('Cluster Interface'), _t('Cluster Interfaces'));
 ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
 ZC.registerName('WindowsInterface', _t('Interface'), _t('Interfaces'));
 ZC.registerName('WindowsCPU', _t('Processor'), _t('Processors'));
@@ -287,6 +291,148 @@ if (Ext.version === undefined) {
 }
 
 }());
+
+
+(function(){
+
+Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
+         constructor: function(config) {
+             width = 300;
+             var auto = false;
+             if (config.record.startmode.indexOf('Auto') > -1) {
+                 auto = true;
+             }
+             var manual = false;
+             if (config.record.startmode.indexOf('Manual') > -1) {
+                 manual = true;
+             }
+             var disabled = false;
+             if (config.record.startmode.indexOf('Disabled') > -1) {
+                 disabled = true;
+             }
+             config = Ext.applyIf(config || {}, {
+                 layout: 'fit',
+                   listeners: {
+                        afterrender: function() {
+                            if (config.record.startmode){
+                                this.setValue(config.record.startmode.split(','));
+                            }
+                        },
+                        scope: this
+                 },
+                 items: [ {
+                     xtype: 'hidden',
+                     name: 'startmode',
+                     itemId: 'hiddenInput',
+                     value: config.record.startmode
+                 },{
+                     xtype: 'checkboxgroup',
+                     itemId: 'checkboxgroup',
+                     columns: 1,
+                     vertical: true,
+                     listeners: {
+                         change: function() { this.updateHiddenField();
+                         },
+                         scope: this
+                     },
+                     items: [{boxLabel: 'Auto', name: 'autostart', inputValue: 'Auto', checked: auto},
+                             {boxLabel: 'Manual', name: 'manualstart', inputValue: 'Manual', checked: manual},
+                             {boxLabel: 'Disabled', name: 'disabledstart', inputValue: 'Disabled', checked: disabled}]
+                 },]
+             });
+             Zenoss.form.StartModeGroup.superclass.constructor.apply(this, arguments);
+         },
+         updateHiddenField: function() {
+             this.down('hidden').setValue(this.getValue());
+         },
+         // --- Value handling ---
+         setValue: function(values) {
+             var group = this.down('checkboxgroup');
+             var auto = false;
+             if (values.indexOf('Auto') > -1) {
+                 auto = true;
+             }
+             var manual = false;
+             if (values.indexOf('Manual') > -1) {
+                 manual = true;
+             }
+             var disabled = false;
+             if (values.indexOf('Disabled') > -1) {
+                 disabled = true;
+             }
+             if (group) {
+                 group.setValue({autostart: auto, manualstart: manual, disabledstart: disabled});
+             }
+         },
+         // --- Value handling ---
+         getValue: function() {
+             var group = this.down("checkboxgroup");
+             if (group != null){
+             var startmodes = ['None',];
+             groupValues = group.getValue();
+             if (groupValues.hasOwnProperty('autostart')) {
+                 startmodes.push(groupValues.autostart);
+             }
+             if (groupValues.hasOwnProperty('manualstart')) {
+                 startmodes.push(groupValues.manualstart);
+             }
+             if (groupValues.hasOwnProperty('disabledstart')) {
+                 startmodes.push(groupValues.disabledstart);
+             }
+             if (startmodes.length > 1){
+                 startmodes.splice(startmodes.indexOf('None'),1);
+             }
+             return startmodes.toString();
+             }
+         }
+
+     });
+
+    // Ext.version will be defined in ExtJS3 and undefined in ExtJS4.
+    if (Ext.version === undefined) {
+        Ext.reg('startmodegroup', 'Zenoss.form.StartModeGroup');
+    } else {
+        Ext.reg('startmodegroup', Zenoss.form.StartModeGroup);
+    }
+})();
+
+Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
+    var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.')
+    var dlg = new Zenoss.FormDialog({
+        title: _t('Windows Services'),
+        modal: true,
+        items: [ {
+                    xtype: 'label',
+                    text: message,
+                    ref: 'messagelabel'
+                },
+                {
+                    xtype: 'checkboxfield',
+                    boxLabel  : 'Check if you no longer want to see this message.',
+                    name      : 'hidemessage',
+                    inputValue: '1',
+                    id        : 'checkbox1',
+                    stateful: true,
+                    stateEvents: ['change'],
+                    getState: function() {
+                        return {checked: this.getValue()}
+                    },
+                    applyState: function(state){
+                        this.setValue(state.checked);
+                    }
+                }],
+        buttons: [
+                    {
+                        xtype: 'HideDialogButton',
+                        text: _t('OK'),
+                    }
+                ],
+    });
+    if (dlg.down('checkboxfield').getValue() == false){
+        dlg.show();
+    }
+});
+
 
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 

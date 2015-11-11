@@ -15,8 +15,6 @@ via WinRS.
 '''
 
 import logging
-LOG = logging.getLogger('zen.windows')
-
 import collections
 import time
 
@@ -47,6 +45,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
+LOG = logging.getLogger('zen.windows')
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
@@ -238,14 +237,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     counter_map = None
 
     command_line = (
-        'powershell -NoLogo -NonInteractive -NoProfile -Command "'
+        'powershell -NoLogo -NonInteractive -NoProfile -Command "& {{'
+        '$CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;'
+        '[System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object \"System.Globalization.CultureInfo\" \"en-Us\";'
+        'Invoke-Command {{ '
         '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
         '$FormatEnumerationLimit = -1; '
         '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25); '
         'get-counter -ea silentlycontinue '
         '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
         '-counter @({Counters}) '
-        '| Format-List -Property Readings"'
+        '| Format-List -Property Readings; }};'
+        '[System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture; }}"'
     )
 
     def __init__(self, config):
@@ -283,9 +286,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Return a list of command lines needed to get data for all counters.
         '''
         # The max length of the cmd.exe command is 8192.
-        # The length of the powershell prefix is 399 chars.
-        # Thus the line containing counters should not go beyond 7600 limit.
-        counters_limit = 7600
+        # The length of the powershell prefix is ~ 680 chars.
+        # Thus the line containing counters should not go beyond 7500 limit.
+        counters_limit = 7500
 
         counters = sorted(self.ps_counter_map.keys())
 
@@ -377,6 +380,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         data = PERSISTER.pop(self.config.id)
         if data and data['values']:
             defer.returnValue(data)
+        if data and data['events']:
+            for evt in data['events']:
+                PERSISTER.add_event(self.config.id, evt)
 
         if hasattr(self, '_wait_for_data'):
             LOG.debug("waiting for %s Get-Counter data", self.config.id)
@@ -599,7 +605,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.WARN,
                 "network error on {}: {}"
                 .format(self.config.id, e.message or 'timeout'))
-
         # Handle errors on which we should start over.
         else:
             retry, level, msg = (
@@ -683,57 +688,42 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Emit logs and events for counters requested but not returned.
         '''
         missing_counters = set(requested).difference(returned)
+        default_eventClass = '/Status/Winrm'
 
         events = {}
         for req_counter in requested:
             if req_counter in missing_counters:
                 component, datasource, event_class = requested.get(req_counter, (None, None, None))
-                if event_class:
+                if event_class and event_class != default_eventClass:
                     if not event_class in events:
                         events[event_class] = []
                     events[event_class].append(req_counter)
-                    missing_counters.remove(req_counter)
+                else:
+                    if not default_eventClass in events:
+                        events[default_eventClass] = []
+                    events[default_eventClass].append(req_counter)
 
         if events:
             for event in events:
                 PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Info,
-                'eventClass': event,
-                'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': self.missing_counters_summary(len(events[event])),
-                'missing_counters': self.missing_counters_str(events[event]).decode('UTF-8'),
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Info,
+                    'eventClass': event,
+                    'eventKey': 'Windows Perfmon Missing Counters',
+                    'summary': self.missing_counters_summary(len(events[event])),
+                    'missing_counters': self.missing_counters_str(events[event]).decode('UTF-8'),
                 })
 
-        if missing_counters:
-            missing_counter_count = len(missing_counters)
-
-            LOG.warn(
-                "%s missing counters for %s - see debug for details",
-                missing_counter_count,
-                self.config.id)
-
-            missing_counters_str = self.missing_counters_str(missing_counters)
-
-            LOG.debug(
-                "%s missing counters for %s: %s",
-                missing_counter_count,
-                self.config.id,
-                missing_counters_str)
-
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Info,
-                'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': self.missing_counters_summary(missing_counter_count),
-                'missing_counters': missing_counters_str.decode('UTF-8'),
-                })
-        else:
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Clear,
-                'eventKey': 'Windows Perfmon Missing Counters',
-                'summary': '0 counters missing in collection',
+        for req_counter in requested:
+            component, datasource, event_class = requested.get(req_counter, (None, None, None))
+            event_class = event_class or default_eventClass
+            if event_class not in events:
+                PERSISTER.add_event(self.config.id, {
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Clear,
+                    'eventClass': event_class or default_eventClass,
+                    'eventKey': 'Windows Perfmon Missing Counters',
+                    'summary': '0 counters missing in collection',
                 })
 
     def missing_counters_summary(self, count):

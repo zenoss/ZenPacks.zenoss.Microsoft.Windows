@@ -1413,6 +1413,13 @@
         <item resourceId="JoinTree_1.dim_windows_cpu.windows_cpu_cache_speed_l3" dimensionOrMeasure="Dimension" id="dim_windows_cpu_windows_cpu_cache_speed_l3" label="L3 Cache Speed"/>
       </items>
     </itemGroup>
+    <itemGroup description="" descriptionId="" id="set_software" label="Software" resourceId="JoinTree_1">
+      <items>
+        <item description="name" descriptionId="" dimensionOrMeasure="Dimension" id="name" label="Software Name" labelId="" resourceId="JoinTree_1.dim_software_class.name" />
+        <item description="description" descriptionId="" dimensionOrMeasure="Dimension" id="description" label="Software Description" labelId="" resourceId="JoinTree_1.dim_software_class.description" />
+        <item description="id3" descriptionId="" dimensionOrMeasure="Dimension" id="id3" label="Manufacturer Name" labelId="" resourceId="JoinTree_1.dim_manufacturer.id" />
+      </items>
+    </itemGroup>
   </itemGroups>
   <items>
     <item resourceId="JoinTree_1.dim_date.date_date" dimensionOrMeasure="Dimension" id="dim_date_date_date" label="Date"/>
@@ -1420,6 +1427,33 @@
   <resources>
     <jdbcTable tableName="dim_device" datasourceId="zenoss_reporting" id="dim_device">
       <fieldList>
+        <field id="dim_software.device_key" type="java.lang.Integer" />
+        <field id="dim_software.id" type="java.lang.String" />
+        <field id="dim_software.installDate" type="java.sql.Timestamp" />
+        <field id="dim_software.monitorProc" type="java.lang.Boolean" />
+        <field id="dim_software.os_key" type="java.lang.Integer" />
+        <field id="dim_software.procRegex" type="java.lang.String" />
+        <field id="dim_software.product_class_key" type="java.lang.Integer" />
+        <field id="dim_software.sid" type="java.lang.String" />
+        <field id="dim_software.software_deleted_at" type="java.sql.Timestamp" />
+        <field id="dim_software.software_key" type="java.lang.Integer" />
+        <field id="dim_software.totalSwap" type="java.lang.Long" />
+        <field id="dim_software.uname" type="java.lang.String" />
+        <field id="dim_software.zenoss_instance_key" type="java.lang.Integer" />
+        <field id="dim_software_class.build" type="java.lang.String" />
+        <field id="dim_software_class.description" type="java.lang.String" />
+        <field id="dim_software_class.id" type="java.lang.String" />
+        <field id="dim_software_class.isOS" type="java.lang.Boolean" />
+        <field id="dim_software_class.manufacturer_key" type="java.lang.Integer" />
+        <field id="dim_software_class.name" type="java.lang.String" />
+        <field id="dim_software_class.pack_key" type="java.lang.Integer" />
+        <field id="dim_software_class.partNumber" type="java.lang.String" />
+        <field id="dim_software_class.productKeys" type="java.lang.String" />
+        <field id="dim_software_class.sid" type="java.lang.String" />
+        <field id="dim_software_class.software_class_deleted_at" type="java.sql.Timestamp" />
+        <field id="dim_software_class.software_class_key" type="java.lang.Integer" />
+        <field id="dim_software_class.version" type="java.lang.String" />
+        <field id="dim_software_class.zenoss_instance_key" type="java.lang.Integer" />
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.sql.Timestamp" id="device_deleted_at" dataSetExpression="if(device_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="device_id"/>
@@ -4640,6 +4674,41 @@
         <field type="java.lang.Integer" id="device_hw_key"/>
       </fieldList>
     </jdbcTable>
+    <jdbcTable id="dim_software" datasourceId="zenoss_reporting" tableName="dim_software">
+      <fieldList>
+        <field id="device_key" type="java.lang.Integer" />
+        <field id="id" type="java.lang.String" />
+        <field id="installDate" type="java.sql.Timestamp" />
+        <field id="monitorProc" type="java.lang.Boolean" />
+        <field id="os_key" type="java.lang.Integer" />
+        <field id="procRegex" type="java.lang.String" />
+        <field id="product_class_key" type="java.lang.Integer" />
+        <field id="sid" type="java.lang.String" />
+        <field id="software_deleted_at" type="java.sql.Timestamp" />
+        <field id="software_key" type="java.lang.Integer" />
+        <field id="totalSwap" type="java.lang.Long" />
+        <field id="uname" type="java.lang.String" />
+        <field id="zenoss_instance_key" type="java.lang.Integer" />
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable id="dim_software_class" datasourceId="zenoss_reporting" tableName="dim_software_class">
+      <fieldList>
+        <field id="build" type="java.lang.String" />
+        <field id="description" type="java.lang.String" />
+        <field id="id" type="java.lang.String" />
+        <field id="isOS" type="java.lang.Boolean" />
+        <field id="manufacturer_key" type="java.lang.Integer" />
+        <field id="name" type="java.lang.String" />
+        <field id="pack_key" type="java.lang.Integer" />
+        <field id="partNumber" type="java.lang.String" />
+        <field id="productKeys" type="java.lang.String" />
+        <field id="sid" type="java.lang.String" />
+        <field id="software_class_deleted_at" type="java.sql.Timestamp" />
+        <field id="software_class_key" type="java.lang.Integer" />
+        <field id="version" type="java.lang.String" />
+        <field id="zenoss_instance_key" type="java.lang.Integer" />
+      </fieldList>
+    </jdbcTable>
     <jdbcTable tableName="dim_device" datasourceId="zenoss_reporting" id="JoinTree_1">
       <fieldList>
         <field type="java.lang.Integer" id="dim_date.date_key"/>
@@ -6839,6 +6908,33 @@
         <field type="java.lang.Double" id="dim_windows_cpu.dependents_count"/>
         <field type="java.lang.Integer" id="dim_windows_cpu.product_class_key"/>
         <field type="java.lang.Integer" id="dim_windows_cpu.device_hw_key"/>
+        <field id="dim_software.device_key" type="java.lang.Integer" />
+        <field id="dim_software.id" type="java.lang.String" />
+        <field id="dim_software.installDate" type="java.sql.Timestamp" />
+        <field id="dim_software.monitorProc" type="java.lang.Boolean" />
+        <field id="dim_software.os_key" type="java.lang.Integer" />
+        <field id="dim_software.procRegex" type="java.lang.String" />
+        <field id="dim_software.product_class_key" type="java.lang.Integer" />
+        <field id="dim_software.sid" type="java.lang.String" />
+        <field id="dim_software.software_deleted_at" type="java.sql.Timestamp" />
+        <field id="dim_software.software_key" type="java.lang.Integer" />
+        <field id="dim_software.totalSwap" type="java.lang.Long" />
+        <field id="dim_software.uname" type="java.lang.String" />
+        <field id="dim_software.zenoss_instance_key" type="java.lang.Integer" />
+        <field id="dim_software_class.build" type="java.lang.String" />
+        <field id="dim_software_class.description" type="java.lang.String" />
+        <field id="dim_software_class.id" type="java.lang.String" />
+        <field id="dim_software_class.isOS" type="java.lang.Boolean" />
+        <field id="dim_software_class.manufacturer_key" type="java.lang.Integer" />
+        <field id="dim_software_class.name" type="java.lang.String" />
+        <field id="dim_software_class.pack_key" type="java.lang.Integer" />
+        <field id="dim_software_class.partNumber" type="java.lang.String" />
+        <field id="dim_software_class.productKeys" type="java.lang.String" />
+        <field id="dim_software_class.sid" type="java.lang.String" />
+        <field id="dim_software_class.software_class_deleted_at" type="java.sql.Timestamp" />
+        <field id="dim_software_class.software_class_key" type="java.lang.Integer" />
+        <field id="dim_software_class.version" type="java.lang.String" />
+        <field id="dim_software_class.zenoss_instance_key" type="java.lang.Integer" />
       </fieldList>
       <filterString>contains(dim_device.device_class, 'Microsoft/Windows')</filterString>
       <joinInfo alias="dim_device" referenceId="dim_device"/>
@@ -7595,6 +7691,9 @@
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join hourly_iissiteunlockrequests__sec hourly_iissiteunlockrequests__sec on (dim_win_rmiis.win_rmiis_key == hourly_iissiteunlockrequests__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join dim_software dim_software on (dim_device.device_key == dim_software.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_date dim_date on (hourly_transactions__sec.date_key == dim_date.date_key and daily_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iismoverequests__sec.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_diskreadtime.date_key == dim_date.date_key and daily_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_logsize__kbytes.date_key == dim_date.date_key and hourly_diskwritetime.date_key == dim_date.date_key and daily_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_cacheentriespinned.date_key == dim_date.date_key and daily_logsize__kbytes.date_key == dim_date.date_key and hourly_iiscgirequests.date_key == dim_date.date_key and daily_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and hourly_iiscopyrequests__sec.date_key == dim_date.date_key and daily_memorypagesoutput__sec.date_key == dim_date.date_key and daily_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logcachehitratio__pct.date_key == dim_date.date_key and hourly_iismoverequests__sec.date_key == dim_date.date_key and daily_logsizeused__kbytes.date_key == dim_date.date_key and daily_iiscgirequests.date_key == dim_date.date_key and hourly_logtruncations__sec.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and hourly_packetssent__sec.date_key == dim_date.date_key and hourly_packetsreceived__sec.date_key == dim_date.date_key and daily_packetsreceived__sec.date_key == dim_date.date_key and daily_packetssent__sec.date_key == dim_date.date_key and hourly_iisotherrequestmethods__sec.date_key == dim_date.date_key and daily_bulkcopyrows__sec.date_key == dim_date.date_key and daily_filesize__kbytes.date_key == dim_date.date_key and daily_diskreadbytes__sec.date_key == dim_date.date_key and hourly_iispostrequests__sec.date_key == dim_date.date_key and hourly_memorypagesoutput__sec.date_key == dim_date.date_key and hourly_logflushes__sec.date_key == dim_date.date_key and daily_transactions__sec.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and daily_iisputrequests__sec.date_key == dim_date.date_key and hourly_iislockrequests__sec.date_key == dim_date.date_key and hourly_bulkcopyrows__sec.date_key == dim_date.date_key and hourly_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_cpuuser__pct.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_iisgetrequests__sec.date_key == dim_date.date_key and daily_iisfilessent__sec.date_key == dim_date.date_key and hourly_paging__pct.date_key == dim_date.date_key and hourly_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_diskwritetime.date_key == dim_date.date_key and hourly_iisproppatchrequests__sec.date_key == dim_date.date_key and hourly_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_diskreadbytes__sec.date_key == dim_date.date_key and hourly_logshrinks__sec.date_key == dim_date.date_key and daily_iisotherrequestmethods__sec.date_key == dim_date.date_key and hourly_backuprestorethroughput__sec.date_key == dim_date.date_key and hourly_repltransactions__sec.date_key == dim_date.date_key and daily_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissearchrequests__sec.date_key == dim_date.date_key and daily_iisoptionsrequests__sec.date_key == dim_date.date_key and daily_cacheentries.date_key == dim_date.date_key and hourly_activetransactions.date_key == dim_date.date_key and daily_diskreadtime.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and daily_smtpservermessagesdelivered__sec.date_key == dim_date.date_key and daily_iiscurrentconnections.date_key == dim_date.date_key and hourly_iisputrequests__sec.date_key == dim_date.date_key and hourly_loggrowths__sec.date_key == dim_date.date_key and hourly_diskwritebytes__sec.date_key == dim_date.date_key and daily_logused__pct.date_key == dim_date.date_key and daily_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_cpupriv__pct.date_key == dim_date.date_key and daily_paging__pct.date_key == dim_date.date_key and hourly_logused__pct.date_key == dim_date.date_key and hourly_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and daily_activetransactions.date_key == dim_date.date_key and hourly_mseismailboxfolderopens__sec.date_key == dim_date.date_key and daily_logbytesflushed__sec.date_key == dim_date.date_key and hourly_logsizeused__kbytes.date_key == dim_date.date_key and hourly_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_iisfilessent__sec.date_key == dim_date.date_key and daily_iistracerequests__sec.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and hourly_iisunlockrequests__sec.date_key == dim_date.date_key and daily_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_logflushwaittime__sec.date_key == dim_date.date_key and hourly_memorypagesinput__sec.date_key == dim_date.date_key and daily_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iiscurrentconnections.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and daily_repltransactions__sec.date_key == dim_date.date_key and daily_memorypagesinput__sec.date_key == dim_date.date_key and hourly_memorycommitted__bytes.date_key == dim_date.date_key and hourly_iistracerequests__sec.date_key == dim_date.date_key and daily_logflushwaittime__sec.date_key == dim_date.date_key and daily_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_memorycommitted__bytes.date_key == dim_date.date_key and daily_iisgetrequests__sec.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and hourly_iismkcolrequests__sec.date_key == dim_date.date_key and daily_cpuuser__pct.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and daily_iisunlockrequests__sec.date_key == dim_date.date_key and daily_mseisrpcrequests.date_key == dim_date.date_key and daily_iispostrequests__sec.date_key == dim_date.date_key and daily_smtpserverlocalqueuelength.date_key == dim_date.date_key and daily_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_smtpservermessagesdelivered__sec.date_key == dim_date.date_key and hourly_smtpserverlocalqueuelength.date_key == dim_date.date_key and daily_logflushes__sec.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_loggrowths__sec.date_key == dim_date.date_key and hourly_mseisrpcrequests.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and hourly_logbytesflushed__sec.date_key == dim_date.date_key and hourly_bulkcopythroughput__sec.date_key == dim_date.date_key and daily_iisconnectionattempts__sec.date_key == dim_date.date_key and daily_iislockrequests__sec.date_key == dim_date.date_key and hourly_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and daily_diskwritebytes__sec.date_key == dim_date.date_key and hourly_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_cacheentries.date_key == dim_date.date_key and hourly_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissearchrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxmessageopens__sec.date_key == dim_date.date_key and daily_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_logshrinks__sec.date_key == dim_date.date_key and daily_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and daily_logtruncations__sec.date_key == dim_date.date_key and daily_iispropfindrequests__sec.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and daily_cpupriv__pct.date_key == dim_date.date_key and hourly_iispropfindrequests__sec.date_key == dim_date.date_key and daily_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and hourly_logcachehitratio__pct.date_key == dim_date.date_key and daily_cacheentriespinned.date_key == dim_date.date_key and daily_mseismailboxmessageopens__sec.date_key == dim_date.date_key)</joinString>
