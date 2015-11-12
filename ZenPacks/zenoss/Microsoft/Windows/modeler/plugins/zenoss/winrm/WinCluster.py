@@ -317,7 +317,7 @@ class WinCluster(WinRMPlugin):
                 interface_om.ipaddresses = intfline[4]
                 interface_om.adapter = intfline[5]
                 interface_om.state = intfline[6]
-                disk_om.domain = results['domain']
+                interface_om.domain = results['domain']
 
                 intfnodeid = node_ownergroups[interface_om.node]
                 intfom = []
