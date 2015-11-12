@@ -1080,6 +1080,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.5.1
+* Fix MicrosoftWindows - Unbound Cluster Error when modeling cluster (ZEN-20931)
+* Fix MicrosoftWindows - list index out of range when modeling processes (ZEN-20932)
+
 ;2.5.0
 * Windows Service monitoring improvements
 * Added State column for MSSQL Databases

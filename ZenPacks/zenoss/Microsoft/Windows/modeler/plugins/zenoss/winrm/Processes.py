@@ -73,10 +73,11 @@ class Processes(WinRMPlugin):
             oms = self.old_process(device, results, log)
 
         # Determine if WorkingSetPrivate is supported.
-        perfproc = results.get(
-            'Win32_PerfFormattedData_PerfProc_Process', (None,))[0]
-
-        supports_WorkingSetPrivate = hasattr(perfproc, 'WorkingSetPrivate')
+        try:
+            perfproc = results.get('Win32_PerfFormattedData_PerfProc_Process', (None,))[0]
+            supports_WorkingSetPrivate = hasattr(perfproc, 'WorkingSetPrivate')
+        except IndexError:
+            supports_WorkingSetPrivate = False
 
         for om in oms:
             om.supports_WorkingSetPrivate = supports_WorkingSetPrivate
