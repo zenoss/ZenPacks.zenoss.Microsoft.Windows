@@ -166,7 +166,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             # 7 and above use the same namespace/query
             try:
                 iis_version = re.match('Version (\d).*', version.stdout[0]).group(1)
-            except IndexError:
+            except (IndexError, AttributeError):
                 if version.stdout:
                     log.error("Malformed version information: {}".format(version.stdout[0]))
                 if version.stderr:
