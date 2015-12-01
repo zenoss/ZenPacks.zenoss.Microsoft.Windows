@@ -12,6 +12,7 @@ A datasource that uses WinRM to collect Windows IIS Site Status
 
 """
 import logging
+import re
 
 from zope.component import adapts
 from zope.interface import implements
@@ -65,8 +66,7 @@ class IISCommander(object):
 
     IIS_COMMAND= '''
         $iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;
-        If($iisversion -like '*Version 6*'){ Write-Host 6 };
-        If($iisversion -like '*Version 7*'){ Write-Host 7 };
+        Write-Host $iisversion.versionstring;
     '''
 
     def get_iis_version(self):
@@ -162,7 +162,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         if not iis_version:
             winrs = IISCommander(conn_info)
             version = yield winrs.get_iis_version()
-            iis_version = version.stdout[0]
+            # version should be in 'Version x.x' format
+            # 7 and above use the same namespace/query
+            try:
+                iis_version = re.match('Version (\d).*', version.stdout[0]).group(1)
+            except (IndexError, AttributeError):
+                if version.stdout:
+                    log.error("Malformed version information: {}".format(version.stdout[0]))
+                if version.stderr:
+                    log.error("Error retrieving IIS Version: {}".format(version.stderr[0]))
+                defer.returnValue(None)
 
         if iis_version == 6:
             WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),]
