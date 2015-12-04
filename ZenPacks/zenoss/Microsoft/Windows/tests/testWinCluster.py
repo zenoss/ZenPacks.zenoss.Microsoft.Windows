@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2014, all rights reserved.
@@ -25,7 +27,8 @@ class TestProcesses(BaseTestCase):
         self.results['nodes'] = ['node0', 'node1']
         self.results['nodes_data'] = ['node0|1|1|2|state0']
         self.results['clusterdisk'] = [
-            '2beb|disk1|Vol{2beb}|node0|1|1|2147199|1937045|Online|service'
+            '2beb|disk1|Vol{2beb}|node0|1|1|2147199|1937045|Online|service',
+            'b10c641b-29df-4aff-ab26-53769e793770|CSV Disk|C:\ClusterStorage\Volume1|node0|2|1|2147199||Online|Cluster Shared Volume',
         ]
         self.results['clusternetworks'] = [
             'e4a2|Network1||Up|3',
@@ -58,3 +61,19 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].volumepath, 'Vol{2beb}')
         self.assertEquals(data[4].maps[0].state, 'Online')
         self.assertEquals(data[4].maps[0].assignedto, 'service')
+
+        # Test for missing freespace ZEN-21242
+        self.assertEquals(data[4].maps[1].freespace, 'N/A')
+
+
+def test_suite():
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestProcesses))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()
