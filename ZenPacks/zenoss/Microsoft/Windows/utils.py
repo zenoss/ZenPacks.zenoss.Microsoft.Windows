@@ -279,11 +279,14 @@ def check_low_disk_utilization(size, freespace):
 
 
 def sizeof_fmt(byte=0):
-    byte = int(byte)
-    for unit in ['B','KB','MB','GB','TB','PB','EB','ZB']:
-        if abs(byte) < 1024.0:
-            return "%3.2f%s" % (byte, unit)
-        byte /= 1024.0
+    try:
+        byte = int(byte)
+        for unit in ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB']:
+            if abs(byte) < 1024.0:
+                return "%3.2f%s" % (byte, unit)
+            byte /= 1024.0
+    except ValueError:
+        return "N/A"
 
 
 def pipejoin(items):
