@@ -87,53 +87,54 @@ class WinCluster(WinRMPlugin):
 
         clusterDiskCommand = []
         clusterDiskCommand.append(
-            "$clusterSharedVolume = Get-ClusterSharedVolume;" \
-            "foreach ($volume in $clusterSharedVolume) {" \
-            "$volumeowner = $volume.OwnerNode.Name;" \
-            "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;" \
-            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{" \
-            "Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}};"\
-            "$csvdisknumber = ($volumeinfo | where { $_.Volume -eq $csvVolume}).Disknumber;" \
-            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{" \
-                "Id = $csvVolume.substring(11, $csvVolume.length-13);" \
-                "Name = $volume.Name;" \
-                "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;" \
-                "OwnerNode = $volumeowner;" \
-                "DiskNumber = $csvdisknumber;" \
-                "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;" \
-                "Size = $volume.SharedVolumeInfo.Partition.Size;" \
-                "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;" \
-                "State = $volume.State;" \
-                "OwnerGroup = 'Cluster Shared Volume';};" \
+            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{"
+            "Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}};"
+            "$clusterSharedVolume = Get-ClusterSharedVolume;"
+            "foreach ($volume in $clusterSharedVolume) {"
+            "$volumeowner = $volume.OwnerNode.Name;"
+            "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
+            "$csvdisknumber = ($volumeinfo | where { $_.Volume -eq $csvVolume}).Disknumber;"
+            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{"
+            "Id = $csvVolume.substring(11, $csvVolume.length-13);"
+            "Name = $volume.Name;"
+            "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;"
+            "OwnerNode = $volumeowner;"
+            "DiskNumber = $csvdisknumber;"
+            "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;"
+            "Size = $volume.SharedVolumeInfo.Partition.Size;"
+            "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
+            "State = $volume.State;"
+            "OwnerGroup = 'Cluster Shared Volume';};"
             "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
             )
 
         clusterDiskCommand.append(
-            "$clusterDisk = get-clusterresource | where { $_.ResourceType -eq 'Physical Disk'};" \
-            "foreach ($disk in $clusterDisk) {" \
-            "$diskowner = $disk.OwnerNode.Name;" \
-            "$diskVolume = $disk.Name;" \
-            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber," \
-            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};}," \
-            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};}," \
-            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};}," \
-            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};}," \
-            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};" \
-            "$disknumber = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).DiskNumber;" \
-            "$diskpartition = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).PartitionNumber;" \
-            "$disksize = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).Size;" \
-            "$disksizeremain = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).SizeRemaining;" \
-            "$diskvolume = ($diskInfo | where { $_.FileSystemLabel -eq $diskVolume}).Volume.substring(3);" \
-            "$physicaldisk = New-Object -TypeName PSObject -Property @{" \
-            "Id = $diskvolume.substring(8, $diskvolume.length-10);" \
-            "Name = $disk.Name;VolumePath = $diskvolume;" \
-            "OwnerNode = $diskowner;DiskNumber = $disknumber;" \
-            "PartitionNumber = $diskpartition;Size = $disksize;" \
-            "FreeSpace = $disksizeremain;State = $disk.State;"\
-            "OwnerGroup = $disk.OwnerGroup.Name;};" \
-            "$physicaldisk | foreach { %s };}" % pipejoin(
+            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
+            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};},"
+            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};},"
+            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};},"
+            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};},"
+            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};"
+            "$clusterDisk = get-clusterresource | where { $_.ResourceType -eq 'Physical Disk'};"
+            "foreach ($disk in $clusterDisk) {"
+            "$founddisk = $diskInfo | where { $_.FileSystemLabel -eq $disk.Name};"
+            "if ($founddisk -ne $null) {"
+            "$diskowner = $disk.OwnerNode.Name;"
+            "$disknumber = $founddisk.DiskNumber;"
+            "$diskpartition = $founddisk.PartitionNumber;"
+            "$disksize = $founddisk.Size;"
+            "$disksizeremain = $founddisk.SizeRemaining;"
+            "$diskvolume = $founddisk.Volume.substring(3);"
+            "$physicaldisk = New-Object -TypeName PSObject -Property @{"
+            "Id = $diskvolume.substring(8, $diskvolume.length-10);"
+            "Name = $disk.Name;VolumePath = $diskvolume;"
+            "OwnerNode = $diskowner;DiskNumber = $disknumber;"
+            "PartitionNumber = $diskpartition;Size = $disksize;"
+            "FreeSpace = $disksizeremain;State = $disk.State;"
+            "OwnerGroup = $disk.OwnerGroup.Name;};"
+            "$physicaldisk | foreach { %s };} }" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
             )
