@@ -143,8 +143,8 @@ class WinCommandAction(IActionBase):
             connectiontype='Keep-Alive',
             keytab=device.zWinKeyTabFilePath,
             dcip=device.zWinKDC,
-            trusted_realm=device.zWinRMTrustedRealm,
-            trusted_kdc=device.zWinRMTrustedKDC)
+            trusted_realm=device.zWinTrustedRealm,
+            trusted_kdc=device.zWinTrustedKDC)
 
     def _execute_command(self, device, command):
         """
