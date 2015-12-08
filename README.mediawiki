@@ -628,7 +628,7 @@ See the following examples:
 ;Enable/Disable monitoring by default for the WinRM service for a select group of servers.
 # Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
 # Move the servers to the new device class.
-# Follow steps 1-5 from the previous section.
+# Follow steps 1-5 from the previous section to create a copy of the WinService template.
 # Choose your new device class as the target then click submit.
 # Expand the ''WinService'' tree then select the copy in your device class.
 # Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
@@ -644,13 +644,29 @@ See the following examples:
 # In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
-# You can optionally exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These must be the service names and are case insensitive.
+
+;Enable monitoring of all services with a start mode of 'Auto' and begin with MSSQLSERVER.
+# Navigate to Advanced -> Monitoring Templates.
+# Verify the list of templates is grouped by template.
+# Expand the ''WinService'' tree.
+# Select ''/Server/Microsoft''.
+# In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
+# Choose ''View and Edit Details'' from the Data Sources gear menu.
+# Tick the ''Auto'' checkbox under ''Service Options''.
+# Enter ''+MSSQLSERVER.*'' into the "Inclusions(+)/Exclusions(-)" text box and click save.
+
+The order of precedence for monitoring a service is:
+# User manually sets monitoring
+# 'DefaultService' datasource from default WinService template or copy of default template
+# Datasource other than the DefaultService in default WinService template or copy of default template
+
+You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression and are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions.
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
 
 {{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
 
-{{note}} The WinService datasource no longer depends on the 'DefaultService' data source name.
+{{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
 
 <br clear=all>
 
