@@ -40,8 +40,11 @@ class Device(BaseDevice):
         {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
         {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
         {'id': 'ip_and_hostname', 'type': 'string'},
-        {'id': 'domain_controller', 'label': 'Domain Controller','type': 'boolean'},
+        {'id': 'domain_controller', 'label': 'Domain Controller', 'type': 'boolean'},
     )
+
+    def getPingStatus(self):
+        return self.getStatus('/Status/WinRM')
 
     def setClusterMachines(self, clusterdnsnames):
         '''

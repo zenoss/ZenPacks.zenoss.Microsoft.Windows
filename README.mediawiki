@@ -1080,6 +1080,14 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.5.4
+* Fix Windows Service monitoring improvements
+* Fix WinRM Ping DataSource marks ping up devices down and stops all collection (ZEN-21270)
+* Fix WinCommand notification fails to run on WinRM ZP 2.5.1, 2.5.3 (ZEN-21272)
+
+;2.5.3
+* Fix Microsoft Windows - modeling cluster results in traceback error (ZEN-21242)
+
 ;2.5.2
 * Fix IIS Site Failed connection when monitoring Windows Server 2012 with IIS 8.5 (ZEN-21029)
 
