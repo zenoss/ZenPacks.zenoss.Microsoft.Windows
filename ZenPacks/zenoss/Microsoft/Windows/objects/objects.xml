@@ -15874,6 +15874,9 @@ Running
 <property type="string" id="startmode" >
 None
 </property>
+<property type="string" id="in_exclusions" >
++.*
+</property>
 </object>
 </tomanycont>
 </object>
