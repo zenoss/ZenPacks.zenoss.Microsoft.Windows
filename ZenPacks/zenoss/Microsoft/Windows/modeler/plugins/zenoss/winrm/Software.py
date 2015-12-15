@@ -73,13 +73,8 @@ class Software(WinRMPlugin):
                 softwareDict[key] = value
 
             keys = ['DisplayName', 'Vendor', 'InstallDate']
-            for k in softwareDict.keys():
-                try:
-                    keys.remove(k)
-                except ValueError:
-                    continue
             # malformed data line
-            if keys:
+            if set(keys).difference(set(softwareDict.keys())):
                 continue
             # skip over empty entries
             if softwareDict['DisplayName'] == '':
