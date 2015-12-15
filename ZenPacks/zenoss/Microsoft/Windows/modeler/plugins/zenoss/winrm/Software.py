@@ -11,11 +11,13 @@
 Windows Installed Software
 
 Models list of installed software by querying registry.
-Querying Win32_Product causes Windows installer to run a consistency check, 
+Querying Win32_Product causes Windows installer to run a consistency check,
 possibly causing other problems to appear.
 """
 
 from DateTime import DateTime
+from DateTime.interfaces import SyntaxError, TimeError
+
 from Products.DataCollector.plugins.DataMaps import MultiArgs
 
 from OFS.ObjectManager import checkValidId, BadRequest
@@ -88,13 +90,12 @@ class Software(WinRMPlugin):
 
             om.setProductKey = MultiArgs(om.id, vendor)
 
-            if softwareDict['InstallDate'] is not '':
-                try:
-                    installDate = DateTime(softwareDict['InstallDate'])
-                    om.setInstallDate = '{0} 00:00:00'.format(installDate.Date())
-                except:
-                    # Date is unreadable, leave blank
-                    pass
+            try:
+                installDate = DateTime(softwareDict['InstallDate'])
+                om.setInstallDate = '{0} 00:00:00'.format(installDate.Date())
+            except (SyntaxError, TimeError):
+                # Date is unreadable or empty, ok to leave blank
+                pass
             rm.append(om)
 
         return rm

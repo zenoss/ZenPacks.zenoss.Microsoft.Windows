@@ -32,7 +32,8 @@ class TestProcesses(BaseTestCase):
                                                   'DisplayName=Soft x86 - 1.0.0;'
                                                   'InstallDate=19700101;'
                                                   'Vendor=Вендор|',
-                                                  'DisplayName=;xxx;yyy|'
+                                                  'DisplayName=;xxx;yyy|',
+                                                  'DisplayName=Software;InstallDate=;Vendor=SoftCorp'
                                                   ]))
 
         self.device = StringAttributeObject()
@@ -47,7 +48,8 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data.maps[2].setInstallDate, '1970/01/01 00:00:00')
         self.assertTupleEqual(data.maps[2].setProductKey.args, ('Soft x86 - 1.0.0', 'Sunway Systems'))
         self.assertTupleEqual(data.maps[3].setProductKey.args, ('Soft x86 - 1.0.0', 'Unknown'))
-        self.assertEquals(len(data.maps), 4)
+        self.assertFalse(hasattr(data.maps[4], 'setInstallDate'))
+        self.assertEquals(len(data.maps), 5)
 
 
 def test_suite():
