@@ -40,6 +40,9 @@ class Software(WinRMPlugin):
     )
 
     def process(self, device, results, log):
+        # data format expected in results
+        # DisplayName=Software1;InstallDate=19700101;Vendor=Microsoft Corporation|
+        # DisplayName=Software2;InstallDate=19700102;Vendor=Microsoft Corporation|
         log.info(
             "Modeler %s processing data for device %s",
             self.name(), device.id)
@@ -47,45 +50,52 @@ class Software(WinRMPlugin):
         rm = self.relMap()
 
         software_results = results.get('software')
-        if software_results:
-            software_results = ''.join(software_results.stdout).split('|')
+        if not software_results:
+            return rm
+
+        software_results = ''.join(software_results.stdout).split('|')
 
         # Registry Software formatting
-        if software_results:
-            for sw in software_results:
-                softwareDict = {}
+        for sw in software_results:
+            softwareDict = {}
+            for keyvalues in sw.split(';'):
                 try:
-                    for keyvalues in sw.split(';'):
-                        key, value = keyvalues.split('=')
-                        try:
-                            if key == "Vendor":
-                                checkValidId(None, value, allow_dup=False)
-                        except BadRequest:
-                            value = str()
-                        softwareDict[key] = value
+                    key, value = keyvalues.split('=')
+                except ValueError:
+                    continue
+                try:
+                    if key == "Vendor":
+                        checkValidId(None, value, allow_dup=False)
+                except BadRequest:
+                    value = str()
+                softwareDict[key] = value
 
-                    # skip over empty entries
-                    if softwareDict['DisplayName'] == '':
-                        continue
-                    om = self.objectMap()
-                    om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName']))
-                    if softwareDict['Vendor'].strip() == '':
-                        softwareDict['Vendor'] = 'Unknown'
-                        om.Vendor = 'Unknown'
+            keys = ['DisplayName', 'Vendor', 'InstallDate']
+            for k in softwareDict.keys():
+                try:
+                    keys.remove(k)
+                except ValueError:
+                    continue
+            # malformed data line
+            if keys:
+                continue
+            # skip over empty entries
+            if softwareDict['DisplayName'] == '':
+                continue
+            om = self.objectMap()
+            om.id = self.eliminate_underscores(self.prepId(softwareDict['DisplayName'])).strip()
+            vendor = softwareDict['Vendor'].strip() if softwareDict['Vendor'].strip() != '' else 'Unknown'
 
-                    om.setProductKey = MultiArgs(softwareDict['DisplayName'], softwareDict['Vendor'])
+            om.setProductKey = MultiArgs(om.id, vendor)
 
-                    if softwareDict['InstallDate'] is not '':
-                        try:
-                            installDate = DateTime(softwareDict['InstallDate'])
-                            om.setInstallDate = '{0} 00:00:00'.format(installDate.Date())
-                        except:
-                            # Date is unreadable, leave blank
-                            pass
-                    rm.append(om)
-
-                except (KeyError, ValueError):
+            if softwareDict['InstallDate'] is not '':
+                try:
+                    installDate = DateTime(softwareDict['InstallDate'])
+                    om.setInstallDate = '{0} 00:00:00'.format(installDate.Date())
+                except:
+                    # Date is unreadable, leave blank
                     pass
+            rm.append(om)
 
         return rm
 
