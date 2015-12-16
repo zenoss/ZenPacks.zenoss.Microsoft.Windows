@@ -1080,7 +1080,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
-=======
+; 2.5.5
+* Fix WinRM Modeling Software Breaks if Installed Software Ends in Underscores(ZEN-20375)
+
 ;2.5.4
 * Fix Windows Service monitoring improvements
 * Fix WinRM Ping DataSource marks ping up devices down and stops all collection (ZEN-21270)
