@@ -1082,6 +1082,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ; 2.5.5
 * Fix WinRM Modeling Software Breaks if Installed Software Ends in Underscores(ZEN-20375)
+* Fix Microsoft Windows - monitoring cluster disks results in powershell error (ZEN-21325)
 
 ;2.5.4
 * Fix Windows Service monitoring improvements
