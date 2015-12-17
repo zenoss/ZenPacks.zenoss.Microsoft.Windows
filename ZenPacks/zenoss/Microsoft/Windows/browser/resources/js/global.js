@@ -396,43 +396,44 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
     }
 })();
 
-Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
-    var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.')
-    var dlg = new Zenoss.FormDialog({
-        title: _t('Windows Services'),
-        modal: true,
-        items: [ {
-                    xtype: 'label',
-                    text: message,
-                    ref: 'messagelabel'
-                },
-                {
-                    xtype: 'checkboxfield',
-                    boxLabel  : 'Check if you no longer want to see this message.',
-                    name      : 'hidemessage',
-                    inputValue: '1',
-                    id        : 'checkbox1',
-                    stateful: true,
-                    stateEvents: ['change'],
-                    getState: function() {
-                        return {checked: this.getValue()}
+Ext.onReady(function() {
+    Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
+        var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.');
+        var dlg = new Zenoss.FormDialog({
+            title: _t('Windows Services'),
+            modal: true,
+            items: [ {
+                        xtype: 'label',
+                        text: message,
+                        ref: 'messagelabel'
                     },
-                    applyState: function(state){
-                        this.setValue(state.checked);
-                    }
-                }],
-        buttons: [
                     {
-                        xtype: 'HideDialogButton',
-                        text: _t('OK'),
-                    }
-                ],
+                        xtype: 'checkboxfield',
+                        boxLabel  : 'Check if you no longer want to see this message.',
+                        name      : 'hidemessage',
+                        inputValue: '1',
+                        stateId   : 'services_checkbox',
+                        stateful: true,
+                        stateEvents: ['change'],
+                        getState: function() {
+                            return {checked: this.getValue()}
+                        },
+                        applyState: function(state){
+                            this.setValue(state.checked);
+                        }
+                    }],
+            buttons: [
+                        {
+                            xtype: 'HideDialogButton',
+                            text: _t('OK'),
+                        }
+                    ],
+        });
+        if (dlg.down('checkboxfield').getValue() == false){
+            dlg.show();
+        }
     });
-    if (dlg.down('checkboxfield').getValue() == false){
-        dlg.show();
-    }
 });
-
 
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 
