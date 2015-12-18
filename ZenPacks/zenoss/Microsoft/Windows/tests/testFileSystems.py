@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2014, all rights reserved.
@@ -7,7 +8,6 @@
 #
 ##############################################################################
 
-from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject
 from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.FileSystems import (
@@ -17,9 +17,10 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.FileSystems 
     Win32_volume_mount,
     FileSystems
 )
+from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 
-class DiskObject(StringAttributeObject):
+class DiskObject1(StringAttributeObject):
     def __init__(self):
         for i in ("DriveType", "MediaType", "BlockSize", "Size",
                   "Capacity", "MaximumComponentLength"):
@@ -27,12 +28,23 @@ class DiskObject(StringAttributeObject):
         setattr(self, "FreeSpace", 10)
 
 
+class DiskObject2(StringAttributeObject):
+    # test for missing data in FreeSpace and/or Size (ZEN-21351)
+    # these should not be added to the map
+    def __init__(self):
+        for i in ("DriveType", "MediaType", "BlockSize",
+                  "Capacity", "MaximumComponentLength"):
+            setattr(self, i, 100)
+        setattr(self, "Size", '')
+        setattr(self, "FreeSpace", '')
+
+
 class TestFileSystems(BaseTestCase):
     def setUp(self):
         self.plugin = FileSystems()
 
     def test_process(self):
-        results = Mock(get=lambda *_: [DiskObject()])
+        results = Mock(get=lambda *_: [DiskObject1(), DiskObject2()])
         data = self.plugin.process(StringAttributeObject(), results, Mock())
         self.assertEquals(len(data.maps), 3)
         d2 = data.maps[2]
@@ -65,3 +77,10 @@ class TestHelpers(BaseTestCase):
     def test_guess_block_size(self):
         self.assertEquals(guess_block_size(None), 4096)
         self.assertEquals(guess_block_size(1000), 512)
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    from utils import test_suite
+    runner = Runner(found_suites=[test_suite((TestFileSystems, TestHelpers))])
+    runner.run()

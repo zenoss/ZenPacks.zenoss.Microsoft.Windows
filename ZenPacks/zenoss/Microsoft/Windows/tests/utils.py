@@ -27,3 +27,11 @@ def load_pickle(self, filename):
             self.__class__.__name__,
             '{}.pkl.gz'.format(filename)), 'rb') as f:
         return pickle.load(f)
+
+
+def test_suite(testnames):
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    for testname in testnames:
+        suite.addTest(makeSuite(testname))
+    return suite
