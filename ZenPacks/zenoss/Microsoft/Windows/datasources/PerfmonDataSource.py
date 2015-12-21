@@ -571,10 +571,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         elif not results and not failures and self.cycling:
             try:
                 yield self.remove_corrupt_counters()
-            except Exception, ex:
+            except Exception:
                 pass
-            yield self.restart()
-
+            if self.ps_counter_map.keys():
+                yield self.restart()
+            # Report corrupt counters
+            dsconf0 = self.config.datasources[0]
+            if CORRUPT_COUNTERS[dsconf0.device]:
+                self.reportCorruptCounters(self.counter_map)
         else:
             if self.cycling:
                 LOG.debug('Result: {0}'.format(result))
@@ -631,7 +635,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         command = lambda counters: (
             "powershell -NoLogo -NonInteractive -NoProfile -Command "
-            "\"get-counter -ea silentlycontinue -counter @({0})\" ".format(
+            "\"get-counter -counter @({0})\" ".format(
                 ', '.join("('{0}')".format(c) for c in counters))
         )
 
@@ -657,8 +661,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     @defer.inlineCallbacks
     def remove_corrupt_counters(self):
         '''
-        Remove counters which are not ignored by Error Action parameter
-        and crash the whole command.
+        Remove counters which return an error.
         '''
         LOG.debug('Performing check for corrupt counters')
         dsconf0 = self.config.datasources[0]
@@ -683,6 +686,49 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
+    def reportCorruptCounters(self, requested):
+        '''
+        Emit event for corrupt counters
+        '''
+        default_eventClass = '/Status/WinRM'
+        dsconf0 = self.config.datasources[0]
+
+        events = {}
+        for req_counter in requested:
+            if req_counter in CORRUPT_COUNTERS[dsconf0.device]:
+                component, datasource, event_class = requested.get(req_counter, (None, None, None))
+                if event_class and event_class != default_eventClass:
+                    if event_class not in events:
+                        events[event_class] = []
+                    events[event_class].append(req_counter)
+                else:
+                    if default_eventClass not in events:
+                        events[default_eventClass] = []
+                    events[default_eventClass].append(req_counter)
+
+        if events:
+            for event in events:
+                PERSISTER.add_event(self.config.id, {
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Error,
+                    'eventClass': event,
+                    'eventKey': 'Windows Perfmon Corrupt Counters',
+                    'summary': self.corrupt_counters_summary(len(events[event])),
+                    'corrupt_counters': self.missing_counters_str(events[event]).decode('UTF-8'),
+                })
+
+        for req_counter in requested:
+            component, datasource, event_class = requested.get(req_counter, (None, None, None))
+            event_class = event_class or default_eventClass
+            if event_class not in events:
+                PERSISTER.add_event(self.config.id, {
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Clear,
+                    'eventClass': event_class or default_eventClass,
+                    'eventKey': 'Windows Perfmon Corrupt Counters',
+                    'summary': '0 counters corrupt in collection',
+                })
+
     def reportMissingCounters(self, requested, returned):
         '''
         Emit logs and events for counters requested but not returned.
@@ -695,11 +741,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if req_counter in missing_counters:
                 component, datasource, event_class = requested.get(req_counter, (None, None, None))
                 if event_class and event_class != default_eventClass:
-                    if not event_class in events:
+                    if event_class not in events:
                         events[event_class] = []
                     events[event_class].append(req_counter)
                 else:
-                    if not default_eventClass in events:
+                    if default_eventClass not in events:
                         events[default_eventClass] = []
                     events[default_eventClass].append(req_counter)
 
@@ -729,6 +775,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def missing_counters_summary(self, count):
         return (
             '{} counters missing in collection - see details'.format(count))
+
+    def corrupt_counters_summary(self, count):
+        return (
+            '{} counters found corrupted in collection - see details'.format(count))
 
     def missing_counters_str(self, counters):
         return ', '.join(counters)
