@@ -341,7 +341,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Start the continuous command.
         '''
-        if self.state != PluginStates.STOPPED or not self.ps_counter_map.keys():
+        if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
         LOG.debug("starting Get-Counter on %s", self.config.id)
@@ -573,7 +573,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 yield self.remove_corrupt_counters()
             except Exception:
                 pass
-            yield self.restart()
+            if self.ps_counter_map.keys():
+                yield self.restart()
             # Report corrupt counters
             dsconf0 = self.config.datasources[0]
             if CORRUPT_COUNTERS[dsconf0.device]:
@@ -712,7 +713,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'severity': ZenEventClasses.Error,
                     'eventClass': event,
                     'eventKey': 'Windows Perfmon Corrupt Counters',
-                    'summary': self.missing_counters_summary(len(events[event])),
+                    'summary': self.corrupt_counters_summary(len(events[event])),
                     'corrupt_counters': self.missing_counters_str(events[event]).decode('UTF-8'),
                 })
 
@@ -774,6 +775,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def missing_counters_summary(self, count):
         return (
             '{} counters missing in collection - see details'.format(count))
+
+    def corrupt_counters_summary(self, count):
+        return (
+            '{} counters found corrupted in collection - see details'.format(count))
 
     def missing_counters_str(self, counters):
         return ', '.join(counters)

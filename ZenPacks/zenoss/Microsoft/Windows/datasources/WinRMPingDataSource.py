@@ -138,17 +138,19 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
     def onSuccess(self, results, config):
         data = self.new_data()
         data['events'].append({
-            'eventClass': '/Status/WinRM',
+            'eventClass': '/Status/WinRM/Ping',
             'severity': ZenEventClasses.Clear,
             'summary': 'Device is UP!',
+            'ipAddress': config.manageIp,
             'device': config.id})
         return data
 
     def onError(self, results, config):
         data = self.new_data()
         data['events'].append({
-            'eventClass': '/Status/WinRM',
+            'eventClass': '/Status/WinRM/Ping',
             'severity': ZenEventClasses.Critical,
             'summary': 'Device is DOWN!',
+            'ipAddress': config.manageIp,
             'device': config.id})
         return data
