@@ -969,6 +969,8 @@ If you experience OperationTimeout errors, it may be a solution to decrease valu
 
 Other timeout issues on a domain could involve having a large Kerberos token.  This could be caused by the user belonging to a large number of groups.  See https://support.microsoft.com/en-us/kb/970875 for more information on the cause and resolution.  Possible side effects of a large token include high CPU usage on the Windows server.
 
+If you see a corrupt counters error event, this indicates that the specified counters have been corrupted on the Windows device.  No data will be collected for the specified counters until the counters have been repaired on the device and zenpython has been restarted.
+
 == Zenoss Analytics ==
 
 This ZenPack provides additional support for Zenoss Analytics. Perform the
@@ -1084,6 +1086,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM Modeling Software Breaks if Installed Software Ends in Underscores(ZEN-20375)
 * Fix Microsoft Windows - monitoring cluster disks results in powershell error (ZEN-21325)
 * Fix Problem while executing plugin zenoss.winrm.FileSystems (ZEN-21351)
+* Fix Microsoft Windows - corrupt counters are not removed from collection (ZEN-21396)
 
 ;2.5.4
 * Fix Windows Service monitoring improvements
