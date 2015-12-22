@@ -1087,6 +1087,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows - monitoring cluster disks results in powershell error (ZEN-21325)
 * Fix Problem while executing plugin zenoss.winrm.FileSystems (ZEN-21351)
 * Fix Microsoft Windows - corrupt counters are not removed from collection (ZEN-21396)
+* Fix WinRM Polling causing partial Event Creation (ZEN-18757)
 
 ;2.5.4
 * Fix Windows Service monitoring improvements
