@@ -246,7 +246,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             if res.stderr:
                 str_err = '\n'.join(res.stderr)
                 if (str_err.startswith('Get-WinEvent : The specified channel could not be found.')) \
-                    or "does not exist" in str_err:
+                        or "does not exist" in str_err:
                     err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
                     raise MissedEventLogException(err_msg)
                 elif str_err.startswith('Where-Object : Cannot bind parameter \'FilterScript\'. Cannot convert the'):
@@ -258,6 +258,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         except AttributeError:
             pass
         try:
+            log.debug(output)
             value = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
             if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
@@ -319,10 +320,13 @@ class EventLogPlugin(PythonDataSourcePlugin):
             msg = "WindowsEventLog: failed collection. " + result.value.message
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
             msg = "WindowsEventLog: " + result.value.message
+        severity = ZenEventClasses.Warning
+        if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in result:
+            severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
         data['events'].append({
-            'severity': ZenEventClasses.Warning,
+            'severity': severity,
             'eventClassKey': 'WindowsEventCollectionError',
             'eventKey': 'WindowsEventCollection',
             'summary': msg,
@@ -399,7 +403,7 @@ class EventLogQuery(object):
                     `"TimeGenerated`": `"$(sstring($_.TimeCreated))`",
                     `"Source`": `"$(sstring($_.ProviderName))`",
                     `"InstanceId`": `"$(sstring($_.Id))`",
-                    `"Message`": `"$(if ($_.Message){{$(sstring($_.Message))}}else{{$(sstring($_.Properties.Value))}})`",
+                    `"Message`": `"$(if ($_.Message){{$(sstring($_.Message))}}else{{$(sstring($_.FormatDescription()))}})`",
                     `"UserName`": `"$(sstring($_.UserId))`",
                     `"MachineName`": `"$(sstring($_.MachineName))`",
                     `"EventID`": `"$(sstring($_.Id))`"
@@ -422,7 +426,6 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ([single]($PSVersionTable.CLRVersion.Major.ToString()+'.'+$PSVersionTable.CLRVersion.Minor.ToString()) -lt 3.5) {{ $win2003 = $true}}
             if ($win2003 -eq $false) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
@@ -453,7 +456,6 @@ class EventLogQuery(object):
         }};
         Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
     '''
-
 
     def run(self, eventlog, selector, max_age, eventid, isxml):
         if selector.strip() == '*':
