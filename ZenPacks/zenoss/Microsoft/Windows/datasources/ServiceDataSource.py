@@ -152,8 +152,8 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     def set_startmode(self, value):
         if self._object.startmode != value:
             self._object.startmode = value
-            for service in self._object.getAffectedServices():
-                service.index_object()
+        for service in self._object.getAffectedServices():
+            service.index_object()
 
     startmode = property(get_startmode, set_startmode)
 
@@ -188,6 +188,10 @@ class ServicePlugin(PythonDataSourcePlugin):
     def collect(self, config):
 
         ds0 = config.datasources[0]
+
+        if ds0.params['startmode'] == 'None':
+            log.debug('No startmodes defined in {}.  Terminating datasource collection.'.format(ds0.datasource))
+            defer.returnValue(None)
 
         log.debug('{0}:Start Collection of Services'.format(config.id))
 
@@ -227,6 +231,10 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
+        if config.datasources[0].params['startmode'] == 'None':
+            log.debug('No startmodes defined in {}.  No collection occurred.'
+                      .format(config.datasources[0].datasource))
+            return data
         services = self.buildServicesDict(config.datasources)
         log.debug('Windows services query results: {}'.format(results))
         try:
