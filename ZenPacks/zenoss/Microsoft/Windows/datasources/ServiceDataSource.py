@@ -143,19 +143,34 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     testable = False
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
-    alertifnot = ProxyProperty('alertifnot')
-    in_exclusions = ProxyProperty('in_exclusions')
+
+    def get_alertifnot(self):
+        return self._object.alertifnot
+
+    def set_alertifnot(self, value):
+        self._object.alertifnot = value
+        for service in self._object.getAffectedServices():
+            service.index_object()
 
     def get_startmode(self):
         return self._object.startmode
 
     def set_startmode(self, value):
-        if self._object.startmode != value:
-            self._object.startmode = value
+        self._object.startmode = value
+        for service in self._object.getAffectedServices():
+            service.index_object()
+
+    def get_in_exclusions(self):
+        return self._object.in_exclusions
+
+    def set_in_exclusions(self, value):
+        self._object.in_exclusions = value
         for service in self._object.getAffectedServices():
             service.index_object()
 
     startmode = property(get_startmode, set_startmode)
+    in_exclusions = property(get_in_exclusions, set_in_exclusions)
+    alertifnot = property(get_alertifnot, set_alertifnot)
 
 
 class ServicePlugin(PythonDataSourcePlugin):
