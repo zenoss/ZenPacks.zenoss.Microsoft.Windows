@@ -321,7 +321,7 @@ class CustomCommandStrategy(object):
             try:
                 err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
                 msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
-            except:
+            except Exception:
                 msg = 'Custom Command error: ' + ''.join(result.stderr)
             collectedResult.events.append({
                 'eventClass': eventClass,
