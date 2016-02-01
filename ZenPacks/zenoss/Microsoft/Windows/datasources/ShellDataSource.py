@@ -318,8 +318,11 @@ class CustomCommandStrategy(object):
         # Give error feedback to user
         eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
-            err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
-            msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
+            try:
+                err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
+                msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
+            except Exception:
+                msg = 'Custom Command error: ' + ''.join(result.stderr)
             collectedResult.events.append({
                 'eventClass': eventClass,
                 'severity': dsconf.severity or ZenEventClasses.Warning,
