@@ -1082,6 +1082,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.5.6
+* Fix MicrosoftWindows - warning is generated if $$ is used in command datasource. (ZEN-20221)
+* Fix No event generated for failed modeling of Windows Device (ZEN-16195)
+* Fix Disabled WinRMService templates continue to event after disabling (ZEN-21603)
+
 ; 2.5.5
 * Fix WinRM Modeling Software Breaks if Installed Software Ends in Underscores(ZEN-20375)
 * Fix Microsoft Windows - monitoring cluster disks results in powershell error (ZEN-21325)
