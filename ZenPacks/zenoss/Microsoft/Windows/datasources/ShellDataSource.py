@@ -318,6 +318,7 @@ class CustomCommandStrategy(object):
         # Give error feedback to user
         eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
+            log.debug(result.stderr)
             try:
                 err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
                 msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
