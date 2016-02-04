@@ -104,7 +104,7 @@ class WinService(OSComponent):
                     return True
             # 3 - Allow for other datasources to be specified.
             for datasource in template.getRRDDataSources():
-                if datasource.id != 'DefaultService':
+                if datasource.id != 'DefaultService' and hasattr(datasource, 'startmode'):
                     if self.getMonitored(datasource):
                         return True
 
