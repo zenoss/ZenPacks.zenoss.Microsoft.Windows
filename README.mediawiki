@@ -1084,6 +1084,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.5.8
+* Fix ShellDataSource custom command does not send severity to custom parsers (ZEN-21928)
+
 ; 2.5.7
 * Fix Windows traceback during zenpack install (ZEN-21899)
 
