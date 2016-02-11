@@ -298,6 +298,9 @@ class CustomCommandStrategy(object):
         cmd.device = dsconf.params['servername']
         cmd.component = dsconf.params['contextcompname']
 
+        # Pass the severity from the datasource to the command parsers
+        cmd.severity = dsconf.severity
+
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
         cmd.deviceConfig = config
