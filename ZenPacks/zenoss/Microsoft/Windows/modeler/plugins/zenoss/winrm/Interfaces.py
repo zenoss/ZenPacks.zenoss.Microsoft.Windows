@@ -404,7 +404,7 @@ class Interfaces(WinRMPlugin):
         def compareAdapters(a, b):
             n = cmp(a.Description, b.Description)
             if n == 0:
-                n = cmp(a.Index, b.Index)
+                n = cmp(int(a.Index), int(b.Index))
             return n
         adapters.sort(compareAdapters)
 
