@@ -294,3 +294,19 @@ def sizeof_fmt(byte=0):
 
 def pipejoin(items):
     return " + '|' + ".join(items.split())
+
+
+def cluster_state_string(state):
+    return {0: 'Online',
+            1: 'Up',
+            2: 'Offline',
+            3: 'PartialOnline',
+            4: 'Failed'}.get(state, 'Unknown')
+
+
+def cluster_state_value(state):
+    return {'Online': 0,
+            'Up': 1,
+            'Offline': 2,
+            'PartialOnline': 3,
+            'Failed': 4}.get(state, 5)

@@ -11,11 +11,12 @@ from Globals import InitializeClass
 from socket import gaierror
 import logging
 
-log = logging.getLogger("zen.MicrosoftWindows")
-
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 from Products.ZenUtils.IpUtil import getHostByName
+from utils import cluster_state_string
+
+log = logging.getLogger("zen.MicrosoftWindows")
 
 
 class ClusterResource(OSComponent):
@@ -40,8 +41,7 @@ class ClusterResource(OSComponent):
 
     _relations = OSComponent._relations + (
         ("clusterservice", ToOne(ToManyCont,
-            "ZenPacks.zenoss.Microsoft.Windows.ClusterService",
-            "clusterresources")),
+         "ZenPacks.zenoss.Microsoft.Windows.ClusterService", "clusterresources")),
     )
 
     def ownernodeentity(self):
@@ -55,5 +55,14 @@ class ClusterResource(OSComponent):
 
     def getRRDTemplateName(self):
         return 'ClusterResource'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return cluster_state_string(state)
+
 
 InitializeClass(ClusterResource)
