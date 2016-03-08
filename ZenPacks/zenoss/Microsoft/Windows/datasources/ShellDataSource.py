@@ -47,7 +47,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt
+from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value
 
 
 # Requires that txwinrm_utils is already imported.
@@ -1312,6 +1312,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 checked_result = False
                 db_statuses = {}
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
+                    try:
+                        state = value[1]
+                    except (IndexError, Exception):
+                        continue
                     checked_result = True
                     if dsconf.datasource == 'state':
                         currentstate = {
@@ -1319,21 +1323,19 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             'Offline': ZenEventClasses.Critical,
                             'PartialOnline': ZenEventClasses.Error,
                             'Failed': ZenEventClasses.Critical
-                        }.get(value[1], ZenEventClasses.Info)
+                        }.get(state, ZenEventClasses.Info)
 
                         data['events'].append(dict(
                             eventClass=dsconf.eventClass or "/Status",
                             eventClassKey='winrs{0}'.format(strategy.key),
                             eventKey=strategy.key,
                             severity=currentstate,
-                            summary='Last state of component was {0}'.format(value[1]),
+                            summary='Last state of component was {0}'.format(state),
                             device=config.id,
                             component=prepId(dsconf.component)
                         ))
 
-                        data['maps'].append(
-                            value[2]
-                        )
+                        data['values'][dsconf.component]['state'] = cluster_state_value(state), timestamp
                     else:
                         if value == 'offline' and strategy.key == 'PowershellMSSQL':
                             db_statuses[dsconf.component] = False

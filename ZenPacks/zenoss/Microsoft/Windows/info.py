@@ -242,7 +242,11 @@ class ClusterServiceInfo(WinComponentInfo):
     description = ProxyProperty('description')
     coregroup = ProxyProperty('coregroup')
     priority = ProxyProperty('priority')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
     @property
     @info
@@ -259,7 +263,11 @@ class ClusterResourceInfo(WinComponentInfo):
     ownernode = ProxyProperty('ownernode')
     description = ProxyProperty('description')
     ownergroup = ProxyProperty('ownergroup')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
     @property
     @info
@@ -280,7 +288,11 @@ class ClusterNodeInfo(WinComponentInfo):
     implements(IClusterNodeInfo)
     assignedvote = ProxyProperty('assignedvote')
     currentvote = ProxyProperty('currentvote')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
     @property
     @info
@@ -301,7 +313,11 @@ class ClusterDiskInfo(WinComponentInfo):
     size = ProxyProperty('size')
     freespace = ProxyProperty('freespace')
     assignedto = ProxyProperty('assignedto')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
     @property
     @info
@@ -313,7 +329,11 @@ class ClusterNetworkInfo(WinComponentInfo):
     implements(IClusterNetworkInfo)
     description = ProxyProperty('description')
     role = ProxyProperty('role')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
 
 class ClusterInterfaceInfo(WinComponentInfo):
@@ -322,7 +342,11 @@ class ClusterInterfaceInfo(WinComponentInfo):
     network = ProxyProperty('network')
     ipaddresses = ProxyProperty('ipaddresses')
     adapter = ProxyProperty('adapter')
-    state = ProxyProperty('state')
+
+    @property
+    @info
+    def state(self):
+        return self._object.getState()
 
     @property
     @info
