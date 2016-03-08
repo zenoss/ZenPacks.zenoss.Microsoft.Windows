@@ -1084,6 +1084,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.5.10
+* Fix Microsoft Windows Cluster datasources are sending datamaps too often and bogging down zenhub (ZEN-22345)
+
 ; 2.5.9
 * Fix Windows Team NIC Monitoring/Modeling Failure (ZEN-19588)
 
