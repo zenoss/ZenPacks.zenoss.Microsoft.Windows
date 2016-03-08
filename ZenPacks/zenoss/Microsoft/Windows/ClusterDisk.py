@@ -15,6 +15,8 @@ from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 from Products.ZenUtils.IpUtil import getHostByName
 
+from utils import cluster_state_string
+
 log = logging.getLogger("zen.MicrosoftWindows")
 
 
@@ -69,5 +71,13 @@ class ClusterDisk(OSComponent):
         Return the path to an icon for this component.
         '''
         return '/++resource++mswindows/img/FileSystem.png'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return cluster_state_string(state)
 
 InitializeClass(ClusterDisk)

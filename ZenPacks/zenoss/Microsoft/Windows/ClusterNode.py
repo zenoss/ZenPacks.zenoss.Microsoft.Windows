@@ -15,6 +15,8 @@ from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 from Products.ZenUtils.IpUtil import getHostByName
 
+from utils import cluster_state_string
+
 log = logging.getLogger("zen.MicrosoftWindows")
 
 
@@ -38,14 +40,11 @@ class ClusterNode(OSComponent):
 
     _relations = OSComponent._relations + (
         ('os', ToOne(ToManyCont,
-            'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',
-            'clusternodes')),
+         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusternodes')),
         ('clusterdisks', ToManyCont(ToOne,
-            'ZenPacks.zenoss.Microsoft.Windows.ClusterDisk',
-            'clusternode')),
+         'ZenPacks.zenoss.Microsoft.Windows.ClusterDisk', 'clusternode')),
         ('clusterinterfaces', ToManyCont(ToOne,
-            'ZenPacks.zenoss.Microsoft.Windows.ClusterInterface',
-            'clusternode')),
+         'ZenPacks.zenoss.Microsoft.Windows.ClusterInterface', 'clusternode')),
     )
 
     def ownernodeentity(self):
@@ -65,6 +64,14 @@ class ClusterNode(OSComponent):
         Return the path to an icon for this component.
         '''
         return '/++resource++mswindows/img/server-windows.png'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return cluster_state_string(state)
 
 
 InitializeClass(ClusterNode)
