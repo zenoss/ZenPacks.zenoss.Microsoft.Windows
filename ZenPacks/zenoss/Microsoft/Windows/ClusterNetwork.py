@@ -8,12 +8,10 @@
 ##############################################################################
 
 from Globals import InitializeClass
-from socket import gaierror
 import logging
 
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
-from Products.ZenUtils.IpUtil import getHostByName
 
 log = logging.getLogger("zen.MicrosoftWindows")
 
@@ -38,11 +36,18 @@ class ClusterNetwork(OSComponent):
 
     _relations = OSComponent._relations + (
         ('os', ToOne(ToManyCont,
-            'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',
-            'clusternetworks')),
+         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusternetworks')),
     )
 
     def getRRDTemplateName(self):
         return 'ClusterNetwork'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return state
 
 InitializeClass(ClusterNetwork)

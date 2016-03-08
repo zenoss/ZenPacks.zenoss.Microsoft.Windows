@@ -11,10 +11,13 @@ from Globals import InitializeClass
 from socket import gaierror
 import logging
 
-log = logging.getLogger("zen.MicrosoftWindows")
 from Products.ZenModel.OSComponent import OSComponent
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 from Products.ZenUtils.IpUtil import getHostByName
+
+from utils import cluster_state_string
+
+log = logging.getLogger("zen.MicrosoftWindows")
 
 
 class ClusterService(OSComponent):
@@ -41,11 +44,9 @@ class ClusterService(OSComponent):
 
     _relations = OSComponent._relations + (
         ('os', ToOne(ToManyCont,
-            'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem',
-            'clusterservices')),
+         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusterservices')),
         ('clusterresources', ToManyCont(ToOne,
-            'ZenPacks.zenoss.Microsoft.Windows.ClusterResource',
-            'clusterservice')),
+         'ZenPacks.zenoss.Microsoft.Windows.ClusterResource', 'clusterservice')),
     )
 
     def ownernodeentity(self):
@@ -65,5 +66,14 @@ class ClusterService(OSComponent):
         Return the path to an icon for this component.
         '''
         return '/++resource++mswindows/img/ClusterService.png'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return cluster_state_string(state)
+
 
 InitializeClass(ClusterService)

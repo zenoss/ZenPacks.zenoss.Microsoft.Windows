@@ -929,7 +929,8 @@ ZC.MSClusterNodePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'state',
                 header: _t('State'),
                 sortable: true,
-                width: 100
+                width: 100,
+                renderer: Zenoss.render.pingStatus
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1102,7 +1103,8 @@ ZC.MSClusterNetworkPanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'state',
                 header: _t('State'),
                 sortable: true,
-                width: 100
+                width: 100,
+                renderer: Zenoss.render.pingStatus
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -1192,7 +1194,8 @@ ZC.MSClusterInterfacePanel = Ext.extend(ZC.WINComponentGridPanel, {
                 dataIndex: 'state',
                 header: _t('State'),
                 sortable: true,
-                width: 100
+                width: 100,
+                renderer: Zenoss.render.pingStatus
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
