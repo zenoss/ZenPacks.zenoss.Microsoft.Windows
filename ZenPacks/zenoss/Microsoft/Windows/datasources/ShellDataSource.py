@@ -1312,12 +1312,12 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 checked_result = False
                 db_statuses = {}
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
-                    try:
-                        state = value[1]
-                    except (IndexError, Exception):
-                        continue
                     checked_result = True
                     if dsconf.datasource == 'state':
+                        try:
+                            state = value[1]
+                        except (IndexError, Exception):
+                            continue
                         currentstate = {
                             'Online': ZenEventClasses.Clear,
                             'Offline': ZenEventClasses.Critical,
