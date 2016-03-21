@@ -29,6 +29,7 @@ from zope.interface import Interface
 
 from twisted.internet import defer
 from twisted.python.failure import Failure
+from twisted.internet.error import TimeoutError
 
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
@@ -45,6 +46,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
+
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value
@@ -1224,7 +1227,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         command = create_single_shot_command(conn_info)
         try:
-            results = yield command.run_command(command_line)
+            results = yield add_timeout(command.run_command(command_line), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('ShellDataSource.collect on {} {}'.format(config.id, e))
+            raise
         except UnauthorizedError:
             results = ShellResult()
         except Exception, e:

@@ -18,11 +18,11 @@ from xml.parsers.expat import ExpatError
 import xml.dom.minidom
 
 from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 
 from zope.component import adapts
 from zope.interface import implements
 from Products.Zuul.infos import InfoBase
-from Products.Zuul.utils import severityId
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -33,6 +33,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_single_shot_command
@@ -239,7 +240,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
         output = []
 
         try:
-            res = yield query.run(eventlog, select, max_age, eventid, isxml)
+            res = yield add_timeout(query.run(eventlog, select, max_age, eventid, isxml), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('EventLogDataSource.collect {} {}'.format(config.id, e))
+            raise
         except Exception as e:
             log.error(e)
         try:
@@ -267,7 +271,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             value = json.loads(unicode(output.decode("utf-8", "replace")))
             if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
-        except ValueError as e:
+        except Exception as e:
             log.error('Could not parse json: %r\n%s' % (output, e))
             raise
         defer.returnValue(value)

@@ -38,7 +38,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
     )
 
-from ..twisted_utils import add_timeout
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
@@ -50,8 +50,6 @@ LOG = logging.getLogger('zen.windows')
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
 
-# This should match OperationTimeout in txwinrm's receive.xml.
-OPERATION_TIMEOUT = 60
 # Store corrupt counters for each device in module scope, not to doublecheck
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
@@ -186,9 +184,10 @@ class ComplexLongRunningCommand(object):
     according to the number of commands supplied.
     '''
 
-    def __init__(self, dsconf, num_commands):
+    def __init__(self, dsconf, num_commands, timeout):
         self.dsconf = dsconf
         self.num_commands = num_commands
+        self.timeout = timeout
         self.commands = self._create_commands(num_commands)
 
     def _create_commands(self, num_commands):
@@ -210,7 +209,10 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            yield command.start(command_line)
+            try:
+                yield add_timeout(command.start(command_line), self.timeout)
+            except TimeoutError as e:
+                LOG.error('PerfmonDataSource.start on {} {}'.format(self.dsconf.config.id, e))
 
     @defer.inlineCallbacks
     def stop(self):
@@ -279,7 +281,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self._build_commandlines()
 
         self.complex_command = ComplexLongRunningCommand(
-            dsconf0, self.num_commands)
+            dsconf0, self.num_commands, dsconf0.cycletime+5)
 
     def _build_commandlines(self):
         '''
@@ -388,7 +390,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.debug("waiting for %s Get-Counter data", self.config.id)
             self.data_deferred = defer.Deferred()
             try:
-                yield add_timeout(self.data_deferred, self.sample_interval)
+                yield add_timeout(self.data_deferred, OPERATION_TIMEOUT+5)
+            except TimeoutError as e:
+                LOG.error('PerfmonDataSource.get_data on {} {}'.format(self.config.id, e))
+                pass
             except Exception:
                 pass
         else:
@@ -644,9 +649,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if num_counters == 0:
             pass
         elif num_counters == 1:
-            result = yield winrs.run_command(command(counter_list))
-            if result.stderr:
-                corrupt_list.extend(counter_list)
+            try:
+                result = yield add_timeout(winrs.run_command(command(counter_list)), OPERATION_TIMEOUT+5)
+            except TimeoutError as e:
+                LOG.error('PerfmonDataSource.search_corrupt_counters on {} {}'.format(self.config.id, e))
+            else:
+                if result.stderr:
+                    corrupt_list.extend(counter_list)
         else:
             mid_index = num_counters/2
             slices = (counter_list[:mid_index], counter_list[mid_index:])

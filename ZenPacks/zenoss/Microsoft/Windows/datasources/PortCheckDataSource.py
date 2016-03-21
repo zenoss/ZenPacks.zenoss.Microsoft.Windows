@@ -16,9 +16,11 @@ gets discovered as a datasource type in Zenoss.
 import json
 import logging
 
-from zope.interface import Interface
 from zope.component import adapts
 from zope.interface import implements
+
+from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
@@ -31,8 +33,11 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
+
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 log = logging.getLogger("zen.MicrosoftWindows")
+
 
 class PortCheckDataSource(PythonDataSource):
     """
@@ -53,6 +58,7 @@ class PortCheckDataSource(PythonDataSource):
     plugin_classname = ZENPACKID + \
         '.datasources.PortCheckDataSource.PortCheckDataSourcePlugin'
 
+
 class IPortCheckDataSourceInfo(IRRDDataSourceInfo):
     """
     Provide the UI information for the PortCheck datasource.
@@ -65,7 +71,8 @@ class IPortCheckDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Port Check'),
         title=_t('Port Check'),
         xtype='portcheck')
-    
+
+
 class PortCheckDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the PortCheck plugin.
@@ -77,6 +84,7 @@ class PortCheckDataSourceInfo(RRDDataSourceInfo):
     cycletime = ProxyProperty('cycletime')
     ports = ProxyProperty('ports')
 
+
 # Subclass due to bug in PortScan.Scanner:  fixed in ZEN-17104
 class PortCheckScanner(PortScan.Scanner):
     def recordFailure(self, failure, host, port):
@@ -84,6 +92,7 @@ class PortCheckScanner(PortScan.Scanner):
         data = (port, failure.getErrorMessage())
         logging.getLogger('zen.Portscanner').debug('Failed to connect to {}:{} -- {}'.format(host, port, data[1]))
         hostData.append(data)
+
 
 class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
 
@@ -105,8 +114,8 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
     def params(cls, datasource, context):
         return dict(
             ports=datasource.ports)
-        
-    #@defer.inlineCallbacks
+
+    @defer.inlineCallbacks
     def collect(self, config):
         dsconf0 = config.datasources[0]
 
@@ -114,14 +123,19 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             self.json_ports = json.loads(dsconf0.params['ports'])
         except:
             log.error('Unable to load ports.  Check configuration')
-        
+
         self.portDict = {}
         for port in self.json_ports:
             self.portDict[int(port['port'])] = port['desc']
-        self.scanner = PortCheckScanner(config.manageIp,portList=self.portDict.keys())
-        dl = self.scanner.prepare()
-        return dl
-        
+        self.scanner = PortCheckScanner(config.manageIp, portList=self.portDict.keys())
+
+        try:
+            results = yield add_timeout(self.scanner.prepare(), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('PortCheckDataSource.collect on {} {}'.format(config.id, e))
+            raise
+        defer.returnValue(results)
+
     def onSuccess(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
@@ -163,11 +177,11 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             pass
         # send clear events
         return data
-    
+
     def onError(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
-        
+
         # send error event
         eventClass = dsconf0.eventClass if dsconf0.eventClass else "/Status"
         eventkey = 'WindowsPortCheckError'
@@ -180,4 +194,3 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             'summary': msg,
             'device': config.id})
         return data
-

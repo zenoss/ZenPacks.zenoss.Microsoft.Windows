@@ -13,7 +13,6 @@ performance.
 '''
 
 import logging
-LOG = logging.getLogger('zen.WindowsProcess')
 
 import collections
 import re
@@ -29,6 +28,11 @@ from Products.Zuul.form import schema
 from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
+
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
+
+from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 
 try:
     # Introduced in Zenoss 4.2 2013-10-15 RPS.
@@ -55,6 +59,7 @@ from ..utils import get_processNameAndArgs, get_processText
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
+LOG = logging.getLogger('zen.WindowsProcess')
 
 
 SOURCE_TYPE = 'Windows Process'
@@ -252,6 +257,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
         return params
 
+    @defer.inlineCallbacks
     def collect(self, config):
         client = txwinrm.collect.WinrmCollectClient()
         conn_info = createConnectionInfo(config.datasources[0])
@@ -286,8 +292,13 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 'FROM Win32_PerfFormattedData_PerfProc_Process'.format(
                     ', '.join(perf_attrs)))
 
-        return client.do_collect(
-            conn_info, map(txwinrm.collect.create_enum_info, queries))
+        try:
+            results = yield add_timeout(client.do_collect(
+                conn_info, map(txwinrm.collect.create_enum_info, queries)), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            LOG.error('ProcessDataSource.collect {} {}'.format(config.id, e))
+            raise
+        defer.returnValue(results)
 
     def onSuccess(self, results, config):
         data = self.new_data()
