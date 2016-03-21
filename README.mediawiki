@@ -1086,6 +1086,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ; 2.5.11
 Fix MSSQL Monitoring (ZEN-22476)
+Fix Microsoft Windows: failed collection - Couldn't bind: 24: Too many open files. (ZEN-22558)
 
 ; 2.5.10
 * Fix Microsoft Windows Cluster datasources are sending datamaps too often and bogging down zenhub (ZEN-22345)

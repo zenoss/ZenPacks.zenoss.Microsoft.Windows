@@ -17,6 +17,7 @@ import re
 from zope.component import adapts
 from zope.interface import implements
 from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -30,6 +31,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import check_for_network_error
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -161,7 +163,11 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         if not iis_version:
             winrs = IISCommander(conn_info)
-            version = yield winrs.get_iis_version()
+            try:
+                version = yield add_timeout(winrs.get_iis_version(), OPERATION_TIMEOUT+5)
+            except TimeoutError as e:
+                log.error('IISDataSource.collect.get_iis_version on {} {}'.format(config.id, e))
+                raise
             # version should be in 'Version x.x' format
             # 7 and above use the same namespace/query
             try:
@@ -174,18 +180,19 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 defer.returnValue(None)
 
         if iis_version == 6:
-            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),]
+            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6), ]
         else:
-            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),]
+            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7), ]
 
         winrm = WinrmCollectClient()
         results = None
         try:
-            results = yield winrm.do_collect(conn_info, WinRMQueries)
+            results = yield add_timeout(winrm.do_collect(conn_info, WinRMQueries), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('IISSiteDatasource.collect on {} {}'.format(config.id, e))
+            results = None
         except Exception as e:
-            log.error("IISSiteDataSource error on %s: %s",
-                    config.id,
-                    e)
+            log.error("IISSiteDataSource error on %s: %s", config.id, e)
         log.debug(WinRMQueries)
         defer.returnValue(results)
 

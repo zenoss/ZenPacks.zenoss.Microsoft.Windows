@@ -18,6 +18,7 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer, error
 from twisted.python.failure import Failure
+from twisted.internet.error import TimeoutError
 from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.interfaces import ICatalogTool, IRRDDataSourceInfo
 from Products.Zuul.form import schema
@@ -32,6 +33,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -219,7 +221,11 @@ class ServicePlugin(PythonDataSourcePlugin):
         conn_info = createConnectionInfo(ds0)
 
         winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        try:
+            results = yield add_timeout(winrm.do_collect(conn_info, WinRMQueries), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('ServiceDataSource.collect on {} {}'.format(config.id, e))
+            raise
         log.debug(WinRMQueries)
 
         defer.returnValue(results)

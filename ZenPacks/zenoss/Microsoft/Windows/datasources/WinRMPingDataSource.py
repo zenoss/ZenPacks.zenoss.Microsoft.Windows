@@ -25,8 +25,10 @@ from Products.Zuul.infos import ProxyProperty
 from Products.ZenEvents import ZenEventClasses
 
 from twisted.internet import defer
+from twisted.internet.error import TimeoutError
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..twisted_utils import add_timeout, OPERATION_TIMEOUT
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -131,7 +133,11 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
         ]
 
         winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        try:
+            results = yield add_timeout(winrm.do_collect(conn_info, WinRMQueries), OPERATION_TIMEOUT+5)
+        except TimeoutError as e:
+            log.error('WinRMPingDataSource collect {} {}'.format(config.id, e))
+            raise
 
         defer.returnValue(results)
 
