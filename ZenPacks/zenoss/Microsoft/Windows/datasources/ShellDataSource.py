@@ -210,7 +210,7 @@ class DCDiagStrategy(object):
     def build_command_line(self, tests, testparms, username, password):
         self.run_tests = set(tests)
         try:
-            dcuser = '{}\\{}'.format('.'.join(username.split('@')[1].split('.')[:-1]),username.split('@')[0])
+            dcuser = '{}\\{}'.format((username.split('@')[1].split('.')[0]), username.split('@')[0])
         except Exception:
             raise WindowsShellException('Username invalid.  Must be in user@example.com format.  Check zWinRMUser: {}'.format(username))
         dcdiagcommand = 'dcdiag /q /u:{} /p:{} /test:'.format(dcuser, password) + ' /test:'.join(tests)
