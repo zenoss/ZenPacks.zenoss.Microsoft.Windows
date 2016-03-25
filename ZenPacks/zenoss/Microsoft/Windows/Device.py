@@ -44,7 +44,7 @@ class Device(BaseDevice):
     )
 
     def getPingStatus(self):
-        return self.getStatus('/Status/WinRM/Ping')
+        return self.getStatus('/Status/Winrm/Ping')
 
     def setClusterMachines(self, clusterdnsnames):
         '''
