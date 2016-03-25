@@ -1089,11 +1089,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ; 2.5.11
-Fix MSSQL Monitoring (ZEN-22476)
-Document Microsoft Windows:  High CPU usage when modeling domain controller (ZEN-22566)
-Fix Windows Replication datasource fails for dcdiag user formatting (ZEN-22487)
-Fix Microsoft Windows: failed collection - Couldn't bind: 24: Too many open files. (ZEN-22558)
-Fix /Status/WinRM/Ping Event Class does not exist (ZEN-22407)
+* Fix MSSQL Monitoring (ZEN-22476)
+* Document Microsoft Windows:  High CPU usage when modeling domain controller (ZEN-22566)
+* Fix Windows Replication datasource fails for dcdiag user formatting (ZEN-22487)
+* Fix Microsoft Windows: failed collection - Couldn't bind: 24: Too many open files. (ZEN-22558)
+* Fix /Status/WinRM/Ping Event Class does not exist (ZEN-22407)
 
 ; 2.5.10
 * Fix Microsoft Windows Cluster datasources are sending datamaps too often and bogging down zenhub (ZEN-22345)
