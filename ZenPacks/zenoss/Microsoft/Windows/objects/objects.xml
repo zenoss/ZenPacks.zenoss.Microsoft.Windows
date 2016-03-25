@@ -16783,6 +16783,9 @@ True
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'Winrm') -->
 <object id='/zport/dmd/Events/Status/Winrm' module='Products.ZenEvents.EventClass' class='EventClass'>
 </object>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'Winrm', 'Ping') -->
+<object id='/zport/dmd/Events/Status/Winrm/Ping' module='Products.ZenEvents.EventClass' class='EventClass'>
+</object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'IISSiteStatus') -->
 <object id='/zport/dmd/Events/Status/instances/IISSiteStatus' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
 <property type="text" id="transform" mode="w" >
