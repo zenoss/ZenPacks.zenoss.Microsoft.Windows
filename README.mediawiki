@@ -902,6 +902,10 @@ Please refer the the Zenoss Service Dynamics documentation if you run into any o
 
 If you cannot find the answer in the documentation, then Resource Manager (Service Dynamics) users should contact [https://support.zenoss.com Zenoss Customer Support]. Core users can use the #zenoss IRC channel or the community.zenoss.org forums (there is a forum specific to Windows monitoring).
 
+=== Troubleshooting Windows ===
+
+If you see 100% CPU usage on a domain controller and your forest functional level is Windows 2003 or Windows 2008, you could be missing the WinRMRemoteWMIUsers__ security group.  Adding this group to your domain should fix this problem.  It is a known error from Microsoft, https://support.microsoft.com/en-us/kb/3118385.
+
 === Troubleshooting Kerberos Error Messages ===
 
 <blockquote>Cannot determine realm for numeric host address</blockquote>
@@ -1083,6 +1087,13 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+; 2.5.11
+Fix MSSQL Monitoring (ZEN-22476)
+Document Microsoft Windows:  High CPU usage when modeling domain controller (ZEN-22566)
+Fix Windows Replication datasource fails for dcdiag user formatting (ZEN-22487)
+Fix Microsoft Windows: failed collection - Couldn't bind: 24: Too many open files. (ZEN-22558)
+Fix /Status/WinRM/Ping Event Class does not exist (ZEN-22407)
 
 ; 2.5.10
 * Fix Microsoft Windows Cluster datasources are sending datamaps too often and bogging down zenhub (ZEN-22345)
