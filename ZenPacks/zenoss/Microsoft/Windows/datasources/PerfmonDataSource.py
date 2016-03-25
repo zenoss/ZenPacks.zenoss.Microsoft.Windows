@@ -55,6 +55,7 @@ OPERATION_TIMEOUT = 60
 # Store corrupt counters for each device in module scope, not to doublecheck
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
+MAX_NETWORK_FAILURES = 3
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -253,9 +254,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def __init__(self, config):
         self.config = config
+        self.reset()
+
+    def reset(self):
         self.state = PluginStates.STOPPED
 
-        dsconf0 = config.datasources[0]
+        dsconf0 = self.config.datasources[0]
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
 
@@ -270,7 +274,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Get counters from all components in the device.
         self.counter_map = {}
         self.ps_counter_map = {}
-        for dsconf in config.datasources:
+        for dsconf in self.config.datasources:
             counter = dsconf.params['counter'].lower()
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
@@ -280,6 +284,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self.complex_command = ComplexLongRunningCommand(
             dsconf0, self.num_commands)
+        self.network_failures = 0
 
     def _build_commandlines(self):
         '''
@@ -609,6 +614,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.WARN,
                 "network error on {}: {}"
                 .format(self.config.id, e.message or 'timeout'))
+            if isinstance(e, TimeoutError):
+                self.network_failures += 1
         # Handle errors on which we should start over.
         else:
             retry, level, msg = (
@@ -621,6 +628,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.data_deferred.errback(failure)
 
         LOG.log(level, msg)
+        if self.network_failures >= MAX_NETWORK_FAILURES:
+            self.reset()
         if retry:
             self.receive()
         else:
