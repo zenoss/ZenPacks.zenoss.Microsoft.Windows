@@ -629,6 +629,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         LOG.log(level, msg)
         if self.network_failures >= MAX_NETWORK_FAILURES:
+            yield self.stop()
             self.reset()
         if retry:
             self.receive()
@@ -699,7 +700,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         Emit event for corrupt counters
         '''
-        default_eventClass = '/Status/WinRM'
+        default_eventClass = '/Status/Winrm'
         dsconf0 = self.config.datasources[0]
 
         events = {}

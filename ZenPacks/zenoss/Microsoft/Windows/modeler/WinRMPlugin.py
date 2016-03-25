@@ -175,7 +175,7 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
-        self._send_event(message % tuple(args), device.id, 5, eventClass='/Status/WinRM/Ping')
+        self._send_event(message % tuple(args), device.id, 5, eventClass='/Status/Winrm/Ping')
 
     def _send_event(self, reason, id, severity, force=False,
                     key='ConnectionError', eventClass='/Status'):
