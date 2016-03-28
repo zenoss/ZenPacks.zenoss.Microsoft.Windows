@@ -22,7 +22,6 @@ from twisted.internet import defer
 from zope.component import adapts
 from zope.interface import implements
 from Products.Zuul.infos import InfoBase
-from Products.Zuul.utils import severityId
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -202,6 +201,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             use_xml = True
         except ExpatError:
             use_xml = False
+            query_error = True
 
         return dict(
                 eventlog=te(datasource.eventlog),
@@ -245,7 +245,11 @@ class EventLogPlugin(PythonDataSourcePlugin):
         try:
             if res.stderr:
                 str_err = '\n'.join(res.stderr)
-                if (str_err.startswith('Get-WinEvent : The specified channel could not be found.')) \
+                log.debug('Event query error: {}'.format(str_err))
+                if str_err.find('No events were found that match the specified selection criteria') != -1:
+                    # no events found.  expected error.
+                    pass
+                elif (str_err.startswith('Get-WinEvent : The specified channel could not be found.')) \
                         or "does not exist" in str_err:
                     err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
                     raise MissedEventLogException(err_msg)
@@ -414,9 +418,9 @@ class EventLogQuery(object):
             }}
         }};
         function get_new_recent_entries($logname, $selector, $max_age, $eventid) {{
-            New-Item HKLM:\SOFTWARE\zenoss -ErrorAction SilentlyContinue;
-            New-Item HKLM:\SOFTWARE\zenoss\logs -ErrorAction SilentlyContinue;
-            $last_read = Get-ItemProperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -ErrorAction SilentlyContinue;
+            $x=New-Item HKCU:\SOFTWARE\zenoss -ea SilentlyContinue;
+            $x=New-Item HKCU:\SOFTWARE\zenoss\logs -ea SilentlyContinue;
+            $last_read = Get-ItemProperty -Path HKCU:\SOFTWARE\zenoss\logs -Name  $eventid -ea SilentlyContinue;
             [DateTime]$yesterday = (Get-Date).AddHours(-$max_age);
             [DateTime]$after = $yesterday;
             if ($last_read) {{
@@ -426,14 +430,14 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ($win2003 -eq $false) {{
+            if ($win2003 -eq $false -and (get-itemproperty 'HKLM:\\software\\microsoft\\net framework setup\\ndp\\v3.5' -ea silentlycontinue)) {{
                 $query = '{filter_xml}';
-                [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds) -ErrorAction SilentlyContinue;
+                [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds);
             }} else {{
                 [Array]$events = Get-EventLog -After $after -LogName $logname;
             }};
             [DateTime]$last_read = get-date;
-            Set-Itemproperty -Path HKLM:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
+            Set-Itemproperty -Path HKCU:\SOFTWARE\zenoss\logs -Name $eventid -Value ([String]$last_read);
             if ($events -eq $null) {{
                 return;
             }};
@@ -476,6 +480,7 @@ class EventLogQuery(object):
                 filter_xml=filter_xml
             )
         )
+        log.debug('sending event script: {}'.format(command))
         return self.winrs.run_command(command)
 
 
