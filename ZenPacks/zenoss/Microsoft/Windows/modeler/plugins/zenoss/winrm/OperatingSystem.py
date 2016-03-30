@@ -57,7 +57,7 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
-        domainController = results.get('ActiveDirectory', (None,))
+        domainController = results.get('ActiveDirectory', None)
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
@@ -97,7 +97,7 @@ class OperatingSystem(WinRMPlugin):
             pass
 
         # if NTDS service present then this is a DC
-        if len(domainController):
+        if domainController:
             device_om.domain_controller = True
         else:
             device_om.domain_controller = False
