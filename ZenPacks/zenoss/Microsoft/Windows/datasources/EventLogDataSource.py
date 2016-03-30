@@ -325,7 +325,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
             msg = "WindowsEventLog: " + result.value.message
         severity = ZenEventClasses.Warning
-        if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in result.value.message:
+        if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in msg:
             severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
