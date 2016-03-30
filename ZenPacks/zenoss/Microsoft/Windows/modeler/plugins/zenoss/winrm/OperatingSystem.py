@@ -57,7 +57,7 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
-        domainController = results.get('ActiveDirectory', (None,))[0]
+        domainController = results.get('ActiveDirectory', None)
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
