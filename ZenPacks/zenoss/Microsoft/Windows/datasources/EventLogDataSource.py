@@ -201,7 +201,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             use_xml = True
         except ExpatError:
             use_xml = False
-            query_error = True
 
         return dict(
                 eventlog=te(datasource.eventlog),
