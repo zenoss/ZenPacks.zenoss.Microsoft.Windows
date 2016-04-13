@@ -377,9 +377,13 @@ For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
+Or to look for a specific event id:
+
 <code>{ $$_.Id -eq 4001}</code>
 
 <code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event.  <code>Id</code> is the property to compare for specific event ids.  You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.
+
+Note: This query is structured to look for "less than or equal" although we are looking for events "greater than or equal" in severity. This is because the Level is an enumeration where the integer values map to 1 = Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate higher severity.  The LogAlways event level evaluates to 0, which is less than a Warning.  These events are typically Informational and will display if using the sample powershell query above.  To work around this, you could add <code> -and $$_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways</code> into your query or use the xml option.
 
 [[File:CustomViewXML.png|thumb|250px|CustomViewXML]]
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
@@ -1087,6 +1091,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+; 2.6.0
+* Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)
