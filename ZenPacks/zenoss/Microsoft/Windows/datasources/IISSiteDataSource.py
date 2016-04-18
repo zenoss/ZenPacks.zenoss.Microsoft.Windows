@@ -29,7 +29,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import check_for_network_error
+from ..utils import check_for_network_error, save
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -189,6 +189,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         log.debug(WinRMQueries)
         defer.returnValue(results)
 
+    @save
     def onSuccess(self, results, config):
 
         data = self.new_data()

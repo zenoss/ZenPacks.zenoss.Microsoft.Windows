@@ -27,6 +27,7 @@ from pprint import pformat
 from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 class OperatingSystem(WinRMPlugin):
@@ -47,6 +48,7 @@ class OperatingSystem(WinRMPlugin):
         ),
     )
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",

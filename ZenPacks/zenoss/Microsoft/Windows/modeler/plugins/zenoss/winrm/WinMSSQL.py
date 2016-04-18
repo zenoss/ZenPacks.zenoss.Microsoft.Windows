@@ -24,6 +24,7 @@ from Products.DataCollector.plugins.DataMaps \
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 addLocalLibPath()
 
@@ -447,6 +448,7 @@ class WinMSSQL(WinRMPlugin):
 
         defer.returnValue(maps)
 
+    @save
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)

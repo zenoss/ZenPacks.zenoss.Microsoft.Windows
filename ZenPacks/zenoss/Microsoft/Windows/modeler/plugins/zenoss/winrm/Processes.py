@@ -26,6 +26,7 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import (
     get_processNameAndArgs,
     get_processText,
+    save
     )
 
 try:
@@ -59,6 +60,7 @@ class Processes(WinRMPlugin):
         'Win32_PerfFormattedData_PerfProc_Process': "SELECT * FROM Win32_PerfFormattedData_PerfProc_Process",
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",

@@ -51,7 +51,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from .. import ZENPACK_NAME
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import get_processNameAndArgs, get_processText
+from ..utils import get_processNameAndArgs, get_processText, save
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
@@ -289,6 +289,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return client.do_collect(
             conn_info, map(txwinrm.collect.create_enum_info, queries))
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
 
