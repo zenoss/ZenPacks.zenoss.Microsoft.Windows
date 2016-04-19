@@ -19,7 +19,7 @@ from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import asyncIpLookup
-from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin
+from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
 
 addLocalLibPath()
 
@@ -171,6 +171,7 @@ class WinCluster(WinRMPlugin):
 
         defer.returnValue(maps)
 
+    @save
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)

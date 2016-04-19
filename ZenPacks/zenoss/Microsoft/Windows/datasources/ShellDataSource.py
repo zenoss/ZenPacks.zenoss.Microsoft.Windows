@@ -47,7 +47,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value
+from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, save
 
 
 # Requires that txwinrm_utils is already imported.
@@ -1236,6 +1236,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue((strategy, config.datasources, results))
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
@@ -1413,6 +1414,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         return data
 
+    @save
     def onError(self, result, config):
         logg = log.error
         msg, event_class = check_for_network_error(result, config)

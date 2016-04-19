@@ -22,6 +22,7 @@ import string
 from Products.ZenUtils.IpUtil import checkip, IpAddressError
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 _transTable = string.maketrans("#()/", "_[]_")
@@ -118,6 +119,7 @@ class Interfaces(WinRMPlugin):
             )
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",

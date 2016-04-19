@@ -14,6 +14,7 @@ Models network routes by querying Win32_IP4RouteTable via WMI.
 '''
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 class Routes(WinRMPlugin):
@@ -31,6 +32,7 @@ class Routes(WinRMPlugin):
         'Win32_IP4RouteTable': "SELECT * FROM Win32_IP4RouteTable",
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
