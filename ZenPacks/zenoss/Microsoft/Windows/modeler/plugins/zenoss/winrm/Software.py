@@ -23,6 +23,7 @@ from Products.DataCollector.plugins.DataMaps import MultiArgs
 from OFS.ObjectManager import checkValidId, BadRequest
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 class Software(WinRMPlugin):
@@ -41,6 +42,7 @@ class Software(WinRMPlugin):
         )
     )
 
+    @save
     def process(self, device, results, log):
         # data format expected in results
         # DisplayName=Software1;InstallDate=19700101;Vendor=Microsoft Corporation|

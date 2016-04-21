@@ -14,6 +14,7 @@ Models list of installed services by querying Win32_Service via WMI.
 '''
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 class Services(WinRMPlugin):
@@ -25,6 +26,7 @@ class Services(WinRMPlugin):
         'Win32_Service': "SELECT * FROM Win32_Service",
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",

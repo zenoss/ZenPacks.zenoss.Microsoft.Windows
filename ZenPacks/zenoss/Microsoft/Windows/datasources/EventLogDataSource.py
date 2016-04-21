@@ -35,6 +35,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_single_shot_command
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -303,6 +304,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         )
         return evt
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
         for evt in results:
@@ -317,6 +319,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         })
         return data
 
+    @save
     def onError(self, result, config):
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
         if isinstance(result.value, EventLogException):

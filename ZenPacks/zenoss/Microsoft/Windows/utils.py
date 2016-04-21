@@ -310,3 +310,56 @@ def cluster_state_value(state):
             'Offline': 2,
             'PartialOnline': 3,
             'Failed': 4}.get(state, 5)
+
+
+def save(f):
+    '''
+    This is a decorator that will save arguments sent to a function.
+    It will write to the /tmp directory using the class name, method name
+    and write time as the file name.  It depends upon the 'ZP_DUMP' env
+    variable existing to dump the pickle.  It then passes the args to the original
+    function.  Be sure to unset ZP_DUMP or you'll see a lot of pickles
+
+    We'll skip over device_proxy and config because they contain password in clear text
+
+    usage:
+    class foo(object):
+        @save
+        def bar(self, x, y):
+            print 'x: {}, y: {}'.format(x, y)
+
+    foo().bar(1, 2)
+
+    $ export ZP_DUMP = 1; python foo.py; unset ZP_DUMP
+    '''
+    def dumper(self, *args, **kwargs):
+        import os
+        if os.environ.get('ZP_DUMP', None):
+            import pickle
+            import time
+            import logging
+            filetime = time.strftime('%H%M%S', time.localtime())
+            fname = '_'.join((self.__class__.__name__, f.func_name, filetime))
+            with open(os.path.join('/tmp', fname + '.pickle'), 'w') as pkl_file:
+                arguments = []
+                for count, thing in enumerate(args):
+                    if (isinstance(thing, logging.Logger) or
+                            isinstance(thing, file) or
+                            hasattr(thing, 'windows_password') or
+                            hasattr(thing, 'datasources')):
+                                continue
+                    arguments.append(thing)
+                for name, thing in kwargs.items():
+                    if (isinstance(thing, logging.Logger) or
+                            isinstance(thing, file) or
+                            hasattr(thing, 'windows_password') or
+                            hasattr(thing, 'datasources')):
+                                continue
+                    arguments.append('{}={}'.format(name, thing))
+                try:
+                    pickle.dump(arguments, pkl_file)
+                except TypeError:
+                    pass
+                pkl_file.close()
+        return f(self, *args, **kwargs)
+    return dumper

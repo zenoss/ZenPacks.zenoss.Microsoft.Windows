@@ -16,7 +16,7 @@ Models file systems by querying Win32_LogicalDisk via WMI.
 import re
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import check_low_disk_utilization
+from ZenPacks.zenoss.Microsoft.Windows.utils import check_low_disk_utilization, save
 
 
 class FileSystems(WinRMPlugin):
@@ -35,6 +35,7 @@ class FileSystems(WinRMPlugin):
         'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
