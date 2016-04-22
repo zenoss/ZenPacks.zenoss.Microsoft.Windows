@@ -761,13 +761,13 @@ Individual Machine configuration
 * Run command prompt as Administrator
 * winrm quickconfig
 
-* winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}
-* winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
-* winrm s winrm/config/winrs @{IdleTimeout="7200000"}
+* winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
+* winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
+* winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
-* winrm s winrm/config/service/auth @{Basic="true"}
-* winrm s winrm/config/service @{AllowUnencrypted="true"}
+* winrm s winrm/config/service/auth '@{Basic="true"}'
+* winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
 
@@ -1094,6 +1094,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ; 2.6.0
 * Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
+* Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)
