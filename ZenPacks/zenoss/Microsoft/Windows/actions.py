@@ -144,7 +144,8 @@ class WinCommandAction(IActionBase):
             keytab=device.zWinKeyTabFilePath,
             dcip=device.zWinKDC,
             trusted_realm=device.zWinTrustedRealm,
-            trusted_kdc=device.zWinTrustedKDC)
+            trusted_kdc=device.zWinTrustedKDC,
+            ipaddress=device.manageIp)
 
     def _execute_command(self, device, command):
         """
