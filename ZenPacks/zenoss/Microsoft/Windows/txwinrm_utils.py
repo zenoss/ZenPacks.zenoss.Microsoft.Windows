@@ -98,4 +98,5 @@ def createConnectionInfo(device_proxy):
         keytab=device_proxy.zWinKeyTabFilePath,
         dcip=device_proxy.zWinKDC,
         trusted_realm=trusted_realm,
-        trusted_kdc=trusted_kdc)
+        trusted_kdc=trusted_kdc,
+        ipaddress=device_proxy.manageIp)
