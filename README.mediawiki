@@ -1095,6 +1095,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ; 2.6.0
 * Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
 * Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
+* Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)
