@@ -79,7 +79,7 @@ class WinService(OSComponent):
         # exclusion will override an inclusion
         rtn = False
         for startmode in datasource.startmode.split(','):
-            if startmode in self.startmode.split(','):
+            if startmode in self.startmode.split(',') and hasattr(datasource, 'in_exclusions'):
                 for service in datasource.in_exclusions.split(','):
                     service_regex = service.strip()
                     if service_regex.startswith('+') and self.is_match(service_regex[1:]):
