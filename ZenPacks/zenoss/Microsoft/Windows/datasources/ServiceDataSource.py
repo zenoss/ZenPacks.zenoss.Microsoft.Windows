@@ -197,6 +197,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         params['startmode'] = datasource.startmode
 
+        params['usermonitor'] = context.usermonitor
+
         return params
 
     @defer.inlineCallbacks
@@ -204,8 +206,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        if ds0.params['startmode'] == 'None':
-            log.debug('No startmodes defined in {}.  Terminating datasource collection.'.format(ds0.datasource))
+        if ds0.params['startmode'] == 'None' and not ds0.params['usermonitor']:
+            log.debug('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
             defer.returnValue(None)
 
         log.debug('{0}:Start Collection of Services'.format(config.id))
@@ -246,8 +248,9 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
-        if config.datasources[0].params['startmode'] == 'None':
-            log.debug('No startmodes defined in {}.  No collection occurred.'
+        params = config.datasources[0].params
+        if params['startmode'] == 'None' and not params['usermonitor']:
+            log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
                       .format(config.datasources[0].datasource))
             return data
         services = self.buildServicesDict(config.datasources)
