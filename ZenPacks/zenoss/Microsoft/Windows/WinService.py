@@ -31,7 +31,7 @@ class WinService(OSComponent):
     servicename = None
     caption = None
     description = None
-    startmode = None
+    startmode = ''
     account = None
     monitor = False
     usermonitor = False
