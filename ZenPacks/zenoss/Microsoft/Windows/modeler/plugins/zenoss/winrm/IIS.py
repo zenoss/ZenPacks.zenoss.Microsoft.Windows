@@ -67,7 +67,7 @@ class IIS(WinRMPlugin):
             try:
                 apps = result.values()[0][0]
                 pool = apps.ApplicationPool
-            except:
+            except IndexError:
                 pool = 'Unknown'
             iisSite.ApplicationPool = pool
         defer.returnValue(output)
