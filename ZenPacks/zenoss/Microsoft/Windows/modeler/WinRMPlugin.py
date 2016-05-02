@@ -261,8 +261,8 @@ class WinRMPlugin(PythonPlugin):
             for command_key, command in commands.iteritems():
                 try:
                     results[command_key] = yield winrs.run_command(command)
-                    msg = 'shell command completed successfully for {}'.format(device.id)
-                    self._send_event(msg, device.id, 0, eventClass='/Status/Winrm/Ping')
+                    msg = 'shell command completed successfully for %s'
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
                 except Exception as e:
                     self.log_error(log, device, e)
 
