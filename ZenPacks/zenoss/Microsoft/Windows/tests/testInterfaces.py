@@ -65,3 +65,17 @@ class TestHelpers(BaseTestCase):
             setattr(device, prop, 'ignore')
 
         self.assertFalse(list(filter_maps([om0, om1, om2], device, Mock())))
+
+
+class TestInterfacesCounters(BaseTestCase):
+    def setUp(self):
+        self.results = load_pickle(self, 'interfaces')[0]
+        self.device = load_pickle(self, 'device')
+        self.plugin = Interfaces()
+
+    def test_process(self):
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(len(data.maps), 14)
+
+        self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver)")
+        self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver _2)")
