@@ -27,6 +27,12 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 _transTable = string.maketrans("#()/", "_[]_")
 
+
+class PnpEntity(object):
+    def addProp(self, property, value):
+        self.__setattr__(property, value)
+
+
 # Windows Server 2003 and Windows XP has no true/false status field
 # for enabled/disabled states. This statuses used to determine if
 # interface is enabled:
@@ -90,7 +96,7 @@ class Interfaces(WinRMPlugin):
     '''
     powershell_commands = {
         'registry': (
-            "get-childitem 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}'"
+            "get-childitem -ea silentlycontinue 'HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}'"
             " | foreach-object {get-itemproperty $_.pspath}"
             " | where-object {$_.flowcontrol -or $_.teammode -or $_.teamtype -eq 0}"
             " | foreach-object {'id=', $_.pschildname, ';provider=',"
@@ -98,13 +104,13 @@ class Interfaces(WinRMPlugin):
             "$_.teammode, ';networkaddress=', $_.networkaddress,"
             "';netinterfaceid=', $_.netcfginstanceid,"
             "';altteamname=', $_.teamname, '|'};"
-            ),
+        ),
         'broadcomnic': (
-            "get-childitem 'HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters'"
+            "get-childitem -ea silentlycontinue 'HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters'"
             " | foreach-object {get-itemproperty $_.pspath}"
             " | foreach-object {'id=', $_.pschildname, ';teamname=',"
             "$_.teamname, '|'};"
-            ),
+        ),
         'counters2012': (
             ' '.join('''$ver2012 = (Get-WmiObject win32_OperatingSystem).Name -like '*2012*';
             function replace_unallowed($s)
@@ -116,8 +122,14 @@ class Interfaces(WinRMPlugin):
                     if($_ -eq (replace_unallowed $na.InterfaceDescription) -or $_ -like 'isatap.' + "$($na.DeviceID)") {
                         $na.DeviceID, ':', $_, '|'
             }}}}'''.split())
-            )
-        }
+        ),
+        'win32_pnpentity': (
+            "$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);"
+            "$interfaces = (get-wmiobject -query 'select * from win32_networkadapter'); foreach ($interface in $interfaces) {"
+            "$query = 'ASSOCIATORS OF {Win32_NetworkAdapter.DeviceID='+$interface.DeviceID+'} WHERE ResultClass=Win32_PnPEntity';"
+            "get-wmiobject -query $query}"
+        )
+    }
 
     @save
     def process(self, device, results, log):
@@ -127,6 +139,20 @@ class Interfaces(WinRMPlugin):
 
         netInt = results.get('Win32_NetworkAdapter', ())
         netConf = results.get('Win32_NetworkAdapterConfiguration', ())
+        win32_pnpentities = results.get('win32_pnpentity', None)
+
+        # Actual instance names should be pulled in from the Win32_PnPEntity class
+        if win32_pnpentities:
+            pnpentities = {}
+            pnpentity = PnpEntity()
+            for line in win32_pnpentities.stdout:
+                k, v = line.split(':', 1)
+                pnpentity.addProp(k.strip(), v.strip())
+                if k.strip() == 'PSComputerName':
+                    pnpentities[pnpentity.PNPDeviceID] = pnpentity
+                    pnpentity = PnpEntity()
+        else:
+            pnpentities = None
 
         regresults = results.get('registry')
         if regresults:
@@ -170,10 +196,10 @@ class Interfaces(WinRMPlugin):
                     bdcDict[memberDict['id']] = memberDict['teamname']
                 except (KeyError, ValueError):
                     pass
-        perfmonInstanceMap = self.buildPerfmonInstances(netConf, log, counters)
+        perfmonInstanceMap = self.buildPerfmonInstances(netConf, log, counters, pnpentities, netInt)
 
         for inter in netInt:
-            #Get the Network Configuration data for this interface
+            # Get the Network Configuration data for this interface
 
             # Merge broadcom NIC Team information into object
             try:
@@ -397,7 +423,7 @@ class Interfaces(WinRMPlugin):
     # TOOD: this method can be made generic for all perfmon data that has
     # multiple instances and should be moved into WMIPlugin or some other
     # helper class.
-    def buildPerfmonInstances(self, adapters, log, counters=None):
+    def buildPerfmonInstances(self, adapters, log, counters=None, pnpentities=None, netInt=None):
         # don't bother with adapters without a description or interface index
         adapters = [a for a in adapters
                     if getattr(a, 'Description', None) is not None
@@ -426,7 +452,20 @@ class Interfaces(WinRMPlugin):
                 # then increment the index for this description for the additional
                 # instances, otherwise build a perfmon-compatible description and
                 # reset the index
-                desc = adapter.Description
+                # the real counter instance name is found in the win32_pnpentity class
+                # we have to cross reference the interface index to get to the pnpdeviceid
+                # if the Name is empty then just use the adapter description
+                desc = None
+                if pnpentities and netInt:
+                    for intfc in netInt:
+                        if intfc.InterfaceIndex == adapter.InterfaceIndex:
+                            if intfc.PNPDeviceID:
+                                desc = pnpentities[intfc.PNPDeviceID].Name
+                            else:
+                                desc = adapter.Description
+                            break
+                if not desc:
+                    desc = adapter.Description
                 if desc == prevDesc:
                     index += 1
                 else:
