@@ -19,7 +19,6 @@ namespace:
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
-from txwinrm.shell import create_single_shot_command
 from txwinrm.collect import WinrmCollectClient, create_enum_info
 from twisted.internet import defer
 
