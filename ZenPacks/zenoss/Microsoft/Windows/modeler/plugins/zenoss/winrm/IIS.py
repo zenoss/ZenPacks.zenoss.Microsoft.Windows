@@ -19,12 +19,17 @@ namespace:
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
+from txwinrm.collect import WinrmCollectClient, create_enum_info
+from twisted.internet import defer
 
 
 class IIS(WinRMPlugin):
     compname = 'os'
     relname = 'winrmiis'
     modname = 'ZenPacks.zenoss.Microsoft.Windows.WinIIS'
+
+    winrm = WinrmCollectClient()
+    uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/webadministration/*'
 
     queries = {
         'IIsWebServerSetting': {
@@ -41,12 +46,31 @@ class IIS(WinRMPlugin):
             'query': "SELECT Name, Id, ServerAutoStart  FROM Site",
             'namespace': 'WebAdministration',
             },
-
-        'IIs7VirtualDirectory': {
-            'query': "SELECT * FROM VirtualDirectory",
-            'namespace': 'WebAdministration',
-            },
     }
+
+    @defer.inlineCallbacks
+    def run_query(self, conn_info, wql, log):
+        wql = create_enum_info(wql=wql, resource_uri=self.uri)
+        result = yield self.winrm.do_collect(conn_info, [wql])
+        defer.returnValue(result)
+
+    @defer.inlineCallbacks
+    def collect(self, device, log):
+        orig = WinRMPlugin()
+        orig.queries = self.queries
+        conn_info = self.conn_info(device)
+        output = yield orig.collect(device, log)
+        for iisSite in output.get('IIs7Site', ()):
+            name = iisSite.Name
+            query = 'ASSOCIATORS OF {Site.Name="%s"} WHERE ResultClass=Application' % name
+            result = yield self.run_query(conn_info, query, log)
+            try:
+                apps = result.values()[0][0]
+                pool = apps.ApplicationPool
+            except IndexError:
+                pool = 'Unknown'
+            iisSite.ApplicationPool = pool
+        defer.returnValue(output)
 
     @save
     def process(self, device, results, log):
@@ -84,11 +108,7 @@ class IIS(WinRMPlugin):
                         om.status = 'Stopped'
                     else:
                         om.status = 'Running'
-
-                    for iisVirt in results.get('IIs7VirtualDirectory', ()):
-                        if iisVirt.SiteName == iisSite.Name:
-                            om.apppool = iisSite.Name
-
+                    om.apppool = iisSite.ApplicationPool
                     rm.append(om)
                 except AttributeError:
                     pass
