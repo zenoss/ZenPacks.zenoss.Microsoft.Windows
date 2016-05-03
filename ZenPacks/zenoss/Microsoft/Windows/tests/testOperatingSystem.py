@@ -8,7 +8,7 @@
 ##############################################################################
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock, patch
-from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
@@ -33,7 +33,7 @@ class TestOperatingSystem(BaseTestCase):
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data[0].ip_and_hostname, ['8.8.8.8', 'FQDN'])
-        self.assertEquals(data[0].domain_controller, True)
+        self.assertEquals(data[0].domain_controller, False)
         self.assertEquals(data[0].msexchangeversion, 'MSExchange2013IS')
         self.assertEquals(data[0].setClusterMachines, [])
         self.assertEquals(data[0].snmpContact, 'PrimaryOwnerName')
@@ -43,3 +43,17 @@ class TestOperatingSystem(BaseTestCase):
         self.assertEquals(data[1].tag, 'Tag')
         self.assertEquals(data[1].totalMemory, 1024)
         self.assertEquals(data[2].totalSwap, 1024)
+
+
+class TestDomainController(BaseTestCase):
+    '''
+    Test if a device is a domain controller
+    '''
+    def setUp(self):
+        self.plugin = OperatingSystem()
+        self.device = load_pickle(self, 'device')
+        self.results = load_pickle(self, 'results')
+
+    def test_process(self):
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data[0].domain_controller, True)

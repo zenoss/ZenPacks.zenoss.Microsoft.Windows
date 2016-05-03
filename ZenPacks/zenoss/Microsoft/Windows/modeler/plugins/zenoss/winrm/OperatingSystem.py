@@ -28,6 +28,8 @@ from Products.DataCollector.plugins.DataMaps import MultiArgs, ObjectMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
+PRIMARYDC = '5'
+BACKUPDC = '4'
 
 
 class OperatingSystem(WinRMPlugin):
@@ -40,7 +42,6 @@ class OperatingSystem(WinRMPlugin):
             'query': 'SELECT * FROM mscluster_cluster',
             'namespace': 'mscluster',
         },
-        'ActiveDirectory': 'SELECT * FROM Win32_Service where Name = "NTDS"',
     }
     powershell_commands = dict(
         exchange_version=(
@@ -59,7 +60,6 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
         exchange_version = results.get('exchange_version')
-        domainController = results.get('ActiveDirectory', None)
 
         if exchange_version:
             exchange_version = exchange_version.stdout[0][:2] if exchange_version.stdout else None
@@ -98,8 +98,14 @@ class OperatingSystem(WinRMPlugin):
         except (AttributeError):
             pass
 
-        # if NTDS service present then this is a DC
-        if domainController:
+        # if domainrole is 4 or 5 then this is a DC
+        # Standalone Workstation (0)
+        # Member Workstation (1)
+        # Standalone Server (2)
+        # Member Server (3)
+        # Backup Domain Controller (4)
+        # Primary Domain Controller (5)
+        if computerSystem.DomainRole in (BACKUPDC, PRIMARYDC):
             device_om.domain_controller = True
         else:
             device_om.domain_controller = False
