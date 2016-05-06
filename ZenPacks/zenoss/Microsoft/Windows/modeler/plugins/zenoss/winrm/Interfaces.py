@@ -28,11 +28,6 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import save
 _transTable = string.maketrans("#()/", "_[]_")
 
 
-class PnpEntity(object):
-    def addProp(self, property, value):
-        self.__setattr__(property, value)
-
-
 # Windows Server 2003 and Windows XP has no true/false status field
 # for enabled/disabled states. This statuses used to determine if
 # interface is enabled:
@@ -144,13 +139,17 @@ class Interfaces(WinRMPlugin):
         # Actual instance names should be pulled in from the Win32_PnPEntity class
         if win32_pnpentities:
             pnpentities = {}
-            pnpentity = PnpEntity()
+            pnpentity = {}
             for line in win32_pnpentities.stdout:
                 k, v = line.split(':', 1)
-                pnpentity.addProp(k.strip(), v.strip())
-                if k.strip() == 'PSComputerName':
-                    pnpentities[pnpentity.PNPDeviceID] = pnpentity
-                    pnpentity = PnpEntity()
+                # __GENUS marks the beginning of a win32_pnpentity class
+                if k.strip() == '__GENUS':
+                    if 'PNPDeviceID' in pnpentity.keys():
+                        pnpentities[pnpentity['PNPDeviceID']] = pnpentity
+                        pnpentity = {}
+                pnpentity[k.strip()] = v.strip()
+            # add in the last one
+            pnpentities[pnpentity['PNPDeviceID']] = pnpentity
         else:
             pnpentities = None
 
@@ -439,8 +438,7 @@ class Interfaces(WinRMPlugin):
         # use the sorted interfaces to determine the perfmon unique instance
         # path
         instanceMap = {}
-        index = 0
-        prevDesc = None
+        prevDesc = {}
         for adapter in adapters:
             # comparison Performance Counters with existing Network Adapters for Windows 2012
             if counters and counters.get(adapter.SettingID):
@@ -459,26 +457,26 @@ class Interfaces(WinRMPlugin):
                 if pnpentities and netInt:
                     for intfc in netInt:
                         if intfc.InterfaceIndex == adapter.InterfaceIndex:
-                            if intfc.PNPDeviceID:
-                                desc = pnpentities[intfc.PNPDeviceID].Name
-                            else:
-                                desc = adapter.Description
+                            try:
+                                desc = pnpentities[intfc.PNPDeviceID]['Name']
+                            except Exception:
+                                pass
                             break
                 if not desc:
                     desc = adapter.Description
-                if desc == prevDesc:
-                    index += 1
+                desc = standardizeInstance(desc)
+                if desc in prevDesc.keys():
+                    prevDesc[desc] += 1
                 else:
-                    index = 0
-                    prevDesc = standardizeInstance(desc)
+                    prevDesc[desc] = 0
 
                 # only additional instances need the #index appended to the instance
                 # name - the first item always appears without that qualifier
-                if index > 0:
-                    perfmonInstance = '\\Network Interface(%s#%d)' % (prevDesc,
-                                                                      index)
+                if prevDesc[desc] > 0:
+                    perfmonInstance = '\\Network Interface(%s#%d)' % (desc,
+                                                                      prevDesc[desc])
                 else:
-                    perfmonInstance = '\\Network Interface(%s)' % prevDesc
+                    perfmonInstance = '\\Network Interface(%s)' % desc
                 instanceMap[adapter.Index] = perfmonInstance
             log.debug("%s=%s", adapter.Index, instanceMap[adapter.Index])
         return instanceMap

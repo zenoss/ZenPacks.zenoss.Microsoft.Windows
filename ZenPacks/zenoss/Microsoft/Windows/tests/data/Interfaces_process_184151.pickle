@@ -1,0 +1,3948 @@
+(lp0
+(dp1
+S'Win32_NetworkAdapter'
+p2
+(lp3
+ccopy_reg
+_reconstructor
+p4
+(ctxwinrm.enumerate
+Item
+p5
+c__builtin__
+object
+p6
+Ntp7
+Rp8
+(dp9
+S'Index'
+p10
+S'0'
+p11
+sS'MaxSpeed'
+p12
+NsS'PowerManagementSupported'
+p13
+S'false'
+p14
+sS'InterfaceIndex'
+p15
+S'2'
+p16
+sS'SystemName'
+p17
+S'NEX5003CDC'
+p18
+sS'TimeOfLastReset'
+p19
+cdatetime
+datetime
+p20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p21
+tp22
+Rp23
+sS'GUID'
+p24
+NsS'AdapterType'
+p25
+NsS'Status'
+p26
+NsS'ProductName'
+p27
+S'WAN Miniport (SSTP)'
+p28
+sS'PNPDeviceID'
+p29
+S'ROOT\\MS_SSTPMINIPORT\\0000'
+p30
+sS'Description'
+p31
+S'WAN Miniport (SSTP)'
+p32
+sS'ConfigManagerUserConfig'
+p33
+S'false'
+p34
+sS'NetConnectionID'
+p35
+NsS'ErrorCleared'
+p36
+NsS'NetConnectionStatus'
+p37
+NsS'Manufacturer'
+p38
+S'Microsoft'
+p39
+sS'Name'
+p40
+S'WAN Miniport (SSTP)'
+p41
+sS'InstallDate'
+p42
+NsS'AdapterTypeId'
+p43
+NsS'Caption'
+p44
+S'[00000000] WAN Miniport (SSTP)'
+p45
+sS'ServiceName'
+p46
+S'RasSstp'
+p47
+sS'StatusInfo'
+p48
+NsS'DeviceID'
+p49
+g11
+sS'ConfigManagerErrorCode'
+p50
+g11
+sS'MaxNumberControlled'
+p51
+g11
+sS'MACAddress'
+p52
+NsS'PermanentAddress'
+p53
+NsS'PhysicalAdapter'
+p54
+S'false'
+p55
+sS'ErrorDescription'
+p56
+NsS'NetEnabled'
+p57
+NsS'Installed'
+p58
+S'true'
+p59
+sS'LastErrorCode'
+p60
+NsS'AutoSense'
+p61
+NsS'CreationClassName'
+p62
+S'Win32_NetworkAdapter'
+p63
+sS'Speed'
+p64
+NsS'Availability'
+p65
+S'3'
+p66
+sS'SystemCreationClassName'
+p67
+S'Win32_ComputerSystem'
+p68
+sbag4
+(g5
+g6
+Ntp69
+Rp70
+(dp71
+g10
+S'1'
+p72
+sg12
+Nsg13
+S'false'
+p73
+sg15
+S'17'
+p74
+sg17
+S'NEX5003CDC'
+p75
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p76
+tp77
+Rp78
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (IKEv2)'
+p79
+sg29
+S'ROOT\\MS_AGILEVPNMINIPORT\\0000'
+p80
+sg31
+S'WAN Miniport (IKEv2)'
+p81
+sg33
+S'false'
+p82
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p83
+sg40
+S'WAN Miniport (IKEv2)'
+p84
+sg42
+Nsg43
+Nsg44
+S'[00000001] WAN Miniport (IKEv2)'
+p85
+sg46
+S'RasAgileVpn'
+p86
+sg48
+Nsg49
+g72
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p87
+sg56
+Nsg57
+Nsg58
+S'true'
+p88
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p89
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p90
+sbag4
+(g5
+g6
+Ntp91
+Rp92
+(dp93
+g10
+g16
+sg12
+Nsg13
+S'false'
+p94
+sg15
+g66
+sg17
+S'NEX5003CDC'
+p95
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p96
+tp97
+Rp98
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (L2TP)'
+p99
+sg29
+S'ROOT\\MS_L2TPMINIPORT\\0000'
+p100
+sg31
+S'WAN Miniport (L2TP)'
+p101
+sg33
+S'false'
+p102
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p103
+sg40
+S'WAN Miniport (L2TP)'
+p104
+sg42
+Nsg43
+Nsg44
+S'[00000002] WAN Miniport (L2TP)'
+p105
+sg46
+S'Rasl2tp'
+p106
+sg48
+Nsg49
+g16
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p107
+sg56
+Nsg57
+Nsg58
+S'true'
+p108
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p109
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p110
+sbag4
+(g5
+g6
+Ntp111
+Rp112
+(dp113
+g10
+g66
+sg12
+Nsg13
+S'false'
+p114
+sg15
+S'4'
+p115
+sg17
+S'NEX5003CDC'
+p116
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p117
+tp118
+Rp119
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (PPTP)'
+p120
+sg29
+S'ROOT\\MS_PPTPMINIPORT\\0000'
+p121
+sg31
+S'WAN Miniport (PPTP)'
+p122
+sg33
+S'false'
+p123
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p124
+sg40
+S'WAN Miniport (PPTP)'
+p125
+sg42
+Nsg43
+Nsg44
+S'[00000003] WAN Miniport (PPTP)'
+p126
+sg46
+S'PptpMiniport'
+p127
+sg48
+Nsg49
+g66
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p128
+sg56
+Nsg57
+Nsg58
+S'true'
+p129
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p130
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p131
+sbag4
+(g5
+g6
+Ntp132
+Rp133
+(dp134
+g10
+g115
+sg12
+Nsg13
+S'false'
+p135
+sg15
+S'5'
+p136
+sg17
+S'NEX5003CDC'
+p137
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p138
+tp139
+Rp140
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (PPPOE)'
+p141
+sg29
+S'ROOT\\MS_PPPOEMINIPORT\\0000'
+p142
+sg31
+S'WAN Miniport (PPPOE)'
+p143
+sg33
+S'false'
+p144
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p145
+sg40
+S'WAN Miniport (PPPOE)'
+p146
+sg42
+Nsg43
+Nsg44
+S'[00000004] WAN Miniport (PPPOE)'
+p147
+sg46
+S'RasPppoe'
+p148
+sg48
+Nsg49
+g115
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p149
+sg56
+Nsg57
+Nsg58
+S'true'
+p150
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p151
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p152
+sbag4
+(g5
+g6
+Ntp153
+Rp154
+(dp155
+g10
+g136
+sg12
+Nsg13
+S'false'
+p156
+sg15
+S'6'
+p157
+sg17
+S'NEX5003CDC'
+p158
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p159
+tp160
+Rp161
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (IPv6)'
+p162
+sg29
+S'ROOT\\MS_NDISWANIPV6\\0000'
+p163
+sg31
+S'WAN Miniport (IPv6)'
+p164
+sg33
+S'false'
+p165
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p166
+sg40
+S'WAN Miniport (IPv6)'
+p167
+sg42
+Nsg43
+Nsg44
+S'[00000005] WAN Miniport (IPv6)'
+p168
+sg46
+S'NdisWan'
+p169
+sg48
+Nsg49
+g136
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p170
+sg56
+Nsg57
+Nsg58
+S'true'
+p171
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p172
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p173
+sbag4
+(g5
+g6
+Ntp174
+Rp175
+(dp176
+g10
+g157
+sg12
+Nsg13
+S'false'
+p177
+sg15
+S'7'
+p178
+sg17
+S'NEX5003CDC'
+p179
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p180
+tp181
+Rp182
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (Network Monitor)'
+p183
+sg29
+S'ROOT\\MS_NDISWANBH\\0000'
+p184
+sg31
+S'WAN Miniport (Network Monitor)'
+p185
+sg33
+S'false'
+p186
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p187
+sg40
+S'WAN Miniport (Network Monitor)'
+p188
+sg42
+Nsg43
+Nsg44
+S'[00000006] WAN Miniport (Network Monitor)'
+p189
+sg46
+S'NdisWan'
+p190
+sg48
+Nsg49
+g157
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p191
+sg56
+Nsg57
+Nsg58
+S'true'
+p192
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p193
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p194
+sbag4
+(g5
+g6
+Ntp195
+Rp196
+(dp197
+g10
+g178
+sg12
+Nsg13
+S'false'
+p198
+sg15
+S'11'
+p199
+sg17
+S'NEX5003CDC'
+p200
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p201
+tp202
+Rp203
+sg24
+S'{8D26D9AF-B94A-4D96-9D5E-6C95367C2DDB}'
+p204
+sg25
+S'Ethernet 802.3'
+p205
+sg26
+Nsg27
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p206
+sg29
+S'B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&6FB4662&0&20050200'
+p207
+sg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p208
+sg33
+S'false'
+p209
+sg35
+S'Local Area Connection'
+p210
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p211
+sg40
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p212
+sg42
+Nsg43
+g11
+sg44
+S'[00000007] HP NC382i DP Multifunction Gigabit Server Adapter'
+p213
+sg46
+S'l2nd'
+p214
+sg48
+Nsg49
+g178
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:5C'
+p215
+sg53
+Nsg54
+S'true'
+p216
+sg56
+Nsg57
+S'true'
+p217
+sg58
+S'true'
+p218
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p219
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p220
+sbag4
+(g5
+g6
+Ntp221
+Rp222
+(dp223
+g10
+S'8'
+p224
+sg12
+Nsg13
+S'false'
+p225
+sg15
+S'12'
+p226
+sg17
+S'NEX5003CDC'
+p227
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p228
+tp229
+Rp230
+sg24
+S'{34123FD0-FB3B-4674-A99D-9962F00725AD}'
+p231
+sg25
+S'Ethernet 802.3'
+p232
+sg26
+Nsg27
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p233
+sg29
+S'B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&29FCE8BF&0&20050200'
+p234
+sg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p235
+sg33
+S'false'
+p236
+sg35
+S'Local Area Connection 2'
+p237
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p238
+sg40
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p239
+sg42
+Nsg43
+g11
+sg44
+S'[00000008] HP NC382i DP Multifunction Gigabit Server Adapter'
+p240
+sg46
+S'l2nd'
+p241
+sg48
+Nsg49
+g224
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:5C'
+p242
+sg53
+Nsg54
+S'true'
+p243
+sg56
+Nsg57
+S'true'
+p244
+sg58
+S'true'
+p245
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p246
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p247
+sbag4
+(g5
+g6
+Ntp248
+Rp249
+(dp250
+g10
+S'9'
+p251
+sg12
+Nsg13
+S'false'
+p252
+sg15
+g224
+sg17
+S'NEX5003CDC'
+p253
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p254
+tp255
+Rp256
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'WAN Miniport (IP)'
+p257
+sg29
+S'ROOT\\MS_NDISWANIP\\0000'
+p258
+sg31
+S'WAN Miniport (IP)'
+p259
+sg33
+S'false'
+p260
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p261
+sg40
+S'WAN Miniport (IP)'
+p262
+sg42
+Nsg43
+Nsg44
+S'[00000009] WAN Miniport (IP)'
+p263
+sg46
+S'NdisWan'
+p264
+sg48
+Nsg49
+g251
+sg50
+g11
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p265
+sg56
+Nsg57
+Nsg58
+S'true'
+p266
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p267
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p268
+sbag4
+(g5
+g6
+Ntp269
+Rp270
+(dp271
+g10
+S'10'
+p272
+sg12
+Nsg13
+S'false'
+p273
+sg15
+S'10'
+p274
+sg17
+S'NEX5003CDC'
+p275
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p276
+tp277
+Rp278
+sg24
+Nsg25
+Nsg26
+Nsg27
+S'Microsoft Teredo Tunneling Adapter'
+p279
+sg29
+S'ROOT\\*TEREDO\\0000'
+p280
+sg31
+S'Microsoft Teredo Tunneling Adapter'
+p281
+sg33
+S'false'
+p282
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p283
+sg40
+S'Microsoft Teredo Tunneling Adapter'
+p284
+sg42
+Nsg43
+Nsg44
+S'[00000010] Microsoft Teredo Tunneling Adapter'
+p285
+sg46
+S'tunnel'
+p286
+sg48
+Nsg49
+S'10'
+p287
+sg50
+S'10'
+p288
+sg51
+g11
+sg52
+Nsg53
+Nsg54
+S'false'
+p289
+sg56
+Nsg57
+Nsg58
+S'true'
+p290
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p291
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p292
+sbag4
+(g5
+g6
+Ntp293
+Rp294
+(dp295
+g10
+S'11'
+p296
+sg12
+Nsg13
+S'false'
+p297
+sg15
+g251
+sg17
+S'NEX5003CDC'
+p298
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p299
+tp300
+Rp301
+sg24
+Nsg25
+S'Wide Area Network (WAN)'
+p302
+sg26
+Nsg27
+S'RAS Async Adapter'
+p303
+sg29
+S'SW\\{EEAB7790-C514-11D1-B42B-00805FC1270E}\\ASYNCMAC'
+p304
+sg31
+S'RAS Async Adapter'
+p305
+sg33
+S'false'
+p306
+sg35
+Nsg36
+Nsg37
+Nsg38
+S'Microsoft'
+p307
+sg40
+S'RAS Async Adapter'
+p308
+sg42
+Nsg43
+g66
+sg44
+S'[00000011] RAS Async Adapter'
+p309
+sg46
+S'AsyncMac'
+p310
+sg48
+Nsg49
+S'11'
+p311
+sg50
+g11
+sg51
+g11
+sg52
+S'20:41:53:59:4E:FF'
+p312
+sg53
+Nsg54
+S'false'
+p313
+sg56
+Nsg57
+Nsg58
+S'true'
+p314
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p315
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p316
+sbag4
+(g5
+g6
+Ntp317
+Rp318
+(dp319
+g10
+S'12'
+p320
+sg12
+Nsg13
+S'false'
+p321
+sg15
+S'14'
+p322
+sg17
+S'NEX5003CDC'
+p323
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p324
+tp325
+Rp326
+sg24
+S'{25DCBA6F-78DD-4E7E-B02D-FEDBB2304F42}'
+p327
+sg25
+S'Ethernet 802.3'
+p328
+sg26
+Nsg27
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p329
+sg29
+S'B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&FEA1E3A&0&20050300'
+p330
+sg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p331
+sg33
+S'false'
+p332
+sg35
+S'Local Area Connection 3'
+p333
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p334
+sg40
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p335
+sg42
+Nsg43
+g11
+sg44
+S'[00000012] HP NC382i DP Multifunction Gigabit Server Adapter'
+p336
+sg46
+S'l2nd'
+p337
+sg48
+Nsg49
+S'12'
+p338
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:60'
+p339
+sg53
+Nsg54
+S'true'
+p340
+sg56
+Nsg57
+S'true'
+p341
+sg58
+S'true'
+p342
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p343
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p344
+sbag4
+(g5
+g6
+Ntp345
+Rp346
+(dp347
+g10
+S'13'
+p348
+sg12
+Nsg13
+S'false'
+p349
+sg15
+S'15'
+p350
+sg17
+S'NEX5003CDC'
+p351
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p352
+tp353
+Rp354
+sg24
+S'{E8AB3DDC-3342-470D-A647-A8A25DC55DBE}'
+p355
+sg25
+S'Ethernet 802.3'
+p356
+sg26
+Nsg27
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p357
+sg29
+S'B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&288345E4&0&20050300'
+p358
+sg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p359
+sg33
+S'false'
+p360
+sg35
+S'Local Area Connection 4'
+p361
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p362
+sg40
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p363
+sg42
+Nsg43
+g11
+sg44
+S'[00000013] HP NC382i DP Multifunction Gigabit Server Adapter'
+p364
+sg46
+S'l2nd'
+p365
+sg48
+Nsg49
+S'13'
+p366
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:60'
+p367
+sg53
+Nsg54
+S'true'
+p368
+sg56
+Nsg57
+S'true'
+p369
+sg58
+S'true'
+p370
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p371
+sg64
+Nsg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p372
+sbag4
+(g5
+g6
+Ntp373
+Rp374
+(dp375
+g10
+S'14'
+p376
+sg12
+Nsg13
+S'false'
+p377
+sg15
+S'13'
+p378
+sg17
+S'NEX5003CDC'
+p379
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p380
+tp381
+Rp382
+sg24
+S'{3ECD044A-BA3C-4735-A67C-878DDF0D8A10}'
+p383
+sg25
+S'Ethernet 802.3'
+p384
+sg26
+Nsg27
+S'HP Network Teaming Virtual Miniport Driver'
+p385
+sg29
+S'ROOT\\CQ_CPQTEAMMP\\0000'
+p386
+sg31
+S'HP Network Teaming Virtual Miniport Driver'
+p387
+sg33
+S'false'
+p388
+sg35
+S'Public'
+p389
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p390
+sg40
+S'HP Network Team #1'
+p391
+sg42
+Nsg43
+g11
+sg44
+S'[00000014] HP Network Teaming Virtual Miniport Driver'
+p392
+sg46
+S'CPQTeamMP'
+p393
+sg48
+Nsg49
+S'14'
+p394
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:5C'
+p395
+sg53
+Nsg54
+S'true'
+p396
+sg56
+Nsg57
+S'true'
+p397
+sg58
+S'true'
+p398
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p399
+sg64
+S'1000000000'
+p400
+sg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p401
+sbag4
+(g5
+g6
+Ntp402
+Rp403
+(dp404
+g10
+S'15'
+p405
+sg12
+Nsg13
+S'false'
+p406
+sg15
+S'16'
+p407
+sg17
+S'NEX5003CDC'
+p408
+sg19
+g20
+(S'\x07\xe0\x04\x1d\x17"\x01\tQ\xee'
+p409
+tp410
+Rp411
+sg24
+S'{53DC1007-8BCB-401E-B650-579C6E8847A4}'
+p412
+sg25
+S'Ethernet 802.3'
+p413
+sg26
+Nsg27
+S'HP Network Teaming Virtual Miniport Driver'
+p414
+sg29
+S'ROOT\\CQ_CPQTEAMMP\\0001'
+p415
+sg31
+S'HP Network Teaming Virtual Miniport Driver'
+p416
+sg33
+S'false'
+p417
+sg35
+S'Private'
+p418
+sg36
+Nsg37
+g16
+sg38
+S'Hewlett-Packard Company'
+p419
+sg40
+S'HP Network Team #2'
+p420
+sg42
+Nsg43
+g11
+sg44
+S'[00000015] HP Network Teaming Virtual Miniport Driver'
+p421
+sg46
+S'CPQTeamMP'
+p422
+sg48
+Nsg49
+S'15'
+p423
+sg50
+g11
+sg51
+g11
+sg52
+S'1C:C1:DE:21:10:60'
+p424
+sg53
+Nsg54
+S'true'
+p425
+sg56
+Nsg57
+S'true'
+p426
+sg58
+S'true'
+p427
+sg60
+Nsg61
+Nsg62
+S'Win32_NetworkAdapter'
+p428
+sg64
+S'1000000000'
+p429
+sg65
+g66
+sg67
+S'Win32_ComputerSystem'
+p430
+sbasS'win32_pnpentity'
+p431
+g4
+(ctxwinrm.shell
+CommandResponse
+p432
+g6
+Ntp433
+Rp434
+(dp435
+S'_stderr'
+p436
+(lp437
+sS'_exit_code'
+p438
+I0
+sS'_stdout'
+p439
+(lp440
+S'__GENUS                     : 2'
+p441
+aS'__CLASS                     : Win32_PnPEntity'
+p442
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p443
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p444
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_SSTPMINIPORT\\\\0000"'
+p445
+aS'__PROPERTY_COUNT            : 24'
+p446
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p447
+aS'__SERVER                    : NEX5003CDC'
+p448
+aS'__NAMESPACE                 : root\\cimv2'
+p449
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_SSTPMINIPORT\\\\0000"'
+p450
+aS'Availability                :'
+p451
+aS'Caption                     : WAN Miniport (SSTP)'
+p452
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p453
+aS'CompatibleID                :'
+p454
+aS'ConfigManagerErrorCode      : 0'
+p455
+aS'ConfigManagerUserConfig     : False'
+p456
+aS'CreationClassName           : Win32_PnPEntity'
+p457
+aS'Description                 : WAN Miniport (SSTP)'
+p458
+aS'DeviceID                    : ROOT\\MS_SSTPMINIPORT\\0000'
+p459
+aS'ErrorCleared                :'
+p460
+aS'ErrorDescription            :'
+p461
+aS'HardwareID                  : {ms_sstpminiport}'
+p462
+aS'InstallDate                 :'
+p463
+aS'LastErrorCode               :'
+p464
+aS'Manufacturer                : Microsoft'
+p465
+aS'Name                        : WAN Miniport (SSTP)'
+p466
+aS'PNPDeviceID                 : ROOT\\MS_SSTPMINIPORT\\0000'
+p467
+aS'PowerManagementCapabilities :'
+p468
+aS'PowerManagementSupported    :'
+p469
+aS'Service                     : RasSstp'
+p470
+aS'Status                      : OK'
+p471
+aS'StatusInfo                  :'
+p472
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p473
+aS'SystemName                  : NEX5003CDC'
+p474
+aS'__GENUS                     : 2'
+p475
+aS'__CLASS                     : Win32_PnPEntity'
+p476
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p477
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p478
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_AGILEVPNMINIPORT\\\\0000"'
+p479
+aS'__PROPERTY_COUNT            : 24'
+p480
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p481
+aS'__SERVER                    : NEX5003CDC'
+p482
+aS'__NAMESPACE                 : root\\cimv2'
+p483
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_AGILEVPNMINIPORT\\\\0000"'
+p484
+aS'Availability                :'
+p485
+aS'Caption                     : WAN Miniport (IKEv2)'
+p486
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p487
+aS'CompatibleID                :'
+p488
+aS'ConfigManagerErrorCode      : 0'
+p489
+aS'ConfigManagerUserConfig     : False'
+p490
+aS'CreationClassName           : Win32_PnPEntity'
+p491
+aS'Description                 : WAN Miniport (IKEv2)'
+p492
+aS'DeviceID                    : ROOT\\MS_AGILEVPNMINIPORT\\0000'
+p493
+aS'ErrorCleared                :'
+p494
+aS'ErrorDescription            :'
+p495
+aS'HardwareID                  : {ms_agilevpnminiport}'
+p496
+aS'InstallDate                 :'
+p497
+aS'LastErrorCode               :'
+p498
+aS'Manufacturer                : Microsoft'
+p499
+aS'Name                        : WAN Miniport (IKEv2)'
+p500
+aS'PNPDeviceID                 : ROOT\\MS_AGILEVPNMINIPORT\\0000'
+p501
+aS'PowerManagementCapabilities :'
+p502
+aS'PowerManagementSupported    :'
+p503
+aS'Service                     : RasAgileVpn'
+p504
+aS'Status                      : OK'
+p505
+aS'StatusInfo                  :'
+p506
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p507
+aS'SystemName                  : NEX5003CDC'
+p508
+aS'__GENUS                     : 2'
+p509
+aS'__CLASS                     : Win32_PnPEntity'
+p510
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p511
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p512
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_L2TPMINIPORT\\\\0000"'
+p513
+aS'__PROPERTY_COUNT            : 24'
+p514
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p515
+aS'__SERVER                    : NEX5003CDC'
+p516
+aS'__NAMESPACE                 : root\\cimv2'
+p517
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_L2TPMINIPORT\\\\0000"'
+p518
+aS'Availability                :'
+p519
+aS'Caption                     : WAN Miniport (L2TP)'
+p520
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p521
+aS'CompatibleID                :'
+p522
+aS'ConfigManagerErrorCode      : 0'
+p523
+aS'ConfigManagerUserConfig     : False'
+p524
+aS'CreationClassName           : Win32_PnPEntity'
+p525
+aS'Description                 : WAN Miniport (L2TP)'
+p526
+aS'DeviceID                    : ROOT\\MS_L2TPMINIPORT\\0000'
+p527
+aS'ErrorCleared                :'
+p528
+aS'ErrorDescription            :'
+p529
+aS'HardwareID                  : {ms_l2tpminiport}'
+p530
+aS'InstallDate                 :'
+p531
+aS'LastErrorCode               :'
+p532
+aS'Manufacturer                : Microsoft'
+p533
+aS'Name                        : WAN Miniport (L2TP)'
+p534
+aS'PNPDeviceID                 : ROOT\\MS_L2TPMINIPORT\\0000'
+p535
+aS'PowerManagementCapabilities :'
+p536
+aS'PowerManagementSupported    :'
+p537
+aS'Service                     : Rasl2tp'
+p538
+aS'Status                      : OK'
+p539
+aS'StatusInfo                  :'
+p540
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p541
+aS'SystemName                  : NEX5003CDC'
+p542
+aS'__GENUS                     : 2'
+p543
+aS'__CLASS                     : Win32_PnPEntity'
+p544
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p545
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p546
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_PPTPMINIPORT\\\\0000"'
+p547
+aS'__PROPERTY_COUNT            : 24'
+p548
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p549
+aS'__SERVER                    : NEX5003CDC'
+p550
+aS'__NAMESPACE                 : root\\cimv2'
+p551
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_PPTPMINIPORT\\\\0000"'
+p552
+aS'Availability                :'
+p553
+aS'Caption                     : WAN Miniport (PPTP)'
+p554
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p555
+aS'CompatibleID                :'
+p556
+aS'ConfigManagerErrorCode      : 0'
+p557
+aS'ConfigManagerUserConfig     : False'
+p558
+aS'CreationClassName           : Win32_PnPEntity'
+p559
+aS'Description                 : WAN Miniport (PPTP)'
+p560
+aS'DeviceID                    : ROOT\\MS_PPTPMINIPORT\\0000'
+p561
+aS'ErrorCleared                :'
+p562
+aS'ErrorDescription            :'
+p563
+aS'HardwareID                  : {ms_pptpminiport}'
+p564
+aS'InstallDate                 :'
+p565
+aS'LastErrorCode               :'
+p566
+aS'Manufacturer                : Microsoft'
+p567
+aS'Name                        : WAN Miniport (PPTP)'
+p568
+aS'PNPDeviceID                 : ROOT\\MS_PPTPMINIPORT\\0000'
+p569
+aS'PowerManagementCapabilities :'
+p570
+aS'PowerManagementSupported    :'
+p571
+aS'Service                     : PptpMiniport'
+p572
+aS'Status                      : OK'
+p573
+aS'StatusInfo                  :'
+p574
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p575
+aS'SystemName                  : NEX5003CDC'
+p576
+aS'__GENUS                     : 2'
+p577
+aS'__CLASS                     : Win32_PnPEntity'
+p578
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p579
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p580
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_PPPOEMINIPORT\\\\0000"'
+p581
+aS'__PROPERTY_COUNT            : 24'
+p582
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p583
+aS'__SERVER                    : NEX5003CDC'
+p584
+aS'__NAMESPACE                 : root\\cimv2'
+p585
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_PPPOEMINIPORT\\\\0000"'
+p586
+aS'Availability                :'
+p587
+aS'Caption                     : WAN Miniport (PPPOE)'
+p588
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p589
+aS'CompatibleID                :'
+p590
+aS'ConfigManagerErrorCode      : 0'
+p591
+aS'ConfigManagerUserConfig     : False'
+p592
+aS'CreationClassName           : Win32_PnPEntity'
+p593
+aS'Description                 : WAN Miniport (PPPOE)'
+p594
+aS'DeviceID                    : ROOT\\MS_PPPOEMINIPORT\\0000'
+p595
+aS'ErrorCleared                :'
+p596
+aS'ErrorDescription            :'
+p597
+aS'HardwareID                  : {ms_pppoeminiport}'
+p598
+aS'InstallDate                 :'
+p599
+aS'LastErrorCode               :'
+p600
+aS'Manufacturer                : Microsoft'
+p601
+aS'Name                        : WAN Miniport (PPPOE)'
+p602
+aS'PNPDeviceID                 : ROOT\\MS_PPPOEMINIPORT\\0000'
+p603
+aS'PowerManagementCapabilities :'
+p604
+aS'PowerManagementSupported    :'
+p605
+aS'Service                     : RasPppoe'
+p606
+aS'Status                      : OK'
+p607
+aS'StatusInfo                  :'
+p608
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p609
+aS'SystemName                  : NEX5003CDC'
+p610
+aS'__GENUS                     : 2'
+p611
+aS'__CLASS                     : Win32_PnPEntity'
+p612
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p613
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p614
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANIPV6\\\\0000"'
+p615
+aS'__PROPERTY_COUNT            : 24'
+p616
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p617
+aS'__SERVER                    : NEX5003CDC'
+p618
+aS'__NAMESPACE                 : root\\cimv2'
+p619
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANIPV6\\\\0000"'
+p620
+aS'Availability                :'
+p621
+aS'Caption                     : WAN Miniport (IPv6)'
+p622
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p623
+aS'CompatibleID                :'
+p624
+aS'ConfigManagerErrorCode      : 0'
+p625
+aS'ConfigManagerUserConfig     : False'
+p626
+aS'CreationClassName           : Win32_PnPEntity'
+p627
+aS'Description                 : WAN Miniport (IPv6)'
+p628
+aS'DeviceID                    : ROOT\\MS_NDISWANIPV6\\0000'
+p629
+aS'ErrorCleared                :'
+p630
+aS'ErrorDescription            :'
+p631
+aS'HardwareID                  : {ms_ndiswanipv6}'
+p632
+aS'InstallDate                 :'
+p633
+aS'LastErrorCode               :'
+p634
+aS'Manufacturer                : Microsoft'
+p635
+aS'Name                        : WAN Miniport (IPv6)'
+p636
+aS'PNPDeviceID                 : ROOT\\MS_NDISWANIPV6\\0000'
+p637
+aS'PowerManagementCapabilities :'
+p638
+aS'PowerManagementSupported    :'
+p639
+aS'Service                     : NdisWan'
+p640
+aS'Status                      : OK'
+p641
+aS'StatusInfo                  :'
+p642
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p643
+aS'SystemName                  : NEX5003CDC'
+p644
+aS'__GENUS                     : 2'
+p645
+aS'__CLASS                     : Win32_PnPEntity'
+p646
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p647
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p648
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANBH\\\\0000"'
+p649
+aS'__PROPERTY_COUNT            : 24'
+p650
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p651
+aS'__SERVER                    : NEX5003CDC'
+p652
+aS'__NAMESPACE                 : root\\cimv2'
+p653
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANBH\\\\0000"'
+p654
+aS'Availability                :'
+p655
+aS'Caption                     : WAN Miniport (Network Monitor)'
+p656
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p657
+aS'CompatibleID                :'
+p658
+aS'ConfigManagerErrorCode      : 0'
+p659
+aS'ConfigManagerUserConfig     : False'
+p660
+aS'CreationClassName           : Win32_PnPEntity'
+p661
+aS'Description                 : WAN Miniport (Network Monitor)'
+p662
+aS'DeviceID                    : ROOT\\MS_NDISWANBH\\0000'
+p663
+aS'ErrorCleared                :'
+p664
+aS'ErrorDescription            :'
+p665
+aS'HardwareID                  : {ms_ndiswanbh}'
+p666
+aS'InstallDate                 :'
+p667
+aS'LastErrorCode               :'
+p668
+aS'Manufacturer                : Microsoft'
+p669
+aS'Name                        : WAN Miniport (Network Monitor)'
+p670
+aS'PNPDeviceID                 : ROOT\\MS_NDISWANBH\\0000'
+p671
+aS'PowerManagementCapabilities :'
+p672
+aS'PowerManagementSupported    :'
+p673
+aS'Service                     : NdisWan'
+p674
+aS'Status                      : OK'
+p675
+aS'StatusInfo                  :'
+p676
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p677
+aS'SystemName                  : NEX5003CDC'
+p678
+aS'__GENUS                     : 2'
+p679
+aS'__CLASS                     : Win32_PnPEntity'
+p680
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p681
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p682
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&6FB4662&0&20050200"'
+p683
+aS'__PROPERTY_COUNT            : 24'
+p684
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p685
+aS'__SERVER                    : NEX5003CDC'
+p686
+aS'__NAMESPACE                 : root\\cimv2'
+p687
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&6FB4662&0&20050200"'
+p688
+aS'Availability                :'
+p689
+aS'Caption                     : HP NC382i DP Multifunction Gigabit Server Adapter'
+p690
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p691
+aS'CompatibleID                : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C, B06BDRV\\L2ND&PCI_163914E4, B06BDRV\\L2ND}'
+p692
+aS'ConfigManagerErrorCode      : 0'
+p693
+aS'ConfigManagerUserConfig     : False'
+p694
+aS'CreationClassName           : Win32_PnPEntity'
+p695
+aS'Description                 : HP NC382i DP Multifunction Gigabit Server Adapter'
+p696
+aS'DeviceID                    : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&6FB4662&0&20050200'
+p697
+aS'ErrorCleared                :'
+p698
+aS'ErrorDescription            :'
+p699
+aS'HardwareID                  : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20}'
+p700
+aS'InstallDate                 :'
+p701
+aS'LastErrorCode               :'
+p702
+aS'Manufacturer                : Hewlett-Packard Company'
+p703
+aS'Name                        : HP NC382i DP Multifunction Gigabit Server Adapter'
+p704
+aS'PNPDeviceID                 : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&6FB4662&0&20050200'
+p705
+aS'PowerManagementCapabilities :'
+p706
+aS'PowerManagementSupported    :'
+p707
+aS'Service                     : l2nd'
+p708
+aS'Status                      : OK'
+p709
+aS'StatusInfo                  :'
+p710
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p711
+aS'SystemName                  : NEX5003CDC'
+p712
+aS'__GENUS                     : 2'
+p713
+aS'__CLASS                     : Win32_PnPEntity'
+p714
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p715
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p716
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&29FCE8BF&0&20050200"'
+p717
+aS'__PROPERTY_COUNT            : 24'
+p718
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p719
+aS'__SERVER                    : NEX5003CDC'
+p720
+aS'__NAMESPACE                 : root\\cimv2'
+p721
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&29FCE8BF&0&20050200"'
+p722
+aS'Availability                :'
+p723
+aS'Caption                     : HP NC382i DP Multifunction Gigabit Server Adapter #2'
+p724
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p725
+aS'CompatibleID                : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C, B06BDRV\\L2ND&PCI_163914E4, B06BDRV\\L2ND}'
+p726
+aS'ConfigManagerErrorCode      : 0'
+p727
+aS'ConfigManagerUserConfig     : False'
+p728
+aS'CreationClassName           : Win32_PnPEntity'
+p729
+aS'Description                 : HP NC382i DP Multifunction Gigabit Server Adapter'
+p730
+aS'DeviceID                    : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&29FCE8BF&0&20050200'
+p731
+aS'ErrorCleared                :'
+p732
+aS'ErrorDescription            :'
+p733
+aS'HardwareID                  : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20}'
+p734
+aS'InstallDate                 :'
+p735
+aS'LastErrorCode               :'
+p736
+aS'Manufacturer                : Hewlett-Packard Company'
+p737
+aS'Name                        : HP NC382i DP Multifunction Gigabit Server Adapter #2'
+p738
+aS'PNPDeviceID                 : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&29FCE8BF&0&20050200'
+p739
+aS'PowerManagementCapabilities :'
+p740
+aS'PowerManagementSupported    :'
+p741
+aS'Service                     : l2nd'
+p742
+aS'Status                      : OK'
+p743
+aS'StatusInfo                  :'
+p744
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p745
+aS'SystemName                  : NEX5003CDC'
+p746
+aS'__GENUS                     : 2'
+p747
+aS'__CLASS                     : Win32_PnPEntity'
+p748
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p749
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p750
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANIP\\\\0000"'
+p751
+aS'__PROPERTY_COUNT            : 24'
+p752
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p753
+aS'__SERVER                    : NEX5003CDC'
+p754
+aS'__NAMESPACE                 : root\\cimv2'
+p755
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\MS_NDISWANIP\\\\0000"'
+p756
+aS'Availability                :'
+p757
+aS'Caption                     : WAN Miniport (IP)'
+p758
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p759
+aS'CompatibleID                :'
+p760
+aS'ConfigManagerErrorCode      : 0'
+p761
+aS'ConfigManagerUserConfig     : False'
+p762
+aS'CreationClassName           : Win32_PnPEntity'
+p763
+aS'Description                 : WAN Miniport (IP)'
+p764
+aS'DeviceID                    : ROOT\\MS_NDISWANIP\\0000'
+p765
+aS'ErrorCleared                :'
+p766
+aS'ErrorDescription            :'
+p767
+aS'HardwareID                  : {ms_ndiswanip}'
+p768
+aS'InstallDate                 :'
+p769
+aS'LastErrorCode               :'
+p770
+aS'Manufacturer                : Microsoft'
+p771
+aS'Name                        : WAN Miniport (IP)'
+p772
+aS'PNPDeviceID                 : ROOT\\MS_NDISWANIP\\0000'
+p773
+aS'PowerManagementCapabilities :'
+p774
+aS'PowerManagementSupported    :'
+p775
+aS'Service                     : NdisWan'
+p776
+aS'Status                      : OK'
+p777
+aS'StatusInfo                  :'
+p778
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p779
+aS'SystemName                  : NEX5003CDC'
+p780
+aS'__GENUS                     : 2'
+p781
+aS'__CLASS                     : Win32_PnPEntity'
+p782
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p783
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p784
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\*TEREDO\\\\0000"'
+p785
+aS'__PROPERTY_COUNT            : 24'
+p786
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p787
+aS'__SERVER                    : NEX5003CDC'
+p788
+aS'__NAMESPACE                 : root\\cimv2'
+p789
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\*TEREDO\\\\0000"'
+p790
+aS'Availability                :'
+p791
+aS'Caption                     : Microsoft Teredo Tunneling Adapter'
+p792
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p793
+aS'CompatibleID                :'
+p794
+aS'ConfigManagerErrorCode      : 10'
+p795
+aS'ConfigManagerUserConfig     : False'
+p796
+aS'CreationClassName           : Win32_PnPEntity'
+p797
+aS'Description                 : Microsoft Teredo Tunneling Adapter'
+p798
+aS'DeviceID                    : ROOT\\*TEREDO\\0000'
+p799
+aS'ErrorCleared                :'
+p800
+aS'ErrorDescription            :'
+p801
+aS'HardwareID                  : {*TEREDO}'
+p802
+aS'InstallDate                 :'
+p803
+aS'LastErrorCode               :'
+p804
+aS'Manufacturer                : Microsoft'
+p805
+aS'Name                        : Microsoft Teredo Tunneling Adapter'
+p806
+aS'PNPDeviceID                 : ROOT\\*TEREDO\\0000'
+p807
+aS'PowerManagementCapabilities :'
+p808
+aS'PowerManagementSupported    :'
+p809
+aS'Service                     : tunnel'
+p810
+aS'Status                      : Error'
+p811
+aS'StatusInfo                  :'
+p812
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p813
+aS'SystemName                  : NEX5003CDC'
+p814
+aS'__GENUS                     : 2'
+p815
+aS'__CLASS                     : Win32_PnPEntity'
+p816
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p817
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p818
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="SW\\\\{EEAB7790-C514-11D1-B42B-00805FC1270E}\\\\ASYNCMAC"'
+p819
+aS'__PROPERTY_COUNT            : 24'
+p820
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p821
+aS'__SERVER                    : NEX5003CDC'
+p822
+aS'__NAMESPACE                 : root\\cimv2'
+p823
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="SW\\\\{EEAB7790-C514-11D1-B42B-00805FC1270E}\\\\ASYNCMAC"'
+p824
+aS'Availability                :'
+p825
+aS'Caption                     : RAS Async Adapter'
+p826
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p827
+aS'CompatibleID                :'
+p828
+aS'ConfigManagerErrorCode      : 0'
+p829
+aS'ConfigManagerUserConfig     : False'
+p830
+aS'CreationClassName           : Win32_PnPEntity'
+p831
+aS'Description                 : RAS Async Adapter'
+p832
+aS'DeviceID                    : SW\\{EEAB7790-C514-11D1-B42B-00805FC1270E}\\ASYNCMAC'
+p833
+aS'ErrorCleared                :'
+p834
+aS'ErrorDescription            :'
+p835
+aS'HardwareID                  : {SW\\{eeab7790-c514-11d1-b42b-00805fc1270e}}'
+p836
+aS'InstallDate                 :'
+p837
+aS'LastErrorCode               :'
+p838
+aS'Manufacturer                : Microsoft'
+p839
+aS'Name                        : RAS Async Adapter'
+p840
+aS'PNPDeviceID                 : SW\\{EEAB7790-C514-11D1-B42B-00805FC1270E}\\ASYNCMAC'
+p841
+aS'PowerManagementCapabilities :'
+p842
+aS'PowerManagementSupported    :'
+p843
+aS'Service                     : AsyncMac'
+p844
+aS'Status                      : OK'
+p845
+aS'StatusInfo                  :'
+p846
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p847
+aS'SystemName                  : NEX5003CDC'
+p848
+aS'__GENUS                     : 2'
+p849
+aS'__CLASS                     : Win32_PnPEntity'
+p850
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p851
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p852
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&FEA1E3A&0&20050300"'
+p853
+aS'__PROPERTY_COUNT            : 24'
+p854
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p855
+aS'__SERVER                    : NEX5003CDC'
+p856
+aS'__NAMESPACE                 : root\\cimv2'
+p857
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&FEA1E3A&0&20050300"'
+p858
+aS'Availability                :'
+p859
+aS'Caption                     : HP NC382i DP Multifunction Gigabit Server Adapter'
+p860
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p861
+aS'CompatibleID                : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C, B06BDRV\\L2ND&PCI_163914E4, B06BDRV\\L2ND}'
+p862
+aS'ConfigManagerErrorCode      : 0'
+p863
+aS'ConfigManagerUserConfig     : False'
+p864
+aS'CreationClassName           : Win32_PnPEntity'
+p865
+aS'Description                 : HP NC382i DP Multifunction Gigabit Server Adapter'
+p866
+aS'DeviceID                    : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&FEA1E3A&0&20050300'
+p867
+aS'ErrorCleared                :'
+p868
+aS'ErrorDescription            :'
+p869
+aS'HardwareID                  : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20}'
+p870
+aS'InstallDate                 :'
+p871
+aS'LastErrorCode               :'
+p872
+aS'Manufacturer                : Hewlett-Packard Company'
+p873
+aS'Name                        : HP NC382i DP Multifunction Gigabit Server Adapter'
+p874
+aS'PNPDeviceID                 : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&FEA1E3A&0&20050300'
+p875
+aS'PowerManagementCapabilities :'
+p876
+aS'PowerManagementSupported    :'
+p877
+aS'Service                     : l2nd'
+p878
+aS'Status                      : OK'
+p879
+aS'StatusInfo                  :'
+p880
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p881
+aS'SystemName                  : NEX5003CDC'
+p882
+aS'__GENUS                     : 2'
+p883
+aS'__CLASS                     : Win32_PnPEntity'
+p884
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p885
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p886
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&288345E4&0&20050300"'
+p887
+aS'__PROPERTY_COUNT            : 24'
+p888
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p889
+aS'__SERVER                    : NEX5003CDC'
+p890
+aS'__NAMESPACE                 : root\\cimv2'
+p891
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="B06BDRV\\\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\\\5&288345E4&0&20050300"'
+p892
+aS'Availability                :'
+p893
+aS'Caption                     : HP NC382i DP Multifunction Gigabit Server Adapter #2'
+p894
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p895
+aS'CompatibleID                : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C, B06BDRV\\L2ND&PCI_163914E4, B06BDRV\\L2ND}'
+p896
+aS'ConfigManagerErrorCode      : 0'
+p897
+aS'ConfigManagerUserConfig     : False'
+p898
+aS'CreationClassName           : Win32_PnPEntity'
+p899
+aS'Description                 : HP NC382i DP Multifunction Gigabit Server Adapter'
+p900
+aS'DeviceID                    : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&288345E4&0&20050300'
+p901
+aS'ErrorCleared                :'
+p902
+aS'ErrorDescription            :'
+p903
+aS'HardwareID                  : {B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20}'
+p904
+aS'InstallDate                 :'
+p905
+aS'LastErrorCode               :'
+p906
+aS'Manufacturer                : Hewlett-Packard Company'
+p907
+aS'Name                        : HP NC382i DP Multifunction Gigabit Server Adapter #2'
+p908
+aS'PNPDeviceID                 : B06BDRV\\L2ND&PCI_163914E4&SUBSYS_7055103C&REV_20\\5&288345E4&0&20050300'
+p909
+aS'PowerManagementCapabilities :'
+p910
+aS'PowerManagementSupported    :'
+p911
+aS'Service                     : l2nd'
+p912
+aS'Status                      : OK'
+p913
+aS'StatusInfo                  :'
+p914
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p915
+aS'SystemName                  : NEX5003CDC'
+p916
+aS'__GENUS                     : 2'
+p917
+aS'__CLASS                     : Win32_PnPEntity'
+p918
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p919
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p920
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\CQ_CPQTEAMMP\\\\0000"'
+p921
+aS'__PROPERTY_COUNT            : 24'
+p922
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p923
+aS'__SERVER                    : NEX5003CDC'
+p924
+aS'__NAMESPACE                 : root\\cimv2'
+p925
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\CQ_CPQTEAMMP\\\\0000"'
+p926
+aS'Availability                :'
+p927
+aS'Caption                     : HP Network Team #1'
+p928
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p929
+aS'CompatibleID                :'
+p930
+aS'ConfigManagerErrorCode      : 0'
+p931
+aS'ConfigManagerUserConfig     : False'
+p932
+aS'CreationClassName           : Win32_PnPEntity'
+p933
+aS'Description                 : HP Network Teaming Virtual Miniport Driver'
+p934
+aS'DeviceID                    : ROOT\\CQ_CPQTEAMMP\\0000'
+p935
+aS'ErrorCleared                :'
+p936
+aS'ErrorDescription            :'
+p937
+aS'HardwareID                  : {cq_cpqteammp}'
+p938
+aS'InstallDate                 :'
+p939
+aS'LastErrorCode               :'
+p940
+aS'Manufacturer                : Hewlett-Packard Company'
+p941
+aS'Name                        : HP Network Team #1'
+p942
+aS'PNPDeviceID                 : ROOT\\CQ_CPQTEAMMP\\0000'
+p943
+aS'PowerManagementCapabilities :'
+p944
+aS'PowerManagementSupported    :'
+p945
+aS'Service                     : CPQTeamMP'
+p946
+aS'Status                      : OK'
+p947
+aS'StatusInfo                  :'
+p948
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p949
+aS'SystemName                  : NEX5003CDC'
+p950
+aS'__GENUS                     : 2'
+p951
+aS'__CLASS                     : Win32_PnPEntity'
+p952
+aS'__SUPERCLASS                : CIM_LogicalDevice'
+p953
+aS'__DYNASTY                   : CIM_ManagedSystemElement'
+p954
+aS'__RELPATH                   : Win32_PnPEntity.DeviceID="ROOT\\\\CQ_CPQTEAMMP\\\\0001"'
+p955
+aS'__PROPERTY_COUNT            : 24'
+p956
+aS'__DERIVATION                : {CIM_LogicalDevice, CIM_LogicalElement, CIM_ManagedSystemElement}'
+p957
+aS'__SERVER                    : NEX5003CDC'
+p958
+aS'__NAMESPACE                 : root\\cimv2'
+p959
+aS'__PATH                      : \\\\NEX5003CDC\\root\\cimv2:Win32_PnPEntity.DeviceID="ROOT\\\\CQ_CPQTEAMMP\\\\0001"'
+p960
+aS'Availability                :'
+p961
+aS'Caption                     : HP Network Team #2'
+p962
+aS'ClassGuid                   : {4d36e972-e325-11ce-bfc1-08002be10318}'
+p963
+aS'CompatibleID                :'
+p964
+aS'ConfigManagerErrorCode      : 0'
+p965
+aS'ConfigManagerUserConfig     : False'
+p966
+aS'CreationClassName           : Win32_PnPEntity'
+p967
+aS'Description                 : HP Network Teaming Virtual Miniport Driver'
+p968
+aS'DeviceID                    : ROOT\\CQ_CPQTEAMMP\\0001'
+p969
+aS'ErrorCleared                :'
+p970
+aS'ErrorDescription            :'
+p971
+aS'HardwareID                  : {cq_cpqteammp}'
+p972
+aS'InstallDate                 :'
+p973
+aS'LastErrorCode               :'
+p974
+aS'Manufacturer                : Hewlett-Packard Company'
+p975
+aS'Name                        : HP Network Team #2'
+p976
+aS'PNPDeviceID                 : ROOT\\CQ_CPQTEAMMP\\0001'
+p977
+aS'PowerManagementCapabilities :'
+p978
+aS'PowerManagementSupported    :'
+p979
+aS'Service                     : CPQTeamMP'
+p980
+aS'Status                      : OK'
+p981
+aS'StatusInfo                  :'
+p982
+aS'SystemCreationClassName     : Win32_ComputerSystem'
+p983
+aS'SystemName                  : NEX5003CDC'
+p984
+asbsS'Win32_NetworkAdapterConfiguration'
+p985
+(lp986
+g4
+(g5
+g6
+Ntp987
+Rp988
+(dp989
+S'DHCPLeaseObtained'
+p990
+Nsg10
+g11
+sS'WINSScopeID'
+p991
+NsS'TcpMaxDataRetransmissions'
+p992
+NsS'DomainDNSRegistrationEnabled'
+p993
+NsS'DatabasePath'
+p994
+NsS'WINSHostLookupFile'
+p995
+NsS'IPXEnabled'
+p996
+NsS'TcpWindowSize'
+p997
+Nsg15
+g16
+sS'IPUseZeroBroadcast'
+p998
+NsS'DHCPLeaseExpires'
+p999
+NsS'TcpipNetbiosOptions'
+p1000
+Nsg31
+S'WAN Miniport (SSTP)'
+p1001
+sS'TcpNumConnections'
+p1002
+NsS'WINSEnableLMHostsLookup'
+p1003
+NsS'IPFilterSecurityEnabled'
+p1004
+NsS'DeadGWDetectEnabled'
+p1005
+NsS'TcpMaxConnectRetransmissions'
+p1006
+NsS'ArpAlwaysSourceRoute'
+p1007
+NsS'DHCPEnabled'
+p1008
+S'false'
+p1009
+sS'PMTUBHDetectEnabled'
+p1010
+NsS'DNSDomain'
+p1011
+NsS'IPXMediaType'
+p1012
+NsS'KeepAliveInterval'
+p1013
+NsS'PMTUDiscoveryEnabled'
+p1014
+NsS'MTU'
+p1015
+NsS'IPConnectionMetric'
+p1016
+NsS'SettingID'
+p1017
+S'{4AE6B55C-6DD6-427D-A5BB-13535D4BE926}'
+p1018
+sg46
+S'RasSstp'
+p1019
+sS'ForwardBufferMemory'
+p1020
+NsS'FullDNSRegistrationEnabled'
+p1021
+NsS'TcpUseRFC1122UrgentPointer'
+p1022
+Nsg52
+NsS'ArpUseEtherSNAP'
+p1023
+NsS'DNSEnabledForWINSResolution'
+p1024
+Nsg44
+S'[00000000] WAN Miniport (SSTP)'
+p1025
+sS'IPXAddress'
+p1026
+NsS'IGMPLevel'
+p1027
+NsS'NumForwardPackets'
+p1028
+NsS'KeepAliveTime'
+p1029
+NsS'DNSHostName'
+p1030
+NsS'IPXVirtualNetNumber'
+p1031
+NsS'WINSSecondaryServer'
+p1032
+NsS'DefaultTOS'
+p1033
+NsS'IPEnabled'
+p1034
+S'false'
+p1035
+sS'IPPortSecurityEnabled'
+p1036
+NsS'DefaultTTL'
+p1037
+NsS'WINSPrimaryServer'
+p1038
+NsS'DHCPServer'
+p1039
+Nsbag4
+(g5
+g6
+Ntp1040
+Rp1041
+(dp1042
+g990
+Nsg10
+g72
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'17'
+p1043
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (IKEv2)'
+p1044
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1045
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{EDCA90E1-304B-417D-911C-51A8834BF1D6}'
+p1046
+sg46
+S'RasAgileVpn'
+p1047
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000001] WAN Miniport (IKEv2)'
+p1048
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1049
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1050
+Rp1051
+(dp1052
+g990
+Nsg10
+g16
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g66
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (L2TP)'
+p1053
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1054
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{66973E50-CF44-46A7-AD86-0F369D30ACA2}'
+p1055
+sg46
+S'Rasl2tp'
+p1056
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000002] WAN Miniport (L2TP)'
+p1057
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1058
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1059
+Rp1060
+(dp1061
+g990
+Nsg10
+g66
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g115
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (PPTP)'
+p1062
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1063
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{F93EB786-8968-43C5-BC58-54D87385060E}'
+p1064
+sg46
+S'PptpMiniport'
+p1065
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000003] WAN Miniport (PPTP)'
+p1066
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1067
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1068
+Rp1069
+(dp1070
+g990
+Nsg10
+g115
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g136
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (PPPOE)'
+p1071
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1072
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{6A16EDEB-24DF-416A-B427-CED88EFCA006}'
+p1073
+sg46
+S'RasPppoe'
+p1074
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000004] WAN Miniport (PPPOE)'
+p1075
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1076
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1077
+Rp1078
+(dp1079
+g990
+Nsg10
+g136
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g157
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (IPv6)'
+p1080
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1081
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{F4373218-ED19-4F3D-8DB4-982009ED86B7}'
+p1082
+sg46
+S'NdisWan'
+p1083
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000005] WAN Miniport (IPv6)'
+p1084
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1085
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1086
+Rp1087
+(dp1088
+g990
+Nsg10
+g157
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g178
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (Network Monitor)'
+p1089
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1090
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{5356FE17-48EE-4A7A-BECE-645E20060A52}'
+p1091
+sg46
+S'NdisWan'
+p1092
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000006] WAN Miniport (Network Monitor)'
+p1093
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1094
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1095
+Rp1096
+(dp1097
+g990
+Nsg10
+g178
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'11'
+p1098
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p1099
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1100
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{8D26D9AF-B94A-4D96-9D5E-6C95367C2DDB}'
+p1101
+sg46
+S'l2nd'
+p1102
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+S'1C:C1:DE:21:10:5C'
+p1103
+sg1023
+Nsg1024
+Nsg44
+S'[00000007] HP NC382i DP Multifunction Gigabit Server Adapter'
+p1104
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1105
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1106
+Rp1107
+(dp1108
+g990
+Nsg10
+g224
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'12'
+p1109
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p1110
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'true'
+p1111
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{34123FD0-FB3B-4674-A99D-9962F00725AD}'
+p1112
+sg46
+S'l2nd'
+p1113
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+S'1C:C1:DE:21:10:5C'
+p1114
+sg1023
+Nsg1024
+Nsg44
+S'[00000008] HP NC382i DP Multifunction Gigabit Server Adapter'
+p1115
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1116
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1117
+Rp1118
+(dp1119
+g990
+Nsg10
+g251
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g224
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'WAN Miniport (IP)'
+p1120
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1121
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{66513FCE-F1B9-480C-B278-3DD588D5D452}'
+p1122
+sg46
+S'NdisWan'
+p1123
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000009] WAN Miniport (IP)'
+p1124
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1125
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1126
+Rp1127
+(dp1128
+g990
+Nsg10
+S'10'
+p1129
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'10'
+p1130
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'Microsoft Teredo Tunneling Adapter'
+p1131
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1132
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{B45D31DA-648D-409A-ACE8-2AB6C21CF675}'
+p1133
+sg46
+S'tunnel'
+p1134
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+Nsg1023
+Nsg1024
+Nsg44
+S'[00000010] Microsoft Teredo Tunneling Adapter'
+p1135
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1136
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1137
+Rp1138
+(dp1139
+g990
+Nsg10
+S'11'
+p1140
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+g251
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'RAS Async Adapter'
+p1141
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'false'
+p1142
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{DD2F4800-0DEB-4A98-A302-0777CB955DC1}'
+p1143
+sg46
+S'AsyncMac'
+p1144
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+S'20:41:53:59:4E:FF'
+p1145
+sg1023
+Nsg1024
+Nsg44
+S'[00000011] RAS Async Adapter'
+p1146
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1147
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1148
+Rp1149
+(dp1150
+g990
+Nsg10
+S'12'
+p1151
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'14'
+p1152
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p1153
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'true'
+p1154
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{25DCBA6F-78DD-4E7E-B02D-FEDBB2304F42}'
+p1155
+sg46
+S'l2nd'
+p1156
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+S'1C:C1:DE:21:10:60'
+p1157
+sg1023
+Nsg1024
+Nsg44
+S'[00000012] HP NC382i DP Multifunction Gigabit Server Adapter'
+p1158
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1159
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1160
+Rp1161
+(dp1162
+g990
+Nsg10
+S'13'
+p1163
+sg991
+Nsg992
+Nsg993
+Nsg994
+Nsg995
+Nsg996
+Nsg997
+Nsg15
+S'15'
+p1164
+sg998
+Nsg999
+Nsg1000
+Nsg31
+S'HP NC382i DP Multifunction Gigabit Server Adapter'
+p1165
+sg1002
+Nsg1003
+Nsg1004
+Nsg1005
+Nsg1006
+Nsg1007
+Nsg1008
+S'true'
+p1166
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+Nsg1014
+Nsg1015
+Nsg1016
+Nsg1017
+S'{E8AB3DDC-3342-470D-A647-A8A25DC55DBE}'
+p1167
+sg46
+S'l2nd'
+p1168
+sg1020
+Nsg1021
+Nsg1022
+Nsg52
+S'1C:C1:DE:21:10:60'
+p1169
+sg1023
+Nsg1024
+Nsg44
+S'[00000013] HP NC382i DP Multifunction Gigabit Server Adapter'
+p1170
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+Nsg1030
+Nsg1031
+Nsg1032
+Nsg1033
+Nsg1034
+S'false'
+p1171
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+Nsbag4
+(g5
+g6
+Ntp1172
+Rp1173
+(dp1174
+g990
+Nsg10
+S'14'
+p1175
+sg991
+S''
+p1176
+sg992
+g66
+sg993
+S'false'
+p1177
+sg994
+S'%SystemRoot%\\System32\\drivers\\etc'
+p1178
+sg995
+Nsg996
+Nsg997
+Nsg15
+S'13'
+p1179
+sg998
+NsS'GatewayCostMetric'
+p1180
+g72
+sg999
+Nsg1000
+g11
+sS'DNSServerSearchOrder'
+p1181
+(lp1182
+S'10.255.5.25'
+p1183
+aS'10.104.135.40'
+p1184
+aS'10.100.135.40'
+p1185
+asg31
+S'HP Network Team #1'
+p1186
+sg1002
+Nsg1003
+S'false'
+p1187
+sg1004
+S'false'
+p1188
+sg1005
+S'false'
+p1189
+sg1006
+Nsg1007
+NsS'IPAddress'
+p1190
+S'10.100.125.211'
+p1191
+sg1008
+S'false'
+p1192
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+S'60000'
+p1193
+sg1014
+NsS'DefaultIPGateway'
+p1194
+S'10.100.125.252'
+p1195
+sg1015
+Nsg44
+S'[00000014] HP Network Teaming Virtual Miniport Driver'
+p1196
+sg1017
+S'{3ECD044A-BA3C-4735-A67C-878DDF0D8A10}'
+p1197
+sg46
+S'CPQTeamMP'
+p1198
+sg1020
+Nsg1021
+S'true'
+p1199
+sS'IPSubnet'
+p1200
+S'255.255.255.128'
+p1201
+sg1022
+Nsg52
+S'1C:C1:DE:21:10:5C'
+p1202
+sg1023
+Nsg1024
+S'true'
+p1203
+sg1016
+S'10'
+p1204
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+S'300000'
+p1205
+sg1030
+S'NEX5003CDC'
+p1206
+sg1031
+NsS'DNSDomainSuffixSearchOrder'
+p1207
+(lp1208
+S'us.global.schwab.com'
+p1209
+aS'cdc.schwab.com'
+p1210
+aS'nt.schwab.com'
+p1211
+aS'schwab.com'
+p1212
+asg1032
+S'10.104.11.200'
+p1213
+sg1033
+Nsg1034
+S'true'
+p1214
+sg1036
+Nsg1037
+Nsg1038
+S'10.100.11.200'
+p1215
+sg1039
+Nsbag4
+(g5
+g6
+Ntp1216
+Rp1217
+(dp1218
+g990
+Nsg10
+S'15'
+p1219
+sg991
+g1176
+sg992
+g66
+sg993
+S'false'
+p1220
+sg994
+S'%SystemRoot%\\System32\\drivers\\etc'
+p1221
+sg995
+Nsg996
+Nsg997
+Nsg15
+S'16'
+p1222
+sg998
+Nsg1180
+S'256'
+p1223
+sg999
+Nsg1000
+g11
+sg1200
+S'255.255.255.128'
+p1224
+sg31
+S'HP Network Team #2'
+p1225
+sg1002
+Nsg1003
+S'false'
+p1226
+sg1004
+S'false'
+p1227
+sg1005
+S'false'
+p1228
+sg1006
+Nsg1007
+Nsg1190
+S'10.100.125.220'
+p1229
+sg1008
+S'false'
+p1230
+sg1010
+Nsg1011
+Nsg1012
+Nsg1013
+S'60000'
+p1231
+sg1014
+Nsg1194
+S'10.100.125.252'
+p1232
+sg1015
+Nsg44
+S'[00000015] HP Network Teaming Virtual Miniport Driver'
+p1233
+sg1017
+S'{53DC1007-8BCB-401E-B650-579C6E8847A4}'
+p1234
+sg46
+S'CPQTeamMP'
+p1235
+sg1020
+Nsg1021
+S'false'
+p1236
+sg1022
+Nsg52
+S'1C:C1:DE:21:10:60'
+p1237
+sg1023
+Nsg1024
+S'true'
+p1238
+sg1016
+S'10'
+p1239
+sg1026
+Nsg1027
+Nsg1028
+Nsg1029
+S'300000'
+p1240
+sg1030
+S'NEX5003CDC'
+p1241
+sg1031
+Nsg1207
+(lp1242
+S'us.global.schwab.com'
+p1243
+aS'cdc.schwab.com'
+p1244
+aS'nt.schwab.com'
+p1245
+aS'schwab.com'
+p1246
+asg1032
+Nsg1033
+Nsg1034
+S'true'
+p1247
+sg1036
+Nsg1037
+Nsg1038
+Nsg1039
+NsbasS'counters2012'
+p1248
+g4
+(g432
+g6
+Ntp1249
+Rp1250
+(dp1251
+g436
+(lp1252
+sg438
+I0
+sg439
+(lp1253
+sbsS'registry'
+p1254
+g4
+(g432
+g6
+Ntp1255
+Rp1256
+(dp1257
+g436
+(lp1258
+sg438
+I0
+sg439
+(lp1259
+sbsS'broadcomnic'
+p1260
+g4
+(g432
+g6
+Ntp1261
+Rp1262
+(dp1263
+g436
+(lp1264
+sg438
+I0
+sg439
+(lp1265
+sbsa.
