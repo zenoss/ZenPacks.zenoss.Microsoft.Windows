@@ -1148,6 +1148,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
 * Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
 * Fix Latest version of WinRM pack (2.5.12) causes "AttributeError: in_exclusions" tracebacks (ZEN-23063)
+* Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)

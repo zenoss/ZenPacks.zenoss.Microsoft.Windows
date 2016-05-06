@@ -29,6 +29,11 @@ def load_pickle(self, filename):
         return pickle.load(f)
 
 
+def load_pickle_file(self, filename):
+    with open(os.path.join(os.path.dirname(__file__), 'data', '{}.pickle'.format(filename)), 'r') as f:
+        return pickle.load(f)
+
+
 def test_suite(testnames):
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
