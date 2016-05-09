@@ -277,6 +277,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         defer.returnValue(value)
 
     def _makeEvent(self, evt, config):
+        log.info("_makeEvent")
         ds = config.datasources[0].params
         assert isinstance(evt, dict)
         severity = {
@@ -287,10 +288,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'FailureAudit': ZenEventClasses.Info,
         }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
 
-        eventClass = ds['eventClass'] if 'eventClass' in ds.keys() else '/Unknown'
         evt = dict(
             device=config.id,
-            eventClass=eventClass,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
             eventGroup=ds['eventlog'],
             component=evt['Source'],
@@ -302,6 +301,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
             computername=evt['MachineName'],
             eventidentifier=evt['EventID'],
         )
+        # Fixes ZEN-23024
+        # only assign event class if other than '/Unknown', otherwise 
+        # the user should use event class mappings
+        eventClass = ds.get('eventClass')
+        if eventClass and eventClass != '/Unknown':
+            evt['eventClass'] = eventClass
         return evt
 
     @save
