@@ -16427,7 +16427,7 @@ Windows Operating System
 Windows Operating System
 </property>
 <property type="lines" id="devtypes" mode="w" >
-[('Windows Server', 'WMI')]
+[('Windows Server', 'WinRM')]
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
@@ -16450,7 +16450,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property type="lines" id="devtypes" mode="w" >
-[('Windows Cluster', 'WMI')]
+[('Windows Cluster', 'WinRM')]
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster']

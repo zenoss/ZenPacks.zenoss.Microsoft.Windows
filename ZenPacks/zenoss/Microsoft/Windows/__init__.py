@@ -27,7 +27,8 @@ Globals
 ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
 
 DEVTYPE_NAME = 'Windows Server'
-DEVTYPE_PROTOCOL = 'WMI'
+DEVTYPE_PROTOCOL = 'WinRM'
+OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 
 _PACK_Z_PROPS = [
@@ -164,14 +165,14 @@ class ZenPack(ZenPackBase):
             # No old device class. That's fine.
             pass
         else:
-            old_deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
+            old_deviceclass.unregister_devtype(DEVTYPE_NAME, OLD_DEVTYPE_PROTOCOL)
 
         deviceclass = dmd.Devices.createOrganizer('/Server/Microsoft/Windows')
         deviceclass.register_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
     def unregister_devtype(self, dmd):
         '''
-        Unregister the "Windows Server (WMI)" devtype.
+        Unregister the "Windows Server (WinRM)" devtype.
         '''
         try:
             deviceclass = dmd.Devices.Microsoft.Windows
