@@ -63,7 +63,7 @@ class EventLogDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
-        {'id': 'query', 'type': 'lines'},
+        {'id': 'query', 'type': 'string'},
         {'id': 'max_age', 'type': 'string'},
     )
 
