@@ -210,7 +210,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
-{{note}} The Active Directory monitoring template will only be used when the NTDS service is found during modeling.
+{{note}} The Active Directory monitoring template will only be used when the the server has the Primary or Backup Domain Controller role.
 
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -1149,6 +1149,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
 * Fix Latest version of WinRM pack (2.5.12) causes "AttributeError: in_exclusions" tracebacks (ZEN-23063)
 * Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
+
+; 2.5.13
+* Fix Active Directory not correctly detected (ZEN-23137)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)
