@@ -54,7 +54,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]
     eventlog = ''
-    query = '*'
+    query = ['*']
     max_age = '24'
     eventClass = '/Unknown'
 
@@ -143,7 +143,7 @@ class EventLogInfo(InfoBase):
             try:
                 in_filter_xml = xml.dom.minidom.parseString(value)
             except ExpatError:
-                self._object.query = value
+                self._object.query = [value]
                 return
             for node in in_filter_xml.getElementsByTagName('Select'):
                 filter_text = node.childNodes[0].data
@@ -156,7 +156,7 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
                 node.childNodes[0].data = filter_text
-            self._object.query = in_filter_xml.toprettyxml(indent='', newl='').replace('<?xml version="1.0" ?>\n', '').replace('&amp;', '&')
+            self._object.query = [in_filter_xml.toprettyxml(indent='', newl='').replace('<?xml version="1.0" ?>\n', '').replace('&amp;', '&')]
 
     def get_query(self):
         return self._object.query
@@ -189,7 +189,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         te = lambda x: datasource.talesEval(x, context)
-        query = ""
+        query = datasource.query
         query_error = True
 
         try:
@@ -198,7 +198,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         except Exception:
             pass
         try:
-            xml.dom.minidom.parseString(datasource.query)
+            xml.dom.minidom.parseString(query)
             use_xml = True
         except ExpatError:
             use_xml = False
@@ -277,7 +277,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
         defer.returnValue(value)
 
     def _makeEvent(self, evt, config):
-        log.info("_makeEvent")
         ds = config.datasources[0].params
         assert isinstance(evt, dict)
         severity = {
