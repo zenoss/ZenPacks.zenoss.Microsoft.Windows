@@ -48,7 +48,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, save
-
+from EventLogDataSource import string_to_lines
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import UnauthorizedError, RequestError
@@ -1110,11 +1110,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         parser = getParserLoader(context.dmd, datasource.parser)
 
-        try:
-            script = datasource.talesEval(datasource.script, context)
-        except:
-            script = ''
-            log.error('Invalid tales expression in custom command script')
+        script = get_script(datasource, context)
 
         return dict(resource=resource,
             strategy=datasource.strategy,
@@ -1485,3 +1481,13 @@ def parse_stdout(result, check_stderr=False):
 def pscommand():
     return "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
+
+def get_script(datasource, context):
+    '''return single or multiline formatted script'''
+    te = lambda x: datasource.talesEval(x, context)
+    try:
+        script = te(' '.join(string_to_lines(datasource.script)))
+    except:
+        script = ''
+        log.error('Invalid tales expression in custom command script: %s' % str(datasource.script))
+    return script
