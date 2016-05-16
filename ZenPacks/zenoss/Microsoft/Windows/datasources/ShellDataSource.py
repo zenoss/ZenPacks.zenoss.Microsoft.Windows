@@ -1482,6 +1482,7 @@ def pscommand():
     return "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
+
 def get_script(datasource, context):
     '''return single or multiline formatted script'''
     te = lambda x: datasource.talesEval(x, context)
