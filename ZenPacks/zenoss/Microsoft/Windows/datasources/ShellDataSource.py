@@ -1489,5 +1489,6 @@ def get_script(datasource, context):
         script = te(' '.join(string_to_lines(datasource.script)))
     except:
         script = ''
-        log.error('Invalid tales expression in custom command script: %s' % str(datasource.script))
+        log.error('Invalid tales expression in custom command script: %s' % \
+                  str(datasource.script))
     return script
