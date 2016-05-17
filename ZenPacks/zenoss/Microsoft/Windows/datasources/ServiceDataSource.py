@@ -32,6 +32,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from util import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -339,11 +340,13 @@ class ServicePlugin(PythonDataSourcePlugin):
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         log.error(msg)
         data = self.new_data()
-        data['events'].append({
-            'eventClass': eventClass,
-            'severity': ZenEventClasses.Error,
-            'eventClassKey': 'WindowsServiceCollectionStatus',
-            'eventKey': 'WindowsServiceCollection',
-            'summary': msg,
-            'device': config.id})
+        checkExpiredPassword(config, data['events'], result.message)
+        if not data['events']:
+            data['events'].append({
+                'eventClass': eventClass,
+                'severity': ZenEventClasses.Error,
+                'eventClassKey': 'WindowsServiceCollectionStatus',
+                'eventKey': 'WindowsServiceCollection',
+                'summary': msg,
+                'device': config.id})
         return data

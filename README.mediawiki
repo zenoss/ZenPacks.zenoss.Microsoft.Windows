@@ -971,6 +971,10 @@ If you see 100% CPU usage on a domain controller and your forest functional leve
 
 * More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
 
+<blockquote>Preauthentication failed while getting initial credentials.</blockquote>
+
+* This typically indicates a bad or expired password.
+
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
 There are many reasons for kerberos authentication not to work, and a lot of them result in the following unhelpful error message.
@@ -1149,6 +1153,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
 * Fix Latest version of WinRM pack (2.5.12) causes "AttributeError: in_exclusions" tracebacks (ZEN-23063)
 * Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
+* Fix WinRM monitoring does not emit message for expired password (ZEN-23183)
+* Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)

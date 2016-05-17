@@ -32,6 +32,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from util import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_single_shot_command
@@ -241,6 +242,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         try:
             res = yield query.run(eventlog, select, max_age, eventid, isxml)
         except Exception as e:
+            if 'Password expired' in e.message:
+                raise e
             log.error(e)
         try:
             if res.stderr:
@@ -325,7 +328,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
-        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
+        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result.value.message, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
@@ -335,13 +338,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
-        data['events'].append({
-            'severity': severity,
-            'eventClassKey': 'WindowsEventCollectionError',
-            'eventKey': 'WindowsEventCollection',
-            'summary': msg,
-            'device': config.id
-        })
+        checkExpiredPassword(config, data['events'], result.value.message)
+        if not data['events']:
+            data['events'].append({
+                'severity': severity,
+                'eventClassKey': 'WindowsEventCollectionError',
+                'eventKey': 'WindowsEventCollection',
+                'summary': msg,
+                'device': config.id
+            })
         return data
 
 
