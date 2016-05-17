@@ -239,7 +239,7 @@ def check_for_network_error(result, config):
         return 'Unauthorized, check username and password', '/Status'
 
     msg = 'Failed collection {0} on {1}'.format(
-        result, config
+        result.value.message, config
     )
 
     return msg, '/Unknown'

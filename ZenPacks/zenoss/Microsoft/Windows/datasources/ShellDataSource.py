@@ -49,6 +49,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, save
 from EventLogDataSource import string_to_lines
+from util import checkExpiredPassword
 
 
 # Requires that txwinrm_utils is already imported.
@@ -1431,19 +1432,23 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        data['events'].append(dict(
-            eventClass=event_class,
-            severity=ZenEventClasses.Warning,
-            eventClassKey='winrsCollectionError',
-            eventKey=eventKey,
-            summary='WinRS: ' + msg,
-            device=config.id))
+        checkExpiredPassword(config, data['events'], result.value.message)
+        if not data['events']:
+            data['events'].append(dict(
+                eventClass=event_class,
+                severity=ZenEventClasses.Warning,
+                eventClassKey='winrsCollectionError',
+                eventKey=eventKey,
+                summary='WinRS: ' + msg,
+                device=config.id))
         return data
+
 
 def get_dsconf(dsconfs, component):
     for dsconf in dsconfs:
         if component == dsconf.component:
             return dsconf
+
 
 def check_datasource(dsconf):
     '''
