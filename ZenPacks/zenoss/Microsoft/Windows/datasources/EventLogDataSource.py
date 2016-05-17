@@ -16,6 +16,8 @@ import json
 import re
 from xml.parsers.expat import ExpatError
 import xml.dom.minidom
+from xml.dom.ext import PrettyPrint
+from StringIO import StringIO
 
 from twisted.internet import defer
 
@@ -54,7 +56,7 @@ class EventLogDataSource(PythonDataSource):
     sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]
     eventlog = ''
-    query = ['*']
+    query = '*'
     max_age = '24'
     eventClass = '/Unknown'
 
@@ -63,7 +65,7 @@ class EventLogDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
-        {'id': 'query', 'type': 'lines'},
+        {'id': 'query', 'type': 'string'},
         {'id': 'max_age', 'type': 'string'},
     )
 
@@ -98,7 +100,7 @@ class IEventLogInfo(IInfo):
     query = schema.Text(
         group=_t(u'WindowsEventLog'),
         title=_t('Event Query Powershell or XPath XML'),
-        xtype='twocolumntextarea'
+        xtype='textarea'
     )
     max_age = schema.TextLine(
         group=_t(u'WindowsEventLog'),
@@ -143,7 +145,7 @@ class EventLogInfo(InfoBase):
             try:
                 in_filter_xml = xml.dom.minidom.parseString(value)
             except ExpatError:
-                self._object.query = [value]
+                self._object.query = value
                 return
             for node in in_filter_xml.getElementsByTagName('Select'):
                 filter_text = node.childNodes[0].data
@@ -156,7 +158,8 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
                 node.childNodes[0].data = filter_text
-            self._object.query = [in_filter_xml.toprettyxml(indent='', newl='').replace('<?xml version="1.0" ?>\n', '').replace('&amp;', '&')]
+            header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
+            self._object.query = prettify_xml(in_filter_xml).replace(header, '').replace('&amp;', '&')
 
     def get_query(self):
         return self._object.query
@@ -167,8 +170,16 @@ class EventLogInfo(InfoBase):
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
         return string
-    elif hasattr(string, 'splitlines'):
-        return string.splitlines()
+    if isinstance(string, (unicode, str)):
+        return str(string).splitlines()
+    log.warn('Could not convert string to lines: %s' % str(string))
+    return []
+
+def prettify_xml(xml):
+    '''preserve XML formatting'''
+    iostream = StringIO()
+    PrettyPrint(xml, stream=iostream)
+    return iostream.getvalue()
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
