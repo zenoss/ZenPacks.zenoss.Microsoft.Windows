@@ -137,7 +137,7 @@ class Interfaces(WinRMPlugin):
         win32_pnpentities = results.get('win32_pnpentity', None)
 
         # Actual instance names should be pulled in from the Win32_PnPEntity class
-        if win32_pnpentities:
+        if win32_pnpentities and win32_pnpentities.stdout:
             pnpentities = {}
             pnpentity = {}
             for line in win32_pnpentities.stdout:
