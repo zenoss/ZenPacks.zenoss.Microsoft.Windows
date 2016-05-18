@@ -32,7 +32,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from util import checkExpiredPassword
+from ..utils import save, checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info

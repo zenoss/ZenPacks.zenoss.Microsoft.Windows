@@ -12,6 +12,7 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import json
+from Products.ZenEvents import ZenEventClasses
 
 
 def addLocalLibPath():
@@ -363,3 +364,17 @@ def save(f):
                 pkl_file.close()
         return f(self, *args, **kwargs)
     return dumper
+
+'''
+Common datasource utilities.
+'''
+
+def checkExpiredPassword(config, events, error):
+    '''add password expired event'''
+    if 'Password expired' in error:
+        events.append({
+            'eventClass': '/Status/Winrm/Ping',
+            'severity': ZenEventClasses.Critical,
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'device': config.id})

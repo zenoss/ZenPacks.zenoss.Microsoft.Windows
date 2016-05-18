@@ -33,12 +33,11 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from util import checkExpiredPassword
+from ..utils import save, checkExpiredPassword
 
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_single_shot_command
-from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 log = logging.getLogger("zen.MicrosoftWindows")

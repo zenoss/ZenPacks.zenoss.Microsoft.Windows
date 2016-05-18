@@ -38,6 +38,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
 )
 
+from ..utils import save, checkExpiredPassword
+
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
