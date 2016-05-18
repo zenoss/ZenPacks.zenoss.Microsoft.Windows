@@ -47,9 +47,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, save
+from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
+    save, checkExpiredPassword
 from EventLogDataSource import string_to_lines
-from util import checkExpiredPassword
 
 
 # Requires that txwinrm_utils is already imported.

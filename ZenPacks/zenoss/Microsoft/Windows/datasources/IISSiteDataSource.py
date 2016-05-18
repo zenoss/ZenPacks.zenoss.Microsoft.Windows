@@ -29,8 +29,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import check_for_network_error, save
-from util import checkExpiredPassword
+from ..utils import check_for_network_error, save, checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info

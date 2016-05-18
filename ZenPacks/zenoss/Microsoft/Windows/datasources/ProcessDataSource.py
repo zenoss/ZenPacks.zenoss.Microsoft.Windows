@@ -50,8 +50,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from .. import ZENPACK_NAME
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import get_processNameAndArgs, get_processText, save
-from util import checkExpiredPassword
+from ..utils import get_processNameAndArgs, get_processText, save, \
+    checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect

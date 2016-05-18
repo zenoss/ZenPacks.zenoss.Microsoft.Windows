@@ -27,7 +27,7 @@ from Products.ZenEvents import ZenEventClasses
 from twisted.internet import defer
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from util import checkExpiredPassword
+from ..utils import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
