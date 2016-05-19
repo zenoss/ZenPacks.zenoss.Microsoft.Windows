@@ -131,10 +131,6 @@ class Device(BaseDevice):
 
     def is_ntds(self):
         '''Return True if an NTDS/AD server'''
-        # running the NTDS service indicates that this is an AD server
-        for component in self.getDeviceComponents():
-            if isinstance(component, WinService) and component.servicename == 'NTDS':
-                return True
         # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
         if self.domain_controller:
             return True
