@@ -121,46 +121,52 @@ class Device(BaseDevice):
                     clusterdnsname))
         return _clusterdevices
 
+    def is_iis(self):
+        '''Return True if an IIS server'''
+        # if we have IIS components, then we are IIS server
+        for component in self.getDeviceComponents():
+            if isinstance(component, WinIIS):
+                return True
+        return False
+
+    def is_ntds(self):
+        '''Return True if an NTDS/AD server'''
+        # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
+        if self.domain_controller:
+            return True
+        return False
+
+    def is_exchange(self):
+        '''return True if this is an Exchange server'''
+        if self.msexchangeversion:
+            return True
+        return False
+
     def getRRDTemplates(self):
         """
         Returns all the templates bound to this Device and
         add MSExchangeIS or Active Directory template according to version.
         """
-        result = super(Device, self).getRRDTemplates()
-        # Check if version of the system
-        # modeled by OperatingSystem plugin is Windows 2003.
-        # https://jira.hyperic.com/browse/HHQ-5553
-        bIIS = False
-        bAD = False
-        for component in self.getDeviceComponents():
-            if bIIS and bAD:
-                break
-            if isinstance(component, WinIIS):
-                bIIS = True
-            if isinstance(component, WinService) and component.servicename == 'NTDS':
-                bAD = True
-        # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
-        if not bAD and self.domain_controller:
-            bAD = True
         templates = []
-        for template in result:
-            if 'IIS' in template.id and not bIIS:
+        for template in super(Device, self).getRRDTemplates():
+            # skip IIS template if not installed
+            if 'IIS' in template.id and not self.is_iis():
                 continue
-            elif 'Active Directory' in template.id:
-                if not bAD:
-                    continue
+            # skip Active Director template if not installed
+            if 'Active Directory' in template.id and not self.is_ntds():
+                continue
+            else:
+                # get version-appropriate template
                 if '2003' in self.getOSProductName():
-                    ad = self.getRRDTemplateByName('Active Directory 2003')
-                    if ad:
-                        templates.append(ad)
-                        continue
-            elif 'MSExchange' in template.id:
-                if not self.msexchangeversion:
-                    continue
-                exchange = self.getRRDTemplateByName(self.msexchangeversion)
-                if exchange:
-                    templates.append(exchange)
-                    continue
+                    template = self.getRRDTemplateByName('Active Directory 2003')
+            # skip Exchange template if not installed
+            if 'MSExchange' in template.id and not self.is_exchange():
+                continue
+            else:
+                # get version-appropriate template
+                exch = self.getRRDTemplateByName(self.msexchangeversion)
+                if exch:
+                    template = exch
             templates.append(template)
 
         return templates
