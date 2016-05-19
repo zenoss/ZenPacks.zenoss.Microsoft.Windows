@@ -158,8 +158,13 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
                 node.childNodes[0].data = filter_text
+            xml_query = prettify_xml(in_filter_xml)
+            # undo replacement of single quotes with double            
+            xml_query = re.sub(r"(\w+)='(\w+)'", r'\1="\2"', xml_query)
+            # remove the xml header and replace any "&amp;" with "&"
             header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
-            self._object.query = prettify_xml(in_filter_xml).replace(header, '').replace('&amp;', '&')
+            xml_query = xml_query.replace(header, '').replace('&amp;', '&')
+            self._object.query = xml_query
 
     def get_query(self):
         return self._object.query
@@ -179,7 +184,9 @@ def prettify_xml(xml):
     '''preserve XML formatting'''
     iostream = StringIO()
     PrettyPrint(xml, stream=iostream)
-    return iostream.getvalue()
+    output = iostream.getvalue()
+    iostream.close()
+    return output
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
