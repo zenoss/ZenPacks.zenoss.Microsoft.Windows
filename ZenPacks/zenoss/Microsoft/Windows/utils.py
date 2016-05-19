@@ -371,7 +371,7 @@ Common datasource utilities.
 
 def checkExpiredPassword(config, events, error):
     '''add password expired event'''
-    if 'Password expired' in error:
+    if 'Password expired' in error or 'Check username and password' in error:
         events.append({
             'eventClass': '/Status/Winrm/Ping',
             'severity': ZenEventClasses.Critical,
