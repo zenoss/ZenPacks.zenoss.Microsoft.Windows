@@ -154,7 +154,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',
                 'severity': ZenEventClasses.Critical,
-                'summary': 'Device is DOWN!',
+                'summary': 'Device is DOWN:  {}'.format(results.value.message),
                 'ipAddress': config.manageIp,
                 'device': config.id})
         return data

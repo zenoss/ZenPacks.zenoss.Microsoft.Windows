@@ -580,7 +580,11 @@ See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more 
 
 === WinRM Ping ===
 
-Device status relies on ping status, but if a target's IP has been reassigned to a non-Windows device, it is still pingable and will show as Up.  WinRM Ping is a simple datasource that will attempt to retrieve data over winrm.  If it fails, then we will send a Device Down message to '/Status/Ping', which will set the device status to down.
+WinRM Ping is a simple datasource that will attempt to retrieve basic data over winrm.  If the device cannot return a simple query, then Zenoss will view this device as being down.  An event will appear in the /Status/Winrm/Ping event class with any resulting error message.  This is a more comprehensive test than using a ping.  A simple ping test could easily result in a false positive in many scenarios.  The following are just a few:
+
+* A target's IP has been reassigned to a non-Windows device between models.
+* The winrm service has stopped and cannot be restarted.
+* The monitoring user account password has expired.
 
 == Requirements ==
 
