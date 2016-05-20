@@ -152,17 +152,17 @@ class Device(BaseDevice):
             # skip IIS template if not installed
             if 'IIS' in template.id and not self.is_iis():
                 continue
-            # skip Active Director template if not installed
-            if 'Active Directory' in template.id and not self.is_ntds():
-                continue
-            else:
+            if 'Active Directory' in template.id:
+                # skip Active Director template if not installed
+                if not self.is_ntds():
+                    continue
                 # get version-appropriate template
                 if '2003' in self.getOSProductName():
                     template = self.getRRDTemplateByName('Active Directory 2003')
-            # skip Exchange template if not installed
-            if 'MSExchange' in template.id and not self.is_exchange():
-                continue
-            else:
+            if 'MSExchange' in template.id:
+                # skip Exchange template if not installed
+                if not self.is_exchange():
+                    continue
                 # get version-appropriate template
                 exch = self.getRRDTemplateByName(self.msexchangeversion)
                 if exch:
