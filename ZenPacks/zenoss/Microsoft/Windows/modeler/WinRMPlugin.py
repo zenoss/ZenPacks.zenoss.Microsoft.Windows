@@ -165,7 +165,7 @@ class WinRMPlugin(PythonPlugin):
                     message = "Connection lost for %s. Check if WinRM service listening on port %s is working correctly."
                     args.append(device.zWinRMPort)
                 elif isinstance(reason.value, SSLError):
-                    message = message = "Connection lost for %s. SSL Error: %s."
+                    message = "Connection lost for %s. SSL Error: %s."
                     args.append(', '.join(reason.value.args[0][0]))
                 log.error(message, *args)
             return
@@ -175,7 +175,7 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
-        self._send_event(message % tuple(args), device.id, 5, eventClass='/Status/Winrm/Ping')
+        self._send_event(message % tuple(args), device.id, 3, eventClass='/Status/Winrm')
 
     def _send_event(self, reason, id, severity, force=False,
                     key='ConnectionError', eventClass='/Status'):
@@ -186,10 +186,12 @@ class WinRMPlugin(PythonPlugin):
         log.debug('Sending event: %s' % reason)
         if self._eventService:
             self._eventService.sendEvent(dict(
-                summary=reason,
+                summary='Modeler plugin zenoss.winrm.%s returned no results.' % self.__class__.__name__,
+                message=reason,
                 eventClass=eventClass,
+                eventClassKey=key,
                 device=id,
-                eventKey=key,
+                eventKey=self.__class__.__name__,
                 severity=severity,
             ))
             return True
