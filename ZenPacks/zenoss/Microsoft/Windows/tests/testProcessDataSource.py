@@ -7,6 +7,7 @@
 #
 ##############################################################################
 
+from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
@@ -23,9 +24,9 @@ class TestProcessDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.LOG', Mock())
     def test_onError(self):
-        data = self.plugin.onError(sentinel, sentinel)
+        data = self.plugin.onError(Failure('process datasource error'), sentinel)
         self.assertEquals(len(data['events']), 1)
-        self.assertEquals(data['events'][0]['summary'], "process scan error: sentinel.value")
+        self.assertEquals(data['events'][0]['summary'], "process scan error: process datasource error")
 
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
