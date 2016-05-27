@@ -210,7 +210,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
-{{note}} The Active Directory monitoring template will only be used when the the server has the Primary or Backup Domain Controller role.
+{{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
 
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -474,7 +474,7 @@ from Products.ZenRRD.CommandParser import CommandParser
 
 # Select a windows target device
 # Navigate to Device (/Server/Microsoft)
-# On the rigt side panel, click '+' to add a 'Windows Shell' datasource
+# On the right side panel, click '+' to add a 'Windows Shell' datasource
 # Provide name (eg. custom) and type (Windows Shell) for the datasource
 # View Edit and Details : strategy ->custom command and parser is test1
 # Run zenpython to collect the data zenpython run -v10 -d <devicename>
@@ -556,7 +556,7 @@ You can optionally include or exclude certain services to be monitored when sele
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
 
-{{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
+{{note}} When saving changes to a service template, the changes may take several minutes to propagate to all of your devices.
 
 {{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
 
@@ -952,7 +952,7 @@ When combined with the Zenoss Service Dynamics product, this ZenPack adds built-
 
 == Troubleshooting ==
 
-Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
+Please refer the Zenoss Service Dynamics documentation if you run into any of the following problems:
 
 * ZenPack will not install
 * Adding a device fails
