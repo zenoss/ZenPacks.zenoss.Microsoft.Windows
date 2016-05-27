@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -16,9 +16,8 @@ import shutil
 import re
 import logging
 
-from Products.ZenModel.ZenPack import ZenPackBase
-from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import zenPath
+
 
 log = logging.getLogger("zen.MicrosoftWindows")
 # unused
@@ -31,29 +30,13 @@ DEVTYPE_PROTOCOL = 'WinRM'
 OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 
-_PACK_Z_PROPS = [
-    ('zWinRMUser', '', 'string'),
-    ('zWinRMPassword', '', 'password'),
-    ('zWinRMServerName', '', 'string'),
-    ('zWinRMPort', '5985', 'string'),
-    ('zDBInstances', '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'instancecredentials'),
-    ('zWinKDC', '', 'string'),
-    ('zWinKeyTabFilePath', '', 'string'),
-    ('zWinScheme', 'http', 'string'),
-    ('zWinPerfmonInterval', 300, 'int'),
-    ('zWinTrustedRealm', '', 'string'),
-    ('zWinTrustedKDC', '', 'string'),
-    ]
+from . import zenpacklib
 
-for name, default_value, type_ in _PACK_Z_PROPS:
-    setzPropertyCategory(name, 'Windows')
+# CFG is necessary when using zenpacklib.TestCase.
+CFG = zenpacklib.load_yaml()
 
-# General zProp for Instance logins
-# Format example:
-# zDBInstances = '[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
-# {"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
+from . import schema
 
-setzPropertyCategory('zDBInstances', 'Misc')
 
 # Used by zenchkschema to validate relationship schema.
 productNames = (
@@ -88,11 +71,9 @@ def getOSKerberos(osrelease):
     else:
         return 'kerberos_el6'
 
-
-class ZenPack(ZenPackBase):
+class ZenPack(schema.ZenPack):
 
     binUtilities = ['winrm', 'winrs']
-    packZProperties = _PACK_Z_PROPS
 
     def install(self, app):
         super(ZenPack, self).install(app)

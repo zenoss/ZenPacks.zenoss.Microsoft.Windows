@@ -71,6 +71,7 @@ class CPUs(WinRMPlugin):
 
         rm = self.relMap()
         for processor in results.get('Win32_Processor', []):
+            log.info("PROC: %s" % processor)
             product_key = getManufacturerAndModel(
                 ', '.join((processor.Name, processor.Version)))
 
@@ -116,7 +117,7 @@ class CPUs(WinRMPlugin):
                 'cacheSizeL3': check_value(l3_cache_size),
                 'cacheSpeedL3': check_value(l3_cache_speed),
             }))
-
+        log.info('RM: %s' % rm)
         return rm
 
     def getPerfmonInstance(self, processor, log):

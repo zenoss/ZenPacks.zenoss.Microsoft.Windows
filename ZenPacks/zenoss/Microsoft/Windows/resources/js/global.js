@@ -10,23 +10,6 @@
 
 var ZC = Ext.ns('Zenoss.component');
 
-/* Friendly Names for Component Types ***************************************/
-
-ZC.registerName('WinRMService', _t('Service'), _t('Services'));
-ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
-ZC.registerName('WinDBInstance', _t('MSSQL Instance'), _t('MSSQL Instances'));
-ZC.registerName('WinDatabase', _t('MSSQL Database'), _t('MSSQL Databases'));
-ZC.registerName('WinBackupDevice', _t('MSSQL Backup Device'), _t('MSSQL Backup Devices'));
-ZC.registerName('WinSQLJob', _t('MSSQL Job'), _t('MSSQL Jobs'));
-ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
-ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
-ZC.registerName('MSClusterNode', _t('Cluster Node'), _t('Cluster Nodes'));
-ZC.registerName('MSClusterDisk', _t('Cluster Disk'), _t('Cluster Disks'));
-ZC.registerName('MSClusterNetwork', _t('Cluster Network'), _t('Cluster Networks'));
-ZC.registerName('MSClusterInterface', _t('Cluster Interface'), _t('Cluster Interfaces'));
-ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
-ZC.registerName('WindowsInterface', _t('Interface'), _t('Interfaces'));
-ZC.registerName('WindowsCPU', _t('Processor'), _t('Processors'));
 
 /* WinRS Datasource UI ******************************************************/
 
