@@ -72,7 +72,7 @@ class ServiceDataSource(PythonDataSource):
     sourcetype = sourcetypes[0]
     servicename = '${here/id}'
     alertifnot = 'Running'
-    startmode = ''
+    startmode = 'Auto'
     in_exclusions = '+.*'
 
     plugin_classname = ZENPACKID + \
@@ -199,14 +199,12 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['startmode'] = datasource.startmode
 
         params['usermonitor'] = context.usermonitor
-
         return params
 
     @defer.inlineCallbacks
     def collect(self, config):
-
         ds0 = config.datasources[0]
-
+        log.info('collect %s (%s)' % (config, ds0))
         if ds0.params['startmode'] == 'None' and not ds0.params['usermonitor']:
             log.debug('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
             defer.returnValue(None)

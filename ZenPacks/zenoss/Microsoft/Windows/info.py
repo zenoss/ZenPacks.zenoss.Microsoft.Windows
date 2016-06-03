@@ -14,9 +14,10 @@ from Products.Zuul.infos.device import DeviceInfo as BaseDeviceInfo
 from Products.Zuul.infos.component.filesystem import FileSystemInfo as BaseFileSystemInfo
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo as BaseIpInterfaceInfo
 from Products.Zuul.decorators import info
-
+from Products.Zuul.infos.component.winservice import WinServiceInfo
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import *
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import IFileSystemInfo as WIFileSystemInfo
+
 
 def SuffixedProperty(property_name, suffix):
     '''
@@ -139,31 +140,20 @@ class FileSystemInfo(ComponentInfo):
     mediatype = ProxyProperty('mediatype')
 
 
-class WinServiceInfo(WinComponentInfo):
+class WinServiceInfo(WinServiceInfo):
     implements(IWinServiceInfo)
 
-    servicename = ProxyProperty('servicename')
-    caption = ProxyProperty('caption')
-    description = ProxyProperty('description')
-    startmode = ProxyProperty('startmode')
-    account = ProxyProperty('account')
     usermonitor = ProxyProperty('usermonitor')
-
-    @property
-    @info
-    def formatted_description(self):
-        return '<div style="white-space: normal;">{}</div>'.format(
-            self._object.description)
 
     def getMonitor(self):
         monitorstatus = self._object.monitored()
         return monitorstatus
-
+    
     def setMonitor(self, value):
         self._object.usermonitor = True
         self._object.monitor = value
         self._object.index_object()
-
+    
     monitor = property(getMonitor, setMonitor)
 
 

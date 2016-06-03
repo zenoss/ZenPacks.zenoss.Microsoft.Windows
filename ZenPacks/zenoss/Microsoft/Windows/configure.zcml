@@ -113,6 +113,8 @@
         provides=".interfaces.IWinSQLJobInfo"
         />
 
+
+	<!-- datasources -->
     <adapter
         provides=".datasources.ShellDataSource.IShellDataSourceInfo"
         for=".datasources.ShellDataSource.ShellDataSource"
@@ -173,6 +175,7 @@
         factory=".global_catalog.InterfaceWrapper"
         />
 
+
     <!-- Custom Actions -->
     <utility
         name="wincommand"
@@ -186,11 +189,13 @@
         factory=".actions.WinCommandActionContentInfo"
         />
 
+
     <!-- Custom Path Reporters -->
     <adapter factory=".catalog.paths.InterfacePathReporter"
         for=".Interface.Interface"
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
         />
+
 
     <!-- Device Links -->
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
@@ -199,7 +204,6 @@
             for='ZenPacks.zenoss.Microsoft.Windows.Device.Device'
             factory='.Device.DeviceLinkProvider'
             />
-
     </configure>
 
     <!-- Impact -->

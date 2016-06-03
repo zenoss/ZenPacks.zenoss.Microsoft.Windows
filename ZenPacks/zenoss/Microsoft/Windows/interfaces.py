@@ -11,12 +11,9 @@ from Products.Zuul.form import schema
 from Products.Zuul.interfaces.device import IDeviceInfo
 from Products.Zuul.interfaces.component import IComponentInfo
 from Products.Zuul.interfaces.component import IIpInterfaceInfo as IBaseIpInterfaceInfo
-#from Products.Zuul.interfaces.component import IFileSystemInfo as IBaseFileSystemInfo
-
 from zope.interface import Attribute
-
 from Products.Zuul.utils import ZuulMessageFactory as _t
-
+import Products.Zuul.interfaces.component as zuul
 
 class IDeviceInfo(IDeviceInfo):
     clusterdevices = schema.TextLine(title=_t(u'Cluster Devices'), readonly=True)
@@ -81,13 +78,12 @@ class IFileSystemInfo(IComponentInfo):
     mediatype = schema.TextLine(title=_t(u'Media Type'), readonly=True)
 
 
-class IWinServiceInfo(IWinComponentInfo):
-    servicename = schema.TextLine(title=_t(u'Service Name'), readonly=True)
-    caption = schema.TextLine(title=_t(u'Caption'), readonly=True)
-    formatted_description = schema.TextLine(title=_t(u'Description'), readonly=True)
-    startmode = schema.TextLine(title=_t(u'Start Mode'), readonly=True)
-    account = schema.TextLine(title=_t(u'Account'), readonly=True)
-    usermonitor = schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
+class IWinServiceInfo(zuul.IWinServiceInfo):
+     """
+     Info adapter for WinService components.
+     """
+
+     usermonitor = zuul_schema.Bool(title=_t(u'User Selected Monitor State'), readonly=True)
 
 
 class IWinIISInfo(IWinComponentInfo):

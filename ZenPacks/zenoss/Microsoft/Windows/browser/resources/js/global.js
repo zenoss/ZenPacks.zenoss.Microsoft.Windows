@@ -292,7 +292,7 @@ if (Ext.version === undefined) {
 
 }());
 
-
+/* 
 (function(){
 
 Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
@@ -395,6 +395,7 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
         Ext.reg('startmodegroup', Zenoss.form.StartModeGroup);
     }
 })();
+*/
 
 Ext.onReady(function() {
     Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
