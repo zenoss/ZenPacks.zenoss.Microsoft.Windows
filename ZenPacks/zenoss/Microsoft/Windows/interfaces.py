@@ -83,7 +83,7 @@ class IWinServiceInfo(zuul.IWinServiceInfo):
      Info adapter for WinService components.
      """
 
-     usermonitor = zuul_schema.Bool(title=_t(u'User Selected Monitor State'), readonly=True)
+     usermonitor = schema.Bool(title=_t(u'User Selected Monitor State'), readonly=True)
 
 
 class IWinIISInfo(IWinComponentInfo):
