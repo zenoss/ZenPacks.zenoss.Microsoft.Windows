@@ -24,11 +24,9 @@ from Products.Zuul.catalog.events import IndexingEvent
 from Products.Zuul.interfaces import ICatalogTool
 
 # ZenPack Imports
-from ZenPacks.zenoss.Microsoft.Windows import schema
+from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
-
-
 
 
 class WinServiceTransplant(ZenPackMigration):
@@ -38,7 +36,7 @@ class WinServiceTransplant(ZenPackMigration):
         LOG.info("migrating WinService relations")
         catalog = ICatalogTool(pack.getDmdRoot('Devices'))
 
-        results = catalog.search(schema.WinService)
+        results = catalog.search(WinService)
         if not results.total:
             return
 
