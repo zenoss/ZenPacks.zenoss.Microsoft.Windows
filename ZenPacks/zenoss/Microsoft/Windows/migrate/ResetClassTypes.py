@@ -25,6 +25,7 @@ from Products.Zuul.interfaces import ICatalogTool
 
 # ZenPack Imports
 from ZenPacks.zenoss.Microsoft.Windows import schema
+from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
@@ -33,6 +34,7 @@ class ResetClassTypes(ZenPackMigration):
     version = Version(2, 6, 0)
 
     def migrate(self, pack):
+        LOG.info('Resetting component attributes')
         catalog = ICatalogTool(pack.getDmdRoot('Devices'))
 
         klasses = [schema.CPU, schema.ClusterDisk, schema.ClusterInterface, 
@@ -40,7 +42,7 @@ class ResetClassTypes(ZenPackMigration):
                    schema.ClusterService, schema.FileSystem, schema.Interface, 
                    schema.OSProcess, schema.TeamInterface, schema.WinIIS, 
                    schema.WinSQLBackup, schema.WinSQLDatabase, schema.WinSQLInstance,
-                   schema.WinSQLJob, schema.WinService]
+                   schema.WinSQLJob, WinService]
         for klass in klasses:
             self.reset_class(catalog, klass)
 
@@ -51,13 +53,14 @@ class ResetClassTypes(ZenPackMigration):
         if not results.total:
             return
 
-        LOG.info("Indexing %s %s objects", (results.total, name))
+        LOG.info("Indexing %s %s objects" % (results.total, name))
         for result in results:
             try:
                 ob = result.getObject()
                 ob.meta_type = name 
                 ob.portal_type = name
             except Exception as e:
+                log.warn('problem setting to "%s"' % (name))
                 continue
 
             ob.index_object()

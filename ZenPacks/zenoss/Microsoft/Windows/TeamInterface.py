@@ -10,13 +10,15 @@
 from . import schema
 from zope.event import notify
 from Products.Zuul.catalog.events import IndexingEvent
+from .utils import get_properties
 
 
 class TeamInterface(schema.TeamInterface):
     '''
     Model class for TeamInterface.
     '''
-    #meta_type = portal_type = 'WinTeamInterface'
+
+    _properties = get_properties(schema.TeamInterface)
 
     def monitored(self):
         '''

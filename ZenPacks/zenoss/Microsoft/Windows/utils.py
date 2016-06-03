@@ -14,6 +14,15 @@ Basic utilities that don't cause any Zope stuff to be imported.
 import json
 from Products.ZenEvents import ZenEventClasses
 
+def get_properties(klass):
+    '''
+        avoid duplicates when adding properties 
+        to ZPL schema-based class from a base class
+    '''
+    seen = set()
+    seen_add = seen.add
+    props = tuple([x for x in klass._properties if not (x.get('id') in seen or seen_add(x.get('id')))])
+    return props
 
 def addLocalLibPath():
     """

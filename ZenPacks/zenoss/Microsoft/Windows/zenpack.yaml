@@ -421,8 +421,6 @@ classes:
     base: [BaseComponent, Products.ZenModel.OSProcess.OSProcess]
     monitoring_templates: [OSProcess]
     properties:
-      DEFAULTS:
-        grid_display: false
       supports_WorkingSetPrivate:
         label: Supports Private Working Set
         type: boolean
@@ -482,46 +480,6 @@ classes:
         label: Version
         type: int
     monitoring_templates: [IISSites]
-    impacts: []
-    impacted_by: [device]
-    dynamicview_views: [service_view]
-    dynamicview_relations:
-      impacts: []
-      impacted_by: [device]
-    relationships:
-      DEFAULTS:
-        grid_display: false
-        details_display: false
-      os: {}
-
-  WinService:
-    label: Service
-    #base: [BaseComponent, Products.ZenModel.WinService.WinService]
-    properties:
-      DEFAULTS:
-        grid_display: true
-        default: None
-      servicename:
-        label: Service Name
-        order: 1
-      caption:
-        label: Display Name
-        order: 2
-      description:
-        label: Description
-        grid_display: false
-      startmode:
-        label: Start Mode
-        default: ''
-        order: 4
-      account:
-        label: Account
-        order: 3
-      usermonitor:
-        label: User Selected Monitor State
-        default: False
-        type: boolean
-        grid_display: false
     impacts: []
     impacted_by: [device]
     dynamicview_views: [service_view]

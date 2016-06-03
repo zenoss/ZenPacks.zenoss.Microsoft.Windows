@@ -8,6 +8,7 @@
 ##############################################################################
 
 from . import schema
+from .utils import get_properties
 
 
 class OSProcess(schema.OSProcess):
@@ -18,6 +19,8 @@ class OSProcess(schema.OSProcess):
     Depending on the version of Windows there are different per-process
     counters available.
     '''
+
+    _properties = get_properties(schema.OSProcess)
 
     def getRRDTemplateName(self):
         '''

@@ -8,6 +8,7 @@
 ##############################################################################
 
 from . import schema
+from .utils import get_properties
 
 
 class Interface(schema.Interface):
@@ -15,6 +16,8 @@ class Interface(schema.Interface):
     Model class for Interface
     '''
     portal_type = meta_type = 'IpInterface'
+
+    _properties = get_properties(schema.Interface)
 
     def monitored(self):
         '''
