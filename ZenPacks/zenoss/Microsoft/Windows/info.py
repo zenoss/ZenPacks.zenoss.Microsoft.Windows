@@ -143,19 +143,6 @@ class FileSystemInfo(ComponentInfo):
 class WinServiceInfo(WinServiceInfo):
     implements(IWinServiceInfo)
 
-    usermonitor = ProxyProperty('usermonitor')
-
-    def getMonitor(self):
-        monitorstatus = self._object.monitored()
-        return monitorstatus
-    
-    def setMonitor(self, value):
-        self._object.usermonitor = True
-        self._object.monitor = value
-        self._object.index_object()
-    
-    monitor = property(getMonitor, setMonitor)
-
 
 class WinIISInfo(WinComponentInfo):
     implements(IWinIISInfo)

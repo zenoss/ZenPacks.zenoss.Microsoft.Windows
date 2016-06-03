@@ -67,9 +67,14 @@ class WinServiceTransplant(ZenPackMigration):
         '''set WinService properties'''
         EQUIVALENTS = {'servicename': 'serviceName',
                        'startmode': 'startMode',
-                       'account': 'startName'}
+                       'account': 'startName',
+                       'usermonitor': 'monitor'
+                       }
         for old, new in EQUIVALENTS.items():
             val = getattr(ob, old)
+            # don't want to set locally to False
+            if old == 'usermonitor' and val is False:
+                continue
             setattr(ob, new, val)
 
     def transplant_service(self, ob):

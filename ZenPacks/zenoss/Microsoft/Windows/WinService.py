@@ -33,13 +33,15 @@ class WinService(BaseWinService):
 
     _properties = BaseWinService._properties + (
             # this is the only one not present on WinService
+            # but it doesn't seem to have a way to set it manually
+            # and duplicates the 'monitor' attribute
             {'id': 'usermonitor', 
              'label': 'User Selected Monitor State', 
              'type': 'boolean'},
-        # keeping these for migration
-        {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
-        {'id': 'startmode', 'label': 'Start Mode', 'type': 'string'},
-        {'id': 'account', 'label': 'Account', 'type': 'string'},
+            # keeping these for migration
+            {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
+            {'id': 'startmode', 'label': 'Start Mode', 'type': 'string'},
+            {'id': 'account', 'label': 'Account', 'type': 'string'},
         )
 
     def getClassObject(self):
@@ -85,14 +87,13 @@ class WinService(BaseWinService):
                         rtn = True
                     elif service_regex.startswith('-') and self.is_match(service_regex[1:]):
                         return False
-        
         return rtn
 
     def monitored(self):
         """Return True if this service should be monitored. False otherwise."""
         
         # 1 - Check to see if the user has manually set monitor status
-        if self.usermonitor is True:
+        if self.monitor is True:
             return self.monitor
 
         # 2 - Check what our template says to do.
@@ -122,5 +123,34 @@ class WinService(BaseWinService):
         if self.startMode and self.startMode == "Disabled": return False
 
         return False
+
+    def get_serviceclass_startmodes(self):
+        ''' determine the start modes for this services
+            giving precedence to local template override
+            and falling back on service class if not defined
+        '''
+        start_modes = []
+        template = self.getRRDTemplate()
+        if template:
+            datasource = template.datasources._getOb('DefaultService', None)
+            if datasource:
+                modes = datasource.startmode.split(',')
+                if 'None' in modes:
+                    modes.remove('None')
+                if len(modes) > 0:
+                    return modes
+        sc = self.serviceclass()
+        if sc:
+            return sc.monitoredStartModes
+
+    def get_winservices_modes(self):
+        ''''''
+        data = {}
+        for svc in self.device().os.winservices():
+            data[svc.id] = {'modes': svc.get_serviceclass_startmodes(),
+                            'mode': svc.startMode,
+                            'monitor': svc.monitored()
+                            }
+        return data
 
 InitializeClass(WinService)
