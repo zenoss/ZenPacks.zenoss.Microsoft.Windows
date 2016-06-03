@@ -29,7 +29,12 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         self.assertIn("is in Unknown state", data['events'][0]['summary'])
 
     def test_onError(self):
-        data = self.plugin.onError(Failure('foo'), MagicMock(
+        f = None
+        try:
+            f = Failure('foo')
+        except TypeError:
+            f = Failure()
+        data = self.plugin.onError(f, MagicMock(
             id=sentinel.id,
             datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
         ))
