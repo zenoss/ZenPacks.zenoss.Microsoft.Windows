@@ -75,7 +75,17 @@ class ZenPack(schema.ZenPack):
 
     binUtilities = ['winrm', 'winrs']
 
+    def fix_migrate(self):
+        '''fix migrate scripts ignored without __init__.py file'''
+        filename = os.path.join(os.path.dirname(__file__), 'migrate','__init__.py')
+        log.info('checking for %s' % filename)
+        if not os.path.exists(filename):
+            log.warn('creating %s' % filename)
+            open(filename, 'a').close()
+            os.utime(filename, None)
+
     def install(self, app):
+        self.fix_migrate()
         super(ZenPack, self).install(app)
 
         self.register_devtype(app.zport.dmd)
