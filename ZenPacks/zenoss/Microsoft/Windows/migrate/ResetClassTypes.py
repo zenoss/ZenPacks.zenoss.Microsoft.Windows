@@ -26,6 +26,22 @@ from Products.Zuul.interfaces import ICatalogTool
 # ZenPack Imports
 from ZenPacks.zenoss.Microsoft.Windows import schema
 from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
+from ZenPacks.zenoss.Microsoft.Windows.CPU import CPU
+from ZenPacks.zenoss.Microsoft.Windows.ClusterDisk import ClusterDisk
+from ZenPacks.zenoss.Microsoft.Windows.ClusterInterface import ClusterInterface
+from ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork import ClusterNetwork
+from ZenPacks.zenoss.Microsoft.Windows.ClusterNode import ClusterNode
+from ZenPacks.zenoss.Microsoft.Windows.ClusterResource import ClusterResource
+from ZenPacks.zenoss.Microsoft.Windows.ClusterService import ClusterService
+from ZenPacks.zenoss.Microsoft.Windows.FileSystem import FileSystem
+from ZenPacks.zenoss.Microsoft.Windows.Interface import Interface
+from ZenPacks.zenoss.Microsoft.Windows.OSProcess import OSProcess
+from ZenPacks.zenoss.Microsoft.Windows.TeamInterface import TeamInterface
+from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
+from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
+from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
+from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
+from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
@@ -37,12 +53,12 @@ class ResetClassTypes(ZenPackMigration):
         LOG.info('Resetting component attributes')
         catalog = ICatalogTool(pack.getDmdRoot('Devices'))
 
-        klasses = [schema.CPU, schema.ClusterDisk, schema.ClusterInterface, 
-                   schema.ClusterNetwork, schema.ClusterNode, schema.ClusterResource, 
-                   schema.ClusterService, schema.FileSystem, schema.Interface, 
-                   schema.OSProcess, schema.TeamInterface, schema.WinIIS, 
-                   schema.WinSQLBackup, schema.WinSQLDatabase, schema.WinSQLInstance,
-                   schema.WinSQLJob, WinService]
+        klasses = [CPU, ClusterDisk, ClusterInterface, 
+                   ClusterNetwork, ClusterNode, ClusterResource, 
+                   ClusterService, FileSystem, Interface, 
+                   OSProcess, TeamInterface, WinIIS, 
+                   WinSQLBackup, WinSQLDatabase, WinSQLInstance,
+                   WinSQLJob, WinService]
         for klass in klasses:
             self.reset_class(catalog, klass)
 
