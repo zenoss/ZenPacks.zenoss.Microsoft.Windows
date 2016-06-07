@@ -117,7 +117,7 @@ class WinService(BaseWinService):
                 # check the service class monitored start modes
                 if self.startMode in sc.monitoredStartModes:
                     # check the zMonitor organizer property
-                    if org and hasattr(org, 'zMontitor'):
+                    if org and hasattr(org, 'zMonitor'):
                         return org.zMonitor
         #don't monitor Disabled services
         if self.startMode and self.startMode == "Disabled": return False
