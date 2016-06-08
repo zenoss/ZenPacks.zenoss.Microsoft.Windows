@@ -210,7 +210,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
-{{note}} The Active Directory monitoring template will only be used when the the server has the Primary or Backup Domain Controller role.
+{{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
 
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -474,7 +474,7 @@ from Products.ZenRRD.CommandParser import CommandParser
 
 # Select a windows target device
 # Navigate to Device (/Server/Microsoft)
-# On the rigt side panel, click '+' to add a 'Windows Shell' datasource
+# On the right side panel, click '+' to add a 'Windows Shell' datasource
 # Provide name (eg. custom) and type (Windows Shell) for the datasource
 # View Edit and Details : strategy ->custom command and parser is test1
 # Run zenpython to collect the data zenpython run -v10 -d <devicename>
@@ -556,7 +556,7 @@ You can optionally include or exclude certain services to be monitored when sele
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
 
-{{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
+{{note}} When saving changes to a service template, the changes may take several minutes to propagate to all of your devices.
 
 {{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
 
@@ -744,7 +744,6 @@ Use the following steps to configure SQL Server Authentication on your SQL Serve
 # Check user ''Properties'' > ''Server Roles'' and make sure that the user has the ''public'' role.
 ## If using an Administrator user, make sure it has the ''sysadmin'' role.
 ## If not using an Administrator user, check user ''Properties'' > ''Securables'' and make sure the user has been granted ''View server state'' rights.
-## You must also add the non-Administrator user to each database to be able to view status and counters.
 
 ; Support for Local and Failover Cluster SQL instances:
 
@@ -764,7 +763,7 @@ The monitoring templates for SQL Server are component templates so there is no n
 
 {{note}} The default instance of MSSQLSERVER appears as the host name.
 
-{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.  The user will also need to be created on each database.  For example, "CREATE USER [MYDOMAIN\zenoss_user] FOR LOGIN [MYDOMAIN\zenoss_user]" and "ALTER USER [MYDOMAIN\zenoss_user] WITH DEFAULT_SCHEMA=[dbo]".
+{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
 
 === Working with WinCommand Notification Action ===
 
@@ -953,7 +952,7 @@ When combined with the Zenoss Service Dynamics product, this ZenPack adds built-
 
 == Troubleshooting ==
 
-Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
+Please refer the Zenoss Service Dynamics documentation if you run into any of the following problems:
 
 * ZenPack will not install
 * Adding a device fails
@@ -1160,7 +1159,6 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
 * Fix WinRM monitoring does not emit message for expired password (ZEN-23183)
 * Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
-* Fix MSSQL Queries wrong database for metric (ZEN-23228)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
