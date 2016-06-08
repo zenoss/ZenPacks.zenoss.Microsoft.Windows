@@ -24,7 +24,12 @@ class TestProcessDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource.LOG', Mock())
     def test_onError(self):
-        data = self.plugin.onError(Failure('process datasource error'), sentinel)
+        f = None
+        try:
+            f = Failure('process datasource error')
+        except TypeError:
+            f = Failure()
+        data = self.plugin.onError(f, sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['summary'], "process scan error: process datasource error")
 

@@ -33,6 +33,11 @@ class TestServiceDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.log', Mock())
     def test_onError(self):
-        data = self.plugin.onError(Failure('foo'), sentinel)
+        f = None
+        try:
+            f = Failure('foo')
+        except TypeError:
+            f = Failure()
+        data = self.plugin.onError(f, sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['severity'], 4)

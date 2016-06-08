@@ -48,7 +48,6 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[1].maps[0].description, 'description0')
         self.assertEquals(data[1].maps[0].domain, 'domain0')
         self.assertEquals(data[1].maps[0].ownernode, 'node0')
-        self.assertEquals(data[1].maps[0].state, 'state0')
         self.assertEquals(data[1].maps[0].title, 'title0')
         self.assertEquals(data[4].maps[0].id, '2beb')
         self.assertEquals(data[4].maps[0].freespace, '1.85MB')
@@ -59,7 +58,6 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].domain, 'domain0')
         self.assertEquals(data[4].maps[0].title, 'disk1')
         self.assertEquals(data[4].maps[0].volumepath, 'Vol{2beb}')
-        self.assertEquals(data[4].maps[0].state, 'Online')
         self.assertEquals(data[4].maps[0].assignedto, 'service')
 
         # Test for missing freespace ZEN-21242
