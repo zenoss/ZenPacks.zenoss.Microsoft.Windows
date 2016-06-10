@@ -191,7 +191,7 @@ class ZenPack(schema.ZenPack):
         devices = dmd.Devices
         try:
             devices.deleteZenProperty('zDBInstancesPassword')
-        except:
+        except Exception:
             pass
         # workaround for ZEN-13662
         devices._properties = tuple(
