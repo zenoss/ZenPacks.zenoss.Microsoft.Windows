@@ -18,6 +18,13 @@ import logging
 
 from Products.ZenUtils.Utils import zenPath
 
+try:
+    from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge, DSVRelationshipProvider, RelationshipEdgeError
+    from ZenPacks.zenoss.Impact.impactd.interfaces import IRelationshipDataProvider
+except ImportError:
+    IMPACT_INSTALLED = False
+else:
+    IMPACT_INSTALLED = True
 
 log = logging.getLogger("zen.MicrosoftWindows")
 # unused
@@ -61,6 +68,11 @@ productNames = (
     'WinSQLJob',
     )
 
+EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
+    '  You must update to the latest version of the Exchange Server ZenPack.'
+SEGFAULT_INFO = "If a Segmentation fault occurs, then run the installation "\
+    "once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older."
+
 
 def getOSKerberos(osrelease):
 
@@ -71,25 +83,26 @@ def getOSKerberos(osrelease):
     else:
         return 'kerberos_el6'
 
+
 class ZenPack(schema.ZenPack):
 
     binUtilities = ['winrm', 'winrs']
 
-    def fix_migrate(self):
-        '''fix migrate scripts ignored without __init__.py file'''
-        filename = os.path.join(os.path.dirname(__file__), 'migrate','__init__.py')
-        log.info('checking for %s' % filename)
-        if not os.path.exists(filename):
-            log.warn('creating %s' % filename)
-            open(filename, 'a').close()
-            os.utime(filename, None)
-
     def install(self, app):
-        self.fix_migrate()
         super(ZenPack, self).install(app)
 
         self.register_devtype(app.zport.dmd)
-        log.info("If a Segmentation fault occurs, then run the installation once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older.")
+        log.info(SEGFAULT_INFO)
+
+        try:
+            exchange_version = self.dmd.ZenPackManager.packs._getOb(
+                'ZenPacks.zenoss.Microsoft.Exchange').version
+            if IMPACT_INSTALLED and \
+               exchange_version in ('1.0.0', '1.0.1', '1.0.2'):
+                log.warn(EXCH_WARN)
+        except AttributeError:
+            pass
+
         # copy kerberos.so file to python path
         osrelease = platform.release()
         kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')

@@ -28,4 +28,3 @@ class Interface(schema.Interface):
         '''
         return self.monitor and self.adminStatus == 1
 
-

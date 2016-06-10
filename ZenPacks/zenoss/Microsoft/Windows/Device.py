@@ -213,6 +213,7 @@ class Device(schema.Device):
             if obj.ip == self.id:
                 yield obj
 
+
 class DeviceLinkProvider(object):
     '''
     Provides a link to the cluster server hosted on this device
