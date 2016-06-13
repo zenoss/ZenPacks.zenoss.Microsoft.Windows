@@ -16,7 +16,7 @@ from Products.ZenModel.WinService import WinService as BaseWinService
 log = logging.getLogger('zen.MicrosoftWindows')
 
 
-class WinService(BaseWinService):
+class WinService(OSComponent):
     '''
     Model class for Windows Service.
     '''
