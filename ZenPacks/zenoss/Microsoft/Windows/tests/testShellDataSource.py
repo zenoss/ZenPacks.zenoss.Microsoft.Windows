@@ -7,6 +7,7 @@
 #
 ##############################################################################
 
+from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle
@@ -15,6 +16,7 @@ from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
     ShellDataSourcePlugin
 )
+
 
 class TestShellDataSourcePlugin(BaseTestCase):
     def setUp(self):
@@ -30,6 +32,6 @@ class TestShellDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_onError(self):
-        data = self.plugin.onError(sentinel,sentinel)
+        data = self.plugin.onError(Failure('foo'), sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['severity'], 3)

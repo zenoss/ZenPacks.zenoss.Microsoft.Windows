@@ -1293,8 +1293,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     db_name = result.stdout[0].split(':')[1]
                 except IndexError:
                     db_name = dsconf0.component
-                msg = 'There is no monitoring data for the database "{0}" \
-                    '.format(db_name)
+                msg = 'There is no monitoring data for the database "{0}"'.format(db_name)
                 severity = ZenEventClasses.Info
 
                 if result.stderr:

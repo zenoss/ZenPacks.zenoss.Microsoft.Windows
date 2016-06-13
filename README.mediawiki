@@ -744,6 +744,7 @@ Use the following steps to configure SQL Server Authentication on your SQL Serve
 # Check user ''Properties'' > ''Server Roles'' and make sure that the user has the ''public'' role.
 ## If using an Administrator user, make sure it has the ''sysadmin'' role.
 ## If not using an Administrator user, check user ''Properties'' > ''Securables'' and make sure the user has been granted ''View server state'' rights.
+## You must also add the non-Administrator user to each database to be able to view status and counters.
 
 ; Support for Local and Failover Cluster SQL instances:
 
@@ -763,7 +764,7 @@ The monitoring templates for SQL Server are component templates so there is no n
 
 {{note}} The default instance of MSSQLSERVER appears as the host name.
 
-{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
+{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.  The user will also need to be created on each database.  For example, "CREATE USER [MYDOMAIN\zenoss_user] FOR LOGIN [MYDOMAIN\zenoss_user]" and "ALTER USER [MYDOMAIN\zenoss_user] WITH DEFAULT_SCHEMA=[dbo]".
 
 === Working with WinCommand Notification Action ===
 
@@ -1159,6 +1160,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
 * Fix WinRM monitoring does not emit message for expired password (ZEN-23183)
 * Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
+* Fix MSSQL Queries wrong database for metric (ZEN-23228)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
