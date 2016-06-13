@@ -1,25 +1,21 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
 
-from Products.ZenModel.FileSystem import FileSystem as BaseFileSystem
+from . import schema
+from .utils import get_properties
 
+class FileSystem(schema.FileSystem):
+    '''
+    Model class for FileSystem.
+    '''
 
-class FileSystem(BaseFileSystem):
-    mediatype = None
-    total_bytes = 0
-
-    _properties = BaseFileSystem._properties + (
-        {'id': 'mediatype', 'label': 'Media Type',
-            'type': 'string', 'mode': 'w'},
-        {'id':'total_bytes', 'label': 'Total Bytes',
-            'type':'long', 'mode':''},
-        )
+    _properties = get_properties(schema.FileSystem)
 
     def monitored(self):
         '''
@@ -35,12 +31,6 @@ class FileSystem(BaseFileSystem):
             return False
 
         return self.monitor and True
-
-    def getIconPath(self):
-        '''
-        Return the path to an icon for this component.
-        '''
-        return '/++resource++mswindows/img/FileSystem.png'
 
     @property
     def total_bytes(self):

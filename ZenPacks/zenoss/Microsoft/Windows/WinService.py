@@ -17,6 +17,7 @@ from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 
 log = logging.getLogger('zen.MicrosoftWindows')
 
+
 class WinService(OSComponent):
     '''
     Model class for Windows Service.

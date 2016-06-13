@@ -116,7 +116,6 @@ class CPUs(WinRMPlugin):
                 'cacheSizeL3': check_value(l3_cache_size),
                 'cacheSpeedL3': check_value(l3_cache_speed),
             }))
-
         return rm
 
     def getPerfmonInstance(self, processor, log):
