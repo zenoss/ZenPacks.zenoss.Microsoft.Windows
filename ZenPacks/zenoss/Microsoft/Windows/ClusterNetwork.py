@@ -1,21 +1,53 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
 
+from Globals import InitializeClass
 import logging
-from . import schema
+
+from Products.ZenModel.OSComponent import OSComponent
+from Products.ZenRelations.RelSchema import ToOne, ToManyCont
+
 log = logging.getLogger("zen.MicrosoftWindows")
 
 
-class ClusterNetwork(schema.ClusterNetwork):
+class ClusterNetwork(OSComponent):
     '''
-    Base class for ClusterNetwork classes.
-    
-    This file exists to avoid ZenPack upgrade issues
+    Model class for Cluster Network.
     '''
+    meta_type = portal_type = 'MSClusterNetwork'
 
+    description = None
+    role = None
+    state = None
+    domain = ""
+
+    _properties = OSComponent._properties + (
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'role', 'label': 'Cluster Use', 'type': 'string'},
+        {'id': 'state', 'label': 'State', 'type': 'string'},
+        {'id': 'domain', 'label': 'Domain', 'type': 'string'},
+        )
+
+    _relations = OSComponent._relations + (
+        ('os', ToOne(ToManyCont,
+         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusternetworks')),
+    )
+
+    def getRRDTemplateName(self):
+        return 'ClusterNetwork'
+
+    def getState(self):
+        try:
+            state = int(self.cacheRRDValue('state', None))
+        except Exception:
+            return 'Unknown'
+
+        return state
+
+InitializeClass(ClusterNetwork)

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -19,12 +19,29 @@ from Products.Zuul.interfaces import ICatalogTool
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
-from . import schema
+from ZenPacks.zenoss.Microsoft.Windows.zope_utils import BaseDevice
+from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
+from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 
-class Device(schema.Device):
+
+class Device(BaseDevice):
     '''
     Model class for a Windows operating system device.
     '''
+
+    clusterdevices = ''
+    sqlhostname = None
+    msexchangeversion = None
+    ip_and_hostname = None
+    domain_controller = False
+
+    _properties = BaseDevice._properties + (
+        {'id': 'clusterdevices', 'label': 'Cluster Devices', 'type': 'string', 'mode': 'w'},
+        {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
+        {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
+        {'id': 'ip_and_hostname', 'type': 'string'},
+        {'id': 'domain_controller', 'label': 'Domain Controller', 'type': 'boolean'},
+    )
 
     def getPingStatus(self):
         return self.getStatus('/Status/Winrm/Ping')
@@ -107,7 +124,6 @@ class Device(schema.Device):
     def is_iis(self):
         '''Return True if an IIS server'''
         # if we have IIS components, then we are IIS server
-        from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
         for component in self.getDeviceComponents():
             if isinstance(component, WinIIS):
                 return True
@@ -154,64 +170,6 @@ class Device(schema.Device):
             templates.append(template)
 
         return templates
-
-    def all_filesystems(self):
-        """Generate all HardDisk components."""
-        for fs in self.os.filesystems():
-            yield fs
-
-    def all_processes(self):
-        """Generate all OSProcess components."""
-        for process in self.os.processes():
-            yield process
-
-    def all_ipservices(self):
-        """Generate all IpService components."""
-        for ipservice in self.os.ipservices():
-            yield ipservice
-
-    def all_cpus(self):
-        """Generate all CPU components."""
-        for cpu in self.hw.cpus():
-            yield cpu
-
-    def all_clusterservices(self):
-        """Generate all ClusterService components."""
-        for c in self.os.clusterservices():
-            yield c
-
-    def all_clusternodes(self):
-        """Generate all ClusterNode components."""
-        for c in self.os.clusternodes():
-            yield c
-
-    def all_clusternetworks(self):
-        """Generate all ClusterNetwork components."""
-        for c in self.os.clusternetworks():
-            yield c
-
-    def all_winrmservices(self):
-        """Generate all Cluster Services components."""
-        for c in self.os.winrmservices():
-            yield c
-
-    def all_hyperv(self):
-        # Look up for HyperV server with same IP
-        try:
-            dc = self.getDmdRoot('Devices').getOrganizer(
-                '/Server/Microsoft/HyperV'
-            )
-        except Exception:
-            return
-
-        results = ICatalogTool(dc).search(types=(
-            'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
-        ))
-
-        for brain in results:
-            obj = brain.getObject()
-            if obj.ip == self.id:
-                yield obj
 
 
 class DeviceLinkProvider(object):

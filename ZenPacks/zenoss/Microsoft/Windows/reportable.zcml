@@ -5,12 +5,12 @@
 
   <!-- Define the reportable schema -->
   <adapter factory=".basereportable.BaseReportable"
-           for=".BaseDevice.BaseDevice"
+           for=".zope_utils.BaseDevice"
            provides="Products.Zuul.interfaces.IReportable"
            />
 
   <adapter factory=".basereportable.BaseReportableFactory"
-           for=".BaseDevice.BaseDevice"
+           for=".zope_utils.BaseDevice"
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 

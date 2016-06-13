@@ -205,6 +205,7 @@ class WinCluster(WinRMPlugin):
             res_om.title = resourceline[0]
             res_om.coregroup = resourceline[1]
             res_om.ownernode = resourceline[2]
+            res_om.state = resourceline[3]
             res_om.description = resourceline[4]
             res_om.priority = resourceline[6]
             res_om.domain = results['domain']
@@ -227,6 +228,7 @@ class WinCluster(WinRMPlugin):
                 app_om.ownernode = appline[2]
                 app_om.description = appline[4]
                 app_om.ownergroup = app_ownergroup
+                app_om.state = appline[3]
                 app_om.domain = results['domain']
 
                 groupid = ownergroups[app_om.ownergroup]
@@ -263,6 +265,7 @@ class WinCluster(WinRMPlugin):
             node_om.ownernode = nodeline[0]
             node_om.assignedvote = nodeline[1]
             node_om.currentvote = nodeline[2]
+            node_om.state = nodeline[4]
             node_om.domain = results['domain']
 
             if node_om.title not in node_ownergroups:
@@ -288,6 +291,7 @@ class WinCluster(WinRMPlugin):
                 disk_om.size = sizeof_fmt(diskline[6])
                 disk_om.freespace = sizeof_fmt(diskline[7])
                 disk_om.assignedto = diskline[9]
+                disk_om.state = diskline[8]
                 disk_om.domain = results['domain']
 
                 nodeid = node_ownergroups[disk_om.ownernode]
@@ -314,6 +318,7 @@ class WinCluster(WinRMPlugin):
                 interface_om.network = intfline[3]
                 interface_om.ipaddresses = intfline[4]
                 interface_om.adapter = intfline[5]
+                interface_om.state = intfline[6]
                 interface_om.domain = results['domain']
 
                 intfnodeid = node_ownergroups[interface_om.node]
@@ -360,6 +365,7 @@ class WinCluster(WinRMPlugin):
             net_om.title = netline[1]
             net_om.description = netline[2]
             net_om.role = netrole
+            net_om.state = netline[3]
             net_om.domain = results['domain']
 
             map_networks_oms.append(net_om)
@@ -370,5 +376,5 @@ class WinCluster(WinRMPlugin):
             modname="ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork",
             objmaps=map_networks_oms
         ))
-        return maps
 
+        return maps

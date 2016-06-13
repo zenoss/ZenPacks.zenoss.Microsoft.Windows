@@ -5,23 +5,16 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
-	<!-- components -->
     <adapter
-        factory=".info.FileSystemInfo"
-        for=".FileSystem.FileSystem"
-        provides=".interfaces.IFileSystemInfo"
+        factory=".info.DeviceInfo"
+        for=".Device.Device"
+        provides=".interfaces.IDeviceInfo"
         />
 
     <adapter
-        factory=".info.CPUInfo"
-        for=".CPU.CPU"
-        provides=".interfaces.ICPUInfo"
-        />
-
-    <adapter
-        factory=".info.OSProcessInfo"
-        for=".OSProcess.OSProcess"
-        provides=".interfaces.IOSProcessInfo"
+        factory=".info.TeamInterfaceInfo"
+        for=".TeamInterface.TeamInterface"
+        provides=".interfaces.ITeamInterfaceInfo"
         />
 
     <adapter
@@ -31,10 +24,95 @@
         />
 
     <adapter
+        factory=".info.CPUInfo"
+        for=".CPU.CPU"
+        provides=".interfaces.ICPUInfo"
+        />
+
+    <adapter
+        factory=".info.FileSystemInfo"
+        for=".FileSystem.FileSystem"
+        provides=".interfaces.IFileSystemInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterDeviceInfo"
+        for=".ClusterDevice.ClusterDevice"
+        provides=".interfaces.IClusterDeviceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterServiceInfo"
+        for=".ClusterService.ClusterService"
+        provides=".interfaces.IClusterServiceInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterResourceInfo"
+        for=".ClusterResource.ClusterResource"
+        provides=".interfaces.IClusterResourceInfo"
+        />
+
+    <adapter
         factory=".info.WinServiceInfo"
         for=".WinService.WinService"
         provides=".interfaces.IWinServiceInfo"
         />
+
+    <adapter
+        factory=".info.ClusterNodeInfo"
+        for=".ClusterNode.ClusterNode"
+        provides=".interfaces.IClusterNodeInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterDiskInfo"
+        for=".ClusterDisk.ClusterDisk"
+        provides=".interfaces.IClusterDiskInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterNetworkInfo"
+        for=".ClusterNetwork.ClusterNetwork"
+        provides=".interfaces.IClusterNetworkInfo"
+        />
+
+    <adapter
+        factory=".info.ClusterInterfaceInfo"
+        for=".ClusterInterface.ClusterInterface"
+        provides=".interfaces.IClusterInterfaceInfo"
+        />
+
+    <adapter
+        factory=".info.WinIISInfo"
+        for=".WinIIS.WinIIS"
+        provides=".interfaces.IWinIISInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLBackupInfo"
+        for=".WinSQLBackup.WinSQLBackup"
+        provides=".interfaces.IWinSQLBackupInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLDatabaseInfo"
+        for=".WinSQLDatabase.WinSQLDatabase"
+        provides=".interfaces.IWinSQLDatabaseInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLInstanceInfo"
+        for=".WinSQLInstance.WinSQLInstance"
+        provides=".interfaces.IWinSQLInstanceInfo"
+        />
+
+    <adapter
+        factory=".info.WinSQLJobInfo"
+        for=".WinSQLJob.WinSQLJob"
+        provides=".interfaces.IWinSQLJobInfo"
+        />
+
 
 	<!-- datasources -->
     <adapter
@@ -117,58 +195,113 @@
         for=".Interface.Interface"
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
         />
-	 -->
 
-    <!-- Device Links
+
+    <!-- Device Links -->
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
         <subscriber
             provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
             for='ZenPacks.zenoss.Microsoft.Windows.Device.Device'
             factory='.Device.DeviceLinkProvider'
             />
-	-->
+    </configure>
 
-    <!-- Analytics
+    <!-- Impact -->
+    <configure zcml:condition="installed ZenPacks.zenoss.Impact">
+        <include package="ZenPacks.zenoss.Impact" file="meta.zcml"/>
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".Device.Device"
+            factory=".impact.DeviceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".FileSystem.FileSystem"
+            factory=".impact.FileSystemRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".CPU.CPU"
+            factory=".impact.CPURelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterService.ClusterService"
+            factory=".impact.ClusterRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinService.WinService"
+            factory=".impact.WinServiceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinIIS.WinIIS"
+            factory=".impact.WinIISRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLJob.WinSQLJob"
+            factory=".impact.WinSQLJobRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLDatabase.WinSQLDatabase"
+            factory=".impact.WinSQLDatabaseRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".WinSQLJob.WinSQLJob"
+            factory=".impact.WinSQLJobRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterResource.ClusterResource"
+            factory=".impact.ClusterResourceRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterNode.ClusterNode"
+            factory=".impact.ClusterNodeRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterNetwork.ClusterNetwork"
+            factory=".impact.ClusterNetworkRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterDisk.ClusterDisk"
+            factory=".impact.ClusterDiskRelationsProvider"
+            />
+
+        <subscriber
+            provides="ZenPacks.zenoss.Impact.impactd.interfaces.IRelationshipDataProvider"
+            for=".ClusterInterface.ClusterInterface"
+            factory=".impact.ClusterInterfaceRelationsProvider"
+            />
+
+    </configure>
+
+    <!-- Analytics -->
     <include file="reportable.zcml"
         xmlns:zcml="http://namespaces.zope.org/zcml"
         zcml:condition="installed ZenPacks.zenoss.ZenETL" />
-	-->
 
-    <!-- Browser Resources -->
-
-    <browser:resourceDirectory
-        name="mswindows"
-        directory="resources"
-        />
-
-    <browser:viewlet
-        name="js-mswindowsproperty"
-        paths="/++resource++mswindows/js/zDBInstances.js"
-        weight="21"
-        for="*"
-        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
-        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
-        permission="zope2.Public"
-        />
-
-    <browser:viewlet
-        name="js-mswindows"
-        paths="/++resource++mswindows/js/global.js"
-        weight="10"
-        for="*"
-        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
-        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
-        permission="zope2.Public"
-        />
-
-    <browser:viewlet
-        name="js-mswindowsdevice"
-        paths="/++resource++mswindows/js/device.js"
-        weight="10"
-        for=".Device.Device"
-        manager="Products.ZenUI3.browser.interfaces.IJavaScriptSrcManager"
-        class="Products.ZenUI3.browser.javascript.JavaScriptSrcBundleViewlet"
-        permission="zope2.Public"
-        />
+    <!-- Browser -->
+    <include package=".browser"/>
 
 </configure>

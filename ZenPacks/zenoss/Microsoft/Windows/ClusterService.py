@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -20,50 +20,52 @@ from utils import cluster_state_string
 log = logging.getLogger("zen.MicrosoftWindows")
 
 
-class ClusterNode(OSComponent):
+class ClusterService(OSComponent):
     '''
-    Model class for Cluster Node.
+    Model class for Cluster Service.
     '''
-    meta_type = portal_type = 'MSClusterNode'
+    meta_type = portal_type = 'MSClusterService'
 
-    assignedvote = None
-    currentvote = None
+    ownernode = None
+    description = None
+    coregroup = False
+    priority = 0
     state = None
     domain = ""
 
     _properties = OSComponent._properties + (
-        {'id': 'assignedvote', 'label': 'Assigned Vote', 'type': 'string'},
-        {'id': 'currentvote', 'label': 'Current Vote', 'type': 'string'},
+        {'id': 'ownernode', 'label': 'Owner Node', 'type': 'string'},
+        {'id': 'description', 'label': 'Description', 'type': 'string'},
+        {'id': 'coregroup', 'label': 'Core Group', 'type': 'boolean'},
+        {'id': 'priority', 'label': 'Priority', 'type': 'integer'},
         {'id': 'state', 'label': 'State', 'type': 'string'},
         {'id': 'domain', 'label': 'Domain', 'type': 'string'},
-    )
+        )
 
     _relations = OSComponent._relations + (
         ('os', ToOne(ToManyCont,
-         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusternodes')),
-        ('clusterdisks', ToManyCont(ToOne,
-         'ZenPacks.zenoss.Microsoft.Windows.ClusterDisk', 'clusternode')),
-        ('clusterinterfaces', ToManyCont(ToOne,
-         'ZenPacks.zenoss.Microsoft.Windows.ClusterInterface', 'clusternode')),
+         'ZenPacks.zenoss.Microsoft.Windows.OperatingSystem', 'clusterservices')),
+        ('clusterresources', ToManyCont(ToOne,
+         'ZenPacks.zenoss.Microsoft.Windows.ClusterResource', 'clusterservice')),
     )
 
     def ownernodeentity(self):
         deviceRoot = self.dmd.getDmdRoot("Devices")
         try:
-            clusterhostip = getHostByName(self.title + "." + self.domain)
+            clusterhostip = getHostByName(self.ownernode + "." + self.domain)
             return deviceRoot.findDeviceByIdOrIp(clusterhostip)
         except(gaierror):
-            log.warning('Unable to resolve hostname {0}'.format(self.title + "." + self.domain))
+            log.warning('Unable to resolve hostname {0}'.format(self.ownernode + "." + self.domain))
             return
 
     def getRRDTemplateName(self):
-        return 'ClusterNode'
+        return 'ClusterService'
 
     def getIconPath(self):
         '''
         Return the path to an icon for this component.
         '''
-        return '/++resource++mswindows/img/server-windows.png'
+        return '/++resource++mswindows/img/ClusterService.png'
 
     def getState(self):
         try:
@@ -74,4 +76,4 @@ class ClusterNode(OSComponent):
         return cluster_state_string(state)
 
 
-InitializeClass(ClusterNode)
+InitializeClass(ClusterService)
