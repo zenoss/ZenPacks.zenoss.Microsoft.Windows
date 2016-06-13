@@ -119,7 +119,7 @@ class ZenPack(ZenPackBase):
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
 
-        self.cleanup_zProps()
+        self.cleanup_zProps(app.zport.dmd)
 
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
@@ -182,9 +182,9 @@ class ZenPack(ZenPackBase):
 
         deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
-    def cleanup_zProps(self):
+    def cleanup_zProps(self, dmd):
         # Delete zProperty when updating the older zenpack version without reinstall.
-        devices = self.dmd.Devices
+        devices = dmd.Devices
         try:
             devices.deleteZenProperty('zDBInstancesPassword')
         except:

@@ -29,6 +29,6 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data.maps[0].caption, 'Caption')
         self.assertEquals(data.maps[0].description, 'Description')
         self.assertEquals(data.maps[0].id, 'Name')
-        self.assertEquals(data.maps[0].servicename, 'Name')
-        self.assertEquals(data.maps[0].startmode, 'StartMode')
+        self.assertEquals(data.maps[0].serviceName, 'Name')
+        self.assertEquals(data.maps[0].startMode, 'StartMode')
         self.assertEquals(data.maps[0].title, 'Caption')

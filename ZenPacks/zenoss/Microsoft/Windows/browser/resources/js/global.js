@@ -396,6 +396,7 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
     }
 })();
 
+
 Ext.onReady(function() {
     Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
         var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.');
