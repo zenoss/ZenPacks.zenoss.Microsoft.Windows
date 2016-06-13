@@ -89,6 +89,7 @@ Ext.apply(Zenoss.render, {
             return "";
         }
     }
+
 });
 
 })();

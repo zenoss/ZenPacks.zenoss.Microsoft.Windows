@@ -10,6 +10,78 @@
 
 var ZC = Ext.ns('Zenoss.component');
 
+Ext.define("Zenoss.component.WinRMServicePanel", {
+    alias:['widget.WinRMServicePanel'],
+    extend:"Zenoss.component.ComponentGridPanel",
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'displayname',
+            componentType: 'WinRMService',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'meta_type'},
+                {name: 'name'},
+                {name: 'title'},
+                {name: 'servicename'},
+                {name: 'caption'},
+                {name: 'startmode'},
+                {name: 'account'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'locking'},
+                {name: 'monitored'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 50
+            },{
+                id: 'name',
+                dataIndex: 'servicename',
+                header: _t('Name'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'displayname',
+                dataIndex: 'caption',
+                header: _t('Display Name'),
+                sortable: true
+            },{
+                id: 'account',
+                dataIndex: 'account',
+                header: _t('Start Name'),
+                widht: 110,
+                sortable: true
+            },{
+                id: 'startmode',
+                dataIndex: 'startmode',
+                header: _t('Start Mode'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinRMServicePanel.superclass.constructor.call(this, config);
+    }
+});
+
+ZC.registerName('WinRMService', _t('Service'), _t('Services'));
+
 
 /* WinRS Datasource UI ******************************************************/
 

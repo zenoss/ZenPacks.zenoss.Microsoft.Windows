@@ -58,7 +58,7 @@ class ResetClassTypes(ZenPackMigration):
                    ClusterService, FileSystem, Interface, 
                    OSProcess, TeamInterface, WinIIS, 
                    WinSQLBackup, WinSQLDatabase, WinSQLInstance,
-                   WinSQLJob, WinService]
+                   WinSQLJob]
         for klass in klasses:
             self.reset_class(catalog, klass)
 

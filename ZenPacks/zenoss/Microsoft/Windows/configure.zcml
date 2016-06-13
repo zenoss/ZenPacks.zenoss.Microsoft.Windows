@@ -30,6 +30,12 @@
         provides=".interfaces.IInterfaceInfo"
         />
 
+    <adapter
+        factory=".info.WinServiceInfo"
+        for=".WinService.WinService"
+        provides=".interfaces.IWinServiceInfo"
+        />
+
 	<!-- datasources -->
     <adapter
         provides=".datasources.ShellDataSource.IShellDataSourceInfo"
