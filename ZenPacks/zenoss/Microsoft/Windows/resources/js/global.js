@@ -23,10 +23,10 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
                 {name: 'meta_type'},
                 {name: 'name'},
                 {name: 'title'},
-                {name: 'servicename'},
+                {name: 'serviceName'},
                 {name: 'caption'},
-                {name: 'startmode'},
-                {name: 'account'},
+                {name: 'startMode'},
+                {name: 'startName'},
                 {name: 'usesMonitorAttribute'},
                 {name: 'monitor'},
                 {name: 'locking'},
@@ -41,7 +41,7 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
                 width: 50
             },{
                 id: 'name',
-                dataIndex: 'servicename',
+                dataIndex: 'serviceName',
                 header: _t('Name'),
                 sortable: true,
                 width: 110
@@ -51,14 +51,14 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
                 header: _t('Display Name'),
                 sortable: true
             },{
-                id: 'account',
-                dataIndex: 'account',
+                id: 'startName',
+                dataIndex: 'startName',
                 header: _t('Start Name'),
                 widht: 110,
                 sortable: true
             },{
                 id: 'startmode',
-                dataIndex: 'startmode',
+                dataIndex: 'startMode',
                 header: _t('Start Mode'),
                 sortable: true,
                 width: 110
@@ -450,45 +450,6 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
         Ext.reg('startmodegroup', Zenoss.form.StartModeGroup);
     }
 })();
-
-Ext.onReady(function() {
-    Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
-        var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.');
-        var dlg = new Zenoss.FormDialog({
-            title: _t('Windows Services'),
-            modal: true,
-            items: [ {
-                        xtype: 'label',
-                        text: message,
-                        ref: 'messagelabel'
-                    },
-                    {
-                        xtype: 'checkboxfield',
-                        boxLabel  : 'Check if you no longer want to see this message.',
-                        name      : 'hidemessage',
-                        inputValue: '1',
-                        stateId   : 'services_checkbox',
-                        stateful: true,
-                        stateEvents: ['change'],
-                        getState: function() {
-                            return {checked: this.getValue()}
-                        },
-                        applyState: function(state){
-                            this.setValue(state.checked);
-                        }
-                    }],
-            buttons: [
-                        {
-                            xtype: 'HideDialogButton',
-                            text: _t('OK'),
-                        }
-                    ],
-        });
-        if (dlg.down('checkboxfield').getValue() == false){
-            dlg.show();
-        }
-    });
-});
 
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 

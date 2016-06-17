@@ -505,6 +505,7 @@ See the following examples:
 # Choose Yes or No depending on what you want.
 
 ;Enable monitoring by default for the WinRM service wherever it is enabled.
+Option 1
 # Navigate to Advanced -> Monitoring Templates.
 # Verify the list of templates is grouped by template.
 # Expand the ''WinService'' tree.
@@ -516,6 +517,16 @@ See the following examples:
 # Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM''.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
+
+Option 2
+# Navigate to Infrastructure -> Windows Services
+# Locate the WinRM service
+# Select the start modes desired for this service
+# Enable monitoring by setting a Local Value
+# Optionally select a Local Failure Severity
+# Save
+
+[[note]] Setting a service to be monitored in this fashion will enable monitoring for the service regardless of device class.
 
 ;Enable/Disable monitoring by default for the WinRM service for a select group of servers.
 # Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
@@ -551,6 +562,7 @@ The order of precedence for monitoring a service is:
 # User manually sets monitoring
 # 'DefaultService' datasource from default WinService template or copy of default template
 # Datasource other than the DefaultService in default WinService template or copy of default template
+# Monitoring is enabled via the Infrastructure -> Windows Services page
 
 You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions.
 
@@ -1152,6 +1164,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ; 2.6.0
+* Enabled the use of the Infrastructure -> Windows Services page
 * Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
 * Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
 * Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
