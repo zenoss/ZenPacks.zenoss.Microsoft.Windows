@@ -110,6 +110,7 @@ class WinService(BaseWinService):
                         return True
 
         # 3 check the service class
+        # be sure we can get the serviceclass and that we have a relationship with serviceclass
         if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
             sc = self.serviceclass()
             if sc:
