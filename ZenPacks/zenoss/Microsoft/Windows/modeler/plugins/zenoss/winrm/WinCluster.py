@@ -237,6 +237,12 @@ class WinCluster(WinRMPlugin):
                 appsom.append(app_om)
                 map_apps_to_resource[groupid] = appsom
 
+        # Fixes ZEN-23142
+        # Remove ClusterServices without any associated ClusterResources configured
+        for m in map_resources_oms:
+            if m.id not in map_apps_to_resource.keys():
+                map_resources_oms.remove(m)
+
         maps.append(RelationshipMap(
             compname="os",
             relname="clusterservices",
