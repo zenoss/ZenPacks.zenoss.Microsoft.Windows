@@ -118,7 +118,7 @@ class DataPersister(object):
     devices = None
 
     # For performing periodic cleanup of stale data.
-    maintenance_interval = 600
+    maintenance_interval = 300
 
     # Data older than this (in seconds) will be dropped on maintenance.
     max_data_age = 3600
