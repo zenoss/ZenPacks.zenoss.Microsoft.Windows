@@ -45,11 +45,11 @@ class WinServiceInfo(ComponentInfo):
     implements(IWinServiceInfo)
 
     title = ProxyProperty('title')
-    servicename = ProxyProperty('servicename')
+    serviceName = ProxyProperty('serviceName')
     caption = ProxyProperty('caption')
     description = ProxyProperty('description')
-    startmode = ProxyProperty('startmode')
-    account = ProxyProperty('account')
+    startMode = ProxyProperty('startMode')
+    startName = ProxyProperty('startName')
     usermonitor = ProxyProperty('usermonitor')
 
     @property

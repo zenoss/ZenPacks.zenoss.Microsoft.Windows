@@ -199,6 +199,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         params['startmode'] = datasource.startmode
 
         params['usermonitor'] = context.usermonitor
+        params['winservices'] = context.get_winservices_modes()
 
         return params
 
@@ -250,6 +251,9 @@ class ServicePlugin(PythonDataSourcePlugin):
         '''
         data = self.new_data()
         params = config.datasources[0].params
+        # if monitoring is false, don't monitor
+        # if no start modes configured on datasource or service class, don't monitor
+        winservices = params['winservices']
         if params['startmode'] == 'None' and not params['usermonitor']:
             log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
                       .format(config.datasources[0].datasource))
@@ -260,60 +264,71 @@ class ServicePlugin(PythonDataSourcePlugin):
             serviceinfo = results[results.keys()[0]]
         except:
             data['events'].append({
-                                'eventClass': "/Status",
-                                'severity': ZenEventClasses.Error,
-                                'eventClassKey': 'WindowsServiceCollectionStatus',
-                                'eventKey': 'WindowsServiceCollection',
-                                'summary': 'No results returned for service query',
-                                'device': config.id})
+                'eventClass': "/Status",
+                'severity': ZenEventClasses.Error,
+                'eventClassKey': 'WindowsServiceCollectionStatus',
+                'eventKey': 'WindowsServiceCollection',
+                'summary': 'No results returned for service query',
+                'device': config.id})
             return data
 
         for index in range(len(serviceinfo)):
-            if serviceinfo[index].Name not in services.keys():
+            svc_info = serviceinfo[index]
+            svc_id = svc_info.Name
+            winsvc = winservices.get(svc_id)
+
+            if svc_id not in services.keys() or not winsvc:
                 continue
 
-            service = services[serviceinfo[index].Name]
+            # skip if this service shouldn't be monitored
+            if not winsvc.get('monitor', False):
+                continue
+            # continue if this service's state is not in montiored modes
+            if winsvc.get('mode') not in winsvc.get('modes', []):
+                continue
+
+            service = services[svc_id]
             eventClass = service['eventClass'] if service['eventClass'] else "/Status"
             eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
 
-            if serviceinfo[index].State != service['alertifnot']:
+            if svc_info.State != service['alertifnot']:
 
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
-                    serviceinfo[index].Name,
-                    serviceinfo[index].State
+                    svc_id,
+                    svc_info.State
                 )
 
                 data['events'].append({
-                    'component': serviceinfo[index].Name,
-                    'service_name': serviceinfo[index].Name,
-                    'service_state': serviceinfo[index].State,
-                    'service_status': serviceinfo[index].Status,
+                    'component': svc_id,
+                    'service_name': svc_id,
+                    'service_state': svc_info.State,
+                    'service_status': svc_info.Status,
                     'eventClass': eventClass,
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': eventKey,
                     'severity': service['severity'],
                     'summary': evtmsg,
-                    'component': prepId(serviceinfo[index].Name),
+                    'component': prepId(svc_id),
                     'device': config.id,
                 })
             else:
 
                 evtmsg = 'Service Recovered: {0} has changed to {1} state'.format(
-                    serviceinfo[index].Name,
-                    serviceinfo[index].State
+                    svc_info.Name,
+                    svc_info.State
                 )
 
                 data['events'].append({
-                    'component': serviceinfo[index].Name,
-                    'service_name': serviceinfo[index].Name,
-                    'service_state': serviceinfo[index].State,
-                    'service_status': serviceinfo[index].Status,
+                    'component': svc_id,
+                    'service_name': svc_id,
+                    'service_state': svc_info.State,
+                    'service_status': svc_info.Status,
                     'eventClass': eventClass,
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': eventKey,
                     'severity': ZenEventClasses.Clear,
                     'summary': evtmsg,
-                    'component': prepId(serviceinfo[index].Name),
+                    'component': prepId(svc_id),
                     'device': config.id,
                 })
 

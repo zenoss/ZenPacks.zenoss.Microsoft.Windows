@@ -11,23 +11,18 @@ import re
 import logging
 import string
 from Globals import InitializeClass
+from AccessControl import ClassSecurityInfo
 
-from Products.ZenModel.OSComponent import OSComponent
-from Products.ZenRelations.RelSchema import ToOne, ToManyCont
+from Products.ZenModel.WinService import WinService as BaseWinService
 
 log = logging.getLogger('zen.MicrosoftWindows')
 
 
-class WinService(OSComponent):
+class WinService(BaseWinService):
     '''
     Model class for Windows Service.
     '''
     meta_type = portal_type = 'WinRMService'
-
-
-    #startmode [string] = The start mode for the servicename
-    #account [string] = The account name the service runs as
-    #usermonitor [boolean] = Did user manually set monitor.
 
     servicename = None
     caption = None
@@ -37,7 +32,7 @@ class WinService(OSComponent):
     monitor = False
     usermonitor = False
 
-    _properties = OSComponent._properties + (
+    _properties = BaseWinService._properties + (
         {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
         {'id': 'caption', 'label': 'Caption', 'type': 'string'},
         {'id': 'description', 'label': 'Description', 'type': 'string'},
@@ -45,33 +40,38 @@ class WinService(OSComponent):
         {'id': 'account', 'label': 'Account', 'type': 'string'},
         {'id': 'usermonitor', 'label': 'User Selected Monitor State',
             'type': 'boolean'},
-        )
-
-    _relations = OSComponent._relations + (
-        ("os", ToOne(ToManyCont,
-         "ZenPacks.zenoss.Microsoft.Windows.OperatingSystem",
-                     "winrmservices")),
     )
+
+    security = ClassSecurityInfo()
+
+    def getClassObject(self):
+        """
+        Return the ServiceClass for this service.
+        """
+        return self.serviceClass()
 
     def getRRDTemplateName(self):
         try:
-            if self.getRRDTemplateByName(self.servicename):
-                return self.servicename
+            if self.getRRDTemplateByName(self.serviceName):
+                return self.serviceName
         except TypeError:
             pass
         return 'WinService'
+
+    def getRRDTemplates(self):
+        return [self.getRRDTemplateByName(self.getRRDTemplateName())]
 
     def is_match(self, service_regex):
         # can be actual name of service or a regex
         allowed_chars = set(string.ascii_letters + string.digits + '_-')
         if not set(service_regex) - allowed_chars:
-            return service_regex == self.servicename
+            return service_regex == self.serviceName
         try:
             regx = re.compile(service_regex)
         except re.error as e:
             log.warn(e)
             return False
-        if regx.match(self.servicename):
+        if regx.match(self.serviceName):
             return True
         return False
 
@@ -80,7 +80,7 @@ class WinService(OSComponent):
         # exclusion will override an inclusion
         rtn = False
         for startmode in datasource.startmode.split(','):
-            if startmode in self.startmode.split(',') and hasattr(datasource, 'in_exclusions'):
+            if startmode in self.startMode.split(',') and hasattr(datasource, 'in_exclusions'):
                 for service in datasource.in_exclusions.split(','):
                     service_regex = service.strip()
                     if service_regex.startswith('+') and self.is_match(service_regex[1:]):
@@ -109,6 +109,75 @@ class WinService(OSComponent):
                     if self.getMonitored(datasource):
                         return True
 
+        # 3 check the service class
+        # be sure we can get the serviceclass and that we have a relationship with serviceclass
+        if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
+            sc = self.serviceclass()
+            if sc:
+                org = sc.serviceorganizer()
+                # check the service class monitored start modes
+                if self.startMode in sc.monitoredStartModes:
+                    # check the zMonitor organizer property
+                    if org and hasattr(org, 'zMonitor'):
+                        return org.zMonitor
+        # don't monitor Disabled services
+        if self.startMode and self.startMode == "Disabled":
+            return False
+
         return False
+
+    def get_serviceclass_startmodes(self):
+        ''' determine the start modes for this services
+            giving precedence to manual monitoring, followed
+            by local template override, and falling back on
+            service class if not defined
+        '''
+        if self.usermonitor is True:
+            return [self.startMode]
+
+        template = self.getRRDTemplate()
+        if template:
+            datasource = template.datasources._getOb('DefaultService', None)
+            if datasource and self.getMonitored(datasource):
+                modes = datasource.startmode.split(',')
+                if 'None' in modes:
+                    modes.remove('None')
+                if len(modes) > 0:
+                    return modes
+            # 3 - Allow for other datasources to be specified.
+            for datasource in template.getRRDDataSources():
+                if datasource.id != 'DefaultService' and hasattr(datasource, 'startmode'):
+                    if self.getMonitored(datasource):
+                        modes = datasource.startmode.split(',')
+                        if 'None' in modes:
+                            modes.remove('None')
+                        if len(modes) > 0:
+                            return modes
+        sc = self.serviceclass()
+        if sc:
+            return sc.monitoredStartModes
+
+    def get_winservices_modes(self):
+        ''''''
+        data = {}
+        for svc in self.device().os.winservices():
+            if svc.monitored():
+                data[svc.id] = {'modes': svc.get_serviceclass_startmodes(),
+                                'mode': svc.startMode,
+                                'monitor': svc.monitored()
+                                }
+        return data
+
+    def getMonitoredStartModes(self):
+        return self.get_serviceclass_startmodes()
+
+    security.declareProtected('Manage DMD', 'manage_editService')
+    def manage_editService(self, *args, **kwargs):
+        """Edit a Service from a web page.
+        """
+        tmpl = super(WinService, self).manage_editService(
+            *args, **kwargs)
+        self.index_object()
+        return tmpl
 
 InitializeClass(WinService)
