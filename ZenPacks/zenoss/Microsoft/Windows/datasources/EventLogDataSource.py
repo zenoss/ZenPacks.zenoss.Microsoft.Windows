@@ -51,7 +51,7 @@ INSERT_TIME = 'TimeCreated[timediff(@SystemTime) &lt;= {time}] and '
 class EventLogDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
-    cycletime = '${here/zWinPerfmonInterval}'
+    cycletime = '300'
     counter = ''
     sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]

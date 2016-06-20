@@ -15860,7 +15860,7 @@ ${here/id}
 5
 </property>
 <property type="string" id="cycletime" mode="w" >
-60
+300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
