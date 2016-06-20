@@ -15,7 +15,7 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.Services import Services
 
 
-class TestProcesses(BaseTestCase):
+class TestServices(BaseTestCase):
 
     def setUp(self):
         self.plugin = Services()
@@ -25,10 +25,13 @@ class TestProcesses(BaseTestCase):
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
-        self.assertEquals(data.maps[0].account, 'StartName')
-        self.assertEquals(data.maps[0].caption, 'Caption')
-        self.assertEquals(data.maps[0].description, 'Description')
-        self.assertEquals(data.maps[0].id, 'Name')
-        self.assertEquals(data.maps[0].servicename, 'Name')
-        self.assertEquals(data.maps[0].startmode, 'StartMode')
-        self.assertEquals(data.maps[0].title, 'Caption')
+        # getting second relationshipmap since first contains empty winservices
+        rm = data[1]
+        maps = rm.maps[0]
+        self.assertEquals(maps.caption, 'Caption')
+        self.assertEquals(maps.id, 'Name')
+        self.assertEquals(maps.pathName, 'PathName')
+        self.assertEquals(maps.serviceName, 'Name')
+        self.assertEquals(maps.serviceType, 'ServiceType')
+        self.assertEquals(maps.setServiceClass, {'description': 'Caption', 'name': 'Name'})
+        self.assertEquals(maps.startMode, 'StartMode')
