@@ -1172,6 +1172,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
 * Fix WinRM monitoring does not emit message for expired password (ZEN-23183)
 * Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
+* Fix MSSQL Queries wrong database for metric (ZEN-23228)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
