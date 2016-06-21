@@ -164,9 +164,32 @@ class WinService(BaseWinService):
             if svc.monitored():
                 data[svc.id] = {'modes': svc.get_serviceclass_startmodes(),
                                 'mode': svc.startMode,
-                                'monitor': svc.monitored()
+                                'monitor': svc.monitored(),
+                                'severity': svc.getFailSeverity(),
                                 }
         return data
+
+    def getTemplateDefaultService(self):
+        '''Return datasource for template if it exists'''
+        template = self.getRRDTemplate()
+        if template:
+            return template.datasources._getOb('DefaultService', None)
+        return None
+
+    def getFailSeverity(self):
+        """
+        Return the severity for this service when it fails.
+        """
+        datasource = self.getTemplateDefaultService()
+        if datasource:
+            return datasource.severity
+        return self.getAqProperty("zFailSeverity")
+
+    def getFailSeverityString(self):
+        """
+        Return a string representation of zFailSeverity
+        """
+        return self.ZenEventManager.severities[self.getFailSeverity()]
 
     def getMonitoredStartModes(self):
         return self.get_serviceclass_startmodes()

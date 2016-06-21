@@ -7,13 +7,10 @@
 #
 ##############################################################################
 
-
 from . import schema
 
 from Products.Zuul.form import schema as form_schema
-
 import Products.Zuul.interfaces.component as zuul
-from Products.Zuul.interfaces.component import IComponentInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
 
@@ -41,11 +38,8 @@ class IInterfaceInfo(schema.IInterfaceInfo, zuul.IIpInterfaceInfo):
     """
 
 
-class IWinServiceInfo(IComponentInfo):
-    title = form_schema.TextLine(title=_t(u'Title'), readonly=True)
-    servicename = form_schema.TextLine(title=_t(u'Service Name'), readonly=True)
-    caption = form_schema.TextLine(title=_t(u'Caption'), readonly=True)
-    formatted_description = form_schema.TextLine(title=_t(u'Description'), readonly=True)
-    startmode = form_schema.TextLine(title=_t(u'Start Mode'), readonly=True)
-    account = form_schema.TextLine(title=_t(u'Account'), readonly=True)
-    usermonitor = form_schema.TextLine(title=_t(u'User Selected Monitor State'), readonly=True)
+class IWinServiceInfo(zuul.IWinServiceInfo):
+    """
+    Info adapter for WinService components.
+    """
+    usermonitor = form_schema.Bool(title=_t(u'User Selected Monitor State'), readonly=True)
