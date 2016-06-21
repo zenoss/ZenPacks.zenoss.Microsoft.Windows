@@ -12,7 +12,7 @@ from Products.Zuul.infos.component.filesystem import FileSystemInfo
 from Products.Zuul.infos.component.cpu import CPUInfo
 from Products.Zuul.infos.component.osprocess import OSProcessInfo
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo
-from Products.Zuul.infos.component import ComponentInfo
+from Products.Zuul.infos.component.winservice import WinServiceInfo
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.decorators import info
 
@@ -41,22 +41,10 @@ class InterfaceInfo(schema.InterfaceInfo, IpInterfaceInfo):
     implements(IInterfaceInfo)
 
 
-class WinServiceInfo(ComponentInfo):
+class WinServiceInfo(WinServiceInfo):
     implements(IWinServiceInfo)
 
-    title = ProxyProperty('title')
-    serviceName = ProxyProperty('serviceName')
-    caption = ProxyProperty('caption')
-    description = ProxyProperty('description')
-    startMode = ProxyProperty('startMode')
-    startName = ProxyProperty('startName')
     usermonitor = ProxyProperty('usermonitor')
-
-    @property
-    @info
-    def formatted_description(self):
-        return '<div style="white-space: normal;">{}</div>'.format(
-            self._object.description)
 
     def getMonitor(self):
         monitorstatus = self._object.monitored()
