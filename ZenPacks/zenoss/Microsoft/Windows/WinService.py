@@ -22,7 +22,6 @@ class WinService(BaseWinService):
     '''
     Model class for Windows Service.
     '''
-    meta_type = portal_type = 'WinRMService'
 
     servicename = None
     caption = None

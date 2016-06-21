@@ -264,7 +264,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             serviceinfo = results[results.keys()[0]]
         except:
             data['events'].append({
-                'eventClass': "/Status",
+                'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'WindowsServiceCollectionStatus',
                 'eventKey': 'WindowsServiceCollection',
@@ -288,7 +288,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                 continue
 
             service = services[svc_id]
-            eventClass = service['eventClass'] if service['eventClass'] else "/Status"
+            eventClass = service['eventClass'] if service['eventClass'] else "/Status/WinService"
             eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
 
             if svc_info.State != service['alertifnot']:
@@ -334,7 +334,7 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # Event to provide notification that check has completed
         data['events'].append({
-            'eventClass': "/Status",
+            'eventClass': "/Status/WinService",
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
@@ -345,7 +345,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
-        eventClass = "/Status"
+        eventClass = "/Status/WinService"
         prefix = 'failed collection - '
         if isinstance(result, Failure):
             result = result.value
