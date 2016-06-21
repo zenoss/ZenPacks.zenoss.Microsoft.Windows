@@ -387,6 +387,9 @@ classes:
     label: File System
     base: [BaseComponent, Products.ZenModel.FileSystem.FileSystem]
     properties:
+      DEFAULTS:
+        details_display: false
+        grid_display: false
       mediatype:
         label: Media Type
         default: None
@@ -415,6 +418,11 @@ classes:
     dynamicview_relations:
       impacts: []
       impacted_by: [device]
+    relationships:
+      DEFAULTS:
+        grid_display: true
+        details_display: false
+      teaminterface: {}
 
   OSProcess:
     label: Process
