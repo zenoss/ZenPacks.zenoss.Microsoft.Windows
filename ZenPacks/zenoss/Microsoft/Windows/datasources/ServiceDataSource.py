@@ -343,7 +343,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                     'eventClass': "/Status/WinService",
                     'eventClassKey': 'WindowsServiceLog',
                     'eventKey': "WindowsService",
-                    'severity': service['severity'],
+                    'severity': winsvc.get('severity', service.get('severity', 3)),
                     'summary': evtmsg,
                     'component': prepId(svc_id),
                     'device': config.id,
