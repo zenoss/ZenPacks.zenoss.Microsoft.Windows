@@ -320,7 +320,9 @@ class Interfaces(WinRMPlugin):
                 int_om.ifindex = inter.Index
 
             if inter.Index in perfmonInstanceMap:
-                int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
+                # only physical adapters will have perfmon data
+                if inter.PhysicalAdapter.lower() == 'true':
+                    int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
             else:
                 log.warning("Adapter '%s':%d does not have a perfmon "
                             "instance name and will not be monitored for "
