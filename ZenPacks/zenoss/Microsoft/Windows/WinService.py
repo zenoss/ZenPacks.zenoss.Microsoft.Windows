@@ -96,17 +96,9 @@ class WinService(BaseWinService):
             return self.monitor
 
         # 2 - Check what our template says to do.
-        template = self.getRRDTemplate()
-        if template:
-            datasource = template.datasources._getOb('DefaultService', None)
-            if datasource:
-                if self.getMonitored(datasource):
-                    return True
-            # 3 - Allow for other datasources to be specified.
-            for datasource in template.getRRDDataSources():
-                if datasource.id != 'DefaultService' and hasattr(datasource, 'startmode'):
-                    if self.getMonitored(datasource):
-                        return True
+        datasource = self.getMonitoredDataSource()
+        if datasource and self.getMonitored(datasource):
+            return True
 
         # 3 check the service class
         # be sure we can get the serviceclass and that we have a relationship with serviceclass
@@ -168,18 +160,20 @@ class WinService(BaseWinService):
                                 }
         return data
 
-    def getTemplateDefaultService(self):
+    def getMonitoredDataSource(self):
         '''Return datasource for template if it exists'''
         template = self.getRRDTemplate()
         if template:
-            return template.datasources._getOb('DefaultService', None)
+            for datasource in template.getRRDDataSources():
+                if hasattr(datasource, 'startmode') and self.getMonitored(datasource):
+                    return datasource
         return None
 
     def getFailSeverity(self):
         """
         Return the severity for this service when it fails.
         """
-        datasource = self.getTemplateDefaultService()
+        datasource = self.getMonitoredDataSource()
         if datasource:
             return datasource.severity
         return self.getAqProperty("zFailSeverity")
