@@ -77,7 +77,7 @@ class TestInterfacesCounters(BaseTestCase):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(len(data.maps), 14)
 
-        self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver)")
+        self.assertFalse(hasattr(data.maps[7], 'perfmonInstance'))
         self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver _2)")
 
 

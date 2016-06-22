@@ -1174,6 +1174,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
 * Fix MSSQL Queries wrong database for metric (ZEN-23228)
 * Fix Windows Service shows 'Up' when down if event class modified (ZEN-19615)
+* Fix Windows Installed on UCS shows 2 interfaces where there's only 1 (ZEN-23379)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
