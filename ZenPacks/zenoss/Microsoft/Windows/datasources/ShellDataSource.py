@@ -200,9 +200,13 @@ class WinCmd(object):
     def __init__(self):
         self.points = []
 
+    def setDatasource(self, datasource):
+        self.datasource = datasource
+
 
 class IStrategy(Interface):
     ''' Interface for strategy '''
+
 
 class DCDiagStrategy(object):
     implements(IStrategy)
@@ -273,6 +277,7 @@ class DCDiagStrategy(object):
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
 
+
 class CustomCommandStrategy(object):
     implements(IStrategy)
 
@@ -293,6 +298,7 @@ class CustomCommandStrategy(object):
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
+        cmd.setDatasource(dsconf)
         cmd.name = '{}/{}'.format(dsconf.template, dsconf.datasource)
         cmd.command = dsconf.params['script']
 
