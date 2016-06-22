@@ -18,11 +18,12 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer, error
 from twisted.python.failure import Failure
-from Products.Zuul.infos.template import RRDDataSourceInfo
-from Products.Zuul.interfaces import ICatalogTool, IRRDDataSourceInfo
+from Products.Zuul.infos import InfoBase
+from Products.Zuul.interfaces import ICatalogTool, IInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
 
@@ -106,10 +107,26 @@ class ServiceDataSource(PythonDataSource):
                     yield service
 
 
-class IServiceDataSourceInfo(IRRDDataSourceInfo):
+class IServiceDataSourceInfo(IInfo):
     """
     Provide the UI information for the WinRS Service datasource.
     """
+    newId = schema.TextLine(
+        title=_t(u'Name'),
+        xtype="idfield",
+        description=_t(u'The name of this datasource')
+    )
+    type = schema.TextLine(
+        title=_t(u'Type'),
+        readonly=True
+    )
+    enabled = schema.Bool(
+        title=_t(u'Enabled')
+    )
+
+    severity = schema.TextLine(title=_t(u'Severity'),
+                               xtype='severity')
+    component = schema.TextLine(title=_t(u'Component'))
 
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
@@ -133,7 +150,7 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         title=_t('Inclusions(+)/Exclusions(-) separated by commas.  Regex accepted'))
 
 
-class ServiceDataSourceInfo(RRDDataSourceInfo):
+class ServiceDataSourceInfo(InfoBase):
     """
     Pull in proxy values so they can be utilized
     within the WinRS Service plugin.
@@ -144,6 +161,8 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     testable = False
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
+    enabled = ProxyProperty('enabled')
+    component = ProxyProperty('component')
 
     def get_alertifnot(self):
         return self._object.alertifnot
@@ -168,6 +187,28 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
         self._object.in_exclusions = value
         for service in self._object.getAffectedServices():
             service.index_object()
+
+    @property
+    def type(self):
+        return self._object.sourcetype
+
+    @property
+    def newId(self):
+        return self._object.id
+
+    def set_severity(self, value):
+        try:
+            if isinstance(value, str):
+                value = severityId(value)
+        except ValueError:
+            # they entered junk somehow (default to info if invalid)
+            value = severityId('info')
+        self._object.severity = value
+
+    def get_severity(self):
+        return self._object.severity
+
+    severity = property(get_severity, set_severity)
 
     startmode = property(get_startmode, set_startmode)
     in_exclusions = property(get_in_exclusions, set_in_exclusions)
@@ -231,9 +272,7 @@ class ServicePlugin(PythonDataSourcePlugin):
     def buildServicesDict(self, datasources):
         services = {}
         for ds in datasources:
-            services[ds.params['servicename']] = {'eventClass': ds.eventClass,
-                                                  'eventKey': ds.eventKey,
-                                                  'severity': ds.severity,
+            services[ds.params['servicename']] = {'severity': ds.severity,
                                                   'alertifnot': ds.params['alertifnot']}
         return services
 
@@ -288,8 +327,6 @@ class ServicePlugin(PythonDataSourcePlugin):
                 continue
 
             service = services[svc_id]
-            eventClass = service['eventClass'] if service['eventClass'] else "/Status/WinService"
-            eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
 
             if svc_info.State != service['alertifnot']:
 
@@ -303,10 +340,10 @@ class ServicePlugin(PythonDataSourcePlugin):
                     'service_name': svc_id,
                     'service_state': svc_info.State,
                     'service_status': svc_info.Status,
-                    'eventClass': eventClass,
+                    'eventClass': "/Status/WinService",
                     'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': eventKey,
-                    'severity': winsvc.get('severity', service.get('severity', 3)),
+                    'eventKey': "WindowsService",
+                    'severity': service['severity'],
                     'summary': evtmsg,
                     'component': prepId(svc_id),
                     'device': config.id,
@@ -323,9 +360,9 @@ class ServicePlugin(PythonDataSourcePlugin):
                     'service_name': svc_id,
                     'service_state': svc_info.State,
                     'service_status': svc_info.Status,
-                    'eventClass': eventClass,
+                    'eventClass': "/Status/WinService",
                     'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': eventKey,
+                    'eventKey': "WindowsService",
                     'severity': ZenEventClasses.Clear,
                     'summary': evtmsg,
                     'component': prepId(svc_id),
@@ -345,7 +382,6 @@ class ServicePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
-        eventClass = "/Status/WinService"
         prefix = 'failed collection - '
         if isinstance(result, Failure):
             result = result.value
@@ -358,7 +394,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         checkExpiredPassword(config, data['events'], result.message)
         if not data['events']:
             data['events'].append({
-                'eventClass': eventClass,
+                'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'WindowsServiceCollectionStatus',
                 'eventKey': 'WindowsServiceCollection',
