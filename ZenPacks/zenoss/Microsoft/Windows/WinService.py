@@ -33,12 +33,8 @@ class WinService(BaseWinService):
     datasource_id = None
 
     _properties = BaseWinService._properties + (
-        {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
-        {'id': 'caption', 'label': 'Caption', 'type': 'string'},
         {'id': 'description', 'label': 'Description', 'type': 'string'},
-        {'id': 'startmode', 'label': 'Start Mode', 'type': 'string'},
-        {'id': 'account', 'label': 'Account', 'type': 'string'},
-        {'id': 'usermonitor', 'label': 'User Selected Monitor State',
+        {'id': 'usermonitor', 'label': 'Manually Selected Monitor State',
             'type': 'boolean'},
     )
 
@@ -98,7 +94,7 @@ class WinService(BaseWinService):
 
         # 2 - Check what our template says to do.
         datasource = self.getMonitoredDataSource()
-        if datasource and self.getMonitored(datasource):
+        if datasource and datasource.enabled and self.getMonitored(datasource):
             self.monitor = True
             return True
 
@@ -176,7 +172,7 @@ class WinService(BaseWinService):
             template = self.getRRDTemplate()
             if template:
                 datasource = template.datasources._getOb(self.datasource_id, None)
-                if datasource and self.getMonitored(datasource):
+                if datasource and datasource.enabled and self.getMonitored(datasource):
                     return datasource
         # if returning the datasource fails reset the datasource_id to none
         self.datasource_id = None
@@ -197,12 +193,12 @@ class WinService(BaseWinService):
             if template:
                 # first check DefaultService
                 datasource = template.datasources._getOb('DefaultService', None)
-                if datasource:
+                if datasource and datasource.enabled:
                     test_datasource(datasource)
                 # if it's still undefined, check for other datasources
                 if not self.datasource_id:
                     for datasource in template.getRRDDataSources():
-                        if datasource.id == 'DefaultService': 
+                        if datasource.id == 'DefaultService':
                             continue
                         test_datasource(datasource)
 
