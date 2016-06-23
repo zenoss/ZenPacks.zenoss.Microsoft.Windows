@@ -33,12 +33,12 @@ class WinService(BaseWinService):
     datasource_id = None
 
     _properties = BaseWinService._properties + (
-        {'id': 'servicename', 'label': 'Service Name', 'type': 'string'},
+        {'id': 'serviceName', 'label': 'Service Name', 'type': 'string'},
         {'id': 'caption', 'label': 'Caption', 'type': 'string'},
         {'id': 'description', 'label': 'Description', 'type': 'string'},
-        {'id': 'startmode', 'label': 'Start Mode', 'type': 'string'},
-        {'id': 'account', 'label': 'Account', 'type': 'string'},
-        {'id': 'usermonitor', 'label': 'User Selected Monitor State',
+        {'id': 'startMode', 'label': 'Start Mode', 'type': 'string'},
+        {'id': 'startName', 'label': 'Start Name', 'type': 'string'},
+        {'id': 'usermonitor', 'label': 'Manually Selected Monitor State',
             'type': 'boolean'},
     )
 
