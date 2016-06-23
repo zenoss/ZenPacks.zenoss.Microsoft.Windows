@@ -43,5 +43,5 @@ class IWinServiceInfo(zuul.IWinServiceInfo):
     Info adapter for WinService components.
     """
     formatted_description = form_schema.TextLine(title=_t(u'Description'), readonly=True)
-    usermonitor = form_schema.Bool(title=_t(u'User Selected Monitor State'),
+    usermonitor = form_schema.Bool(title=_t(u'Manually Selected Monitor State'),
                                    alwaysEditable=True)

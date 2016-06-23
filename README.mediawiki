@@ -562,11 +562,11 @@ Option 2
 
 The order of precedence for monitoring a service is:
 # User manually sets monitoring
-# 'DefaultService' datasource from default WinService template or copy of default template
-# Datasource other than the DefaultService in default WinService template or copy of default template
+# 'DefaultService' datasource from the WinService template associated with the service
+# Datasource other than the DefaultService in the WinService template associated with the service
 # Monitoring is enabled via the Infrastructure -> Windows Services page
 
-You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions.
+You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard ''+.*'' inclusion.
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
 
@@ -717,6 +717,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : If many Windows servers in your environment don't have DNS PTR records that match Active Directory, it is recommended that you set the name of the Zenoss device's to be the fully-qualified Active Directory name and set zWinRMServerName to ''${here/titleOrId}'' at the /Server/Microsoft/Windows device class. This avoids the necessity of setting zWinRMServerName on every device.
 
 : It is recommended to leave zWinRMServerName blank if local authentication is used, or DNS PTR records match Active Directory. This allows Zenoss to not rely on DNS resolution while monitoring, and avoids the overhead of configuring zWinRMServerName.
+
+: If the server name cannot be resolved and you are using domain authentication, it is recommended that you set the Id of the device to the IP address and the Title to the server name it is known by in Active Directory.  Then use ''${here/title}'' for zWinRMServerName.  This situation can occur when no DNS server is available.
 
 ;zWinScheme
 : This must be set to either ''http'' or ''https''. The default is ''http''.
@@ -903,10 +905,6 @@ There are also circumstances where you may currently be using the old Windows Ze
 #* ''zWinRMPassword'': Password for zWinRMUser account.
 # Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
 
-=== Deprecated Items ===
-
-* This ZenPack does not make use of the Infrastructure -> Windows Services page.  It uses component templates for monitoring services.
-
 == Limitations of Current Release ==
 
 The current release is known to have the following limitations.
@@ -1054,6 +1052,24 @@ Other timeout issues on a domain could involve having a large Kerberos token.  T
 
 If you see a corrupt counters error event, this indicates that the specified counters have been corrupted on the Windows device.  No data will be collected for the specified counters until the counters have been repaired on the device and zenpython has been restarted.
 
+If you see the following error, check the zenhub log for errors:
+
+* Configuration for 10.111.5.171 unavailable -- is that the correct name?
+
+=== Troubleshooting modeling/monitoring ===
+
+Version 2.6.0 introduces a command line option to save modeling/monitoring results for troubleshooting.  This option will save the results returned from a Windows server from a modeler or datasource plugin.  This data can then be viewed/tested using unit tests to determine issues.
+
+Usage:
+
+<syntaxhighlight lang="text">
+export ZP_DUMP=1;zenmodeler run -d server1.example.com --collect=Interfaces; unset ZP_DUMP
+</syntaxhighlight>
+
+This will unload a pickle of the results to a file in the /tmp folder called Interfaces_process_XXXXXX.pickle.
+
+{{note}} Be sure to unset the environment variable to avoid unwanted pickle files.
+
 == Zenoss Analytics ==
 
 This ZenPack provides additional support for Zenoss Analytics. Perform the
@@ -1167,6 +1183,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ; 2.6.0
 * Enabled the use of the Infrastructure -> Windows Services page
+* Enabled domain authentication without the need for DNS
+* Added ability to dump results from plugins for troubleshooting
+* Converted to use zenpacklib
 * Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
 * Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
 * Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
@@ -1178,6 +1197,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows Service shows 'Up' when down if event class modified (ZEN-19615)
 * Fix Windows Installed on UCS shows 2 interfaces where there's only 1 (ZEN-23379)
 * Fix Windows ZenPack, doesn't send Datasource fields in 'cmd' to Parsers (ZEN-23739)
+* Fix Windows Zenpack Impact relationships are inconsistent (ZEN-18648)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
