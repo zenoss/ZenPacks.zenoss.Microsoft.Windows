@@ -15,22 +15,22 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
     extend:"Zenoss.component.ComponentGridPanel",
     constructor: function(config) {
         config = Ext.applyIf(config||{}, {
-            autoExpandColumn: 'displayname',
+            autoExpandColumn: 'caption',
             componentType: 'WinRMService',
             fields: [
                 {name: 'uid'},
                 {name: 'severity'},
-                {name: 'meta_type'},
+                {name: 'status'},
                 {name: 'name'},
-                {name: 'title'},
-                {name: 'serviceName'},
+                {name: 'meta_type'},
+                {name: 'locking'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'monitored'},
                 {name: 'caption'},
                 {name: 'startMode'},
                 {name: 'startName'},
-                {name: 'usesMonitorAttribute'},
-                {name: 'monitor'},
-                {name: 'locking'},
-                {name: 'monitored'}
+                {name: 'serviceClassUid'}
             ],
             columns: [{
                 id: 'severity',
@@ -38,23 +38,18 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
                 header: _t('Events'),
                 renderer: Zenoss.render.severity,
                 sortable: true,
-                width: 50
+                width: 60
             },{
                 id: 'name',
-                dataIndex: 'serviceName',
-                header: _t('Name'),
+                dataIndex: 'name',
+                header: _t('Service Name'),
                 sortable: true,
-                width: 110
+                flex: 1,
+                renderer: Zenoss.render.WinServiceClass
             },{
-                id: 'displayname',
+                id: 'caption',
                 dataIndex: 'caption',
-                header: _t('Display Name'),
-                sortable: true
-            },{
-                id: 'startName',
-                dataIndex: 'startName',
-                header: _t('Start Name'),
-                widht: 110,
+                header: _t('Caption'),
                 sortable: true
             },{
                 id: 'startmode',
@@ -62,6 +57,18 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
                 header: _t('Start Mode'),
                 sortable: true,
                 width: 110
+            },{
+                id: 'startName',
+                dataIndex: 'startName',
+                header: _t('Start Name'),
+                widht: 110,
+                sortable: true
+            },{
+               id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                renderer: Zenoss.render.pingStatus,
+                width: 60
             },{
                 id: 'monitored',
                 dataIndex: 'monitored',
@@ -80,7 +87,7 @@ Ext.define("Zenoss.component.WinRMServicePanel", {
     }
 });
 
-ZC.registerName('WinRMService', _t('Service'), _t('Services'));
+ZC.registerName('WinRMService', _t('Windows Service'), _t('Windows Services'));
 
 
 /* WinRS Datasource UI ******************************************************/
