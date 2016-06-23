@@ -202,7 +202,8 @@ class WinService(BaseWinService):
                 # if it's still undefined, check for other datasources
                 if not self.datasource_id:
                     for datasource in template.getRRDDataSources():
-                        if datasource.id == 'DefaultService': continue
+                        if datasource.id == 'DefaultService': 
+                            continue
                         test_datasource(datasource)
 
     def getFailSeverity(self):
@@ -212,8 +213,8 @@ class WinService(BaseWinService):
         template = self.getRRDTemplate()
         if template:
             datasource = template.datasources._getOb(self.datasource_id, None)
-        if datasource:
-            return datasource.severity
+            if datasource:
+                return datasource.severity
         return self.getAqProperty("zFailSeverity")
 
     def getFailSeverityString(self):
