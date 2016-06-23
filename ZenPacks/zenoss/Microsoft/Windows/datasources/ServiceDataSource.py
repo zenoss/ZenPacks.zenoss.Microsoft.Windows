@@ -161,7 +161,15 @@ class ServiceDataSourceInfo(InfoBase):
     testable = False
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
-    enabled = ProxyProperty('enabled')
+
+    def get_enabled(self):
+        return self._object.enabled
+
+    def set_enabled(self, value):
+        self._object.enabled = value
+        for service in self._object.getAffectedServices():
+            service.index_object()
+
     component = ProxyProperty('component')
 
     def get_alertifnot(self):
@@ -209,6 +217,7 @@ class ServiceDataSourceInfo(InfoBase):
         return self._object.severity
 
     severity = property(get_severity, set_severity)
+    enabled = property(get_enabled, set_enabled)
 
     startmode = property(get_startmode, set_startmode)
     in_exclusions = property(get_in_exclusions, set_in_exclusions)
