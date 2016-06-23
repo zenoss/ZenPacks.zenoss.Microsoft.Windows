@@ -45,6 +45,7 @@ class Services(WinRMPlugin):
             om.serviceType = service.ServiceType
             om.startMode = service.StartMode
             om.startName = service.StartName
+            om.description = service.Description
             rm.append(om)
 
         maps = []
