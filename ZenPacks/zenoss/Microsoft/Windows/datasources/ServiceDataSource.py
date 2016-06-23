@@ -258,7 +258,15 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        if ds0.params['startmode'] == 'None' and not ds0.params['usermonitor']:
+        self.manual_monitor = False
+        self.has_startmodes = False
+        for ds in config.datasources:
+            if ds.params['usermonitor'] and not self.manual_monitor:
+                self.manual_monitor = True
+            if ds.params['startmode'] != 'None' and not self.has_startmodes:
+                self.has_startmodes = True
+
+        if not self.has_startmodes and not self.manual_monitor:
             log.debug('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
             defer.returnValue(None)
 
@@ -302,7 +310,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         # if monitoring is false, don't monitor
         # if no start modes configured on datasource or service class, don't monitor
         winservices = params['winservices']
-        if params['startmode'] == 'None' and not params['usermonitor']:
+        if not self.has_startmodes and not self.manual_monitor:
             log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
                       .format(config.datasources[0].datasource))
             return data
