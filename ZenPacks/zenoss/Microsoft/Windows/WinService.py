@@ -44,7 +44,9 @@ class WinService(BaseWinService):
         """
         Return the ServiceClass for this service.
         """
-        return self.serviceClass()
+        if hasattr(self, 'serviceClass'):
+            return self.serviceClass()
+        return None
 
     def getRRDTemplateName(self):
         try:
