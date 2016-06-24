@@ -5557,7 +5557,7 @@ False
 3
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zWinPerfmonInterval}
+300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRMPingDataSource.WinRMPingDataSourcePlugin

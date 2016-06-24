@@ -38,7 +38,7 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
 class WinRMPingDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
-    cycletime = '${here/zWinPerfmonInterval}'
+    cycletime = '300'
     sourcetypes = ('WinRM Ping',)
     sourcetype = sourcetypes[0]
     enabled = True
