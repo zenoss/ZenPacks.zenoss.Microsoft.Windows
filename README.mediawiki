@@ -501,6 +501,8 @@ See the following examples:
 ;Manually Enable or disable monitoring for a single service on a single server.
 # Navigate to the service on the server.
 # Click to select it.
+# Select ''Details'' in the lower component pane.
+# Choose the Fail Severity.
 # Choose ''Monitoring'' from the gear menu.
 # Choose Yes or No depending on what you want.
 
@@ -565,6 +567,30 @@ The order of precedence for monitoring a service is:
 # 'DefaultService' datasource from the WinService template associated with the service
 # Datasource other than the DefaultService in the WinService template associated with the service
 # Monitoring is enabled via the Infrastructure -> Windows Services page
+
+{| class="wikitable"
+|+ <span class="tablecap"><span class="tablecap">Windows Service Startmodes (Template vs Windows Services)</span></span>
+!width="33%"|Startmodes
+!width="33%"|Template includes Service startmode
+!width="33%"|Template excludes Service startmode
+
+|-
+|Windows Service Class includes Service startmode
+
+|monitored
+
+|monitored
+
+|-
+|Windows Service Class excludes Service startmode
+
+|monitored
+
+|NOT monitored
+
+|}
+
+{{note}} The Windows Service Template (default WinService) must have at least one datasource enabled for monitoring to function.
 
 You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard ''+.*'' inclusion.
 

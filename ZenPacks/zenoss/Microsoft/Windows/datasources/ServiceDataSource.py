@@ -226,6 +226,16 @@ class ServiceDataSourceInfo(InfoBase):
 
 class ServicePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties
+    services = {}
+
+    def buildServicesDict(self, datasources):
+        '''
+            store data about each service and datasource
+        '''
+        self.services = {}
+        for ds in datasources:
+            self.services[ds.params['servicename']] = ds.params.get('winservices', {})
+        return self.services
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -242,12 +252,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         params['servicename'] = datasource.talesEval(
             datasource.servicename, context)
-
-        params['alertifnot'] = datasource.talesEval(
-            datasource.alertifnot, context)
-
-        params['startmode'] = datasource.startmode
-
         params['usermonitor'] = context.usermonitor
         params['winservices'] = context.get_winservices_modes()
 
@@ -258,16 +262,20 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        self.manual_monitor = False
-        self.has_startmodes = False
-        for ds in config.datasources:
-            if ds.params['usermonitor'] and not self.manual_monitor:
-                self.manual_monitor = True
-            if ds.params['startmode'] != 'None' and not self.has_startmodes:
-                self.has_startmodes = True
+        # build dictionary of datasource service info
+        self.buildServicesDict(config.datasources)
 
-        if not self.has_startmodes and not self.manual_monitor:
-            log.debug('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
+        run_query = False
+        for ds in config.datasources:
+            id = ds.params['servicename']
+            svc_data = self.services.get(id)
+            if svc_data.get('manual') or len(svc_data.get('modes',[])) > 0:
+                run_query = True
+                break
+
+        # no need to run query
+        if not run_query:
+            log.warn('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
             defer.returnValue(None)
 
         log.debug('{0}:Start Collection of Services'.format(config.id))
@@ -286,13 +294,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(results)
 
-    def buildServicesDict(self, datasources):
-        services = {}
-        for ds in datasources:
-            services[ds.params['servicename']] = {'severity': ds.severity,
-                                                  'alertifnot': ds.params['alertifnot']}
-        return services
-
     def onSuccess(self, results, config):
         '''
         Examples:
@@ -308,13 +309,6 @@ class ServicePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         params = config.datasources[0].params
         # if monitoring is false, don't monitor
-        # if no start modes configured on datasource or service class, don't monitor
-        winservices = params['winservices']
-        if not self.has_startmodes and not self.manual_monitor:
-            log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
-                      .format(config.datasources[0].datasource))
-            return data
-        services = self.buildServicesDict(config.datasources)
         log.debug('Windows services query results: {}'.format(results))
         try:
             serviceinfo = results[results.keys()[0]]
@@ -328,63 +322,52 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'device': config.id})
             return data
 
-        for index in range(len(serviceinfo)):
-            svc_info = serviceinfo[index]
+        for index, svc_info in enumerate(serviceinfo):
             svc_id = svc_info.Name
-            winsvc = winservices.get(svc_id)
-
-            if svc_id not in services.keys() or not winsvc:
-                continue
-
+            svc_data = self.services.get(svc_id)
             # skip if this service shouldn't be monitored
-            if not winsvc.get('monitor', False):
-                continue
-            # continue if this service's state is not in montiored modes
-            if winsvc.get('mode') not in winsvc.get('modes', []):
+            if not svc_data or not svc_data.get('monitor', False):
+                log.debug('%s disabled' % svc_id)
                 continue
 
-            service = services[svc_id]
+            # continue if this service's state is not in monitored modes
+            if svc_data.get('mode') not in svc_data.get('modes', []):
+                log.debug('%s mode %s not in modes: %s' % (svc_id, svc_data.get('mode'), svc_data.get('modes', []))) 
+                continue
 
-            if svc_info.State != service['alertifnot']:
+            # if no startmodes, and not manually monitored, skip
+            if len(svc_data.get('modes', [])) == 0 and not svc_data.get('manual', False):
+                log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
+                      .format(config.datasources[0].datasource))
+                continue
 
+            severity = ZenEventClasses.Clear
+
+            if svc_info.State != svc_data.get('alertifnot'):
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
                     svc_id,
                     svc_info.State
                 )
-
-                data['events'].append({
-                    'component': svc_id,
-                    'service_name': svc_id,
-                    'service_state': svc_info.State,
-                    'service_status': svc_info.Status,
-                    'eventClass': "/Status/WinService",
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': "WindowsService",
-                    'severity': winsvc.get('severity', service.get('severity', 3)),
-                    'summary': evtmsg,
-                    'component': prepId(svc_id),
-                    'device': config.id,
-                })
+                severity = svc_data.get('severity', 3)
             else:
-
                 evtmsg = 'Service Recovered: {0} has changed to {1} state'.format(
                     svc_info.Name,
                     svc_info.State
                 )
-
-                data['events'].append({
-                    'component': svc_id,
-                    'service_name': svc_id,
-                    'service_state': svc_info.State,
-                    'service_status': svc_info.Status,
-                    'eventClass': "/Status/WinService",
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': "WindowsService",
-                    'severity': ZenEventClasses.Clear,
-                    'summary': evtmsg,
-                    'component': prepId(svc_id),
-                    'device': config.id,
-                })
+            # event for the service
+            data['events'].append({
+                'component': svc_id,
+                'service_name': svc_id,
+                'service_state': svc_info.State,
+                'service_status': svc_info.Status,
+                'eventClass': "/Status/WinService",
+                'eventClassKey': 'WindowsServiceLog',
+                'eventKey': "WindowsService",
+                'severity': severity,
+                'summary': evtmsg,
+                'component': prepId(svc_id),
+                'device': config.id,
+            })
 
         # Event to provide notification that check has completed
         data['events'].append({
@@ -395,7 +378,6 @@ class ServicePlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsServiceCollection',
             'eventClassKey': 'WindowsServiceCollectionStatus',
         })
-
         return data
 
     def onError(self, result, config):
