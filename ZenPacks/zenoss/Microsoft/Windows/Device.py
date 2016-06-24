@@ -155,6 +155,16 @@ class Device(schema.Device):
 
         return templates
 
+    def all_winsqlinstances(self):
+        """Generate all WinSQLInstance components."""
+        for c in self.os.winsqlinstances():
+            yield c
+
+    def all_winrmiis(self):
+        """Generate all WinIIS components."""
+        for c in self.os.winrmiis():
+            yield c
+
     def all_filesystems(self):
         """Generate all HardDisk components."""
         for fs in self.os.filesystems():
@@ -175,6 +185,11 @@ class Device(schema.Device):
         for cpu in self.hw.cpus():
             yield cpu
 
+    def all_interfaces(self):
+        """Generate all Interface components."""
+        for iface in self.os.interfaces():
+            yield iface
+
     def all_clusterservices(self):
         """Generate all ClusterService components."""
         for c in self.os.clusterservices():
@@ -190,9 +205,9 @@ class Device(schema.Device):
         for c in self.os.clusternetworks():
             yield c
 
-    def all_winrmservices(self):
+    def all_winservices(self):
         """Generate all Cluster Services components."""
-        for c in self.os.winrmservices():
+        for c in self.os.winservices():
             yield c
 
     def all_hyperv(self):

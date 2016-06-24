@@ -113,11 +113,14 @@ classes:
       - all_processes
       - all_ipservices
       - all_cpus
+      - all_interfaces
       - all_clusterservices
       - all_clusternodes
       - all_clusternetworks
-      - all_winrmservices
+      - all_winservices
       - all_hyperv
+      - all_winsqlinstances
+      - all_winrmiis
     impacted_by: []
     dynamicview_views: [service_view]
     dynamicview_relations:
@@ -126,11 +129,14 @@ classes:
         - all_processes
         - all_ipservices
         - all_cpus
+        - all_interfaces
         - all_clusterservices
         - all_clusternodes
         - all_clusternetworks
-        - all_winrmservices
+        - all_winservices
         - all_hyperv
+        - all_winsqlinstances
+        - all_winrmiis
       impacted_by: []
 
   ClusterDevice:
@@ -150,11 +156,14 @@ classes:
       - all_processes
       - all_ipservices
       - all_cpus
+      - all_interfaces
       - all_clusterservices
       - all_clusternodes
       - all_clusternetworks
-      - all_winrmservices
+      - all_winservices
       - all_hyperv
+      - all_winsqlinstances
+      - all_winrmiis
     impacted_by: [all_clusterhosts]
     dynamicview_views: [service_view]
     dynamicview_relations:
@@ -163,11 +172,14 @@ classes:
         - all_processes
         - all_ipservices
         - all_cpus
+        - all_interfaces
         - all_clusterservices
         - all_clusternodes
         - all_clusternetworks
-        - all_winrmservices
+        - all_winservices
         - all_hyperv
+        - all_winsqlinstances
+        - all_winrmiis
       impacted_by: [all_clusterhosts]
 
   ClusterResource:
@@ -190,7 +202,7 @@ classes:
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [device, clusterservice]
+      impacted_by: [clusterservice]
 
   ClusterService:
     label: Cluster Service
@@ -212,11 +224,11 @@ classes:
         default: 0
     monitoring_templates: [ClusterService]
     impacts: [clusterresources]
-    impacted_by: []
+    impacted_by: [device]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: [clusterresources]
-      impacted_by: []
+      impacted_by: [device]
     relationships:
       DEFAULTS:
         grid_display: false
@@ -241,11 +253,11 @@ classes:
         order: 3
     monitoring_templates: [ClusterNode]
     impacts: []
-    impacted_by: [device, clusterdisks, clusterinterfaces]
+    impacted_by: [clusterdisks, clusterinterfaces]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [device, clusterdisks, clusterinterfaces]
+      impacted_by: [clusterdisks, clusterinterfaces]
     relationships:
       DEFAULTS:
         grid_display: false
@@ -519,11 +531,11 @@ classes:
         label: Status
     monitoring_templates: [WinBackupDevice]
     impacts: []
-    impacted_by:  [device, winsqlinstance]
+    impacted_by:  [winsqlinstance]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by:  [device, winsqlinstance]
+      impacted_by:  [winsqlinstance]
 
   WinSQLDatabase:
     label: SQL Database
@@ -566,11 +578,11 @@ classes:
         label: Cluster Node Server
     monitoring_templates: [WinDatabase]
     impacts: []
-    impacted_by: [device, winsqlinstance]
+    impacted_by: [winsqlinstance]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [device, winsqlinstance]
+      impacted_by: [winsqlinstance]
 
   WinSQLInstance:
     label: SQL Instance
@@ -626,9 +638,9 @@ classes:
         label: Cluster Node Server
     monitoring_templates: [WinSQLJob]
     impacts: []
-    impacted_by: [device, winsqlinstance]
+    impacted_by: [winsqlinstance]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [device, winsqlinstance]
+      impacted_by: [winsqlinstance]
 
