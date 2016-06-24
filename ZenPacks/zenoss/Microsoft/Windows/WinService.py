@@ -65,7 +65,7 @@ class WinService(BaseWinService):
         if not set(service_regex) - allowed_chars:
             return service_regex == self.serviceName
         try:
-            regx = re.compile(service_regex)
+            regx = re.compile(service_regex, re.I)
         except re.error as e:
             log.warn(e)
             return False
