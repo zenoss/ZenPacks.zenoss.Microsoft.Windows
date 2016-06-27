@@ -275,22 +275,6 @@ def prepare_zDBInstances(inst):
     return dbinstance
 
 
-def check_low_disk_utilization(size, freespace):
-    '''
-    Checks disk utilization
-    Return True if disk use less than 1 percent of disk space
-    '''
-    try:
-        size, freespace = int(size), int(freespace)
-    except (TypeError, ValueError):
-        return True
-    if size:
-        percent = float(size - freespace) / size * 100
-        return True if round(percent, 1) < 1.0 else False
-    else:
-        return False
-
-
 def sizeof_fmt(byte=0):
     try:
         byte = int(byte)
