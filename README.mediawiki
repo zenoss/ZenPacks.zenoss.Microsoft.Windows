@@ -1232,6 +1232,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows ZenPack, doesn't send Datasource fields in 'cmd' to Parsers (ZEN-23739)
 * Fix Windows Zenpack Impact relationships are inconsistent (ZEN-18648)
 * Fix WinRMPing datasource should be disabled by default (ZEN-23517)
+* Fix Copy Override of Windows template breaks EventLogDataSource query attribute (ZEN-23157)
 
 ; 2.5.13
 * Fix Active Directory not correctly detected (ZEN-23137)
