@@ -690,6 +690,11 @@ The Least Privileged User requires the following privileges and permissions:
 
 {{note}} An Administrator level user can be denied local logon and remote desktop access through a group policy object.
 
+=== Port Requirements ===
+
+The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.
+For domain authentication, Kerberos communicates with the KDC on port 88 and the Admin Server on port 749.
+
 === Adding a Windows Device ===
 
 Use the following steps to start monitoring a Windows server using local authentication in the Zenoss web interface.
