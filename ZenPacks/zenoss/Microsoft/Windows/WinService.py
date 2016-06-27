@@ -12,8 +12,8 @@ import logging
 import string
 from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-
 from Products.ZenModel.WinService import WinService as BaseWinService
+from Products.ZenModel.Service import Service
 
 log = logging.getLogger('zen.MicrosoftWindows')
 
@@ -23,13 +23,10 @@ class WinService(BaseWinService):
     Model class for Windows Service.
     '''
 
-    servicename = None
-    caption = None
     description = None
-    startmode = ''
-    account = None
-    monitor = False
     usermonitor = False
+
+    monitor = False
     datasource_id = None
 
     _properties = BaseWinService._properties + (
@@ -44,8 +41,8 @@ class WinService(BaseWinService):
         """
         Return the ServiceClass for this service.
         """
-        if hasattr(self, 'serviceClass'):
-            return self.serviceClass()
+        if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
+            return self.serviceclass()
         return None
 
     def getRRDTemplateName(self):
@@ -63,7 +60,7 @@ class WinService(BaseWinService):
         # can be actual name of service or a regex
         allowed_chars = set(string.ascii_letters + string.digits + '_-')
         if not set(service_regex) - allowed_chars:
-            return service_regex == self.serviceName
+            return service_regex.lower() == self.serviceName.lower()
         try:
             regx = re.compile(service_regex, re.I)
         except re.error as e:
@@ -89,38 +86,30 @@ class WinService(BaseWinService):
 
     def monitored(self):
         """Return True if this service should be monitored. False otherwise."""
-
         # 1 - Check to see if the user has manually set monitor status
-        if self.usermonitor is True:
-            return self.monitor
+        if not self.usermonitor:
+            datasource = self.getMonitoredDataSource()
+            sc = self.getClassObject()
+            # 2 - Check what our template says to do.
+            if datasource and datasource.enabled and self.getMonitored(datasource):
+                log.debug('(%s) template %s'  % (self.id, self.monitor))
+                self.monitor = True
+            # 3 check the service class
+            elif sc:
+                valid_start = self.startMode in sc.monitoredStartModes
+                # check the inherited zMonitor property
+                self.monitor = valid_start and self.getAqProperty('zMonitor')
+                log.debug('(%s) serviceclass %s'  % (self.id, self.monitor))
+            # 4 otherwise just inherit from the base WinService class
+            else:
+                self.monitor = BaseWinService.monitored(self)
+                log.debug('(%s) WinService %s' % (self.id, self.monitor))
+        else:
+            log.debug('(%s) manually %s' % (self.id, self.monitor))
+            self.datasource_id = None
+        return self.monitor
 
-        # 2 - Check what our template says to do.
-        datasource = self.getMonitoredDataSource()
-        if datasource and datasource.enabled and self.getMonitored(datasource):
-            self.monitor = True
-            return True
-
-        # 3 check the service class
-        # be sure we can get the serviceclass and that we have a relationship with serviceclass
-        if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
-            sc = self.serviceclass()
-            if sc:
-                org = sc.serviceorganizer()
-                # check the service class monitored start modes
-                if self.startMode in sc.monitoredStartModes:
-                    # check the zMonitor organizer property
-                    if org and hasattr(org, 'zMonitor'):
-                        self.monitor = org.zMonitor
-                        return org.zMonitor
-        # don't monitor Disabled services
-        if self.startMode and self.startMode == "Disabled":
-            self.monitor = False
-            return False
-
-        self.monitor = False
-        return False
-
-    def get_serviceclass_startmodes(self):
+    def get_monitored_startmodes(self):
         ''' determine the start modes for this services
             giving precedence to manual monitoring, followed
             by local template override, and falling back on
@@ -129,55 +118,44 @@ class WinService(BaseWinService):
         if self.usermonitor is True:
             return [self.startMode]
 
-        template = self.getRRDTemplate()
-        if template:
-            datasource = template.datasources._getOb('DefaultService', None)
-            if datasource and self.getMonitored(datasource):
-                modes = datasource.startmode.split(',')
-                if 'None' in modes:
-                    modes.remove('None')
-                if len(modes) > 0:
-                    return modes
-            # 3 - Allow for other datasources to be specified.
-            for datasource in template.getRRDDataSources():
-                if datasource.id != 'DefaultService' and hasattr(datasource, 'startmode'):
-                    if self.getMonitored(datasource):
-                        modes = datasource.startmode.split(',')
-                        if 'None' in modes:
-                            modes.remove('None')
-                        if len(modes) > 0:
-                            return modes
-        sc = self.serviceclass()
+        # give priority to template
+        datasource = self.get_template_datasource()
+        if datasource and self.getMonitored(datasource) and hasattr(datasource, 'startmode'):
+            modes = datasource.startmode.split(',')
+            if 'None' in modes:
+                modes.remove('None')
+            if len(modes) > 0:
+                return modes
+
+        # fallback to serviceclass
+        sc = self.getClassObject()
         if sc:
             return sc.monitoredStartModes
+        return []
 
     def get_winservices_modes(self):
-        ''''''
-        data = {}
-        for svc in self.device().os.winservices():
-            if svc.monitor:
-                data[svc.id] = {'modes': svc.get_serviceclass_startmodes(),
-                                'mode': svc.startMode,
-                                'monitor': svc.monitor,
-                                'severity': svc.getFailSeverity(),
-                                }
-        return data
+        '''Return data about this service to ServiceDataSource'''
+        return {'modes': self.getMonitoredStartModes(),
+                'mode': self.startMode,
+                'monitor': self.monitor,
+                'severity': self.getFailSeverity(),
+                'manual': self.usermonitor,
+                'alertifnot': self.get_alertifnot(),
+                }
 
     def getMonitoredDataSource(self):
         '''Return datasource for template if it exists'''
-        # first there must be a template
-        if not self.datasource_id:
-            self.setMonitoredDataSource()
-        # return the datasource if it is set
+        # try to return datasource, setting back to None if fails
         if self.datasource_id:
-            # return monitored datasource
+            datasource = self.get_template_datasource()
+            if not datasource:
+                self.datasource_id = None
+            return datasource
+        else:
             template = self.getRRDTemplate()
             if template:
-                datasource = template.datasources._getOb(self.datasource_id, None)
-                if datasource and datasource.enabled and self.getMonitored(datasource):
-                    return datasource
-        # if returning the datasource fails reset the datasource_id to none
-        self.datasource_id = None
+                self.setMonitoredDataSource()
+                return self.get_template_datasource()
         return None
 
     def setMonitoredDataSource(self):
@@ -186,7 +164,7 @@ class WinService(BaseWinService):
         '''
         def test_datasource(ds):
             '''set self.datasource_id if valid'''
-            if hasattr(ds, 'startmode') and self.getMonitored(ds):
+            if hasattr(ds, 'startmode') and ds.enabled and self.getMonitored(ds):
                 self.datasource_id = ds.id
 
         # if not defined, try to define it
@@ -195,7 +173,7 @@ class WinService(BaseWinService):
             if template:
                 # first check DefaultService
                 datasource = template.datasources._getOb('DefaultService', None)
-                if datasource and datasource.enabled:
+                if datasource:
                     test_datasource(datasource)
                 # if it's still undefined, check for other datasources
                 if not self.datasource_id:
@@ -204,15 +182,28 @@ class WinService(BaseWinService):
                             continue
                         test_datasource(datasource)
 
+    def get_alertifnot(self):
+        datasource = self.get_template_datasource()
+        if datasource:
+            return getattr(datasource, 'alertifnot', 'Running')
+        return 'Running'
+
+    def get_template_datasource(self):
+        """
+            Attempt to return the proper template datasource if it exists
+        """
+        template = self.getRRDTemplate()
+        if template and self.datasource_id:
+            return template.datasources._getOb(self.datasource_id, None)
+        return None
+
     def getFailSeverity(self):
         """
         Return the severity for this service when it fails.
         """
-        template = self.getRRDTemplate()
-        if template:
-            datasource = template.datasources._getOb(self.datasource_id, None)
-            if datasource:
-                return datasource.severity
+        datasource = self.get_template_datasource()
+        if datasource:
+            return datasource.severity
         return self.getAqProperty("zFailSeverity")
 
     def getFailSeverityString(self):
@@ -222,7 +213,7 @@ class WinService(BaseWinService):
         return self.ZenEventManager.severities[self.getFailSeverity()]
 
     def getMonitoredStartModes(self):
-        return self.get_serviceclass_startmodes()
+        return self.get_monitored_startmodes()
 
     security.declareProtected('Manage DMD', 'manage_editService')
     def manage_editService(self, *args, **kwargs):
