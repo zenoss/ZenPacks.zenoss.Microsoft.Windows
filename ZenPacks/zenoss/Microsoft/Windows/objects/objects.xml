@@ -5551,7 +5551,7 @@ True
 WinRM Ping
 </property>
 <property type="boolean" id="enabled" mode="w" >
-True
+False
 </property>
 <property type="int" id="severity" mode="w" >
 3
