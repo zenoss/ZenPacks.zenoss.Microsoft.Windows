@@ -22,19 +22,22 @@ class TestServiceDataSourcePlugin(BaseTestCase):
         self.success = load_pickle(self, 'results')
         self.config = load_pickle(self, 'config')
         self.plugin = ServicePlugin()
-        self.context = {'aspnet_state': {'modes': ['Stopped'],
-                                        'mode': 'Stopped',
-                                        'monitor': True
-                                        }}
+        self.context = {'modes': ['Auto'],
+                        'mode': 'Auto',
+                        'monitor': True,
+                        'severity': 3,
+                        'manual': False,
+                        'alertifnot': 'Running',
+                        }
+
         self.ds = [MagicMock(params={'eventlog': sentinel.eventlog, 
-                                           'winservices': self.context,
-                                           'startmode': 'Stopped',
-                                           'usermonitor': False,
-                                           'alertifnot': 'OK',
-                                           'servicename': 'aspnet_state'
-                                           })]
+                                     'winservices': self.context,
+                                     'usermonitor': False,
+                                     'servicename': 'aspnet_state'
+                                     })]
 
     def test_onSuccess(self):
+        self.plugin.buildServicesDict(self.ds)
         data = self.plugin.onSuccess(self.success, MagicMock(
            id=sentinel.id,
            datasources=self.ds,
