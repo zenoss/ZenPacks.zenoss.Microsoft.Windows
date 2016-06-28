@@ -71,7 +71,7 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Size:
-                disk.Size = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Size)
 
@@ -119,7 +119,7 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Capacity:
-                disk.Capacity = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Capacity)
 
@@ -163,7 +163,7 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Size:
-                disk.Size = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Size)
 
