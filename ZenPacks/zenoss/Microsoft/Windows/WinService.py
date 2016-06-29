@@ -26,7 +26,6 @@ class WinService(BaseWinService):
     description = None
     usermonitor = False
 
-    monitor = False
     datasource_id = None
 
     _properties = BaseWinService._properties + (
@@ -85,6 +84,14 @@ class WinService(BaseWinService):
         return rtn
 
     def monitored(self):
+        """detect and set changes to self.monitor and ensure reindexing."""
+        to_monitor = self.is_monitored()
+        if self.monitor != to_monitor:
+            setattr(self, 'monitor', to_monitor)
+            self.index_object()
+        return getattr(self, 'monitor')
+
+    def is_monitored(self):
         """Return True if this service should be monitored. False otherwise."""
         # 1 - Check to see if the user has manually set monitor status
         if not self.usermonitor:
@@ -92,22 +99,20 @@ class WinService(BaseWinService):
             sc = self.getClassObject()
             # 2 - Check what our template says to do.
             if datasource and datasource.enabled and self.getMonitored(datasource):
-                log.debug('(%s) template %s'  % (self.id, self.monitor))
-                self.monitor = True
+                return True
             # 3 check the service class
             elif sc:
                 valid_start = self.startMode in sc.monitoredStartModes
                 # check the inherited zMonitor property
-                self.monitor = valid_start and self.getAqProperty('zMonitor')
-                log.debug('(%s) serviceclass %s'  % (self.id, self.monitor))
+                return valid_start and self.getAqProperty('zMonitor')
             # 4 otherwise just inherit from the base WinService class
             else:
-                self.monitor = BaseWinService.monitored(self)
-                log.debug('(%s) WinService %s' % (self.id, self.monitor))
+                return BaseWinService.monitored(self)
         else:
-            log.debug('(%s) manually %s' % (self.id, self.monitor))
             self.datasource_id = None
-        return self.monitor
+            # if so, return whatever user has set it to
+            return self.monitor
+        return False
 
     def get_monitored_startmodes(self):
         ''' determine the start modes for this services
@@ -137,7 +142,7 @@ class WinService(BaseWinService):
         '''Return data about this service to ServiceDataSource'''
         return {'modes': self.getMonitoredStartModes(),
                 'mode': self.startMode,
-                'monitor': self.monitor,
+                'monitor': self.isMonitored(),
                 'severity': self.getFailSeverity(),
                 'manual': self.usermonitor,
                 'alertifnot': self.get_alertifnot(),
