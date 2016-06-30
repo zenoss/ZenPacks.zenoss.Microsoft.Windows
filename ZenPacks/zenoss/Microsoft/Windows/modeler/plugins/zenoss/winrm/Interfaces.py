@@ -321,7 +321,8 @@ class Interfaces(WinRMPlugin):
 
             if inter.Index in perfmonInstanceMap:
                 # only physical adapters will have perfmon data
-                if inter.PhysicalAdapter.lower() == 'true':
+                # 2003 does not have the PhysicalAdapter property
+                if getattr(inter, 'PhysicalAdapter', 'true').lower() == 'true':
                     int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
             else:
                 log.warning("Adapter '%s':%d does not have a perfmon "
