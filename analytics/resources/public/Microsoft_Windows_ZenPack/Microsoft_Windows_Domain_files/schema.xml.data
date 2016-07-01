@@ -370,7 +370,7 @@
         <item resourceId="JoinTree_1.dim_team_interface.team_interface_name" dimensionOrMeasure="Dimension" id="dim_team_interface_team_interface_name" label="Team Interface Name"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="Devices" id="set_win_service" description="">
+    <itemGroup resourceId="JoinTree_1" label="Services" id="set_win_service" description="">
       <itemGroups>
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_service_measures" description="">
           <itemGroups/>
@@ -378,7 +378,7 @@
         </itemGroup>
       </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_win_service.win_service_name" dimensionOrMeasure="Dimension" id="dim_win_service_win_service_name" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_win_service.win_service_name" dimensionOrMeasure="Dimension" id="dim_win_service_win_service_name" label="Service Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processors" id="set_cpu" description="">
