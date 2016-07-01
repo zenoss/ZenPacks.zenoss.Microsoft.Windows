@@ -112,27 +112,28 @@
         />
 
 
-    <!-- Custom Path Reporters
+    <!-- Custom Path Reporters  -->
     <adapter factory=".catalog.paths.InterfacePathReporter"
         for=".Interface.Interface"
         provides="Products.Zuul.catalog.interfaces.IPathReporter"
         />
-	 -->
 
-    <!-- Device Links
+
+    <!-- Device Links -->
     <configure zcml:condition="have zenoss:IExpandedLinkProvider">
         <subscriber
             provides='Products.ZenModel.interfaces.IExpandedLinkProvider'
             for='ZenPacks.zenoss.Microsoft.Windows.Device.Device'
             factory='.Device.DeviceLinkProvider'
             />
-	-->
+    </configure>
 
-    <!-- Analytics
+
+    <!-- Analytics -->
     <include file="reportable.zcml"
         xmlns:zcml="http://namespaces.zope.org/zcml"
         zcml:condition="installed ZenPacks.zenoss.ZenETL" />
-	-->
+ -->
 
     <!-- Browser Resources -->
 
