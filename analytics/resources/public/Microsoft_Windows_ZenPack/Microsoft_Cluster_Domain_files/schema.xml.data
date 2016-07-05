@@ -90,11 +90,11 @@
         </itemGroup>
       </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_manage_ip" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_manage_ip" label="manageIp"/>
+        <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_manage_ip" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_manage_ip" label="Manage IP"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_msexchangeversion" label="MS Exchange Version"/>
-        <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_ip_and_hostname" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_ip_and_hostname" label="ip_and_hostname"/>
+        <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_ip_and_hostname" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_ip_and_hostname" label="IP and Hostname"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_domain_controller" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_domain_controller" label="MS Exchange Version"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_clusterhostdevices" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_clusterhostdevices" label="Cluster Host Devices"/>
         <item resourceId="JoinTree_1.dim_cluster_device.cluster_device_guid" dimensionOrMeasure="Dimension" id="dim_cluster_device_cluster_device_guid" label="GUID"/>
