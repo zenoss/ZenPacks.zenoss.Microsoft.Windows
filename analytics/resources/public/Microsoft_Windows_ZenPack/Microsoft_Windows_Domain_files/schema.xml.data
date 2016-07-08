@@ -591,7 +591,7 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_device.device_name" dimensionOrMeasure="Dimension" id="dim_device_device_name" label="Device Name"/>
-        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="manageIp"/>
+        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="IP and Hostname"/>
         <item resourceId="JoinTree_1.dim_device.device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_device_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_device.device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_device_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_device.device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_device_device_msexchangeversion" label="MS Exchange Version"/>
