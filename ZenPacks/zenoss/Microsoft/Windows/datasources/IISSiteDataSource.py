@@ -29,7 +29,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import check_for_network_error
+from ..utils import check_for_network_error, save, checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -174,21 +174,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 defer.returnValue(None)
 
         if iis_version == 6:
-            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6),]
+            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6)]
         else:
-            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7),]
+            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7)]
 
         winrm = WinrmCollectClient()
-        results = None
-        try:
-            results = yield winrm.do_collect(conn_info, WinRMQueries)
-        except Exception as e:
-            log.error("IISSiteDataSource error on %s: %s",
-                    config.id,
-                    e)
+        results = yield winrm.do_collect(conn_info, WinRMQueries)
         log.debug(WinRMQueries)
         defer.returnValue(results)
 
+    @save
     def onSuccess(self, results, config):
 
         data = self.new_data()
@@ -231,13 +226,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
     def onError(self, result, config):
         msg, event_class = check_for_network_error(result, config)
-        log.error(msg)
+        log.error("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
-        data['events'].append({
-            'eventClass': event_class,
-            'severity': ZenEventClasses.Warning,
-            'eventClassKey': 'IISSiteStatusError',
-            'eventKey': 'IISSite',
-            'summary': 'IISSite: ' + msg,
-            'device': config.id})
+        checkExpiredPassword(config, data['events'], result.value.message)
+        # only need the one event
+        if not data['events']:
+            data['events'].append({
+                'eventClass': event_class,
+                'severity': ZenEventClasses.Warning,
+                'eventClassKey': 'IISSiteStatusError',
+                'eventKey': 'IISSite',
+                'summary': 'IISSite: ' + msg,
+                'device': config.id})
         return data

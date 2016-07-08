@@ -1,2 +1,9 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<folder exportedWithPermissions="true"><parent>/public</parent><name>Microsoft_Windows_ZenPack</name><label>Microsoft Windows ZenPack</label><creationDate>2014-11-24T21:16:06.000Z</creationDate><updateDate>2014-12-11T12:16:06.000Z</updateDate><resource>Microsoft_Windows_Domain</resource><resource>Microsoft_Cluster_Domain</resource><resource>Windows_IIS_Peak_Usage</resource><resource>Windows_Interfaces_Peak_Usage</resource></folder>
+<?xml version='1.0' encoding='utf-8'?>
+<folder exportedWithPermissions="false">
+  <parent>/public</parent>
+  <name>Microsoft_Windows_ZenPack</name>
+  <label>Microsoft Windows ZenPack</label>
+  <resource>Microsoft_Windows_Domain</resource>
+  <resource>Windows_Interfaces_Peak_Usage</resource>
+  <resource>Windows_IIS_Peak_Usage</resource>
+</folder>

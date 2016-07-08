@@ -16,7 +16,7 @@ Models file systems by querying Win32_LogicalDisk via WMI.
 import re
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
-from ZenPacks.zenoss.Microsoft.Windows.utils import check_low_disk_utilization
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 class FileSystems(WinRMPlugin):
@@ -35,6 +35,7 @@ class FileSystems(WinRMPlugin):
         'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
         }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
@@ -70,11 +71,9 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Size:
-                disk.Size = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Size)
-            if check_low_disk_utilization(disk.Size, disk.FreeSpace):
-                continue
 
             perfmonInstance = '\\LogicalDisk({})'.format(
                 disk.Name.rstrip('\\'))
@@ -120,11 +119,9 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Capacity:
-                disk.Capacity = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Capacity)
-            if check_low_disk_utilization(disk.Capacity, disk.FreeSpace):
-                continue
 
             perfmonInstance = '\\LogicalDisk({})'.format(
                 disk.Name.rstrip('\\'))
@@ -166,11 +163,9 @@ class FileSystems(WinRMPlugin):
                     continue
 
             if not disk.Size:
-                disk.Size = 0
+                continue
             if not disk.BlockSize:
                 disk.BlockSize = guess_block_size(disk.Size)
-            if check_low_disk_utilization(disk.Size, disk.FreeSpace):
-                continue
 
             perfmonInstance = '\\LogicalDisk({})'.format(
                 disk.Name.rstrip('\\'))

@@ -16,6 +16,8 @@ import json
 import re
 from xml.parsers.expat import ExpatError
 import xml.dom.minidom
+from xml.dom.ext import PrettyPrint
+from StringIO import StringIO
 
 from twisted.internet import defer
 
@@ -31,8 +33,9 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import save, checkExpiredPassword
 
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_single_shot_command
 
@@ -48,7 +51,7 @@ INSERT_TIME = 'TimeCreated[timediff(@SystemTime) &lt;= {time}] and '
 class EventLogDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
-    cycletime = '${here/zWinPerfmonInterval}'
+    cycletime = '300'
     counter = ''
     sourcetypes = ('Windows EventLog',)
     sourcetype = sourcetypes[0]
@@ -62,7 +65,7 @@ class EventLogDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'eventlog', 'type': 'string'},
-        {'id': 'query', 'type': 'lines'},
+        {'id': 'query', 'type': 'string'},
         {'id': 'max_age', 'type': 'string'},
     )
 
@@ -97,7 +100,7 @@ class IEventLogInfo(IInfo):
     query = schema.Text(
         group=_t(u'WindowsEventLog'),
         title=_t('Event Query Powershell or XPath XML'),
-        xtype='twocolumntextarea'
+        xtype='textarea'
     )
     max_age = schema.TextLine(
         group=_t(u'WindowsEventLog'),
@@ -155,7 +158,13 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
                 node.childNodes[0].data = filter_text
-            self._object.query = in_filter_xml.toprettyxml(indent='', newl='').replace('<?xml version="1.0" ?>\n', '').replace('&amp;', '&')
+            xml_query = prettify_xml(in_filter_xml)
+            # undo replacement of single quotes with double            
+            xml_query = re.sub(r"(\w+)='(\w+)'", r'\1="\2"', xml_query)
+            # remove the xml header and replace any "&amp;" with "&"
+            header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
+            xml_query = xml_query.replace(header, '').replace('&amp;', '&')
+            self._object.query = xml_query
 
     def get_query(self):
         return self._object.query
@@ -166,8 +175,18 @@ class EventLogInfo(InfoBase):
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
         return string
-    elif hasattr(string, 'splitlines'):
-        return string.splitlines()
+    if isinstance(string, (unicode, str)):
+        return str(string).splitlines()
+    log.warn('Could not convert string to lines: %s' % str(string))
+    return []
+
+def prettify_xml(xml):
+    '''preserve XML formatting'''
+    iostream = StringIO()
+    PrettyPrint(xml, stream=iostream)
+    output = iostream.getvalue()
+    iostream.close()
+    return output
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
@@ -188,7 +207,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         te = lambda x: datasource.talesEval(x, context)
-        query = ""
+        query = datasource.query
         query_error = True
 
         try:
@@ -197,7 +216,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         except Exception:
             pass
         try:
-            xml.dom.minidom.parseString(datasource.query)
+            xml.dom.minidom.parseString(query)
             use_xml = True
         except ExpatError:
             use_xml = False
@@ -240,6 +259,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         try:
             res = yield query.run(eventlog, select, max_age, eventid, isxml)
         except Exception as e:
+            if 'Password expired' in e.message:
+                raise e
             log.error(e)
         try:
             if res.stderr:
@@ -286,10 +307,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'FailureAudit': ZenEventClasses.Info,
         }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
 
-        eventClass = ds['eventClass'] if 'eventClass' in ds.keys() else '/Unknown'
         evt = dict(
             device=config.id,
-            eventClass=eventClass,
             eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
             eventGroup=ds['eventlog'],
             component=evt['Source'],
@@ -301,8 +320,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
             computername=evt['MachineName'],
             eventidentifier=evt['EventID'],
         )
+        # Fixes ZEN-23024
+        # only assign event class if other than '/Unknown', otherwise 
+        # the user should use event class mappings
+        eventClass = ds.get('eventClass')
+        if eventClass and eventClass != '/Unknown':
+            evt['eventClass'] = eventClass
         return evt
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
         for evt in results:
@@ -317,8 +343,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
         })
         return data
 
+    @save
     def onError(self, result, config):
-        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result, config)
+        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result.value.message, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
@@ -328,13 +355,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
-        data['events'].append({
-            'severity': severity,
-            'eventClassKey': 'WindowsEventCollectionError',
-            'eventKey': 'WindowsEventCollection',
-            'summary': msg,
-            'device': config.id
-        })
+        checkExpiredPassword(config, data['events'], result.value.message)
+        if not data['events']:
+            data['events'].append({
+                'severity': severity,
+                'eventClassKey': 'WindowsEventCollectionError',
+                'eventKey': 'WindowsEventCollection',
+                'summary': msg,
+                'device': config.id
+            })
         return data
 
 

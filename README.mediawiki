@@ -2,6 +2,7 @@ This ZenPack provides support for monitoring Microsoft Windows. Monitoring is pe
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
 
+__TOC__
 == Video ==
 {{#widget:YouTube|id=kP28F_aQ77E|width=640|height=360}}
 
@@ -209,7 +210,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \DirectoryServices(NTDS)\LDAP UDP operations/sec
 * \DirectoryServices(NTDS)\LDAP Writes/sec
 
-{{note}} The Active Directory monitoring template will only be used when the NTDS service is found during modeling.
+{{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
 
 ;Exchange 2003
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -377,9 +378,13 @@ For Windows 2008 & Later:
 
 <code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code>
 
+Or to look for a specific event id:
+
 <code>{ $$_.Id -eq 4001}</code>
 
 <code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event.  <code>Id</code> is the property to compare for specific event ids.  You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.
+
+Note: This query is structured to look for "less than or equal" although we are looking for events "greater than or equal" in severity. This is because the Level is an enumeration where the integer values map to 1 = Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate higher severity.  The LogAlways event level evaluates to 0, which is less than a Warning.  These events are typically Informational and will display if using the sample powershell query above.  To work around this, you could add <code> -and $$_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways</code> into your query or use the xml option.
 
 [[File:CustomViewXML.png|thumb|250px|CustomViewXML]]
 The full list of event levels can be found at http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx
@@ -416,7 +421,7 @@ To change event severity follow the steps:
 # go to IIS Site events, and click on '/Status' event class.
 # find 'EventClass Mappings' section and click on 'IISSiteStatus' link
 # click the ''Edit'' button
-# in the 'Transform' section, add "<code>evt.severity = <severity number(see link http://community.zenoss.org/docs/DOC-3923 in the '#7.1.1.3. severity Field' section)></code>" at the bottom
+# in the 'Transform' section, add "<code>evt.severity = NUM</code>" where NUM is one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical) at the bottom
 # click the ''Save'' button
 
 === Custom Commands ===
@@ -469,7 +474,7 @@ from Products.ZenRRD.CommandParser import CommandParser
 
 # Select a windows target device
 # Navigate to Device (/Server/Microsoft)
-# On the rigt side panel, click '+' to add a 'Windows Shell' datasource
+# On the right side panel, click '+' to add a 'Windows Shell' datasource
 # Provide name (eg. custom) and type (Windows Shell) for the datasource
 # View Edit and Details : strategy ->custom command and parser is test1
 # Run zenpython to collect the data zenpython run -v10 -d <devicename>
@@ -485,7 +490,117 @@ from Products.ZenRRD.CommandParser import CommandParser
 # Enter script.  Be sure to use a double dollar sign, '$$', in order to distinguish any powershell specific variables from a TALES expression.
 # Add a datapoint to collect the return value from the script which you can then graph
 
-== DCDiag ==
+=== Configuring Service Monitoring ===
+
+There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, all 'Auto' start services, or somewhere in between.
+
+[[File:winservice.png|thumb|320px|WinService]]
+
+See the following examples:
+
+;Manually Enable or disable monitoring for a single service on a single server.
+# Navigate to the service on the server.
+# Click to select it.
+# Select ''Details'' in the lower component pane.
+# Choose the Fail Severity.
+# Choose ''Monitoring'' from the gear menu.
+# Choose Yes or No depending on what you want.
+
+{{note}} Once monitoring has been enabled or disabled for a service, no monitoring template will apply.  To reset this option for a service, uncheck the 'Manually Selected Monitor State' box in the Details of the service and save the change.
+
+;Enable monitoring by default for the WinRM service wherever it is enabled.
+Option 1
+# Navigate to Advanced -> Monitoring Templates.
+# Verify the list of templates is grouped by template.
+# Expand the ''WinService'' tree.
+# Click once to select the ''/Server/Microsoft'' copy.
+# Choose ''Copy / Override Template'' from the Template gear menu at the bottom left of the page.
+# Select ''/Server/Microsoft (Create Copy)'' from the target list then click submit.
+# Expand the resulting ''copy_of_WinService'' tree.
+# Select the ''/Server/Microsoft'' copy.
+# Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
+# Change the template's name to ''WinRM''.
+# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
+
+Option 2
+# Navigate to Infrastructure -> Windows Services
+# Locate the WinRM service
+# Select the start modes desired for this service
+# Enable monitoring by setting a Local Value
+# Optionally select a Local Failure Severity
+# Save
+
+{{note}} Setting a service to be monitored in this fashion will enable monitoring for the service regardless of device class.
+
+;Enable/Disable monitoring by default for the WinRM service for a select group of servers.
+# Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
+# Move the servers to the new device class.
+# Follow steps 1-5 from the previous section to create a copy of the WinService template.
+# Choose your new device class as the target then click submit.
+# Expand the ''WinService'' tree then select the copy in your device class.
+# Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
+# Change the template's name to ''WinRM'' then click submit.
+# Double-click to edit the ''DefaultService' datasource.
+# Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
+
+;Enable monitoring of all services with a start mode of 'Auto'.
+# Navigate to Advanced -> Monitoring Templates.
+# Verify the list of templates is grouped by template.
+# Expand the ''WinService'' tree.
+# Select ''/Server/Microsoft''.
+# In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
+# Choose ''View and Edit Details'' from the Data Sources gear menu.
+# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
+
+;Create an organizer to monitor auto start SQL Server services.
+# Navigate to Advanced -> Monitoring Templates.
+# Verify the list of templates is grouped by template.
+# Expand the ''WinService'' tree.
+# Select ''/Server/Microsoft''.
+# In the Data Sources pane, click the + button to add a new data source, give it a name such as MSSQLSERVER, and choose Windows Service as the type.
+# Choose ''View and Edit Details'' from the Data Sources gear menu.
+# Tick the ''Auto'' checkbox under ''Service Options''.
+# Enter ''+MSSQLSERVER.*'' into the "Inclusions(+)/Exclusions(-)" text box and click save.
+
+The order of precedence for monitoring a service is:
+# User manually sets monitoring
+# 'DefaultService' datasource from the WinService template associated with the service
+# Datasource other than the DefaultService in the WinService template associated with the service
+# Monitoring is enabled via the Infrastructure -> Windows Services page
+
+{| class="wikitable"
+|+ <span class="tablecap"><span class="tablecap">Windows Service Startmodes (Template vs Windows Services)</span></span>
+!width="33%"|Startmodes
+!width="33%"|Template includes Service startmode
+!width="33%"|Template excludes Service startmode
+
+|-
+|Windows Service Class includes Service startmode
+
+|monitored
+
+|monitored
+
+|-
+|Windows Service Class excludes Service startmode
+
+|monitored
+
+|NOT monitored
+
+|}
+
+{{note}} The Windows Service Template (default WinService) must have at least one datasource enabled for monitoring to function.
+
+You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard ''+.*'' inclusion.
+
+{{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
+
+{{note}} When saving changes to a service template, the changes may take several minutes to propagate to all of your devices.
+
+{{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
+
+=== DCDiag ===
 
 Beginning with version 2.4.0, you can now monitor the output of DCDiag.  By default all dcdiag tests are enabled in the Active Directory monitoring template.  If a test fails an error event is issued.  You can also add other tests, such as DNS, and supply specific test parameters.
 
@@ -493,7 +608,7 @@ See https://technet.microsoft.com/en-us/library/cc731968.aspx for more informati
 
 {{note}} DCDiag must be run as a user with Administrator permissions.  If you will be monitoring a Domain Controller with a non administrator user, you should disable these tests.
 
-== PortCheck ==
+=== PortCheck ===
 
 Beginning with version 2.4.0, you can now monitor specific ports in the Windows Zenpack.  By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.
 
@@ -503,9 +618,15 @@ To monitor ports on a Windows server that is not a domain controller, simply cre
 
 See https://technet.microsoft.com/en-us/library/dd772723(v=ws.10).aspx for more information on Active Directory port usage.
 
-== WinRM Ping ==
+=== WinRM Ping ===
 
-Device status relies on ping status, but if a target's IP has been reassigned to a non-Windows device, it is still pingable and will show as Up.  WinRM Ping is a simple datasource that will attempt to retrieve data over winrm.  If it fails, then we will send a Device Down message to '/Status/Ping', which will set the device status to down.
+WinRM Ping is a simple datasource that will attempt to retrieve basic data over winrm.  If the device cannot return a simple query, then Zenoss will view this device as being down.  An event will appear in the /Status/Winrm/Ping event class with any resulting error message.  This is a more comprehensive test than using a ping.  A simple ping test could easily result in a false positive in many scenarios.  The following are just a few:
+
+* A target's IP has been reassigned to a non-Windows device between models.
+* The winrm service has stopped and cannot be restarted.
+* The monitoring user account password has expired.
+
+This datasource is not enabled by default.
 
 == Requirements ==
 
@@ -526,6 +647,53 @@ yum -y install krb5-workstation
 </console>
 
 == Usage ==
+
+=== Monitoring User Account ===
+
+A monitoring user account must be either an Administrator or a least privileged user.
+
+The Least Privileged User requires the following privileges and permissions:
+
+* Enable, Method Execute, Read Security, Remote Access to the following WMI namespaces
+** "Root"
+** "Root/CIMv2"
+** "Root/DEFAULT"
+** "Root/RSOP"
+** "Root/RSOP/Computer"
+** "Root/WMI"
+** "Root/CIMv2/Security/MicrosoftTpm"
+* Permission to use the winrm service
+* ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys
+** "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib",
+** "HKLM:\system\currentcontrolset\control\securepipeservers\winreg",
+** "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4D36E972-E325-11CE-BFC1-08002bE10318}",
+** "HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters",
+** "HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server",
+** "HKLM:\Software\Microsoft\Microsoft SQL Server"
+* “List Contents” and “Read all Properties” permissions in the Machine Access and Launch Restrictions of DCOM, set in the following registry keys
+** “HKLM:\software\microsoft\ole\MachineAccessRestriction”
+** “HKLM:\software\microsoft\ole\MachineLaunchRestriction”
+** If the value exists, “Remote Access” is set in “HKLM:\software\microsoft\ole\DefaultAccessPermission”
+* Membership in the following local groups or domain level groups for a Domain Controller
+** "Performance Monitor Users",
+** "Performance Log Users",
+** "Event Log Readers",
+** "Distributed COM Users",
+** "WinRMRemoteWMIUsers__"
+* “Read Folder” access to "C:\Windows\system32\inetsrv\config" if it exists
+* Each service needs the following permissions
+** SERVICE_QUERY_CONFIG
+** SERVICE_QUERY_STATUS
+** SERVICE_INTERROGATE
+** READ_CONTROL
+** SERVICE_START
+
+{{note}} An Administrator level user can be denied local logon and remote desktop access through a group policy object.
+
+=== Port Requirements ===
+
+The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.
+For domain authentication, Kerberos communicates with the KDC on port 88 and the Admin Server on port 749.
 
 === Adding a Windows Device ===
 
@@ -583,6 +751,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 : It is recommended to leave zWinRMServerName blank if local authentication is used, or DNS PTR records match Active Directory. This allows Zenoss to not rely on DNS resolution while monitoring, and avoids the overhead of configuring zWinRMServerName.
 
+: If the server name cannot be resolved and you are using domain authentication, it is recommended that you set the Id of the device to the IP address and the Title to the server name it is known by in Active Directory.  Then use ''${here/title}'' for zWinRMServerName.  This situation can occur when no DNS server is available.
+
 ;zWinScheme
 : This must be set to either ''http'' or ''https''. The default is ''http''.
 
@@ -599,76 +769,6 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server using different credentials. The default instance is ''MSSQLSERVER''. Fill in the user and password to use SQL authentication. Leave the user and password blank to use Windows authentication.  The default ''MSSQLSERVER'' credentials will be used for all instances not specified.
 
 {{note}} HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.
-
-=== Configuring Service Monitoring ===
-
-There are multiple ways to configure Windows service monitoring depending on if you want to configure for a single service on a single server, a specific service across all Windows servers, all 'Auto' start services, or somewhere in between.
-
-[[File:winservice.png|thumb|320px|WinService]]
-
-See the following examples:
-
-;Enable or disable monitoring for a single service on a single server.
-# Navigate to the service on the server.
-# Click to select it.
-# Choose ''Monitoring'' from the gear menu.
-# Choose Yes or No depending on what you want.
-
-;Enable monitoring by default for the WinRM service wherever it is enabled.
-# Navigate to Advanced -> Monitoring Templates.
-# Verify the list of templates is grouped by template.
-# Expand the ''WinService'' tree.
-# Click once to select the ''/Server/Microsoft'' copy.
-# Choose ''Copy / Override Template'' from the Template gear menu at the bottom left of the page.
-# Select ''/Server/Microsoft (Create Copy)'' from the target list then click submit.
-# Expand the resulting ''copy_of_WinService'' tree.
-# Select the ''/Server/Microsoft'' copy.
-# Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
-# Change the template's name to ''WinRM''.
-# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
-
-;Enable/Disable monitoring by default for the WinRM service for a select group of servers.
-# Create a new device class somewhere under ''/Server/Microsoft/Windows'' for the select group of servers.
-# Move the servers to the new device class.
-# Follow steps 1-5 from the previous section to create a copy of the WinService template.
-# Choose your new device class as the target then click submit.
-# Expand the ''WinService'' tree then select the copy in your device class.
-# Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
-# Change the template's name to ''WinRM'' then click submit.
-# Double-click to edit the ''DefaultService' datasource.
-# Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
-
-;Enable monitoring of all services with a start mode of 'Auto'.
-# Navigate to Advanced -> Monitoring Templates.
-# Verify the list of templates is grouped by template.
-# Expand the ''WinService'' tree.
-# Select ''/Server/Microsoft''.
-# In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
-# Choose ''View and Edit Details'' from the Data Sources gear menu.
-# Tick the ''Auto'' checkbox under ''Service Options'' and click save.
-
-;Enable monitoring of all services with a start mode of 'Auto' and begin with MSSQLSERVER.
-# Navigate to Advanced -> Monitoring Templates.
-# Verify the list of templates is grouped by template.
-# Expand the ''WinService'' tree.
-# Select ''/Server/Microsoft''.
-# In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
-# Choose ''View and Edit Details'' from the Data Sources gear menu.
-# Tick the ''Auto'' checkbox under ''Service Options''.
-# Enter ''+MSSQLSERVER.*'' into the "Inclusions(+)/Exclusions(-)" text box and click save.
-
-The order of precedence for monitoring a service is:
-# User manually sets monitoring
-# 'DefaultService' datasource from default WinService template or copy of default template
-# Datasource other than the DefaultService in default WinService template or copy of default template
-
-You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression and are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions.
-
-{{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
-
-{{note}} When saving changes to a service template, the changes may take several minutes to propogate to all of your devices.
-
-{{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
 
 <br clear=all>
 
@@ -688,9 +788,11 @@ You can optionally include or exclude certain services to be monitored when sele
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 # Connect to SQL Instance using MSSQL Management Studio.
 # Select instance ''Properties'' > ''Security'' and make sure that ''SQL Server and Windows Authentication mode'' is enabled.
-# Open ''Security'' > ''Logins'', select the user, you specified in ''zDBInstances'' property.
+# Open ''Security'' > ''Logins'', select the user you specified in ''zDBInstances'' property or the ''zWinRMUser'' property if using Windows Authentication.
 # Check user ''Properties'' > ''Status'' and make sure that the user is Enabled.
-# Check user ''Properties'' > ''Server Roles'' and make sure that the user has ''sysadmin'' and ''public'' roles.
+# Check user ''Properties'' > ''Server Roles'' and make sure that the user has the ''public'' role.
+## If using an Administrator user, make sure it has the ''sysadmin'' role.
+## If not using an Administrator user, check user ''Properties'' > ''Securables'' and make sure the user has been granted ''View server state'' rights.
 
 ; Support for Local and Failover Cluster SQL instances:
 
@@ -708,7 +810,7 @@ SQL Server failover cluster instances can be modeled/monitored within cluster de
 
 The monitoring templates for SQL Server are component templates so there is no need to perform a bind.  They will automatically be used to monitor databases, instances, and jobs.
 
-{{note}} The default instance of MSSQLSERVER will appear as only the server name starting with version 2.4.8.
+{{note}} The default instance of MSSQLSERVER appears as the host name.
 
 {{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
 
@@ -757,13 +859,13 @@ Individual Machine configuration
 * Run command prompt as Administrator
 * winrm quickconfig
 
-* winrm s winrm/config/service @{MaxConcurrentOperationsPerUser="4294967295"}
-* winrm s winrm/config/winrs @{MaxShellsPerUser="2147483647"}
-* winrm s winrm/config/winrs @{IdleTimeout="7200000"}
+* winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
+* winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
+* winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
-* winrm s winrm/config/service/auth @{Basic="true"}
-* winrm s winrm/config/service @{AllowUnencrypted="true"}
+* winrm s winrm/config/service/auth '@{Basic="true"}'
+* winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
 {{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
 
@@ -802,6 +904,8 @@ This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Wind
 # Click OK to confirm deleting the Windows device.
 # Add the device back using the [[#Adding a Windows Device]] instructions above. Be sure to select the /Server/Microsoft/Windows device class and not the /Server/Windows/WMI device class.
 # Repeat steps 3-6 for each Windows device.
+
+{{note}} It is also possible to drag and drop selected Windows devices from one class to another.  You will need to remodel the devices after the move.
 
 Old Windows ZenPacks:
 * PySamba
@@ -893,7 +997,7 @@ When combined with the Zenoss Service Dynamics product, this ZenPack adds built-
 
 == Troubleshooting ==
 
-Please refer the the Zenoss Service Dynamics documentation if you run into any of the following problems:
+Please refer the Zenoss Service Dynamics documentation if you run into any of the following problems:
 
 * ZenPack will not install
 * Adding a device fails
@@ -915,6 +1019,10 @@ If you see 100% CPU usage on a domain controller and your forest functional leve
 <blockquote>Server not found in Kerberos database</blockquote>
 
 * More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
+
+<blockquote>Preauthentication failed while getting initial credentials.</blockquote>
+
+* This typically indicates a bad or expired password.
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
@@ -976,6 +1084,24 @@ If you experience OperationTimeout errors, it may be a solution to decrease valu
 Other timeout issues on a domain could involve having a large Kerberos token.  This could be caused by the user belonging to a large number of groups.  See https://support.microsoft.com/en-us/kb/970875 for more information on the cause and resolution.  Possible side effects of a large token include high CPU usage on the Windows server.
 
 If you see a corrupt counters error event, this indicates that the specified counters have been corrupted on the Windows device.  No data will be collected for the specified counters until the counters have been repaired on the device and zenpython has been restarted.
+
+If you see the following error, check the zenhub log for errors:
+
+* Configuration for 10.111.5.171 unavailable -- is that the correct name?
+
+=== Troubleshooting modeling/monitoring ===
+
+Version 2.6.0 introduces a command line option to save modeling/monitoring results for troubleshooting.  This option will save the results returned from a Windows server from a modeler or datasource plugin.  This data can then be viewed/tested using unit tests to determine issues.
+
+Usage:
+
+<syntaxhighlight lang="text">
+export ZP_DUMP=1;zenmodeler run -d server1.example.com --collect=Interfaces; unset ZP_DUMP
+</syntaxhighlight>
+
+This will unload a pickle of the results to a file in the /tmp folder called Interfaces_process_XXXXXX.pickle.
+
+{{note}} Be sure to unset the environment variable to avoid unwanted pickle files.
 
 == Zenoss Analytics ==
 
@@ -1087,6 +1213,29 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+; 2.6.0
+* Enabled the use of the Infrastructure -> Windows Services page
+* Enabled domain authentication without the need for DNS
+* Added ability to dump results from plugins for troubleshooting
+* Converted to use zenpacklib
+* Document Microsoft Windows Event Log Monitoring Returns Information Events (ZEN-22904)
+* Fix zWinRMServerName not resolving properly on remote collector (ZEN-22880)
+* Fix WinRM ZP Error about concurrent shells doesn't close when not reoccuring (ZEN-23010)
+* Fix Latest version of WinRM pack (2.5.12) causes "AttributeError: in_exclusions" tracebacks (ZEN-23063)
+* Fix WinRM Interface modeler does not account for HP NIC naming scheme (ZEN-20762)
+* Fix WinRM monitoring does not emit message for expired password (ZEN-23183)
+* Fix Windows kinit: Internal credentials cache error while storing credentials while getting initial credentials (ZEN-23238)
+* Fix MSSQL Queries wrong database for metric (ZEN-23228)
+* Fix Windows Service shows 'Up' when down if event class modified (ZEN-19615)
+* Fix Windows Installed on UCS shows 2 interfaces where there's only 1 (ZEN-23379)
+* Fix Windows ZenPack, doesn't send Datasource fields in 'cmd' to Parsers (ZEN-23739)
+* Fix Windows Zenpack Impact relationships are inconsistent (ZEN-18648)
+* Fix WinRMPing datasource should be disabled by default (ZEN-23517)
+* Fix Copy Override of Windows template breaks EventLogDataSource query attribute (ZEN-23157)
+
+; 2.5.13
+* Fix Active Directory not correctly detected (ZEN-23137)
 
 ; 2.5.12
 * Fix Windows EvenLog Datasource causes CPU 100% utilization (ZEN-20232)

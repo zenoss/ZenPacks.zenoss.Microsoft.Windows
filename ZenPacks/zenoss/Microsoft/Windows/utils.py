@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -12,7 +12,17 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import json
+from Products.ZenEvents import ZenEventClasses
 
+def get_properties(klass):
+    '''
+        avoid duplicates when adding properties 
+        to ZPL schema-based class from a base class
+    '''
+    seen = set()
+    seen_add = seen.add
+    props = tuple([x for x in klass._properties if not (x.get('id') in seen or seen_add(x.get('id')))])
+    return props
 
 def addLocalLibPath():
     """
@@ -239,7 +249,7 @@ def check_for_network_error(result, config):
         return 'Unauthorized, check username and password', '/Status'
 
     msg = 'Failed collection {0} on {1}'.format(
-        result, config
+        result.value.message, config
     )
 
     return msg, '/Unknown'
@@ -263,22 +273,6 @@ def prepare_zDBInstances(inst):
         else:
             dbinstance = str(dbinstance).replace('\'', '"')
     return dbinstance
-
-
-def check_low_disk_utilization(size, freespace):
-    '''
-    Checks disk utilization
-    Return True if disk use less than 1 percent of disk space
-    '''
-    try:
-        size, freespace = int(size), int(freespace)
-    except (TypeError, ValueError):
-        return True
-    if size:
-        percent = float(size - freespace) / size * 100
-        return True if round(percent, 1) < 1.0 else False
-    else:
-        return False
 
 
 def sizeof_fmt(byte=0):
@@ -310,3 +304,70 @@ def cluster_state_value(state):
             'Offline': 2,
             'PartialOnline': 3,
             'Failed': 4}.get(state, 5)
+
+
+def save(f):
+    '''
+    This is a decorator that will save arguments sent to a function.
+    It will write to the /tmp directory using the class name, method name
+    and write time as the file name.  It depends upon the 'ZP_DUMP' env
+    variable existing to dump the pickle.  It then passes the args to the original
+    function.  Be sure to unset ZP_DUMP or you'll see a lot of pickles
+
+    We'll skip over device_proxy and config because they contain password in clear text
+
+    usage:
+    class foo(object):
+        @save
+        def bar(self, x, y):
+            print 'x: {}, y: {}'.format(x, y)
+
+    foo().bar(1, 2)
+
+    $ export ZP_DUMP = 1; python foo.py; unset ZP_DUMP
+    '''
+    def dumper(self, *args, **kwargs):
+        import os
+        if os.environ.get('ZP_DUMP', None):
+            import pickle
+            import time
+            import logging
+            filetime = time.strftime('%H%M%S', time.localtime())
+            fname = '_'.join((self.__class__.__name__, f.func_name, filetime))
+            with open(os.path.join('/tmp', fname + '.pickle'), 'w') as pkl_file:
+                arguments = []
+                for count, thing in enumerate(args):
+                    if (isinstance(thing, logging.Logger) or
+                            isinstance(thing, file) or
+                            hasattr(thing, 'windows_password') or
+                            hasattr(thing, 'datasources')):
+                                continue
+                    arguments.append(thing)
+                for name, thing in kwargs.items():
+                    if (isinstance(thing, logging.Logger) or
+                            isinstance(thing, file) or
+                            hasattr(thing, 'windows_password') or
+                            hasattr(thing, 'datasources')):
+                                continue
+                    arguments.append('{}={}'.format(name, thing))
+                try:
+                    pickle.dump(arguments, pkl_file)
+                except TypeError:
+                    pass
+                pkl_file.close()
+        return f(self, *args, **kwargs)
+    return dumper
+
+'''
+Common datasource utilities.
+'''
+
+def checkExpiredPassword(config, events, error):
+    '''add password expired event'''
+    if 'Password expired' in error or 'Check username and password' in error:
+        events.append({
+            'eventClass': '/Status/Winrm/Ping',
+            'severity': ZenEventClasses.Critical,
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'device': config.id})

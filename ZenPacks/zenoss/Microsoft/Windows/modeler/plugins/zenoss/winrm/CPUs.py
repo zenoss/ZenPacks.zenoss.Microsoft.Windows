@@ -19,6 +19,7 @@ from Products.DataCollector.plugins.zenoss.snmp.CpuMap import \
     getManufacturerAndModel
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 
 def int_or_none(value):
@@ -55,6 +56,7 @@ class CPUs(WinRMPlugin):
         ),
     }
 
+    @save
     def process(self, device, results, log):
         log.info(
             "Modeler %s processing data for device %s",
@@ -114,7 +116,6 @@ class CPUs(WinRMPlugin):
                 'cacheSizeL3': check_value(l3_cache_size),
                 'cacheSpeedL3': check_value(l3_cache_speed),
             }))
-
         return rm
 
     def getPerfmonInstance(self, processor, log):

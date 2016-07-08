@@ -36,7 +36,6 @@ class DiskObject2(StringAttributeObject):
                   "Capacity", "MaximumComponentLength"):
             setattr(self, i, 100)
         setattr(self, "Size", '')
-        setattr(self, "FreeSpace", '')
 
 
 class TestFileSystems(BaseTestCase):
@@ -46,19 +45,19 @@ class TestFileSystems(BaseTestCase):
     def test_process(self):
         results = Mock(get=lambda *_: [DiskObject1(), DiskObject2()])
         data = self.plugin.process(StringAttributeObject(), results, Mock())
-        self.assertEquals(len(data.maps), 3)
-        d2 = data.maps[2]
-        self.assertEquals(d2.blockSize, 100)
-        self.assertEquals(d2.maxNameLen, 100)
-        self.assertEquals(d2.drivetype, 'network drive')
-        self.assertEquals(d2.mediatype, 'Fixed hard disk media')
-        self.assertEquals(d2.mount, 'Name (Serial Number: VolumeSerialNumber) - VolumeName')
-        self.assertEquals(d2.perfmonInstance, '\\LogicalDisk(Name)')
-        self.assertEquals(d2.storageDevice, 'Name')
-        self.assertEquals(d2.title, 'Name (Serial Number: VolumeSerialNumber) - VolumeName')
-        self.assertEquals(d2.totalBlocks, 1)
-        self.assertEquals(d2.totalFiles, 0)
-        self.assertEquals(d2.type, 'FileSystem')
+        self.assertEquals(len(data.maps), 4)
+        d3 = data.maps[3]
+        self.assertEquals(d3.blockSize, 100)
+        self.assertEquals(d3.maxNameLen, 100)
+        self.assertEquals(d3.drivetype, 'network drive')
+        self.assertEquals(d3.mediatype, 'Fixed hard disk media')
+        self.assertEquals(d3.mount, 'Name (Serial Number: VolumeSerialNumber) - VolumeName')
+        self.assertEquals(d3.perfmonInstance, '\\LogicalDisk(Name)')
+        self.assertEquals(d3.storageDevice, 'Name')
+        self.assertEquals(d3.title, 'Name (Serial Number: VolumeSerialNumber) - VolumeName')
+        self.assertEquals(d3.totalBlocks, 1)
+        self.assertEquals(d3.totalFiles, 0)
+        self.assertEquals(d3.type, 'FileSystem')
 
 
 class TestHelpers(BaseTestCase):

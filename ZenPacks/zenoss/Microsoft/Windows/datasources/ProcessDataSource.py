@@ -13,7 +13,6 @@ performance.
 '''
 
 import logging
-LOG = logging.getLogger('zen.WindowsProcess')
 
 import collections
 import re
@@ -51,10 +50,12 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from .. import ZENPACK_NAME
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import get_processNameAndArgs, get_processText
+from ..utils import get_processNameAndArgs, get_processText, save, \
+    checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
+LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
 SOURCE_TYPE = 'Windows Process'
@@ -289,6 +290,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return client.do_collect(
             conn_info, map(txwinrm.collect.create_enum_info, queries))
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
 
@@ -466,11 +468,13 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         LOG.error("%s process scan error: %s", config.id, error.value)
 
         data = self.new_data()
-        data['events'].append({
-            'device': config.id,
-            'severity': Event.Error,
-            'eventClass': Status_OSProcess,
-            'summary': 'process scan error: {}'.format(error.value),
-            })
+        checkExpiredPassword(config, data['events'], error.value.message)
+        if not data['events']:
+            data['events'].append({
+                'device': config.id,
+                'severity': Event.Error,
+                'eventClass': Status_OSProcess,
+                'summary': 'process scan error: {}'.format(error.value),
+                })
 
         return data

@@ -5551,13 +5551,13 @@ True
 WinRM Ping
 </property>
 <property type="boolean" id="enabled" mode="w" >
-True
+False
 </property>
 <property type="int" id="severity" mode="w" >
 3
 </property>
 <property type="string" id="cycletime" mode="w" >
-${here/zWinPerfmonInterval}
+300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.WinRMPingDataSource.WinRMPingDataSourcePlugin
@@ -6446,7 +6446,7 @@ False
 0
 </property>
 <property type="int" id="maxy" mode="w" >
-100
+-1
 </property>
 <property type="boolean" id="hasSummary" mode="w" >
 True
@@ -15860,7 +15860,7 @@ ${here/id}
 5
 </property>
 <property type="string" id="cycletime" mode="w" >
-60
+300
 </property>
 <property type="string" id="plugin_classname" mode="w" >
 ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.ServicePlugin
@@ -16427,7 +16427,7 @@ Windows Operating System
 Windows Operating System
 </property>
 <property type="lines" id="devtypes" mode="w" >
-[('Windows Server', 'WMI')]
+[('Windows Server', 'WinRM')]
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.CPUs', 'zenoss.winrm.FileSystems', 'zenoss.winrm.Interfaces', 'zenoss.winrm.Services', 'zenoss.winrm.Processes', 'zenoss.winrm.Software']
@@ -16450,7 +16450,7 @@ Windows Cluster
 Windows Cluster
 </property>
 <property type="lines" id="devtypes" mode="w" >
-[('Windows Cluster', 'WMI')]
+[('Windows Cluster', 'WinRM')]
 </property>
 <property visible="True" type="lines" id="zCollectorPlugins" >
 ['zenoss.winrm.OperatingSystem', 'zenoss.winrm.WinCluster']

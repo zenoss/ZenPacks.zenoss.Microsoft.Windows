@@ -1,28 +1,24 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
 
-
+from . import schema
 from zope.event import notify
-
-from Products.ZenModel.IpInterface import IpInterface
-from Products.ZenRelations.RelSchema import ToMany, ToOne
 from Products.Zuul.catalog.events import IndexingEvent
+from .utils import get_properties
 
 
-class TeamInterface(IpInterface):
-    meta_type = portal_type = 'WinTeamInterface'
+class TeamInterface(schema.TeamInterface):
+    '''
+    Model class for TeamInterface.
+    '''
 
-    _relations = IpInterface._relations + (
-        ('teaminterfaces', ToMany(ToOne,
-            'ZenPacks.zenoss.Microsoft.Windows.Interface',
-            'teaminterface')),
-        )
+    _properties = get_properties(schema.TeamInterface)
 
     def monitored(self):
         '''
@@ -54,3 +50,7 @@ class TeamInterface(IpInterface):
 
     def getInterfaces(self):
         return sorted([x.id for x in self.teaminterfaces()])
+
+    def get_niccount(self):
+        ''''''
+        return len(self.getInterfaces())

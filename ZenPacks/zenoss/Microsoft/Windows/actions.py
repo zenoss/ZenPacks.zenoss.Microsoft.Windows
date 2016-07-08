@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -144,7 +144,8 @@ class WinCommandAction(IActionBase):
             keytab=device.zWinKeyTabFilePath,
             dcip=device.zWinKDC,
             trusted_realm=device.zWinTrustedRealm,
-            trusted_kdc=device.zWinTrustedKDC)
+            trusted_kdc=device.zWinTrustedKDC,
+            ipaddress=device.manageIp)
 
     def _execute_command(self, device, command):
         """

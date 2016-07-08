@@ -10,23 +10,85 @@
 
 var ZC = Ext.ns('Zenoss.component');
 
-/* Friendly Names for Component Types ***************************************/
+Ext.define("Zenoss.component.WinRMServicePanel", {
+    alias:['widget.WinRMServicePanel'],
+    extend:"Zenoss.component.ComponentGridPanel",
+    constructor: function(config) {
+        config = Ext.applyIf(config||{}, {
+            autoExpandColumn: 'caption',
+            componentType: 'WinRMService',
+            fields: [
+                {name: 'uid'},
+                {name: 'severity'},
+                {name: 'status'},
+                {name: 'name'},
+                {name: 'meta_type'},
+                {name: 'locking'},
+                {name: 'usesMonitorAttribute'},
+                {name: 'monitor'},
+                {name: 'monitored'},
+                {name: 'caption'},
+                {name: 'startMode'},
+                {name: 'startName'},
+                {name: 'serviceClassUid'}
+            ],
+            columns: [{
+                id: 'severity',
+                dataIndex: 'severity',
+                header: _t('Events'),
+                renderer: Zenoss.render.severity,
+                sortable: true,
+                width: 60
+            },{
+                id: 'name',
+                dataIndex: 'name',
+                header: _t('Service Name'),
+                sortable: true,
+                flex: 1,
+                renderer: Zenoss.render.WinServiceClass
+            },{
+                id: 'caption',
+                dataIndex: 'caption',
+                header: _t('Caption'),
+                sortable: true
+            },{
+                id: 'startmode',
+                dataIndex: 'startMode',
+                header: _t('Start Mode'),
+                sortable: true,
+                width: 110
+            },{
+                id: 'startName',
+                dataIndex: 'startName',
+                header: _t('Start Name'),
+                widht: 110,
+                sortable: true
+            },{
+               id: 'status',
+                dataIndex: 'status',
+                header: _t('Status'),
+                renderer: Zenoss.render.pingStatus,
+                width: 60
+            },{
+                id: 'monitored',
+                dataIndex: 'monitored',
+                header: _t('Monitored'),
+                renderer: Zenoss.render.checkbox,
+                sortable: true,
+                width: 65
+            },{
+                id: 'locking',
+                dataIndex: 'locking',
+                header: _t('Locking'),
+                renderer: Zenoss.render.locking_icons
+            }]
+        });
+        ZC.WinRMServicePanel.superclass.constructor.call(this, config);
+    }
+});
 
-ZC.registerName('WinRMService', _t('Service'), _t('Services'));
-ZC.registerName('WinRMIIS', _t('IIS Site'), _t('IIS Sites'));
-ZC.registerName('WinDBInstance', _t('MSSQL Instance'), _t('MSSQL Instances'));
-ZC.registerName('WinDatabase', _t('MSSQL Database'), _t('MSSQL Databases'));
-ZC.registerName('WinBackupDevice', _t('MSSQL Backup Device'), _t('MSSQL Backup Devices'));
-ZC.registerName('WinSQLJob', _t('MSSQL Job'), _t('MSSQL Jobs'));
-ZC.registerName('MSClusterService', _t('Cluster Service'), _t('Cluster Services'));
-ZC.registerName('MSClusterResource', _t('Cluster Resource'), _t('Cluster Resources'));
-ZC.registerName('MSClusterNode', _t('Cluster Node'), _t('Cluster Nodes'));
-ZC.registerName('MSClusterDisk', _t('Cluster Disk'), _t('Cluster Disks'));
-ZC.registerName('MSClusterNetwork', _t('Cluster Network'), _t('Cluster Networks'));
-ZC.registerName('MSClusterInterface', _t('Cluster Interface'), _t('Cluster Interfaces'));
-ZC.registerName('WinTeamInterface', _t('Team Interface'), _t('Team Interfaces'));
-ZC.registerName('WindowsInterface', _t('Interface'), _t('Interfaces'));
-ZC.registerName('WindowsCPU', _t('Processor'), _t('Processors'));
+ZC.registerName('WinRMService', _t('Windows Service'), _t('Windows Services'));
+
 
 /* WinRS Datasource UI ******************************************************/
 
@@ -395,45 +457,6 @@ Zenoss.form.StartModeGroup = Ext.extend(Ext.panel.Panel, {
         Ext.reg('startmodegroup', Zenoss.form.StartModeGroup);
     }
 })();
-
-Ext.onReady(function() {
-    Ext.ComponentMgr.onAvailable('monitoredStartModes', function(){
-        var message = _t('This page has been deprecated in ZenPacks.zenoss.Microsoft.Windows.  Please use the WinService monitoring template.');
-        var dlg = new Zenoss.FormDialog({
-            title: _t('Windows Services'),
-            modal: true,
-            items: [ {
-                        xtype: 'label',
-                        text: message,
-                        ref: 'messagelabel'
-                    },
-                    {
-                        xtype: 'checkboxfield',
-                        boxLabel  : 'Check if you no longer want to see this message.',
-                        name      : 'hidemessage',
-                        inputValue: '1',
-                        stateId   : 'services_checkbox',
-                        stateful: true,
-                        stateEvents: ['change'],
-                        getState: function() {
-                            return {checked: this.getValue()}
-                        },
-                        applyState: function(state){
-                            this.setValue(state.checked);
-                        }
-                    }],
-            buttons: [
-                        {
-                            xtype: 'HideDialogButton',
-                            text: _t('OK'),
-                        }
-                    ],
-        });
-        if (dlg.down('checkboxfield').getValue() == false){
-            dlg.show();
-        }
-    });
-});
 
 var DEVICE_SUMMARY_PANEL = 'deviceoverviewpanel_summary';
 

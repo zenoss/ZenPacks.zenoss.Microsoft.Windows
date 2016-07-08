@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -19,29 +19,12 @@ from Products.Zuul.interfaces import ICatalogTool
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
-from ZenPacks.zenoss.Microsoft.Windows.zope_utils import BaseDevice
-from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
-from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
+from . import schema
 
-
-class Device(BaseDevice):
+class Device(schema.Device):
     '''
     Model class for a Windows operating system device.
     '''
-
-    clusterdevices = ''
-    sqlhostname = None
-    msexchangeversion = None
-    ip_and_hostname = None
-    domain_controller = False
-
-    _properties = BaseDevice._properties + (
-        {'id': 'clusterdevices', 'label': 'Cluster Devices', 'type': 'string', 'mode': 'w'},
-        {'id': 'sqlhostname', 'label': 'SQL Host Name', 'type': 'string', 'mode': 'w'},
-        {'id': 'msexchangeversion', 'label': 'MS Exchange Version', 'type': 'string', 'mode': 'w'},
-        {'id': 'ip_and_hostname', 'type': 'string'},
-        {'id': 'domain_controller', 'label': 'Domain Controller', 'type': 'boolean'},
-    )
 
     def getPingStatus(self):
         return self.getStatus('/Status/Winrm/Ping')
@@ -121,49 +104,129 @@ class Device(BaseDevice):
                     clusterdnsname))
         return _clusterdevices
 
+    def is_iis(self):
+        '''Return True if an IIS server'''
+        # if we have IIS components, then we are IIS server
+        from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
+        for component in self.getDeviceComponents():
+            if isinstance(component, WinIIS):
+                return True
+        return False
+
+    def is_ntds(self):
+        '''Return True if an NTDS/AD server'''
+        # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
+        if self.domain_controller:
+            return True
+        return False
+
+    def is_exchange(self):
+        '''return True if this is an Exchange server'''
+        if self.msexchangeversion:
+            return True
+        return False
+
     def getRRDTemplates(self):
         """
         Returns all the templates bound to this Device and
         add MSExchangeIS or Active Directory template according to version.
         """
-        result = super(Device, self).getRRDTemplates()
-        # Check if version of the system
-        # modeled by OperatingSystem plugin is Windows 2003.
-        # https://jira.hyperic.com/browse/HHQ-5553
-        bIIS = False
-        bAD = False
-        for component in self.getDeviceComponents():
-            if bIIS and bAD:
-                break
-            if isinstance(component, WinIIS):
-                bIIS = True
-            if isinstance(component, WinService) and component.servicename == 'NTDS':
-                bAD = True
-        # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
-        if not bAD and self.domain_controller:
-            bAD = True
         templates = []
-        for template in result:
-            if 'IIS' in template.id and not bIIS:
+        for template in super(Device, self).getRRDTemplates():
+            # skip IIS template if not installed
+            if 'IIS' in template.id and not self.is_iis():
                 continue
-            elif 'Active Directory' in template.id:
-                if not bAD:
+            if 'Active Directory' in template.id:
+                # skip Active Director template if not installed
+                if not self.is_ntds():
                     continue
+                # get version-appropriate template
                 if '2003' in self.getOSProductName():
-                    ad = self.getRRDTemplateByName('Active Directory 2003')
-                    if ad:
-                        templates.append(ad)
-                        continue
-            elif 'MSExchange' in template.id:
-                if not self.msexchangeversion:
+                    template = self.getRRDTemplateByName('Active Directory 2003')
+            if 'MSExchange' in template.id:
+                # skip Exchange template if not installed
+                if not self.is_exchange():
                     continue
-                exchange = self.getRRDTemplateByName(self.msexchangeversion)
-                if exchange:
-                    templates.append(exchange)
-                    continue
+                # get version-appropriate template
+                exch = self.getRRDTemplateByName(self.msexchangeversion)
+                if exch:
+                    template = exch
             templates.append(template)
 
         return templates
+
+    def all_winsqlinstances(self):
+        """Generate all WinSQLInstance components."""
+        for c in self.os.winsqlinstances():
+            yield c
+
+    def all_winrmiis(self):
+        """Generate all WinIIS components."""
+        for c in self.os.winrmiis():
+            yield c
+
+    def all_filesystems(self):
+        """Generate all HardDisk components."""
+        for fs in self.os.filesystems():
+            yield fs
+
+    def all_processes(self):
+        """Generate all OSProcess components."""
+        for process in self.os.processes():
+            yield process
+
+    def all_ipservices(self):
+        """Generate all IpService components."""
+        for ipservice in self.os.ipservices():
+            yield ipservice
+
+    def all_cpus(self):
+        """Generate all CPU components."""
+        for cpu in self.hw.cpus():
+            yield cpu
+
+    def all_interfaces(self):
+        """Generate all Interface components."""
+        for iface in self.os.interfaces():
+            yield iface
+
+    def all_clusterservices(self):
+        """Generate all ClusterService components."""
+        for c in self.os.clusterservices():
+            yield c
+
+    def all_clusternodes(self):
+        """Generate all ClusterNode components."""
+        for c in self.os.clusternodes():
+            yield c
+
+    def all_clusternetworks(self):
+        """Generate all ClusterNetwork components."""
+        for c in self.os.clusternetworks():
+            yield c
+
+    def all_winservices(self):
+        """Generate all Cluster Services components."""
+        for c in self.os.winservices():
+            yield c
+
+    def all_hyperv(self):
+        # Look up for HyperV server with same IP
+        try:
+            dc = self.getDmdRoot('Devices').getOrganizer(
+                '/Server/Microsoft/HyperV'
+            )
+        except Exception:
+            return
+
+        results = ICatalogTool(dc).search(types=(
+            'ZenPacks.zenoss.Microsoft.HyperV.HyperVVSMS.HyperVVSMS',
+        ))
+
+        for brain in results:
+            obj = brain.getObject()
+            if obj.ip == self.id:
+                yield obj
 
 
 class DeviceLinkProvider(object):

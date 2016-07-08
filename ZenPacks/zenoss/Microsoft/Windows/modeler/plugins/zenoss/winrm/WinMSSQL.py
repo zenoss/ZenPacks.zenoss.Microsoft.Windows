@@ -24,6 +24,7 @@ from Products.DataCollector.plugins.DataMaps \
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
+from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 addLocalLibPath()
 
@@ -256,7 +257,6 @@ class WinMSSQL(WinRMPlugin):
                 "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
             if login_as_user:
-                log.debug("Windows auth %s / %s" % (sqlusername, sqlpassword))
                 # Login using windows credentials
                 sqlConnection.append("$con.LoginSecure=$true;")
                 sqlConnection.append("$con.ConnectAsUser=$true;")
@@ -264,7 +264,6 @@ class WinMSSQL(WinRMPlugin):
                 sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
                 sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
             else:
-                log.debug("DB auth %s / %s" % (sqlusername, sqlpassword))
                 sqlConnection.append("$con.Connect();")
 
             # Connect to Database Server
@@ -447,6 +446,7 @@ class WinMSSQL(WinRMPlugin):
 
         defer.returnValue(maps)
 
+    @save
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
                  self.name(), device.id)

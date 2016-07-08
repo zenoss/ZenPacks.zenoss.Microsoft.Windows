@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -19,26 +19,12 @@ from ZODB.transact import transact
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
-from ZenPacks.zenoss.Microsoft.Windows.Device import Device as BaseDevice
+from . import schema
 
-
-class ClusterDevice(BaseDevice):
+class ClusterDevice(schema.ClusterDevice):
     '''
     Model class for a Windows virtual cluster device.
     '''
-
-    clusterhostdevices = ''
-    guid = None
-    creatingdc = None
-
-    _properties = BaseDevice._properties + (
-        {'id': 'clusterhostdevices', 'label': 'Cluster Host Devices',
-            'type': 'string', 'mode': 'w'},
-        {'id': 'guid', 'label': 'GUID',
-            'type': 'string', 'mode': 'w'},
-        {'id': 'creatingdc', 'label': 'Creating DC',
-            'type': 'string', 'mode': 'w'},
-        )
 
     def setClusterMachines(self, clusterdnsnames):
         '''
@@ -126,3 +112,10 @@ class ClusterDevice(BaseDevice):
                     continue
             _clusterhostdevice.append(deviceRoot.findDeviceByIdOrIp(clusterhostip))
         return _clusterhostdevice
+
+    def all_clusterhosts(self):
+        ''''''
+        for host in self.getClusterHostMachines():
+            clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+            if clusterhost:
+                yield clusterhost

@@ -47,7 +47,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value
+from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
+    save, checkExpiredPassword
+from EventLogDataSource import string_to_lines
 
 
 # Requires that txwinrm_utils is already imported.
@@ -198,9 +200,13 @@ class WinCmd(object):
     def __init__(self):
         self.points = []
 
+    def setDatasource(self, datasource):
+        self.datasource = datasource
+
 
 class IStrategy(Interface):
     ''' Interface for strategy '''
+
 
 class DCDiagStrategy(object):
     implements(IStrategy)
@@ -271,6 +277,7 @@ class DCDiagStrategy(object):
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
 
+
 class CustomCommandStrategy(object):
     implements(IStrategy)
 
@@ -291,6 +298,7 @@ class CustomCommandStrategy(object):
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
+        cmd.setDatasource(dsconf)
         cmd.name = '{}/{}'.format(dsconf.template, dsconf.datasource)
         cmd.command = dsconf.params['script']
 
@@ -373,6 +381,7 @@ class SqlConnection(object):
         # Connect to Database Server
         self.sqlConnection.append("$server = new-object ('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
+
 class PowershellMSSQLStrategy(object):
     implements(IStrategy)
 
@@ -387,24 +396,22 @@ class PowershellMSSQLStrategy(object):
 
         counters_sqlConnection = []
         counters_sqlConnection.append("if ($server.Databases -ne $null) {")
+        counters_sqlConnection.append("$dbMaster = $server.Databases['master'];")
         counters_sqlConnection.append("foreach ($db in $server.Databases){")
-        counters_sqlConnection.append("if ($db.IsAccessible) {")
-        counters_sqlConnection.append("$db_name = '';" \
-        "$sp = $db.Name.split($([char]39)); " \
-        "if($sp.length -ge 2){ " \
-        "foreach($i in $sp){ " \
-        "if($i -ne $sp[-1]){ $db_name += $i + [char]39 + [char]39;}" \
-        "else { $db_name += $i;}" \
-        "}} else { $db_name = $db.Name;}")
-        counters_sqlConnection.append("$query = 'select instance_name as databasename, " \
-        "counter_name as ckey, cntr_value as cvalue from " \
-        "sys.dm_os_performance_counters where instance_name = '" \
-        " +[char]39+$db_name+[char]39;")
-        counters_sqlConnection.append("$ds = $db.ExecuteWithResults($query);")
-        counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}' \
-        'else { Write-Host "databasename:"$db.Name;}}')
-        counters_sqlConnection.append("else { Write-Host 'databasename:'$db.name; Write-Host 'status:offline';}}")
-        counters_sqlConnection.append("}")
+        counters_sqlConnection.append("$db_name = '';"
+                                      "$sp = $db.Name.split($([char]39)); "
+                                      "if($sp.length -ge 2){ "
+                                      "foreach($i in $sp){ "
+                                      "if($i -ne $sp[-1]){ $db_name += $i + [char]39 + [char]39;}"
+                                      "else { $db_name += $i;}"
+                                      "}} else { $db_name = $db.Name;}")
+        counters_sqlConnection.append("$query = 'select instance_name as databasename, "
+                                      "counter_name as ckey, cntr_value as cvalue from "
+                                      "sys.dm_os_performance_counters where instance_name = '"
+                                      " +[char]39+$db_name+[char]39;")
+        counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
+        counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
+                                      'else { Write-Host "databasename:"$db.Name;}}}')
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
             ''.join(getSQLAssembly() + sqlConnection.sqlConnection + counters_sqlConnection))
@@ -453,6 +460,7 @@ class PowershellMSSQLStrategy(object):
                     yield dsconf, value, timestamp
 
 gsm.registerUtility(PowershellMSSQLStrategy(), IStrategy, 'powershell MSSQL')
+
 
 class PowershellMSSQLJobStrategy(object):
     implements(IStrategy)
@@ -1110,11 +1118,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         parser = getParserLoader(context.dmd, datasource.parser)
 
-        try:
-            script = datasource.talesEval(datasource.script, context)
-        except:
-            script = ''
-            log.error('Invalid tales expression in custom command script')
+        script = get_script(datasource, context)
 
         return dict(resource=resource,
             strategy=datasource.strategy,
@@ -1236,6 +1240,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue((strategy, config.datasources, results))
 
+    @save
     def onSuccess(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
@@ -1294,8 +1299,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     db_name = result.stdout[0].split(':')[1]
                 except IndexError:
                     db_name = dsconf0.component
-                msg = 'There is no monitoring data for the database "{0}" \
-                    '.format(db_name)
+                msg = 'There is no monitoring data for the database "{0}"'.format(db_name)
                 severity = ZenEventClasses.Info
 
                 if result.stderr:
@@ -1413,6 +1417,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         return data
 
+    @save
     def onError(self, result, config):
         logg = log.error
         msg, event_class = check_for_network_error(result, config)
@@ -1432,19 +1437,23 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        data['events'].append(dict(
-            eventClass=event_class,
-            severity=ZenEventClasses.Warning,
-            eventClassKey='winrsCollectionError',
-            eventKey=eventKey,
-            summary='WinRS: ' + msg,
-            device=config.id))
+        checkExpiredPassword(config, data['events'], result.value.message)
+        if not data['events']:
+            data['events'].append(dict(
+                eventClass=event_class,
+                severity=ZenEventClasses.Warning,
+                eventClassKey='winrsCollectionError',
+                eventKey=eventKey,
+                summary='WinRS: ' + msg,
+                device=config.id))
         return data
+
 
 def get_dsconf(dsconfs, component):
     for dsconf in dsconfs:
         if component == dsconf.component:
             return dsconf
+
 
 def check_datasource(dsconf):
     '''
@@ -1483,3 +1492,15 @@ def parse_stdout(result, check_stderr=False):
 def pscommand():
     return "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
+
+
+def get_script(datasource, context):
+    '''return single or multiline formatted script'''
+    te = lambda x: datasource.talesEval(x, context)
+    try:
+        script = te(' '.join(string_to_lines(datasource.script)))
+    except:
+        script = ''
+        log.error('Invalid tales expression in custom command script: %s' % \
+                  str(datasource.script))
+    return script

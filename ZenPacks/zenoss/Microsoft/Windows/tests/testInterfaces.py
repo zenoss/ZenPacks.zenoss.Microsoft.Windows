@@ -10,7 +10,7 @@
 from mock import Mock, sentinel
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
-from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle, load_pickle_file
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.Interfaces import (
     Interfaces,
@@ -65,3 +65,37 @@ class TestHelpers(BaseTestCase):
             setattr(device, prop, 'ignore')
 
         self.assertFalse(list(filter_maps([om0, om1, om2], device, Mock())))
+
+
+class TestInterfacesCounters(BaseTestCase):
+    def setUp(self):
+        self.results = load_pickle(self, 'interfaces')[0]
+        self.device = load_pickle(self, 'device')
+        self.plugin = Interfaces()
+
+    def test_process(self):
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(len(data.maps), 14)
+
+        self.assertFalse(hasattr(data.maps[7], 'perfmonInstance'))
+        self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver _2)")
+
+
+class TestTeamInterfaces(BaseTestCase):
+    def setUp(self):
+        self.device = load_pickle_file(self, 'device')
+        self.plugin = Interfaces()
+
+    def test_process(self):
+        self.results = load_pickle_file(self, 'Interfaces_process_184038')[0]
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
+        self.assertEquals(data.maps[8].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2)")
+        self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter#1)")
+        self.assertEquals(data.maps[14].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")
+        self.results = load_pickle_file(self, 'Interfaces_process_184151')[0]
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
+        self.assertEquals(data.maps[8].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2)")
+        self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter#1)")
+        self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")

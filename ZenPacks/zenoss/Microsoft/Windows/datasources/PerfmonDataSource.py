@@ -36,7 +36,9 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSource,
     PythonDataSourcePlugin,
-    )
+)
+
+from ..utils import save, checkExpiredPassword
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
@@ -45,7 +47,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from txwinrm.shell import create_long_running_command, create_single_shot_command
 import codecs
 
-LOG = logging.getLogger('zen.windows')
+LOG = logging.getLogger('zen.MicrosoftWindows')
 
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 SOURCETYPE = 'Windows Perfmon'
@@ -116,7 +118,7 @@ class DataPersister(object):
     devices = None
 
     # For performing periodic cleanup of stale data.
-    maintenance_interval = 600
+    maintenance_interval = 300
 
     # Data older than this (in seconds) will be dropped on maintenance.
     max_data_age = 3600
@@ -359,6 +361,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 "Error on %s: %s",
                 self.config.id,
                 e.message or "timeout")
+
+            if 'Password expired' in e.message:
+                PERSISTER.add_event(self.config.id, {
+                    'device': self.config.id,
+                    'severity': ZenEventClasses.Critical,
+                    'eventClass': '/Status/Winrm/Ping',
+                    'summary': e.message,
+                    'ipAddress': self.config.manageIp
+                })
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)

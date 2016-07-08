@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -16,9 +16,15 @@ import shutil
 import re
 import logging
 
-from Products.ZenModel.ZenPack import ZenPackBase
-from Products.ZenRelations.zPropertyCategory import setzPropertyCategory
 from Products.ZenUtils.Utils import zenPath
+
+try:
+    from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge, DSVRelationshipProvider, RelationshipEdgeError
+    from ZenPacks.zenoss.Impact.impactd.interfaces import IRelationshipDataProvider
+except ImportError:
+    IMPACT_INSTALLED = False
+else:
+    IMPACT_INSTALLED = True
 
 log = logging.getLogger("zen.MicrosoftWindows")
 # unused
@@ -27,32 +33,17 @@ Globals
 ZENPACK_NAME = 'ZenPacks.zenoss.Microsoft.Windows'
 
 DEVTYPE_NAME = 'Windows Server'
-DEVTYPE_PROTOCOL = 'WMI'
+DEVTYPE_PROTOCOL = 'WinRM'
+OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 
-_PACK_Z_PROPS = [
-    ('zWinRMUser', '', 'string'),
-    ('zWinRMPassword', '', 'password'),
-    ('zWinRMServerName', '', 'string'),
-    ('zWinRMPort', '5985', 'string'),
-    ('zDBInstances', '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]', 'instancecredentials'),
-    ('zWinKDC', '', 'string'),
-    ('zWinKeyTabFilePath', '', 'string'),
-    ('zWinScheme', 'http', 'string'),
-    ('zWinPerfmonInterval', 300, 'int'),
-    ('zWinTrustedRealm', '', 'string'),
-    ('zWinTrustedKDC', '', 'string'),
-    ]
+from . import zenpacklib
 
-for name, default_value, type_ in _PACK_Z_PROPS:
-    setzPropertyCategory(name, 'Windows')
+# CFG is necessary when using zenpacklib.TestCase.
+CFG = zenpacklib.load_yaml()
 
-# General zProp for Instance logins
-# Format example:
-# zDBInstances = '[{"instance": "MSSQLSERVER", "user": "sa", "passwd": "Sup3rPa"},
-# {"instance": "ZenossInstance2", "user": "sa", "passwd": "WRAAgf4234"}]'
+from . import schema
 
-setzPropertyCategory('zDBInstances', 'Misc')
 
 # Used by zenchkschema to validate relationship schema.
 productNames = (
@@ -77,6 +68,11 @@ productNames = (
     'WinSQLJob',
     )
 
+EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
+    '  You must update to the latest version of the Exchange Server ZenPack.'
+SEGFAULT_INFO = "If a Segmentation fault occurs, then run the installation "\
+    "once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older."
+
 
 def getOSKerberos(osrelease):
 
@@ -88,16 +84,25 @@ def getOSKerberos(osrelease):
         return 'kerberos_el6'
 
 
-class ZenPack(ZenPackBase):
+class ZenPack(schema.ZenPack):
 
     binUtilities = ['winrm', 'winrs']
-    packZProperties = _PACK_Z_PROPS
 
     def install(self, app):
         super(ZenPack, self).install(app)
 
         self.register_devtype(app.zport.dmd)
-        log.info("If a Segmentation fault occurs, then run the installation once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older.")
+        log.info(SEGFAULT_INFO)
+
+        try:
+            exchange_version = self.dmd.ZenPackManager.packs._getOb(
+                'ZenPacks.zenoss.Microsoft.Exchange').version
+            if IMPACT_INSTALLED and \
+               exchange_version in ('1.0.0', '1.0.1', '1.0.2'):
+                log.warn(EXCH_WARN)
+        except AttributeError:
+            pass
+
         # copy kerberos.so file to python path
         osrelease = platform.release()
         kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')
@@ -118,7 +123,7 @@ class ZenPack(ZenPackBase):
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
 
-        self.cleanup_zProps()
+        self.cleanup_zProps(app.zport.dmd)
 
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
@@ -164,14 +169,14 @@ class ZenPack(ZenPackBase):
             # No old device class. That's fine.
             pass
         else:
-            old_deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
+            old_deviceclass.unregister_devtype(DEVTYPE_NAME, OLD_DEVTYPE_PROTOCOL)
 
         deviceclass = dmd.Devices.createOrganizer('/Server/Microsoft/Windows')
         deviceclass.register_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
     def unregister_devtype(self, dmd):
         '''
-        Unregister the "Windows Server (WMI)" devtype.
+        Unregister the "Windows Server (WinRM)" devtype.
         '''
         try:
             deviceclass = dmd.Devices.Microsoft.Windows
@@ -181,12 +186,12 @@ class ZenPack(ZenPackBase):
 
         deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
-    def cleanup_zProps(self):
+    def cleanup_zProps(self, dmd):
         # Delete zProperty when updating the older zenpack version without reinstall.
-        devices = self.dmd.Devices
+        devices = dmd.Devices
         try:
             devices.deleteZenProperty('zDBInstancesPassword')
-        except:
+        except Exception:
             pass
         # workaround for ZEN-13662
         devices._properties = tuple(

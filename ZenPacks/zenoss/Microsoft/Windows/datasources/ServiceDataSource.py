@@ -18,11 +18,12 @@ from zope.interface import implements
 from zope.schema.vocabulary import SimpleVocabulary
 from twisted.internet import defer, error
 from twisted.python.failure import Failure
-from Products.Zuul.infos.template import RRDDataSourceInfo
-from Products.Zuul.interfaces import ICatalogTool, IRRDDataSourceInfo
+from Products.Zuul.infos import InfoBase
+from Products.Zuul.interfaces import ICatalogTool, IInfo
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
 
@@ -32,6 +33,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..WinService import WinService
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import save, checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -105,10 +107,26 @@ class ServiceDataSource(PythonDataSource):
                     yield service
 
 
-class IServiceDataSourceInfo(IRRDDataSourceInfo):
+class IServiceDataSourceInfo(IInfo):
     """
     Provide the UI information for the WinRS Service datasource.
     """
+    newId = schema.TextLine(
+        title=_t(u'Name'),
+        xtype="idfield",
+        description=_t(u'The name of this datasource')
+    )
+    type = schema.TextLine(
+        title=_t(u'Type'),
+        readonly=True
+    )
+    enabled = schema.Bool(
+        title=_t(u'Enabled')
+    )
+
+    severity = schema.TextLine(title=_t(u'Severity'),
+                               xtype='severity')
+    component = schema.TextLine(title=_t(u'Component'))
 
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
@@ -132,7 +150,7 @@ class IServiceDataSourceInfo(IRRDDataSourceInfo):
         title=_t('Inclusions(+)/Exclusions(-) separated by commas.  Regex accepted'))
 
 
-class ServiceDataSourceInfo(RRDDataSourceInfo):
+class ServiceDataSourceInfo(InfoBase):
     """
     Pull in proxy values so they can be utilized
     within the WinRS Service plugin.
@@ -143,6 +161,16 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
     testable = False
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
+
+    def get_enabled(self):
+        return self._object.enabled
+
+    def set_enabled(self, value):
+        self._object.enabled = value
+        for service in self._object.getAffectedServices():
+            service.index_object()
+
+    component = ProxyProperty('component')
 
     def get_alertifnot(self):
         return self._object.alertifnot
@@ -168,6 +196,29 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
         for service in self._object.getAffectedServices():
             service.index_object()
 
+    @property
+    def type(self):
+        return self._object.sourcetype
+
+    @property
+    def newId(self):
+        return self._object.id
+
+    def set_severity(self, value):
+        try:
+            if isinstance(value, str):
+                value = severityId(value)
+        except ValueError:
+            # they entered junk somehow (default to info if invalid)
+            value = severityId('info')
+        self._object.severity = value
+
+    def get_severity(self):
+        return self._object.severity
+
+    severity = property(get_severity, set_severity)
+    enabled = property(get_enabled, set_enabled)
+
     startmode = property(get_startmode, set_startmode)
     in_exclusions = property(get_in_exclusions, set_in_exclusions)
     alertifnot = property(get_alertifnot, set_alertifnot)
@@ -175,6 +226,16 @@ class ServiceDataSourceInfo(RRDDataSourceInfo):
 
 class ServicePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties
+    services = {}
+
+    def buildServicesDict(self, datasources):
+        '''
+            store data about each service and datasource
+        '''
+        self.services = {}
+        for ds in datasources:
+            self.services[ds.params['servicename']] = ds.params.get('winservices', {})
+        return self.services
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -191,11 +252,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         params['servicename'] = datasource.talesEval(
             datasource.servicename, context)
-
-        params['alertifnot'] = datasource.talesEval(
-            datasource.alertifnot, context)
-
-        params['startmode'] = datasource.startmode
+        params['usermonitor'] = context.usermonitor
+        params['winservices'] = context.get_winservices_modes()
 
         return params
 
@@ -204,8 +262,20 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         ds0 = config.datasources[0]
 
-        if ds0.params['startmode'] == 'None':
-            log.debug('No startmodes defined in {}.  Terminating datasource collection.'.format(ds0.datasource))
+        # build dictionary of datasource service info
+        self.buildServicesDict(config.datasources)
+
+        run_query = False
+        for ds in config.datasources:
+            id = ds.params['servicename']
+            svc_data = self.services.get(id)
+            if svc_data.get('manual') or len(svc_data.get('modes',[])) > 0:
+                run_query = True
+                break
+
+        # no need to run query
+        if not run_query:
+            log.warn('No startmodes defined in {} and not manually monitored.  Terminating datasource collection.'.format(ds0.datasource))
             defer.returnValue(None)
 
         log.debug('{0}:Start Collection of Services'.format(config.id))
@@ -224,15 +294,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(results)
 
-    def buildServicesDict(self, datasources):
-        services = {}
-        for ds in datasources:
-            services[ds.params['servicename']] = {'eventClass': ds.eventClass,
-                                                  'eventKey': ds.eventKey,
-                                                  'severity': ds.severity,
-                                                  'alertifnot': ds.params['alertifnot']}
-        return services
-
     def onSuccess(self, results, config):
         '''
         Examples:
@@ -246,87 +307,80 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
-        if config.datasources[0].params['startmode'] == 'None':
-            log.debug('No startmodes defined in {}.  No collection occurred.'
-                      .format(config.datasources[0].datasource))
-            return data
-        services = self.buildServicesDict(config.datasources)
+        params = config.datasources[0].params
+        # if monitoring is false, don't monitor
         log.debug('Windows services query results: {}'.format(results))
         try:
             serviceinfo = results[results.keys()[0]]
         except:
             data['events'].append({
-                                'eventClass': "/Status",
-                                'severity': ZenEventClasses.Error,
-                                'eventClassKey': 'WindowsServiceCollectionStatus',
-                                'eventKey': 'WindowsServiceCollection',
-                                'summary': 'No results returned for service query',
-                                'device': config.id})
+                'eventClass': "/Status/WinService",
+                'severity': ZenEventClasses.Error,
+                'eventClassKey': 'WindowsServiceCollectionStatus',
+                'eventKey': 'WindowsServiceCollection',
+                'summary': 'No results returned for service query',
+                'device': config.id})
             return data
 
-        for index in range(len(serviceinfo)):
-            if serviceinfo[index].Name not in services.keys():
+        for index, svc_info in enumerate(serviceinfo):
+            svc_id = svc_info.Name
+            svc_data = self.services.get(svc_id)
+            # skip if this service shouldn't be monitored
+            if not svc_data or not svc_data.get('monitor', False):
+                log.debug('%s disabled' % svc_id)
                 continue
 
-            service = services[serviceinfo[index].Name]
-            eventClass = service['eventClass'] if service['eventClass'] else "/Status"
-            eventKey = service['eventKey'] if service['eventKey'] else "WindowsService"
+            # continue if this service's state is not in monitored modes
+            if svc_data.get('mode') not in svc_data.get('modes', []):
+                log.debug('%s mode %s not in modes: %s' % (svc_id, svc_data.get('mode'), svc_data.get('modes', []))) 
+                continue
 
-            if serviceinfo[index].State != service['alertifnot']:
+            # if no startmodes, and not manually monitored, skip
+            if len(svc_data.get('modes', [])) == 0 and not svc_data.get('manual', False):
+                log.debug('No startmodes defined in {} and not manually monitored.  No collection occurred.'
+                      .format(config.datasources[0].datasource))
+                continue
 
+            severity = ZenEventClasses.Clear
+
+            if svc_info.State != svc_data.get('alertifnot'):
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
-                    serviceinfo[index].Name,
-                    serviceinfo[index].State
+                    svc_id,
+                    svc_info.State
                 )
-
-                data['events'].append({
-                    'component': serviceinfo[index].Name,
-                    'service_name': serviceinfo[index].Name,
-                    'service_state': serviceinfo[index].State,
-                    'service_status': serviceinfo[index].Status,
-                    'eventClass': eventClass,
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': eventKey,
-                    'severity': service['severity'],
-                    'summary': evtmsg,
-                    'component': prepId(serviceinfo[index].Name),
-                    'device': config.id,
-                })
+                severity = svc_data.get('severity', 3)
             else:
-
                 evtmsg = 'Service Recovered: {0} has changed to {1} state'.format(
-                    serviceinfo[index].Name,
-                    serviceinfo[index].State
+                    svc_info.Name,
+                    svc_info.State
                 )
-
-                data['events'].append({
-                    'component': serviceinfo[index].Name,
-                    'service_name': serviceinfo[index].Name,
-                    'service_state': serviceinfo[index].State,
-                    'service_status': serviceinfo[index].Status,
-                    'eventClass': eventClass,
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': eventKey,
-                    'severity': ZenEventClasses.Clear,
-                    'summary': evtmsg,
-                    'component': prepId(serviceinfo[index].Name),
-                    'device': config.id,
-                })
+            # event for the service
+            data['events'].append({
+                'component': svc_id,
+                'service_name': svc_id,
+                'service_state': svc_info.State,
+                'service_status': svc_info.Status,
+                'eventClass': "/Status/WinService",
+                'eventClassKey': 'WindowsServiceLog',
+                'eventKey': "WindowsService",
+                'severity': severity,
+                'summary': evtmsg,
+                'component': prepId(svc_id),
+                'device': config.id,
+            })
 
         # Event to provide notification that check has completed
         data['events'].append({
-            'eventClass': "/Status",
+            'eventClass': "/Status/WinService",
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
             'eventClassKey': 'WindowsServiceCollectionStatus',
         })
-
         return data
 
     def onError(self, result, config):
-        eventClass = "/Status"
         prefix = 'failed collection - '
         if isinstance(result, Failure):
             result = result.value
@@ -336,11 +390,13 @@ class ServicePlugin(PythonDataSourcePlugin):
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         log.error(msg)
         data = self.new_data()
-        data['events'].append({
-            'eventClass': eventClass,
-            'severity': ZenEventClasses.Error,
-            'eventClassKey': 'WindowsServiceCollectionStatus',
-            'eventKey': 'WindowsServiceCollection',
-            'summary': msg,
-            'device': config.id})
+        checkExpiredPassword(config, data['events'], result.message)
+        if not data['events']:
+            data['events'].append({
+                'eventClass': "/Status/WinService",
+                'severity': ZenEventClasses.Error,
+                'eventClassKey': 'WindowsServiceCollectionStatus',
+                'eventKey': 'WindowsServiceCollection',
+                'summary': msg,
+                'device': config.id})
         return data

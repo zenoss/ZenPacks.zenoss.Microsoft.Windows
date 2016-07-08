@@ -27,6 +27,7 @@ from Products.ZenEvents import ZenEventClasses
 from twisted.internet import defer
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -37,7 +38,7 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
 class WinRMPingDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
-    cycletime = '${here/zWinPerfmonInterval}'
+    cycletime = '300'
     sourcetypes = ('WinRM Ping',)
     sourcetype = sourcetypes[0]
     enabled = True
@@ -147,10 +148,13 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
 
     def onError(self, results, config):
         data = self.new_data()
-        data['events'].append({
-            'eventClass': '/Status/Winrm/Ping',
-            'severity': ZenEventClasses.Critical,
-            'summary': 'Device is DOWN!',
-            'ipAddress': config.manageIp,
-            'device': config.id})
+        log.error('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
+        checkExpiredPassword(config, data['events'], results.value.message)
+        if not data['events']:
+            data['events'].append({
+                'eventClass': '/Status/Winrm/Ping',
+                'severity': ZenEventClasses.Critical,
+                'summary': 'Device is DOWN:  {}'.format(results.value.message),
+                'ipAddress': config.manageIp,
+                'device': config.id})
         return data

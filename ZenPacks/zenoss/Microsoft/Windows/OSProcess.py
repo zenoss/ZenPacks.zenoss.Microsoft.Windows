@@ -1,16 +1,17 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
 
-from Products.ZenModel.OSProcess import OSProcess as OSProcessBase
+from . import schema
+from .utils import get_properties
 
 
-class OSProcess(OSProcessBase):
+class OSProcess(schema.OSProcess):
     '''
     Model class for OSProcess.
 
@@ -19,11 +20,7 @@ class OSProcess(OSProcessBase):
     counters available.
     '''
 
-    supports_WorkingSetPrivate = None
-
-    _properties = OSProcessBase._properties + (
-        {'id': 'supports_WorkingSetPrivate', 'type': 'boolean', 'mode': 'w'},
-        )
+    _properties = get_properties(schema.OSProcess)
 
     def getRRDTemplateName(self):
         '''

@@ -7,6 +7,7 @@
 #
 ##############################################################################
 
+from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import MagicMock, sentinel
 
@@ -28,7 +29,12 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         self.assertIn("is in Unknown state", data['events'][0]['summary'])
 
     def test_onError(self):
-        data = self.plugin.onError({}, MagicMock(
+        f = None
+        try:
+            f = Failure('foo')
+        except TypeError:
+            f = Failure()
+        data = self.plugin.onError(f, MagicMock(
             id=sentinel.id,
             datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
         ))
