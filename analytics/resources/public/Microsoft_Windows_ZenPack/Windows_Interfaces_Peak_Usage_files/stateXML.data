@@ -110,9 +110,9 @@
   <intelligentChartState XAxisRotation="-45" XAxisStep="1" YAxisRotation="0" YAxisStep="1" showDataPoints="true" showMeasureOnValueAxis="true" typeString="column" />
   <measures>
     <measure function="Count" labelOverride="Device IP Address" name="set_device.dim_device_device_manage_ip" showSummary="false" type="java.lang.String" width="137" />
-    <measure function="Count" labelOverride="Interface" name="set_windows_interface.dim_windows_interface_windows_interface_name" showSummary="false" type="java.lang.String" width="241" />
-    <measure function="Average" functionMask="#,##0.00" labelOverride="Received Bytes/Sec / Daily / Highest" mask="#,##0.00" measure="true" name="set_windows_interface.set_windows_interface_measures.daily_inputoctets__bytes_fct_max" showSummary="false" type="java.lang.Double" width="137" />
-    <measure function="Average" functionMask="#,##0.00" labelOverride="Sent Bytes/Sec / Daily / Highest" mask="#,##0.00" measure="true" name="set_windows_interface.set_windows_interface_measures.daily_outputoctets__bytes_fct_max" showSummary="false" type="java.lang.Double" width="141" />
+    <measure function="Count" labelOverride="Interface" name="set_ip_interface.dim_ip_interface_ip_interface_name" showSummary="false" type="java.lang.String" width="241" />
+    <measure function="Average" functionMask="#,##0.00" labelOverride="Received Bytes/Sec / Daily / Highest" mask="#,##0.00" measure="true" name="set_ip_interface.set_ip_interface_measures.daily_inputoctets__bytes_fct_max" showSummary="false" type="java.lang.Double" width="137" />
+    <measure function="Average" functionMask="#,##0.00" labelOverride="Sent Bytes/Sec / Daily / Highest" mask="#,##0.00" measure="true" name="set_ip_interface.set_ip_interface_measures.daily_outputoctets__bytes_fct_max" showSummary="false" type="java.lang.Double" width="141" />
   </measures>
   <propertyMap>
     <entry key="modFlags">
