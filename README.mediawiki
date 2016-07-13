@@ -1214,6 +1214,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.6.1
+* Fix Microsoft Windows ZenPack doesn't work with HyperV pack (ZEN-23967)
+* Fix Microsoft Windows:  no collection when Processes are modeled (ZEN-24010)
+
 ; 2.6.0
 * Enabled the use of the Infrastructure -> Windows Services page
 * Enabled domain authentication without the need for DNS
