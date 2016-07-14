@@ -10,6 +10,8 @@
 from . import schema
 from .utils import get_properties
 
+from Products.ZenModel.OSProcess import OSProcess as BaseOSProcess
+
 
 class OSProcess(schema.OSProcess):
     '''
@@ -21,6 +23,9 @@ class OSProcess(schema.OSProcess):
     '''
 
     _properties = get_properties(schema.OSProcess)
+
+    def getClassObject(self):
+        return BaseOSProcess.getClassObject(self)
 
     def getRRDTemplateName(self):
         '''
