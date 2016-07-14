@@ -101,3 +101,15 @@ def getDevTypes(self, uid):
         return data
     return filter(lambda x: x['value'] != '/zport/dmd/Devices/Server/Microsoft',
                   data)
+
+@monkeypatch('Products.Zuul.facades.templatefacade.TemplateFacade')
+def _editDetails(self, info, data):
+    """
+    Calls `post_update` method if defined.
+    """
+    result = original(self, info, data)
+
+    if hasattr(info, 'post_update'):
+        info.post_update()
+
+    return result

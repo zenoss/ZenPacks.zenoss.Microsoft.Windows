@@ -32,6 +32,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..WinService import WinService
 
+from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import save, checkExpiredPassword
 
@@ -162,13 +163,17 @@ class ServiceDataSourceInfo(InfoBase):
     cycletime = ProxyProperty('cycletime')
     servicename = ProxyProperty('servicename')
 
+    def __init__(self, object):
+        super(ServiceDataSourceInfo, self).__init__(object)
+
+        self._reindex = False
+
     def get_enabled(self):
         return self._object.enabled
 
     def set_enabled(self, value):
         self._object.enabled = value
-        for service in self._object.getAffectedServices():
-            service.index_object()
+        self._reindex = True
 
     component = ProxyProperty('component')
 
@@ -177,24 +182,21 @@ class ServiceDataSourceInfo(InfoBase):
 
     def set_alertifnot(self, value):
         self._object.alertifnot = value
-        for service in self._object.getAffectedServices():
-            service.index_object()
+        self._reindex = True
 
     def get_startmode(self):
         return self._object.startmode
 
     def set_startmode(self, value):
         self._object.startmode = value
-        for service in self._object.getAffectedServices():
-            service.index_object()
+        self._reindex = True
 
     def get_in_exclusions(self):
         return self._object.in_exclusions
 
     def set_in_exclusions(self, value):
         self._object.in_exclusions = value
-        for service in self._object.getAffectedServices():
-            service.index_object()
+        self._reindex = True
 
     @property
     def type(self):
@@ -215,6 +217,12 @@ class ServiceDataSourceInfo(InfoBase):
 
     def get_severity(self):
         return self._object.severity
+
+    def post_update(self):
+        if self._reindex:
+            job = self._object.dmd.JobManager.addJob(ReindexWinServices,
+                                                     kwargs=dict(uid=self.uid))
+            self._reindex = False
 
     severity = property(get_severity, set_severity)
     enabled = property(get_enabled, set_enabled)
