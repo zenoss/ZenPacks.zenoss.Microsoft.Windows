@@ -1214,6 +1214,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.6.2
+* Fix WinRM ZenPack - Windows Services page elections conflict with WinService template exclusions (ZEN-24165)
+
 ; 2.6.1
 * Fix Microsoft Windows ZenPack doesn't work with HyperV pack (ZEN-23967)
 * Fix Microsoft Windows:  no collection when Processes are modeled (ZEN-24010)

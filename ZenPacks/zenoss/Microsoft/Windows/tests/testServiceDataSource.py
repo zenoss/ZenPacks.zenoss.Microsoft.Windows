@@ -30,18 +30,19 @@ class TestServiceDataSourcePlugin(BaseTestCase):
                         'alertifnot': 'Running',
                         }
 
-        self.ds = [MagicMock(params={'eventlog': sentinel.eventlog, 
+        self.ds = [MagicMock(params={'eventlog': sentinel.eventlog,
                                      'winservices': self.context,
                                      'usermonitor': False,
-                                     'servicename': 'aspnet_state'
+                                     'servicename': 'aspnet_state',
+                                     'severity': 3,
+                                     'alertifnot': 'Running'
                                      })]
 
     def test_onSuccess(self):
-        self.plugin.buildServicesDict(self.ds)
         data = self.plugin.onSuccess(self.success, MagicMock(
-           id=sentinel.id,
-           datasources=self.ds,
-        ))
+                                     id=sentinel.id,
+                                     datasources=self.ds,
+                                     ))
         self.assertEquals(len(data['events']), 2)
         self.assertEquals(data['events'][0]['summary'],
                           'Service Alert: aspnet_state has changed to Stopped state')

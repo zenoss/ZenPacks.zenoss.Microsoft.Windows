@@ -5,6 +5,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
+    <subscriber handler=".handlers.onServiceDataSourceMoved" />
+
 	<!-- components -->
     <adapter
         factory=".info.FileSystemInfo"
