@@ -108,7 +108,8 @@ class WinService(BaseWinService):
                     return True
                 elif status is EXCLUDED:
                     return False
-            # 3 - Check other DataSources
+            # 3 - Check all other DataSources
+            ds_monitored = False
             for datasource in template.getRRDDataSources():
                 if datasource.id != 'DefaultService' and\
                    hasattr(datasource, 'startmode') and\
@@ -117,9 +118,11 @@ class WinService(BaseWinService):
                         if status is MONITORED:
                             self.failSeverity = datasource.severity
                             self.alertifnot = datasource.alertifnot
-                            return True
+                            ds_monitored = True
                         elif status is EXCLUDED:
                             return False
+            if ds_monitored:
+                return True
 
         # 4 check the service class
         sc = self.getClassObject()
@@ -127,6 +130,7 @@ class WinService(BaseWinService):
             valid_start = self.startMode in sc.monitoredStartModes
             # check the inherited zMonitor property
             self.failSeverity = self.getAqProperty("zFailSeverity")
+
             return valid_start and self.getAqProperty('zMonitor')
 
         return False
