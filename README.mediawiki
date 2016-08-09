@@ -496,6 +496,15 @@ There are multiple ways to configure Windows service monitoring depending on if 
 
 [[File:winservice.png|thumb|320px|WinService]]
 
+==== Options ====
+* Name - Enter a name for the data source
+* Enabled - Enable or disable the data source
+* Severity - Choose the severity of the alert
+* Cycle Time - Frequency of how often the datasource will query service status
+* Update services immediately - Changes will be picked up during modeling.  To have changes take effect immediately, check this box to start a job to index all services on all devices
+* Service Options - Select the start type(s) to monitor.  Add any services to include/exclude using a regex
+* Service Status - Choose to be alerted if a service is either not Running or not Stopped
+
 See the following examples:
 
 ;Manually Enable or disable monitoring for a single service on a single server.
@@ -520,6 +529,7 @@ Option 1
 # Select the ''/Server/Microsoft'' copy.
 # Choose ''View and Edit Details'' from the Template gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM''.
+# Edit the datasource and optionally select the ''Update services immediately'' option.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 Option 2
@@ -541,6 +551,7 @@ Option 2
 # Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
+# Optionally select the ''Update services immediately'' option.
 # Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Enable monitoring of all services with a start mode of 'Auto'.
@@ -550,6 +561,7 @@ Option 2
 # Select ''/Server/Microsoft''.
 # In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
+# Optionally select the ''Update services immediately'' option.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Create an organizer to monitor auto start SQL Server services.
@@ -559,6 +571,7 @@ Option 2
 # Select ''/Server/Microsoft''.
 # In the Data Sources pane, click the + button to add a new data source, give it a name such as MSSQLSERVER, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
+# Optionally select the ''Update services immediately'' option.
 # Tick the ''Auto'' checkbox under ''Service Options''.
 # Enter ''+MSSQLSERVER.*'' into the "Inclusions(+)/Exclusions(-)" text box and click save.
 
@@ -592,11 +605,11 @@ The order of precedence for monitoring a service is:
 
 {{note}} The Windows Service Template (default WinService) must have at least one datasource enabled for monitoring to function.
 
-You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case sensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard ''+.*'' inclusion.
+You can optionally include or exclude certain services to be monitored when selecting the ''Auto'', ''Manual'', and/or ''Disabled'' start mode(s) by entering a comma separated list of services.  These can be the service names or a valid regular expression.  Entered names and expressions are case insensitive.  To exclude services, you must specify a '-' at the beginning of the name or regular expression.  To include services, specify a '+' at the beginning of the name or regular expression.  Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard ''+.*'' inclusion.
 
 {{note}} To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box.  Unticking all three boxes disables monitoring by default.
 
-{{note}} When saving changes to a service template, the changes may take several minutes to propagate to all of your devices.
+{{note}} When saving changes to a service template and you choose to update services immediately, this will create a job to index all services on all devices.  These changes may take several minutes to propagate to all of your devices depending upon the size of your organization.  Updating is not recommended if you are making several changes in a short period of time.  Updates are automatically applied at the time of the next model.
 
 {{note}} The Windows Service datasource no longer depends on the 'DefaultService' data source name.  User defined datasources are now honored.
 
@@ -1216,6 +1229,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 ; 2.6.2
 * Fix WinRM ZenPack - Windows Services page elections conflict with WinService template exclusions (ZEN-24165)
+* Fix Modifying the WinService template causes parallel reindexing of the same components (ZEN-24375)
 
 ; 2.6.1
 * Fix Microsoft Windows ZenPack doesn't work with HyperV pack (ZEN-23967)
