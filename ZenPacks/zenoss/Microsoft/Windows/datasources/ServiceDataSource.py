@@ -76,6 +76,7 @@ class ServiceDataSource(PythonDataSource):
     alertifnot = 'Running'
     startmode = ''
     in_exclusions = '+.*'
+    reindex = False
 
     plugin_classname = ZENPACKID + \
         '.datasources.ServiceDataSource.ServicePlugin'
@@ -85,6 +86,7 @@ class ServiceDataSource(PythonDataSource):
         {'id': 'alertifnot', 'type': 'string'},
         {'id': 'startmode', 'type': 'string'},
         {'id': 'in_exclusions', 'type': 'string'},
+        {'id': 'reindex', 'type': 'boolean'}
     )
 
     def getAffectedServices(self):
@@ -127,14 +129,12 @@ class IServiceDataSourceInfo(IInfo):
 
     severity = schema.TextLine(title=_t(u'Severity'),
                                xtype='severity')
-    component = schema.TextLine(title=_t(u'Component'))
+
+    reindex = schema.Bool(
+        title=_t('Update services immediately.  This could take several minutes to complete.'))
 
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)'))
-
-    servicename = schema.TextLine(
-        group=_t('Service Status'),
-        title=_t('Service Name'))
 
     alertifnot = schema.Choice(
         group=_t('Service Status'),
@@ -161,42 +161,11 @@ class ServiceDataSourceInfo(InfoBase):
 
     testable = False
     cycletime = ProxyProperty('cycletime')
-    servicename = ProxyProperty('servicename')
-
-    def __init__(self, object):
-        super(ServiceDataSourceInfo, self).__init__(object)
-
-        self._reindex = False
-
-    def get_enabled(self):
-        return self._object.enabled
-
-    def set_enabled(self, value):
-        self._object.enabled = value
-        self._reindex = True
-
-    component = ProxyProperty('component')
-
-    def get_alertifnot(self):
-        return self._object.alertifnot
-
-    def set_alertifnot(self, value):
-        self._object.alertifnot = value
-        self._reindex = True
-
-    def get_startmode(self):
-        return self._object.startmode
-
-    def set_startmode(self, value):
-        self._object.startmode = value
-        self._reindex = True
-
-    def get_in_exclusions(self):
-        return self._object.in_exclusions
-
-    def set_in_exclusions(self, value):
-        self._object.in_exclusions = value
-        self._reindex = True
+    reindex = ProxyProperty('reindex')
+    enabled = ProxyProperty('enabled')
+    alertifnot = ProxyProperty('alertifnot')
+    startmode = ProxyProperty('startmode')
+    in_exclusions = ProxyProperty('in_exclusions')
 
     @property
     def type(self):
@@ -219,17 +188,12 @@ class ServiceDataSourceInfo(InfoBase):
         return self._object.severity
 
     def post_update(self):
-        if self._reindex:
+        if self.reindex:
             self._object.dmd.JobManager.addJob(ReindexWinServices,
                                                kwargs=dict(uid=self.uid))
             self._reindex = False
 
     severity = property(get_severity, set_severity)
-    enabled = property(get_enabled, set_enabled)
-
-    startmode = property(get_startmode, set_startmode)
-    in_exclusions = property(get_in_exclusions, set_in_exclusions)
-    alertifnot = property(get_alertifnot, set_alertifnot)
 
 
 class ServicePlugin(PythonDataSourcePlugin):
