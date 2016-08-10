@@ -1227,6 +1227,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+; 2.6.3
+* Fix potential "clusternetworks" and "clusternodes" errors after upgrading (ZEN-24401)
+
 ; 2.6.2
 * Fix WinRM ZenPack - Windows Services page elections conflict with WinService template exclusions (ZEN-24165)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZEN-24375)
