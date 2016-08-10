@@ -65,6 +65,8 @@ class ResetClassTypes(ZenPackMigration):
     def reset_class(self, catalog, klass):
         '''reset portal_type and meta_type to class name'''
         name = klass.__name__
+        if name == 'Interface':
+            name = 'IpInterface'
         results = catalog.search(klass)
         if not results.total:
             return
@@ -73,8 +75,9 @@ class ResetClassTypes(ZenPackMigration):
         for result in results:
             try:
                 ob = result.getObject()
-                ob.meta_type = name 
+                ob.meta_type = name
                 ob.portal_type = name
+
             except Exception as e:
                 log.warn('problem setting to "%s"' % (name))
                 continue
