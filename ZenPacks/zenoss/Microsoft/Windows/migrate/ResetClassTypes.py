@@ -47,7 +47,7 @@ LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
 class ResetClassTypes(ZenPackMigration):
-    version = Version(2, 6, 0)
+    version = Version(2, 6, 3)
 
     def migrate(self, pack):
         LOG.info('Resetting component attributes')
@@ -65,8 +65,8 @@ class ResetClassTypes(ZenPackMigration):
     def reset_class(self, catalog, klass):
         '''reset portal_type and meta_type to class name'''
         name = klass.__name__
-        if name == 'Interface':
-            name = 'IpInterface'
+        meta_type = klass.meta_type
+        portal_type = klass.portal_type
         results = catalog.search(klass)
         if not results.total:
             return
@@ -75,12 +75,10 @@ class ResetClassTypes(ZenPackMigration):
         for result in results:
             try:
                 ob = result.getObject()
-                ob.meta_type = name
-                ob.portal_type = name
-
-            except Exception as e:
-                log.warn('problem setting to "%s"' % (name))
-                continue
-
-            ob.index_object()
-            notify(IndexingEvent(ob))
+                if ob.meta_type != meta_type or ob.portal_type != portal_type:
+                    del(ob.meta_type)
+                    del(ob.portal_type)
+                    ob.index_object()
+                    notify(IndexingEvent(ob))
+            except Exception:
+                pass
