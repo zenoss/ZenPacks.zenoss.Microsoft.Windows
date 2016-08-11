@@ -1231,6 +1231,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ; 2.6.3
 * Fix potential "clusternetworks" and "clusternodes" errors after upgrading (ZEN-24401)
 * Fix AttributeError: serviceclass on Windows Services after v515 update (ZEN-24347)
+* Fix duplicated "Interfaces" components after upgrade (ZEN-24401)
 
 ; 2.6.2
 * Fix WinRM ZenPack - Windows Services page elections conflict with WinService template exclusions (ZEN-24165)
