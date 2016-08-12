@@ -34,7 +34,6 @@ from ZenPacks.zenoss.Microsoft.Windows.Interface import Interface
 from ZenPacks.zenoss.Microsoft.Windows.OSProcess import OSProcess
 from ZenPacks.zenoss.Microsoft.Windows.TeamInterface import TeamInterface
 from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
-from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
@@ -65,7 +64,6 @@ class ResetClassTypes(ZenPackMigration):
             OSProcess,
             TeamInterface,
             WinIIS,
-            WinService,
             WinSQLBackup,
             WinSQLDatabase,
             WinSQLInstance,
