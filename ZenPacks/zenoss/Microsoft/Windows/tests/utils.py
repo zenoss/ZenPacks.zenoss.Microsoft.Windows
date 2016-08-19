@@ -11,6 +11,8 @@ import os
 import gzip
 import pickle
 
+from Products.DataCollector.ApplyDataMap import ApplyDataMap
+
 
 class StringAttributeObject(dict):
     def __setattr__(self, k, v):
@@ -40,3 +42,17 @@ def test_suite(testnames):
     for testname in testnames:
         suite.addTest(makeSuite(testname))
     return suite
+
+
+def create_device(dmd, zPythonClass, device_id, datamaps):
+    device = dmd.Devices.findDeviceByIdExact(device_id)
+    if not device:
+        deviceclass = dmd.Devices.createOrganizer("/Server/SSH/Linux")
+        deviceclass.setZenProperty("zPythonClass", zPythonClass)
+        device = deviceclass.createInstance(device_id)
+
+    adm = ApplyDataMap()._applyDataMap
+
+    [adm(device, datamap) for datamap in datamaps]
+
+    return device
