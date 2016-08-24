@@ -301,29 +301,25 @@ class WinMSSQL(WinRMPlugin):
                 '};')
 
             # Get SQL Jobs information
-            jobsquery = (
-                "select s.name as jobname, s.job_id as jobid, "
-                "s.enabled as enabled, s.date_created as datecreated, "
-                # Replace each new line with a space in description.
-                "replace(replace(s.description, char(13), char(32)), "
-                "char(10), char(32)) as description, "
-                "l.name as username from msdb..sysjobs s left join "
-                "master.sys.syslogins l on s.owner_sid = l.sid"
-            )
             job_sqlConnection = []
             job_sqlConnection.append('write-host "====Jobs";')
-            job_sqlConnection.append("$db = $server.Databases[0];")
-            job_sqlConnection.append("$ds = $db.ExecuteWithResults('{0}');".format(jobsquery))
-            job_sqlConnection.append('$ds.Tables | Format-List;')
+            job_sqlConnection.append("if ($server.JobServer -ne $null) {")
+            job_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
+            job_sqlConnection.append("write-host 'jobname:'$job.Name;")
+            job_sqlConnection.append("write-host 'enabled:'$job.IsEnabled;")
+            job_sqlConnection.append("write-host 'jobid:'$job.JobID;")
+            job_sqlConnection.append("write-host 'description:'$job.Description;")
+            job_sqlConnection.append("write-host 'datecreated:'$job.DateCreated;")
+            job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
 
             instance_info = yield winrs.run_command(
-                ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection + \
+                ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection +
                         backup_sqlConnection + job_sqlConnection)
             )
 
             log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
             check_username(instance_info, instance, log)
-            in_databases=False
+            in_databases = False
             in_backups = False
             in_jobs = False
             for stdout_line in filter_sql_stdout(instance_info.stdout):
@@ -428,7 +424,7 @@ class WinMSSQL(WinRMPlugin):
                             om_jobs.id = self.prepId(om_jobs.jobid)
                         elif key.strip() == 'enabled':
                             om_jobs.enabled = 'Yes'\
-                                if value.strip() == '1' else 'No'
+                                if value.strip() == 'True' else 'No'
                         elif key.strip() == 'description':
                             om_jobs.description = value.strip()
                         elif key.strip() == 'datecreated':
