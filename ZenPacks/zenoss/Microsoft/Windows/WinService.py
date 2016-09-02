@@ -100,6 +100,8 @@ class WinService(BaseWinService):
         if template:
             # 2 - Check DefaultService DataSource
             datasource = template.datasources._getOb('DefaultService', None)
+            if datasource and not datasource.enabled and template.id == self.serviceName:
+                return False
             if datasource and datasource.enabled:
                 status = self.getMonitored(datasource)
                 if status is MONITORED:
