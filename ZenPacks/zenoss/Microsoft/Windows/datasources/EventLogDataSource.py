@@ -37,7 +37,7 @@ from ..utils import save, checkExpiredPassword
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -369,7 +369,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
 class EventLogQuery(object):
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "

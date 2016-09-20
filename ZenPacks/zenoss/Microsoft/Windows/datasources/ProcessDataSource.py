@@ -55,6 +55,7 @@ from ..utils import get_processNameAndArgs, get_processText, save, \
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
+from txwinrm.WinRMClient import EnumerateClient
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
@@ -254,15 +255,15 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return params
 
     def collect(self, config):
-        client = txwinrm.collect.WinrmCollectClient()
         conn_info = createConnectionInfo(config.datasources[0])
+        client = EnumerateClient(conn_info)
 
         # Always query Win32_Process. This is where we get process
         # status and count.
         queries = [
             'SELECT Name, ExecutablePath, CommandLine, ProcessId '
             'FROM Win32_Process',
-            ]
+        ]
 
         # Query only for the superset of attributes needed to satisfy
         # the configured datapoints across all processes.
@@ -288,7 +289,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                     ', '.join(perf_attrs)))
 
         return client.do_collect(
-            conn_info, map(txwinrm.collect.create_enum_info, queries))
+            map(txwinrm.collect.create_enum_info, queries))
 
     @save
     def onSuccess(self, results, config):

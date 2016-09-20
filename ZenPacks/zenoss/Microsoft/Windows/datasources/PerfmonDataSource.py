@@ -38,13 +38,11 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
 )
 
-from ..utils import save, checkExpiredPassword
-
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command, create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -153,7 +151,7 @@ class DataPersister(object):
                 'values': collections.defaultdict(dict),
                 'events': [],
                 'maps': [],
-                }
+            }
 
     def get(self, device):
         return self.devices[device].copy()
@@ -199,7 +197,7 @@ class ComplexLongRunningCommand(object):
         Create initial set of commands according to the number supplied.
         '''
         self.num_commands = num_commands
-        return [create_long_running_command(createConnectionInfo(self.dsconf))
+        return [LongCommandClient(createConnectionInfo(self.dsconf))
                 for i in xrange(num_commands)]
 
     @defer.inlineCallbacks
@@ -669,7 +667,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if result.stderr:
                 corrupt_list.extend(counter_list)
         else:
-            mid_index = num_counters/2
+            mid_index = num_counters / 2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
                 result = yield winrs.run_command(command(counter_slice))
@@ -686,10 +684,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         '''
         LOG.debug('Performing check for corrupt counters')
         dsconf0 = self.config.datasources[0]
-        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+        winrs = SingleCommandClient(createConnectionInfo(dsconf0))
 
         counter_list = sorted(
-            set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS[dsconf0.device]))
+            set(self.ps_counter_map.keys()) - set(CORRUPT_COUNTERS[dsconf0.device]))
         corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
 
         # Add newly found corrupt counters to the previously checked ones.

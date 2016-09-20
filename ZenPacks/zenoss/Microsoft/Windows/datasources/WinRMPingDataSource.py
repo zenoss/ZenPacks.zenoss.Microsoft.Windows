@@ -30,7 +30,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.collect import WinrmCollectClient, create_enum_info
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import EnumerateClient
 
 log = logging.getLogger('zen.MicrosoftWindows')
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -131,12 +132,13 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
             )
         ]
 
-        winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        winrm = EnumerateClient(conn_info)
+        results = yield winrm.do_collect(WinRMQueries)
 
         defer.returnValue(results)
 
     def onSuccess(self, results, config):
+        log.debug('results on {}: {}'.format(config.manageIp, results))
         data = self.new_data()
         data['events'].append({
             'eventClass': '/Status/Winrm/Ping',

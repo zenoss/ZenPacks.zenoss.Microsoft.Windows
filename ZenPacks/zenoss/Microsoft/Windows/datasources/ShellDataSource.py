@@ -55,6 +55,7 @@ from EventLogDataSource import string_to_lines
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import UnauthorizedError, RequestError
 from txwinrm.shell import create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -1202,11 +1203,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = dsconf0.params['instanceid']
             command_line = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
-                'powershell Cluster Resources'
-                'powershell Cluster Nodes'
-                'powershell Cluster Disks'
-                'powershell Cluster Network'
-                'powershell Cluster Interface'):
+                                            'powershell Cluster Resources'
+                                            'powershell Cluster Nodes'
+                                            'powershell Cluster Disks'
+                                            'powershell Cluster Network'
+                                            'powershell Cluster Interface'):
 
             resource = dsconf0.params['contexttitle']
             if not resource:
@@ -1226,7 +1227,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line = strategy.build_command_line(counters)
 
-        command = create_single_shot_command(conn_info)
+        command = SingleCommandClient(conn_info)
         try:
             results = yield command.run_command(command_line)
         except UnauthorizedError:
