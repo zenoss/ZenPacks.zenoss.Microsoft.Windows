@@ -14,20 +14,21 @@ Windows Cluster System Collection
 from socket import gaierror
 from twisted.internet import defer
 
-from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
+from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import asyncIpLookup
 from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
 
+from txwinrm.WinRMClient import SingleCommandClient
+
 addLocalLibPath()
 
-from txwinrm.shell import create_single_shot_command
 
 class ClusterCommander(object):
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "

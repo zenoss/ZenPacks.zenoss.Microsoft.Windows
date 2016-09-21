@@ -19,7 +19,8 @@ namespace:
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
-from txwinrm.collect import WinrmCollectClient, create_enum_info
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import EnumerateClient
 from twisted.internet import defer
 
 
@@ -28,30 +29,31 @@ class IIS(WinRMPlugin):
     relname = 'winrmiis'
     modname = 'ZenPacks.zenoss.Microsoft.Windows.WinIIS'
 
-    winrm = WinrmCollectClient()
+    winrm = None
     uri = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/webadministration/*'
 
     queries = {
         'IIsWebServerSetting': {
             'query': "SELECT * FROM IIsWebServerSetting",
             'namespace': 'microsoftiisv2',
-            },
+        },
 
         'IIsWebVirtualDirSetting': {
             'query': "SELECT * FROM IIsWebVirtualDirSetting",
             'namespace': 'microsoftiisv2',
-            },
+        },
 
         'IIs7Site': {
             'query': "SELECT Name, Id, ServerAutoStart  FROM Site",
             'namespace': 'WebAdministration',
-            },
+        },
     }
 
     @defer.inlineCallbacks
     def run_query(self, conn_info, wql, log):
+        self.winrm = EnumerateClient(conn_info)
         wql = create_enum_info(wql=wql, resource_uri=self.uri)
-        result = yield self.winrm.do_collect(conn_info, [wql])
+        result = yield self.winrm.do_collect([wql])
         defer.returnValue(result)
 
     @defer.inlineCallbacks

@@ -26,9 +26,9 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
-addLocalLibPath()
+from txwinrm.WinRMClient import SingleCommandClient
 
-from txwinrm.shell import create_single_shot_command
+addLocalLibPath()
 
 
 class SQLCommander(object):
@@ -37,7 +37,7 @@ class SQLCommander(object):
     '''
 
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
@@ -118,7 +118,7 @@ class WinMSSQL(WinRMPlugin):
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
         'getDeviceClassName'
-        )
+    )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
@@ -192,7 +192,6 @@ class WinMSSQL(WinRMPlugin):
         device_om = ObjectMap()
         device_om.sqlhostname = sqlhostname
         for instance in server_config['instances']:
-            #clear_inst = prepare_instance(instance)
             owner_node = ''  # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
@@ -208,7 +207,7 @@ class WinMSSQL(WinRMPlugin):
                     continue
 
             if instance not in dblogins:
-                log.info("DB Instance {0} found but was not set in zDBInstances.  " \
+                log.info("DB Instance {0} found but was not set in zDBInstances.  "
                          "Using default credentials.".format(instance))
 
             instance_title = instance
@@ -228,11 +227,10 @@ class WinMSSQL(WinRMPlugin):
             om_instance.title = instance_title
             om_instance.instancename = instance_title
             om_instance.cluster_node_server = '{0}//{1}'.format(
-                            owner_node.strip(), sqlserver)
+                owner_node.strip(), sqlserver)
             instance_oms.append(om_instance)
 
             sqlConnection = []
-
 
             # Look for specific instance creds first
             try:
@@ -252,9 +250,9 @@ class WinMSSQL(WinRMPlugin):
                     login_as_user = True
 
             # DB Connection Object
-            sqlConnection.append("$con = new-object " \
-                "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
-                "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
+            sqlConnection.append("$con = new-object "
+                                 "('Microsoft.SqlServer.Management.Common.ServerConnection')"
+                                 "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
             if login_as_user:
                 # Login using windows credentials
@@ -267,38 +265,38 @@ class WinMSSQL(WinRMPlugin):
                 sqlConnection.append("$con.Connect();")
 
             # Connect to Database Server
-            sqlConnection.append("$server = new-object " \
-                "('Microsoft.SqlServer.Management.Smo.Server') $con;")
+            sqlConnection.append("$server = new-object "
+                                 "('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
             db_sqlConnection = []
             # Get database information
             db_sqlConnection.append('write-host "====Databases";')
-            db_sqlConnection.append('$server.Databases | foreach {' \
-                'write-host \"Name---\" $_,' \
-                '\"`tVersion---\" $_.Version,' \
-                '\"`tIsAccessible---\" $_.IsAccessible,' \
-                '\"`tID---\" $_.ID,' \
-                '\"`tOwner---\" $_.Owner,' \
-                '\"`tLastBackupDate---\" $_.LastBackupDate,'\
-                '\"`tCollation---\" $_.Collation,'\
-                '\"`tCreateDate---\" $_.CreateDate,'\
-                '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
-                '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
-                '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,' \
-                '\"`tSystemObject---\" $_.IsSystemObject,' \
-                '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel' \
-                '};')
+            db_sqlConnection.append('$server.Databases | foreach {'
+                                    'write-host \"Name---\" $_,'
+                                    '\"`tVersion---\" $_.Version,'
+                                    '\"`tIsAccessible---\" $_.IsAccessible,'
+                                    '\"`tID---\" $_.ID,'
+                                    '\"`tOwner---\" $_.Owner,'
+                                    '\"`tLastBackupDate---\" $_.LastBackupDate,'
+                                    '\"`tCollation---\" $_.Collation,'
+                                    '\"`tCreateDate---\" $_.CreateDate,'
+                                    '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'
+                                    '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'
+                                    '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,'
+                                    '\"`tSystemObject---\" $_.IsSystemObject,'
+                                    '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel'
+                                    '};')
 
             # Get SQL Backup Jobs information
             backup_sqlConnection = []
             backup_sqlConnection.append('write-host "====Backups";')
             # Get database information
-            backup_sqlConnection.append('$server.BackupDevices | foreach {' \
-                'write-host \"Name---\" $_.Name,' \
-                '\"`tDeviceType---\" $_.BackupDeviceType,' \
-                '\"`tPhysicalLocation---\" $_.PhysicalLocation,' \
-                '\"`tStatus---\" $_.State' \
-                '};')
+            backup_sqlConnection.append('$server.BackupDevices | foreach {'
+                                        'write-host \"Name---\" $_.Name,'
+                                        '\"`tDeviceType---\" $_.BackupDeviceType,'
+                                        '\"`tPhysicalLocation---\" $_.PhysicalLocation,'
+                                        '\"`tStatus---\" $_.State'
+                                        '};')
 
             # Get SQL Jobs information
             job_sqlConnection = []
@@ -342,7 +340,6 @@ class WinMSSQL(WinRMPlugin):
                     continue
                 if in_databases:
                     dbobj = stdout_line
-                    #for dbobj in filter_sql_stdout(databases.stdout):
                     db = dbobj.split('\t')
                     dbdict = {}
 
@@ -356,12 +353,12 @@ class WinMSSQL(WinRMPlugin):
 
                     lastlogbackupdate = None
                     if ('lastlogbackupdate' in dbdict) \
-                    and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
+                       and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
                         lastlogbackupdate = dbdict['lastlogbackupdate']
 
                     lastbackupdate = None
                     if ('lastbackupdate' in dbdict) \
-                    and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
+                       and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
                         lastbackupdate = dbdict['lastbackupdate']
 
                     if ('id' in dbdict):
@@ -382,7 +379,7 @@ class WinMSSQL(WinRMPlugin):
                             owner_node.strip(), sqlserver)
                         om_database.systemobject = dbdict['systemobject']
                         om_database.recoverymodel = dbdict['recoverymodel']
-                        om_database.status= 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
+                        om_database.status = 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
 
                         database_oms.append(om_database)
                 elif in_backups:
@@ -405,14 +402,14 @@ class WinMSSQL(WinRMPlugin):
 
                 elif in_jobs:
                     job = stdout_line
-                    # Make sure that the job description length does not go 
+                    # Make sure that the job description length does not go
                     # beyond the buffer size (4096 characters).
                     if ':' not in job:
                         continue
 
                     key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
-                        #New Job Record
+                        # New Job Record
                         om_jobs = ObjectMap()
                         om_jobs.instancename = om_instance.id
                         om_jobs.title = value.strip()

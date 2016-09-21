@@ -21,7 +21,7 @@ from twisted.internet.error import (
     ConnectionRefusedError,
     TimeoutError,
     ConnectionLost,
-    )
+)
 from twisted.web._newclient import ResponseFailed
 from OpenSSL.SSL import Error as SSLError
 
@@ -29,8 +29,9 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm
-import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
-import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1
+import txwinrm.collect  # fix 'module' has no attribute 'collect' error on 4.1.1
+import txwinrm.shell  # fix 'module' has no attribute 'shell' error on 4.1.1
+from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient
 import zope.component
 
 from txwinrm.util import UnauthorizedError
@@ -85,11 +86,11 @@ class WinRMPlugin(PythonPlugin):
         '''
         return self.powershell_commands
 
-    def client(self):
+    def client(self, conn_info):
         '''
-        Return a WinrmCollectClient.
+        Return an EnumerateClient.
         '''
-        return txwinrm.collect.WinrmCollectClient()
+        return EnumerateClient(conn_info)
 
     def conn_info(self, device):
         '''
@@ -220,8 +221,8 @@ class WinRMPlugin(PythonPlugin):
         This method can be overridden if more complex collection is
         required.
         '''
-        client = self.client()
         conn_info = self.conn_info(device)
+        client = self.client(conn_info)
 
         results = {}
         queries = self.get_queries()
@@ -235,7 +236,7 @@ class WinRMPlugin(PythonPlugin):
 
             try:
                 query_results = yield client.do_collect(
-                    conn_info, query_map.iterkeys())
+                    query_map.iterkeys())
                 msg = "connection for %s is established"
                 self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
             except Exception as e:
@@ -258,11 +259,10 @@ class WinRMPlugin(PythonPlugin):
                     POWERSHELL_PREFIX, psc)
 
         if commands:
-            winrs = txwinrm.shell.create_single_shot_command(conn_info)
-
+            winrs_client = SingleCommandClient(conn_info)
             for command_key, command in commands.iteritems():
                 try:
-                    results[command_key] = yield winrs.run_command(command)
+                    results[command_key] = yield winrs_client.run_command(command)
                     msg = 'shell command completed successfully for %s'
                     self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
                 except Exception as e:

@@ -37,7 +37,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.collect import WinrmCollectClient, create_enum_info
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import EnumerateClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -239,8 +240,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         conn_info = createConnectionInfo(config.datasources[0])
 
-        winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        winrm = EnumerateClient(conn_info)
+        results = yield winrm.do_collect(WinRMQueries)
 
         defer.returnValue(results)
 

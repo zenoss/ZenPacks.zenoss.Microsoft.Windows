@@ -32,8 +32,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import check_for_network_error, save, checkExpiredPassword
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.collect import WinrmCollectClient, create_enum_info
-from txwinrm.shell import create_single_shot_command
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import SingleCommandClient, EnumerateClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -59,12 +59,12 @@ def string_to_lines(string):
 class IISCommander(object):
 
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
-    IIS_COMMAND= '''
+    IIS_COMMAND = '''
         $iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;
         Write-Host $iisversion.versionstring;
     '''
@@ -178,8 +178,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         else:
             WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7)]
 
-        winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        winrm = EnumerateClient(conn_info)
+        results = yield winrm.do_collect(WinRMQueries)
         log.debug(WinRMQueries)
         defer.returnValue(results)
 
