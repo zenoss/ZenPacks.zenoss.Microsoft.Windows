@@ -21,13 +21,17 @@ from Products.ZenUtils.IpUtil import getHostByName
 
 from . import schema
 
+
 class Device(schema.Device):
     '''
     Model class for a Windows operating system device.
     '''
 
     def getPingStatus(self):
-        return self.getStatus('/Status/Winrm/Ping')
+        pingStatus = self.getStatus('/Status/Winrm/Ping')
+        if not pingStatus:
+            return super(Device, self).getPingStatus()
+        return pingStatus
 
     def setClusterMachines(self, clusterdnsnames):
         '''
