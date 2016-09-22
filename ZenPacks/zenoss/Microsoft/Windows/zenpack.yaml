@@ -29,6 +29,9 @@ zProperties:
     default: ''
   zWinTrustedKDC:
     default: ''
+  zWinUseWsmanSPN:
+    default: false
+    type: boolean
 
 
 class_relationships:

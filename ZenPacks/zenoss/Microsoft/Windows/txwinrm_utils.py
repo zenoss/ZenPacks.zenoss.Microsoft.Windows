@@ -31,7 +31,8 @@ ConnectionInfoProperties = (
     'zWinScheme',
     'zDBInstances',
     'zWinTrustedRealm',
-    'zWinTrustedKDC'
+    'zWinTrustedKDC',
+    'zWinUseWsmanSPN'
     )
 
 
@@ -87,6 +88,10 @@ def createConnectionInfo(device_proxy):
            not device_proxy.zWinTrustedRealm and device_proxy.zWinTrustedKDC:
             log.debug('zWinTrustedKDC and zWinTrustedRealm must both be populated in order to add a trusted realm.')
 
+    service = scheme
+    if hasattr(device_proxy, 'zWinUseWsmanSPN') and device_proxy.zWinUseWsmanSPN:
+        service = 'wsman'
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -99,4 +104,5 @@ def createConnectionInfo(device_proxy):
         dcip=device_proxy.zWinKDC,
         trusted_realm=trusted_realm,
         trusted_kdc=trusted_kdc,
-        ipaddress=device_proxy.manageIp)
+        ipaddress=device_proxy.manageIp,
+        service=service)

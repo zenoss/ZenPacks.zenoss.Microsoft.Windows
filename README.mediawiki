@@ -769,6 +769,11 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 ;zWinScheme
 : This must be set to either ''http'' or ''https''. The default is ''http''.
 
+;zWinUseWsmanSPN
+: If the HTTP/HTTPS service principals are exclusively in use for a particular service account, such as on an IIS server, set this option to true to use the WSMAN service principal name.  You can use this option for all domain joined Windows Servers that are using a domain monitoring account.
+
+{{note}} A domain controller may need “Validated write to service principal name” permission for the NETWORK SERVICE account in order for the WSMAN service principal name to be used.
+
 ;zWinRMPort
 : The port on which the Windows server is listening for ''WinRM'' or ''WS-Management'' connections. The default is ''5985''. It is uncommon for this to be configured as anything else.
 
@@ -1227,6 +1232,11 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+; 2.7.0
+* Fix Microsoft Windows ZenPack: multiple datasources have been disabled (ZEN-24477)
+* Allow non HTTP/HTTPS SPN usage for WinRM Kerberos auth (ZEN-24583)
+* Fix Ping Down events don't mark Windows devices down (ZEN-24556)
 
 ; 2.6.4
 * Fix Windows ZenPack incorrectly assumes that the first database returned is the master when modeling databases, backups, and jobs (ZEN-24519)
