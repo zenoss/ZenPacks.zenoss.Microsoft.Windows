@@ -133,6 +133,9 @@ class WinCommandAction(IActionBase):
         """
         Return a ConnectionInfo object with device credentials.
         """
+        service = device.zWinScheme
+        if hasattr(device, 'zWinUseWsmanSPN') and device.zWinUseWsmanSPN:
+            service = 'wsman'
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -145,7 +148,8 @@ class WinCommandAction(IActionBase):
             dcip=device.zWinKDC,
             trusted_realm=device.zWinTrustedRealm,
             trusted_kdc=device.zWinTrustedKDC,
-            ipaddress=device.manageIp)
+            ipaddress=device.manageIp,
+            service=service)
 
     def _execute_command(self, device, command):
         """
