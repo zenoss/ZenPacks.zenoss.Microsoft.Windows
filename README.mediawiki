@@ -1233,10 +1233,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
-; 2.7.0
-* Fix Microsoft Windows ZenPack: multiple datasources have been disabled (ZEN-24477)
-* Allow non HTTP/HTTPS SPN usage for WinRM Kerberos auth (ZEN-24583)
-* Fix Ping Down events don't mark Windows devices down (ZEN-24556)
+;2.6.5
+* Fix missing Process Set process title (ZEN-25311)
 
 ; 2.6.4
 * Fix Windows ZenPack incorrectly assumes that the first database returned is the master when modeling databases, backups, and jobs (ZEN-24519)
