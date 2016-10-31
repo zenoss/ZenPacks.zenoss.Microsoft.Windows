@@ -1228,6 +1228,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.6.5
+* Fix missing Process Set process title (ZEN-25311)
+
 ; 2.6.4
 * Fix Windows ZenPack incorrectly assumes that the first database returned is the master when modeling databases, backups, and jobs (ZEN-24519)
 * Fix WinRM ZenPack - WinService components disabled at template still show "Monitored" in component view (ZEN-24528)
