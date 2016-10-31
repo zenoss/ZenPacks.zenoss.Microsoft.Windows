@@ -1228,6 +1228,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.6.6
+* Fix Windows Error Events come across as Info Events (ZEN-24633)
+* Fix Windows ZenPack - No "bad credentials" event for monitoring (ZEN-24726)
+
 ;2.6.5
 * Fix missing Process Set process title (ZEN-25311)
 
