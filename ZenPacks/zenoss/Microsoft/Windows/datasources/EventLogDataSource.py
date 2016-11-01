@@ -321,7 +321,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventidentifier=evt['EventID'],
         )
         # Fixes ZEN-23024
-        # only assign event class if other than '/Unknown', otherwise 
+        # only assign event class if other than '/Unknown', otherwise
         # the user should use event class mappings
         eventClass = ds.get('eventClass')
         if eventClass and eventClass != '/Unknown':
@@ -458,7 +458,8 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ($win2003 -eq $false -and (get-itemproperty 'HKLM:\\software\\microsoft\\net framework setup\\ndp\\v3.5' -ea silentlycontinue)) {{
+            $dotnets = Get-ChildItem 'HKLM:\\software\\microsoft\\net framework setup\\ndp'| % {{$_.name.split('\\')[5]}} | ? {{ $_ -match 'v3.5|v[45].*'}};
+            if ($win2003 -eq $false -and $dotnets -ne $null) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds);
             }} else {{
@@ -472,7 +473,7 @@ class EventLogQuery(object):
             if($events) {{
                 [Array]::Reverse($events);
             }};
-            if ($win2003) {{
+            if ($win2003 -and $dotnets -eq $null) {{
                 @($events | ? $selector) | EventLogToJSON
             }}
             else {{
