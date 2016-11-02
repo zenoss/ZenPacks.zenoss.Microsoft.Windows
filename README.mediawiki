@@ -1229,6 +1229,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ;2.6.6
+* Added additional event classes to cover connection errors (ZEN-25700)
 * Fix Windows Error Events come across as Info Events (ZEN-24633)
 * Fix Windows ZenPack - No "bad credentials" event for monitoring (ZEN-24726)
 

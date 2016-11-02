@@ -362,11 +362,18 @@ def save(f):
 Common datasource utilities.
 '''
 
-def checkExpiredPassword(config, events, error):
-    '''add password expired event'''
-    if 'Password expired' in error or 'Check username and password' in error:
+def errorMsgCheck(config, events, error):
+    """Check error message and generate appropriate event."""
+    if 'Password expired' in error:
         events.append({
-            'eventClass': '/Status/Winrm/Ping',
+            'eventClassKey': 'MW|PasswordExpired',
+            'severity': ZenEventClasses.Critical,
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'device': config.id})
+    elif 'Check username and password' in error:
+        events.append({
+            'eventClassKey': 'MW|WrongCredentials',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,
