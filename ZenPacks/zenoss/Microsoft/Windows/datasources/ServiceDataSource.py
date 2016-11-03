@@ -34,7 +34,7 @@ from ..WinService import WinService
 
 from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import checkExpiredPassword
+from ..utils import errorMsgCheck
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -333,7 +333,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         log.error(msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.message)
+        errorMsgCheck(config, data['events'], result.message)
         if not data['events']:
             data['events'].append({
                 'eventClass': "/Status/WinService",

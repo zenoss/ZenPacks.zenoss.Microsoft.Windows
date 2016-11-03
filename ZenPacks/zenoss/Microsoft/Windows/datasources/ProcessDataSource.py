@@ -51,7 +51,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from .. import ZENPACK_NAME
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import get_processNameAndArgs, get_processText, save, \
-    checkExpiredPassword
+    errorMsgCheck
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
@@ -468,7 +468,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         LOG.error("%s process scan error: %s", config.id, error.value)
 
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], error.value.message)
+        errorMsgCheck(config, data['events'], error.value.message)
         if not data['events']:
             data['events'].append({
                 'device': config.id,

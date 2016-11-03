@@ -48,7 +48,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
-    save, checkExpiredPassword
+    save, errorMsgCheck
 from EventLogDataSource import string_to_lines
 
 
@@ -1437,7 +1437,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.value.message)
+        errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
             data['events'].append(dict(
                 eventClass=event_class,
