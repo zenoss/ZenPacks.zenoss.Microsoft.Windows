@@ -12,7 +12,7 @@ INSTALL_REQUIRES = ['ZenPacks.zenoss.PythonCollector>=1.4']
 COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
-################################ 123
+################################ 123 123
 # Zenoss will not overwrite any changes you make below here.
 
 import os
