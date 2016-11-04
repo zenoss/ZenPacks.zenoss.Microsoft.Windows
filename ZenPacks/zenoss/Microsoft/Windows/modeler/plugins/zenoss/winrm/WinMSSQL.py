@@ -65,7 +65,9 @@ class SQLCommander(object):
                 $instanceValue = $regKey.GetValue($_);
                 $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
                 If ($instanceReg.GetSubKeyNames() -notcontains 'Cluster') {
-                    $local_instances += $_;
+                    $version = $instanceReg.OpenSubKey('MSSQLServer\CurrentVersion').GetValue('CurrentVersion');
+                    $instance_ver = $_;$instance_ver+=':';$instance_ver+=$version;
+                    $local_instances += $_+':'+$version;
                 };
             };
             break;
@@ -171,16 +173,20 @@ class WinMSSQL(WinRMPlugin):
 
         for serverconfig in instances.stdout:
             key, value = serverconfig.split(':', 1)
-            serverlist = []
+            if key == 'instances':
+                serverlist = {}
+            else:
+                serverlist = []
             if not value:
                 continue
             if key in server_config:
                 serverlist = server_config[key]
-                serverlist.append(value.strip())
-                server_config[key] = serverlist
+            if key == 'instances':
+                instance_version = value.split(':')
+                serverlist[''.join(instance_version[:-1]).strip()] = ''.join(instance_version[-1:]).strip()
             else:
                 serverlist.append(value.strip())
-                server_config[key] = serverlist
+            server_config[key] = serverlist
 
         if not server_config.get('instances'):
             eventmessage = 'No MSSQL Servers are installed but modeler is enabled'
@@ -191,8 +197,7 @@ class WinMSSQL(WinRMPlugin):
         # Set value for device sqlhostname property
         device_om = ObjectMap()
         device_om.sqlhostname = sqlhostname
-        for instance in server_config['instances']:
-            #clear_inst = prepare_instance(instance)
+        for instance, version in server_config['instances'].items():
             owner_node = ''  # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
@@ -208,7 +213,7 @@ class WinMSSQL(WinRMPlugin):
                     continue
 
             if instance not in dblogins:
-                log.info("DB Instance {0} found but was not set in zDBInstances.  " \
+                log.info("DB Instance {0} found but was not set in zDBInstances.  "
                          "Using default credentials.".format(instance))
 
             instance_title = instance
@@ -227,6 +232,7 @@ class WinMSSQL(WinRMPlugin):
             om_instance.id = self.prepId(instance_title)
             om_instance.title = instance_title
             om_instance.instancename = instance_title
+            om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
                             owner_node.strip(), sqlserver)
             instance_oms.append(om_instance)
@@ -313,7 +319,7 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
 
             instance_info = yield winrs.run_command(
-                ''.join(getSQLAssembly() + sqlConnection + db_sqlConnection +
+                ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) + sqlConnection + db_sqlConnection +
                         backup_sqlConnection + job_sqlConnection)
             )
 
