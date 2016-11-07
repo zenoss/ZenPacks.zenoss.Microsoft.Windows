@@ -364,7 +364,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 PERSISTER.add_event(self.config.id, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Critical,
-                    'eventClass': '/Status/Winrm/Ping',
+                    'eventClassKey': 'MW|PasswordExpired',
                     'summary': e.message,
                     'ipAddress': self.config.manageIp
                 })

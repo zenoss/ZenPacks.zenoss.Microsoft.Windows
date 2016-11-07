@@ -16782,9 +16782,34 @@ True
 </object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'Winrm') -->
 <object id='/zport/dmd/Events/Status/Winrm' module='Products.ZenEvents.EventClass' class='EventClass'>
+<object id='Ping' module='Products.ZenEvents.EventClass' class='EventClass'>
 </object>
-<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'Winrm', 'Ping') -->
-<object id='/zport/dmd/Events/Status/Winrm/Ping' module='Products.ZenEvents.EventClass' class='EventClass'>
+<object id='Auth' module='Products.ZenEvents.EventClass' class='EventClass'>
+<object id='PasswordExpired' module='Products.ZenEvents.EventClass' class='EventClass'>
+<tomanycont id='instances'>
+<object id='Password Expired Default' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+MW|PasswordExpired
+</property>
+<property type="int" id="sequence" mode="w" >
+1001
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='WrongCredentials' module='Products.ZenEvents.EventClass' class='EventClass'>
+<tomanycont id='instances'>
+<object id='Wrong Credentials Default' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+MW|WrongCredentials
+</property>
+<property type="int" id="sequence" mode="w" >
+1002
+</property>
+</object>
+</tomanycont>
+</object>
+</object>
 </object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'IISSiteStatus') -->
 <object id='/zport/dmd/Events/Status/instances/IISSiteStatus' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>

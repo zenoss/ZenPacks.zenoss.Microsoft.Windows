@@ -136,8 +136,30 @@ def filter_sql_stdout(val):
     return filter(lambda x: x!="LogonUser succedded", val)
 
 
-def getSQLAssembly():
+def getSQLAssembly(version=None):
+    """Return only the powershell assembly version needed for the instance.
+    These statements are prepended to any sql server connections.
+    SQL server 2012 and 2014 can use the same version.
+    If no version is given then return all and hope the first one that
+    loads is correct.
+    Multiple versions of sql server can co-exist on the same machine.
 
+    example using sql server 11 or 12
+    try {
+        add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop
+    }
+    catch {
+        write-host 'assembly load error'
+    }
+    try {
+        add-type -AssemblyName 'Microsoft.SqlServer.Smo, Version=11.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91' -EA Stop
+    }
+    catch {
+        write-host 'assembly load error'
+    }
+
+    TODO:  Test with 2016 server
+    """
     ASSEMBLY_Connection = "add-type -AssemblyName 'Microsoft.SqlServer.ConnectionInfo"
     ASSEMBLY_Smo = "add-type -AssemblyName 'Microsoft.SqlServer.Smo"
 
@@ -161,6 +183,11 @@ def getSQLAssembly():
         ASSEMBLY_2012,
         ASSEMBLY)
 
+    MSSQL_CONNECTION_INFO = {9: MSSQL2005_CONNECTION_INFO,
+                             10: MSSQL2008_CONNECTION_INFO,
+                             11: MSSQL2012_CONNECTION_INFO,
+                             12: MSSQL2012_CONNECTION_INFO}
+
     MSSQL2005_SMO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Smo,
         ASSEMBLY_2005,
@@ -176,32 +203,49 @@ def getSQLAssembly():
         ASSEMBLY_2012,
         ASSEMBLY)
 
+    MSSQL_SMO = {9: MSSQL2005_SMO,
+                 10: MSSQL2008_SMO,
+                 11: MSSQL2012_SMO,
+                 12: MSSQL2012_SMO}
+
     ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
 
     sqlConnection = []
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2012_CONNECTION_INFO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2008_CONNECTION_INFO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2005_CONNECTION_INFO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-    sqlConnection.append("}}}")
+    if version not in [9, 10, 11, 12]:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2012_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2008_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2005_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+        sqlConnection.append("}}}")
 
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2012_SMO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2008_SMO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append("try{")
-    sqlConnection.append(MSSQL2005_SMO)
-    sqlConnection.append("}catch{")
-    sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-    sqlConnection.append("}}}")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2012_SMO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2008_SMO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2005_SMO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+        sqlConnection.append("}}}")
+    else:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL_CONNECTION_INFO.get(version))
+        sqlConnection.append("}catch{")
+        sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+        sqlConnection.append("}")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL_SMO.get(version))
+        sqlConnection.append("}catch{")
+        sqlConnection.append(ASSEMBLY_LOAD_ERROR)
+        sqlConnection.append("}")
 
     return sqlConnection
 
@@ -362,11 +406,18 @@ def save(f):
 Common datasource utilities.
 '''
 
-def checkExpiredPassword(config, events, error):
-    '''add password expired event'''
-    if 'Password expired' in error or 'Check username and password' in error:
+def errorMsgCheck(config, events, error):
+    """Check error message and generate appropriate event."""
+    if 'Password expired' in error:
         events.append({
-            'eventClass': '/Status/Winrm/Ping',
+            'eventClassKey': 'MW|PasswordExpired',
+            'severity': ZenEventClasses.Critical,
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'device': config.id})
+    elif 'Check username and password' in error:
+        events.append({
+            'eventClassKey': 'MW|WrongCredentials',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,

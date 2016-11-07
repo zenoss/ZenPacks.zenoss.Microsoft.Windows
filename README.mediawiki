@@ -830,7 +830,7 @@ The monitoring templates for SQL Server are component templates so there is no n
 
 {{note}} The default instance of MSSQLSERVER appears as the host name.
 
-{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.
+{{note}} The authenticated user will need to be granted permission to view the server state.  For example, "GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management Studio.  The user must also be interactive, i.e. the account must not be denied local logon rights.
 
 === Working with WinCommand Notification Action ===
 
@@ -1234,8 +1234,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 == Changes ==
 
 ;2.6.6
+* Added additional event classes to cover connection errors (ZEN-25700)
 * Fix Windows Error Events come across as Info Events (ZEN-24633)
 * Fix Windows ZenPack - No "bad credentials" event for monitoring (ZEN-24726)
+* Fix MSSQL modeling doesn't pick up multiple instances if they're running different versions (ZEN-25851)
 
 ;2.6.5
 * Fix missing Process Set process title (ZEN-25311)

@@ -27,7 +27,7 @@ from Products.ZenEvents import ZenEventClasses
 from twisted.internet import defer
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import checkExpiredPassword
+from ..utils import errorMsgCheck
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
@@ -151,7 +151,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
     def onError(self, results, config):
         data = self.new_data()
         log.error('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
-        checkExpiredPassword(config, data['events'], results.value.message)
+        errorMsgCheck(config, data['events'], results.value.message)
         if not data['events']:
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',

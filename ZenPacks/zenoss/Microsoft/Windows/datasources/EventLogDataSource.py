@@ -33,7 +33,7 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ..utils import save, checkExpiredPassword
+from ..utils import save, errorMsgCheck
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
@@ -355,7 +355,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.value.message)
+        errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
             data['events'].append({
                 'severity': severity,

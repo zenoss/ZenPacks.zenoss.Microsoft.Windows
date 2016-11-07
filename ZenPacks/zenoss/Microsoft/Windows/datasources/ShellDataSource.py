@@ -48,7 +48,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
-    save, checkExpiredPassword
+    save, errorMsgCheck
 from EventLogDataSource import string_to_lines
 
 
@@ -354,20 +354,22 @@ class CustomCommandStrategy(object):
                 'device': config.id})
         return collectedResult
 
+
 gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
 
 
 class SqlConnection(object):
 
-    def __init__(self, instance, sqlusername, sqlpassword, login_as_user):
+    def __init__(self, instance, sqlusername, sqlpassword, login_as_user, version):
         # Need to modify query where clause.
         # Currently all counters are retrieved for each database
         self.sqlConnection = []
+        self.version = version
 
         # DB Connection Object
         self.sqlConnection.append("$con = new-object "
-            "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                        "'{}', '{}', '{}';".format(instance, sqlusername, sqlpassword))
+                                  "('Microsoft.SqlServer.Management.Common.ServerConnection')"
+                                  "'{}', '{}', '{}';".format(instance, sqlusername, sqlpassword))
 
         if login_as_user:
             # Login using windows credentials
@@ -415,7 +417,7 @@ class PowershellMSSQLStrategy(object):
                                       'else { Write-Host "databasename:"$db.Name;}}}')
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
-            ''.join(getSQLAssembly() + sqlConnection.sqlConnection + counters_sqlConnection))
+            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + counters_sqlConnection))
         return command
 
     def parse_result(self, dsconfs, result):
@@ -483,7 +485,7 @@ class PowershellMSSQLJobStrategy(object):
         jobs_sqlConnection.append("}}")
         command = "{0} \"& {{{1}}}\"".format(
             pscommand,
-            ''.join(getSQLAssembly() + sqlConnection.sqlConnection + jobs_sqlConnection))
+            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + jobs_sqlConnection))
         return command
 
     def parse_result(self, dsconfs, result):
@@ -1071,29 +1073,30 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         resource = datasource.talesEval(datasource.resource, context)
         if not resource.startswith('\\') and \
             datasource.strategy not in ('powershell MSSQL',
-                'powershell Cluster Services',
-                'powershell Cluster Resources',
-                'powershell Cluster Nodes',
-                'powershell Cluster Disks',
-                'powershell Cluster Network',
-                'powershell Cluster Interface',
-                'Custom Command',
-                'DCDiag',
-                'powershell MSSQL Instance',
-                'powershell MSSQL Job'):
+                                        'powershell Cluster Services',
+                                        'powershell Cluster Resources',
+                                        'powershell Cluster Nodes',
+                                        'powershell Cluster Disks',
+                                        'powershell Cluster Network',
+                                        'powershell Cluster Interface',
+                                        'Custom Command',
+                                        'DCDiag',
+                                        'powershell MSSQL Instance',
+                                        'powershell MSSQL Job'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
-        
-        if safe_hasattr(context, 'instancename'):
-            instancename = context.instancename
-        else:
-            instancename = ''
 
-        if safe_hasattr(context, 'id'):
-            instanceid = context.id
-        else:
-            instanceid = ''
+        instancename = getattr(context, 'instancename', '')
+
+        instanceid = getattr(context, 'id', '')
+
+        version = getattr(context, 'sql_server_version', 0)
+        if not re.match('\d+\..*', version):
+            version = 0
+        # get the major version number so we pull the correct assembly in powershell
+        if version:
+            version = int(version.split('.')[0])
 
         try:
             contextURL = context.getPrimaryUrlPath()
@@ -1122,17 +1125,18 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         script = get_script(datasource, context)
 
         return dict(resource=resource,
-            strategy=datasource.strategy,
-            instancename=instancename,
-            instanceid=instanceid,
-            servername=servername,
-            script=script,
-            parser=parser,
-            usePowershell=datasource.usePowershell,
-            contextrelname=contextrelname,
-            contextcompname=contextcompname,
-            contextmodname=contextmodname,
-            contexttitle=contexttitle)
+                    strategy=datasource.strategy,
+                    instancename=instancename,
+                    instanceid=instanceid,
+                    servername=servername,
+                    script=script,
+                    parser=parser,
+                    usePowershell=datasource.usePowershell,
+                    contextrelname=contextrelname,
+                    contextcompname=contextcompname,
+                    contextmodname=contextmodname,
+                    contexttitle=contexttitle,
+                    version=version)
 
     def getSQLConnection(self, dsconf, conn_info):
         dbinstances = dsconf.zDBInstances
@@ -1175,7 +1179,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         sqlConnection = SqlConnection(instance_name,
                                       instance_login['username'],
                                       instance_login['password'],
-                                      instance_login['login_as_user'])
+                                      instance_login['login_as_user'],
+                                      dsconf.params['version'])
         return sqlConnection, conn_info
 
     @defer.inlineCallbacks
@@ -1194,7 +1199,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         if dsconf0.params['strategy'].startswith('powershell MSSQL'):
             cmd_line_input, conn_info = self.getSQLConnection(dsconf0,
-                                                             conn_info)
+                                                              conn_info)
             if dsconf0.params['strategy'] == 'powershell MSSQL Instance':
                 owner_node, server = dsconf.cluster_node_server.split('//')
                 if len(server.split('\\')) < 2:
@@ -1438,7 +1443,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.value.message)
+        errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
             data['events'].append(dict(
                 eventClass=event_class,
