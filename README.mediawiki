@@ -1233,6 +1233,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows Error Events come across as Info Events (ZEN-24633)
 * Fix Windows ZenPack - No "bad credentials" event for monitoring (ZEN-24726)
 * Fix MSSQL modeling doesn't pick up multiple instances if they're running different versions (ZEN-25851)
+* Fix Auto Creation of Windows Cluster Device doesn't copy over zWinKDC property (ZEN-25564)
 
 ;2.6.5
 * Fix missing Process Set process title (ZEN-25311)
