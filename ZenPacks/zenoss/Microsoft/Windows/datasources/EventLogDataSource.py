@@ -33,7 +33,7 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ..utils import save, checkExpiredPassword
+from ..utils import save, errorMsgCheck
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
@@ -321,7 +321,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventidentifier=evt['EventID'],
         )
         # Fixes ZEN-23024
-        # only assign event class if other than '/Unknown', otherwise 
+        # only assign event class if other than '/Unknown', otherwise
         # the user should use event class mappings
         eventClass = ds.get('eventClass')
         if eventClass and eventClass != '/Unknown':
@@ -355,7 +355,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Critical
         log.error(msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.value.message)
+        errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
             data['events'].append({
                 'severity': severity,
@@ -458,7 +458,8 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            if ($win2003 -eq $false -and (get-itemproperty 'HKLM:\\software\\microsoft\\net framework setup\\ndp\\v3.5' -ea silentlycontinue)) {{
+            $dotnets = Get-ChildItem 'HKLM:\\software\\microsoft\\net framework setup\\ndp'| % {{$_.name.split('\\')[5]}} | ? {{ $_ -match 'v3.5|v[45].*'}};
+            if ($win2003 -eq $false -and $dotnets -ne $null) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds);
             }} else {{
@@ -472,7 +473,7 @@ class EventLogQuery(object):
             if($events) {{
                 [Array]::Reverse($events);
             }};
-            if ($win2003) {{
+            if ($win2003 -and $dotnets -eq $null) {{
                 @($events | ? $selector) | EventLogToJSON
             }}
             else {{

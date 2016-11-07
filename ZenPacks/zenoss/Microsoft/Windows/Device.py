@@ -65,6 +65,7 @@ class Device(schema.Device):
                 cluster.setZenProperty('zWinRMUser', self.zWinRMUser)
                 cluster.setZenProperty('zWinRMPassword', self.zWinRMPassword)
                 cluster.setZenProperty('zWinRMPort', self.zWinRMPort)
+                cluster.setZenProperty('zWinKDC', self.zWinKDC)
                 cluster.index_object()
                 notify(IndexingEvent(cluster))
 

@@ -38,8 +38,6 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
 )
 
-from ..utils import save, checkExpiredPassword
-
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
@@ -362,11 +360,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 e.message or "timeout")
 
-            if 'Password expired' in e.message:
+            if 'Password expired' in e.message or 'Check username and password' in e.message:
                 PERSISTER.add_event(self.config.id, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Critical,
-                    'eventClass': '/Status/Winrm/Ping',
+                    'eventClassKey': 'MW|PasswordExpired',
                     'summary': e.message,
                     'ipAddress': self.config.manageIp
                 })
@@ -610,6 +608,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             return
 
         retry, level, msg = (False, None, None)
+
+        # check for expired password
+        if 'Password expired' in e.message or 'Check username and password' in e.message:
+            PERSISTER.add_event(self.config.id, {
+                'device': self.config.id,
+                'severity': ZenEventClasses.Critical,
+                'eventClass': '/Status/Winrm/Ping',
+                'summary': e.message,
+                'ipAddress': self.config.manageIp
+            })
 
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:

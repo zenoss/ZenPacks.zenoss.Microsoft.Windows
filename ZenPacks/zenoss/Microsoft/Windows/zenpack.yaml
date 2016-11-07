@@ -48,17 +48,11 @@ class_relationships:
 
 
 classes:
-  DEFAULTS:
-    base: [BaseComponent]
-
   BaseDevice:
     base: [zenpacklib.Device]
-  
-  BaseComponent:
-    base: [zenpacklib.Component, Products.ZenModel.OSComponent.OSComponent]
 
   ClusterObject:
-    base: [BaseComponent]
+    base: [zenpacklib.OSComponent]
     properties:
       DEFAULTS:
         grid_display: false
@@ -364,7 +358,7 @@ classes:
 
   CPU:
     label: Processor
-    base: [zenpacklib.Component, Products.ZenModel.CPU.CPU]
+    base: [zenpacklib.CPU]
     properties:
       DEFAULTS:
         grid_display: false
@@ -397,7 +391,7 @@ classes:
 
   FileSystem:
     label: File System
-    base: [BaseComponent, Products.ZenModel.FileSystem.FileSystem]
+    base: [zenpacklib.FileSystem]
     properties:
       DEFAULTS:
         details_display: false
@@ -422,7 +416,7 @@ classes:
 
   Interface:
     label: Interface
-    base: [BaseComponent, Products.ZenModel.IpInterface.IpInterface]
+    base: [zenpacklib.IpInterface]
     monitoring_templates: [ethernetCsmacd]
     impacts: []
     impacted_by: [device]
@@ -438,7 +432,7 @@ classes:
 
   OSProcess:
     label: Process
-    base: [BaseComponent, Products.ZenModel.OSProcess.OSProcess]
+    base: [zenpacklib.OSProcess]
     monitoring_templates: [OSProcess]
     properties:
       supports_WorkingSetPrivate:
@@ -454,7 +448,7 @@ classes:
 
   TeamInterface:
     label: Team Interface
-    base: [BaseComponent, Products.ZenModel.IpInterface.IpInterface]
+    base: [zenpacklib.IpInterface]
     monitoring_templates: [TeamInterface]
     properties:
       DEFAULTS:
@@ -477,6 +471,7 @@ classes:
 
   WinIIS:
     label: IIS Site
+    base: [zenpacklib.OSComponent]
     plural_label: IIS Sites
     properties:
       DEFAULTS:
@@ -514,6 +509,7 @@ classes:
 
   WinSQLBackup:
     label: SQL Backup
+    base: [zenpacklib.OSComponent]
     order: 13
     properties:
       DEFAULTS:
@@ -539,6 +535,7 @@ classes:
 
   WinSQLDatabase:
     label: SQL Database
+    base: [zenpacklib.OSComponent]
     order: 11
     properties:
       DEFAULTS:
@@ -586,6 +583,7 @@ classes:
 
   WinSQLInstance:
     label: SQL Instance
+    base: [zenpacklib.OSComponent]
     order: 10
     properties:
       DEFAULTS:
@@ -593,6 +591,9 @@ classes:
         default: None
       instancename:
         label: Instance Name
+        grid_display: true
+      sql_server_version:
+        label: SQL Server Version
         grid_display: true
       backupdevices:
         label: Backup Devices
@@ -615,6 +616,7 @@ classes:
 
   WinSQLJob:
     label: SQL Job
+    base: [zenpacklib.OSComponent]
     order: 12
     properties:
       DEFAULTS:

@@ -29,7 +29,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import check_for_network_error, save, checkExpiredPassword
+from ..utils import check_for_network_error, save, errorMsgCheck
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -228,7 +228,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         msg, event_class = check_for_network_error(result, config)
         log.error("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
-        checkExpiredPassword(config, data['events'], result.value.message)
+        errorMsgCheck(config, data['events'], result.value.message)
         # only need the one event
         if not data['events']:
             data['events'].append({
