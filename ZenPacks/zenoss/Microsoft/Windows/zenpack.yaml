@@ -592,6 +592,9 @@ classes:
       instancename:
         label: Instance Name
         grid_display: true
+      sql_server_version:
+        label: SQL Server Version
+        grid_display: true
       backupdevices:
         label: Backup Devices
       roles:
