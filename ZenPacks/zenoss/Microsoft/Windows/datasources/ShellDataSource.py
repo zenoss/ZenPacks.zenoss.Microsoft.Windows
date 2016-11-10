@@ -1092,11 +1092,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         instanceid = getattr(context, 'id', '')
 
         version = getattr(context, 'sql_server_version', 0)
-        if not re.match('\d+\..*', version):
-            version = 0
-        # get the major version number so we pull the correct assembly in powershell
         if version:
-            version = int(version.split('.')[0])
+            # ensure version is a string
+            match = re.match('(\d+)\..*', str(version))
+            if match:
+                version = match.groups()[0]
+            else:
+                version = 0
 
         try:
             contextURL = context.getPrimaryUrlPath()
