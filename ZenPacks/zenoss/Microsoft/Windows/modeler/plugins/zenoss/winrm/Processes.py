@@ -83,7 +83,6 @@ class Processes(WinRMPlugin):
 
         for om in oms:
             om.supports_WorkingSetPrivate = supports_WorkingSetPrivate
-            om.title = om.displayName
             rm.append(om)
 
         return rm
