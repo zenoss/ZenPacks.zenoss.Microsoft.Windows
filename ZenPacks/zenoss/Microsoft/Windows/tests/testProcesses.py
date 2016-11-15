@@ -30,4 +30,3 @@ class TestProcesses(BaseTestCase):
             self.assertTrue(i.id.startswith('zport_dmd_Processes_Zenoss_osProcessClasses_WIN_'))
             self.assertEquals(i.setOSProcessClass, '/Processes/Zenoss/osProcessClasses/WIN')
             self.assertEquals(i.displayName, i.monitoredProcesses[0])
-            self.assertEquals(i.displayName, i.title)
