@@ -1228,6 +1228,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.6.9
+* Fix Windows Shell Datasources are sending datamaps and bogging down ZenHub (ZEN-26226)
+
 ;2.6.7
 * Fix TypeError during zenpython collection of a ShellDataSource (ZEN-25978)
 
