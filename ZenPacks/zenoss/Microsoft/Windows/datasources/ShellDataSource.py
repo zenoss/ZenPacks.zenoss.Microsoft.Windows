@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -47,8 +47,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
-    save, errorMsgCheck
+from ..utils import (
+    check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
+    save, errorMsgCheck, generateClearAuthEvents,)
 from EventLogDataSource import string_to_lines
 
 
@@ -1414,6 +1415,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             eventKey='winrsCollection',
             summary='Monitoring ok',
             device=config.id))
+
+        generateClearAuthEvents(config, data['events'])
 
         return data
 

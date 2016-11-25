@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -29,7 +29,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import check_for_network_error, save, errorMsgCheck
+from ..utils import (
+    check_for_network_error, save, errorMsgCheck, generateClearAuthEvents,)
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -221,6 +222,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             'summary': 'Monitoring ok',
             'device': config.id,
         })
+
+        generateClearAuthEvents(config, data['events'])
 
         return data
 

@@ -27,7 +27,8 @@ class Device(schema.Device):
     '''
 
     def getPingStatus(self):
-        return self.getStatus('/Status/Winrm/Ping')
+        return self.getStatus('/Status/Winrm/Ping') or \
+               self.getStatus('/Status/Ping')
 
     def setClusterMachines(self, clusterdnsnames):
         '''
