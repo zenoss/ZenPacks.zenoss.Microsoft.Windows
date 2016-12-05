@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -47,8 +47,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
-from ..utils import check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value, \
-    save, errorMsgCheck
+from ..utils import (
+    check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
+    save, errorMsgCheck, generateClearAuthEvents,)
 from EventLogDataSource import string_to_lines
 
 
@@ -1264,7 +1265,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             data['events'] = cmdResult.events
             if result.exit_code == 0:
                 dsconf = dsconfs[0]
-                data['maps'] = cmdResult.maps
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
             else:
@@ -1360,14 +1360,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     if not dsconf:
                         continue
 
-                    dbid = dsconf.params['instanceid']
-                    dbstatus = 'Up' if db_statuses[db] else 'Down'
-                    instname = dsconf.params['instancename']
-
-                    data['maps'].append(ObjectMap({
-                        "compname": "os/winsqlinstances/{0}/databases/{1}".format(instname, dbid),
-                        "status": dbstatus
-                    }))
+                    dbstatus = 1 if db_statuses[db] else 0
+                    data['values'][dsconf.component]['status'] = dbstatus
 
                     summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
                     data['events'].append(dict(
@@ -1422,6 +1416,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             eventKey='winrsCollection',
             summary='Monitoring ok',
             device=config.id))
+
+        generateClearAuthEvents(config, data['events'])
 
         return data
 

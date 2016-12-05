@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -50,8 +50,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from .. import ZENPACK_NAME
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import get_processNameAndArgs, get_processText, save, \
-    errorMsgCheck
+from ..utils import (
+    get_processNameAndArgs, get_processText, save, errorMsgCheck,
+    generateClearAuthEvents,)
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
@@ -462,6 +463,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             'eventClass': Status_OSProcess,
             'summary': 'process scan successful',
             })
+
+        generateClearAuthEvents(config, data['events'])
 
         return data
 

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2014, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -360,17 +360,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.config.id,
                 e.message or "timeout")
 
-            if 'Password expired' in e.message or 'Check username and password' in e.message:
-                PERSISTER.add_event(self.config.id, {
-                    'device': self.config.id,
-                    'severity': ZenEventClasses.Critical,
-                    'eventClassKey': 'MW|PasswordExpired',
-                    'summary': e.message,
-                    'ipAddress': self.config.manageIp
-                })
+            self._errorMsgCheck(e.message)
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
+        else:
+            self._generateClearAuthEvents()
 
         self.state = PluginStates.STARTED
         self.collected_samples = 0
@@ -598,6 +593,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 LOG.debug('Result: {0}'.format(result))
                 yield self.restart()
 
+        self._generateClearAuthEvents()
+
         defer.returnValue(None)
 
     @defer.inlineCallbacks
@@ -607,17 +604,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if isinstance(e, defer.CancelledError):
             return
 
-        retry, level, msg = (False, None, None)
+        retry, level, msg = (False, None, None)  # NOT USED.
 
-        # check for expired password
-        if 'Password expired' in e.message or 'Check username and password' in e.message:
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClass': '/Status/Winrm/Ping',
-                'summary': e.message,
-                'ipAddress': self.config.manageIp
-            })
+        self._errorMsgCheck(e.message)
 
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
@@ -820,6 +809,40 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         deleted or modified.
         '''
         return reactor.callLater(self.sample_interval, self.stop)
+
+    def _errorMsgCheck(self, errorMessage):
+        """Check error message and generate appropriate event."""
+        if 'Password expired' in errorMessage:
+            PERSISTER.add_event(self.config.id, {
+                'device': self.config.id,
+                'severity': ZenEventClasses.Critical,
+                'eventClassKey': 'MW|PasswordExpired',
+                'summary': errorMessage,
+                'ipAddress': self.config.manageIp})
+        elif 'Check username and password' in errorMessage:
+            PERSISTER.add_event(self.config.id, {
+                'device': self.config.id,
+                'severity': ZenEventClasses.Critical,
+                'eventClassKey': 'MW|WrongCredentials',
+                'summary': errorMessage,
+                'ipAddress': self.config.manageIp})
+
+    def _generateClearAuthEvents(self):
+        """Add clear authentication events to PERSISTER singleton."""
+        PERSISTER.add_event(self.config.id, {
+            'eventClass': '/Status/Winrm/Auth/PasswordExpired',
+            'device': self.config.id,
+            'severity': ZenEventClasses.Clear,
+            'eventClassKey': 'MW|PasswordExpired',
+            'summary': 'Password is not expired',
+            'ipAddress': self.config.manageIp})
+        PERSISTER.add_event(self.config.id, {
+            'eventClass': '/Status/Winrm/Auth/WrongCredentials',
+            'device': self.config.id,
+            'severity': ZenEventClasses.Clear,
+            'eventClassKey': 'MW|WrongCredentials',
+            'summary': 'Credentials are OK',
+            'ipAddress': self.config.manageIp})
 
 
 # Helper functions for PerfmonDataSource plugin.

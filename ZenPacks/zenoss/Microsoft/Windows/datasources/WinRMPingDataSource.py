@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -27,7 +27,7 @@ from Products.ZenEvents import ZenEventClasses
 from twisted.internet import defer
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import errorMsgCheck
+from ..utils import errorMsgCheck, generateClearAuthEvents
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
@@ -146,12 +146,17 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
             'summary': 'Device is UP!',
             'ipAddress': config.manageIp,
             'device': config.id})
+
+        generateClearAuthEvents(config, data['events'])
+
         return data
 
     def onError(self, results, config):
         data = self.new_data()
         log.error('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
+
         errorMsgCheck(config, data['events'], results.value.message)
+
         if not data['events']:
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',

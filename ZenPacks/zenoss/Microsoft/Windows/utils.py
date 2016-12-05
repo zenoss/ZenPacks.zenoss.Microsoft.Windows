@@ -422,3 +422,19 @@ def errorMsgCheck(config, events, error):
             'summary': error,
             'ipAddress': config.manageIp,
             'device': config.id})
+
+
+def generateClearAuthEvents(config, events):
+    """Generate clear authentication events."""
+    events.append({
+        'eventClass': '/Status/Winrm/Auth/PasswordExpired',
+        'eventClassKey': 'MW|PasswordExpired',
+        'severity': ZenEventClasses.Clear,
+        'summary': 'Password is not expired',
+        'device': config.id})
+    events.append({
+        'eventClass': '/Status/Winrm/Auth/WrongCredentials',
+        'eventClassKey': 'MW|WrongCredentials',
+        'severity': ZenEventClasses.Clear,
+        'summary': 'Credentials are OK',
+        'device': config.id})

@@ -570,8 +570,10 @@ classes:
         label: System Object
       recoverymodel:
         label: Recovery Model
-      status:
+      getStatus:
         label: Status
+        api_only: true
+        api_backendtype: method
         grid_display: true
         order: 3
       cluster_node_server:
