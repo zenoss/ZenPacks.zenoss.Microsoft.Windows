@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -34,7 +34,7 @@ from ..WinService import WinService
 
 from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import errorMsgCheck
+from ..utils import errorMsgCheck, generateClearAuthEvents
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import WinrmCollectClient, create_enum_info
@@ -321,6 +321,9 @@ class ServicePlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsServiceCollection',
             'eventClassKey': 'WindowsServiceCollectionStatus',
         })
+
+        generateClearAuthEvents(config, data['events'])
+
         return data
 
     def onError(self, result, config):

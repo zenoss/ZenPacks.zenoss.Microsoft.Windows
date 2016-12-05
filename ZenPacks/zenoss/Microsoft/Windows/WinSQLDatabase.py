@@ -15,7 +15,13 @@ log = logging.getLogger("zen.MicrosoftWindows")
 class WinSQLDatabase(schema.WinSQLDatabase):
     '''
     Base class for WinSQLDatabase classes.
-    
+
     This file exists to avoid ZenPack upgrade issues
     '''
+    def getStatus(self):
+        try:
+            status = int(self.cacheRRDValue('status', None))
+        except Exception:
+            return 'Unknown'
 
+        return 'Up' if status else 'Down'

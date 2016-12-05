@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2016, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -33,7 +33,7 @@ from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
-from ..utils import save, errorMsgCheck
+from ..utils import save, errorMsgCheck, generateClearAuthEvents
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
@@ -341,6 +341,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsEventCollection',
             'eventClassKey': 'WindowsEventLogSuccess',
         })
+
+        generateClearAuthEvents(config, data['events'])
+
         return data
 
     @save
