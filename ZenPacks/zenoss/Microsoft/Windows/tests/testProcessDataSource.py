@@ -39,5 +39,8 @@ class TestProcessDataSourcePlugin(BaseTestCase):
         data = self.plugin.onSuccess(self.success, self.config)
         self.assertItemsEqual(
             (x['summary'] for x in data['events']),
-            ('matching processes running', 'process scan successful')
+            (
+                'matching processes running', 'process scan successful', 
+                'Password is not expired', 'Credentials are OK',
+            )
         )

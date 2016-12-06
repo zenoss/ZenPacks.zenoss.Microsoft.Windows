@@ -24,7 +24,7 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
             id=sentinel.id,
             datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
         ))
-        self.assertEquals(len(data['events']), 2)
+        self.assertEquals(len(data['events']), 4)
         self.assertEquals("Monitoring ok", data['events'][1]['summary'])
         self.assertIn("is in Unknown state", data['events'][0]['summary'])
 
