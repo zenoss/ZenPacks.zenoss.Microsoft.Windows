@@ -27,7 +27,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
         self.assertEquals(len(data['values']), 12)
-        self.assertEquals(len(data['events']), 16)
+        self.assertEquals(len(data['events']), 18)
         self.assertFalse(all(e['severity'] for e in data['events']))
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
