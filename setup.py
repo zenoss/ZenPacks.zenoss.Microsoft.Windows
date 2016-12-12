@@ -1,6 +1,6 @@
 ################################
 # These variables are overwritten by Zenoss when the ZenPack is exportedd
-# or saved.  Do not modify them directly here. Jenkins test one more timec
+# or saved.  Do not modify them directly here. Jenkins test one more timecc
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
 VERSION = "2.7.0dev"
