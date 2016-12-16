@@ -1233,6 +1233,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.6.11
+* Fix Monitoring of SQL Instances results in a UUID error (ZPS-453)
+
 ;2.6.9
 * Added Auth event clears, getPingStatus includes /Status/Ping event class (ZEN-25700)
 * Fix Windows Shell Datasources are sending datamaps and bogging down ZenHub (ZEN-26226)
