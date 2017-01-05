@@ -46,8 +46,13 @@ The following components will be automatically discovered through the Windows se
 ;Processors
 : Attributes: Name, Description, Model, Socket, Cores, Threads, Clock Speed, External Speed, Voltage, L1 Cache Size, L2 Cache Size and Speed, L3 Cache Size and Speed
 
-;File System
+;Hard Disks
+: Attributes: Name, Size, Number of Partitions, Disk Ids, Free Space, Capabilities
+: Relationships: File Systems
+
+;File Systems
 : Attributes: Mount Point, Status, Storage Device, Type, Block Size, Total Blocks, Total Bytes, Maximum Name Length
+:Relationships: Hard Disks
 
 ;Interfaces
 : Attributes: Name, Description, MAC Address, MTU, Speed, Duplex, Type, Administrative Status, Operational Status, IP Addresses
@@ -1232,6 +1237,10 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.7.0
+* Add support for Hard Disk association with storage servers
+* Added Session Management to lower number of connections to Windows Servers
 
 ;2.6.11
 * Fix Monitoring of SQL Instances results in a UUID error (ZPS-453)
