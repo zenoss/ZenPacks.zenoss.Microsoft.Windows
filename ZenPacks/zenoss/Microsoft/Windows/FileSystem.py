@@ -10,6 +10,7 @@
 from . import schema
 from .utils import get_properties
 
+
 class FileSystem(schema.FileSystem):
     '''
     Model class for FileSystem.
@@ -38,3 +39,9 @@ class FileSystem(schema.FileSystem):
         Return the total bytes of a filesytem for analytics
         """
         return self.blockSize * self.totalBlocks
+
+    def harddisk(self):
+        for hd in self.device().hw.harddisks():
+            if self.id in hd.fs_ids:
+                return hd
+        return None

@@ -130,6 +130,11 @@ from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 from zope.viewlet.interfaces import IViewlet
 
 try:
+    from Products.Zuul.interfaces.component import IHardDiskInfo as IBaseHardDiskInfo
+except ImportError:
+    IBaseHardDiskInfo = IBaseComponentInfo
+
+try:
     import yaml
     import yaml.constructor
     YAML_INSTALLED = True
@@ -2567,6 +2572,8 @@ class ClassSpec(Spec):
         if not bases:
             if self.is_device:
                 bases = [IBaseDeviceInfo]
+            elif self.is_a(HardDisk):
+                bases = [IBaseHardDiskInfo]
             elif self.is_component or self.is_a(OSComponent):
                 bases = [IBaseComponentInfo]
             elif self.is_hardware_component:
@@ -2624,7 +2631,7 @@ class ClassSpec(Spec):
         if not bases:
             if self.is_device:
                 bases = [BaseDeviceInfo]
-            elif self.is_component or self.is_a(OSComponent):
+            elif self.is_component or self.is_a(OSComponent) or self.is_a(HardDisk):
                 bases = [BaseComponentInfo]
             elif self.is_hardware_component:
                 bases = [HardwareComponentInfo]

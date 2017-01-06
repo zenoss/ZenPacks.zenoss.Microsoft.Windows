@@ -31,7 +31,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 import txwinrm
 import txwinrm.collect  # fix 'module' has no attribute 'collect' error on 4.1.1
 import txwinrm.shell  # fix 'module' has no attribute 'shell' error on 4.1.1
-from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient
+from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient, AssociatorClient
 import zope.component
 
 from txwinrm.util import UnauthorizedError
@@ -56,6 +56,7 @@ class WinRMPlugin(PythonPlugin):
     queries = {}
     commands = {}
     powershell_commands = {}
+    associators = {}
     _eventService = zope.component.queryUtility(IEventService)
 
     def get_queries(self):
@@ -85,6 +86,15 @@ class WinRMPlugin(PythonPlugin):
         commands property.
         '''
         return self.powershell_commands
+
+    def get_associators(self):
+        """
+        Return Associators list
+
+        To be overridden if commands need to be programmatically defined
+        instead of set in the class-level commands property.
+        """
+        return self.associators
 
     def client(self, conn_info):
         '''
@@ -247,6 +257,30 @@ class WinRMPlugin(PythonPlugin):
 
             # Unset winrm logging. Will fallback to root logger level.
             # winrm_log.setLevel(logging.NOTSET)
+
+        # Get associators.
+        associators = self.get_associators()
+
+        if associators:
+            assoc_client = AssociatorClient(conn_info)
+            for assoc_key, associator in associators.iteritems():
+                try:
+                    if not associator.get('kwargs'):
+                        assoc_result = yield assoc_client.associate(
+                            associator['seed_class'],
+                            associator['associations'])
+                    else:
+                        assoc_result = yield assoc_client.associate(
+                            associator['seed_class'],
+                            associator['associations'],
+                            **associator['kwargs'])
+
+                    msg = "connection for %s is established"
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                except Exception as e:
+                    self.log_error(log, device, e)
+                else:
+                    results[assoc_key] = assoc_result
 
         # Get a copy of the class' commands.
         commands = dict(self.get_commands())
