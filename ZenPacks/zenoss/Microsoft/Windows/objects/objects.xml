@@ -16811,6 +16811,35 @@ MW|WrongCredentials
 </object>
 </object>
 </object>
+<!-- ('', 'zport', 'dmd', 'Events', 'Status', 'Kerberos') -->
+<object id='/zport/dmd/Events/Status/Kerberos' module='Products.ZenEvents.EventClass' class='EventClass'>
+<object id='Failure' module='Products.ZenEvents.EventClass' class='EventClass'>
+<tomanycont id='instances'>
+<object id='Failure Default' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+MW|Kerberos|Failure
+</property>
+<property type="int" id="sequence" mode="w" >
+1101
+</property>
+</object>
+</tomanycont>
+</object>
+<object id='Auth' module='Products.ZenEvents.EventClass' class='EventClass'>
+<object id='Failure' module='Products.ZenEvents.EventClass' class='EventClass'>
+<tomanycont id='instances'>
+<object id='Failure Default' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
+<property type="string" id="eventClassKey" mode="w" >
+MW|Kerberos|Auth|Failure
+</property>
+<property type="int" id="sequence" mode="w" >
+1111
+</property>
+</object>
+</tomanycont>
+</object>
+</object>
+</object>
 <!-- ('', 'zport', 'dmd', 'Events', 'Status', 'instances', 'IISSiteStatus') -->
 <object id='/zport/dmd/Events/Status/instances/IISSiteStatus' module='Products.ZenEvents.EventClassInst' class='EventClassInst'>
 <property type="text" id="transform" mode="w" >
