@@ -1,5 +1,5 @@
 ################################
-# These variables are overwritten by Zenoss when the ZenPack i
+# These variables are overwritten by Zenoss when the ZenPack 
 # or saved.  Do not modify them directly here. Jenkins test one more 
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
