@@ -392,6 +392,49 @@ classes:
       impacts: []
       impacted_by: [device]
 
+  HardDisk:
+    label: Hard Disk
+    base: [zenpacklib.HardDisk]
+    meta_type: WindowsHardDisk
+    plural_label: Hard Disks
+    properties:
+      DEFAULTS:
+        grid_display: false
+      size:
+        label: Size
+        type: int
+        renderer: Zenoss.render.bytesString
+        order: 4.1
+        grid_display: true
+      utilization:
+        label: '% Util'
+        api_backendtype: method
+        api_only: true
+        grid_display: true
+      partitions:
+        label: Partitions
+        type: int
+        grid_display: true
+      capabilities:
+        label: Capabilities
+        type: lines
+      disk_ids:
+        label: 'Disk IDs'
+        type: lines
+      filesystems:
+        label: File Systems
+        type: entity
+        api_only: true
+        api_backendtype: method
+      fs_ids:
+        type: lines
+        details_display: false
+      freespace:
+        label: Free
+        type: int
+      perfmonInstance:
+        details_display: false
+
   FileSystem:
     label: File System
     base: [zenpacklib.FileSystem]
@@ -409,6 +452,13 @@ classes:
         type: long
         label: Total Bytes
         default: 0
+      harddisk:
+        label: Hard Disk
+        type: entity
+        api_backendtype: method
+        api_only: true
+        grid_display: true
+        details_display: true
     monitoring_templates: [FileSystem]
     impacts: []
     impacted_by: [device]
@@ -651,3 +701,64 @@ classes:
       impacts: []
       impacted_by: [winsqlinstance]
 
+device_classes:
+  /Server/Microsoft:
+    templates:
+      HardDisk:
+        description: Microsoft Windows file system monitoring.
+        targetPythonClass: Products.ZenModel.HardDisk
+        datasources:
+          DiskReadTime:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              DiskReadTime:
+                rrdtype: GAUGE
+                aliases: {diskReadTime: null}
+            counter: \% Disk Read Time
+          DiskWriteBytesSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              DiskWriteBytesSec:
+                rrdtype: GAUGE
+                aliases: {diskWriteBytes__sec: null}
+            counter: \Disk Write Bytes/sec
+          DiskWriteTime:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              DiskWriteTime:
+                rrdtype: GAUGE
+                aliases: {diskWriteTime: null}
+            counter: \% Disk Write Time
+          DiskReadBytesSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              DiskReadBytesSec:
+                rrdtype: GAUGE
+                aliases: {diskReadBytes__sec: null}
+            counter: \Disk Read Bytes/sec
+        graphs:
+          Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Read:
+                dpName: DiskReadBytesSec_DiskReadBytesSec
+                format: '%7.2lf%s'
+              Write:
+                dpName: DiskWriteBytesSec_DiskWriteBytesSec
+                format: '%7.2lf%s'
+          Time:
+            units: percent
+            miny: 0
+            graphpoints:
+              Read:
+                dpName: DiskReadTime_DiskReadTime
+                format: '%7.2lf%%'
+              Write:
+                dpName: DiskWriteTime_DiskWriteTime
+                format: '%7.2lf%%'
