@@ -406,8 +406,45 @@ def save(f):
 Common datasource utilities.
 '''
 
-def errorMsgCheck(config, events, error):
+def kerberosErrorMsgCheck(config, events, error):
     """Check error message and generate appropriate event."""
+    if any(x in error for x in ('kerberos', 'kinit',)):
+        if 'initial credentials' in error \
+                or 'authGSSClientStep failed' in error:
+            events.append({
+                'eventClassKey': 'MW|Kerberos|Auth|Failure',
+                'severity': ZenEventClasses.Critical,
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+        else:
+            events.append({
+                'eventClassKey': 'MW|Kerberos|Failure',
+                'severity': ZenEventClasses.Critical,
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+
+
+def generateKerberosClearAuthEvents(config, events):
+    """Generate clear authentication events."""
+    events.append({
+        'eventClass': '/Status/Kerberos/Auth/Failure',
+        'eventClassKey': 'MW|Kerberos|Auth|Failure',
+        'severity': ZenEventClasses.Clear,
+        'summary': 'No Kerberos auth failures',
+        'device': config.id})
+    events.append({
+        'eventClass': '/Status/Kerberos/Failure',
+        'eventClassKey': 'MW|Kerberos|Failure',
+        'severity': ZenEventClasses.Clear,
+        'summary': 'No Kerberos failures',
+        'device': config.id})
+
+
+def errorMsgCheck(config, events, error):
+    """Check error message and generate an appropriate event."""
+    wrongCredsMessages = ('Check username and password', 'Username invalid',)
     if 'Password expired' in error:
         events.append({
             'eventClassKey': 'MW|PasswordExpired',
@@ -415,13 +452,15 @@ def errorMsgCheck(config, events, error):
             'summary': error,
             'ipAddress': config.manageIp,
             'device': config.id})
-    elif 'Check username and password' in error:
+    elif any(x in error for x in wrongCredsMessages):
         events.append({
             'eventClassKey': 'MW|WrongCredentials',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,
             'device': config.id})
+    else:
+        kerberosErrorMsgCheck(config, events, error)
 
 
 def generateClearAuthEvents(config, events):
@@ -438,3 +477,5 @@ def generateClearAuthEvents(config, events):
         'severity': ZenEventClasses.Clear,
         'summary': 'Credentials are OK',
         'device': config.id})
+
+    generateKerberosClearAuthEvents(config, events)
