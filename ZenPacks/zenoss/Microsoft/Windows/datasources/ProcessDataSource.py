@@ -73,15 +73,15 @@ VALID_DATAPOINTS = frozenset({
     'Frequency_Sys100NS',
     'HandleCount',
     'IDProcess',
-    'IODataBytesPerSec',
-    'IODataOperationsPerSec',
-    'IOOtherBytesPerSec',
-    'IOOtherOperationsPerSec',
-    'IOReadBytesPerSec',
-    'IOReadOperationsPerSec',
-    'IOWriteBytesPerSec',
-    'IOWriteOperationsPerSec',
-    'PageFaultsPerSec',
+    'IODataBytesPersec',
+    'IODataOperationsPersec',
+    'IOOtherBytesPersec',
+    'IOOtherOperationsPersec',
+    'IOReadBytesPersec',
+    'IOReadOperationsPersec',
+    'IOWriteBytesPersec',
+    'IOWriteOperationsPersec',
+    'PageFaultsPersec',
     'PageFileBytes',
     'PageFileBytesPeak',
     'PercentPrivilegedTime',
@@ -279,7 +279,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 "Removing invalid datapoints for %s: %s",
                 config.id, ', '.join(invalid_datapoints))
 
-            perf_attrs.remove(invalid_datapoints)
+            perf_attrs.difference_update(invalid_datapoints)
 
         # Only query Win32_PerfFormattedData_PerfProc_Process if its
         # necessary to satisfy the configured datapoints.
