@@ -1427,11 +1427,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         eventKey = 'winrsCollection'
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
-                result = str(result.value)
                 eventKey = 'datasourceWarning_{0}'.format(
                     config.datasources[0].datasource
                 )
-                msg = '{0} on {1}'.format(result, config)
+                msg = '{0} on {1}'.format(str(result.value), config)
                 logg = log.warn
             elif isinstance(result.value, RequestError):
                 args = result.value.args

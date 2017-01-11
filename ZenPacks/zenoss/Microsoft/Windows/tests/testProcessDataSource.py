@@ -42,5 +42,6 @@ class TestProcessDataSourcePlugin(BaseTestCase):
             (
                 'matching processes running', 'process scan successful', 
                 'Password is not expired', 'Credentials are OK',
+                'No Kerberos auth failures', 'No Kerberos failures',
             )
         )

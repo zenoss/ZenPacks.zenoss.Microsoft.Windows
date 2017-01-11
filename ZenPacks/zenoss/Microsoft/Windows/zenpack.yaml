@@ -567,7 +567,7 @@ classes:
         label: System Object
       recoverymodel:
         label: Recovery Model
-      getStatus:
+      getState:
         label: Status
         api_only: true
         api_backendtype: method

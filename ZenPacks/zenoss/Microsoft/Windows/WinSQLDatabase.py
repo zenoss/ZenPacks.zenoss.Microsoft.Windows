@@ -18,7 +18,7 @@ class WinSQLDatabase(schema.WinSQLDatabase):
 
     This file exists to avoid ZenPack upgrade issues
     '''
-    def getStatus(self):
+    def getState(self):
         try:
             status = int(self.cacheRRDValue('status', None))
         except Exception:

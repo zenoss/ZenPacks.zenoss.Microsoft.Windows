@@ -2567,7 +2567,7 @@ class ClassSpec(Spec):
         if not bases:
             if self.is_device:
                 bases = [IBaseDeviceInfo]
-            elif self.is_component:
+            elif self.is_component or self.is_a(OSComponent):
                 bases = [IBaseComponentInfo]
             elif self.is_hardware_component:
                 bases = [IHardwareComponentInfo]
@@ -2624,7 +2624,7 @@ class ClassSpec(Spec):
         if not bases:
             if self.is_device:
                 bases = [BaseDeviceInfo]
-            elif self.is_component:
+            elif self.is_component or self.is_a(OSComponent):
                 bases = [BaseComponentInfo]
             elif self.is_hardware_component:
                 bases = [HardwareComponentInfo]
