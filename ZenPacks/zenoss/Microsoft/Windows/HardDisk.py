@@ -34,3 +34,8 @@ class HardDisk(schema.HardDisk):
             else:
                 file_systems.append(filesystem)
         return file_systems
+
+    def monitored(self):
+        if self.size == 0 and self.partitions == 0:
+            return False
+        return self.monitor and True

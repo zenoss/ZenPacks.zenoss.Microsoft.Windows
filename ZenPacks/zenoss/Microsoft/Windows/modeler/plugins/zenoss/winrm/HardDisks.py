@@ -61,11 +61,19 @@ class HardDisks(WinRMPlugin):
             freespace = int(drive.Size) - utilization
             if freespace < 0:
                 freespace = 0
+            try:
+                num_partitions = int(drive.Partitions)
+            except TypeError:
+                num_partitions = 0
+            try:
+                size = int(drive.Size)
+            except TypeError:
+                size = 0
             rm.append(self.objectMap({
                 'id': self.prepId(drive.PNPDeviceID),
                 'title': drive.Caption,
-                'size': int(drive.Size),
-                'partitions': int(drive.Partitions),
+                'size': size,
+                'partitions': num_partitions,
                 'capabilities': drive.CapabilityDescriptions,
                 'serialNumber': drive.SerialNumber.strip(),
                 'freespace': freespace,
