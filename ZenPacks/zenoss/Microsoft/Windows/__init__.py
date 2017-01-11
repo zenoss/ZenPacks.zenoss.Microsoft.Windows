@@ -37,12 +37,11 @@ DEVTYPE_PROTOCOL = 'WinRM'
 OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 
-from . import zenpacklib
+from ZenPacks.zenoss.ZenPackLib import zenpacklib
 
-# CFG is necessary when using zenpacklib.TestCase.
-CFG = zenpacklib.load_yaml()
+CFG = zenpacklib.load_yaml([os.path.join(os.path.dirname(__file__), 'zenpack.yaml')])
 
-from . import schema
+schema = CFG.zenpack_module.schema
 
 
 # Used by zenchkschema to validate relationship schema.

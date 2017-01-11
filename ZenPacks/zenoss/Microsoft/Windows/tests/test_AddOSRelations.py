@@ -10,19 +10,22 @@
 # stdlib imports
 import copy
 
+import Globals  # noqa
+from Products.ZenUtils.Utils import unused
+from Products.ZenTestCase.BaseTestCase import BaseTestCase
+from ZenPacks.zenoss.ZenPackLib import zenpacklib
 # ZenPack imports
-from .. import zenpacklib
-from .. import ZenPack
-from ..OperatingSystem import OperatingSystem
-from ..migrate.AddOSRelations import AddOSRelations
+from ZenPacks.zenoss.Microsoft.Windows import ZenPack
+from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
+from ZenPacks.zenoss.Microsoft.Windows.migrate.AddOSRelations import AddOSRelations
 
 # Local testing imports
-from .utils import create_device
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import create_device
 
-zenpacklib.enableTesting()
+unused(Globals)
 
 
-class migrateTests(zenpacklib.TestCase):
+class migrateTests(BaseTestCase):
     """Tests for AddOSRelations.migrate()."""
 
     def afterSetUp(self):
@@ -101,3 +104,17 @@ class migrateTests(zenpacklib.TestCase):
 
         # Validate that the relationship methods return iterables.
         len(os.clusternodes() + os.clusternetworks())
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(migrateTests))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

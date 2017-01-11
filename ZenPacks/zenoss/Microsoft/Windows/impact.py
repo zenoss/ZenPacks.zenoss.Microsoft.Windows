@@ -17,7 +17,7 @@ else:
 
 
 if IMPACT_INSTALLED:
-    from ZenPacks.zenoss.Microsoft.Windows.zenpacklib import ImpactRelationshipDataProvider
+    from ZenPacks.zenoss.ZenPackLib.lib.impact import ImpactRelationshipDataProvider
 
     class DeviceRelationsProvider(ImpactRelationshipDataProvider):
         '''RelationsProvider stub for backwards compatibility'''
