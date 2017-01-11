@@ -35,7 +35,7 @@ zProperties:
 
 
 class_relationships:
-  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService
+  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)ZenPacks.zenoss.Microsoft.Windows.WinService.WinService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmiis) 1:MC (os)WinIIS
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winsqlinstances) 1:MC (os)WinSQLInstance
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusterservices) 1:MC (os)ClusterService
@@ -404,7 +404,7 @@ classes:
         label: Size
         type: int
         renderer: Zenoss.render.bytesString
-        order: 4.1
+        order: 4
         grid_display: true
       utilization:
         label: '% Util'
@@ -700,6 +700,7 @@ classes:
     dynamicview_relations:
       impacts: []
       impacted_by: [winsqlinstance]
+
 
 device_classes:
   /Server/Microsoft:
