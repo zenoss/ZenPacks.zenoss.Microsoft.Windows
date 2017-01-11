@@ -43,7 +43,7 @@ class TestServiceDataSourcePlugin(BaseTestCase):
                                      id=sentinel.id,
                                      datasources=self.ds,
                                      ))
-        self.assertEquals(len(data['events']), 4)
+        self.assertEquals(len(data['events']), 6)
         self.assertEquals(data['events'][0]['summary'],
                           'Service Alert: aspnet_state has changed to Stopped state')
         self.assertEquals(data['events'][1]['summary'],

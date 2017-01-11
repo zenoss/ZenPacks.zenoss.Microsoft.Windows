@@ -33,7 +33,7 @@ class TestDataSourcePlugin(BaseTestCase):
             datasources=[Mock(params={'eventlog': sentinel.eventlog})],
         ))
 
-        self.assertEquals(len(res['events']), 4)
+        self.assertEquals(len(res['events']), 6)
         self.assertEquals(res['events'][0]['summary'], sentinel.message)
         self.assertEquals(res['events'][0]['eventGroup'], sentinel.eventlog)
 
