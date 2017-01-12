@@ -6214,3 +6214,71 @@ device_classes:
           DefaultService:
             type: Windows Service
             startmode: Auto
+
+event_classes:
+  /Status:
+    mappings:
+      WindowsServiceLog:
+        eventClassKey: WindowsServiceLog
+        sequence: 10
+        transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
+          \    if getattr(component, 'state') != currentstate:\n            setattr(component,\
+          \ 'state', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'Service\
+          \ (.*): (.*) has changed to (.*) state(.*)', msg)\n\nchange_properties(summaryObj.group(3))"
+        example: 'Service Alert: ALG has changed to Stopped state'
+        remove: true
+      IISSiteStatus:
+        eventClassKey: IISSiteStatus
+        sequence: 10
+        transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
+          \    if getattr(component, 'status') != currentstate:\n        setattr(component,\
+          \ 'status', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'IIS\
+          \ Service (.*) is in (.*) state(.*)', msg)\n\nchange_properties(summaryObj.group(2))"
+        example: IIS Service W3SVC_1 is in Stopped state
+        remove: true
+  /Status/Kerberos:
+    mappings:
+      Failure Default:
+        eventClassKey: MW|Kerberos|Auth|Failure
+        sequence: 1111
+  /Status/Kerberos/Auth:
+    mappings:
+      Failure Default:
+        eventClassKey: MW|Kerberos|Auth|Failure
+        sequence: 1111
+  /Status/Kerberos/Auth/Failure:
+    remove: true
+    mappings:
+      Failure Default:
+        eventClassKey: MW|Kerberos|Auth|Failure
+        sequence: 1111
+  /Status/Kerberos/Failure:
+    remove: true
+    mappings:
+      Failure Default:
+        eventClassKey: MW|Kerberos|Failure
+        sequence: 1101
+  /Status/Winrm:
+    mappings:
+      Wrong Credentials Default:
+        eventClassKey: MW|WrongCredentials
+        sequence: 1002
+  /Status/Winrm/Ping:
+    remove: true
+  /Status/Winrm/Auth:
+    mappings:
+      Wrong Credentials Default:
+        eventClassKey: MW|WrongCredentials
+        sequence: 1002
+  /Status/Winrm/Auth/WrongCredentials:
+    remove: true
+    mappings:
+      Wrong Credentials Default:
+        eventClassKey: MW|WrongCredentials
+        sequence: 1002
+  /Status/Winrm/Auth/PasswordExpired:
+    remove: true
+    mappings:
+      Password Expired Default:
+        eventClassKey: MW|PasswordExpired
+        sequence: 1001
