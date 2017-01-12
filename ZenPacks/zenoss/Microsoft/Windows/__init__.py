@@ -90,7 +90,6 @@ class ZenPack(schema.ZenPack):
     def install(self, app):
         super(ZenPack, self).install(app)
 
-        self.register_devtype(app.zport.dmd)
         log.info(SEGFAULT_INFO)
 
         try:
@@ -126,7 +125,6 @@ class ZenPack(schema.ZenPack):
 
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
-            self.unregister_devtype(app.zport.dmd)
 
             # remove kerberos.so file from python path
             kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
@@ -157,33 +155,6 @@ class ZenPack(schema.ZenPack):
                 self.removeBinFile(utilname)
 
         super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
-
-    def register_devtype(self, dmd):
-        '''
-        Register or replace the "Windows Server (WMI)" devtype.
-        '''
-        try:
-            old_deviceclass = dmd.Devices.Server.Windows.WMI
-        except AttributeError:
-            # No old device class. That's fine.
-            pass
-        else:
-            old_deviceclass.unregister_devtype(DEVTYPE_NAME, OLD_DEVTYPE_PROTOCOL)
-
-        deviceclass = dmd.Devices.createOrganizer('/Server/Microsoft/Windows')
-        deviceclass.register_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
-
-    def unregister_devtype(self, dmd):
-        '''
-        Unregister the "Windows Server (WinRM)" devtype.
-        '''
-        try:
-            deviceclass = dmd.Devices.Microsoft.Windows
-        except AttributeError:
-            # Someone removed the device class. That's fine.
-            return
-
-        deviceclass.unregister_devtype(DEVTYPE_NAME, DEVTYPE_PROTOCOL)
 
     def cleanup_zProps(self, dmd):
         # Delete zProperty when updating the older zenpack version without reinstall.
