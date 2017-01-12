@@ -2511,9 +2511,9 @@ device_classes:
             eventClass: /Perf
             maxval: '95'
           Memory:
-            dsnames: [MemoryCommittedBytes_MemoryCommittedBytes]
+            dsnames: [MemoryAvailableBytes_MemoryAvailableBytes]
             eventClass: /Perf/Memory
-            maxval: here.hw.totalMemory * 0.9
+            minval: here.hw.totalMemory * .1
         datasources:
           sysUpTime:
             type: Windows Perfmon
