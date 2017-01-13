@@ -11,7 +11,6 @@ import re
 import logging
 
 from .utils import addLocalLibPath
-from Products.ZenUtils.IpUtil import isip
 addLocalLibPath()
 
 # Requires that addLocalLibPath be called above.
@@ -32,8 +31,9 @@ ConnectionInfoProperties = (
     'zDBInstances',
     'zWinTrustedRealm',
     'zWinTrustedKDC',
-    'zWinUseWsmanSPN'
-    )
+    'zWinUseWsmanSPN',
+    'zWinRMEnvelopeSize'
+)
 
 
 def createConnectionInfo(device_proxy):
@@ -92,6 +92,8 @@ def createConnectionInfo(device_proxy):
     if hasattr(device_proxy, 'zWinUseWsmanSPN') and device_proxy.zWinUseWsmanSPN:
         service = 'wsman'
 
+    envelope_size = getattr(device_proxy, 'zWinRMEnvelopeSize', 512000)
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -105,4 +107,5 @@ def createConnectionInfo(device_proxy):
         trusted_realm=trusted_realm,
         trusted_kdc=trusted_kdc,
         ipaddress=device_proxy.manageIp,
-        service=service)
+        service=service,
+        envelope_size=envelope_size)
