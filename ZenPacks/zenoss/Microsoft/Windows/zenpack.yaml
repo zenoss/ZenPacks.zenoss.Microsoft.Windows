@@ -2,8 +2,6 @@ name: ZenPacks.zenoss.Microsoft.Windows
 zProperties:
   DEFAULTS:
     category: Windows
-  zWinRMUser:
-    default: ''
   zWinRMPassword:
     type: password
     default: ''
@@ -32,6 +30,9 @@ zProperties:
   zWinUseWsmanSPN:
     default: false
     type: boolean
+  zWinRMEnvelopeSize:
+    default: 512000
+    type: int
 
 
 class_relationships:

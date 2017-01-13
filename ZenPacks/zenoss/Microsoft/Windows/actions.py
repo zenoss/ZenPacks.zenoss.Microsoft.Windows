@@ -136,6 +136,7 @@ class WinCommandAction(IActionBase):
         service = device.zWinScheme
         if hasattr(device, 'zWinUseWsmanSPN') and device.zWinUseWsmanSPN:
             service = 'wsman'
+        envelope_size = getattr(device, 'zWinRMEnvelopeSize', 512000)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -149,7 +150,8 @@ class WinCommandAction(IActionBase):
             trusted_realm=device.zWinTrustedRealm,
             trusted_kdc=device.zWinTrustedKDC,
             ipaddress=device.manageIp,
-            service=service)
+            service=service,
+            envelope_size=envelope_size)
 
     def _execute_command(self, device, command):
         """
