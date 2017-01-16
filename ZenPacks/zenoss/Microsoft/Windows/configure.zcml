@@ -19,13 +19,6 @@
         for=".CPU.CPU"
         provides=".interfaces.ICPUInfo"
         />
-
-    <adapter
-        factory=".info.OSProcessInfo"
-        for=".OSProcess.OSProcess"
-        provides=".interfaces.IOSProcessInfo"
-        />
-
     <adapter
         factory=".info.InterfaceInfo"
         for=".Interface.Interface"
