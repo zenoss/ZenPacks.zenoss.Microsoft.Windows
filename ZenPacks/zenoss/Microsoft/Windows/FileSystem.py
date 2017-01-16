@@ -8,15 +8,12 @@
 ##############################################################################
 
 from . import schema
-from .utils import get_properties
 
 
 class FileSystem(schema.FileSystem):
     '''
     Model class for FileSystem.
     '''
-
-    _properties = get_properties(schema.FileSystem)
 
     def monitored(self):
         '''

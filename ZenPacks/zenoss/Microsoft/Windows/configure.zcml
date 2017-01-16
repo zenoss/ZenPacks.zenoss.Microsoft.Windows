@@ -9,17 +9,6 @@
 
 	<!-- components -->
     <adapter
-        factory=".info.FileSystemInfo"
-        for=".FileSystem.FileSystem"
-        provides=".interfaces.IFileSystemInfo"
-        />
-
-    <adapter
-        factory=".info.CPUInfo"
-        for=".CPU.CPU"
-        provides=".interfaces.ICPUInfo"
-        />
-    <adapter
         factory=".info.InterfaceInfo"
         for=".Interface.Interface"
         provides=".interfaces.IInterfaceInfo"

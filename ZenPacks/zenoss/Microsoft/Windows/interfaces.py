@@ -14,17 +14,6 @@ import Products.Zuul.interfaces.component as zuul
 from Products.Zuul.utils import ZuulMessageFactory as _t
 
 
-class IFileSystemInfo(schema.IFileSystemInfo, zuul.IFileSystemInfo):
-    """
-    Info adapter for FileSystem components.
-    """
-
-
-class ICPUInfo(schema.ICPUInfo, zuul.ICPUInfo):
-    """
-    Info adapter for CPU components.
-    """
-
 
 class IInterfaceInfo(schema.IInterfaceInfo, zuul.IIpInterfaceInfo):
     """

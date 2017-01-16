@@ -14,15 +14,6 @@ Basic utilities that don't cause any Zope stuff to be imported.
 import json
 from Products.ZenEvents import ZenEventClasses
 
-def get_properties(klass):
-    '''
-        avoid duplicates when adding properties 
-        to ZPL schema-based class from a base class
-    '''
-    seen = set()
-    seen_add = seen.add
-    props = tuple([x for x in klass._properties if not (x.get('id') in seen or seen_add(x.get('id')))])
-    return props
 
 def addLocalLibPath():
     """
@@ -118,7 +109,7 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
                 dblogins['MSSQLSERVER'] = {
-                    'username': username, # 'sa',
+                    'username': username,  # 'sa',
                     'password': password,
                     'login_as_user':True
                 }
@@ -133,7 +124,7 @@ def filter_sql_stdout(val):
     Filters SQL stdout from service messages
     """
     # SQL 2005 returns in stdout when Win auth
-    return filter(lambda x: x!="LogonUser succedded", val)
+    return filter(lambda x: x != "LogonUser succedded", val)
 
 
 def getSQLAssembly(version=None):
