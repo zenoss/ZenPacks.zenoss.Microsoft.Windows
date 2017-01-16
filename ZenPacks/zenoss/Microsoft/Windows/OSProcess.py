@@ -8,8 +8,6 @@
 ##############################################################################
 
 from . import schema
-from .utils import get_properties
-
 from Products.ZenModel.OSProcess import OSProcess as BaseOSProcess
 
 
@@ -21,8 +19,6 @@ class OSProcess(schema.OSProcess):
     Depending on the version of Windows there are different per-process
     counters available.
     '''
-
-    _properties = get_properties(schema.OSProcess)
 
     def getClassObject(self):
         return BaseOSProcess.getClassObject(self)

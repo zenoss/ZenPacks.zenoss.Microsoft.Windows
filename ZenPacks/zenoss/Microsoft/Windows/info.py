@@ -10,7 +10,6 @@
 from zope.interface import implements
 from Products.Zuul.infos.component.filesystem import FileSystemInfo
 from Products.Zuul.infos.component.cpu import CPUInfo
-from Products.Zuul.infos.component.osprocess import OSProcessInfo
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo
 from Products.Zuul.infos.component.winservice import WinServiceInfo
 from Products.Zuul.infos import ProxyProperty
@@ -20,7 +19,6 @@ from . import schema
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import (
     IFileSystemInfo,
     ICPUInfo,
-    IOSProcessInfo,
     IInterfaceInfo,
     IWinServiceInfo)
 
@@ -31,10 +29,6 @@ class FileSystemInfo(schema.FileSystemInfo, FileSystemInfo):
 
 class CPUInfo(schema.CPUInfo, CPUInfo):
     implements(ICPUInfo)
-
-
-class OSProcessInfo(schema.OSProcessInfo, OSProcessInfo):
-    implements(IOSProcessInfo)
 
 
 class InterfaceInfo(schema.InterfaceInfo, IpInterfaceInfo):

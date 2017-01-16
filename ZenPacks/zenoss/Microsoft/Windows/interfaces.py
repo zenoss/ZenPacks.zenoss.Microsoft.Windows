@@ -26,12 +26,6 @@ class ICPUInfo(schema.ICPUInfo, zuul.ICPUInfo):
     """
 
 
-class IOSProcessInfo(schema.IOSProcessInfo, zuul.IOSProcessInfo):
-    """
-    Info adapter for OSProcess components.
-    """
-
-
 class IInterfaceInfo(schema.IInterfaceInfo, zuul.IIpInterfaceInfo):
     """
     Info adapter for Interface components.
