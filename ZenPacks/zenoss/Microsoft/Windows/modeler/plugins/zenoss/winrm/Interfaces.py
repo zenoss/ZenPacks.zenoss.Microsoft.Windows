@@ -79,6 +79,15 @@ class Interfaces(WinRMPlugin):
         'Win32_NetworkAdapterConfiguration': "SELECT * FROM Win32_NetworkAdapterConfiguration",
         }
 
+    associators = {
+        'win32_pnpentity': {
+            'seed_class': 'Win32_NetworkAdapter',
+            'associations': [{'return_class': 'Win32_PnPEntity',
+                  'search_class': 'win32_NetworkAdapter',
+                  'search_property': 'DeviceID',
+                  'where_type': 'ResultClass'}]
+        }
+    }
     '''
     Team NIC information is collected per device type from the registry.
     Each vendor will have a differnt location in the registry to store the member
@@ -117,12 +126,6 @@ class Interfaces(WinRMPlugin):
                     if($_ -eq (replace_unallowed $na.InterfaceDescription) -or $_ -like 'isatap.' + "$($na.DeviceID)") {
                         $na.DeviceID, ':', $_, '|'
             }}}}'''.split())
-        ),
-        'win32_pnpentity': (
-            "$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);"
-            "$interfaces = (get-wmiobject -query 'select * from win32_networkadapter'); foreach ($interface in $interfaces) {"
-            "$query = 'ASSOCIATORS OF {Win32_NetworkAdapter.DeviceID='+$interface.DeviceID+'} WHERE ResultClass=Win32_PnPEntity';"
-            "get-wmiobject -query $query}"
         )
     }
 
@@ -137,19 +140,8 @@ class Interfaces(WinRMPlugin):
         win32_pnpentities = results.get('win32_pnpentity', None)
 
         # Actual instance names should be pulled in from the Win32_PnPEntity class
-        if win32_pnpentities and win32_pnpentities.stdout:
-            pnpentities = {}
-            pnpentity = {}
-            for line in win32_pnpentities.stdout:
-                k, v = line.split(':', 1)
-                # __GENUS marks the beginning of a win32_pnpentity class
-                if k.strip() == '__GENUS':
-                    if 'PNPDeviceID' in pnpentity.keys():
-                        pnpentities[pnpentity['PNPDeviceID']] = pnpentity
-                        pnpentity = {}
-                pnpentity[k.strip()] = v.strip()
-            # add in the last one
-            pnpentities[pnpentity['PNPDeviceID']] = pnpentity
+        if win32_pnpentities:
+            pnpentities = win32_pnpentities['Win32_PnPEntity']
         else:
             pnpentities = None
 
@@ -461,7 +453,7 @@ class Interfaces(WinRMPlugin):
                     for intfc in netInt:
                         if intfc.InterfaceIndex == adapter.InterfaceIndex:
                             try:
-                                desc = pnpentities[intfc.PNPDeviceID]['Name']
+                                desc = pnpentities[intfc.Index][0].Name
                             except Exception:
                                 pass
                             break
