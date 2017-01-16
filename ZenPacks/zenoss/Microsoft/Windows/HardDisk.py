@@ -8,13 +8,10 @@
 ##############################################################################
 
 from . import schema
-from .utils import get_properties
 
 
 class HardDisk(schema.HardDisk):
     """Model class for HardDisk."""
-
-    _properties = get_properties(schema.HardDisk)
 
     def utilization(self):
         if self.size == 0:
