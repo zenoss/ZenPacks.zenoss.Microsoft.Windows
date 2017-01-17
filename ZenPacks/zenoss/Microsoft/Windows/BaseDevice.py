@@ -10,9 +10,6 @@
 '''
 Utilities that may cause Zope stuff to be imported.
 '''
-
-import logging
-LOG = logging.getLogger('zen.Windows')
 from . import schema
 
 from Products.ZenModel.Device import Device
@@ -39,13 +36,13 @@ class BaseDevice(schema.BaseDevice):
         try:
             self._delOb('os')
         except Exception as e:
-            LOG.warn('Error removing OperatingSystem (%s)' % e)
+            self.LOG.warn('Error removing OperatingSystem (%s)' % e)
         from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
         os = OperatingSystem()
         try:
             self._setObject('os', os)
         except Exception as e:
-            LOG.info("ERROR SETTING OS: %s" % e)
+            self.LOG.info("ERROR SETTING OS: %s" % e)
 
     def windows_user(self):
         """Return Windows user for this device."""
@@ -71,7 +68,7 @@ class BaseDevice(schema.BaseDevice):
             try:
                 return talesEvalStr(pvalue, self)
             except Exception:
-                LOG.warn(
+                self.LOG.warn(
                     "%s.%s contains invalid TALES expression: %s",
                     self.id, pname, pvalue)
 

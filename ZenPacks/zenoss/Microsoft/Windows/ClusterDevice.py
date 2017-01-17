@@ -6,11 +6,6 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-
-import logging
-log = logging.getLogger("zen.MicrosoftWindows")
-
 from socket import gaierror
 
 from zope.event import notify
@@ -20,6 +15,7 @@ from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
 
 from . import schema
+
 
 class ClusterDevice(schema.ClusterDevice):
     '''
@@ -42,7 +38,7 @@ class ClusterDevice(schema.ClusterDevice):
         '''
         Set hostnames of servers belonging to this cluster.
         '''
-        log.info('Hostnames {0}'.format(clusterhostdnsnames))
+        self.LOG.info('Hostnames {0}'.format(clusterhostdnsnames))
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterhostdnsname in clusterhostdnsnames.keys():
             clusterhostip = clusterhostdnsnames[clusterhostdnsname]
@@ -51,7 +47,7 @@ class ClusterDevice(schema.ClusterDevice):
                 try:
                     clusterhostip = getHostByName(clusterhostdnsname)
                 except(gaierror):
-                    log.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
+                    self.LOG.warning('Unable to resolve hostname {0}'.format(clusterhostdnsname))
                     continue
 
             if deviceRoot.findDeviceByIdOrIp(clusterhostip) or \

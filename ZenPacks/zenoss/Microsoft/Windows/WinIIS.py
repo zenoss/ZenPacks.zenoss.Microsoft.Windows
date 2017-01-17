@@ -6,10 +6,7 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-import logging
 from . import schema
-log = logging.getLogger("zen.MicrosoftWindows")
 
 
 class WinIIS(schema.WinIIS):

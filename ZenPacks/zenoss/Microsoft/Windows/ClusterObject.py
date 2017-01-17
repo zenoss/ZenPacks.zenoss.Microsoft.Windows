@@ -6,10 +6,7 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-import logging
 from . import schema
-log = logging.getLogger("zen.MicrosoftWindows")
 from socket import gaierror
 from Products.ZenUtils.IpUtil import getHostByName
 from utils import cluster_state_string
@@ -26,7 +23,7 @@ class ClusterObject(schema.ClusterObject):
             clusterhostip = getHostByName(self.title + "." + self.domain)
             return deviceRoot.findDeviceByIdOrIp(clusterhostip)
         except(gaierror):
-            log.warning('Unable to resolve hostname {0}'.format(self.title + "." + self.domain))
+            self.LOG.warning('Unable to resolve hostname {0}'.format(self.title + "." + self.domain))
             return
 
     def getState(self):
