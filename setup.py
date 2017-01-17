@@ -1,6 +1,6 @@
 ################################
 # These variables are overwritten by Zenoss when the ZenPack 
-# or saved.  Do not modify them directly here. 23 
+# or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
 VERSION = "2.7.0dev"
