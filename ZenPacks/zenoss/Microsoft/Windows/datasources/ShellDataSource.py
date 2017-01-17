@@ -1057,12 +1057,12 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             return (context.device().id,
                     datasource.getCycleTime(context),
                     datasource.strategy,
-                    context.instancename)
+                    getattr(context, 'instancename', ''))
         elif datasource.strategy == 'powershell MSSQL Instance':
             return (context.device().id,
                     datasource.getCycleTime(context),
                     datasource.strategy,
-                    context.instancename,
+                    getattr(context, 'instancename', ''),
                     context.id)
         return (context.device().id,
                 datasource.getCycleTime(context),
