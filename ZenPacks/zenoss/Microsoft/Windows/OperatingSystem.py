@@ -6,13 +6,12 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
- 
 from Globals import InitializeClass
- 
+
 from Products.ZenRelations.RelSchema import ToOne, ToManyCont
 from Products.ZenModel.OperatingSystem import OperatingSystem as BaseOS
-  
-  
+
+
 class OperatingSystem(BaseOS):
     '''
         Provides common functionality for OperatingSystem

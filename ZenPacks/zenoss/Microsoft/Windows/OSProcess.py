@@ -6,7 +6,6 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
 from . import schema
 from Products.ZenModel.OSProcess import OSProcess as BaseOSProcess
 

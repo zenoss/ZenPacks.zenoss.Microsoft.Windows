@@ -6,10 +6,6 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-import logging
-log = logging.getLogger("zen.MicrosoftWindows")
-
 from socket import gaierror
 
 from zope.event import notify
@@ -42,7 +38,7 @@ class Device(schema.Device):
             try:
                 clusterip = getHostByName(clusterdnsname)
             except(gaierror):
-                log.warning(
+                self.LOG.warning(
                     'Unable to resolve hostname {0}'.format(clusterdnsname)
                 )
                 continue
