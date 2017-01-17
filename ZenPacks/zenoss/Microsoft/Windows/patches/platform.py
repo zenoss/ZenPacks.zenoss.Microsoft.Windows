@@ -114,12 +114,14 @@ def _editDetails(self, info, data):
 
     return result
 
-
-# ZPS-572 Make sure our OSProcess subclass is included in the Process tab
+# # ZPS-572 Make sure our OSProcess subclass is included in the Process tab
 from Products.Zuul.facades.processfacade import ProcessFacade
-@property
-def _instanceClass(ob):
-    return ('Products.ZenModel.OSProcess.OSProcess', 'ZenPacks.zenoss.Microsoft.Windows.OSProcess.OSProcess')
 
-ProcessFacade._instanceClass = _instanceClass
+@property
+def get_instance_class(ob):
+    return ob._types
+
+if not hasattr(ProcessFacade, '_types'):
+    ProcessFacade._types = ('Products.ZenModel.OSProcess.OSProcess', 'ZenPacks.zenoss.Microsoft.Windows.OSProcess.OSProcess')
+ProcessFacade._instanceClass = get_instance_class
 
