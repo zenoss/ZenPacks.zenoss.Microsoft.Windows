@@ -379,7 +379,7 @@ class EventLogQuery(object):
 
     PS_SCRIPT = '''
         $FormatEnumerationLimit = -1;
-        $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
+        $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 1024);
         function sstring($s) {{
             if ($s -eq $null) {{
                 return "";
@@ -483,14 +483,7 @@ class EventLogQuery(object):
                 @($events | ? $selector) | EventLogRecordToJSON
             }}
         }};
-        function Use-en-US ([ScriptBlock]$script= (throw))
-        {{
-            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
-            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
-            Invoke-Command $script;
-            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
-        }};
-        Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
+        get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}";
     '''
 
     def run(self, eventlog, selector, max_age, eventid, isxml):
@@ -502,8 +495,7 @@ class EventLogQuery(object):
         else:
             filter_xml = FILTER_XML.replace('"', r'\"')
         ps_script = ' '.join([x.strip() for x in self.PS_SCRIPT.split('\n')])
-        command = "{0} \"& {{{1}}}\"".format(
-            self.PS_COMMAND,
+        script = "\"& {{{}}}\"".format(
             ps_script.replace('\n', ' ').replace('"', r'\"').format(
                 eventlog=eventlog or 'System',
                 selector=selector or '{$True}',
@@ -512,8 +504,8 @@ class EventLogQuery(object):
                 filter_xml=filter_xml
             )
         )
-        log.debug('sending event script: {}'.format(command))
-        return self.winrs.run_command(command)
+        log.debug('sending event script: {}'.format(script))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class EventLogException(Exception):

@@ -289,14 +289,17 @@ class WinRMPlugin(PythonPlugin):
         powershell_commands = self.get_powershell_commands()
         if powershell_commands:
             for psc_key, psc in powershell_commands.iteritems():
-                commands[psc_key] = '{0} "& {{{1}}}"'.format(
-                    POWERSHELL_PREFIX, psc)
+                commands[psc_key] = '"& {{{}}}"'.format(psc)
 
         if commands:
             winrs_client = SingleCommandClient(conn_info)
             for command_key, command in commands.iteritems():
                 try:
-                    results[command_key] = yield winrs_client.run_command(command)
+                    if command.startswith('"&'):
+                        results[command_key] = yield winrs_client.run_command(POWERSHELL_PREFIX,
+                                                                              ps_script=command)
+                    else:
+                        results[command_key] = yield winrs_client.run_command(command)
                     msg = 'shell command completed successfully for %s'
                     self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
                 except Exception as e:

@@ -27,13 +27,13 @@ class FileSystems(WinRMPlugin):
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
-        )
+    )
 
     queries = {
         'Win32_LogicalDisk': "SELECT * FROM Win32_LogicalDisk",
         'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
         'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
-        }
+    }
 
     @save
     def process(self, device, results, log):
@@ -91,7 +91,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         for disk in results.get('Win32_Volume', ()):
             mount = Win32_volume_mount(disk)
@@ -139,7 +140,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumFileNameLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         for disk in results.get('Win32_MappedLogicalDisk', ()):
             mount = win32_mapped_logicaldisk_mount(disk)
@@ -183,7 +185,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         return rm
 

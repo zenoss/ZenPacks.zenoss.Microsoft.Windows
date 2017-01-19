@@ -33,6 +33,13 @@ zProperties:
   zWinRMEnvelopeSize:
     default: 512000
     type: int
+  zWinRMLocale:
+    default: en-US
+  zWinRMEncoding:
+    default: utf-8
+  zWinRSCodePage:
+    default: 65001
+    type: int
 
 
 class_relationships:
@@ -433,7 +440,7 @@ classes:
       freespace:
         label: Free
         type: int
-      perfmonInstance:
+      instance_name:
         details_display: false
 
   FileSystem:
@@ -460,6 +467,8 @@ classes:
         api_only: true
         grid_display: true
         details_display: true
+      instance_name:
+        label: Instance Name
     monitoring_templates: [FileSystem]
     impacts: []
     impacted_by: [device]
@@ -3804,7 +3813,7 @@ device_classes:
               DiskReadTime:
                 rrdtype: GAUGE
                 aliases: {diskReadTime: null}
-            counter: \% Disk Read Time
+            counter: \PhysicalDisk({$here/instance_name})\% Disk Read Time
           DiskWriteBytesSec:
             type: Windows Perfmon
             component: ${here/id}
@@ -3812,7 +3821,7 @@ device_classes:
               DiskWriteBytesSec:
                 rrdtype: GAUGE
                 aliases: {diskWriteBytes__sec: null}
-            counter: \Disk Write Bytes/sec
+            counter: \PhysicalDisk({$here/instance_name})\Disk Write Bytes/sec
           DiskWriteTime:
             type: Windows Perfmon
             component: ${here/id}
@@ -3820,7 +3829,7 @@ device_classes:
               DiskWriteTime:
                 rrdtype: GAUGE
                 aliases: {diskWriteTime: null}
-            counter: \% Disk Write Time
+            counter: \PhysicalDisk({$here/instance_name})\% Disk Write Time
           DiskReadBytesSec:
             type: Windows Perfmon
             component: ${here/id}
@@ -3828,7 +3837,7 @@ device_classes:
               DiskReadBytesSec:
                 rrdtype: GAUGE
                 aliases: {diskReadBytes__sec: null}
-            counter: \Disk Read Bytes/sec
+            counter: \PhysicalDisk({$here/instance_name})\Disk Read Bytes/sec
         graphs:
           Throughput:
             units: bytes/sec
