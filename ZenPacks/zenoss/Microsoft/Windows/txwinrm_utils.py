@@ -32,7 +32,10 @@ ConnectionInfoProperties = (
     'zWinTrustedRealm',
     'zWinTrustedKDC',
     'zWinUseWsmanSPN',
-    'zWinRMEnvelopeSize'
+    'zWinRMEnvelopeSize',
+    'zWinRMLocale',
+    'zWinRMEncoding',
+    'zWinRSCodePage',
 )
 
 
@@ -93,6 +96,9 @@ def createConnectionInfo(device_proxy):
         service = 'wsman'
 
     envelope_size = getattr(device_proxy, 'zWinRMEnvelopeSize', 512000)
+    locale = getattr(device_proxy, 'zWinRMLocale', 'en-US')
+    encoding = getattr(device_proxy, 'zWinRMEncoding', 'utf-8')
+    code_page = getattr(device_proxy, 'zWinRSCodePage', 65001)
 
     return ConnectionInfo(
         hostname=hostname,
@@ -108,4 +114,7 @@ def createConnectionInfo(device_proxy):
         trusted_kdc=trusted_kdc,
         ipaddress=device_proxy.manageIp,
         service=service,
-        envelope_size=envelope_size)
+        envelope_size=envelope_size,
+        locale=locale,
+        encoding=encoding,
+        code_page=code_page)

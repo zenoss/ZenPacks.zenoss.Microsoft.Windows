@@ -137,6 +137,9 @@ class WinCommandAction(IActionBase):
         if hasattr(device, 'zWinUseWsmanSPN') and device.zWinUseWsmanSPN:
             service = 'wsman'
         envelope_size = getattr(device, 'zWinRMEnvelopeSize', 512000)
+        locale = getattr(device, 'zWinRMLocale', 'en-US')
+        encoding = getattr(device, 'zWinRMEncoding', 'utf-8')
+        code_page = getattr(device, 'zWinRSCodePage', 65001)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -151,7 +154,10 @@ class WinCommandAction(IActionBase):
             trusted_kdc=device.zWinTrustedKDC,
             ipaddress=device.manageIp,
             service=service,
-            envelope_size=envelope_size)
+            envelope_size=envelope_size,
+            locale=locale,
+            encoding=encoding,
+            code_page=code_page)
 
     def _execute_command(self, device, command):
         """

@@ -51,13 +51,12 @@ class HardDisks(WinRMPlugin):
         for drive in diskdrives:
             utilization = 0
             fs_ids = []
-            perfmonInstance = '\\PhysicalDisk({}'.format(drive.Index)
+            instance_name = '{}'.format(drive.Index)
             for partition in partitions[drive.DeviceID]:
                 utilization += int(partition.Size)
                 for volume in volumes[partition.DeviceID]:
                     fs_ids.append(self.prepId(volume.DeviceID))
-                    perfmonInstance += ' {}'.format(volume.DeviceID)
-            perfmonInstance += ')'
+                    instance_name += ' {}'.format(volume.DeviceID)
             freespace = int(drive.Size) - utilization
             if freespace < 0:
                 freespace = 0
@@ -79,7 +78,7 @@ class HardDisks(WinRMPlugin):
                 'freespace': freespace,
                 'disk_ids': make_disk_ids(drive),
                 'fs_ids': fs_ids,
-                'perfmonInstance': perfmonInstance
+                'instance_name': instance_name
             }))
         return rm
 

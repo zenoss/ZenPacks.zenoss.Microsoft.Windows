@@ -14,6 +14,7 @@ Collection is performed by executing the Get-Counter PowerShell Cmdlet
 via WinRS.
 '''
 
+import re
 import logging
 import collections
 import time
@@ -182,42 +183,37 @@ PERSISTER = DataPersister()
 
 
 class ComplexLongRunningCommand(object):
-    '''
-    A complex command containing one or more long running commands,
+    """A complex command containing one or more long running commands,
     according to the number of commands supplied.
-    '''
+    """
 
     def __init__(self, dsconf, num_commands):
         self.dsconf = dsconf
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
+        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command'
 
     def _create_commands(self, num_commands):
-        '''
-        Create initial set of commands according to the number supplied.
-        '''
+        """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
         return [LongCommandClient(createConnectionInfo(self.dsconf))
                 for i in xrange(num_commands)]
 
     @defer.inlineCallbacks
     def start(self, command_lines):
-        '''
-        Start a separate command for each command line.
+        """Start a separate command for each command line.
         If the number of commands has changed since the last start,
         create an appropriate set of commands.
-        '''
+        """
         if self.num_commands != len(command_lines):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            yield command.start(command_line)
+            yield command.start(self.ps_command, ps_script=command_line)
 
     @defer.inlineCallbacks
     def stop(self):
-        '''
-        Stop all started commands.
-        '''
+        """Stop all started commands."""
         for command in self.commands:
             yield command.stop()
 
@@ -238,18 +234,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     counter_map = None
 
     command_line = (
-        'powershell -NoLogo -NonInteractive -NoProfile -Command "& {{'
-        '$CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;'
-        '[System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object \"System.Globalization.CultureInfo\" \"en-Us\";'
-        'Invoke-Command {{ '
+        '"& {{'
         '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
         '$FormatEnumerationLimit = -1; '
-        '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25); '
+        '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 1024); '
         'get-counter -ea silentlycontinue '
         '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
         '-counter @({Counters}) '
-        '| Format-List -Property Readings; }};'
-        '[System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture; }}"'
+        '| Format-List -Property Readings;'
+        ' }}"'
     )
 
     def __init__(self, config):
@@ -287,13 +280,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.network_failures = 0
 
     def _build_commandlines(self):
-        '''
-        Return a list of command lines needed to get data for all counters.
-        '''
+        """Return a list of command lines needed to get data for all counters."""
         # The max length of the cmd.exe command is 8192.
-        # The length of the powershell prefix is ~ 680 chars.
-        # Thus the line containing counters should not go beyond 7500 limit.
-        counters_limit = 7500
+        # The length of the powershell command line is ~ 420 chars.
+        # Thus the line containing counters should not go beyond 7700 limit.
+        counters_limit = 7700
 
         counters = sorted(self.ps_counter_map.keys())
 
@@ -319,23 +310,23 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             context.device().id,
             datasource.getCycleTime(context),
             SOURCETYPE,
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
         counter = datasource.talesEval(datasource.counter, context)
         if getattr(context, 'perfmonInstance', None):
-            counter = ''.join((context.perfmonInstance, counter))
+            if not re.match("\\\\.*\\\\.*", counter):
+                counter = ''.join((context.perfmonInstance, counter))
 
         return {'counter': counter}
 
     @defer.inlineCallbacks
     def collect(self, config):
-        '''
-        Collect for config.
+        """Collect for config.
 
         Called each collection interval.
-        '''
+        """
         yield self.start()
 
         data = yield self.get_data()
@@ -343,9 +334,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def start(self):
-        '''
-        Start the continuous command.
-        '''
+        """Start the continuous command."""
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
@@ -383,9 +372,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def get_data(self):
-        '''
-        Wait for data to arrive if necessary, then return it.
-        '''
+        """Wait for data to arrive if necessary, then return it."""
         data = PERSISTER.pop(self.config.id)
         if data and data['values']:
             defer.returnValue(data)
@@ -407,9 +394,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def stop(self):
-        '''
-        Stop the continuous command.
-        '''
+        """Stop the continuous command."""
         if self.state != PluginStates.STARTED:
             LOG.debug(
                 "skipping Get-Counter stop on %s while it's %s",
@@ -453,17 +438,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def restart(self):
-        '''
-        Stop then start the long-running command.
-        '''
+        """Stop then start the long-running command."""
         yield self.stop()
         yield self.start()
         defer.returnValue(None)
 
     def receive(self):
-        '''
+        """
         Receive results from continuous command.
-        '''
+        """
         deferreds = []
         for cmd in self.complex_command.commands:
             try:
@@ -479,10 +462,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.onReceive, self.onReceiveFail)
 
     def _parse_deferred_result(self, result):
-        '''
-        Group all stdout data and failures from each command result
+        """Group all stdout data and failures from each command result
         and return them as a tuple of two lists: (filures, results)
-        '''
+        """
         failures, results = [], []
 
         for index, command_result in enumerate(result):
@@ -507,7 +489,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def onReceive(self, result):
-        # Group the result of all commands into a single result.
+        """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
         collect_time = int(time.time())
@@ -648,28 +630,24 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
-        '''
-        Bisect the counters to determine which of them are corrupt.
-        '''
-        command = lambda counters: (
-            "powershell -NoLogo -NonInteractive -NoProfile -Command "
-            "\"get-counter -counter @({0})\" ".format(
-                ', '.join("('{0}')".format(c) for c in counters))
-        )
+        """Bisect the counters to determine which of them are corrupt."""
+        ps_command = "powershell -NoLogo -NonInteractive -NoProfile -Command"
+        ps_script = lambda counters: (
+            "\"get-counter -counter @({})\"".format(format_counters(counters)))
 
         num_counters = len(counter_list)
 
         if num_counters == 0:
             pass
         elif num_counters == 1:
-            result = yield winrs.run_command(command(counter_list))
+            result = yield winrs.run_command(ps_command, ps_script(counter_list))
             if result.stderr:
                 corrupt_list.extend(counter_list)
         else:
             mid_index = num_counters / 2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
-                result = yield winrs.run_command(command(counter_slice))
+                result = yield winrs.run_command(ps_command, ps_script(counter_slice))
                 if result.stderr:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)
@@ -678,9 +656,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def remove_corrupt_counters(self):
-        '''
-        Remove counters which return an error.
-        '''
+        """Remove counters which return an error."""
         LOG.debug('Performing check for corrupt counters')
         dsconf0 = self.config.datasources[0]
         winrs = SingleCommandClient(createConnectionInfo(dsconf0))
@@ -705,9 +681,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         defer.returnValue(None)
 
     def reportCorruptCounters(self, requested):
-        '''
-        Emit event for corrupt counters
-        '''
+        """Emit event for corrupt counters"""
         default_eventClass = '/Status/Winrm'
         dsconf0 = self.config.datasources[0]
 
@@ -748,9 +722,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 })
 
     def reportMissingCounters(self, requested, returned):
-        '''
-        Emit logs and events for counters requested but not returned.
-        '''
+        """Emit logs and events for counters requested but not returned."""
         missing_counters = set(requested).difference(returned)
         default_eventClass = '/Status/Winrm'
 
@@ -802,12 +774,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return ', '.join(counters)
 
     def cleanup(self, config):
-        '''
-        Cleanup any resources associated with this task.
+        """Cleanup any resources associated with this task.
 
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
-        '''
+        """
         return reactor.callLater(self.sample_interval, self.stop)
 
     def _errorMsgCheck(self, errorMessage):
@@ -863,27 +834,23 @@ def convert_to_ps_counter(counter):
 
 
 def format_counters(ps_counters):
-    '''
-    Convert a list of supplied counters into a string, which will
+    """Convert a list of supplied counters into a string, which will
     be further used to cteate ps command line.
-    '''
+    """
     return ','.join(
-        "('{0}')".format(counter) for counter in ps_counters)
+        '(\\"{0}\\")'.format(counter) for counter in ps_counters)
 
 
 def chunkify(lst, n):
-    '''
-    Yield successive n-sized chunks from the list.
-    '''
+    """Yield successive n-sized chunks from the list."""
     return [lst[i::n] for i in xrange(n)]
 
 
 def format_stdout(stdout_lines):
-    '''
-    Return a tuple containing a list of stdout lines without the
+    """Return a tuple containing a list of stdout lines without the
     BOM marker and property name, and a bool value specifying if it
     is a start of a sample.
-    '''
+    """
     sample_start = False
     # Remove BOM marker(if present).
     if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):

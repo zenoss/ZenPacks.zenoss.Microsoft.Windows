@@ -24,4 +24,3 @@ class Interface(schema.Interface):
         administratively down interfaces.
         '''
         return self.monitor and self.adminStatus == 1
-
