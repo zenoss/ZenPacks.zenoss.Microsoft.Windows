@@ -138,7 +138,6 @@ class WinCommandAction(IActionBase):
             service = 'wsman'
         envelope_size = getattr(device, 'zWinRMEnvelopeSize', 512000)
         locale = getattr(device, 'zWinRMLocale', 'en-US')
-        encoding = getattr(device, 'zWinRMEncoding', 'utf-8')
         code_page = getattr(device, 'zWinRSCodePage', 65001)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
@@ -156,7 +155,6 @@ class WinCommandAction(IActionBase):
             service=service,
             envelope_size=envelope_size,
             locale=locale,
-            encoding=encoding,
             code_page=code_page)
 
     def _execute_command(self, device, command):

@@ -35,8 +35,6 @@ zProperties:
     type: int
   zWinRMLocale:
     default: en-US
-  zWinRMEncoding:
-    default: utf-8
   zWinRSCodePage:
     default: 65001
     type: int
