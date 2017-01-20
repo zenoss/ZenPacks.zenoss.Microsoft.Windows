@@ -38,14 +38,13 @@ class ClusterCommander(object):
     psClusterCommands.append("import-module failoverclusters;")
 
     def run_command(self, command):
-        ''' Run command for powershell failover clusters '''
+        """Run command for powershell failover clusters"""
         if isinstance(command, str):
             command = command.splitlines()
-        command = "{0} \"& {{{1}}}\"".format(
-            self.pscommand,
+        command = "\"& {{{}}}\"".format(
             ''.join(self.psClusterCommands + command)
         )
-        return self.winrs.run_command(command)
+        return self.winrs.run_command(self.pscommand, ps_command=command)
 
 
 class WinCluster(WinRMPlugin):
@@ -84,7 +83,7 @@ class WinCluster(WinRMPlugin):
         clusternode = yield cmd.run_command(
             "get-clusternode | foreach {%s};" % pipejoin(
                 '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State')
-            )
+        )
 
         clusterDiskCommand = []
         clusterDiskCommand.append(
@@ -109,7 +108,7 @@ class WinCluster(WinRMPlugin):
             "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
-            )
+        )
 
         clusterDiskCommand.append(
             "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
@@ -138,7 +137,7 @@ class WinCluster(WinRMPlugin):
             "$physicaldisk | foreach { %s };} }" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
-            )
+        )
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
 
         clusterNetworkCommand = []
@@ -195,7 +194,7 @@ class WinCluster(WinRMPlugin):
         # Cluster Resource Maps
         res_spliter_index = results['resources'].index("====")
         resources = results['resources'][:res_spliter_index]
-        applications = results['resources'][res_spliter_index+1:]
+        applications = results['resources'][res_spliter_index + 1:]
 
         # This section is for ClusterService class
         for resource in resources:
@@ -307,7 +306,7 @@ class WinCluster(WinRMPlugin):
         # This section is for ClusterInterface class
         net_spliter_index = results['clusternetworks'].index("====")
         clusternetworks = results['clusternetworks'][:net_spliter_index]
-        nodeinterfaces = results['clusternetworks'][net_spliter_index+1:]
+        nodeinterfaces = results['clusternetworks'][net_spliter_index + 1:]
 
         for interface in nodeinterfaces:
             intfline = interface.split("|")
@@ -378,4 +377,3 @@ class WinCluster(WinRMPlugin):
             objmaps=map_networks_oms
         ))
         return maps
-

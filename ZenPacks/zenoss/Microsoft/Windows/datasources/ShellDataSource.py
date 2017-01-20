@@ -55,7 +55,6 @@ from EventLogDataSource import string_to_lines
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import UnauthorizedError, RequestError
-from txwinrm.shell import create_single_shot_command
 from txwinrm.WinRMClient import SingleCommandClient
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -287,11 +286,11 @@ class CustomCommandStrategy(object):
 
     def build_command_line(self, script, usePowershell):
         if not usePowershell:
-            return script
+            return script, None
         script = script.replace('"', "'")
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
-                    '-Command "{0}"'
-        return pscommand.format(script)
+                    '-Command'
+        return pscommand, '"{}"'.format(script)
 
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
@@ -416,10 +415,9 @@ class PowershellMSSQLStrategy(object):
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
                                       'else { Write-Host "databasename:"$db.Name;}}}')
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
+        script = "\"& {{{}}}\"".format(
             ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + counters_sqlConnection))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
         if result.stderr:
@@ -459,9 +457,10 @@ class PowershellMSSQLStrategy(object):
                 yield dsconf, value, timestamp
             except:
                 log.debug("No value was returned for counter {0} on {1}".format(dsconf.params['resource'], databasename))
-                if valuemap[databasename].has_key('status'):
+                if 'status' in valuemap[databasename]:
                     value = valuemap[databasename]['status']
                     yield dsconf, value, timestamp
+
 
 gsm.registerUtility(PowershellMSSQLStrategy(), IStrategy, 'powershell MSSQL')
 
@@ -484,10 +483,9 @@ class PowershellMSSQLJobStrategy(object):
         jobs_sqlConnection.append("'|LastRunOutcome:'$job.LastRunOutcome")
         jobs_sqlConnection.append("'|CurrentRunStatus:'$job.CurrentRunStatus;")
         jobs_sqlConnection.append("}}")
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
+        script = "\"& {{{}}}\"".format(
             ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + jobs_sqlConnection))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
         log.debug('MSSQLJob results: {}'.format(result))
@@ -524,7 +522,7 @@ class PowershellMSSQLJobStrategy(object):
                 'summary': msg,
                 'device': dsconfs[0].device,
                 'query_results': result.stdout
-                })
+            })
 
         for dsconf in dsconfs:
             component = dsconf.params['contexttitle']
@@ -556,11 +554,12 @@ class PowershellMSSQLJobStrategy(object):
                     'summary': msg,
                     'device': dsconf.device,
                     'component': dsconf.component
-                    })
+                })
         return collectedResults
 
 
 gsm.registerUtility(PowershellMSSQLJobStrategy(), IStrategy, 'powershell MSSQL Job')
+
 
 class PowershellClusterResourceStrategy(object):
     implements(IStrategy)
@@ -568,7 +567,7 @@ class PowershellClusterResourceStrategy(object):
     key = 'ClusterResource'
 
     def build_command_line(self, resource, componenttype):
-        #Clustering Command opening
+        # Clustering Command opening
 
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
@@ -577,17 +576,16 @@ class PowershellClusterResourceStrategy(object):
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
-            '$_.Description')
+                           '$_.Description')
 
-        psClusterCommands.append("{0} -name '{1}' " \
-            " | foreach {{{2}}};".format(componenttype,
-            resource, " + '|' + ".join(clusterappitems)
-            ))
+        psClusterCommands.append(
+            "{0} -name '{1}' | foreach {{{2}}};".format(
+                componenttype, resource, " + '|' + ".join(clusterappitems))
+        )
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
 
@@ -624,6 +622,7 @@ class PowershellClusterResourceStrategy(object):
         else:
             log.debug('Error in parsing cluster resource data')
 
+
 gsm.registerUtility(PowershellClusterResourceStrategy(), IStrategy, 'powershell Cluster Resources')
 
 
@@ -633,7 +632,7 @@ class PowershellClusterServiceStrategy(object):
     key = 'ClusterService'
 
     def build_command_line(self, resource, componenttype):
-        #Clustering Command opening
+        # Clustering Command opening
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
             "-OutputFormat TEXT -Command "
 
@@ -641,17 +640,16 @@ class PowershellClusterServiceStrategy(object):
         psClusterCommands.append("import-module failoverclusters;")
 
         clustergroupitems = ('$_.Name', '$_.IsCoreGroup', '$_.OwnerNode', '$_.State',
-            '$_.Description', '$_.Id', '$_.Priority')
+                             '$_.Description', '$_.Id', '$_.Priority')
 
-        psClusterCommands.append("{0} -name '{1}' " \
-            " | foreach {{{2}}};".format(componenttype,
-            resource, " + '|' + ".join(clustergroupitems)
+        psClusterCommands.append(
+            "{0} -name '{1}' | foreach {{{2}}};".format(
+                componenttype, resource, " + '|' + ".join(clustergroupitems)
             ))
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
 
@@ -688,6 +686,7 @@ class PowershellClusterServiceStrategy(object):
         else:
             log.debug('Error in parsing cluster service data')
 
+
 gsm.registerUtility(PowershellClusterServiceStrategy(), IStrategy, 'powershell Cluster Services')
 
 
@@ -704,15 +703,14 @@ class PowershellClusterNodeStrategy(object):
             '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State'
         )
 
-        psClusterCommands.append("{0} -name '{1}' " \
-            " | foreach {{{2}}};".format(componenttype,
-            resource, clusternodeitems
+        psClusterCommands.append(
+            "{0} -name '{1}' | foreach {{{2}}};".format(
+                componenttype, resource, clusternodeitems
             ))
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand(),
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand(), script
 
     def parse_result(self, dsconfs, result):
 
@@ -748,8 +746,9 @@ class PowershellClusterNodeStrategy(object):
         else:
             log.debug('Error in parsing cluster service data')
 
+
 gsm.registerUtility(PowershellClusterNodeStrategy(),
-    IStrategy, 'powershell Cluster Nodes')
+                    IStrategy, 'powershell Cluster Nodes')
 
 
 class PowershellClusterDiskStrategy(object):
@@ -786,7 +785,7 @@ class PowershellClusterDiskStrategy(object):
                 "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
                 "State = $volume.State;"
             "}; $csvtophysicaldisk | foreach { %s };};}" % (resource, clusterdiskitems)
-            )
+        )
 
         psClusterCommands.append(
             "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
@@ -814,12 +813,11 @@ class PowershellClusterDiskStrategy(object):
             "PartitionNumber = $diskpartition;Size = $disksize;"
             "FreeSpace = $disksizeremain;State = $disk.State;};"
             "$physicaldisk | foreach { %s };};};}" % (resource, clusterdiskitems)
-            )
+        )
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand(),
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
 
@@ -858,8 +856,9 @@ class PowershellClusterDiskStrategy(object):
         else:
             log.debug('Error in parsing cluster disk data')
 
+
 gsm.registerUtility(PowershellClusterDiskStrategy(),
-    IStrategy, 'powershell Cluster Disks')
+                    IStrategy, 'powershell Cluster Disks')
 
 
 class PowershellClusterNetworkStrategy(object):
@@ -880,10 +879,9 @@ class PowershellClusterNetworkStrategy(object):
             resource, clusternetworkitems
             ))
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand(),
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand(), script
 
     def parse_result(self, dsconfs, result):
 
@@ -937,10 +935,9 @@ class PowershellClusterInterfaceStrategy(object):
             " | foreach {{{2}}};".format(componenttype,
             resource, clusterinterfaceitems))
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand(),
+        script = "\"& {{{}}}\"".format(
             ''.join(psClusterCommands))
-        return command
+        return pscommand(), script
 
     def parse_result(self, dsconfs, result):
 
@@ -993,10 +990,9 @@ class PowershellMSSQLInstanceStrategy(object):
         psInstanceCommands.append("$inst = Get-Service -DisplayName 'SQL Server ({0})';".format(instance))
         psInstanceCommands.append("Write-Host $inst.Status'|'$inst.Name;")
 
-        command = "{0} \"& {{{1}}}\"".format(
-            pscommand,
+        script = "\"& {{{}}}\"".format(
             ''.join(psInstanceCommands))
-        return command
+        return pscommand, script
 
     def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
@@ -1209,7 +1205,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = 'MSSQLSERVER'
                 else:
                     cmd_line_input = dsconf0.params['instanceid']
-            command_line = strategy.build_command_line(cmd_line_input)
+            command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] in ('powershell Cluster Services'
                                             'powershell Cluster Resources'
                                             'powershell Cluster Nodes'
@@ -1221,23 +1217,24 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             if not resource:
                 return
             componenttype = dsconf0.params['resource']
-            command_line = strategy.build_command_line(resource, componenttype)
+            command_line, script = strategy.build_command_line(resource, componenttype)
 
         elif dsconf0.params['strategy'] == 'Custom Command':
             check_datasource(dsconf0)
             script = dsconf0.params['script']
             usePowershell = dsconf0.params['usePowershell']
-            command_line = strategy.build_command_line(script, usePowershell)
+            command_line, script = strategy.build_command_line(script, usePowershell)
         elif dsconf0.params['strategy'] == 'DCDiag':
             testparms = [dsconf.params['script'] for dsconf in config.datasources if dsconf.params['script']]
             command_line = strategy.build_command_line(counters, testparms, dsconf0.windows_user, dsconf0.windows_password)
             conn_info = conn_info._replace(timeout=180)
+            script = None
         else:
-            command_line = strategy.build_command_line(counters)
+            command_line, script = strategy.build_command_line(counters)
 
         command = SingleCommandClient(conn_info)
         try:
-            results = yield command.run_command(command_line)
+            results = yield command.run_command(command_line, script)
         except UnauthorizedError:
             results = ShellResult()
         except Exception, e:

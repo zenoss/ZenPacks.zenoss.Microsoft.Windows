@@ -93,26 +93,23 @@ class SQLCommander(object):
     '''
 
     def get_instances_names(self, is_cluster):
-        '''
-        Run script to retrieve DB instances' names and hostname either
+        """Run script to retrieve DB instances' names and hostname either
         available in the cluster or installed on the local machine,
         according to the 'is_cluster' parameter supplied.
-        '''
+        """
         psinstance_script = self.CLUSTER_INSTANCES_PS_SCRIPT if is_cluster \
             else self.LOCAL_INSTANCES_PS_SCRIPT
         return self.run_command(
-            psinstance_script.replace('\n', ' ') + self.HOSTNAME_PS_SCRIPT
+            psinstance_script + self.HOSTNAME_PS_SCRIPT
         )
 
     def run_command(self, pscommand):
-        '''
-        Run PowerShell command.
-        '''
+        """Run PowerShell command."""
         buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
                        'Management.Automation.Host.Size (4096, 25);')
-        command = "{0} \"{1} & {{{2}}}\"".format(
-            self.PS_COMMAND, buffer_size, pscommand)
-        return self.winrs.run_command(command)
+        script = "\"{0} & {{{1}}}\"".format(
+            buffer_size, pscommand.replace('\n', ' '))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class WinMSSQL(WinRMPlugin):

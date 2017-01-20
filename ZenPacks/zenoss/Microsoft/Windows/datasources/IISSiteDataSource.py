@@ -71,9 +71,9 @@ class IISCommander(object):
     '''
 
     def get_iis_version(self):
-        command = '{0} "& {{{1}}}"'.format(
-            self.PS_COMMAND, self.IIS_COMMAND.replace('\n', ' '))
-        return self.winrs.run_command(command)
+        script = '"& {{{}}}"'.format(
+            self.IIS_COMMAND.replace('\n', ' '))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class IISSiteDataSource(PythonDataSource):
