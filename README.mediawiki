@@ -802,9 +802,6 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 ;zWinRMEnvelopSize
 : This property is used when the winrm configuration setting for MaxEnvelopeSizekb exceeds the default of 512k.  Some WMI queries return large amounts of data and this envelope size may need to be enlarged.  A possible symptom of this is seeing an xml parsing error during collection.
 
-;zWinRMEncoding
-: This property can be used to define which language encoding to use when communicating with a Windows server.  This is a python codec name which can be found here:  https://docs.python.org/2.7/library/codecs.html?highlight=codecs#standard-encodings.  The default is ''utf-8''.
-
 ;zWinRMLocale
 : The locale to use for communicating with a Windows server.  The default is ''en-US''.
 

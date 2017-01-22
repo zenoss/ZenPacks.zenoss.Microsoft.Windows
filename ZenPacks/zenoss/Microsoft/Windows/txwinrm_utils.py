@@ -97,7 +97,6 @@ def createConnectionInfo(device_proxy):
 
     envelope_size = getattr(device_proxy, 'zWinRMEnvelopeSize', 512000)
     locale = getattr(device_proxy, 'zWinRMLocale', 'en-US')
-    encoding = getattr(device_proxy, 'zWinRMEncoding', 'utf-8')
     code_page = getattr(device_proxy, 'zWinRSCodePage', 65001)
 
     return ConnectionInfo(
@@ -116,5 +115,4 @@ def createConnectionInfo(device_proxy):
         service=service,
         envelope_size=envelope_size,
         locale=locale,
-        encoding=encoding,
         code_page=code_page)
