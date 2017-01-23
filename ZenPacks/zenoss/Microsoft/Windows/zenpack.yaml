@@ -427,6 +427,7 @@ classes:
       disk_ids:
         label: 'Disk IDs'
         type: lines
+        index_type: keyword
       filesystems:
         label: File Systems
         type: entity
