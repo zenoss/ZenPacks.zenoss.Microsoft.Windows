@@ -9,22 +9,12 @@
 from . import schema
 
 
-class WinSQLDatabase(schema.WinSQLDatabase):
+class WinSQLInstance(schema.WinSQLInstance):
     '''
     Base class for WinSQLDatabase classes.
 
     This file exists to avoid ZenPack upgrade issues
     '''
 
-    def getState(self):
-        """Return database state if instance state is OK"""
-        status = None
-        instance = getattr(self, 'winsqlinstance', None)
-        if instance:
-            if instance().getStatus():
-                return "Down"
-        try:
-            status = int(self.cacheRRDValue('status', None))
-        except Exception:
-            return 'Unknown'
-        return 'Up' if status  else 'Down'
+    def getStatus(self):
+        return super(WinSQLInstance, self).getStatus('/')

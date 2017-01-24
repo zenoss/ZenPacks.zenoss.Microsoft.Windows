@@ -1394,16 +1394,30 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         )
                     severity = ZenEventClasses.Warning
 
-        data['events'].append(dict(
-            severity=severity,
-            eventClass=dsconf0.eventClass or "/Status",
-            eventClassKey='winrsCollection',
-            eventKey='winrsCollection {}'.format(
-                dsconf0.params['contexttitle']
-            ),
-            summary=msg,
-            component=dsconf0.component,
-            device=config.id))
+        if strategy.key == "PowershellMSSQL":
+            instances = {dsc.component for dsc in dsconfs}
+            for i in list(instances):
+                data['events'].append(dict(
+                    severity=severity,
+                    eventClass=dsconf0.eventClass or "/Status",
+                    eventClassKey='winrsCollection',
+                    eventKey='winrsCollection {}'.format(
+                        dsconf0.params['contexttitle']
+                    ),
+                    summary=msg,
+                    component=i,
+                    device=config.id))
+        else:
+            data['events'].append(dict(
+                severity=severity,
+                eventClass=dsconf0.eventClass or "/Status",
+                eventClassKey='winrsCollection',
+                eventKey='winrsCollection {}'.format(
+                    dsconf0.params['contexttitle']
+                ),
+                summary=msg,
+                component=dsconf0.component,
+                device=config.id))
 
         data['events'].append(dict(
             severity=ZenEventClasses.Clear,
