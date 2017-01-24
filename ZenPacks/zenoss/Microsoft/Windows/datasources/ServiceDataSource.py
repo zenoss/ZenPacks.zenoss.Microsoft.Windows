@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -192,7 +192,7 @@ class ServiceDataSourceInfo(InfoBase):
         if self.reindex:
             self._object.dmd.JobManager.addJob(ReindexWinServices,
                                                kwargs=dict(uid=self.uid))
-            self._reindex = False
+            self.reindex = False
 
     severity = property(get_severity, set_severity)
 
