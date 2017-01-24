@@ -23,11 +23,8 @@ DEFAULT_SERVICE = '/zport/dmd/Devices/Server/Microsoft/rrdTemplates/WinService/d
 def onServiceDataSourceMoved(ob, event):
     if isinstance(event, ObjectWillBeRemovedEvent):
         dmd = ob.getDmdRoot("Devices")
-        try:
-            template = ob.getPrimaryUrlPath().split('/')[-3]
-            temporary = [x for x in ['-new', '-backup', '-preupgrade'] if x in template]
-        except Exception:
-            temporary = None
+        template = ob.rrdTemplate().id
+        temporary = [x for x in ['-new', '-backup', '-preupgrade'] if x in template]
         if dmd and not temporary:
             log.debug('handler: Starting ReindexWinServices job')
             dmd.JobManager.addJob(ReindexWinServices, kwargs=dict(uid=DEFAULT_SERVICE))
