@@ -1260,6 +1260,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added Session Management to lower number of connections to Windows Servers
 * Added option to specify winrm envelope size
 * Added localization support
+* Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 
 ;2.6.11
 * Fix Monitoring of SQL Instances results in a UUID error (ZPS-453)

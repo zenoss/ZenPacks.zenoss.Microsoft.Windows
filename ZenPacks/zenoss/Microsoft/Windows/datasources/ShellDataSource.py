@@ -229,18 +229,20 @@ class DCDiagStrategy(object):
         if result.stderr:
             log.debug('DCDiag error: {0}' + ''.join(result.stderr))
 
-        dsconf = config.datasources[0]
+        def get_datasource(test_name):
+            for ds in config.datasources:
+                if ds.params['resource'] == test_name:
+                    return ds
         output = result.stdout
         collectedResults = ParsedResults()
         tests_in_error = set()
-        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if output:
             error_str = ''
             for line in output:
                 # Failure of a test shows the error message first followed by:
                 # "......................... <dc> failed test <testname>"
                 if line.startswith('........'):
-                    #create err event
+                    # create err event
                     match = re.match('.*test (.*)', line)
                     if not match:
                         test = 'Unknown'
@@ -251,6 +253,12 @@ class DCDiagStrategy(object):
                         error_str = 'Unknown'
                     msg = "'DCDiag /test:{}' failed: {}".format(test, error_str)
                     eventkey = 'WindowsActiveDirectory{}'.format(test)
+
+                    dsconf = get_datasource(test)
+                    # default to first ds
+                    if not dsconf:
+                        dsconf = config.datasources[0]
+                    eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
 
                     collectedResults.events.append({
                         'eventClass': eventClass,
@@ -267,6 +275,11 @@ class DCDiagStrategy(object):
             msg = "'DCDiag /test:{}' passed".format(diag_test)
             eventkey = 'WindowsActiveDirectory{}'.format(diag_test)
 
+            dsconf = get_datasource(diag_test)
+            # default to first ds
+            if not dsconf:
+                dsconf = config.datasources[0]
+            eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             collectedResults.events.append({
                 'eventClass': eventClass,
                 'severity': ZenEventClasses.Clear,
@@ -275,6 +288,7 @@ class DCDiagStrategy(object):
                 'summary': msg,
                 'device': config.id})
         return collectedResults
+
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
 
