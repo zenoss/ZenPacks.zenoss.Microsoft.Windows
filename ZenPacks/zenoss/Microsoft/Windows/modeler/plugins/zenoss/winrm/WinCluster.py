@@ -44,7 +44,7 @@ class ClusterCommander(object):
         command = "\"& {{{}}}\"".format(
             ''.join(self.psClusterCommands + command)
         )
-        return self.winrs.run_command(self.pscommand, ps_command=command)
+        return self.winrs.run_command(self.pscommand, ps_script=command)
 
 
 class WinCluster(WinRMPlugin):
