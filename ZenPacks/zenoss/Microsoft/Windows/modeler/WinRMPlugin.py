@@ -156,7 +156,7 @@ class WinRMPlugin(PythonPlugin):
             args.append(error[0])
             if isinstance(error, UnauthorizedError):
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
-                            'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
+                           'https://www.zenoss.com/product/zenpacks/microsoft-windows'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
         elif isinstance(error, TimeoutError):
