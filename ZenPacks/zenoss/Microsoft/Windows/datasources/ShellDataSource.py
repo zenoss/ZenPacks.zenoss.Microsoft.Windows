@@ -29,7 +29,7 @@ from zope.interface import Interface
 
 from twisted.internet import defer
 from twisted.python.failure import Failure
-
+from Products.ZenRRD.zencommand import DataPointConfig
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
 from Products.Zuul.form import schema
@@ -1371,8 +1371,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     if not dsconf:
                         continue
 
+                    # add datapoint config and values for status
+                    dsconf.points.append(get_dummy_dpconfig(dsconf.points[0], 'status'))
                     dbstatus = 1 if db_statuses[db] else 0
-                    data['values'][dsconf.component]['status'] = dbstatus
+                    data['values'][dsconf.component]['status'] = dbstatus, timestamp
 
                     summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
                     data['events'].append(dict(
@@ -1518,3 +1520,14 @@ def get_script(datasource, context):
         log.error('Invalid tales expression in custom command script: %s' % \
                   str(datasource.script))
     return script
+
+def get_dummy_dpconfig(ref_dp, id):
+    """Return datapoint config based on reference datapoint config"""
+    dp_name = '{}_{}'.format(id, id)
+    dp_config = DataPointConfig()
+    dp_config.id = id
+    dp_config.dpName = dp_name
+    dp_config.component = ref_dp.component
+    dp_config.rrdPath = '/'.join(ref_dp.rrdPath.split('/')[:-1] + [dp_name])
+    dp_config.rrdType = 'GAUGE'
+    return dp_config
