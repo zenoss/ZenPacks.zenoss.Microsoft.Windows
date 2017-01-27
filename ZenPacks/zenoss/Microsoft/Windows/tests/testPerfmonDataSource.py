@@ -72,7 +72,7 @@ class TestConvert_to_ps_counter(BaseTestCase):
 
 class TestFormat_counters(BaseTestCase):
     def test_format_counters(self):
-        self.assertEquals(format_counters(['a', 'b']), "('a'),('b')")
+        self.assertEquals(format_counters(['a', 'b']), '(\\"a\\"),(\\"b\\")')
 
 
 class TestFormat_stdout(BaseTestCase):
