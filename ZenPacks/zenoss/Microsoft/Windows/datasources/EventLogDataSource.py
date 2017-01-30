@@ -152,14 +152,14 @@ class EventLogInfo(InfoBase):
                 time_match = re.match('(.*TimeCreated)(\[.*?\])(.*)', filter_text)
                 if time_match:
                     # easy to replace with our time filter
-                    filter_text = time_match.group(1)+TIME_CREATED+time_match.group(3)
+                    filter_text = time_match.group(1) + TIME_CREATED + time_match.group(3)
                 else:
                     # need to insert our time filter
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
-                    filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
+                    filter_text = notime_match.group(1) + INSERT_TIME + notime_match.group(2)
                 node.childNodes[0].data = filter_text
             xml_query = prettify_xml(in_filter_xml)
-            # undo replacement of single quotes with double            
+            # undo replacement of single quotes with double
             xml_query = re.sub(r"(\w+)='(\w+)'", r'\1="\2"', xml_query)
             # remove the xml header and replace any "&amp;" with "&"
             header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
@@ -335,13 +335,14 @@ class EventLogPlugin(PythonDataSourcePlugin):
         for evt in results:
             data['events'].append(self._makeEvent(evt, config))
 
-        data['events'].append({
-            'device': config.id,
-            'summary': 'Windows EventLog: successful event collection',
-            'severity': ZenEventClasses.Clear,
-            'eventKey': 'WindowsEventCollection',
-            'eventClassKey': 'WindowsEventLogSuccess',
-        })
+        for ds in config.datasources:
+            data['events'].append({
+                'device': config.id,
+                'summary': 'Windows EventLog: successful event collection',
+                'severity': ZenEventClasses.Clear,
+                'eventKey': 'WindowsEventCollection: {}'.format(ds.id),
+                'eventClassKey': 'WindowsEventLogSuccess',
+            })
 
         generateClearAuthEvents(config, data['events'])
 
@@ -361,13 +362,14 @@ class EventLogPlugin(PythonDataSourcePlugin):
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
-            data['events'].append({
-                'severity': severity,
-                'eventClassKey': 'WindowsEventCollectionError',
-                'eventKey': 'WindowsEventCollection',
-                'summary': msg,
-                'device': config.id
-            })
+            for ds in config.datasources:
+                data['events'].append({
+                    'severity': severity,
+                    'eventClassKey': 'WindowsEventCollectionError',
+                    'eventKey': 'WindowsEventCollection: {}'.format(ds.id),
+                    'summary': msg,
+                    'device': config.id
+                })
         return data
 
 
