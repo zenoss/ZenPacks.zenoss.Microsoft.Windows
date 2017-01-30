@@ -104,10 +104,9 @@ class OperatingSystem(WinRMPlugin):
         # Member Server (3)
         # Backup Domain Controller (4)
         # Primary Domain Controller (5)
-        if computerSystem.DomainRole in (BACKUPDC, PRIMARYDC):
+        device_om.domain_controller = False
+        if hasattr(computerSystem, 'DomainRole') and getattr(computerSystem, 'DomainRole', None) in (BACKUPDC, PRIMARYDC):
             device_om.domain_controller = True
-        else:
-            device_om.domain_controller = False
 
         maps.append(device_om)
 
