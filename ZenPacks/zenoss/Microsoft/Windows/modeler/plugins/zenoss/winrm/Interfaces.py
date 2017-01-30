@@ -140,8 +140,8 @@ class Interfaces(WinRMPlugin):
         win32_pnpentities = results.get('win32_pnpentity', None)
 
         # Actual instance names should be pulled in from the Win32_PnPEntity class
-        if win32_pnpentities:
-            pnpentities = win32_pnpentities['Win32_PnPEntity']
+        if win32_pnpentities and isinstance(win32_pnpentities, dict):
+            pnpentities = win32_pnpentities.get('Win32_PnPEntity', None)
         else:
             pnpentities = None
 
@@ -315,7 +315,10 @@ class Interfaces(WinRMPlugin):
                 # only physical adapters will have perfmon data
                 # 2003 does not have the PhysicalAdapter property
                 if getattr(inter, 'PhysicalAdapter', 'true').lower() == 'true':
-                    int_om.instance_name = pnpentities[inter.Index][0].Name
+                    if pnpentities and isinstance(pnpentities, dict):
+                        entry = pnpentities.get(inter.Index, [])
+                        if entry:
+                            int_om.instance_name = entry[0].Name
                     int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
             else:
                 log.warning("Adapter '%s':%d does not have a perfmon "
