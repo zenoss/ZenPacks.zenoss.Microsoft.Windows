@@ -102,7 +102,7 @@ class WinService(BaseWinService):
             datasource = template.datasources._getOb('DefaultService', None)
             if datasource and not datasource.enabled and template.id == self.serviceName:
                 return False
-            if datasource and datasource.enabled:
+            if datasource and datasource.enabled and hasattr(datasource, 'startmode'):
                 status = self.getMonitored(datasource)
                 if status is MONITORED:
                     self.failSeverity = datasource.severity
