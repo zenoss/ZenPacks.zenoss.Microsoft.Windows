@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -91,8 +91,10 @@ class WinService(BaseWinService):
         # Set necessary defaults
         self.alertifnot = 'Running'
         self.failSeverity = ZenEventClasses.Error
+        self.monitoredStartModes = []
         # 1 - Check to see if the user has manually set monitor status
         if self.usermonitor:
+            self.monitoredStartModes = [self.startMode]
             return self.monitor
 
         # Check what our template says to do.
@@ -102,11 +104,12 @@ class WinService(BaseWinService):
             datasource = template.datasources._getOb('DefaultService', None)
             if datasource and not datasource.enabled and template.id == self.serviceName:
                 return False
-            if datasource and datasource.enabled:
+            if datasource and datasource.enabled and hasattr(datasource, 'startmode'):
                 status = self.getMonitored(datasource)
                 if status is MONITORED:
                     self.failSeverity = datasource.severity
                     self.alertifnot = datasource.alertifnot
+                    self.monitoredStartModes = datasource.startmode.split(',')
                     return True
                 elif status is EXCLUDED:
                     return False
@@ -120,8 +123,10 @@ class WinService(BaseWinService):
                         if status is MONITORED:
                             self.failSeverity = datasource.severity
                             self.alertifnot = datasource.alertifnot
+                            self.monitoredStartModes = datasource.startmode.split(',')
                             ds_monitored = True
                         elif status is EXCLUDED:
+                            self.monitoredStartModes = []
                             return False
             if ds_monitored:
                 return True
@@ -132,8 +137,11 @@ class WinService(BaseWinService):
             valid_start = self.startMode in sc.monitoredStartModes
             # check the inherited zMonitor property
             self.failSeverity = self.getAqProperty("zFailSeverity")
+            sc_monitor = valid_start and self.getAqProperty('zMonitor')
+            if sc_monitor:
+                self.monitoredStartModes = sc.monitoredStartModes
 
-            return valid_start and self.getAqProperty('zMonitor')
+            return sc_monitor
 
         return False
 
@@ -145,5 +153,6 @@ class WinService(BaseWinService):
             *args, **kwargs)
         self.index_object()
         return tmpl
+
 
 InitializeClass(WinService)
