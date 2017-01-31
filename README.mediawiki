@@ -1228,6 +1228,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.6.12
+* Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
+
 ;2.6.11
 * Fix Monitoring of SQL Instances results in a UUID error (ZPS-453)
 * Added additional event classes and handlers for Kerberos failures (ZEN-25700)
