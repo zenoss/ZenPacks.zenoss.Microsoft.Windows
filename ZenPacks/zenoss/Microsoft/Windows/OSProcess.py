@@ -19,9 +19,6 @@ class OSProcess(schema.OSProcess):
     counters available.
     '''
 
-    def getClassObject(self):
-        return BaseOSProcess.getClassObject(self)
-
     def getRRDTemplateName(self):
         '''
         Return monitoring template name appropriate for this component.
