@@ -190,6 +190,11 @@ class ServiceDataSourceInfo(InfoBase):
 
     def post_update(self):
         if self.reindex:
+            for job in self._object.getDmdRoot('Devices').JobManager.getPendingJobs():
+                if job.type == ReindexWinServices.getJobType():
+                    log.info('ServiceDataSource: ReindexWinServices already pending')
+                    self.reindex = False
+                    return
             self._object.dmd.JobManager.addJob(ReindexWinServices,
                                                kwargs=dict(uid=self.uid))
             self.reindex = False
