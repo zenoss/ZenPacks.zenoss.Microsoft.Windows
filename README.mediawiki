@@ -1262,6 +1262,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added localization support
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
+* Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
