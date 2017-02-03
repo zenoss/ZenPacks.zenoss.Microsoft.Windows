@@ -160,6 +160,7 @@ class WinMSSQL(WinRMPlugin):
         dbinstances = winrs.get_instances_names(isCluster)
         instances = yield dbinstances
 
+        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         maps = {}
         instance_oms = []
         database_oms = []
