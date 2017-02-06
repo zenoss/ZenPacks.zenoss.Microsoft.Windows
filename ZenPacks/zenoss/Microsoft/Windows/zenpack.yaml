@@ -38,7 +38,8 @@ zProperties:
   zWinRSCodePage:
     default: 65001
     type: int
-
+  zWinRMClusterNodeClass:
+    default: /Devices/Server/Microsoft/Windows
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)ZenPacks.zenoss.Microsoft.Windows.WinService.WinService

@@ -60,8 +60,11 @@ class ClusterDevice(schema.ClusterDevice):
             @transact
             def create_device():
                 # Need to create cluster server device
-                dc = self.dmd.Devices.getOrganizer('/Devices/Server/Microsoft/Windows')
-
+                path = getattr(self, 'zWinRMClusterNodeClass', '/Devices/Server/Microsoft/Windows')
+                try:
+                    dc = self.dmd.Devices.getOrganizer(path)
+                except KeyError:
+                    dc = self.dmd.Devices.createOrganizer(path)
                 clusterhost = dc.createInstance(clusterhostdnsname)
                 clusterhost.manageIp = clusterhostip
                 clusterhost.title = clusterhostdnsname
