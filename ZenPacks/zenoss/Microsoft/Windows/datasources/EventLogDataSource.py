@@ -340,7 +340,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 'device': config.id,
                 'summary': 'Windows EventLog: successful event collection',
                 'severity': ZenEventClasses.Clear,
-                'eventKey': 'WindowsEventCollection: {}'.format(ds.id),
+                'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
                 'eventClassKey': 'WindowsEventLogSuccess',
             })
 
@@ -366,7 +366,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 data['events'].append({
                     'severity': severity,
                     'eventClassKey': 'WindowsEventCollectionError',
-                    'eventKey': 'WindowsEventCollection: {}'.format(ds.id),
+                    'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
                     'summary': msg,
                     'device': config.id
                 })
