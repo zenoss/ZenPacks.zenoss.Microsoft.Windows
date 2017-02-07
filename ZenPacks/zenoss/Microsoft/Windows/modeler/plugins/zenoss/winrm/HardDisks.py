@@ -39,6 +39,11 @@ class HardDisks(WinRMPlugin):
 
     @save
     def process(self, device, results, log):
+        log.info(
+            "Modeler {} processing data for device {}".format(
+                self.name(), device.id))
+
+        log.debug('HardDisks results: {}'.format(results))
         rm = self.relMap()
         try:
             diskdrives = results.get('diskdrives').get('Win32_DiskDrive')
