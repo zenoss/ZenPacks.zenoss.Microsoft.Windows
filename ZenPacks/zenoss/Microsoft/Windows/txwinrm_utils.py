@@ -36,6 +36,7 @@ ConnectionInfoProperties = (
     'zWinRMLocale',
     'zWinRMEncoding',
     'zWinRSCodePage',
+    'zWinRMKrb5includedir'
 )
 
 
@@ -99,6 +100,8 @@ def createConnectionInfo(device_proxy):
     locale = getattr(device_proxy, 'zWinRMLocale', 'en-US')
     code_page = getattr(device_proxy, 'zWinRSCodePage', 65001)
 
+    include_dir = getattr(device_proxy, 'zWinRMKrb5includedir', None)
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -115,4 +118,5 @@ def createConnectionInfo(device_proxy):
         service=service,
         envelope_size=envelope_size,
         locale=locale,
-        code_page=code_page)
+        code_page=code_page,
+        include_dir=include_dir)

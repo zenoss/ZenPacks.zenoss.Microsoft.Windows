@@ -40,6 +40,8 @@ zProperties:
     type: int
   zWinRMClusterNodeClass:
     default: /Devices/Server/Microsoft/Windows
+  zWinRMKrb5includedir:
+    default: ''
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)ZenPacks.zenoss.Microsoft.Windows.WinService.WinService

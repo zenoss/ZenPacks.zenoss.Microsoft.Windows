@@ -139,6 +139,7 @@ class WinCommandAction(IActionBase):
         envelope_size = getattr(device, 'zWinRMEnvelopeSize', 512000)
         locale = getattr(device, 'zWinRMLocale', 'en-US')
         code_page = getattr(device, 'zWinRSCodePage', 65001)
+        include_dir = getattr(device, 'zWinRMKrb5includedir', None)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -155,7 +156,8 @@ class WinCommandAction(IActionBase):
             service=service,
             envelope_size=envelope_size,
             locale=locale,
-            code_page=code_page)
+            code_page=code_page,
+            include_dir=include_dir)
 
     def _execute_command(self, device, command):
         """
