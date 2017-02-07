@@ -31,7 +31,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 import txwinrm
 import txwinrm.collect  # fix 'module' has no attribute 'collect' error on 4.1.1
 import txwinrm.shell  # fix 'module' has no attribute 'shell' error on 4.1.1
-from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient, AssociatorClient
+from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient, AssociatorClient, EnumInfo
 import zope.component
 
 from txwinrm.util import UnauthorizedError
@@ -180,7 +180,9 @@ class WinRMPlugin(PythonPlugin):
                     args.append(', '.join(reason.value.args[0][0]))
                 log.error(message, *args)
             return
-
+        elif isinstance(error, KeyError) and isinstance(error.message, EnumInfo):
+            message = "Error on %s: %s.  zWinRMEnvelopeSize may not be large enough.  Increase the size and try again."
+            args.append(error)
         else:
             message = "Error on %s: %s"
             args.append(error)

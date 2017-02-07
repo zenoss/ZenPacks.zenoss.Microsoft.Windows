@@ -160,8 +160,14 @@ class WinMSSQL(WinRMPlugin):
         dbinstances = winrs.get_instances_names(isCluster)
         instances = yield dbinstances
 
-        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         maps = {}
+        if not instances:
+            log.info('{}:  No output while getting instance names.'
+                     '  zWinRMEnvelopeSize may not be large enough.'
+                     '  Increase the size and try again.'.format(self.name()))
+            defer.returnValue(maps)
+
+        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         instance_oms = []
         database_oms = []
         backup_oms = []
