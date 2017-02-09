@@ -128,14 +128,14 @@ class DataPersister(object):
 
     def start(self, result=None):
         if result:
-            LOG.debug("data maintenance failed: %s", result)
+            LOG.debug("Windows Perfmon data maintenance failed: %s", result)
 
-        LOG.debug("starting data maintenance")
+        LOG.debug("Windows Perfmon starting data maintenance")
         d = LoopingCall(self.maintenance).start(self.maintenance_interval)
         d.addBoth(self.start)
 
     def maintenance(self):
-        LOG.debug("performing periodic data maintenance")
+        LOG.debug("Windows Perfmon performing periodic data maintenance")
         for device, data in self.devices.items():
             data_age = time.time() - data['last']
             if data_age > self.max_data_age:
@@ -292,7 +292,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # counters of the device equals to floor division of the current
         # counters_line length by the calculated limit, incremented by 1.
         self.num_commands = len(format_counters(counters)) // counters_limit + 1
-        LOG.debug('Creating {0} long running command(s)'.format(
+        LOG.debug('Windows Perfmon Creating {0} long running command(s)'.format(
             self.num_commands))
 
         # Chunk a counter list into num_commands equal parts.
@@ -338,16 +338,24 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
-        LOG.debug("starting Get-Counter on %s", self.config.id)
+        LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
 
         try:
             yield self.complex_command.start(self.commandlines)
         except Exception as e:
-            LOG.warn(
-                "Error on %s: %s",
+            errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
                 e.message or "timeout")
+            LOG.warn(errorMessage)
+
+            PERSISTER.add_event(self.config.id, {
+                'device': self.config.id,
+                'eventClass': '/Status/Winrm',
+                'eventKey': 'Windows Perfmon Collection Error',
+                'severity': ZenEventClasses.Warning,
+                'summary': errorMessage,
+                'ipAddress': self.config.manageIp})
 
             self._errorMsgCheck(e.message)
 
@@ -381,7 +389,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 PERSISTER.add_event(self.config.id, evt)
 
         if hasattr(self, '_wait_for_data'):
-            LOG.debug("waiting for %s Get-Counter data", self.config.id)
+            LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
             self.data_deferred = defer.Deferred()
             try:
                 yield add_timeout(self.data_deferred, self.sample_interval)
@@ -397,7 +405,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Stop the continuous command."""
         if self.state != PluginStates.STARTED:
             LOG.debug(
-                "skipping Get-Counter stop on %s while it's %s",
+                "Windows Perfmon skipping Get-Counter stop on %s while it's %s",
                 self.config.id,
                 self.state)
 
@@ -429,7 +437,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
                 LOG.log(
                     log_level,
-                    "failed to stop Get-Counter on %s: %s",
+                    "Windows Perfmon failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 
         self.state = PluginStates.STOPPED
@@ -452,7 +460,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 deferreds.append(cmd.receive())
             except Exception as err:
-                LOG.error('Receive error {0}'.format(err))
+                LOG.error('Windows Perfmon receive error {0}'.format(err))
 
         self.receive_deferreds = add_timeout(
             defer.DeferredList(deferreds, consumeErrors=True),
@@ -498,7 +506,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         stdout_lines, sample_start = format_stdout(results)
 
         if stdout_lines:
-            LOG.debug("received Get-Counter data for %s", self.config.id)
+            LOG.debug("Windows Perfmon received Get-Counter data for %s", self.config.id)
             # Data persister will take care of data order.
             self.sample_buffer = collections.deque(stdout_lines)
 
@@ -537,7 +545,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     PERSISTER.add_value(
                         self.config.id, component, datasource, value, collect_time)
             except Exception, err:
-                LOG.debug('Could not process a sample. Error: {}'.format(err))
+                LOG.debug('Windows Perfmon could not process a sample. Error: {}'.format(err))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.callback(None)
@@ -572,11 +580,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.reportCorruptCounters(self.counter_map)
         else:
             if self.cycling:
-                LOG.debug('Result: {0}'.format(result))
+                LOG.debug('Windows Perfmon Result: {0}'.format(result))
                 yield self.restart()
 
         self._generateClearAuthEvents()
 
+        PERSISTER.add_event(self.config.id, {
+            'device': self.config.id,
+            'eventClass': '/Status/Winrm',
+            'eventKey': 'Windows Perfmon Collection Error',
+            'severity': ZenEventClasses.Clear,
+            'summary': 'Successful Perfmon Collection',
+            'ipAddress': self.config.manageIp})
         defer.returnValue(None)
 
     @defer.inlineCallbacks
