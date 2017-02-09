@@ -799,7 +799,7 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 ;zDBInstances
 : This setting is only relevant when the ''zenoss.winrm.WinMSSQL'' modeler plugin is enabled. Multiple instances can be specified to monitor multiple SQL Server instances per server using different credentials. The default instance is ''MSSQLSERVER''. Fill in the user and password to use SQL authentication. Leave the user and password blank to use Windows authentication.  The default ''MSSQLSERVER'' credentials will be used for all instances not specified.
 
-;zWinRMEnvelopSize
+;zWinRMEnvelopeSize
 : This property is used when the winrm configuration setting for MaxEnvelopeSizekb exceeds the default of 512k.  Some WMI queries return large amounts of data and this envelope size may need to be enlarged.  A possible symptom of this is seeing an xml parsing error during collection.
 
 ;zWinRMLocale
