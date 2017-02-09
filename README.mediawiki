@@ -661,8 +661,13 @@ This ZenPack has the following requirements.
 ;[[ZenPack:PythonCollector|PythonCollector ZenPack]]
 : This ZenPack depends on [[ZenPack:PythonCollector|PythonCollector]] being installed, and having the associated ''zenpython'' collector process running.
 
+;[[ZenPack:ZenPackLib|ZenPackLib ZenPack]]
+: This ZenPack depends on [[ZenPack:ZenPackLib|ZenPackLib]] being installed.
+
 ;System Kerberos RPM
 : The operating system's kerberos RPM must be installed. See the [[#Installing_Kerberos_Dependency]] section for details.
+
+{{note}} During ZenPack installation, a job to reindex Windows Services may start.  It is recommended to either stop zenjobs before installing or to wait until the job finishes before restarting Zenoss.  If you restart before the job finishes, you may need to Abort and/or Delete the job after the restart.
 
 === Installing Kerberos Dependency ===
 
