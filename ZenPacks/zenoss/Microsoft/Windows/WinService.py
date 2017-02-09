@@ -8,43 +8,22 @@
 ##############################################################################
 
 import re
-import logging
 import string
-from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from Products.ZenModel.WinService import WinService as BaseWinService
 from Products.ZenEvents import ZenEventClasses
-
-log = logging.getLogger('zen.MicrosoftWindows')
+from . import schema
 
 UNMONITORED = 0
 MONITORED = 1
 EXCLUDED = 2
 
 
-class WinService(BaseWinService):
+class WinService(schema.WinService):
     '''
     Model class for Windows Service.
     '''
 
-    description = None
-    usermonitor = False
-
-    _properties = BaseWinService._properties + (
-        {'id': 'description', 'label': 'Description', 'type': 'string'},
-        {'id': 'usermonitor', 'label': 'Manually Selected Monitor State',
-            'type': 'boolean'},
-    )
-
     security = ClassSecurityInfo()
-
-    def getClassObject(self):
-        """
-        Return the ServiceClass for this service.
-        """
-        if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
-            return self.serviceclass()
-        return None
 
     def getRRDTemplateName(self):
         try:
@@ -65,7 +44,7 @@ class WinService(BaseWinService):
         try:
             regx = re.compile(service_regex, re.I)
         except re.error as e:
-            log.warn(e)
+            self.LOG.warn(e)
             return False
         if regx.match(self.serviceName):
             return True
@@ -153,6 +132,3 @@ class WinService(BaseWinService):
             *args, **kwargs)
         self.index_object()
         return tmpl
-
-
-InitializeClass(WinService)
