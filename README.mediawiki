@@ -723,7 +723,7 @@ The Least Privileged User requires the following privileges and permissions:
 
 === Port Requirements ===
 
-The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.
+The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.  Compatible ports of 80 and 443 are also acceptable.
 For domain authentication, Kerberos communicates with the KDC on port 88 and the Admin Server on port 749.
 
 === Adding a Windows Device ===
@@ -1273,6 +1273,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
+* Fix Windows ZP Does not allow compatible ports of 80/443 to be used (ZPS-622)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
