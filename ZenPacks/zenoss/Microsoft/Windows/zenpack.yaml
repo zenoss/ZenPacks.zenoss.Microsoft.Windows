@@ -482,6 +482,10 @@ classes:
   Interface:
     label: Interface
     base: [zenpacklib.IpInterface]
+    properties:
+      instance_name:
+        grid_display: false
+        details_display: false
     monitoring_templates: [ethernetCsmacd]
     impacts: []
     impacted_by: [device]
