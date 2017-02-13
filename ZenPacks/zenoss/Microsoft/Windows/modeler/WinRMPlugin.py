@@ -191,15 +191,20 @@ class WinRMPlugin(PythonPlugin):
         self._send_event(message % tuple(args), device.id, 3, eventClass='/Status/Winrm')
 
     def _send_event(self, reason, id, severity, force=False,
-                    key='ConnectionError', eventClass='/Status'):
+                    key='ConnectionError', eventClass='/Status', summary=None):
         """
         Send event for device with specified id, severity and
         error message.
         """
         log.debug('Sending event: %s' % reason)
         if self._eventService:
+            if not summary:
+                if severity != 0:
+                    summary = 'Modeler plugin zenoss.winrm.{} returned no results.'.format(self.__class__.__name__)
+                else:
+                    summary = 'Modeler plugin zenoss.winrm.{} successful.'.format(self.__class__.__name__)
             self._eventService.sendEvent(dict(
-                summary='Modeler plugin zenoss.winrm.%s returned no results.' % self.__class__.__name__,
+                summary=summary,
                 message=reason,
                 eventClass=eventClass,
                 eventClassKey=key,

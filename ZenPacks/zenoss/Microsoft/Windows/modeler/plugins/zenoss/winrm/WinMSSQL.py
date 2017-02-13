@@ -106,7 +106,7 @@ class SQLCommander(object):
     def run_command(self, pscommand):
         """Run PowerShell command."""
         buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
-                       'Management.Automation.Host.Size (4096, 25);')
+                       'Management.Automation.Host.Size (4096, 512);')
         script = "\"{0} & {{{1}}}\"".format(
             buffer_size, pscommand.replace('\n', ' '))
         return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
@@ -167,6 +167,7 @@ class WinMSSQL(WinRMPlugin):
                      '  Increase the size and try again.'.format(self.name()))
             defer.returnValue(maps)
 
+        maps['errors'] = {}
         log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         instance_oms = []
         database_oms = []
@@ -305,17 +306,17 @@ class WinMSSQL(WinRMPlugin):
             backup_sqlConnection = []
             backup_sqlConnection.append('write-host "====Backups";')
             # Get database information
-            backup_sqlConnection.append('$server.BackupDevices | foreach {'
+            backup_sqlConnection.append('try{$server.BackupDevices | foreach {'
                                         'write-host \"Name---\" $_.Name,'
                                         '\"`tDeviceType---\" $_.BackupDeviceType,'
                                         '\"`tPhysicalLocation---\" $_.PhysicalLocation,'
                                         '\"`tStatus---\" $_.State'
-                                        '};')
+                                        '}}catch{ continue };')
 
             # Get SQL Jobs information
             job_sqlConnection = []
             job_sqlConnection.append('write-host "====Jobs";')
-            job_sqlConnection.append("if ($server.JobServer -ne $null) {")
+            job_sqlConnection.append("try {")
             job_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
             job_sqlConnection.append("write-host 'jobname:'$job.Name;")
             job_sqlConnection.append("write-host 'enabled:'$job.IsEnabled;")
@@ -323,6 +324,7 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append("write-host 'description:'$job.Description;")
             job_sqlConnection.append("write-host 'datecreated:'$job.DateCreated;")
             job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
+            job_sqlConnection.append("catch { continue; }")
 
             instance_info = yield winrs.run_command(
                 ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) + sqlConnection + db_sqlConnection +
@@ -334,6 +336,7 @@ class WinMSSQL(WinRMPlugin):
             in_databases = False
             in_backups = False
             in_jobs = False
+            maps['errors'][om_instance.id] = instance_info.stderr
             for stdout_line in filter_sql_stdout(instance_info.stdout):
                 if stdout_line == 'assembly load error':
                     break
@@ -525,6 +528,14 @@ class WinMSSQL(WinRMPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
+
+        for instance, errors in results['errors'].items():
+            if errors:
+                msg = '{}: {}'.format(instance, '\n'.join(errors))
+                self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
+            else:
+                msg = 'Successful collection for {}'.format(instance)
+                self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
         return maps
 
 
