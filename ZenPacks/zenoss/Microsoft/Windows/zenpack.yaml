@@ -75,6 +75,7 @@ zProperties:
   zWinRMKrb5includedir:
     default: ''
     label: Windows KRB5 Include Directory
+    description: Directory path for Kerberos config files
 
 
 class_relationships:
