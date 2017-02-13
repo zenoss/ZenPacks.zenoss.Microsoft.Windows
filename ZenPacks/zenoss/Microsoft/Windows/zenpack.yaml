@@ -895,32 +895,32 @@ device_classes:
                 aliases: {mseisMailboxFolderOpens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
         graphs:
+          Exchange - Mailbox Operations:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Folder Opens:
+                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
+                format: '%7.2lf%s'
+              Message Opens:
+                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
+                format: '%7.2lf%s'
+              Local Deliveries:
+                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
+                format: '%7.2lf%s'
+          Exchange - RPC Requests:
+            units: requests
+            miny: 0
+            graphpoints:
+              Current:
+                dpName: mseisRPCRequests_mseisRPCRequests
+                format: '%7.2lf%s'
           Exchange - RPC Rate:
             units: operations/sec
             miny: 0
             graphpoints:
               Operations:
                 dpName: mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
-                format: '%7.2lf%s'
-          SMTP Server - Message Delivery Rate:
-            units: messages/sec
-            miny: 0
-            graphpoints:
-              Messages:
-                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
-                format: '%7.2lf%s'
-          Exchange - Mailbox Operations:
-            units: operations/sec
-            miny: 0
-            graphpoints:
-              Local Deliveries:
-                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
-                format: '%7.2lf%s'
-              'Message Opens   ':
-                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
-                format: '%7.2lf%s'
-              'Folder Opens    ':
-                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
                 format: '%7.2lf%s'
           Exchange - RPC Latency:
             units: seconds
@@ -937,12 +937,12 @@ device_classes:
               Queued:
                 dpName: smtpServerLocalQueueLength_smtpServerLocalQueueLength
                 format: '%7.2lf%s'
-          Exchange - RPC Requests:
-            units: requests
+          SMTP Server - Message Delivery Rate:
+            units: messages/sec
             miny: 0
             graphpoints:
-              Current:
-                dpName: mseisRPCRequests_mseisRPCRequests
+              Messages:
+                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
                 format: '%7.2lf%s'
       MSExchange2010IS:
         description: Microsoft Exchange monitoring.
@@ -1013,39 +1013,32 @@ device_classes:
                 aliases: {mseisMailboxFolderOpens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
         graphs:
+          Exchange - Mailbox Operations:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Folder Opens:
+                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
+                format: '%7.2lf%s'
+              Message Opens:
+                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
+                format: '%7.2lf%s'
+              Local Deliveries:
+                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
+                format: '%7.2lf%s'
+          Exchange - RPC Requests:
+            units: requests
+            miny: 0
+            graphpoints:
+              Current:
+                dpName: mseisRPCRequests_mseisRPCRequests
+                format: '%7.2lf%s'
           Exchange - RPC Rate:
             units: operations/sec
             miny: 0
             graphpoints:
               Operations:
                 dpName: mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
-                format: '%7.2lf%s'
-          SMTP Server - Message Delivery Rate:
-            units: messages/sec
-            miny: 0
-            graphpoints:
-              Messages:
-                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
-                format: '%7.2lf%s'
-          Exchange - Mailbox Operations:
-            units: operations/sec
-            miny: 0
-            graphpoints:
-              Local Deliveries:
-                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
-                format: '%7.2lf%s'
-              'Message Opens   ':
-                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
-                format: '%7.2lf%s'
-              'Folder Opens    ':
-                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
-                format: '%7.2lf%s'
-          SMTP Server - Active Delivery Queue Length:
-            units: messages
-            miny: 0
-            graphpoints:
-              Queued:
-                dpName: smtpServerLocalQueueLength_smtpServerLocalQueueLength
                 format: '%7.2lf%s'
           Exchange - RPC Latency:
             units: seconds
@@ -1055,12 +1048,19 @@ device_classes:
                 dpName: mseisRPCAveragedLatency_mseisRPCAveragedLatency
                 format: '%7.2lf%s'
                 rpn: 1000,/
-          Exchange - RPC Requests:
-            units: requests
+          SMTP Server - Active Delivery Queue Length:
+            units: messages
             miny: 0
             graphpoints:
-              Current:
-                dpName: mseisRPCRequests_mseisRPCRequests
+              Queued:
+                dpName: smtpServerLocalQueueLength_smtpServerLocalQueueLength
+                format: '%7.2lf%s'
+          SMTP Server - Message Delivery Rate:
+            units: messages/sec
+            miny: 0
+            graphpoints:
+              Messages:
+                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
                 format: '%7.2lf%s'
       IIS:
         description: Microsoft Internet Information Services.
@@ -1282,65 +1282,6 @@ device_classes:
                 aliases: {iisHeadRequests__sec: null}
             counter: \Web Service(_Total)\Head Requests/sec
         graphs:
-          IIS - Other Request Rate:
-            units: requests/sec
-            miny: 0
-            graphpoints:
-              CGI:
-                dpName: iisCGIRequests_iisCGIRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              PROPFIND:
-                dpName: iisPropfindRequests_iisPropfindRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              MKCOL:
-                dpName: iisMkcolRequests_iisMkcolRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              LOCK:
-                dpName: iisLockRequests_iisLockRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              MOVE:
-                dpName: iisMoveRequests_iisMoveRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              SEARCH:
-                dpName: iisSearchRequests_iisSearchRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              PROPPATCH:
-                dpName: iisProppatchRequests_iisProppatchRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              UNLOCK:
-                dpName: iisUnlockRequests_iisUnlockRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              Other:
-                dpName: iisOtherRequestMethods_iisOtherRequestMethods
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              COPY:
-                dpName: iisCopyRequests_iisCopyRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              ISAPI:
-                dpName: iisISAPIExtensionRequests_iisISAPIExtensionRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
           IIS - Connections:
             units: connections
             miny: 0
@@ -1355,16 +1296,113 @@ device_classes:
               Attempts:
                 dpName: iisConnectionAttempts_iisConnectionAttempts
                 format: '%7.2lf%s'
-          IIS - Throughput:
-            units: bytes/sec
-            base: true
+          IIS - Basic Request Rate:
+            units: requests/sec
+            miny: 0
+            graphpoints:
+              DELETE:
+                dpName: iisDeleteRequests_iisDeleteRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              GET:
+                dpName: iisGetRequests_iisGetRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              HEAD:
+                dpName: iisHeadRequests_iisHeadRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              OPTIONS:
+                dpName: iisOptionsRequests_iisOptionsRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              POST:
+                dpName: iisPostRequests_iisPostRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PUT:
+                dpName: iisPutRequests_iisPutRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              TRACE:
+                dpName: iisTraceRequests_iisTraceRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+          IIS - Other Request Rate:
+            units: requests/sec
+            miny: 0
+            graphpoints:
+              CGI:
+                dpName: iisCGIRequests_iisCGIRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              COPY:
+                dpName: iisCopyRequests_iisCopyRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              ISAPI:
+                dpName: iisISAPIExtensionRequests_iisISAPIExtensionRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              LOCK:
+                dpName: iisLockRequests_iisLockRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              MKCOL:
+                dpName: iisMkcolRequests_iisMkcolRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              MOVE:
+                dpName: iisMoveRequests_iisMoveRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              Other:
+                dpName: iisOtherRequestMethods_iisOtherRequestMethods
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PROPFIND:
+                dpName: iisPropfindRequests_iisPropfindRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PROPPATCH:
+                dpName: iisProppatchRequests_iisProppatchRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              SEARCH:
+                dpName: iisSearchRequests_iisSearchRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              UNLOCK:
+                dpName: iisUnlockRequests_iisUnlockRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+          IIS - File Rate:
+            units: files/sec
             miny: 0
             graphpoints:
               Received:
-                dpName: iisBytesReceived_iisBytesReceived
+                dpName: iisFilesReceived_iisFilesReceived
                 format: '%7.2lf%s'
               Sent:
-                dpName: iisBytesSent_iisBytesSent
+                dpName: iisFilesSent_iisFilesSent
                 format: '%7.2lf%s'
           IIS - Request Rate:
             units: requests/sec
@@ -1460,54 +1498,16 @@ device_classes:
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
-          IIS - Basic Request Rate:
-            units: requests/sec
-            miny: 0
-            graphpoints:
-              HEAD:
-                dpName: iisHeadRequests_iisHeadRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              TRACE:
-                dpName: iisTraceRequests_iisTraceRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              GET:
-                dpName: iisGetRequests_iisGetRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              PUT:
-                dpName: iisPutRequests_iisPutRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              POST:
-                dpName: iisPostRequests_iisPostRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              OPTIONS:
-                dpName: iisOptionsRequests_iisOptionsRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              DELETE:
-                dpName: iisDeleteRequests_iisDeleteRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-          IIS - File Rate:
-            units: files/sec
+          IIS - Throughput:
+            units: bytes/sec
+            base: true
             miny: 0
             graphpoints:
               Received:
-                dpName: iisFilesReceived_iisFilesReceived
+                dpName: iisBytesReceived_iisBytesReceived
                 format: '%7.2lf%s'
               Sent:
-                dpName: iisFilesSent_iisFilesSent
+                dpName: iisBytesSent_iisBytesSent
                 format: '%7.2lf%s'
       WinDBInstance:
         description: Microsoft SQL Server per-instance monitoring.
@@ -1869,13 +1869,6 @@ device_classes:
             resource: ObjectsReplicated
             strategy: DCDiag
         graphs:
-          Sessions:
-            units: sessions
-            miny: 0
-            graphpoints:
-              LDAP Client:
-                dpName: ldapClientSessions_ldapClientSessions
-                format: '%7.2lf%s'
           Authentication Rate:
             units: auths/sec
             miny: 0
@@ -1886,16 +1879,6 @@ device_classes:
               NTLM:
                 dpName: ntlmAuthentications_ntlmAuthentications
                 format: '%7.2lf%s'
-          KDC Requests:
-            units: requests
-            miny: 0
-            graphpoints:
-              TGS:
-                dpName: kdcTgsRequests_kdcTgsRequests
-                format: '%7.2lf%s'
-              AS:
-                dpName: kdcAsRequests_kdcAsRequests
-                format: '%7.2lf%s'
           Connection Rate:
             units: connections/sec
             miny: 0
@@ -1903,11 +1886,28 @@ device_classes:
               LDAP New:
                 dpName: ldapNewConnectionsSec_ldapNewConnectionsSec
                 format: '%7.2lf%s'
+              LDAP New SSL:
+                dpName: ldapNewSSLConnectionsSec_ldapNewSSLConnectionsSec
+                format: '%7.2lf%s'
               LDAP Closed:
                 dpName: ldapClosedConnectionsSec_ldapClosedConnectionsSec
                 format: '%7.2lf%s'
-              LDAP New SSL:
-                dpName: ldapNewSSLConnectionsSec_ldapNewSSLConnectionsSec
+          KDC Requests:
+            units: requests
+            miny: 0
+            graphpoints:
+              AS:
+                dpName: kdcAsRequests_kdcAsRequests
+                format: '%7.2lf%s'
+              TGS:
+                dpName: kdcTgsRequests_kdcTgsRequests
+                format: '%7.2lf%s'
+          Bind Time:
+            units: ms
+            miny: 0
+            graphpoints:
+              LDAP:
+                dpName: ldapBindTime_ldapBindTime
                 format: '%7.2lf%s'
           Bind Rate:
             units: binds/sec
@@ -1922,12 +1922,40 @@ device_classes:
               LDAP Success:
                 dpName: ldapSuccessfulBinds_ldapSuccessfulBinds
                 format: '%7.2lf%s'
-          Bind Time:
-            units: ms
+          Operation Rate:
+            units: operations/sec
             miny: 0
             graphpoints:
-              LDAP:
-                dpName: ldapBindTime_ldapBindTime
+              DS Searches:
+                dpName: dsDirectorySearchesSec_dsDirectorySearchesSec
+                format: '%7.2lf%s'
+              DS Sub-Search:
+                dpName: dsSearchSuboperationsSec_dsSearchSuboperationsSec
+                format: '%7.2lf%s'
+              DS Name Translations:
+                dpName: dsServerNameTranslationsSec_dsServerNameTranslationsSec
+                format: '%7.2lf%s'
+              DS Reads:
+                dpName: dsDirectoryReadsSec_dsDirectoryReadsSec
+                format: '%7.2lf%s'
+              DS Writes:
+                dpName: dsDirectoryWritesSec_dsDirectoryWritesSec
+                format: '%7.2lf%s'
+              LDAP Searches:
+                dpName: ldapSearchesSec_ldapSearchesSec
+                format: '%7.2lf%s'
+              LDAP UDP:
+                dpName: ldapUdpOperationsSec_ldapUdpOperationsSec
+                format: '%7.2lf%s'
+              LDAP Writes:
+                dpName: ldapWritesSec_ldapWritesSec
+                format: '%7.2lf%s'
+          Sessions:
+            units: sessions
+            miny: 0
+            graphpoints:
+              LDAP Client:
+                dpName: ldapClientSessions_ldapClientSessions
                 format: '%7.2lf%s'
           Queue Size:
             units: notifications
@@ -1935,16 +1963,6 @@ device_classes:
             graphpoints:
               DS Notify:
                 dpName: dsNotifyQueueSize_dsNotifyQueueSize
-                format: '%7.2lf%s'
-          Threads:
-            units: threads
-            miny: 0
-            graphpoints:
-              LDAP Active:
-                dpName: ldapActiveThreads_ldapActiveThreads
-                format: '%7.2lf%s'
-              DS In Use:
-                dpName: dsThreadsInUse_dsThreadsInUse
                 format: '%7.2lf%s'
           Cache Hit Rate:
             units: percent
@@ -1954,33 +1972,15 @@ device_classes:
               DS Name:
                 dpName: dsNameCacheHitRate_dsNameCacheHitRate
                 format: '%7.2lf%%'
-          Operation Rate:
-            units: operations/sec
+          Threads:
+            units: threads
             miny: 0
             graphpoints:
-              DS Name Translations:
-                dpName: dsServerNameTranslationsSec_dsServerNameTranslationsSec
+              DS In Use:
+                dpName: dsThreadsInUse_dsThreadsInUse
                 format: '%7.2lf%s'
-              'DS Writes           ':
-                dpName: dsDirectoryWritesSec_dsDirectoryWritesSec
-                format: '%7.2lf%s'
-              'DS Searches         ':
-                dpName: dsDirectorySearchesSec_dsDirectorySearchesSec
-                format: '%7.2lf%s'
-              'DS Reads            ':
-                dpName: dsDirectoryReadsSec_dsDirectoryReadsSec
-                format: '%7.2lf%s'
-              'LDAP Writes         ':
-                dpName: ldapWritesSec_ldapWritesSec
-                format: '%7.2lf%s'
-              'LDAP UDP            ':
-                dpName: ldapUdpOperationsSec_ldapUdpOperationsSec
-                format: '%7.2lf%s'
-              'DS Sub-Search       ':
-                dpName: dsSearchSuboperationsSec_dsSearchSuboperationsSec
-                format: '%7.2lf%s'
-              'LDAP Searches       ':
-                dpName: ldapSearchesSec_ldapSearchesSec
+              LDAP Active:
+                dpName: ldapActiveThreads_ldapActiveThreads
                 format: '%7.2lf%s'
       WinDatabase:
         description: Microsoft SQL Server per-database monitoring.
@@ -2257,82 +2257,6 @@ device_classes:
             resource: Log Cache Hit Ratio Base
             strategy: powershell MSSQL
         graphs:
-          Log Cache Hit Ratio:
-            units: percent
-            miny: 0
-            maxy: 100
-            graphpoints:
-              Base:
-                dpName: LogCacheHitRatioBase_LogCacheHitRatioBase
-                lineType: DONTDRAW
-              Hit:
-                dpName: LogCacheHitRatio_LogCacheHitRatio
-                format: '%7.2lf%%'
-                rpn: Base,/,100,*,0,MAX,100,MIN
-                color: 00cc00
-          Log Flush Throughput:
-            units: bytes/sec
-            base: true
-            miny: 0
-            graphpoints:
-              Total:
-                dpName: LogBytesFlushedSec_LogBytesFlushedSec
-                format: '%7.2lf%s'
-          Log File Usage:
-            units: bytes
-            base: true
-            miny: 0
-            graphpoints:
-              Used:
-                dpName: LogFileUsedSize_LogFileUsedSize
-                lineType: AREA
-                format: '%7.2lf%s'
-                rpn: 1024,*
-                color: 00cc00
-              Total:
-                dpName: LogFileSize_LogFileSize
-                format: '%7.2lf%s'
-                rpn: 1024,*
-                color: '000000'
-          Database Console Commands (DBCC) Throughput:
-            units: bytes/sec
-            base: true
-            miny: 0
-            graphpoints:
-              Logical Scan:
-                dpName: DBCCLogicalScanBytesSec_DBCCLogicalScanBytesSec
-                format: '%7.2lf%s'
-              Shrink Data:
-                dpName: ShrinkDataMovementBytesSec_ShrinkDataMovementBytesSec
-                format: '%7.2lf%s'
-          Log Flush Rates:
-            units: per/sec
-            miny: 0
-            graphpoints:
-              Flushes:
-                dpName: LogFlushesSec_LogFlushesSec
-                format: '%7.2lf%s'
-              Waits:
-                dpName: LogFlushWaitsSec_LogFlushWaitsSec
-                format: '%7.2lf%s'
-          Cache Entries:
-            units: entries
-            miny: 0
-            graphpoints:
-              Pinned:
-                dpName: CacheEntriesPinnedCount_CacheEntriesPinnedCount
-                format: '%7.2lf%s'
-              Total:
-                dpName: CacheEntriesCount_CacheEntriesCount
-                format: '%7.2lf%s'
-          Log File Utilization:
-            units: percent
-            miny: 0
-            maxy: 100
-            graphpoints:
-              Used:
-                dpName: PercentLogUsed_PercentLogUsed
-                format: '%7.2lf%%'
           Transactions:
             units: transactions
             miny: 0
@@ -2340,6 +2264,26 @@ device_classes:
               Active:
                 dpName: ActiveTransactions_ActiveTransactions
                 format: '%7.0lf'
+          Transaction Rates:
+            units: transactions/sec
+            miny: 0
+            graphpoints:
+              Normal:
+                dpName: TransactionsSec_TransactionsSec
+                format: '%7.2lf%s'
+              Replication:
+                dpName: ReplTransRate_ReplTransRate
+                format: '%7.2lf%s'
+          Cache Entries:
+            units: entries
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: CacheEntriesCount_CacheEntriesCount
+                format: '%7.2lf%s'
+              Pinned:
+                dpName: CacheEntriesPinnedCount_CacheEntriesPinnedCount
+                format: '%7.2lf%s'
           Cache Hit Ratio:
             units: percent
             miny: 0
@@ -2353,6 +2297,98 @@ device_classes:
                 format: '%7.2lf%%'
                 rpn: Base,/,100,*,0,MAX,100,MIN
                 color: 00cc00
+          Data File Size:
+            units: bytes
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: DataFileSize_DataFileSize
+                format: '%7.2lf%s'
+                rpn: 1024,*
+          Log File Utilization:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Used:
+                dpName: PercentLogUsed_PercentLogUsed
+                format: '%7.2lf%%'
+          Log File Usage:
+            units: bytes
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: LogFileSize_LogFileSize
+                format: '%7.2lf%s'
+                rpn: 1024,*
+                color: '000000'
+              Used:
+                dpName: LogFileUsedSize_LogFileUsedSize
+                lineType: AREA
+                format: '%7.2lf%s'
+                rpn: 1024,*
+                color: 00cc00
+          Log Operation Rates:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Growths:
+                dpName: LogGrowths_LogGrowths
+                format: '%7.2lf%s'
+              Shrinks:
+                dpName: LogShrinks_LogShrinks
+                format: '%7.2lf%s'
+              Truncations:
+                dpName: LogTruncations_LogTruncations
+                format: '%7.2lf%s'
+          Log Flush Latency:
+            units: seconds
+            miny: 0
+            graphpoints:
+              Wait Time:
+                dpName: LogFlushWaitTime_LogFlushWaitTime
+                format: '%7.2lf%s'
+                rpn: 1000,/
+          Log Flush Rates:
+            units: per/sec
+            miny: 0
+            graphpoints:
+              Flushes:
+                dpName: LogFlushesSec_LogFlushesSec
+                format: '%7.2lf%s'
+              Waits:
+                dpName: LogFlushWaitsSec_LogFlushWaitsSec
+                format: '%7.2lf%s'
+          Log Flush Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: LogBytesFlushedSec_LogBytesFlushedSec
+                format: '%7.2lf%s'
+          Log Cache Hit Ratio:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Base:
+                dpName: LogCacheHitRatioBase_LogCacheHitRatioBase
+                lineType: DONTDRAW
+              Hit:
+                dpName: LogCacheHitRatio_LogCacheHitRatio
+                format: '%7.2lf%%'
+                rpn: Base,/,100,*,0,MAX,100,MIN
+                color: 00cc00
+          Log Cache Throughput:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Reads:
+                dpName: LogCacheReadsSec_LogCacheReadsSec
+                format: '%7.2lf%s'
           Bulk Copy Rates:
             units: per/sec
             miny: 0
@@ -2383,53 +2419,17 @@ device_classes:
               Total:
                 dpName: BackupRestoreThroughputSec_BackupRestoreThroughputSec
                 format: '%7.2lf%s'
-          Log Operation Rates:
-            units: operations/sec
-            miny: 0
-            graphpoints:
-              Growths:
-                dpName: LogGrowths_LogGrowths
-                format: '%7.2lf%s'
-              Shrinks:
-                dpName: LogShrinks_LogShrinks
-                format: '%7.2lf%s'
-              Truncations:
-                dpName: LogTruncations_LogTruncations
-                format: '%7.2lf%s'
-          Transaction Rates:
-            units: transactions/sec
-            miny: 0
-            graphpoints:
-              Replication:
-                dpName: ReplTransRate_ReplTransRate
-                format: '%7.2lf%s'
-              Normal:
-                dpName: TransactionsSec_TransactionsSec
-                format: '%7.2lf%s'
-          Log Cache Throughput:
-            units: operations/sec
-            miny: 0
-            graphpoints:
-              Reads:
-                dpName: LogCacheReadsSec_LogCacheReadsSec
-                format: '%7.2lf%s'
-          Log Flush Latency:
-            units: seconds
-            miny: 0
-            graphpoints:
-              Wait Time:
-                dpName: LogFlushWaitTime_LogFlushWaitTime
-                format: '%7.2lf%s'
-                rpn: 1000,/
-          Data File Size:
-            units: bytes
+          Database Console Commands (DBCC) Throughput:
+            units: bytes/sec
             base: true
             miny: 0
             graphpoints:
-              Total:
-                dpName: DataFileSize_DataFileSize
+              Logical Scan:
+                dpName: DBCCLogicalScanBytesSec_DBCCLogicalScanBytesSec
                 format: '%7.2lf%s'
-                rpn: 1024,*
+              Shrink Data:
+                dpName: ShrinkDataMovementBytesSec_ShrinkDataMovementBytesSec
+                format: '%7.2lf%s'
       FileSystem:
         description: Microsoft Windows file system monitoring.
         targetPythonClass: Products.ZenModel.FileSystem
@@ -2602,6 +2602,21 @@ device_classes:
                 rrdmin: 0
             counter: \Memory\Committed Bytes
         graphs:
+          CPU Utilization:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Total:
+                dpName: ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
+                format: '%7.2lf%%'
+                includeThresholds: true
+              Privileged:
+                dpName: ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime
+                format: '%7.2lf%%'
+              User:
+                dpName: ProcessorTotalUserTime_ProcessorTotalUserTime
+                format: '%7.2lf%%'
           Memory Usage:
             units: bytes
             base: true
@@ -2618,21 +2633,6 @@ device_classes:
                 stacked: true
                 format: '%7.2lf%s'
                 includeThresholds: true
-          CPU Utilization:
-            units: percent
-            miny: 0
-            maxy: 100
-            graphpoints:
-              Total:
-                dpName: ProcessorTotalProcessorTime_ProcessorTotalProcessorTime
-                format: '%7.2lf%%'
-                includeThresholds: true
-              Privileged:
-                dpName: ProcessorTotalPrivilegedTime_ProcessorTotalPrivilegedTime
-                format: '%7.2lf%%'
-              User:
-                dpName: ProcessorTotalUserTime_ProcessorTotalUserTime
-                format: '%7.2lf%%'
           Memory Paging:
             units: pages/sec
             miny: 0
@@ -3036,13 +3036,6 @@ device_classes:
             resource: ObjectsReplicated
             strategy: DCDiag
         graphs:
-          Sessions:
-            units: sessions
-            miny: 0
-            graphpoints:
-              LDAP Client:
-                dpName: ldapClientSessions_ldapClientSessions
-                format: '%7.2lf%s'
           Authentication Rate:
             units: auths/sec
             miny: 0
@@ -3053,16 +3046,6 @@ device_classes:
               NTLM:
                 dpName: ntlmAuthentications_ntlmAuthentications
                 format: '%7.2lf%s'
-          KDC Requests:
-            units: requests
-            miny: 0
-            graphpoints:
-              TGS:
-                dpName: kdcTgsRequests_kdcTgsRequests
-                format: '%7.2lf%s'
-              AS:
-                dpName: kdcAsRequests_kdcAsRequests
-                format: '%7.2lf%s'
           Connection Rate:
             units: connections/sec
             miny: 0
@@ -3070,11 +3053,28 @@ device_classes:
               LDAP New:
                 dpName: ldapNewConnectionsSec_ldapNewConnectionsSec
                 format: '%7.2lf%s'
+              LDAP New SSL:
+                dpName: ldapNewSSLConnectionsSec_ldapNewSSLConnectionsSec
+                format: '%7.2lf%s'
               LDAP Closed:
                 dpName: ldapClosedConnectionsSec_ldapClosedConnectionsSec
                 format: '%7.2lf%s'
-              LDAP New SSL:
-                dpName: ldapNewSSLConnectionsSec_ldapNewSSLConnectionsSec
+          KDC Requests:
+            units: requests
+            miny: 0
+            graphpoints:
+              AS:
+                dpName: kdcAsRequests_kdcAsRequests
+                format: '%7.2lf%s'
+              TGS:
+                dpName: kdcTgsRequests_kdcTgsRequests
+                format: '%7.2lf%s'
+          Bind Time:
+            units: ms
+            miny: 0
+            graphpoints:
+              LDAP:
+                dpName: ldapBindTime_ldapBindTime
                 format: '%7.2lf%s'
           Bind Rate:
             units: binds/sec
@@ -3089,12 +3089,40 @@ device_classes:
               LDAP Success:
                 dpName: ldapSuccessfulBinds_ldapSuccessfulBinds
                 format: '%7.2lf%s'
-          Bind Time:
-            units: ms
+          Operation Rate:
+            units: operations/sec
             miny: 0
             graphpoints:
-              LDAP:
-                dpName: ldapBindTime_ldapBindTime
+              DS Searches:
+                dpName: dsDirectorySearchesSec_dsDirectorySearchesSec
+                format: '%7.2lf%s'
+              DS Sub-Search:
+                dpName: dsSearchSuboperationsSec_dsSearchSuboperationsSec
+                format: '%7.2lf%s'
+              DS Name Translations:
+                dpName: dsServerNameTranslationsSec_dsServerNameTranslationsSec
+                format: '%7.2lf%s'
+              DS Reads:
+                dpName: dsDirectoryReadsSec_dsDirectoryReadsSec
+                format: '%7.2lf%s'
+              DS Writes:
+                dpName: dsDirectoryWritesSec_dsDirectoryWritesSec
+                format: '%7.2lf%s'
+              LDAP Searches:
+                dpName: ldapSearchesSec_ldapSearchesSec
+                format: '%7.2lf%s'
+              LDAP UDP:
+                dpName: ldapUdpOperationsSec_ldapUdpOperationsSec
+                format: '%7.2lf%s'
+              LDAP Writes:
+                dpName: ldapWritesSec_ldapWritesSec
+                format: '%7.2lf%s'
+          Sessions:
+            units: sessions
+            miny: 0
+            graphpoints:
+              LDAP Client:
+                dpName: ldapClientSessions_ldapClientSessions
                 format: '%7.2lf%s'
           Queue Size:
             units: notifications
@@ -3102,16 +3130,6 @@ device_classes:
             graphpoints:
               DS Notify:
                 dpName: dsNotifyQueueSize_dsNotifyQueueSize
-                format: '%7.2lf%s'
-          Threads:
-            units: threads
-            miny: 0
-            graphpoints:
-              LDAP Active:
-                dpName: ldapActiveThreads_ldapActiveThreads
-                format: '%7.2lf%s'
-              DS In Use:
-                dpName: dsThreadsInUse_dsThreadsInUse
                 format: '%7.2lf%s'
           Cache Hit Rate:
             units: percent
@@ -3121,33 +3139,15 @@ device_classes:
               DS Name:
                 dpName: dsNameCacheHitRate_dsNameCacheHitRate
                 format: '%7.2lf%%'
-          Operation Rate:
-            units: operations/sec
+          Threads:
+            units: threads
             miny: 0
             graphpoints:
-              DS Name Translations:
-                dpName: dsServerNameTranslationsSec_dsServerNameTranslationsSec
+              DS In Use:
+                dpName: dsThreadsInUse_dsThreadsInUse
                 format: '%7.2lf%s'
-              'DS Writes           ':
-                dpName: dsDirectoryWritesSec_dsDirectoryWritesSec
-                format: '%7.2lf%s'
-              'DS Searches         ':
-                dpName: dsDirectorySearchesSec_dsDirectorySearchesSec
-                format: '%7.2lf%s'
-              'DS Reads            ':
-                dpName: dsDirectoryReadsSec_dsDirectoryReadsSec
-                format: '%7.2lf%s'
-              'LDAP Writes         ':
-                dpName: ldapWritesSec_ldapWritesSec
-                format: '%7.2lf%s'
-              'LDAP UDP            ':
-                dpName: ldapUdpOperationsSec_ldapUdpOperationsSec
-                format: '%7.2lf%s'
-              'DS Sub-Search       ':
-                dpName: dsSearchSuboperationsSec_dsSearchSuboperationsSec
-                format: '%7.2lf%s'
-              'LDAP Searches       ':
-                dpName: ldapSearchesSec_ldapSearchesSec
+              LDAP Active:
+                dpName: ldapActiveThreads_ldapActiveThreads
                 format: '%7.2lf%s'
       OSProcess-2003:
         description: Microsoft Windows 2003 per-process monitoring.
@@ -3173,14 +3173,13 @@ device_classes:
                 rrdmin: 0
             cycletime: '300'
         graphs:
-          Memory Usage:
-            units: bytes
-            base: true
+          Running Processes:
+            units: processes
             miny: 0
             graphpoints:
-              Total Working Set:
-                dpName: process_WorkingSet
-                format: '%7.2lf%s'
+              Count:
+                dpName: process_count
+                format: '%7.0lf'
           CPU Usage:
             units: percent
             miny: 0
@@ -3189,13 +3188,14 @@ device_classes:
               Processor Time:
                 dpName: process_PercentProcessorTime
                 format: '%7.2lf%%'
-          Running Processes:
-            units: processes
+          Memory Usage:
+            units: bytes
+            base: true
             miny: 0
             graphpoints:
-              Count:
-                dpName: process_count
-                format: '%7.0lf'
+              Total Working Set:
+                dpName: process_WorkingSet
+                format: '%7.2lf%s'
       MSExchange2013IS:
         description: Microsoft Exchange monitoring.
         datasources:
@@ -3273,12 +3273,18 @@ device_classes:
                 aliases: {mseisMailboxFolderOpens__sec: null}
             counter: \MSExchangeIS Store(_Total)\Folders opened/sec
         graphs:
-          SMTP Server - Message Delivery Rate:
-            units: messages/sec
+          Exchange - Mailbox Operations:
+            units: operations/sec
             miny: 0
             graphpoints:
-              Messages:
-                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
+              Folder Opens:
+                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
+                format: '%7.2lf%s'
+              Message Opens:
+                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
+                format: '%7.2lf%s'
+              Messages Delivered:
+                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
                 format: '%7.2lf%s'
           Exchange - RPC Requests Sent:
             units: requests
@@ -3287,25 +3293,12 @@ device_classes:
               Current:
                 dpName: mseisRPCRequests_mseisRPCRequests
                 format: '%7.2lf%s'
-          Exchange - Mailbox Operations:
-            units: operations/sec
+          Exchange - RPC Requests Sent per Sec:
+            units: requests/sec
             miny: 0
             graphpoints:
-              Messages Delivered:
-                dpName: mseisMailboxLocalDeliveryRate_mseisMailboxLocalDeliveryRate
-                format: '%7.2lf%s'
-              'Message Opens   ':
-                dpName: mseisMailboxMessageOpensPerSec_mseisMailboxMessageOpensPerSec
-                format: '%7.2lf%s'
-              'Folder Opens    ':
-                dpName: mseisMailboxFolderOpensPerSec_mseisMailboxFolderOpensPerSec
-                format: '%7.2lf%s'
-          SMTP Server - Active Delivery Queue Length:
-            units: messages
-            miny: 0
-            graphpoints:
-              Queued:
-                dpName: smtpServerLocalQueueLength_smtpServerLocalQueueLength
+              Operations:
+                dpName: mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
                 format: '%7.2lf%s'
           Exchange - RPC Latency:
             units: seconds
@@ -3315,12 +3308,19 @@ device_classes:
                 dpName: mseisRPCAveragedLatency_mseisRPCAveragedLatency
                 format: '%7.2lf%s'
                 rpn: 1000,/
-          Exchange - RPC Requests Sent per Sec:
-            units: requests/sec
+          SMTP Server - Active Delivery Queue Length:
+            units: messages
             miny: 0
             graphpoints:
-              Operations:
-                dpName: mseisRPCOperationsPerSec_mseisRPCOperationsPerSec
+              Queued:
+                dpName: smtpServerLocalQueueLength_smtpServerLocalQueueLength
+                format: '%7.2lf%s'
+          SMTP Server - Message Delivery Rate:
+            units: messages/sec
+            miny: 0
+            graphpoints:
+              Messages:
+                dpName: smtpServerMessagesDeliveredPerSec_smtpServerMessagesDeliveredPerSec
                 format: '%7.2lf%s'
       IISSites:
         description: Microsoft IIS site monitoring.
@@ -3523,65 +3523,6 @@ device_classes:
                 aliases: {iisSiteHeadRequests__sec: null}
             counter: \Web Service(${here/sitename})\Head Requests/sec
         graphs:
-          IIS - Other Request Rate:
-            units: requests/sec
-            miny: 0
-            graphpoints:
-              CGI:
-                dpName: iisCGIRequests_iisCGIRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              PROPFIND:
-                dpName: iisPropfindRequests_iisPropfindRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              MKCOL:
-                dpName: iisMkcolRequests_iisMkcolRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              LOCK:
-                dpName: iisLockRequests_iisLockRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              MOVE:
-                dpName: iisMoveRequests_iisMoveRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              SEARCH:
-                dpName: iisSearchRequests_iisSearchRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              PROPPATCH:
-                dpName: iisProppatchRequests_iisProppatchRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              UNLOCK:
-                dpName: iisUnlockRequests_iisUnlockRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              Other:
-                dpName: iisOtherRequestMethods_iisOtherRequestMethods
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              COPY:
-                dpName: iisCopyRequests_iisCopyRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              ISAPI:
-                dpName: iisISAPIExtensionRequests_iisISAPIExtensionRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
           IIS - Connections:
             units: connections
             miny: 0
@@ -3596,28 +3537,12 @@ device_classes:
               Attempts:
                 dpName: iisConnectionAttempts_iisConnectionAttempts
                 format: '%7.2lf%s'
-          IIS - Throughput:
-            units: bytes/sec
-            base: true
-            miny: 0
-            graphpoints:
-              Received:
-                dpName: iisBytesReceived_iisBytesReceived
-                format: '%7.2lf%s'
-              Sent:
-                dpName: iisBytesSent_iisBytesSent
-                format: '%7.2lf%s'
           IIS - Basic Request Rate:
             units: requests/sec
             miny: 0
             graphpoints:
-              HEAD:
-                dpName: iisHeadRequests_iisHeadRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              TRACE:
-                dpName: iisTraceRequests_iisTraceRequests
+              DELETE:
+                dpName: iisDeleteRequests_iisDeleteRequests
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
@@ -3626,13 +3551,8 @@ device_classes:
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
-              PUT:
-                dpName: iisPutRequests_iisPutRequests
-                lineType: AREA
-                stacked: true
-                format: '%7.2lf%s'
-              POST:
-                dpName: iisPostRequests_iisPostRequests
+              HEAD:
+                dpName: iisHeadRequests_iisHeadRequests
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
@@ -3641,8 +3561,77 @@ device_classes:
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
-              DELETE:
-                dpName: iisDeleteRequests_iisDeleteRequests
+              POST:
+                dpName: iisPostRequests_iisPostRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PUT:
+                dpName: iisPutRequests_iisPutRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              TRACE:
+                dpName: iisTraceRequests_iisTraceRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+          IIS - Other Request Rate:
+            units: requests/sec
+            miny: 0
+            graphpoints:
+              CGI:
+                dpName: iisCGIRequests_iisCGIRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              COPY:
+                dpName: iisCopyRequests_iisCopyRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              ISAPI:
+                dpName: iisISAPIExtensionRequests_iisISAPIExtensionRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              LOCK:
+                dpName: iisLockRequests_iisLockRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              MKCOL:
+                dpName: iisMkcolRequests_iisMkcolRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              MOVE:
+                dpName: iisMoveRequests_iisMoveRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              Other:
+                dpName: iisOtherRequestMethods_iisOtherRequestMethods
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PROPFIND:
+                dpName: iisPropfindRequests_iisPropfindRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              PROPPATCH:
+                dpName: iisProppatchRequests_iisProppatchRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              SEARCH:
+                dpName: iisSearchRequests_iisSearchRequests
+                lineType: AREA
+                stacked: true
+                format: '%7.2lf%s'
+              UNLOCK:
+                dpName: iisUnlockRequests_iisUnlockRequests
                 lineType: AREA
                 stacked: true
                 format: '%7.2lf%s'
@@ -3655,6 +3644,17 @@ device_classes:
                 format: '%7.2lf%s'
               Sent:
                 dpName: iisFilesSent_iisFilesSent
+                format: '%7.2lf%s'
+          IIS - Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Received:
+                dpName: iisBytesReceived_iisBytesReceived
+                format: '%7.2lf%s'
+              Sent:
+                dpName: iisBytesSent_iisBytesSent
                 format: '%7.2lf%s'
       ethernetCsmacd:
         description: Microsoft Windows network interface monitoring.
@@ -3728,16 +3728,6 @@ device_classes:
                 dpName: bytesSentSec_bytesSentSec
                 format: '%7.2lf%s'
                 rpn: 8,*
-          Errors:
-            units: '# of errors'
-            miny: 0
-            graphpoints:
-              Receive:
-                dpName: packetsReceivedErrors_packetsReceivedErrors
-                format: '%7.2lf%s'
-              Send:
-                dpName: packetsSentErrors_packetsSentErrors
-                format: '%7.2lf%s'
           Packets:
             units: packets/sec
             miny: 0
@@ -3747,6 +3737,16 @@ device_classes:
                 format: '%7.2lf%s'
               Outbound:
                 dpName: packetsSentSec_packetsSentSec
+                format: '%7.2lf%s'
+          Errors:
+            units: '# of errors'
+            miny: 0
+            graphpoints:
+              Receive:
+                dpName: packetsReceivedErrors_packetsReceivedErrors
+                format: '%7.2lf%s'
+              Send:
+                dpName: packetsSentErrors_packetsSentErrors
                 format: '%7.2lf%s'
       Cluster:
         datasources:
@@ -3786,17 +3786,13 @@ device_classes:
                 rrdmin: 0
             cycletime: '300'
         graphs:
-          Memory Usage:
-            units: bytes
-            base: true
+          Running Processes:
+            units: processes
             miny: 0
             graphpoints:
-              'Total Working Set  ':
-                dpName: process_WorkingSet
-                format: '%7.2lf%s'
-              Private Working Set:
-                dpName: process_WorkingSetPrivate
-                format: '%7.2lf%s'
+              Count:
+                dpName: process_count
+                format: '%7.0lf'
           CPU Usage:
             units: percent
             miny: 0
@@ -3805,13 +3801,17 @@ device_classes:
               Processor Time:
                 dpName: process_PercentProcessorTime
                 format: '%7.2lf%%'
-          Running Processes:
-            units: processes
+          Memory Usage:
+            units: bytes
+            base: true
             miny: 0
             graphpoints:
-              Count:
-                dpName: process_count
-                format: '%7.0lf'
+              Private Working Set:
+                dpName: process_WorkingSetPrivate
+                format: '%7.2lf%s'
+              Total Working Set:
+                dpName: process_WorkingSet
+                format: '%7.2lf%s'
       HardDisk:
         description: Microsoft Windows file system monitoring.
         targetPythonClass: Products.ZenModel.HardDisk
