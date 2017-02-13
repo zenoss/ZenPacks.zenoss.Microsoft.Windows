@@ -38,6 +38,7 @@ from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
+from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
 
 
 # If the migration takes longer than this interval, a running progress
@@ -47,7 +48,7 @@ PROGRESS_LOG_INTERVAL = 10
 
 
 class ResetClassTypes(ZenPackMigration):
-    version = Version(2, 6, 3)
+    version = Version(2, 7, 0)
 
     def migrate(self, pack):
         LOG.info("searching for objects")
@@ -68,6 +69,7 @@ class ResetClassTypes(ZenPackMigration):
             WinSQLDatabase,
             WinSQLInstance,
             WinSQLJob,
+            WinService,
             ])
 
         if not results.total:

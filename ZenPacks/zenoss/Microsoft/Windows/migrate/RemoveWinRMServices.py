@@ -26,7 +26,7 @@ LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
 class RemoveWinRMServices(ZenPackMigration):
-    version = Version(2, 6, 3)
+    version = Version(2, 7, 0)
 
     def migrate(self, pack):
         org = pack.dmd.Devices.getOrganizer('/Server/Microsoft')
