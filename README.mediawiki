@@ -827,6 +827,8 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : SQL Server 2008
 : SQL Server 2008 R2
 : SQL Server 2012
+: SQL Server 2014
+: SQL Server 2016
 
 ; Support for SQL Server and Windows Authentication:
 * Windows Authentication: In ''zDBInstances'' property specify only SQL instances names, leave user and password fields blank.
@@ -1270,6 +1272,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added localization support
 * Added ability to allow different KDCs for single domain
 * Added ability to specify extra kerberos configuration directory
+* Added support for Windows Server 2016
+* Added support for SQL Server 2014, 2016
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
