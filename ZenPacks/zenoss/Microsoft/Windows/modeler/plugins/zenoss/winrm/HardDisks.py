@@ -43,7 +43,6 @@ class HardDisks(WinRMPlugin):
             "Modeler {} processing data for device {}".format(
                 self.name(), device.id))
 
-        log.debug('HardDisks results: {}'.format(results))
         rm = self.relMap()
         try:
             diskdrives = results.get('diskdrives').get('Win32_DiskDrive')
@@ -57,11 +56,14 @@ class HardDisks(WinRMPlugin):
             utilization = 0
             fs_ids = []
             instance_name = '{}'.format(drive.Index)
-            for partition in partitions[drive.DeviceID]:
-                utilization += int(partition.Size)
-                for volume in volumes[partition.DeviceID]:
-                    fs_ids.append(self.prepId(volume.DeviceID))
-                    instance_name += ' {}'.format(volume.DeviceID)
+            try:
+                for partition in partitions[drive.DeviceID]:
+                    utilization += int(partition.Size)
+                    for volume in volumes[partition.DeviceID]:
+                        fs_ids.append(self.prepId(volume.DeviceID))
+                        instance_name += ' {}'.format(volume.DeviceID)
+            except Exception:
+                log.debug("No partitions for drive {} on {}.".format(instance_name, device.id))
             freespace = int(drive.Size) - utilization
             if freespace < 0:
                 freespace = 0
