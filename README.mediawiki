@@ -767,7 +767,7 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : Password for user defined by ''zWinRMUser''.
 
 ;zWinKDC
-: The zWinKDC property must be set if domain authentication is used.  It must be the IP address or resolvable name of a valid Windows domain controller.
+: The zWinKDC property must be set if domain authentication is used.  It must be the IP address or resolvable name of a valid Windows domain controller.  To use multiple KDCs, enter a comma separated list of valid addresses.
 
 ;zWinTrustedRealm
 : Enter the name of the domain which is trusted by the user's domain.  This can be a child or other domain which has a trust relationship with the user's domain.  For example, if zWinRMUser is ''username@example.com'', and austin.example.com is a child of the example domain, enter ''austin.example.com'' into zWinTrustedRealm.
