@@ -1537,10 +1537,13 @@ def get_script(datasource, context):
 def get_dummy_dpconfig(ref_dp, id):
     """Return datapoint config based on reference datapoint config"""
     dp_name = '{}_{}'.format(id, id)
-    dp_config = DataPointConfig()
+    dp_config = ref_dp.__class__()
+    dp_config.__dict__.update(ref_dp.__dict__)
     dp_config.id = id
     dp_config.dpName = dp_name
     dp_config.component = ref_dp.component
-    dp_config.rrdPath = '/'.join(ref_dp.rrdPath.split('/')[:-1] + [dp_name])
+    ref_path = dp_config.rrdPath
+    if not isinstance(ref_path, dict):
+        dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
     dp_config.rrdType = 'GAUGE'
     return dp_config
