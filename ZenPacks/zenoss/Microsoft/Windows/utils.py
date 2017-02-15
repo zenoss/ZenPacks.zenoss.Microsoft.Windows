@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -506,3 +506,23 @@ def generateClearAuthEvents(config, events):
         'device': config.id})
 
     generateKerberosClearAuthEvents(config, events)
+
+
+def get_dummy_dpconfig(ref_dp, id):
+    """Return datapoint config based on reference datapoint config"""
+    dp_name = '{}_{}'.format(id, id)
+    dp_config = ref_dp.__class__()
+    dp_config.__dict__.update(ref_dp.__dict__)
+    dp_config.id = id
+    dp_config.dpName = dp_name
+    dp_config.component = ref_dp.component
+    dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
+    dp_config.rrdType = 'GAUGE'
+    return dp_config
+
+
+def get_dsconf(dsconfs, component):
+    for dsconf in dsconfs:
+        if component == dsconf.component:
+            return dsconf
+    return None
