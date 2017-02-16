@@ -514,7 +514,7 @@ There are multiple ways to configure Windows service monitoring depending on if 
 * Enabled - Enable or disable the data source
 * Severity - Choose the severity of the alert
 * Cycle Time - Frequency of how often the datasource will query service status
-* Update services immediately - Changes will be picked up during modeling.  To have changes take effect immediately, check this box to start a job to index all services on all devices
+* Update services immediately - Changes will be picked up during modeling.  To have changes take effect immediately, check this box to start a job to index all services on all devices.  This job could take several minutes to complete as it will update every service component on every Windows device in the system.
 * Service Options - Select the start type(s) to monitor.  Add any services to include/exclude using a regex
 * Service Status - Choose to be alerted if a service is either not Running or not Stopped
 
@@ -528,7 +528,7 @@ See the following examples:
 # Choose ''Monitoring'' from the gear menu.
 # Choose Yes or No depending on what you want.
 
-{{note}} Once monitoring has been enabled or disabled for a service, no monitoring template will apply.  To reset this option for a service, uncheck the 'Manually Selected Monitor State' box in the Details of the service and save the change.
+{{note}} Once monitoring has been enabled or disabled for a service, no monitoring template will apply.  To reset this option for a service, uncheck the 'Manually Selected Monitor State' box in the Details of the service and save the change.  This check box does not enable or disable monitoring for the service component.
 
 ;Enable monitoring by default for the WinRM service wherever it is enabled.
 Option 1
@@ -564,7 +564,7 @@ Option 2
 # Choose ''View and Edit Details'' from the gear menu at the bottom left of the page.
 # Change the template's name to ''WinRM'' then click submit.
 # Double-click to edit the ''DefaultService' datasource.
-# Optionally select the ''Update services immediately'' option.
+# Optionally select the ''Update services immediately'' option.  This will start a background job that could take several minutes to complete for a large number of Windows devices.
 # Tick/Untick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Enable monitoring of all services with a start mode of 'Auto'.
@@ -574,7 +574,7 @@ Option 2
 # Select ''/Server/Microsoft''.
 # In the Data Sources pane, click the + button to add a new data source, give it a name, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
-# Optionally select the ''Update services immediately'' option.
+# Optionally select the ''Update services immediately'' option.  This will start a background job that could take several minutes to complete for a large number of Windows devices.
 # Tick the ''Auto'' checkbox under ''Service Options'' and click save.
 
 ;Create an organizer to monitor auto start SQL Server services.
@@ -584,7 +584,7 @@ Option 2
 # Select ''/Server/Microsoft''.
 # In the Data Sources pane, click the + button to add a new data source, give it a name such as MSSQLSERVER, and choose Windows Service as the type.
 # Choose ''View and Edit Details'' from the Data Sources gear menu.
-# Optionally select the ''Update services immediately'' option.
+# Optionally select the ''Update services immediately'' option.  This will start a background job that could take several minutes to complete for a large number of Windows devices.
 # Tick the ''Auto'' checkbox under ''Service Options''.
 # Enter ''+MSSQLSERVER.*'' into the "Inclusions(+)/Exclusions(-)" text box and click save.
 
@@ -701,10 +701,6 @@ The Least Privileged User requires the following privileges and permissions:
 ** "HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters",
 ** "HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server",
 ** "HKLM:\Software\Microsoft\Microsoft SQL Server"
-* “List Contents” and “Read all Properties” permissions in the Machine Access and Launch Restrictions of DCOM, set in the following registry keys
-** “HKLM:\software\microsoft\ole\MachineAccessRestriction”
-** “HKLM:\software\microsoft\ole\MachineLaunchRestriction”
-** If the value exists, “Remote Access” is set in “HKLM:\software\microsoft\ole\DefaultAccessPermission”
 * Membership in the following local groups or domain level groups for a Domain Controller
 ** "Performance Monitor Users",
 ** "Performance Log Users",
@@ -724,7 +720,7 @@ The Least Privileged User requires the following privileges and permissions:
 === Port Requirements ===
 
 The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.  Compatible ports of 80 and 443 are also acceptable.
-For domain authentication, Kerberos communicates with the KDC on port 88 and the Admin Server on port 749.
+For domain authentication, Kerberos communicates on port 88 of the KDC and on port 749 of the Admin Server.
 
 === Adding a Windows Device ===
 

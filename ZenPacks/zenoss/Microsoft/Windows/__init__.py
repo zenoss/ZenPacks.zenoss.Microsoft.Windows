@@ -36,7 +36,6 @@ DEVTYPE_NAME = 'Windows Server'
 DEVTYPE_PROTOCOL = 'WinRM'
 OLD_DEVTYPE_PROTOCOL = 'WMI'
 
-
 from ZenPacks.zenoss.ZenPackLib import zenpacklib
 
 CFG = zenpacklib.load_yaml([os.path.join(os.path.dirname(__file__), 'zenpack.yaml')])
@@ -65,7 +64,7 @@ productNames = (
     'WinSQLDatabase',
     'WinSQLInstance',
     'WinSQLJob',
-    )
+)
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
     '  You must update to the latest version of the Exchange Server ZenPack.'
@@ -88,6 +87,7 @@ class ZenPack(schema.ZenPack):
     binUtilities = ['winrm', 'winrs']
 
     def install(self, app):
+        self.in_install = True
         super(ZenPack, self).install(app)
 
         log.info(SEGFAULT_INFO)
@@ -122,9 +122,11 @@ class ZenPack(schema.ZenPack):
             self.installBinFile(utilname)
 
         self.cleanup_zProps(app.zport.dmd)
+        self.in_install = False
 
     def remove(self, app, leaveObjects=False):
         if not leaveObjects:
+            self.in_remove = True
 
             # remove kerberos.so file from python path
             kerbdst = os.path.join(zenPath('lib', 'python'), 'kerberos.so')
@@ -140,8 +142,8 @@ class ZenPack(schema.ZenPack):
                 content = bashfile.read()
                 bashfile.close()
                 content = re.sub(r'# Following value required for Windows ZenPack\n?',
-                    '',
-                    content)
+                                 '',
+                                 content)
                 content = re.sub(r'export KRB5_CONFIG.*\n?', '', content)
                 newbashfile = open(userenvironconfig, 'w')
                 newbashfile.write(content)
@@ -155,6 +157,7 @@ class ZenPack(schema.ZenPack):
                 self.removeBinFile(utilname)
 
         super(ZenPack, self).remove(app, leaveObjects=leaveObjects)
+        self.in_remove = False
 
     def cleanup_zProps(self, dmd):
         # Delete zProperty when updating the older zenpack version without reinstall.
