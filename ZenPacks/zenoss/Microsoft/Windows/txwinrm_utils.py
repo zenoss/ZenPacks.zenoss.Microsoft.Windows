@@ -80,11 +80,11 @@ def createConnectionInfo(device_proxy):
 
     ok_ports = (5986, 443)
     if int(device_proxy.zWinRMPort) not in ok_ports and scheme == 'https':
-        raise UnauthorizedError("zWinRMPort must be 5986 if zWinScheme is https")
+        raise UnauthorizedError("zWinRMPort must be 5986 or 443 if zWinScheme is https")
 
     ok_ports = (5985, 80)
     if int(device_proxy.zWinRMPort) not in ok_ports and scheme == 'http':
-        raise UnauthorizedError("zWinRMPort must be 5985 if zWinScheme is http")
+        raise UnauthorizedError("zWinRMPort must be 5985 or 80 if zWinScheme is http")
 
     trusted_realm = trusted_kdc = ''
     if hasattr(device_proxy, 'zWinTrustedRealm') and hasattr(device_proxy, 'zWinTrustedKDC'):
