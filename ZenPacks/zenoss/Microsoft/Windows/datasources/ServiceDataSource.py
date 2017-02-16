@@ -291,22 +291,10 @@ class ServicePlugin(PythonDataSourcePlugin):
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
         for index, svc_info in enumerate(serviceinfo):
-            severity = ZenEventClasses.Clear
             if svc_info.Name not in services.keys():
-                data['events'].append({
-                    'service_name': svc_info.Name,
-                    'service_state': svc_info.State,
-                    'service_status': svc_info.Status,
-                    'eventClass': "/Status/WinService",
-                    'eventClassKey': 'WindowsServiceLog',
-                    'eventKey': "WindowsService",
-                    'severity': severity,
-                    'summary': 'Service not monitored',
-                    'component': prepId(svc_info.Name),
-                    'device': config.id,
-                })
                 continue
 
+            severity = ZenEventClasses.Clear
             service = services[svc_info.Name]
 
             if svc_info.State != service['alertifnot']:
