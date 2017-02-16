@@ -516,7 +516,8 @@ def get_dummy_dpconfig(ref_dp, id):
     dp_config.id = id
     dp_config.dpName = dp_name
     dp_config.component = ref_dp.component
-    dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
+    if not isinstance(dp_config.rrdPath, dict):
+        dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
     dp_config.rrdType = 'GAUGE'
     return dp_config
 
