@@ -191,7 +191,7 @@ class WinMSSQL(WinRMPlugin):
                 if len(instance_version) > 1:
                     serverlist[''.join(instance_version[:-1]).strip()] = ''.join(instance_version[-1:]).strip()
                 else:
-                    serverlist[value.strip()] = 0
+                    serverlist[value.strip()] = '0'
             else:
                 serverlist.append(value.strip())
             server_config[key] = serverlist
