@@ -20,7 +20,7 @@ class IInterfaceInfo(schema.IInterfaceInfo, zuul.IIpInterfaceInfo):
     """
 
 
-class IWinServiceInfo(zuul.IWinServiceInfo):
+class IWinServiceInfo(schema.IWinServiceInfo, zuul.IWinServiceInfo):
     """
     Info adapter for WinService components.
     """

@@ -26,6 +26,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
+from Products.ZenRRD.zencommand import DataPointConfig
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -34,7 +35,7 @@ from ..WinService import WinService
 
 from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import errorMsgCheck, generateClearAuthEvents
+from ..utils import errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
@@ -230,6 +231,10 @@ class ServicePlugin(PythonDataSourcePlugin):
             # Use Error by default
             params['severity'] = ZenEventClasses.Error
 
+        params['rrdpath'] = context.rrdPath() + '/'
+        if hasattr(context, 'getMetricMetadata'):
+            params['metricmetadata'] = context.getMetricMetadata()
+
         return params
 
     @defer.inlineCallbacks
@@ -285,7 +290,6 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
-
         for index, svc_info in enumerate(serviceinfo):
             severity = ZenEventClasses.Clear
             if svc_info.Name not in services.keys():
@@ -316,6 +320,15 @@ class ServicePlugin(PythonDataSourcePlugin):
                     svc_info.Name,
                     svc_info.State
                 )
+            dsconf = get_dsconf(config.datasources, svc_info.Name)
+            if dsconf:
+                dp = DataPointConfig()
+                dp.component = svc_info.Name
+                dp.rrdPath = dsconf.params['rrdpath']
+                dp.metadata = dsconf.params.get('metricmetadata', None)
+                dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
+                data['values'][svc_info.Name]['state'] = 1 if svc_info.State.lower()\
+                    == 'stopped' else 0
             # event for the service
             data['events'].append({
                 'service_name': svc_info.Name,

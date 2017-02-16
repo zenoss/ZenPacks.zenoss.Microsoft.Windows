@@ -576,7 +576,31 @@ classes:
   WinService:
     label: Windows Service
     base: [zenpacklib.WinService]
+    meta_type: WindowsService
+    auto_expand_column: caption
     properties:
+      DEFAULTS:
+        grid_display: false
+      caption:
+        label: Caption
+        grid_display: true
+      startMode:
+        label: Start Mode
+        grid_display: true
+      startName:
+        label: Start Name
+        grid_display: true
+        label_width: 200
+      serviceState:
+        label: Service State
+        grid_display: true
+        enum:
+          -1: Unknown
+          0: Running
+          1: Stopped
+        datapoint: state_state
+        datapoint_cached: true
+        datapoint_default: -1
       description:
         label: Description
       usermonitor:
@@ -2707,6 +2731,13 @@ device_classes:
             severity: 5
             cycletime: '300'
             startmode: None
+          state:
+            type: 'Built-In'
+            component: ${here/id}
+            datapoints:
+              state: GAUGE
+
+
       Active Directory:
         description: Microsoft Active Directory
         thresholds:

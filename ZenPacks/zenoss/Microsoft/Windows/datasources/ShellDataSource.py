@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -29,7 +29,6 @@ from zope.interface import Interface
 
 from twisted.internet import defer
 from twisted.python.failure import Failure
-from Products.ZenRRD.zencommand import DataPointConfig
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
 from Products.Zuul.form import schema
@@ -49,7 +48,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
     check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents,)
+    save, errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf)
 from EventLogDataSource import string_to_lines
 
 
@@ -72,9 +71,10 @@ AVAILABLE_STRATEGIES = [
     'DCDiag',
     'powershell MSSQL Instance',
     'powershell MSSQL Job'
-    ]
+]
 
 gsm = getGlobalSiteManager()
+
 
 class WindowsShellException(Exception):
     '''Exception class to catch known exceptions '''
@@ -106,7 +106,7 @@ class ShellDataSource(PythonDataSource):
         {'id': 'parser', 'type': 'string'},
         {'id': 'usePowershell', 'type': 'boolean'},
         {'id': 'script', 'type': 'string'}
-        )
+    )
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
     plugin_classname = ZENPACKID + \
@@ -1375,7 +1375,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     dbstatus = 1 if db_statuses[db] else 0
                     data['values'][dsconf.component]['status'] = dbstatus, timestamp
 
-                    summary='Database {0} is {1}.'.format(dsconf.params['contexttitle'], 'Accessible' if db_statuses[db] else 'Inaccessible')
+                    summary = 'Database {0} is {1}.'.format(dsconf.params['contexttitle'],
+                                                            'Accessible' if db_statuses[db] else 'Inaccessible')
                     data['events'].append(dict(
                         eventClass=dsconf.eventClass or "/Status",
                         eventClassKey='winrsCollection'.format(strategy.key),
@@ -1478,12 +1479,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
 
-def get_dsconf(dsconfs, component):
-    for dsconf in dsconfs:
-        if component == dsconf.component:
-            return dsconf
-
-
 def check_datasource(dsconf):
     '''
     Check whether the data is correctly filled in datasource.
@@ -1533,17 +1528,3 @@ def get_script(datasource, context):
         log.error('Invalid tales expression in custom command script: %s' % \
                   str(datasource.script))
     return script
-
-def get_dummy_dpconfig(ref_dp, id):
-    """Return datapoint config based on reference datapoint config"""
-    dp_name = '{}_{}'.format(id, id)
-    dp_config = ref_dp.__class__()
-    dp_config.__dict__.update(ref_dp.__dict__)
-    dp_config.id = id
-    dp_config.dpName = dp_name
-    dp_config.component = ref_dp.component
-    ref_path = dp_config.rrdPath
-    if not isinstance(ref_path, dict):
-        dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
-    dp_config.rrdType = 'GAUGE'
-    return dp_config
