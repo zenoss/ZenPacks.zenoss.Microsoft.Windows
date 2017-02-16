@@ -75,13 +75,14 @@ class HardDisks(WinRMPlugin):
                 size = int(drive.Size)
             except TypeError:
                 size = 0
+            serialNumber = drive.SerialNumber.strip() if drive.SerialNumber else ''
             rm.append(self.objectMap({
                 'id': self.prepId(drive.PNPDeviceID),
                 'title': drive.Caption,
                 'size': size,
                 'partitions': num_partitions,
                 'capabilities': drive.CapabilityDescriptions,
-                'serialNumber': drive.SerialNumber.strip(),
+                'serialNumber': serialNumber,
                 'freespace': freespace,
                 'disk_ids': make_disk_ids(drive),
                 'fs_ids': fs_ids,
@@ -124,7 +125,7 @@ def make_disk_ids(disk_drive):
     disk_ids.append(pnpDevice)
 
     # Append SerialNumber
-    serial = disk_drive.SerialNumber.strip()
+    serial = disk_drive.SerialNumber.strip() if disk_drive.SerialNumber else None
     if not serial:
         return disk_ids
 
