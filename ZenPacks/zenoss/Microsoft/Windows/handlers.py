@@ -25,11 +25,20 @@ def onServiceDataSourceMoved(ob, event):
     Do not run if removing a temporary template used by ZenPackLib during
     install/remove of the ZenPack.
     Do not run if there are pending Reindex jobs.
+    Do not run during ZenPack installation/removal
     """
     if isinstance(event, ObjectWillBeRemovedEvent):
         dmd = ob.getDmdRoot("Devices")
-        template = ob.rrdTemplate().id
-        temporary = [x for x in ['-new', '-backup', '-preupgrade'] if x in template]
+        pack = dmd.ZenPackManager.packs._getOb('ZenPacks.zenoss.Microsoft.Windows')
+        for attribute in ('in_install', 'in_remove'):
+            if hasattr(pack, attribute):
+                if getattr(pack, attribute):
+                    return
+        try:
+            template = ob.rrdTemplate().id
+            temporary = [x for x in ['-new', '-backup', '-preupgrade'] if x in template]
+        except Exception:
+            temporary = False
 
         if dmd and not temporary:
             for job in dmd.JobManager.getPendingJobs():
