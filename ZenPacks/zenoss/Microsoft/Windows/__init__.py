@@ -86,6 +86,59 @@ class ZenPack(schema.ZenPack):
 
     binUtilities = ['winrm', 'winrs']
 
+    packZProperties_data = {'zDBInstances': {'type': 'instancecredentials',
+                                             'description': 'Microsoft SQL connection parameters',
+                                             'label': 'MSSQL Instance parameters'},
+                            'zWinRSCodePage': {'type': 'int',
+                                               'description': 'Code page used by monitoring user account',
+                                               'label': 'Windows Code Page'},
+                            'zWinTrustedRealm': {'type': 'string',
+                                                 'description': 'Authentication domain trusted by zWinRMUser',
+                                                 'label': 'Windows Trusted Realm'},
+                            'zWinPerfmonInterval': {'type': 'string', 'description':
+                                                    'Interval in seconds at which data is collected',
+                                                    'label': 'Windows Collection Interval'},
+                            'zWinKeyTabFilePath': {'type': 'string', 'description':
+                                                   'Reserved for future use keytab file',
+                                                   'label': 'Windows Keytab Path'},
+                            'zWinTrustedKDC': {'type': 'string',
+                                               'description': 'Domain controller IP or resolvable hostname',
+                                               'label': 'Windows Key Distribution Center (Trusted)'},
+                            'zWinRMLocale': {'type': 'string',
+                                             'description': 'Communication locale to use for monitoring',
+                                             'label': 'Windows Locale'},
+                            'zWinRMEnvelopeSize': {'type': 'int',
+                                                   'description': 'Used when WinRM configuration setting "MaxEnvelopeSizekb" exceeds default of 512k',
+                                                   'label': 'WMI Query Output Envelope Size'},
+                            'zWinScheme': {'type': 'string',
+                                           'description': 'Either "http" or "https"',
+                                           'label': 'Windows Protocol Scheme'},
+                            'zWinRMPassword': {'type': 'password', 'description':
+                                               'Password for user defined by zWinRMUser',
+                                               'label': 'Windows Authentication Password'},
+                            'zWinKDC': {'type': 'string',
+                                        'description': 'Domain controller IP or resolvable hostname',
+                                        'label': 'Windows Key Distribution Center'},
+                            'zWinRMPort': {'type': 'string',
+                                           'description': 'WS-Management TCP communication port',
+                                           'label': 'WS-Management Port'},
+                            'zWinRMUser': {'type': 'string',
+                                           'description': 'If user@somedomain then zWinKDC and zWinRMServerName are possibly required',
+                                           'label': 'Windows Authentication User'},
+                            'zWinRMClusterNodeClass': {'type': 'string',
+                                                       'description': 'Path under which to create cluster nodes',
+                                                       'label': 'Windows Cluster Node Device Class'},
+                            'zWinUseWsmanSPN': {'type': 'boolean',
+                                                'description': 'Set to true if HTTP/HTTPS service principles are exclusively for use by a particular service account',
+                                                'label': 'Use WSMAN Service Principal Name'},
+                            'zWinRMKrb5includedir': {'type': 'string',
+                                                     'description': 'Directory path for Kerberos config files',
+                                                     'label': 'Windows KRB5 Include Directory'},
+                            'zWinRMServerName': {'type': 'string',
+                                                 'description': 'FQDN for domain authentication if resolution fails or different from AD',
+                                                 'label': 'Server Fully Qualified Domain Name'}
+                            }
+
     def install(self, app):
         self.in_install = True
         super(ZenPack, self).install(app)

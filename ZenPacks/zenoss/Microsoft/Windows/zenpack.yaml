@@ -5,78 +5,43 @@ zProperties:
   zWinRMPassword:
     type: password
     default: ''
-    label: Windows Authentication Password
-    description: Password for user defined by zWinRMUser
   zWinRMUser:
     default: ''
-    label: Windows Authentication User
-    description: If user@somedomain then zWinKDC and zWinRMServerName are possibly required
   zWinRMServerName:
     default: ''
-    label: Server Fully Qualified Domain Name
-    description: FQDN for domain authentication if resolution fails or different from AD
   zWinRMPort:
     default: '5985'
-    label: WS-Management Port
-    description: WS-Management TCP communication port
   zDBInstances:
     type: instancecredentials
     default: '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'
     category: 'Misc'
-    label: MSSQL Instance parameters
-    description: Microsoft SQL connection parameters 
   zWinKDC:
     default: ''
-    label: Windows Key Distribution Center 
-    description: Domain controller IP or resolvable hostname
   zWinKeyTabFilePath:
     default: ''
-    label: Windows Keytab Path
-    description: Reserved for future use keytab file
   zWinScheme:
     default: 'http'
-    label: Windows Protocol Scheme
-    description: Either "http" or "https"
   zWinPerfmonInterval:
     default: 300
-    label: Windows Collection Interval
-    description: Interval in seconds at which data is collected
   zWinTrustedRealm:
     default: ''
-    label: Windows Trusted Realm
-    description: Authentication domain trusted by zWinRMUser 
   zWinTrustedKDC:
     default: ''
-    label: Windows Key Distribution Center (Trusted)
-    description: Domain controller IP or resolvable hostname
   zWinUseWsmanSPN:
     default: false
     type: boolean
-    label: Use WSMAN Service Principal Name
-    description: Set to true if HTTP/HTTPS service principles are exclusively for use by a particular service account
   zWinRMEnvelopeSize:
     default: 512000
     type: int
-    label: WMI Query Output Envelope Size
-    description: Used when WinRM configuration setting "MaxEnvelopeSizekb" exceeds default of 512k
   zWinRMLocale:
     default: en-US
-    label: Windows Locale 
-    description: Communication locale to use for monitoring
   zWinRSCodePage:
     default: 65001
     type: int
-    label: Windows Code Page
-    description: Code page used by monitoring user account
   zWinRMClusterNodeClass:
     default: /Devices/Server/Microsoft/Windows
-    label: Windows Cluster Node Device Class
-    description: Path under which to create cluster nodes 
   zWinRMKrb5includedir:
     default: ''
-    label: Windows KRB5 Include Directory
-    description: Directory path for Kerberos config files
-
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService
