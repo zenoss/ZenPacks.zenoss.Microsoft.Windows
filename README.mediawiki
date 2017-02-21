@@ -258,6 +258,9 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 {{note}} If monitoring Exchange with a non-administrator user, the user must be a member of the Active Directory group "Exchange View-Only Administrators" for pre-2010 Exchange installations or "View Only Organization Management" for 2010 and later installations.
 
 ; IIS
+
+{{note}} IIS Management Scripts and Tools needs to be installed on the server side in order to model and monitor IIS sites.  This is done through the Add Roles and Features tool on the Windows Server under Web Server -> Management Tools -> IIS Management Scripts and Tools.
+
 * \Web Service(_Total)\Bytes Received/sec
 * \Web Service(_Total)\Bytes Sent/sec
 * \Web Service(_Total)\CGI Requests/sec
@@ -323,7 +326,7 @@ The following metrics are collected directly via WMI.
 
 {{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
 
-{{note}} IIS Management Scripts and Tools role needs to be installed on the server side in order to use the IIS Sites component.
+
 
 === SQL Server ===
 The following performance counters are monitored via Powershell script per database:
@@ -1282,6 +1285,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
 * Fix Windows ZP Does not allow compatible ports of 80/443 to be used (ZPS-622)
+* Fix Windows Zenpack may not properly detect IIS on 2012 servers. (ZPS-719)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
