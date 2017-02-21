@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -17,6 +17,7 @@ namespace:
     IIsWebServerSetting
 '''
 
+from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 from txwinrm.collect import create_enum_info
@@ -72,6 +73,18 @@ class IIS(WinRMPlugin):
             except IndexError:
                 pool = 'Unknown'
             iisSite.ApplicationPool = pool
+        if not output:
+            msg = 'No IIS sites found on {}. Ensure that IIS Management Scripts'\
+                ' and Tools have been installed.'.format(device.id)
+            log.warn(msg)
+            self._send_event(msg,
+                             device.id,
+                             ZenEventClasses.Warning,
+                             eventClass='/Status/Winrm',
+                             key='IISSites', summary=msg)
+        else:
+            msg = "Found IIS sites on {}.".format(device.id)
+            self._send_event(msg, device.id, ZenEventClasses.Clear, eventClass='/Status/Winrm', key='IISSites')
         defer.returnValue(output)
 
     @save
