@@ -3979,3 +3979,8 @@ event_classes:
       Password Expired Default:
         eventClassKey: MW|PasswordExpired
         sequence: 1001
+  /Status/OSProcess:
+    remove: false
+  /Status/Interface:
+    remove: false
+
