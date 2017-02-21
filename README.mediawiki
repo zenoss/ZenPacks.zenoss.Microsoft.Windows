@@ -1000,43 +1000,26 @@ The current release is known to have the following limitations.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
-=== Manually Establishing Kerberos Tickets ===
+=== Kerberos Tickets ===
 
-In version 2.2.0 of the ZenPack it is now possible to add custom kerberos configurations if your settings differ from the default settings used by Zenoss.  To use a custom configuration file, place it in the $ZENHOME/var/krb5/config/ directory.  This option requires kerberos 5 release 1.10 and higher.
+The ZenPack will automatically generate a kerberos configuration file, krb5.conf, in the $ZENHOME/var/krb5/ directory.  To use a custom configuration file, place it in the $ZENHOME/var/krb5/config/ directory.  In Zenoss 5.x, this location is in a container so you will need to be certain to commit any changes made.  Upgrading Zenoss will lose these changes, so you will need to update your container after upgrade.  The file name can be anything that contains alphanumeric, dashes, and underscores.
 
-In version 2.0.0 of the ZenPack there is a problem in the automatic establishment of kerberos tickets required for monitoring Windows devices using kerberos authentication. This is only a problem on Enterprise Linux 5 (Red Hat or CentOS). It is not a problem on Enterprise Linux 6. The problem will typically manifest as the following error when attempting to model a Windows device.
+To add a permanent location for you configuration file, you can make use of the zWinRMKrb5includedir property.  This must be a location accessible from within a container and contain ONLY kerberos configuration file(s).  If the location is invalid or contains files other than kerberos configuration files, it will be ignored and not added to the main krb5.conf file.
 
-{{note}} Note that these manual steps are not necessary in version 2.0.1 and later of the ZenPack.
+Example:
 
-<blockquote>
-kerberos authGSSClientStep failed (None)
-</blockquote>
+A common problem with Kerberos is that a reverse DNS lookup will result in multiple records returned, and not always the correct one.  Kerberos by default always performs a forward and reverse lookup when establishing a ticket.  To disable the reverse lookup, create a file in either the default location or in a user specified location and add the following:
 
-It is possible to workaround this error by manually establishing the tokens using the following steps.
+<syntaxhighlight lang="text">
+[libdefaults]
+  rdns = False
+</syntaxhighlight>
 
-# Edit $ZENHOME/var/krb5/krb5.conf.
-## Remove the ''includedir'' line.
-## Add the following to the bottom of the file.
+You can also supply multiple KDCs for a domain with the Windows ZenPack.  This can be done using either a comma separated list in the zWinKDC property or supplying single KDCs for multiple devices or device classes under the /Server/Microsoft device class.
 
-<pre>
-[realms]
- EXAMPLE1.COM = {
-  kdc = 192.168.77.77 #KDC IP Address or FQDN
-  admin_server = 192.168.77.77 #KDC IP Address or FQDN
- }
- EXAMPLE2.COM = {
-  kdc = 192.168.88.88 #KDC IP Address or FQDN
-  admin_server = 192.168.88.88 #KDC IP Address or FQDN
- }
+For example, set zWinKDC to ''10.10.10.10,10.10.10.20,10.10.10.30'' for specifying a comma separated list.
 
-[domain_realm]
- .example1.com = EXAMPLE1.COM
- example1.com = EXAMPLE1.COM
- .example2.com = EXAMPLE2.COM
- example2.com = EXAMPLE2.COM
-</pre>
-
-This is an example of what would be required if you had two domains: example1.com and example2.com with domain controllers at 192.168.77.77 and 192.168.88.88 respectively. You can use a single domain or more than two. Be sure to use the same capitalization scheme.
+See http://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html for more information on the includedir and other kerberos options.
 
 == Service Impact ==
 
