@@ -23,6 +23,12 @@ class Device(schema.Device):
     Model class for a Windows operating system device.
     '''
 
+    def getStatus(self, statusclass='/Status/Ping', **kwargs):
+        """Device up/down should be determined by ping or WinRM connectivity"""
+        ping_status = super(Device, self).getStatus(statusclass, **kwargs)
+        winrm_status = super(Device, self).getStatus('/Status/Winrm/Ping', **kwargs)
+        return winrm_status or ping_status
+
     def getPingStatus(self):
         pingStatus = self.getStatus('/Status/Winrm/Ping')
         if not pingStatus:
