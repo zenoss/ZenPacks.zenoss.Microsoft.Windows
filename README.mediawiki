@@ -1032,6 +1032,8 @@ This list also supports a simple regex to add, remove, and specify an admin_serv
 
 For example, set zWinKDC to ''*10.10.10.10,10.10.10.20,+10.10.10.30,-10.10.10.40'' for specifying a comma separated list.  10.10.10.10 will be a kdc and admin_server, 10.10.10.20 and 10.10.10.30 will be added as kdcs, and 10.10.10.40 is no longer a valid kdc address and will be removed.
 
+{{note}} Removing one or more errant KDCs from the system can be a time consuming process, so we recommend double-checking that the addresses are valid when entering them into the zWinKDC property.
+
 == Service Impact ==
 
 When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact capability for services running on Microsoft Windows. The following service impact relationships are automatically added. These will be included in any services that contain one or more of the explicitly mentioned entities.
@@ -1067,6 +1069,10 @@ If you see 100% CPU usage on a domain controller and your forest functional leve
 <blockquote>Preauthentication failed while getting initial credentials.</blockquote>
 
 * This typically indicates a bad or expired password.
+
+<blockquote>Realm not local to KDC while getting initial credentials</blockquote>
+
+* This indicates that one or more of the defined KDCs for a domain are incorrect.  Add a ''-'' to the beginning of the errant KDC address to the beginning of the incorrect address in the zWinKDC property to remove it from the list of KDCs for a domain.
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
