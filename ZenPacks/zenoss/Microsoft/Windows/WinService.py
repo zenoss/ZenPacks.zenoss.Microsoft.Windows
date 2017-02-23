@@ -71,6 +71,8 @@ class WinService(schema.WinService):
         self.alertifnot = 'Running'
         self.failSeverity = ZenEventClasses.Error
         self.monitoredStartModes = []
+        if self.startMode is None:
+            return False
         # 1 - Check to see if the user has manually set monitor status
         if self.usermonitor:
             self.monitoredStartModes = [self.startMode]
