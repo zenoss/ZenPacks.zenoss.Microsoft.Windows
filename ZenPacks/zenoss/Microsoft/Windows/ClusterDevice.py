@@ -114,7 +114,8 @@ class ClusterDevice(schema.ClusterDevice):
 
     def all_clusterhosts(self):
         ''''''
+        deviceRoot = self.dmd.getDmdRoot("Devices")
         for host in self.getClusterHostMachines():
-            clusterhost = deviceRoot.findDeviceByIdOrIp(clusterhostdnsname)
+            clusterhost = deviceRoot.findDeviceByIdOrIp(host)
             if clusterhost:
                 yield clusterhost
