@@ -25,13 +25,31 @@ def addLocalLibPath():
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
+def lookup_databasesummary(value):
+    return {
+        'AutoClosed': 'The database has been automatically closed.',
+        'EmergencyMode': 'The database is in emergency mode.',
+        'Inaccessible': 'The database is inaccessible. The server might'
+        ' be switched off or the network connection has been interrupted.',
+        'Normal': 'The database is available.',
+        'Offline': 'The database has been taken offline.',
+        'Recovering': 'The database is going through the recovery process.',
+        'RecoveryPending': 'The database is waiting to go through the recovery process.',
+        'Restoring': 'The database is going through the restore process.',
+        'Shutdown': 'The server on which the database resides has been shut down.',
+        'Standby': 'The database is in standby mode.',
+        'Suspect': 'The database has been marked as suspect. You will have '
+        'to check the data, and the database might have to be restored from a backup.',
+    }.get(value, '')
+
+
 def lookup_adminpasswordstatus(value):
     return {
         1: 'Disabled',
         2: 'Enabled',
         3: 'Not Implemented',
         4: 'Unknown',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_chassisbootupstate(value):
@@ -42,7 +60,7 @@ def lookup_chassisbootupstate(value):
         4: 'Warning',
         5: 'Critical',
         6: 'Nonrecoverable',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_domainrole(value):
@@ -53,7 +71,7 @@ def lookup_domainrole(value):
         4: 'Member Server',
         5: 'Backup Domain Controller',
         6: 'Primary Domain Controller',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_powerstate(value):
@@ -65,7 +83,7 @@ def lookup_powerstate(value):
         5: 'Power Cycle',
         6: 'Power Off',
         7: 'Power Save - Warning',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_architecture(value):
@@ -77,7 +95,7 @@ def lookup_architecture(value):
         5: 'ARM',
         6: 'Itanium-based systems',
         9: 'x64',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def parseDBUserNamePass(dbinstances='', username='', password=''):
@@ -522,8 +540,10 @@ def get_dummy_dpconfig(ref_dp, id):
     return dp_config
 
 
-def get_dsconf(dsconfs, component):
+def get_dsconf(dsconfs, component, param=None):
     for dsconf in dsconfs:
         if component == dsconf.component:
+            return dsconf
+        elif component == dsconf.params.get(param, None):
             return dsconf
     return None

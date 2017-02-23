@@ -48,7 +48,8 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
     check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf)
+    save, errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf,
+    lookup_databasesummary)
 from EventLogDataSource import string_to_lines
 
 
@@ -72,6 +73,26 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL Instance',
     'powershell MSSQL Job'
 ]
+
+CRITICAL_STATUSES = (
+    'EmergencyMode',
+)
+
+ERROR_STATUSES = (
+    'Inaccessible',
+    'Suspect',
+    'Shutdown',
+)
+
+WARNING_STATUSES = (
+    'RecoveryPending',
+    'Restoring',
+    'Recovering',
+    'Standby',
+    'AutoClosed',
+    'Offline',
+    'Unknown'
+)
 
 gsm = getGlobalSiteManager()
 
@@ -427,14 +448,16 @@ class PowershellMSSQLStrategy(object):
                                       " +[char]39+$db_name+[char]39;")
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
-                                      'else { Write-Host "databasename:"$db.Name;}}}')
+                                      'else { Write-Host "databasename:"$db_name;}'
+                                      '$status = $db.Status;write-host "databasestatus:"$status;}}')
         script = "\"& {{{}}}\"".format(
             ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + counters_sqlConnection))
         return pscommand, script
 
     def parse_result(self, dsconfs, result):
         if result.stderr:
-            log.debug('MSSQL error: {0}' + ''.join(result.stderr))
+            log.debug('MSSQL error: {0}'.format('\n'.join(result.stderr)))
+        log.debug('MSSQL results: {}'.format('\n'.join(result.stdout)))
 
         if result.exit_code != 0:
             for dsconf in dsconfs:
@@ -447,32 +470,29 @@ class PowershellMSSQLStrategy(object):
             return
 
         # Parse values
-        valuemap = {}
+        self.valuemap = {}
         for counterline in filter_sql_stdout(result.stdout):
             key, value = counterline.split(':', 1)
             if key.strip() == 'databasename':
                 databasename = value.strip()
-                if databasename not in valuemap:
-                    valuemap[databasename] = {}
+                if databasename not in self.valuemap:
+                    self.valuemap[databasename] = {}
             elif key.strip() == 'ckey':
                 _counter = value.strip().lower()
             elif key.strip() == 'cvalue':
-                valuemap[databasename][_counter] = value.strip()
-            elif key.strip() == 'status':
-                valuemap[databasename]['status'] = value.strip()
+                self.valuemap[databasename][_counter] = value.strip()
+            elif key.strip() == 'databasestatus':
+                self.valuemap[databasename]['status'] = value.strip()
 
         for dsconf in dsconfs:
             timestamp = int(time.mktime(time.localtime()))
             databasename = dsconf.params['contexttitle']
             try:
                 key = dsconf.params['resource'].lower()
-                value = float(valuemap[databasename][key])
+                value = float(self.valuemap[databasename][key])
                 yield dsconf, value, timestamp
-            except:
+            except Exception:
                 log.debug("No value was returned for counter {0} on {1}".format(dsconf.params['resource'], databasename))
-                if 'status' in valuemap[databasename]:
-                    value = valuemap[databasename]['status']
-                    yield dsconf, value, timestamp
 
 
 gsm.registerUtility(PowershellMSSQLStrategy(), IStrategy, 'powershell MSSQL')
@@ -1332,7 +1352,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     msg = ''.join(msg)
             else:
                 checked_result = False
-                db_statuses = {}
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                     checked_result = True
                     if dsconf.datasource == 'state':
@@ -1359,33 +1378,47 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
                         data['values'][dsconf.component]['state'] = cluster_state_value(state), timestamp
                     else:
-                        if value == 'offline' and strategy.key == 'PowershellMSSQL':
-                            db_statuses[dsconf.component] = False
+                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                if strategy.key == 'PowershellMSSQL':
+                    # send db status events
+                    for db in getattr(strategy, 'valuemap', []):
+                        dsconf = get_dsconf(dsconfs, db, param='contexttitle')
+                        if dsconf:
+                            component = dsconf.component
                         else:
-                            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
-                            if strategy.key == 'PowershellMSSQL':
-                                db_statuses[dsconf.component] = True
-                for db in db_statuses:
-                    dsconf = get_dsconf(dsconfs, db)
-                    if not dsconf:
-                        continue
-
-                    # add datapoint config and values for status
-                    dsconf.points.append(get_dummy_dpconfig(dsconf.points[0], 'status'))
-                    dbstatus = 1 if db_statuses[db] else 0
-                    data['values'][dsconf.component]['status'] = dbstatus, timestamp
-
-                    summary = 'Database {0} is {1}.'.format(dsconf.params['contexttitle'],
-                                                            'Accessible' if db_statuses[db] else 'Inaccessible')
-                    data['events'].append(dict(
-                        eventClass=dsconf.eventClass or "/Status",
-                        eventClassKey='winrsCollection'.format(strategy.key),
-                        eventKey=strategy.key,
-                        severity=ZenEventClasses.Clear if db_statuses[db] else dsconf.severity,
-                        device=config.id,
-                        summary=summary,
-                        component=prepId(db)
-                    ))
+                            component = db
+                        try:
+                            dbstatuses = strategy.valuemap[db]['status']
+                        except Exception:
+                            dbstatuses = 'Unknown'
+                        db_summary = ''
+                        db_severities = set()
+                        for dbstatus in dbstatuses.split(','):
+                            dbstatus = dbstatus.strip()
+                            if dbstatus == 'Normal':
+                                db_severities.add(ZenEventClasses.Clear)
+                            elif dbstatus in WARNING_STATUSES:
+                                db_severities.add(ZenEventClasses.Warning)
+                            elif dbstatus in ERROR_STATUSES:
+                                db_severities.add(ZenEventClasses.Error)
+                            elif dbstatus in CRITICAL_STATUSES:
+                                db_severities.add(ZenEventClasses.Critical)
+                            if db_summary:
+                                db_summary += ' '
+                            db_summary += lookup_databasesummary(dbstatus)
+                        summary = 'Database {0} status is {1}.'.format(db,
+                                                                       dbstatuses)
+                        data['events'].append(dict(
+                            eventClass=dsconf.eventClass or "/Status",
+                            eventClassKey='WinDatabaseStatus',
+                            eventKey=strategy.key,
+                            severity=max(db_severities),
+                            device=config.id,
+                            summary=summary,
+                            message=db_summary,
+                            dbstatus=dbstatuses,
+                            component=prepId(component)
+                        ))
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
