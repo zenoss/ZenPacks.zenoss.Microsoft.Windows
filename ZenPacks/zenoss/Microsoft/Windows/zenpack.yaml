@@ -753,6 +753,7 @@ classes:
 
 device_classes:
   /Server/Microsoft/Windows:
+    remove: true
     description: Windows Server
     protocol: WinRM
     zProperties:
@@ -762,6 +763,7 @@ device_classes:
       zDBInstances:
       - {instance: MSSQLSERVER, passwd: '', user: ''}
   /Server/Microsoft/Cluster:
+    remove: true
     description: Windows Cluster
     protocol: WinRM
     zProperties:
@@ -838,6 +840,7 @@ device_classes:
             resource: get-clustergroup
             strategy: powershell Cluster Services
   /Server/Microsoft:
+    remove: true
     zProperties:
       zCollectorPlugins: []
       zCredentialsZProperties: [zWinRMUser, zWinRMPassword, zWinKDC, zWinScheme, zWinRMPort]
