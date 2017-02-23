@@ -1246,16 +1246,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line, script = strategy.build_command_line(counters)
 
         command = SingleCommandClient(conn_info)
-        try:
-            results = yield command.run_command(command_line, script)
-        except UnauthorizedError:
-            results = ShellResult()
-        except Exception, e:
-            if "Credentials cache file" in str(e):
-                results = ShellResult()
-                results.stderr = ['Credentials cache file not found']
-            else:
-                raise
+
+        results = yield command.run_command(command_line, script)
 
         defer.returnValue((strategy, config.datasources, results))
 
