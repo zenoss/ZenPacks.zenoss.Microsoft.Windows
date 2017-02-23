@@ -3919,9 +3919,9 @@ event_classes:
         eventClassKey: WindowsServiceLog
         sequence: 10
         transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
-          \    if getattr(component, 'state') != currentstate:\n            setattr(component,\
+          \    if getattr(component, 'state') != currentstate:\n        setattr(component,\
           \ 'state', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'Service\
-          \ (.*): (.*) has changed to (.*) state(.*)', msg)\n\nchange_properties(summaryObj.group(3))"
+          \ (.*): (.*) has changed to (.*) state', msg)\n\nchange_properties(summaryObj.group(3))"
         example: 'Service Alert: ALG has changed to Stopped state'
         remove: true
       IISSiteStatus:
@@ -3930,7 +3930,7 @@ event_classes:
         transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
           \    if getattr(component, 'status') != currentstate:\n        setattr(component,\
           \ 'status', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'IIS\
-          \ Service (.*) is in (.*) state(.*)', msg)\n\nchange_properties(summaryObj.group(2))"
+          \ Service (.*) is in (.*) state', msg)\n\nchange_properties(summaryObj.group(2))"
         example: IIS Service W3SVC_1 is in Stopped state
         remove: true
   /Status/Kerberos:
