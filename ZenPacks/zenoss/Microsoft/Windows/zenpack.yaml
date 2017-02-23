@@ -13,7 +13,7 @@ zProperties:
     default: '5985'
   zDBInstances:
     type: instancecredentials
-    default: '[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'
+    default: '[{"instance": "MSSQLSERVER", "user": None , "passwd": None}]'
     category: 'Misc'
   zWinKDC:
     default: ''
