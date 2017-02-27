@@ -1,3 +1,4 @@
+
 This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
@@ -361,6 +362,27 @@ The following performance counters are monitored via Powershell script per datab
 * \SQLServer:Databases(<dbname>)\Transactions/sec
 
 You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
+
+Events will be sent depending upon one or more of the following statuses of the database
+
+* AutoClosed:  The database has been automatically closed.
+* EmergencyMode: The database is in emergency mode.
+* Inaccessible: The database is inaccessible. The server might be switched off or the network connection has been interrupted.
+* Normal: The database is available.
+* Offline: The database has been taken offline.
+* Recovering: The database is going through the recovery process.
+* RecoveryPending: The database is waiting to go through the recovery process.
+* Restoring: The database is going through the restore process.
+* Shutdown: The server on which the database resides has been shut down.
+* Standby: The database is in standby mode.
+* Suspect: The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
+
+'Normal' will send a clear event
+'EmergencyMode' will send a critical event
+'Inaccessible', 'Suspect', 'Shutdown' will send Error events
+'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Warning events
+
+Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.
 
 The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.
 
@@ -1281,6 +1303,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added ability to specify user supplied kerberos configuration directory
 * Added support for Windows Server 2016
 * Added support for SQL Server 2014, 2016
+* Improved support for SQL Server database Status
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
