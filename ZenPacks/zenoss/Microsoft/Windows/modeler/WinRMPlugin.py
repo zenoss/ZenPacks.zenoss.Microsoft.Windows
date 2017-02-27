@@ -255,7 +255,7 @@ class WinRMPlugin(PythonPlugin):
                 query_results = yield client.do_collect(
                     query_map.iterkeys())
                 msg = "connection for %s is established"
-                self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
             except Exception as e:
                 self.log_error(log, device, e)
             else:
@@ -283,7 +283,7 @@ class WinRMPlugin(PythonPlugin):
                             **associator['kwargs'])
 
                     msg = "connection for %s is established"
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
                     self.log_error(log, device, e)
                 else:
@@ -308,7 +308,7 @@ class WinRMPlugin(PythonPlugin):
                     else:
                         results[command_key] = yield winrs_client.run_command(command)
                     msg = 'shell command completed successfully for %s'
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
                     self.log_error(log, device, e)
 

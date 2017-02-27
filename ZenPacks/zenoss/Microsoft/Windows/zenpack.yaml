@@ -652,6 +652,7 @@ classes:
         label: Owner
         grid_display: true
         order: 1
+        label_width: 180
       lastbackupdate:
         label: Last Backup
       lastlogbackupdate:
@@ -670,10 +671,10 @@ classes:
         label: System Object
       recoverymodel:
         label: Recovery Model
-      getState:
-        label: Status
-        api_only: true
+      getDBStatus:
+        label: Database Status
         api_backendtype: method
+        api_only: true
         grid_display: true
         order: 3
       cluster_node_server:
@@ -2023,10 +2024,6 @@ device_classes:
         description: Microsoft SQL Server per-database monitoring.
         targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase
         datasources:
-          status:
-            type: 'Built-In'
-            datapoints:
-              status: GAUGE
           LogFileSize:
             type: Windows Shell
             datapoints:
