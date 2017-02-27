@@ -180,61 +180,9 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \NTDS\LDAP Successful Binds/sec
 * \NTDS\LDAP UDP operations/sec
 * \NTDS\LDAP Writes/sec
-* \NTDS\NTLM Authentications
-* \NTDS\DS Client Binds/sec
-* \NTDS\DS Directory Reads/sec
-* \NTDS\DS Directory Searches/sec
-* \NTDS\DS Directory Writes/sec
-* \NTDS\DS Monitor List Size
-* \NTDS\DS Name Cache hit rate
-* \NTDS\DS Notify Queue Size
-* \NTDS\DS Search sub-operations/sec
-* \NTDS\DS Server Binds/sec
-* \NTDS\DS Server Name Translations/sec
-* \NTDS\DS Threads in Use
-* \NTDS\LDAP Active Threads
-* \NTDS\LDAP Bind Time
-* \NTDS\LDAP Client Sessions
-* \NTDS\LDAP Closed Connections/sec
-* \NTDS\LDAP New Connections/sec
-* \NTDS\LDAP New SSL Connections/sec
-* \NTDS\LDAP Searches/sec
-* \NTDS\LDAP Successful Binds/sec
-* \NTDS\LDAP UDP operations/sec
-* \NTDS\LDAP Writes/sec
-* \DirectoryServices(NTDS)\DS Client Binds/sec
-* \DirectoryServices(NTDS)\DS Directory Reads/sec
-* \DirectoryServices(NTDS)\DS Directory Searches/sec
-* \DirectoryServices(NTDS)\DS Directory Writes/sec
-* \DirectoryServices(NTDS)\DS Monitor List Size
-* \DirectoryServices(NTDS)\DS Name Cache hit rate
-* \DirectoryServices(NTDS)\DS Notify Queue Size
-* \DirectoryServices(NTDS)\DS Search sub-operations/sec
-* \DirectoryServices(NTDS)\DS Server Binds/sec
-* \DirectoryServices(NTDS)\DS Server Name Translations/sec
-* \DirectoryServices(NTDS)\DS Threads in Use
-* \DirectoryServices(NTDS)\LDAP Active Threads
-* \DirectoryServices(NTDS)\LDAP Bind Time
-* \DirectoryServices(NTDS)\LDAP Client Sessions
-* \DirectoryServices(NTDS)\LDAP Closed Connections/sec
-* \DirectoryServices(NTDS)\LDAP New Connections/sec
-* \DirectoryServices(NTDS)\LDAP New SSL Connections/sec
-* \DirectoryServices(NTDS)\LDAP Searches/sec
-* \DirectoryServices(NTDS)\LDAP Successful Binds/sec
-* \DirectoryServices(NTDS)\LDAP UDP operations/sec
-* \DirectoryServices(NTDS)\LDAP Writes/sec
+* \Security System-Wide Statistics\NTLM Authentications
 
 {{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
-
-;Exchange 2003
-* \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-* \MSExchangeIS Mailbox(_Total)\Local delivery rate
-* \MSExchangeIS Mailbox(_Total)\Message Opens/sec
-* \MSExchangeIS\RPC Averaged Latency
-* \MSExchangeIS\RPC Operations/sec
-* \MSExchangeIS\RPC Requests
-* \SMTP Server(_Total)\Local Queue Length
-* \SMTP Server(_Total)\Messages Delivered/sec
 
 ;Exchange 2007 & 2010
 * \MSExchangeIS Mailbox(_Total)\Folder opens/sec
@@ -321,7 +269,7 @@ The following metrics are collected directly via WMI.
 ;Processes (Win32_PerfFormattedData_PerfProc_Process)
 * PercentProcessorTime
 * WorkingSet
-* WorkingSetPrivate (not available on Windows 2003)
+* WorkingSetPrivate
 
 <br clear=all>
 
@@ -1017,7 +965,7 @@ The current release is known to have the following limitations.
 * The custom widget for MSSQL Server credentials is not compatible with Zenoss 4.1.x, therefore the ''zDBInstances'' property in this version should be set as a valid JSON list (e.g. ''[{"instance": "MSSQLSERVER", "user": "", "passwd": ""}]'' ).
 * When upgrading to version 2.2.0, you may see a segmentation fault during the install.  This occurs when upgrading from versions 2.1.3 and previous.  To ensure a successful installation, run the install once more and restart Zenoss.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
-* With the ending of support by Microsoft for Windows 2003, we will no longer support Windows 2003 starting with version 2.5.0 of the ZenPack.  Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done around it.
+* Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
