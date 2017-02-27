@@ -12,7 +12,7 @@ Windows Hard Disks
 
 Models hard disks by querying Win32_Disk via WMI.
 '''
-
+from Products.DataCollector.plugins.DataMaps import MultiArgs
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
@@ -76,6 +76,7 @@ class HardDisks(WinRMPlugin):
             except TypeError:
                 size = 0
             serialNumber = drive.SerialNumber.strip() if drive.SerialNumber else ''
+            product_key = MultiArgs(drive.Model, drive.Manufacturer)
             rm.append(self.objectMap({
                 'id': self.prepId(drive.PNPDeviceID),
                 'title': drive.Caption,
@@ -86,7 +87,8 @@ class HardDisks(WinRMPlugin):
                 'freespace': freespace,
                 'disk_ids': make_disk_ids(drive),
                 'fs_ids': fs_ids,
-                'instance_name': instance_name
+                'instance_name': instance_name,
+                'setProductKey': product_key
             }))
         return rm
 
