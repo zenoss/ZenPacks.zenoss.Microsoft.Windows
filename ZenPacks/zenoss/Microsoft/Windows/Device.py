@@ -211,6 +211,11 @@ class Device(schema.Device):
         for c in self.os.winservices():
             yield c
 
+    def all_harddisks(self):
+        """Generate all Hard Disk components."""
+        for hd in self.hw.harddisks():
+            yield hd
+
     def all_hyperv(self):
         # Look up for HyperV server with same IP
         try:
