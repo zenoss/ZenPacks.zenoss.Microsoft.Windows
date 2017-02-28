@@ -127,6 +127,7 @@ classes:
       - all_hyperv
       - all_winsqlinstances
       - all_winrmiis
+      - all_harddisks
     impacted_by: []
     dynamicview_views: [service_view]
     dynamicview_relations:
@@ -143,6 +144,7 @@ classes:
         - all_hyperv
         - all_winsqlinstances
         - all_winrmiis
+        - all_harddisks
       impacted_by: []
 
   ClusterDevice:
@@ -170,6 +172,7 @@ classes:
       - all_hyperv
       - all_winsqlinstances
       - all_winrmiis
+      - all_harddisks
     impacted_by: [all_clusterhosts]
     dynamicview_views: [service_view]
     dynamicview_relations:
@@ -186,6 +189,7 @@ classes:
         - all_hyperv
         - all_winsqlinstances
         - all_winrmiis
+        - all_harddisks
       impacted_by: [all_clusterhosts]
 
   ClusterResource:
@@ -444,6 +448,12 @@ classes:
         type: int
       instance_name:
         details_display: false
+    impacts: []
+    impacted_by: [device]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: [filesystems]
+      impacted_by: [device]
 
   FileSystem:
     label: File System
@@ -477,7 +487,7 @@ classes:
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [device]
+      impacted_by: [device, harddisk]
 
   Interface:
     label: Interface
