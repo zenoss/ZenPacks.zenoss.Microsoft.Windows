@@ -453,7 +453,6 @@ classes:
         # if the hard disk is actually mapped to it
         label: Storage Disk/LUN
         type: entity
-        grid_display: false
         api_only: true
         api_backendtype: method
 
