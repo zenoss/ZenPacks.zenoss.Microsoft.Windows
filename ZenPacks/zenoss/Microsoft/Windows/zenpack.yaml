@@ -448,6 +448,15 @@ classes:
         type: int
       instance_name:
         details_display: false
+      storage_disk_lun:
+        # link to storage disk/virtual drive
+        # if the hard disk is actually mapped to it
+        label: Storage Disk/LUN
+        type: entity
+        grid_display: false
+        api_only: true
+        api_backendtype: method
+
     impacts: []
     impacted_by: [device]
     dynamicview_views: [service_view]
