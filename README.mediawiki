@@ -759,9 +759,7 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 : If many Windows servers in your environment don't have DNS PTR records that match Active Directory, it is recommended that you set the name of the Zenoss device's to be the fully-qualified Active Directory name and set zWinRMServerName to ''${here/titleOrId}'' at the /Server/Microsoft/Windows device class. This avoids the necessity of setting zWinRMServerName on every device.
 
-: It is recommended to leave zWinRMServerName blank if local authentication is used, or DNS PTR records match Active Directory. This allows Zenoss to not rely on DNS resolution while monitoring, and avoids the overhead of configuring zWinRMServerName.
-
-: If the server name cannot be resolved and you are using domain authentication, it is recommended that you set the Id of the device to the IP address and the Title to the server name it is known by in Active Directory.  Then use ''${here/title}'' for zWinRMServerName.  This situation can occur when no DNS server is available.
+: If the server name cannot be resolved and you are using domain authentication, it is recommended that you set the Id of the device to the IP address and the Title to the server name it is known by in Active Directory.  Then use ''${here/title}'' for zWinRMServerName.  This situation can occur when no DNS server is available.  Kerberos always performs a reverse lookup when obtaining a ticket to use a service on a computer.  If your servers are known by multiple names, the reverse lookup may return the wrong name and you will see "Server not found in kerberos database" errors.  See the troubleshooting section on this topic for a solution.
 
 ;zWinScheme
 : This must be set to either ''http'' or ''https''. The default is ''http''.
@@ -1045,6 +1043,15 @@ If you see 100% CPU usage on a domain controller and your forest functional leve
 <blockquote>Server not found in Kerberos database</blockquote>
 
 * More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
+
+One solution is to disable reverse DNS lookups for kerberos.  This can be achieved by creating a file with the following contents:
+
+<syntaxhighlight lang="text">
+[libdefaults]
+  rdns = False
+</syntaxhighlight>
+
+Then place the file into either the /opt/zenoss/var/krb5/config directory or into any other directory that you specify using the zWinRMKrb5includedir property.  See the description for zWinRMKrb5includedir for more information.
 
 <blockquote>Preauthentication failed while getting initial credentials.</blockquote>
 
