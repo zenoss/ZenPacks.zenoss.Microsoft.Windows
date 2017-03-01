@@ -318,7 +318,7 @@ class Interfaces(WinRMPlugin):
                     if pnpentities and isinstance(pnpentities, dict):
                         entry = pnpentities.get(inter.Index, [])
                         if entry:
-                            int_om.instance_name = entry[0].Name
+                            int_om.instance_name = standardizeInstance(entry[0].Name)
                     int_om.perfmonInstance = perfmonInstanceMap[inter.Index]
             else:
                 log.warning("Adapter '%s':%d does not have a perfmon "
