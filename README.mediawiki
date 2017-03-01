@@ -1019,7 +1019,25 @@ For example, set zWinKDC to ''*10.10.10.10,10.10.10.20,+10.10.10.30,-10.10.10.40
 When combined with the Zenoss Service Dynamics product, this ZenPack adds built-in service impact capability for services running on Microsoft Windows. The following service impact relationships are automatically added. These will be included in any services that contain one or more of the explicitly mentioned entities.
 
 ;Service Impact Relationships
-* The Windows server is impacted by the Processors and File Systems.
+The Windows server impacts the following:
+* File Systems
+* Processes
+* IP Services
+* Processors
+* Interfaces
+* Cluster Services
+* Cluster Nodes
+* Cluster Networks
+* Windows Services
+* HyperV
+* SQL Server instances
+* IIS Sites
+* Hard Disks
+
+Cluster Services impact Cluster Resources.
+Cluster Interfaces and Disks impact Cluster Nodes.
+Hard Disks impact File Systems.
+SQL Server Instances impact SQL Databases, Backups, and Jobs.
 
 == Troubleshooting ==
 
