@@ -326,8 +326,12 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
             job_sqlConnection.append("catch { continue; }")
 
+            buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
+                           'Management.Automation.Host.Size (4096, 512);')
+
             instance_info = yield winrs.run_command(
-                ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) + sqlConnection + db_sqlConnection +
+                ''.join(buffer_size + getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
+                        sqlConnection + db_sqlConnection +
                         backup_sqlConnection + job_sqlConnection)
             )
 

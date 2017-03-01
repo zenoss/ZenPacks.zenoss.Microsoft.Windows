@@ -48,13 +48,13 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
     check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf,
+    save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     lookup_databasesummary)
 from EventLogDataSource import string_to_lines
 
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.util import UnauthorizedError, RequestError
+from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -93,6 +93,8 @@ WARNING_STATUSES = (
     'Offline',
     'Unknown'
 )
+
+BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
 
 gsm = getGlobalSiteManager()
 
@@ -324,7 +326,7 @@ class CustomCommandStrategy(object):
         script = script.replace('"', "'")
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command'
-        return pscommand, '"{}"'.format(script)
+        return pscommand, '"{}{}"'.format(BUFFER_SIZE, script)
 
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
@@ -451,7 +453,10 @@ class PowershellMSSQLStrategy(object):
                                       'else { Write-Host "databasename:"$db_name;}'
                                       '$status = $db.Status;write-host "databasestatus:"$status;}}')
         script = "\"& {{{}}}\"".format(
-            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + counters_sqlConnection))
+            ''.join([BUFFER_SIZE] +
+                    getSQLAssembly(sqlConnection.version) +
+                    sqlConnection.sqlConnection +
+                    counters_sqlConnection))
         return pscommand, script
 
     def parse_result(self, dsconfs, result):
@@ -517,7 +522,10 @@ class PowershellMSSQLJobStrategy(object):
         jobs_sqlConnection.append("'|CurrentRunStatus:'$job.CurrentRunStatus;")
         jobs_sqlConnection.append("}}")
         script = "\"& {{{}}}\"".format(
-            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + jobs_sqlConnection))
+            ''.join([BUFFER_SIZE] +
+                    getSQLAssembly(sqlConnection.version) +
+                    sqlConnection.sqlConnection +
+                    jobs_sqlConnection))
         return pscommand, script
 
     def parse_result(self, dsconfs, result):
@@ -606,6 +614,7 @@ class PowershellClusterResourceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
@@ -670,6 +679,7 @@ class PowershellClusterServiceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clustergroupitems = ('$_.Name', '$_.IsCoreGroup', '$_.OwnerNode', '$_.State',
@@ -730,6 +740,7 @@ class PowershellClusterNodeStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusternodeitems = pipejoin(
@@ -791,6 +802,7 @@ class PowershellClusterDiskStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterdiskitems = pipejoin(
@@ -865,7 +877,7 @@ class PowershellClusterDiskStrategy(object):
         stdout = parse_stdout(result, check_stderr=True)
         if stdout:
             dskid, name, volumepath, ownernode, disknum, \
-            partitionnum, size, freespace, state = stdout
+                partitionnum, size, freespace, state = stdout
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
@@ -901,6 +913,7 @@ class PowershellClusterNetworkStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusternetworkitems = pipejoin(
@@ -958,6 +971,7 @@ class PowershellClusterInterfaceStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterinterfaceitems = pipejoin(
@@ -1006,8 +1020,9 @@ class PowershellClusterInterfaceStrategy(object):
         else:
             log.debug('Error in parsing cluster Interface data')
 
+
 gsm.registerUtility(PowershellClusterInterfaceStrategy(),
-    IStrategy, 'powershell Cluster Interface')
+                    IStrategy, 'powershell Cluster Interface')
 
 
 class PowershellMSSQLInstanceStrategy(object):
@@ -1020,6 +1035,7 @@ class PowershellMSSQLInstanceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psInstanceCommands = []
+        psInstanceCommands.append(BUFFER_SIZE)
         psInstanceCommands.append("$inst = Get-Service -DisplayName 'SQL Server ({0})';".format(instance))
         psInstanceCommands.append("Write-Host $inst.Status'|'$inst.Name;")
 
@@ -1058,6 +1074,7 @@ class PowershellMSSQLInstanceStrategy(object):
                 yield dsconf, value
         else:
             log.debug('Error in parsing mssql instance data')
+
 
 gsm.registerUtility(PowershellMSSQLInstanceStrategy(), IStrategy, 'powershell MSSQL Instance')
 
