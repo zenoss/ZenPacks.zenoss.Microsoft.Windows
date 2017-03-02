@@ -115,6 +115,7 @@ def test_suite():
     suite.addTest(makeSuite(TestTeamInterfaces))
     return suite
 
+
 if __name__ == "__main__":
     from zope.testrunner.runner import Runner
     runner = Runner(found_suites=[test_suite()])

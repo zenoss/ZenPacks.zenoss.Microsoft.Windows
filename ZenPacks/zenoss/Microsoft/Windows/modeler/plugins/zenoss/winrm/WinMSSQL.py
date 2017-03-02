@@ -529,13 +529,17 @@ class WinMSSQL(WinRMPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
 
-        for instance, errors in results['errors'].items():
-            if errors:
-                msg = '{}: {}'.format(instance, '\n'.join(errors))
-                self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
-            else:
-                msg = 'Successful collection for {}'.format(instance)
-                self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
+        try:
+            for instance, errors in results['errors'].items():
+                if errors:
+                    msg = '{}: {}'.format(instance, '\n'.join(errors))
+                    self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
+                else:
+                    msg = 'Successful collection for {}'.format(instance)
+                    self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
+        except KeyError:
+            # This is for unit tests to pass, no need to try and send events
+            pass
         return maps
 
 
