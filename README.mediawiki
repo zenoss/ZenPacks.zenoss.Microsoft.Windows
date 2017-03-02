@@ -1292,6 +1292,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
 * Fix Windows ZP Does not allow compatible ports of 80/443 to be used (ZPS-622)
 * Fix Windows Zenpack may not properly detect IIS on 2012 servers. (ZPS-719)
+* Fix Long MSSQL Database names aren't parsed correctly because they exceed the powershell shell width (ZPS-944)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
