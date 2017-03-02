@@ -268,7 +268,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
-            counter = dsconf.params['counter'].lower()
+            counter = dsconf.params['counter'].decode('utf-8').lower()
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
@@ -523,7 +523,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
                 #   '\\web service(another web site)\\move requests/sec'
                 counter = '\\{}'.format(
-                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3]).decode('utf-8')
 
                 value = self.sample_buffer.popleft()
 
