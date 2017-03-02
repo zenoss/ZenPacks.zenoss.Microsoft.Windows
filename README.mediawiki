@@ -975,6 +975,7 @@ The current release is known to have the following limitations.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
 * Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
+* Some languages, such as French, contain elided words in performance counters.  e.g. ''d’utilisation''.  If you are seeing missing or corrupt counters for languages other than English, check that the unicode apostrophe is being used in the counter name.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
