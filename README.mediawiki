@@ -118,8 +118,6 @@ The following components will be automatically discovered through the Windows se
 
 Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a remove shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows Perfmon counters can also be collected by adding them to the appropriate monitoring template.
 
-{{note}} Performance counters are language specific, so you must use the counter(s) for your service account's language.  The counters listed below are shipped with the ZenPack.  If your server does not have the English language pack installed and it is not possible to install it, Zenoss recommends creating a subclass below ''/Server/Microsoft/Windows'', making copies of the existing templates, and replacing the counters in the datasources with the non-English equivalents.  You ''must'' also update the zWinRMLocale property with the appropriate culture of your service account.  For example, native French locale would be 'fr-FR'.  The full list of cultures can be found at https://msdn.microsoft.com/en-us/library/ee825488(v=cs.20).aspx.
-
 [[File:windows_graphs.png|thumb|320px|Device-level graphs]]
 [[File:windows_filesystem.png|thumb|320px|File systems]]
 
@@ -785,7 +783,7 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : This property is used when the winrm configuration setting for MaxEnvelopeSizekb exceeds the default of 512k.  Some WMI queries return large amounts of data and this envelope size may need to be enlarged.  A possible symptom of this is seeing an xml parsing error during collection.
 
 ;zWinRMLocale
-: The locale to use for communicating with a Windows server.  The default is ''en-US''.
+: The locale to use for communicating with a Windows server.  The default is ''en-US''.  This property is reserved for future use.
 
 ;zWinRSCodePage
 : The code page which is in use on the Windows Server for the monitoring user account.  The default is to use 65001, the identifier for unicode.  The full list is here: https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756(v=vs.85).aspx.  To determine the code page in use on a Windows server, run <code>chcp</code> at a command prompt.
@@ -975,7 +973,6 @@ The current release is known to have the following limitations.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
 * Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
-* Some languages, such as French, contain elided words in performance counters.  e.g. ''d’utilisation''.  If you are seeing missing or corrupt counters for languages other than English, check that the unicode apostrophe is being used in the counter name.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -1282,7 +1279,6 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added support for Hard Disk association with storage servers
 * Added Session Management to lower number of connections to Windows Servers
 * Added option to specify winrm envelope size
-* Added localization support
 * Added ability to allow multiple KDCs for single domain
 * Added ability to specify user supplied kerberos configuration directory
 * Added support for Windows Server 2016
