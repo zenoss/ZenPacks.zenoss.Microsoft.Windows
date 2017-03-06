@@ -47,6 +47,9 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
 STATE_RUNNING = 'Running'
 STATE_STOPPED = 'Stopped'
+STATE_RUNNING_PAUSED = 'Running, Paused'
+STATE_STOPPED_PAUSED = 'Stopped, Paused'
+STATE_PAUSED = 'Paused'
 
 MODE_NONE = 'None'
 MODE_AUTO = 'Auto'
@@ -142,7 +145,7 @@ class IServiceDataSourceInfo(IInfo):
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
-            [STATE_RUNNING, STATE_STOPPED]),)
+            [STATE_RUNNING, STATE_STOPPED, STATE_RUNNING_PAUSED, STATE_STOPPED_PAUSED]),)
 
     startmode = schema.Text(
         group=_t('Service Options'),
@@ -297,7 +300,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Clear
             service = services[svc_info.Name]
 
-            if svc_info.State != service['alertifnot']:
+            if svc_info.State not in [alertifnot.strip() for alertifnot in service['alertifnot'].split(',')]:
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
                     svc_info.Name,
                     svc_info.State
@@ -315,8 +318,13 @@ class ServicePlugin(PythonDataSourcePlugin):
                 dp.rrdPath = dsconf.params['rrdpath']
                 dp.metadata = dsconf.params.get('metricmetadata', None)
                 dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
-                data['values'][svc_info.Name]['state'] = 1 if svc_info.State.lower()\
-                    == 'stopped' else 0
+                if svc_info.State.lower() == STATE_RUNNING:
+                    data['values'][svc_info.Name]['state'] = 0
+                elif svc_info.State.lower() == STATE_STOPPED:
+                    data['values'][svc_info.Name]['state'] = 1
+                elif svc_info.State == STATE_PAUSED:
+                    data['values'][svc_info.Name]['state'] = 2
+
             # event for the service
             data['events'].append({
                 'service_name': svc_info.Name,

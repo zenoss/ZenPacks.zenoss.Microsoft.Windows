@@ -581,6 +581,7 @@ classes:
           -1: Unknown
           0: Running
           1: Stopped
+          2: Paused
         datapoint: state_state
         datapoint_cached: true
         datapoint_default: -1

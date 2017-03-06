@@ -493,7 +493,7 @@ There are multiple ways to configure Windows service monitoring depending on if 
 * Cycle Time - Frequency of how often the datasource will query service status
 * Update services immediately - Changes will be picked up during modeling.  To have changes take effect immediately, check this box to start a job to index all services on all devices.  This job could take several minutes to complete as it will update every service component on every Windows device in the system.
 * Service Options - Select the start type(s) to monitor.  Add any services to include/exclude using a regex
-* Service Status - Choose to be alerted if a service is either not Running or not Stopped
+* Service Status - Choose to be alerted if a service is either not Running, not Stopped, not Paused, not Running or Paused, or not Stopped or Paused.
 
 See the following examples:
 
@@ -1282,6 +1282,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Added ability to specify user supplied kerberos configuration directory
 * Added support for Windows Server 2016
 * Added support for SQL Server 2014, 2016
+* Added Paused as valid Windows Service state to monitor
 * Improved support for SQL Server database Status
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
