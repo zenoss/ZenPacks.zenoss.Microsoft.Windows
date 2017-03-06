@@ -14,7 +14,7 @@ import importlib
 from Products.ZenRelations.RelationshipBase import RelationshipBase
 from Products.ZenRelations.ToManyContRelationship import ToManyContRelationship
 
-LOG = logging.getLogger('zen.exchange')
+LOG = logging.getLogger('zen.Microsoft.Windows.tests')
 
 
 def require_zenpack(zenpack_name, default=None):
@@ -99,6 +99,7 @@ def create_device(dmd, device_name):
     from ZenPacks.zenoss.Microsoft.Windows.Interface import Interface
     from ZenPacks.zenoss.Microsoft.Windows.CPU import CPU
     from ZenPacks.zenoss.Microsoft.Windows.FileSystem import FileSystem
+    from ZenPacks.zenoss.Microsoft.Windows.HardDisk import HardDisk
     from ZenPacks.zenoss.Microsoft.Windows.OSProcess import OSProcess
     from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
     from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
@@ -115,8 +116,11 @@ def create_device(dmd, device_name):
     cpu1 = addContained(windows1.hw, 'cpus', CPU('cpu1'))
     cpu1.perfmonInstance = '/Processor(cpu1)/'
 
+    hdd1 = addContained(windows1.hw, 'harddisks', HardDisk('hdd1'))
+
     fs1 = addContained(windows1.os, 'filesystems', FileSystem('fs1'))
     fs1.perfmonInstance = '/filesystem(fs1)/'
+    hdd1.fs_ids = [fs1.id]
 
     addContained(windows1.os, 'processes', OSProcess('pr1'))
 
