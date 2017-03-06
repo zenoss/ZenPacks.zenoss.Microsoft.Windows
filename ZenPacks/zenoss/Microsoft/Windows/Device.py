@@ -35,15 +35,17 @@ class Device(schema.Device):
         '''
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in clusterdnsnames:
-            try:
-                clusterip = getHostByName(clusterdnsname)
-            except(gaierror):
-                self.LOG.warning(
-                    'Unable to resolve hostname {0}'.format(clusterdnsname)
-                )
-                continue
+            device = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+            if not device:
+                try:
+                    clusterip = getHostByName(clusterdnsname)
+                except(gaierror):
+                    self.LOG.warning(
+                        'Unable to resolve hostname {0}'.format(clusterdnsname)
+                    )
+                    continue
 
-            device = deviceRoot.findDeviceByIdOrIp(clusterip)
+                device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
