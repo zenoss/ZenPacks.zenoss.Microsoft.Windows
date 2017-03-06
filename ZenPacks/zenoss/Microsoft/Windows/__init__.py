@@ -105,7 +105,7 @@ class ZenPack(schema.ZenPack):
                                                'description': 'Domain controller IP or resolvable hostname',
                                                'label': 'Windows Key Distribution Center (Trusted)'},
                             'zWinRMLocale': {'type': 'string',
-                                             'description': 'Communication locale to use for monitoring',
+                                             'description': 'Communication locale to use for monitoring.  Reserved for future use.',
                                              'label': 'Windows Locale'},
                             'zWinRMEnvelopeSize': {'type': 'int',
                                                    'description': 'Used when WinRM configuration setting "MaxEnvelopeSizekb" exceeds default of 512k',
