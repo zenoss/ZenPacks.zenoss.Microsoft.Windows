@@ -110,6 +110,7 @@ classes:
         default: None
       ip_and_hostname:
         default: None
+        label: IP and Host Name
       domain_controller:
         label: MS Exchange Version
         type: boolean
@@ -443,6 +444,7 @@ classes:
       fs_ids:
         type: lines
         details_display: false
+        label: File System IDs
       freespace:
         label: Free
         type: int
