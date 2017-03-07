@@ -2,6 +2,7 @@
 <semanticLayerDataSource exportedWithPermissions="false">
   <folder>/public/Microsoft_Windows_ZenPack</folder>
   <name>Microsoft_Windows_Domain</name>
+  <description>Reporting on Microsoft Windows devices</description>
   <version>1</version>
   <label>Microsoft Windows Domain</label>
   <schema>

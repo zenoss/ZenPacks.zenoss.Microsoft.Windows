@@ -591,7 +591,7 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_device.device_name" dimensionOrMeasure="Dimension" id="dim_device_device_name" label="Device Name"/>
-        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="manageIp"/>
+        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="Manage IP"/>
         <item resourceId="JoinTree_1.dim_device.device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_device_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_device.device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_device_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_device.device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_device_device_msexchangeversion" label="MS Exchange Version"/>
@@ -671,7 +671,7 @@
         <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_name" label="IPInterface Name"/>
         <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_description" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_description" label="Description"/>
         <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_speed" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_speed" label="Speed"/>
-        <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_instance_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_instance_name" label="instance_name"/>
+        <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_instance_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_instance_name" label="Instance Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processors" id="set_cpu" description="">
@@ -752,7 +752,7 @@
         <item resourceId="JoinTree_1.dim_windows_hard_disk.disk_ids" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_disk_ids" label="Disk IDs"/>
         <item resourceId="JoinTree_1.dim_windows_hard_disk.fs_ids" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_fs_ids" label="File System IDs"/>
         <item resourceId="JoinTree_1.dim_windows_hard_disk.freespace" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_freespace" label="Free"/>
-        <item resourceId="JoinTree_1.dim_windows_hard_disk.instance_name" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_instance_name" label="instance_name"/>
+        <item resourceId="JoinTree_1.dim_windows_hard_disk.instance_name" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_instance_name" label="Instance Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="File Systems" id="set_file_system" description="">
@@ -823,12 +823,6 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processes" id="set_os_process" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_os_process_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_os_process.os_process_name" dimensionOrMeasure="Dimension" id="dim_os_process_os_process_name" label="Process Name"/>
         <item resourceId="JoinTree_1.dim_os_process.os_process_supports__working_set_private" dimensionOrMeasure="Dimension" id="dim_os_process_os_process_supports__working_set_private" label="Supports Private Working Set"/>
@@ -1093,12 +1087,6 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Windows Services" id="set_windows_service" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_windows_service_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_name" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_name" label="Windows Service Name"/>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_caption" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_caption" label="Caption"/>
@@ -1109,12 +1097,6 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Instances" id="set_win_sql_instance" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_instance_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_name" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_name" label="SQL Instance Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_instancename" label="Instance Name"/>
@@ -1125,12 +1107,6 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Backups" id="set_win_sql_backup" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_backup_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_name" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_name" label="SQL Backup Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_instancename" label="Instance Name"/>
@@ -1395,12 +1371,6 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Jobs" id="set_win_sql_job" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_job_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_name" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_name" label="SQL Job Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_instancename" label="Instance Name"/>
@@ -1412,29 +1382,17 @@
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_cluster_node_server" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_cluster_node_server" label="Cluster Node Server"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="Devices" id="set_ip_route_entry" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_ip_route_entry_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
+    <itemGroup resourceId="JoinTree_1" label="IP Routes" id="set_ip_route_entry" description="">
       <items>
-        <item resourceId="JoinTree_1.dim_ip_route_entry.id" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_id" label="Device ID"/>
+        <item resourceId="JoinTree_1.dim_ip_route_entry.id" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_id" label="IP Entry ID"/>
         <item resourceId="JoinTree_1.dim_ip_route_entry.nexthopip" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_nexthopip" label="Next Hop"/>
         <item resourceId="JoinTree_1.dim_ip_route_entry.routeproto" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routeproto" label="Protocol"/>
         <item resourceId="JoinTree_1.dim_ip_route_entry.routetype" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routetype" label="Type"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="Devices" id="set_software" description="">
-      <itemGroups>
-        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_software_measures" description="">
-          <itemGroups/>
-          <items/>
-        </itemGroup>
-      </itemGroups>
+    <itemGroup resourceId="JoinTree_1" label="Software" id="set_software" description="">
       <items>
-        <item resourceId="JoinTree_1.dim_software.software_name" dimensionOrMeasure="Dimension" id="dim_software_software_name" label="Device Name"/>
+        <item resourceId="JoinTree_1.dim_software.software_name" dimensionOrMeasure="Dimension" id="dim_software_software_name" label="Software Name"/>
       </items>
     </itemGroup>
   </itemGroups>
