@@ -1,13 +1,13 @@
 <?xml version='1.0' encoding='utf-8'?>
 <semanticLayerDataSource exportedWithPermissions="false">
   <folder>/public/Microsoft_Windows_ZenPack</folder>
-  <name>Microsoft_Windows_Domain</name>
-  <description>Reporting on Microsoft Windows devices</description>
+  <name>Microsoft_Cluster_Domain</name>
+  <description>Reporting on Microsoft Cluster devices</description>
   <version>1</version>
-  <label>Microsoft Windows Domain</label>
+  <label>Microsoft Cluster Domain</label>
   <schema>
     <localResource xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" dataFile="schema.xml.data" exportedWithPermissions="false" xsi:type="fileResource">
-      <folder>/public/Microsoft_Windows_ZenPack/Microsoft_Windows_Domain_files</folder>
+      <folder>/public/Microsoft_Windows_ZenPack/Microsoft_Cluster_Domain_files</folder>
       <name>schema.xml</name>
       <version>0</version>
       <label>schema</label>
