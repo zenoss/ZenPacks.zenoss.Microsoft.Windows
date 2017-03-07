@@ -323,7 +323,7 @@ class CustomCommandStrategy(object):
     def build_command_line(self, script, usePowershell):
         if not usePowershell:
             return script, None
-        script = script.replace('"', "'")
+        script = script.replace('"', r'\"')
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command'
         return pscommand, '"{}{}"'.format(BUFFER_SIZE, script)
