@@ -591,7 +591,7 @@
       </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_device.device_name" dimensionOrMeasure="Dimension" id="dim_device_device_name" label="Device Name"/>
-        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="Manage IP"/>
+        <item resourceId="JoinTree_1.dim_device.device_manage_ip" dimensionOrMeasure="Dimension" id="dim_device_device_manage_ip" label="manageIp"/>
         <item resourceId="JoinTree_1.dim_device.device_clusterdevices" dimensionOrMeasure="Dimension" id="dim_device_device_clusterdevices" label="Cluster Devices"/>
         <item resourceId="JoinTree_1.dim_device.device_sqlhostname" dimensionOrMeasure="Dimension" id="dim_device_device_sqlhostname" label="SQL Host Name"/>
         <item resourceId="JoinTree_1.dim_device.device_msexchangeversion" dimensionOrMeasure="Dimension" id="dim_device_device_msexchangeversion" label="MS Exchange Version"/>
@@ -668,9 +668,10 @@
         </itemGroup>
       </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_name" label="Interface Name"/>
+        <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_name" label="IPInterface Name"/>
         <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_description" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_description" label="Description"/>
         <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_speed" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_speed" label="Speed"/>
+        <item resourceId="JoinTree_1.dim_ip_interface.ip_interface_instance_name" dimensionOrMeasure="Dimension" id="dim_ip_interface_ip_interface_instance_name" label="instance_name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processors" id="set_cpu" description="">
@@ -700,46 +701,46 @@
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_windows_hard_disk_measures" description="">
           <itemGroups/>
           <items>
-            <item resourceId="JoinTree_1.daily_diskreadbytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_diskreadbytes__sec_fct_ts" label="diskreadbytes__sec / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_diskreadbytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_diskreadbytes__sec_fct_ts_gmt" label="diskreadbytes__sec / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_diskreadbytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadbytes__sec_fct_avg" label="diskreadbytes__sec / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_diskreadbytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadbytes__sec_fct_max" label="diskreadbytes__sec / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_diskreadbytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadbytes__sec_fct_min" label="diskreadbytes__sec / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_diskreadbytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_diskreadbytes__sec_fct_ts" label="diskreadbytes__sec / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_diskreadbytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_diskreadbytes__sec_fct_ts_gmt" label="diskreadbytes__sec / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_diskreadbytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadbytes__sec_fct_avg" label="diskreadbytes__sec / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_diskreadbytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadbytes__sec_fct_max" label="diskreadbytes__sec / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_diskreadbytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadbytes__sec_fct_min" label="diskreadbytes__sec / hourly / Lowest"/>
-            <item resourceId="JoinTree_1.daily_diskreadtime.fct_ts" dimensionOrMeasure="Dimension" id="daily_diskreadtime_fct_ts" label="diskreadtime / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_diskreadtime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_diskreadtime_fct_ts_gmt" label="diskreadtime / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_diskreadtime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadtime_fct_avg" label="diskreadtime / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_diskreadtime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadtime_fct_max" label="diskreadtime / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_diskreadtime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskreadtime_fct_min" label="diskreadtime / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_diskreadtime.fct_ts" dimensionOrMeasure="Dimension" id="hourly_diskreadtime_fct_ts" label="diskreadtime / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_diskreadtime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_diskreadtime_fct_ts_gmt" label="diskreadtime / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_diskreadtime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadtime_fct_avg" label="diskreadtime / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_diskreadtime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadtime_fct_max" label="diskreadtime / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_diskreadtime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskreadtime_fct_min" label="diskreadtime / hourly / Lowest"/>
-            <item resourceId="JoinTree_1.daily_diskwritebytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_diskwritebytes__sec_fct_ts" label="diskwritebytes__sec / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_diskwritebytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_diskwritebytes__sec_fct_ts_gmt" label="diskwritebytes__sec / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_diskwritebytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritebytes__sec_fct_avg" label="diskwritebytes__sec / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_diskwritebytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritebytes__sec_fct_max" label="diskwritebytes__sec / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_diskwritebytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritebytes__sec_fct_min" label="diskwritebytes__sec / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_diskwritebytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_diskwritebytes__sec_fct_ts" label="diskwritebytes__sec / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_diskwritebytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_diskwritebytes__sec_fct_ts_gmt" label="diskwritebytes__sec / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_diskwritebytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritebytes__sec_fct_avg" label="diskwritebytes__sec / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_diskwritebytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritebytes__sec_fct_max" label="diskwritebytes__sec / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_diskwritebytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritebytes__sec_fct_min" label="diskwritebytes__sec / hourly / Lowest"/>
-            <item resourceId="JoinTree_1.daily_diskwritetime.fct_ts" dimensionOrMeasure="Dimension" id="daily_diskwritetime_fct_ts" label="diskwritetime / daily / TS"/>
-            <item resourceId="JoinTree_1.daily_diskwritetime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_diskwritetime_fct_ts_gmt" label="diskwritetime / daily / TS GMT"/>
-            <item resourceId="JoinTree_1.daily_diskwritetime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritetime_fct_avg" label="diskwritetime / daily / Average"/>
-            <item resourceId="JoinTree_1.daily_diskwritetime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritetime_fct_max" label="diskwritetime / daily / Highest"/>
-            <item resourceId="JoinTree_1.daily_diskwritetime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_diskwritetime_fct_min" label="diskwritetime / daily / Lowest"/>
-            <item resourceId="JoinTree_1.hourly_diskwritetime.fct_ts" dimensionOrMeasure="Dimension" id="hourly_diskwritetime_fct_ts" label="diskwritetime / hourly / TS"/>
-            <item resourceId="JoinTree_1.hourly_diskwritetime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_diskwritetime_fct_ts_gmt" label="diskwritetime / hourly / TS GMT"/>
-            <item resourceId="JoinTree_1.hourly_diskwritetime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritetime_fct_avg" label="diskwritetime / hourly / Average"/>
-            <item resourceId="JoinTree_1.hourly_diskwritetime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritetime_fct_max" label="diskwritetime / hourly / Highest"/>
-            <item resourceId="JoinTree_1.hourly_diskwritetime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_diskwritetime_fct_min" label="diskwritetime / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadbytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_hd_diskreadbytes__sec_fct_ts" label="hd_diskreadbytes__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadbytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_hd_diskreadbytes__sec_fct_ts_gmt" label="hd_diskreadbytes__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadbytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadbytes__sec_fct_avg" label="hd_diskreadbytes__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadbytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadbytes__sec_fct_max" label="hd_diskreadbytes__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadbytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadbytes__sec_fct_min" label="hd_diskreadbytes__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadbytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_hd_diskreadbytes__sec_fct_ts" label="hd_diskreadbytes__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadbytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_hd_diskreadbytes__sec_fct_ts_gmt" label="hd_diskreadbytes__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadbytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadbytes__sec_fct_avg" label="hd_diskreadbytes__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadbytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadbytes__sec_fct_max" label="hd_diskreadbytes__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadbytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadbytes__sec_fct_min" label="hd_diskreadbytes__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadtime.fct_ts" dimensionOrMeasure="Dimension" id="daily_hd_diskreadtime_fct_ts" label="hd_diskreadtime / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadtime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_hd_diskreadtime_fct_ts_gmt" label="hd_diskreadtime / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadtime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadtime_fct_avg" label="hd_diskreadtime / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadtime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadtime_fct_max" label="hd_diskreadtime / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskreadtime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskreadtime_fct_min" label="hd_diskreadtime / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadtime.fct_ts" dimensionOrMeasure="Dimension" id="hourly_hd_diskreadtime_fct_ts" label="hd_diskreadtime / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadtime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_hd_diskreadtime_fct_ts_gmt" label="hd_diskreadtime / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadtime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadtime_fct_avg" label="hd_diskreadtime / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadtime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadtime_fct_max" label="hd_diskreadtime / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskreadtime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskreadtime_fct_min" label="hd_diskreadtime / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritebytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="daily_hd_diskwritebytes__sec_fct_ts" label="hd_diskwritebytes__sec / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritebytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_hd_diskwritebytes__sec_fct_ts_gmt" label="hd_diskwritebytes__sec / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritebytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritebytes__sec_fct_avg" label="hd_diskwritebytes__sec / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritebytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritebytes__sec_fct_max" label="hd_diskwritebytes__sec / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritebytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritebytes__sec_fct_min" label="hd_diskwritebytes__sec / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritebytes__sec.fct_ts" dimensionOrMeasure="Dimension" id="hourly_hd_diskwritebytes__sec_fct_ts" label="hd_diskwritebytes__sec / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritebytes__sec.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_hd_diskwritebytes__sec_fct_ts_gmt" label="hd_diskwritebytes__sec / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritebytes__sec.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritebytes__sec_fct_avg" label="hd_diskwritebytes__sec / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritebytes__sec.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritebytes__sec_fct_max" label="hd_diskwritebytes__sec / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritebytes__sec.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritebytes__sec_fct_min" label="hd_diskwritebytes__sec / hourly / Lowest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritetime.fct_ts" dimensionOrMeasure="Dimension" id="daily_hd_diskwritetime_fct_ts" label="hd_diskwritetime / daily / TS"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritetime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="daily_hd_diskwritetime_fct_ts_gmt" label="hd_diskwritetime / daily / TS GMT"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritetime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritetime_fct_avg" label="hd_diskwritetime / daily / Average"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritetime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritetime_fct_max" label="hd_diskwritetime / daily / Highest"/>
+            <item resourceId="JoinTree_1.daily_hd_diskwritetime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="daily_hd_diskwritetime_fct_min" label="hd_diskwritetime / daily / Lowest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritetime.fct_ts" dimensionOrMeasure="Dimension" id="hourly_hd_diskwritetime_fct_ts" label="hd_diskwritetime / hourly / TS"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritetime.fct_ts_gmt" dimensionOrMeasure="Dimension" id="hourly_hd_diskwritetime_fct_ts_gmt" label="hd_diskwritetime / hourly / TS GMT"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritetime.fct_avg" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritetime_fct_avg" label="hd_diskwritetime / hourly / Average"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritetime.fct_max" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritetime_fct_max" label="hd_diskwritetime / hourly / Highest"/>
+            <item resourceId="JoinTree_1.hourly_hd_diskwritetime.fct_min" dimensionOrMeasure="Measure" defaultAgg="Average" id="hourly_hd_diskwritetime_fct_min" label="hd_diskwritetime / hourly / Lowest"/>
           </items>
         </itemGroup>
       </itemGroups>
@@ -751,6 +752,7 @@
         <item resourceId="JoinTree_1.dim_windows_hard_disk.disk_ids" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_disk_ids" label="Disk IDs"/>
         <item resourceId="JoinTree_1.dim_windows_hard_disk.fs_ids" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_fs_ids" label="File System IDs"/>
         <item resourceId="JoinTree_1.dim_windows_hard_disk.freespace" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_freespace" label="Free"/>
+        <item resourceId="JoinTree_1.dim_windows_hard_disk.instance_name" dimensionOrMeasure="Dimension" id="dim_windows_hard_disk_instance_name" label="instance_name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="File Systems" id="set_file_system" description="">
@@ -817,6 +819,7 @@
         <item resourceId="JoinTree_1.dim_file_system.file_system_mediatype" dimensionOrMeasure="Dimension" id="dim_file_system_file_system_mediatype" label="Media Type"/>
         <item resourceId="JoinTree_1.dim_file_system.file_system_drivetype" dimensionOrMeasure="Dimension" id="dim_file_system_file_system_drivetype" label="Drive Type"/>
         <item resourceId="JoinTree_1.dim_file_system.file_system_total_bytes" dimensionOrMeasure="Dimension" id="dim_file_system_file_system_total_bytes" label="Total Bytes"/>
+        <item resourceId="JoinTree_1.dim_file_system.file_system_instance_name" dimensionOrMeasure="Dimension" id="dim_file_system_file_system_instance_name" label="Instance Name"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processes" id="set_os_process" description="">
@@ -1090,15 +1093,28 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Windows Services" id="set_windows_service" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_windows_service_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_name" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_name" label="Windows Service Name"/>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_caption" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_caption" label="Caption"/>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_start_mode" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_start_mode" label="Start Mode"/>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_start_name" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_start_name" label="Start Name"/>
         <item resourceId="JoinTree_1.dim_windows_service.windows_service_description" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_windows_service.windows_service_usermonitor" dimensionOrMeasure="Dimension" id="dim_windows_service_windows_service_usermonitor" label="Manually Selected Monitor State"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Instances" id="set_win_sql_instance" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_instance_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_name" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_name" label="SQL Instance Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_instancename" label="Instance Name"/>
@@ -1109,6 +1125,12 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Backups" id="set_win_sql_backup" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_backup_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_name" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_name" label="SQL Backup Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_instancename" label="Instance Name"/>
@@ -1373,6 +1395,12 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Jobs" id="set_win_sql_job" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_job_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_name" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_name" label="SQL Job Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_instancename" label="Instance Name"/>
@@ -1384,7 +1412,13 @@
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_cluster_node_server" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_cluster_node_server" label="Cluster Node Server"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="IP Services" id="set_ip_route_entry" description="">
+    <itemGroup resourceId="JoinTree_1" label="Devices" id="set_ip_route_entry" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_ip_route_entry_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_ip_route_entry.id" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_id" label="Device ID"/>
         <item resourceId="JoinTree_1.dim_ip_route_entry.nexthopip" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_nexthopip" label="Next Hop"/>
@@ -1392,9 +1426,15 @@
         <item resourceId="JoinTree_1.dim_ip_route_entry.routetype" dimensionOrMeasure="Dimension" id="dim_ip_route_entry_routetype" label="Type"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="Software" id="set_software" description="">
+    <itemGroup resourceId="JoinTree_1" label="Devices" id="set_software" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_software_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_software.software_name" dimensionOrMeasure="Dimension" id="dim_software_software_name" label="Software Name"/>
+        <item resourceId="JoinTree_1.dim_software.software_name" dimensionOrMeasure="Dimension" id="dim_software_software_name" label="Device Name"/>
       </items>
     </itemGroup>
   </itemGroups>
@@ -3076,6 +3116,132 @@
         <field type="java.lang.Integer" id="hw_key"/>
       </fieldList>
     </jdbcTable>
+    <jdbcTable tableName="daily_hd_diskreadbytes__sec" datasourceId="zenoss_reporting" id="daily_hd_diskreadbytes__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_hd_diskreadbytes__sec" datasourceId="zenoss_reporting" id="hourly_hd_diskreadbytes__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_hd_diskreadtime" datasourceId="zenoss_reporting" id="daily_hd_diskreadtime">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_hd_diskreadtime" datasourceId="zenoss_reporting" id="hourly_hd_diskreadtime">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_hd_diskwritebytes__sec" datasourceId="zenoss_reporting" id="daily_hd_diskwritebytes__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_hd_diskwritebytes__sec" datasourceId="zenoss_reporting" id="hourly_hd_diskwritebytes__sec">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="daily_hd_diskwritetime" datasourceId="zenoss_reporting" id="daily_hd_diskwritetime">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="hourly_hd_diskwritetime" datasourceId="zenoss_reporting" id="hourly_hd_diskwritetime">
+      <fieldList>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.Integer" id="component_key"/>
+        <field type="java.util.Date" id="date_key"/>
+        <field type="java.sql.Timestamp" id="fct_ts"/>
+        <field type="java.sql.Timestamp" id="fct_ts_gmt"/>
+        <field type="java.lang.Double" id="fct_avg"/>
+        <field type="java.lang.Double" id="fct_max"/>
+        <field type="java.lang.Double" id="fct_min"/>
+      </fieldList>
+    </jdbcTable>
+    <jdbcTable tableName="dim_file_system" datasourceId="zenoss_reporting" id="dim_file_system">
+      <fieldList>
+        <field type="java.lang.Integer" id="file_system_key"/>
+        <field type="java.sql.Timestamp" id="file_system_deleted_at" dataSetExpression="if(file_system_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="file_system_name"/>
+        <field type="java.lang.String" id="file_system_id"/>
+        <field type="java.lang.String" id="file_system_type"/>
+        <field type="java.lang.String" id="file_system_uid"/>
+        <field type="java.lang.Integer" id="device_key"/>
+        <field type="java.lang.String" id="file_system_snmpindex"/>
+        <field type="java.lang.Boolean" id="file_system_monitor"/>
+        <field type="java.lang.String" id="file_system_production_state"/>
+        <field type="java.lang.String" id="file_system_pre_mw_production_state"/>
+        <field type="java.lang.String" id="file_system_mount"/>
+        <field type="java.lang.String" id="file_system_storage_device"/>
+        <field type="java.lang.Double" id="file_system_block_size"/>
+        <field type="java.lang.Double" id="file_system_total_blocks"/>
+        <field type="java.lang.Double" id="file_system_total_files"/>
+        <field type="java.lang.Double" id="file_system_max_name_len"/>
+        <field type="java.lang.String" id="file_system_mediatype"/>
+        <field type="java.lang.String" id="file_system_drivetype"/>
+        <field type="java.lang.Double" id="file_system_total_bytes"/>
+        <field type="java.lang.String" id="file_system_instance_name"/>
+        <field type="java.lang.Double" id="dependencies_count"/>
+        <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="maintenance_window_count"/>
+        <field type="java.lang.Double" id="links_count"/>
+        <field type="java.lang.Integer" id="software_key"/>
+      </fieldList>
+    </jdbcTable>
     <jdbcTable tableName="daily_diskreadbytes__sec" datasourceId="zenoss_reporting" id="daily_diskreadbytes__sec">
       <fieldList>
         <field type="java.lang.Integer" id="device_key"/>
@@ -3170,36 +3336,6 @@
         <field type="java.lang.Double" id="fct_avg"/>
         <field type="java.lang.Double" id="fct_max"/>
         <field type="java.lang.Double" id="fct_min"/>
-      </fieldList>
-    </jdbcTable>
-    <jdbcTable tableName="dim_file_system" datasourceId="zenoss_reporting" id="dim_file_system">
-      <fieldList>
-        <field type="java.lang.Integer" id="file_system_key"/>
-        <field type="java.sql.Timestamp" id="file_system_deleted_at" dataSetExpression="if(file_system_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="file_system_name"/>
-        <field type="java.lang.String" id="file_system_id"/>
-        <field type="java.lang.String" id="file_system_type"/>
-        <field type="java.lang.String" id="file_system_uid"/>
-        <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="file_system_snmpindex"/>
-        <field type="java.lang.Boolean" id="file_system_monitor"/>
-        <field type="java.lang.String" id="file_system_production_state"/>
-        <field type="java.lang.String" id="file_system_pre_mw_production_state"/>
-        <field type="java.lang.String" id="file_system_mount"/>
-        <field type="java.lang.String" id="file_system_storage_device"/>
-        <field type="java.lang.Double" id="file_system_block_size"/>
-        <field type="java.lang.Double" id="file_system_total_blocks"/>
-        <field type="java.lang.Double" id="file_system_total_files"/>
-        <field type="java.lang.Double" id="file_system_max_name_len"/>
-        <field type="java.lang.String" id="file_system_mediatype"/>
-        <field type="java.lang.String" id="file_system_drivetype"/>
-        <field type="java.lang.Double" id="file_system_total_bytes"/>
-        <field type="java.lang.String" id="file_system_instance_name"/>
-        <field type="java.lang.Double" id="dependencies_count"/>
-        <field type="java.lang.Double" id="dependents_count"/>
-        <field type="java.lang.Double" id="maintenance_window_count"/>
-        <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="software_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="daily_usedfilesystemspace__bytes" datasourceId="zenoss_reporting" id="daily_usedfilesystemspace__bytes">
@@ -5735,6 +5871,96 @@
         <field type="java.lang.String" id="dim_windows_hard_disk.instance_name"/>
         <field type="java.lang.Integer" id="dim_windows_hard_disk.product_class_key"/>
         <field type="java.lang.Integer" id="dim_windows_hard_disk.hw_key"/>
+        <field type="java.lang.Integer" id="daily_hd_diskreadbytes__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_hd_diskreadbytes__sec.component_key"/>
+        <field type="java.util.Date" id="daily_hd_diskreadbytes__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskreadbytes__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskreadbytes__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadbytes__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadbytes__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadbytes__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskreadbytes__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskreadbytes__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_hd_diskreadbytes__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskreadbytes__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskreadbytes__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadbytes__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadbytes__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadbytes__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_hd_diskreadtime.device_key"/>
+        <field type="java.lang.Integer" id="daily_hd_diskreadtime.component_key"/>
+        <field type="java.util.Date" id="daily_hd_diskreadtime.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskreadtime.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskreadtime.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadtime.fct_avg"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadtime.fct_max"/>
+        <field type="java.lang.Double" id="daily_hd_diskreadtime.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskreadtime.device_key"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskreadtime.component_key"/>
+        <field type="java.util.Date" id="hourly_hd_diskreadtime.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskreadtime.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskreadtime.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadtime.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadtime.fct_max"/>
+        <field type="java.lang.Double" id="hourly_hd_diskreadtime.fct_min"/>
+        <field type="java.lang.Integer" id="daily_hd_diskwritebytes__sec.device_key"/>
+        <field type="java.lang.Integer" id="daily_hd_diskwritebytes__sec.component_key"/>
+        <field type="java.util.Date" id="daily_hd_diskwritebytes__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskwritebytes__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskwritebytes__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritebytes__sec.fct_avg"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritebytes__sec.fct_max"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritebytes__sec.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskwritebytes__sec.device_key"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskwritebytes__sec.component_key"/>
+        <field type="java.util.Date" id="hourly_hd_diskwritebytes__sec.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskwritebytes__sec.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskwritebytes__sec.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritebytes__sec.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritebytes__sec.fct_max"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritebytes__sec.fct_min"/>
+        <field type="java.lang.Integer" id="daily_hd_diskwritetime.device_key"/>
+        <field type="java.lang.Integer" id="daily_hd_diskwritetime.component_key"/>
+        <field type="java.util.Date" id="daily_hd_diskwritetime.date_key"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskwritetime.fct_ts"/>
+        <field type="java.sql.Timestamp" id="daily_hd_diskwritetime.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritetime.fct_avg"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritetime.fct_max"/>
+        <field type="java.lang.Double" id="daily_hd_diskwritetime.fct_min"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskwritetime.device_key"/>
+        <field type="java.lang.Integer" id="hourly_hd_diskwritetime.component_key"/>
+        <field type="java.util.Date" id="hourly_hd_diskwritetime.date_key"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskwritetime.fct_ts"/>
+        <field type="java.sql.Timestamp" id="hourly_hd_diskwritetime.fct_ts_gmt"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritetime.fct_avg"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritetime.fct_max"/>
+        <field type="java.lang.Double" id="hourly_hd_diskwritetime.fct_min"/>
+        <field type="java.lang.Integer" id="dim_file_system.file_system_key"/>
+        <field type="file_system_deleted_at" id="dim_file_system.file_system_deleted_at" dataSetExpression="if(dim_file_system.file_system_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_name"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_id"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_type"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_uid"/>
+        <field type="java.lang.Integer" id="dim_file_system.device_key"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_file_system.file_system_monitor"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_production_state"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_mount"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_storage_device"/>
+        <field type="java.lang.Double" id="dim_file_system.file_system_block_size"/>
+        <field type="java.lang.Double" id="dim_file_system.file_system_total_blocks"/>
+        <field type="java.lang.Double" id="dim_file_system.file_system_total_files"/>
+        <field type="java.lang.Double" id="dim_file_system.file_system_max_name_len"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_mediatype"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_drivetype"/>
+        <field type="java.lang.Double" id="dim_file_system.file_system_total_bytes"/>
+        <field type="java.lang.String" id="dim_file_system.file_system_instance_name"/>
+        <field type="java.lang.Double" id="dim_file_system.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_file_system.dependents_count"/>
+        <field type="java.lang.Double" id="dim_file_system.maintenance_window_count"/>
+        <field type="java.lang.Double" id="dim_file_system.links_count"/>
+        <field type="java.lang.Integer" id="dim_file_system.software_key"/>
         <field type="java.lang.Integer" id="daily_diskreadbytes__sec.device_key"/>
         <field type="java.lang.Integer" id="daily_diskreadbytes__sec.component_key"/>
         <field type="java.util.Date" id="daily_diskreadbytes__sec.date_key"/>
@@ -5799,32 +6025,6 @@
         <field type="java.lang.Double" id="hourly_diskwritetime.fct_avg"/>
         <field type="java.lang.Double" id="hourly_diskwritetime.fct_max"/>
         <field type="java.lang.Double" id="hourly_diskwritetime.fct_min"/>
-        <field type="java.lang.Integer" id="dim_file_system.file_system_key"/>
-        <field type="file_system_deleted_at" id="dim_file_system.file_system_deleted_at" dataSetExpression="if(dim_file_system.file_system_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_name"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_id"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_type"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_uid"/>
-        <field type="java.lang.Integer" id="dim_file_system.device_key"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_file_system.file_system_monitor"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_production_state"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_mount"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_storage_device"/>
-        <field type="java.lang.Double" id="dim_file_system.file_system_block_size"/>
-        <field type="java.lang.Double" id="dim_file_system.file_system_total_blocks"/>
-        <field type="java.lang.Double" id="dim_file_system.file_system_total_files"/>
-        <field type="java.lang.Double" id="dim_file_system.file_system_max_name_len"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_mediatype"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_drivetype"/>
-        <field type="java.lang.Double" id="dim_file_system.file_system_total_bytes"/>
-        <field type="java.lang.String" id="dim_file_system.file_system_instance_name"/>
-        <field type="java.lang.Double" id="dim_file_system.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_file_system.dependents_count"/>
-        <field type="java.lang.Double" id="dim_file_system.maintenance_window_count"/>
-        <field type="java.lang.Double" id="dim_file_system.links_count"/>
-        <field type="java.lang.Integer" id="dim_file_system.software_key"/>
         <field type="java.lang.Integer" id="daily_usedfilesystemspace__bytes.device_key"/>
         <field type="java.lang.Integer" id="daily_usedfilesystemspace__bytes.component_key"/>
         <field type="java.util.Date" id="daily_usedfilesystemspace__bytes.date_key"/>
@@ -7193,31 +7393,55 @@
           <joinString>left outer join dim_windows_hard_disk dim_windows_hard_disk on (dim_windows_hard_disk.device_key == dim_device.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_diskreadbytes__sec daily_diskreadbytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == daily_diskreadbytes__sec.component_key and dim_file_system.file_system_key == daily_diskreadbytes__sec.component_key)</joinString>
+          <joinString>left outer join daily_hd_diskreadbytes__sec daily_hd_diskreadbytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == daily_hd_diskreadbytes__sec.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_diskreadbytes__sec hourly_diskreadbytes__sec on (dim_file_system.file_system_key == hourly_diskreadbytes__sec.component_key and dim_windows_hard_disk.windows_hard_disk_key == hourly_diskreadbytes__sec.component_key)</joinString>
+          <joinString>left outer join hourly_hd_diskreadbytes__sec hourly_hd_diskreadbytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == hourly_hd_diskreadbytes__sec.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_diskreadtime daily_diskreadtime on (dim_windows_hard_disk.windows_hard_disk_key == daily_diskreadtime.component_key and dim_file_system.file_system_key == daily_diskreadtime.component_key)</joinString>
+          <joinString>left outer join daily_hd_diskreadtime daily_hd_diskreadtime on (dim_windows_hard_disk.windows_hard_disk_key == daily_hd_diskreadtime.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_diskreadtime hourly_diskreadtime on (dim_windows_hard_disk.windows_hard_disk_key == hourly_diskreadtime.component_key and dim_file_system.file_system_key == hourly_diskreadtime.component_key)</joinString>
+          <joinString>left outer join hourly_hd_diskreadtime hourly_hd_diskreadtime on (dim_windows_hard_disk.windows_hard_disk_key == hourly_hd_diskreadtime.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_diskwritebytes__sec daily_diskwritebytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == daily_diskwritebytes__sec.component_key and dim_file_system.file_system_key == daily_diskwritebytes__sec.component_key)</joinString>
+          <joinString>left outer join daily_hd_diskwritebytes__sec daily_hd_diskwritebytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == daily_hd_diskwritebytes__sec.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_diskwritebytes__sec hourly_diskwritebytes__sec on (dim_file_system.file_system_key == hourly_diskwritebytes__sec.component_key and dim_windows_hard_disk.windows_hard_disk_key == hourly_diskwritebytes__sec.component_key)</joinString>
+          <joinString>left outer join hourly_hd_diskwritebytes__sec hourly_hd_diskwritebytes__sec on (dim_windows_hard_disk.windows_hard_disk_key == hourly_hd_diskwritebytes__sec.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join daily_diskwritetime daily_diskwritetime on (dim_file_system.file_system_key == daily_diskwritetime.component_key and dim_windows_hard_disk.windows_hard_disk_key == daily_diskwritetime.component_key)</joinString>
+          <joinString>left outer join daily_hd_diskwritetime daily_hd_diskwritetime on (dim_windows_hard_disk.windows_hard_disk_key == daily_hd_diskwritetime.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join hourly_diskwritetime hourly_diskwritetime on (dim_file_system.file_system_key == hourly_diskwritetime.component_key and dim_windows_hard_disk.windows_hard_disk_key == hourly_diskwritetime.component_key)</joinString>
+          <joinString>left outer join hourly_hd_diskwritetime hourly_hd_diskwritetime on (dim_windows_hard_disk.windows_hard_disk_key == hourly_hd_diskwritetime.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_file_system dim_file_system on (dim_file_system.device_key == dim_device.device_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_diskreadbytes__sec daily_diskreadbytes__sec on (dim_file_system.file_system_key == daily_diskreadbytes__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_diskreadbytes__sec hourly_diskreadbytes__sec on (dim_file_system.file_system_key == hourly_diskreadbytes__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_diskreadtime daily_diskreadtime on (dim_file_system.file_system_key == daily_diskreadtime.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_diskreadtime hourly_diskreadtime on (dim_file_system.file_system_key == hourly_diskreadtime.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_diskwritebytes__sec daily_diskwritebytes__sec on (dim_file_system.file_system_key == daily_diskwritebytes__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_diskwritebytes__sec hourly_diskwritebytes__sec on (dim_file_system.file_system_key == hourly_diskwritebytes__sec.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join daily_diskwritetime daily_diskwritetime on (dim_file_system.file_system_key == daily_diskwritetime.component_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
+          <joinString>left outer join hourly_diskwritetime hourly_diskwritetime on (dim_file_system.file_system_key == hourly_diskwritetime.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join daily_usedfilesystemspace__bytes daily_usedfilesystemspace__bytes on (dim_file_system.file_system_key == daily_usedfilesystemspace__bytes.component_key)</joinString>
@@ -7535,7 +7759,7 @@
           <joinString>left outer join dim_software dim_software on (dim_software.os_key == dim_software.software_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_date dim_date on (hourly_iissitemkcolrequests__sec.date_key == dim_date.date_key and daily_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iismoverequests__sec.date_key == dim_date.date_key and daily_ldapnewconnections__sec.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_diskreadtime.date_key == dim_date.date_key and daily_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_logsize__kbytes.date_key == dim_date.date_key and daily_kdctgsrequests.date_key == dim_date.date_key and daily_dsdirectorysearches__sec.date_key == dim_date.date_key and daily_dsdirectorywrites__sec.date_key == dim_date.date_key and hourly_diskwritetime.date_key == dim_date.date_key and hourly_ldapclosedconnections__sec.date_key == dim_date.date_key and daily_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_logsizeused__kbytes.date_key == dim_date.date_key and daily_iissiteisapiextensionreqs__sec.date_key == dim_date.date_key and daily_iissiteputrequests__sec.date_key == dim_date.date_key and hourly_packetssent__sec.date_key == dim_date.date_key and hourly_iiscgirequests.date_key == dim_date.date_key and daily_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and hourly_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissiteheadrequests__sec.date_key == dim_date.date_key and hourly_iisheadrequests__sec.date_key == dim_date.date_key and hourly_dsdirectoryreads__sec.date_key == dim_date.date_key and daily_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logcachehitratio__pct.date_key == dim_date.date_key and hourly_iismoverequests__sec.date_key == dim_date.date_key and daily_logsizeused__kbytes.date_key == dim_date.date_key and hourly_iissitecgirequests.date_key == dim_date.date_key and daily_iiscgirequests.date_key == dim_date.date_key and hourly_iissitesent__bytes.date_key == dim_date.date_key and daily_iissitedeleterequests__sec.date_key == dim_date.date_key and hourly_kerberosauthentications.date_key == dim_date.date_key and daily_kerberosauthentications.date_key == dim_date.date_key and hourly_logtruncations__sec.date_key == dim_date.date_key and hourly_iissiteconnectionattempts__sec.date_key == dim_date.date_key and daily_iissitepostrequests__sec.date_key == dim_date.date_key and hourly_iissitepostrequests__sec.date_key == dim_date.date_key and daily_ldapwrites__sec.date_key == dim_date.date_key and hourly_dsservernametranslations__sec.date_key == dim_date.date_key and daily_dsclientbinds__sec.date_key == dim_date.date_key and daily_cacheentries.date_key == dim_date.date_key and hourly_iisotherrequestmethods__sec.date_key == dim_date.date_key and daily_bulkcopyrows__sec.date_key == dim_date.date_key and daily_filesize__kbytes.date_key == dim_date.date_key and hourly_iissitemoverequests__sec.date_key == dim_date.date_key and daily_ldapnewsslconnections__sec.date_key == dim_date.date_key and daily_diskreadbytes__sec.date_key == dim_date.date_key and daily_smtpservermsgsdelivered__sec.date_key == dim_date.date_key and daily_iissitecopyrequests__sec.date_key == dim_date.date_key and hourly_iispostrequests__sec.date_key == dim_date.date_key and hourly_logflushes__sec.date_key == dim_date.date_key and hourly_dsnamecachehitrate__pct.date_key == dim_date.date_key and daily_transactions__sec.date_key == dim_date.date_key and hourly_activetransactions.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and hourly_iissiteoptionsrequests__sec.date_key == dim_date.date_key and daily_iisputrequests__sec.date_key == dim_date.date_key and hourly_iislockrequests__sec.date_key == dim_date.date_key and hourly_iisputrequests__sec.date_key == dim_date.date_key and hourly_packetsreceived__sec.date_key == dim_date.date_key and daily_iissitecurrentconnections.date_key == dim_date.date_key and daily_dsthreadsinuse.date_key == dim_date.date_key and hourly_dsdirectorysearches__sec.date_key == dim_date.date_key and daily_iissitetracerequests__sec.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_iisgetrequests__sec.date_key == dim_date.date_key and daily_iisfilessent__sec.date_key == dim_date.date_key and daily_iissitefilessent__sec.date_key == dim_date.date_key and hourly_iissitelockrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_activetransactions.date_key == dim_date.date_key and daily_diskwritetime.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and hourly_ldapudpoperations__sec.date_key == dim_date.date_key and hourly_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_diskreadbytes__sec.date_key == dim_date.date_key and daily_iissitesearchrequests__sec.date_key == dim_date.date_key and daily_dsdirectoryreads__sec.date_key == dim_date.date_key and daily_iisotherrequestmethods__sec.date_key == dim_date.date_key and hourly_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logsize__kbytes.date_key == dim_date.date_key and hourly_logbytesflushed__sec.date_key == dim_date.date_key and hourly_repltransactions__sec.date_key == dim_date.date_key and daily_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissearchrequests__sec.date_key == dim_date.date_key and daily_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_iissiteproppatchrequests__sec.date_key == dim_date.date_key and hourly_iissitecopyrequests__sec.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and hourly_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_dsdirectorywrites__sec.date_key == dim_date.date_key and daily_ldapsearches__sec.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and hourly_transactions__sec.date_key == dim_date.date_key and daily_diskreadtime.date_key == dim_date.date_key and daily_iiscurrentconnections.date_key == dim_date.date_key and hourly_bulkcopyrows__sec.date_key == dim_date.date_key and daily_ldapsuccessfulbinds.date_key == dim_date.date_key and hourly_loggrowths__sec.date_key == dim_date.date_key and hourly_diskwritebytes__sec.date_key == dim_date.date_key and daily_logused__pct.date_key == dim_date.date_key and hourly_ldapsuccessfulbinds.date_key == dim_date.date_key and daily_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_dsserverbinds__sec.date_key == dim_date.date_key and hourly_logused__pct.date_key == dim_date.date_key and daily_iissitegetrequests__sec.date_key == dim_date.date_key and hourly_dsthreadsinuse.date_key == dim_date.date_key and hourly_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and hourly_iissearchrequests__sec.date_key == dim_date.date_key and hourly_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_iissiteputrequests__sec.date_key == dim_date.date_key and daily_logbytesflushed__sec.date_key == dim_date.date_key and daily_iissitelockrequests__sec.date_key == dim_date.date_key and hourly_iisfilesreceived__sec.date_key == dim_date.date_key and daily_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and hourly_iissitedeleterequests__sec.date_key == dim_date.date_key and daily_ldapudpoperations__sec.date_key == dim_date.date_key and hourly_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_iisfilessent__sec.date_key == dim_date.date_key and daily_iistracerequests__sec.date_key == dim_date.date_key and daily_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and daily_iissitereceived__bytes.date_key == dim_date.date_key and daily_iissitepropfindrequests__sec.date_key == dim_date.date_key and hourly_iisunlockrequests__sec.date_key == dim_date.date_key and daily_ldapactivethreads.date_key == dim_date.date_key and hourly_logflushwaittime__sec.date_key == dim_date.date_key and hourly_ldapactivethreads.date_key == dim_date.date_key and hourly_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_dssearchsuboperations__sec.date_key == dim_date.date_key and daily_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iiscurrentconnections.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and hourly_iissitefilessent__sec.date_key == dim_date.date_key and hourly_dssearchsuboperations__sec.date_key == dim_date.date_key and daily_iissitesent__bytes.date_key == dim_date.date_key and hourly_logshrinks__sec.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and daily_usedfilesystemspace__bytes.date_key == dim_date.date_key and daily_repltransactions__sec.date_key == dim_date.date_key and daily_iissiteproppatchrequests__sec.date_key == dim_date.date_key and hourly_iissitetracerequests__sec.date_key == dim_date.date_key and hourly_kdctgsrequests.date_key == dim_date.date_key and daily_ntlmauthentications.date_key == dim_date.date_key and hourly_ldapclientsessions.date_key == dim_date.date_key and hourly_cacheentriespinned.date_key == dim_date.date_key and hourly_ldapnewconnections__sec.date_key == dim_date.date_key and hourly_iissitesearchrequests__sec.date_key == dim_date.date_key and hourly_iistracerequests__sec.date_key == dim_date.date_key and daily_iissiteunlockrequests__sec.date_key == dim_date.date_key and daily_logflushwaittime__sec.date_key == dim_date.date_key and hourly_ldapwrites__sec.date_key == dim_date.date_key and daily_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_iisgetrequests__sec.date_key == dim_date.date_key and daily_dsservernametranslations__sec.date_key == dim_date.date_key and daily_dsnamecachehitrate__pct.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and hourly_ldapsearches__sec.date_key == dim_date.date_key and daily_iissiteoptionsrequests__sec.date_key == dim_date.date_key and daily_dsserverbinds__sec.date_key == dim_date.date_key and daily_iissitecgirequests.date_key == dim_date.date_key and hourly_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iisunlockrequests__sec.date_key == dim_date.date_key and hourly_iissiteheadrequests__sec.date_key == dim_date.date_key and daily_mseisrpcrequests.date_key == dim_date.date_key and hourly_ntlmauthentications.date_key == dim_date.date_key and hourly_dsnotifyqueuesize.date_key == dim_date.date_key and daily_dsnotifyqueuesize.date_key == dim_date.date_key and daily_iispostrequests__sec.date_key == dim_date.date_key and daily_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_dsclientbinds__sec.date_key == dim_date.date_key and hourly_iissitefilesreceived__sec.date_key == dim_date.date_key and daily_smtpserverlocalqueuelength.date_key == dim_date.date_key and hourly_iissiteisapiextensionreqs__sec.date_key == dim_date.date_key and daily_iissiteconnectionattempts__sec.date_key == dim_date.date_key and daily_iissiteotherrequestmethods__sec.date_key == dim_date.date_key and daily_iissitemoverequests__sec.date_key == dim_date.date_key and hourly_smtpserverlocalqueuelength.date_key == dim_date.date_key and hourly_smtpservermsgsdelivered__sec.date_key == dim_date.date_key and daily_logflushes__sec.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_packetsreceived__sec.date_key == dim_date.date_key and daily_loggrowths__sec.date_key == dim_date.date_key and hourly_mseisrpcrequests.date_key == dim_date.date_key and hourly_iissitecurrentconnections.date_key == dim_date.date_key and daily_ldapclientsessions.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and hourly_ldapnewsslconnections__sec.date_key == dim_date.date_key and hourly_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_iissitereceived__bytes.date_key == dim_date.date_key and daily_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_kdcasrequests.date_key == dim_date.date_key and daily_iislockrequests__sec.date_key == dim_date.date_key and hourly_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and daily_diskwritebytes__sec.date_key == dim_date.date_key and daily_packetssent__sec.date_key == dim_date.date_key and daily_ldapclosedconnections__sec.date_key == dim_date.date_key and hourly_cacheentries.date_key == dim_date.date_key and hourly_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissitegetrequests__sec.date_key == dim_date.date_key and daily_iissitemkcolrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxmessageopens__sec.date_key == dim_date.date_key and daily_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissitepropfindrequests__sec.date_key == dim_date.date_key and hourly_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_logshrinks__sec.date_key == dim_date.date_key and daily_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_iissiteunlockrequests__sec.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and daily_logtruncations__sec.date_key == dim_date.date_key and daily_iispropfindrequests__sec.date_key == dim_date.date_key and daily_cacheentriespinned.date_key == dim_date.date_key and daily_kdcasrequests.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and daily_mseismailboxmessageopens__sec.date_key == dim_date.date_key and hourly_iispropfindrequests__sec.date_key == dim_date.date_key and hourly_ldapbindtime.date_key == dim_date.date_key and hourly_logcachehitratio__pct.date_key == dim_date.date_key and daily_iissitefilesreceived__sec.date_key == dim_date.date_key and hourly_iissiteotherrequestmethods__sec.date_key == dim_date.date_key and daily_ldapbindtime.date_key == dim_date.date_key)</joinString>
+          <joinString>left outer join dim_date dim_date on (hourly_iissitemkcolrequests__sec.date_key == dim_date.date_key and daily_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iismoverequests__sec.date_key == dim_date.date_key and daily_ldapnewconnections__sec.date_key == dim_date.date_key and hourly_hd_diskreadtime.date_key == dim_date.date_key and hourly_outputoctets__bytes.date_key == dim_date.date_key and hourly_diskreadtime.date_key == dim_date.date_key and daily_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_logsize__kbytes.date_key == dim_date.date_key and daily_kdctgsrequests.date_key == dim_date.date_key and daily_dsdirectorysearches__sec.date_key == dim_date.date_key and daily_dsdirectorywrites__sec.date_key == dim_date.date_key and hourly_diskwritetime.date_key == dim_date.date_key and daily_hd_diskwritebytes__sec.date_key == dim_date.date_key and hourly_ldapclosedconnections__sec.date_key == dim_date.date_key and daily_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_logsizeused__kbytes.date_key == dim_date.date_key and daily_iissiteisapiextensionreqs__sec.date_key == dim_date.date_key and daily_iissiteputrequests__sec.date_key == dim_date.date_key and hourly_packetssent__sec.date_key == dim_date.date_key and hourly_iiscgirequests.date_key == dim_date.date_key and daily_hd_diskreadtime.date_key == dim_date.date_key and daily_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and hourly_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissiteheadrequests__sec.date_key == dim_date.date_key and hourly_iisheadrequests__sec.date_key == dim_date.date_key and hourly_dsdirectoryreads__sec.date_key == dim_date.date_key and daily_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logcachehitratio__pct.date_key == dim_date.date_key and hourly_iismoverequests__sec.date_key == dim_date.date_key and daily_logsizeused__kbytes.date_key == dim_date.date_key and hourly_iissitecgirequests.date_key == dim_date.date_key and daily_iiscgirequests.date_key == dim_date.date_key and hourly_iissitesent__bytes.date_key == dim_date.date_key and daily_iissitedeleterequests__sec.date_key == dim_date.date_key and hourly_kerberosauthentications.date_key == dim_date.date_key and daily_kerberosauthentications.date_key == dim_date.date_key and hourly_logtruncations__sec.date_key == dim_date.date_key and hourly_iissiteconnectionattempts__sec.date_key == dim_date.date_key and daily_iissitepostrequests__sec.date_key == dim_date.date_key and hourly_iissitepostrequests__sec.date_key == dim_date.date_key and daily_ldapwrites__sec.date_key == dim_date.date_key and hourly_dsservernametranslations__sec.date_key == dim_date.date_key and daily_dsclientbinds__sec.date_key == dim_date.date_key and daily_cacheentries.date_key == dim_date.date_key and hourly_iisotherrequestmethods__sec.date_key == dim_date.date_key and daily_bulkcopyrows__sec.date_key == dim_date.date_key and daily_filesize__kbytes.date_key == dim_date.date_key and hourly_iissitemoverequests__sec.date_key == dim_date.date_key and daily_ldapnewsslconnections__sec.date_key == dim_date.date_key and daily_diskreadbytes__sec.date_key == dim_date.date_key and daily_smtpservermsgsdelivered__sec.date_key == dim_date.date_key and daily_iissitecopyrequests__sec.date_key == dim_date.date_key and hourly_iispostrequests__sec.date_key == dim_date.date_key and hourly_logflushes__sec.date_key == dim_date.date_key and hourly_dsnamecachehitrate__pct.date_key == dim_date.date_key and daily_transactions__sec.date_key == dim_date.date_key and hourly_activetransactions.date_key == dim_date.date_key and hourly_cachehitratio__pct.date_key == dim_date.date_key and hourly_iissiteoptionsrequests__sec.date_key == dim_date.date_key and daily_iisputrequests__sec.date_key == dim_date.date_key and hourly_iislockrequests__sec.date_key == dim_date.date_key and hourly_iisputrequests__sec.date_key == dim_date.date_key and hourly_packetsreceived__sec.date_key == dim_date.date_key and daily_iissitecurrentconnections.date_key == dim_date.date_key and daily_dsthreadsinuse.date_key == dim_date.date_key and hourly_dsdirectorysearches__sec.date_key == dim_date.date_key and daily_iissitetracerequests__sec.date_key == dim_date.date_key and hourly_inputoctets__bytes.date_key == dim_date.date_key and hourly_iisgetrequests__sec.date_key == dim_date.date_key and daily_iisfilessent__sec.date_key == dim_date.date_key and daily_iissitefilessent__sec.date_key == dim_date.date_key and hourly_iissitelockrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxlocaldeliveryrate.date_key == dim_date.date_key and daily_activetransactions.date_key == dim_date.date_key and daily_diskwritetime.date_key == dim_date.date_key and daily_iisreceived__bytes.date_key == dim_date.date_key and hourly_ldapudpoperations__sec.date_key == dim_date.date_key and hourly_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_diskreadbytes__sec.date_key == dim_date.date_key and daily_iissitesearchrequests__sec.date_key == dim_date.date_key and daily_dsdirectoryreads__sec.date_key == dim_date.date_key and daily_iisotherrequestmethods__sec.date_key == dim_date.date_key and hourly_backuprestorethroughput__sec.date_key == dim_date.date_key and daily_logsize__kbytes.date_key == dim_date.date_key and hourly_logbytesflushed__sec.date_key == dim_date.date_key and hourly_repltransactions__sec.date_key == dim_date.date_key and daily_iiscopyrequests__sec.date_key == dim_date.date_key and daily_iissearchrequests__sec.date_key == dim_date.date_key and daily_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_hd_diskwritebytes__sec.date_key == dim_date.date_key and hourly_iissiteproppatchrequests__sec.date_key == dim_date.date_key and hourly_iissitecopyrequests__sec.date_key == dim_date.date_key and hourly_ifouterrors.date_key == dim_date.date_key and hourly_mseisrpcaveragedlatency.date_key == dim_date.date_key and hourly_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_dsdirectorywrites__sec.date_key == dim_date.date_key and daily_ldapsearches__sec.date_key == dim_date.date_key and daily_ifinerrors.date_key == dim_date.date_key and hourly_cacheentries.date_key == dim_date.date_key and hourly_transactions__sec.date_key == dim_date.date_key and daily_diskreadtime.date_key == dim_date.date_key and daily_iiscurrentconnections.date_key == dim_date.date_key and hourly_bulkcopyrows__sec.date_key == dim_date.date_key and daily_ldapsuccessfulbinds.date_key == dim_date.date_key and hourly_loggrowths__sec.date_key == dim_date.date_key and hourly_diskwritebytes__sec.date_key == dim_date.date_key and hourly_hd_diskreadbytes__sec.date_key == dim_date.date_key and hourly_ldapsuccessfulbinds.date_key == dim_date.date_key and daily_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_dsserverbinds__sec.date_key == dim_date.date_key and hourly_logused__pct.date_key == dim_date.date_key and daily_iissitegetrequests__sec.date_key == dim_date.date_key and hourly_dsthreadsinuse.date_key == dim_date.date_key and hourly_dbcclogicalscanbytes__sec.date_key == dim_date.date_key and daily_iissent__bytes.date_key == dim_date.date_key and hourly_iissent__bytes.date_key == dim_date.date_key and hourly_iissearchrequests__sec.date_key == dim_date.date_key and hourly_usedfilesystemspace__bytes.date_key == dim_date.date_key and hourly_mseismailboxfolderopens__sec.date_key == dim_date.date_key and hourly_iissiteputrequests__sec.date_key == dim_date.date_key and daily_logbytesflushed__sec.date_key == dim_date.date_key and daily_iissitelockrequests__sec.date_key == dim_date.date_key and hourly_iisfilesreceived__sec.date_key == dim_date.date_key and daily_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and hourly_iissitedeleterequests__sec.date_key == dim_date.date_key and daily_ldapudpoperations__sec.date_key == dim_date.date_key and hourly_iisoptionsrequests__sec.date_key == dim_date.date_key and hourly_iisfilessent__sec.date_key == dim_date.date_key and daily_iistracerequests__sec.date_key == dim_date.date_key and daily_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_iisreceived__bytes.date_key == dim_date.date_key and daily_cachehitratio__pct.date_key == dim_date.date_key and daily_outputoctets__bytes.date_key == dim_date.date_key and daily_iissitereceived__bytes.date_key == dim_date.date_key and daily_iissitepropfindrequests__sec.date_key == dim_date.date_key and hourly_iisunlockrequests__sec.date_key == dim_date.date_key and daily_ldapactivethreads.date_key == dim_date.date_key and hourly_logflushwaittime__sec.date_key == dim_date.date_key and hourly_ldapactivethreads.date_key == dim_date.date_key and hourly_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_iisisapiextensionrequests__sec.date_key == dim_date.date_key and daily_hd_diskwritetime.date_key == dim_date.date_key and daily_dssearchsuboperations__sec.date_key == dim_date.date_key and daily_iisheadrequests__sec.date_key == dim_date.date_key and hourly_iiscurrentconnections.date_key == dim_date.date_key and daily_ifouterrors.date_key == dim_date.date_key and hourly_iissitefilessent__sec.date_key == dim_date.date_key and hourly_dssearchsuboperations__sec.date_key == dim_date.date_key and daily_iissitesent__bytes.date_key == dim_date.date_key and hourly_logshrinks__sec.date_key == dim_date.date_key and daily_memoryavailable__bytes.date_key == dim_date.date_key and daily_usedfilesystemspace__bytes.date_key == dim_date.date_key and daily_repltransactions__sec.date_key == dim_date.date_key and daily_iissiteproppatchrequests__sec.date_key == dim_date.date_key and hourly_iissitetracerequests__sec.date_key == dim_date.date_key and hourly_kdctgsrequests.date_key == dim_date.date_key and daily_ntlmauthentications.date_key == dim_date.date_key and hourly_ldapclientsessions.date_key == dim_date.date_key and hourly_cacheentriespinned.date_key == dim_date.date_key and hourly_ldapnewconnections__sec.date_key == dim_date.date_key and hourly_iissitesearchrequests__sec.date_key == dim_date.date_key and hourly_iistracerequests__sec.date_key == dim_date.date_key and daily_iissiteunlockrequests__sec.date_key == dim_date.date_key and daily_logflushwaittime__sec.date_key == dim_date.date_key and hourly_ldapwrites__sec.date_key == dim_date.date_key and daily_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_iisgetrequests__sec.date_key == dim_date.date_key and daily_dsservernametranslations__sec.date_key == dim_date.date_key and daily_dsnamecachehitrate__pct.date_key == dim_date.date_key and hourly_memoryavailable__bytes.date_key == dim_date.date_key and daily_cpu__pct.date_key == dim_date.date_key and hourly_ldapsearches__sec.date_key == dim_date.date_key and daily_iissiteoptionsrequests__sec.date_key == dim_date.date_key and daily_dsserverbinds__sec.date_key == dim_date.date_key and daily_iissitecgirequests.date_key == dim_date.date_key and daily_hd_diskreadbytes__sec.date_key == dim_date.date_key and hourly_iisproppatchrequests__sec.date_key == dim_date.date_key and daily_iisunlockrequests__sec.date_key == dim_date.date_key and hourly_iissiteheadrequests__sec.date_key == dim_date.date_key and daily_mseisrpcrequests.date_key == dim_date.date_key and hourly_ntlmauthentications.date_key == dim_date.date_key and hourly_dsnotifyqueuesize.date_key == dim_date.date_key and daily_dsnotifyqueuesize.date_key == dim_date.date_key and daily_iispostrequests__sec.date_key == dim_date.date_key and daily_iisfilesreceived__sec.date_key == dim_date.date_key and hourly_dsclientbinds__sec.date_key == dim_date.date_key and hourly_iissitefilesreceived__sec.date_key == dim_date.date_key and daily_smtpserverlocalqueuelength.date_key == dim_date.date_key and daily_logused__pct.date_key == dim_date.date_key and hourly_iissiteisapiextensionreqs__sec.date_key == dim_date.date_key and daily_iissiteconnectionattempts__sec.date_key == dim_date.date_key and daily_iissiteotherrequestmethods__sec.date_key == dim_date.date_key and daily_iissitemoverequests__sec.date_key == dim_date.date_key and hourly_smtpserverlocalqueuelength.date_key == dim_date.date_key and hourly_smtpservermsgsdelivered__sec.date_key == dim_date.date_key and daily_logflushes__sec.date_key == dim_date.date_key and daily_inputoctets__bytes.date_key == dim_date.date_key and daily_packetsreceived__sec.date_key == dim_date.date_key and daily_loggrowths__sec.date_key == dim_date.date_key and hourly_mseisrpcrequests.date_key == dim_date.date_key and hourly_iissitecurrentconnections.date_key == dim_date.date_key and daily_ldapclientsessions.date_key == dim_date.date_key and hourly_filesize__kbytes.date_key == dim_date.date_key and hourly_ldapnewsslconnections__sec.date_key == dim_date.date_key and hourly_bulkcopythroughput__sec.date_key == dim_date.date_key and hourly_logcachehitratiobase__pct.date_key == dim_date.date_key and hourly_iissitereceived__bytes.date_key == dim_date.date_key and daily_iisconnectionattempts__sec.date_key == dim_date.date_key and hourly_kdcasrequests.date_key == dim_date.date_key and daily_iislockrequests__sec.date_key == dim_date.date_key and hourly_shrinkdatamovementbytes__sec.date_key == dim_date.date_key and daily_diskwritebytes__sec.date_key == dim_date.date_key and daily_packetssent__sec.date_key == dim_date.date_key and daily_ldapclosedconnections__sec.date_key == dim_date.date_key and hourly_hd_diskwritetime.date_key == dim_date.date_key and hourly_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissitegetrequests__sec.date_key == dim_date.date_key and daily_iissitemkcolrequests__sec.date_key == dim_date.date_key and hourly_mseismailboxmessageopens__sec.date_key == dim_date.date_key and daily_iisdeleterequests__sec.date_key == dim_date.date_key and hourly_iissitepropfindrequests__sec.date_key == dim_date.date_key and hourly_mseisrpcoperations__sec.date_key == dim_date.date_key and daily_logshrinks__sec.date_key == dim_date.date_key and daily_iismkcolrequests__sec.date_key == dim_date.date_key and hourly_iissiteunlockrequests__sec.date_key == dim_date.date_key and hourly_ifinerrors.date_key == dim_date.date_key and daily_logtruncations__sec.date_key == dim_date.date_key and daily_iispropfindrequests__sec.date_key == dim_date.date_key and daily_cacheentriespinned.date_key == dim_date.date_key and daily_kdcasrequests.date_key == dim_date.date_key and hourly_cpu__pct.date_key == dim_date.date_key and daily_mseismailboxmessageopens__sec.date_key == dim_date.date_key and hourly_iispropfindrequests__sec.date_key == dim_date.date_key and hourly_ldapbindtime.date_key == dim_date.date_key and hourly_logcachehitratio__pct.date_key == dim_date.date_key and daily_iissitefilesreceived__sec.date_key == dim_date.date_key and hourly_iissiteotherrequestmethods__sec.date_key == dim_date.date_key and daily_ldapbindtime.date_key == dim_date.date_key)</joinString>
         </joinedDataSetRef>
       </joinedDataSetList>
     </jdbcTable>
