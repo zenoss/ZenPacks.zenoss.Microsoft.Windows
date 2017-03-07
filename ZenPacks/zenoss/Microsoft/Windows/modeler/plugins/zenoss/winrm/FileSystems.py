@@ -43,7 +43,12 @@ class FileSystems(WinRMPlugin):
 
         ignore_names = getattr(device, 'zFileSystemMapIgnoreNames', None)
         if ignore_names:
-            ignore_names_search = re.compile(ignore_names).search
+            try:
+                ignore_names_search = re.compile(ignore_names).search
+            except Exception as e:
+                log.warn("Invalid regular expression in zFileSystemMapIgnoreNames: {}".format(e.message))
+                ignore_names = None
+                pass
 
         ignore_types = getattr(device, 'zFileSystemMapIgnoreTypes', None)
 
