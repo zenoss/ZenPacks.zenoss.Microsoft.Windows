@@ -153,8 +153,11 @@ class WinRMPlugin(PythonPlugin):
         message, args = (None, [device.id])
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
+            html_returned = "<title>404 - File or directory not found.</title>" in error[0]
+            if html_returned:
+                error = ['HTTP Status: 404. Be sure the compatibility listener has been configured']
             args.append(error[0])
-            if isinstance(error, UnauthorizedError):
+            if isinstance(error, UnauthorizedError) or html_returned:
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
                            'https://www.zenoss.com/product/zenpacks/microsoft-windows'
         elif isinstance(error, ConnectionRefusedError):
