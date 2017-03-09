@@ -248,8 +248,8 @@ class DCDiagStrategy(object):
         return dcdiagcommand
 
     def parse_result(self, config, result):
-        if result.stderr:
-            log.debug('DCDiag error: {0}' + ''.join(result.stderr))
+        log.debug('DCDiag error on {}: {}'.format(config.id, '\n'.join(result.stderr)))
+        log.debug('DCDiag results on {}: {}'.format(config.id, '\n'.join(result.stdout)))
 
         def get_datasource(test_name):
             for ds in config.datasources:
@@ -366,7 +366,8 @@ class CustomCommandStrategy(object):
         # Give error feedback to user
         eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
-            log.debug(result.stderr)
+            errors = '\n'.join(result.stderr)
+            log.debug('Custom command errors on {}: {}'.format(config.id, errors))
             try:
                 err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
                 msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
@@ -380,6 +381,7 @@ class CustomCommandStrategy(object):
                 'summary': msg,
                 'device': config.id})
         else:
+            log.debug('Custom command results on {}: {}'.format(config.id, cmd.result.output))
             msg = 'Custom Command success'
             collectedResult.events.append({
                 'eventClass': eventClass,

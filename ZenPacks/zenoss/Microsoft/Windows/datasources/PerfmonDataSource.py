@@ -41,6 +41,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
@@ -161,9 +162,9 @@ class DataPersister(object):
         if device in self.devices:
             del(self.devices[device])
 
-    def add_event(self, device, event):
+    def add_event(self, device, datasources, event):
         self.touch(device)
-        self.devices[device]['events'].append(event)
+        append_event_datasource_plugin(datasources, self.devices[device]['events'], event)
 
     def add_value(self, device, component, datasource, value, collect_time):
         self.touch(device)
@@ -349,7 +350,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 e.message or "timeout")
             LOG.warn(errorMessage)
 
-            PERSISTER.add_event(self.config.id, {
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
                 'eventClass': '/Status/Winrm',
                 'eventKey': 'Windows Perfmon Collection Error',
@@ -585,7 +586,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._generateClearAuthEvents()
 
-        PERSISTER.add_event(self.config.id, {
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
             'eventClass': '/Status/Winrm',
             'eventKey': 'Windows Perfmon Collection Error',
@@ -715,7 +716,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Error,
                     'eventClass': event,
@@ -728,7 +729,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -756,7 +757,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Info,
                     'eventClass': event,
@@ -769,7 +770,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -799,14 +800,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def _errorMsgCheck(self, errorMessage):
         """Check error message and generate appropriate event."""
         if 'Password expired' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
                 'eventClassKey': 'MW|PasswordExpired',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
         elif 'Check username and password' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
                 'eventClassKey': 'MW|WrongCredentials',
@@ -815,14 +816,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, {
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'eventClass': '/Status/Winrm/Auth/PasswordExpired',
             'device': self.config.id,
             'severity': ZenEventClasses.Clear,
             'eventClassKey': 'MW|PasswordExpired',
             'summary': 'Password is not expired',
             'ipAddress': self.config.manageIp})
-        PERSISTER.add_event(self.config.id, {
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'eventClass': '/Status/Winrm/Auth/WrongCredentials',
             'device': self.config.id,
             'severity': ZenEventClasses.Clear,

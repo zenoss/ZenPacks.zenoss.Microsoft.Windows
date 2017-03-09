@@ -447,23 +447,31 @@ def save(f):
         return f(self, *args, **kwargs)
     return dumper
 
+
 '''
 Common datasource utilities.
 '''
+
+
+def append_event_datasource_plugin(datasources, events, event):
+    event['plugin_classname'] = datasources[0].plugin_classname
+    event['datasources'] = ','.join([ds.datasource for ds in datasources])
+    events.append(event)
+
 
 def kerberosErrorMsgCheck(config, events, error):
     """Check error message and generate appropriate event."""
     if any(x in error for x in ('kerberos', 'kinit',)):
         if 'initial credentials' in error \
                 or 'authGSSClientStep failed' in error:
-            events.append({
+            append_event_datasource_plugin(config.datasources, events, {
                 'eventClassKey': 'MW|Kerberos|Auth|Failure',
                 'severity': ZenEventClasses.Critical,
                 'summary': error,
                 'ipAddress': config.manageIp,
                 'device': config.id})
         else:
-            events.append({
+            append_event_datasource_plugin(config.datasources, events, {
                 'eventClassKey': 'MW|Kerberos|Failure',
                 'severity': ZenEventClasses.Critical,
                 'summary': error,
@@ -473,13 +481,13 @@ def kerberosErrorMsgCheck(config, events, error):
 
 def generateKerberosClearAuthEvents(config, events):
     """Generate clear authentication events."""
-    events.append({
+    append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Kerberos/Auth/Failure',
         'eventClassKey': 'MW|Kerberos|Auth|Failure',
         'severity': ZenEventClasses.Clear,
         'summary': 'No Kerberos auth failures',
         'device': config.id})
-    events.append({
+    append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Kerberos/Failure',
         'eventClassKey': 'MW|Kerberos|Failure',
         'severity': ZenEventClasses.Clear,
@@ -491,14 +499,14 @@ def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
     wrongCredsMessages = ('Check username and password', 'Username invalid',)
     if 'Password expired' in error:
-        events.append({
+        append_event_datasource_plugin(config.datasources, events, {
             'eventClassKey': 'MW|PasswordExpired',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,
             'device': config.id})
     elif any(x in error for x in wrongCredsMessages):
-        events.append({
+        append_event_datasource_plugin(config.datasources, events, {
             'eventClassKey': 'MW|WrongCredentials',
             'severity': ZenEventClasses.Critical,
             'summary': error,
@@ -510,13 +518,13 @@ def errorMsgCheck(config, events, error):
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
-    events.append({
+    append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Winrm/Auth/PasswordExpired',
         'eventClassKey': 'MW|PasswordExpired',
         'severity': ZenEventClasses.Clear,
         'summary': 'Password is not expired',
         'device': config.id})
-    events.append({
+    append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Winrm/Auth/WrongCredentials',
         'eventClassKey': 'MW|WrongCredentials',
         'severity': ZenEventClasses.Clear,
