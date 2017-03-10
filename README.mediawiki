@@ -702,6 +702,8 @@ If IIS is installed, one of the following namespaces depending upon IIS version
 The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.  Compatible ports of 80 and 443 are also acceptable.
 For domain authentication, Kerberos communicates on port 88 of the KDC and on port 749 of the Admin Server.
 
+{{note}} If using the winrm compatibility ports of 80 or 443, you must create the appropriate listener in your server's winrm configuration.
+
 === Adding a Windows Device ===
 
 Use the following steps to start monitoring a Windows server using local authentication in the Zenoss web interface.
