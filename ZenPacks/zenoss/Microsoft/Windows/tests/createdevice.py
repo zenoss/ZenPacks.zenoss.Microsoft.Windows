@@ -158,6 +158,10 @@ def create_cluster_device(dmd, device_name):
     from ZenPacks.zenoss.Microsoft.Windows.ClusterNode import ClusterNode
     from ZenPacks.zenoss.Microsoft.Windows.ClusterResource import ClusterResource
     from ZenPacks.zenoss.Microsoft.Windows.ClusterService import ClusterService
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
 
     node1 = addContained(cluster1.os, 'clusternodes', ClusterNode('node1'))
 
@@ -168,5 +172,9 @@ def create_cluster_device(dmd, device_name):
     addContained(service1, 'clusterresources', ClusterResource('resource1'))
 
     addContained(cluster1.os, 'clusternetworks', ClusterNetwork('network1'))
+    instance1 = addContained(cluster1.os, 'winsqlinstances', WinSQLInstance('instance1'))
+    addContained(instance1, 'backups', WinSQLBackup('backup1'))
+    addContained(instance1, 'databases', WinSQLDatabase('db1'))
+    addContained(instance1, 'jobs', WinSQLJob('job1'))
 
     return cluster1

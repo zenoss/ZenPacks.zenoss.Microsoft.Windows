@@ -110,6 +110,7 @@ classes:
         default: None
       ip_and_hostname:
         default: None
+        label: IP and Host Name
       domain_controller:
         label: MS Exchange Version
         type: boolean
@@ -443,6 +444,7 @@ classes:
       fs_ids:
         type: lines
         details_display: false
+        label: File System IDs
       freespace:
         label: Free
         type: int
@@ -581,6 +583,7 @@ classes:
           -1: Unknown
           0: Running
           1: Stopped
+          2: Paused
         datapoint: state_state
         datapoint_cached: true
         datapoint_default: -1
@@ -3881,7 +3884,7 @@ device_classes:
             datapoints:
               DiskReadTime:
                 rrdtype: GAUGE
-                aliases: {diskReadTime: null}
+                aliases: {hd_diskReadTime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Read Time
           DiskWriteBytesSec:
             type: Windows Perfmon
@@ -3889,7 +3892,7 @@ device_classes:
             datapoints:
               DiskWriteBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskWriteBytes__sec: null}
+                aliases: {hd_diskWriteBytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Write Bytes/sec
           DiskWriteTime:
             type: Windows Perfmon
@@ -3897,7 +3900,7 @@ device_classes:
             datapoints:
               DiskWriteTime:
                 rrdtype: GAUGE
-                aliases: {diskWriteTime: null}
+                aliases: {hd_diskWriteTime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Write Time
           DiskReadBytesSec:
             type: Windows Perfmon
@@ -3905,7 +3908,7 @@ device_classes:
             datapoints:
               DiskReadBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskReadBytes__sec: null}
+                aliases: {hd_diskReadBytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Read Bytes/sec
         graphs:
           Throughput:
