@@ -387,7 +387,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             defer.returnValue(data)
         if data and data['events']:
             for evt in data['events']:
-                PERSISTER.add_event(self.config.id, evt)
+                PERSISTER.add_event(self.config.id, self.config.datasources, evt)
 
         if hasattr(self, '_wait_for_data'):
             LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
