@@ -155,7 +155,7 @@ class WinRMPlugin(PythonPlugin):
             message = "Query error on %s: %s"
             html_returned = "<title>404 - File or directory not found.</title>" in error[0]
             if html_returned:
-                error = ['HTTP Status: 404. Be sure the compatibility listener has been configured']
+                error = ['HTTP Status: 404. Be sure the WinRM compatibility listener has been configured']
             args.append(error[0])
             if isinstance(error, UnauthorizedError) or html_returned:
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
@@ -285,11 +285,15 @@ class WinRMPlugin(PythonPlugin):
                             associator['associations'],
                             **associator['kwargs'])
 
-                    msg = "connection for %s is established"
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
+                    if 'No results for seed class' in e.message:
+                        message = 'No results returned for {}. Check WinRM server'\
+                                  ' configuration and z properties.'.format(self.name())
+                        e = Exception(message)
                     self.log_error(log, device, e)
                 else:
+                    msg = "connection for %s is established"
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                     results[assoc_key] = assoc_result
 
         # Get a copy of the class' commands.
