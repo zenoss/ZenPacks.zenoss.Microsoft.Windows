@@ -155,7 +155,7 @@ class WinRMPlugin(PythonPlugin):
             message = "Query error on %s: %s"
             html_returned = "<title>404 - File or directory not found.</title>" in error[0]
             if html_returned:
-                error = ['HTTP Status: 404. Be sure the winrm compatibility listener has been configured']
+                error = ['HTTP Status: 404. Be sure the WinRM compatibility listener has been configured']
             args.append(error[0])
             if isinstance(error, UnauthorizedError) or html_returned:
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
