@@ -7,12 +7,15 @@
 #
 ##############################################################################
 from . import schema
+from utils import get_rrd_path
 
 
 class FileSystem(schema.FileSystem):
     '''
     Model class for FileSystem.
     '''
+    # preserve the old style path
+    rrdPath = get_rrd_path
 
     def monitored(self):
         '''

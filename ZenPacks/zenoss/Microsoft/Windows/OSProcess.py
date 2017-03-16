@@ -8,6 +8,7 @@
 ##############################################################################
 from . import schema
 from Products.ZenModel.OSProcess import OSProcess as BaseOSProcess
+from utils import get_rrd_path
 
 
 class OSProcess(schema.OSProcess):
@@ -18,6 +19,9 @@ class OSProcess(schema.OSProcess):
     Depending on the version of Windows there are different per-process
     counters available.
     '''
+
+    # preserve the old style path
+    rrdPath = get_rrd_path
 
     def getRRDTemplateName(self):
         '''

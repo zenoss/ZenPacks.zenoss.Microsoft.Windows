@@ -9,6 +9,7 @@
 from . import schema
 from zope.event import notify
 from Products.Zuul.catalog.events import IndexingEvent
+from utils import get_rrd_path
 
 
 class TeamInterface(schema.TeamInterface):
@@ -16,6 +17,8 @@ class TeamInterface(schema.TeamInterface):
     Model class for TeamInterface.
     '''
 
+    # preserve the old style path
+    rrdPath = get_rrd_path
 
     def monitored(self):
         '''
