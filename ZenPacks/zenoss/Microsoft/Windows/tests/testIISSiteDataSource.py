@@ -22,7 +22,8 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
         data = self.plugin.onSuccess({}, MagicMock(
             id=sentinel.id,
-            datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
+            datasources=[MagicMock(datasource='IISSiteDataSource',
+                                   params={'eventlog': sentinel.eventlog})],
         ))
         self.assertEquals(len(data['events']), 6)
         self.assertEquals("Monitoring ok", data['events'][1]['summary'])

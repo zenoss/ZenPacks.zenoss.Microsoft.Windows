@@ -30,7 +30,8 @@ class TestDataSourcePlugin(BaseTestCase):
              'UserName': u''}
         ], Mock(
             id=sentinel.id,
-            datasources=[Mock(params={'eventlog': sentinel.eventlog})],
+            datasources=[Mock(params={'eventlog': sentinel.eventlog},
+                              datasource='DataSource')],
         ))
 
         self.assertEquals(len(res['events']), 6)
