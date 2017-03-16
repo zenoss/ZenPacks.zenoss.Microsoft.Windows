@@ -555,3 +555,27 @@ def get_dsconf(dsconfs, component, param=None):
         elif component == dsconf.params.get(param, None):
             return dsconf
     return None
+
+def has_metricfacade():
+    '''return True if metricfacade can be imported'''
+    try:
+        from Products.Zuul.facades import metricfacade
+    except ImportError:
+        pass
+    else:
+        return True
+    return False
+
+HAS_METRICFACADE = has_metricfacade()
+
+def get_rrd_path(obj):
+    """Preserve old-style RRD paths"""
+    if HAS_METRICFACADE:
+        return super(obj.__class__, obj).rrdPath()
+    else:
+        d = obj.device()
+        if not d:
+            return "Devices/" + obj.id
+        skip = len(d.getPrimaryPath()) - 1
+        return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
+

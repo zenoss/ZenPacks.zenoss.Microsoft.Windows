@@ -9,20 +9,10 @@
 from . import schema
 from utils import get_rrd_path
 
-class Interface(schema.Interface):
-    '''
-    Model class for Interface
-    '''
-    portal_type = meta_type = 'IpInterface'
 
+class WinIIS(schema.WinIIS):
+    '''
+    Model class for WinIIS.
+    '''
     # preserve the old style path
     rrdPath = get_rrd_path
-
-    def monitored(self):
-        '''
-        Return the monitored status of this component.
-
-        Overridden from IpInterface to prevent monitoring
-        administratively down interfaces.
-        '''
-        return self.monitor and self.adminStatus == 1
