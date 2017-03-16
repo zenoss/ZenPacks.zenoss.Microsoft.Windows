@@ -33,7 +33,7 @@ class RemoveWinRMServices(ZenPackMigration):
         devices = org.getSubDevices()
         device_count = len(devices)
         if device_count:
-            LOG.info('Removing incompatible Windows Services from {} device{}.'
+            LOG.info('Attempting to remove incompatible Windows Services from {} device{}.'
                      .format(device_count, 's' if device_count > 1 else ''))
             for device in devices:
                 device.os.removeRelation('winrmservices')
