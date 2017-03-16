@@ -318,11 +318,11 @@ class ServicePlugin(PythonDataSourcePlugin):
                 dp.rrdPath = dsconf.params['rrdpath']
                 dp.metadata = dsconf.params.get('metricmetadata', None)
                 dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
-                if svc_info.State.lower() == STATE_RUNNING:
+                if svc_info.State.lower() == STATE_RUNNING.lower():
                     data['values'][svc_info.Name]['state'] = 0
-                elif svc_info.State.lower() == STATE_STOPPED:
+                elif svc_info.State.lower() == STATE_STOPPED.lower():
                     data['values'][svc_info.Name]['state'] = 1
-                elif svc_info.State == STATE_PAUSED:
+                elif svc_info.State.lower() == STATE_PAUSED.lower():
                     data['values'][svc_info.Name]['state'] = 2
 
             # event for the service
