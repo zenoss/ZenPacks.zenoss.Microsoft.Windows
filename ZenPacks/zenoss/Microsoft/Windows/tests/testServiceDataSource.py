@@ -36,7 +36,7 @@ class TestServiceDataSourcePlugin(BaseTestCase):
                                      'servicename': 'aspnet_state',
                                      'severity': 3,
                                      'alertifnot': 'Running'
-                                     })]
+                                     }, datasource='ServiceDataSource')]
 
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, MagicMock(
