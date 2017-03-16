@@ -13,6 +13,7 @@ from ZODB.transact import transact
 
 from Products.Zuul.catalog.events import IndexingEvent
 from Products.ZenUtils.IpUtil import getHostByName
+from Products.Zuul import getFacade
 
 from . import schema
 
@@ -57,7 +58,6 @@ class ClusterDevice(schema.ClusterDevice):
                 self.clusterhostdevicesdict = clusterhostdnsnames
                 continue
 
-            @transact
             def create_device():
                 # Need to create cluster server device
                 path = getattr(self, 'zWinRMClusterNodeClass', '/Devices/Server/Microsoft/Windows')
@@ -65,12 +65,18 @@ class ClusterDevice(schema.ClusterDevice):
                     dc = self.dmd.Devices.getOrganizer(path)
                 except KeyError:
                     dc = self.dmd.Devices.createOrganizer(path)
-                clusterhost = dc.createInstance(clusterhostdnsname)
-                clusterhost.manageIp = clusterhostip
-                clusterhost.title = clusterhostdnsname
-                clusterhost.setPerformanceMonitor(self.getPerformanceServerName())
-                clusterhost.index_object()
-                notify(IndexingEvent(clusterhost))
+                fac = getFacade('device')
+                fac.addDevice(clusterhostdnsname,
+                              path,
+                              title=clusterhostdnsname,
+                              manageIp=clusterhostip,
+                              model=True,
+                              collector=self.getPerformanceServerName(),
+                              zProperties={'zWinRMUser': self.zWinRMUser,
+                                           'zWinRMPassword': self.zWinRMPassword,
+                                           'zWinRMPort': self.zWinRMPort,
+                                           'zWinKDC': self.zWinKDC,
+                                           })
 
             create_device()
             # TODO (rbooth@zenoss.com):
