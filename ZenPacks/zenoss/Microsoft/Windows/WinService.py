@@ -68,6 +68,7 @@ class WinService(schema.WinService):
     def monitored(self):
         # Determine whether or not to monitor this service
         # Set necessary defaults
+        self.index_service = False
         self.alertifnot = 'Running'
         self.failSeverity = ZenEventClasses.Error
         self.monitoredStartModes = []

@@ -387,8 +387,6 @@ classes:
         default: None
       cores:
         label: Cores
-      cores:
-        label: Cores
       threads:
         label: Threads
       cacheSpeedL2:
@@ -592,6 +590,8 @@ classes:
       usermonitor:
         label: Manually Selected Monitor State
         type: boolean
+      index_service:
+        details_display: false
 
   WinIIS:
     label: IIS Site
@@ -782,16 +782,12 @@ device_classes:
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.Software, zenoss.winrm.HardDisks]
       zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS]
-      zDBInstances:
-      - {instance: MSSQLSERVER, passwd: '', user: ''}
   /Server/Microsoft/Cluster:
     remove: true
     description: Windows Cluster
     protocol: WinRM
     zProperties:
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.WinCluster]
-      zDBInstances:
-      - {instance: MSSQLSERVER, passwd: '', user: ''}
       zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS]
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
     templates:

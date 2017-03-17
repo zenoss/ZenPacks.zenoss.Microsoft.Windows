@@ -34,8 +34,16 @@ class WinServiceInfo(schema.WinServiceInfo, WinServiceInfo):
         return '<div style="white-space: normal;">{}</div>'.format(
             self._object.description)
 
+    @property
+    def monitored(self):
+        return self.getMonitor()
+
     def getMonitor(self):
-        return self._object.isMonitored()
+        try:
+            is_monitored = self._object.device().componentSearch.getIndexDataForUID(self._object.getPrimaryId())['monitored']
+        except (KeyError, Exception):
+            is_monitored = self.isMonitored()
+        return is_monitored
 
     def setMonitor(self, value):
         self._object.usermonitor = True
