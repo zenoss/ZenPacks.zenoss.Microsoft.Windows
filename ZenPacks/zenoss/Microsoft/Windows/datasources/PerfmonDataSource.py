@@ -129,14 +129,14 @@ class DataPersister(object):
 
     def start(self, result=None):
         if result:
-            LOG.debug("{}: Windows Perfmon data maintenance failed: {}".format(self.config.id, result))
+            LOG.debug("Windows Perfmon data maintenance failed: {}".format(result))
 
-        LOG.debug("{}: Windows Perfmon starting data maintenance".format(self.config.id))
+        LOG.debug("Windows Perfmon starting data maintenance")
         d = LoopingCall(self.maintenance).start(self.maintenance_interval)
         d.addBoth(self.start)
 
     def maintenance(self):
-        LOG.debug("{}: Windows Perfmon performing periodic data maintenance".format(self.config.id))
+        LOG.debug("Windows Perfmon performing periodic data maintenance")
         for device, data in self.devices.items():
             data_age = time.time() - data['last']
             if data_age > self.max_data_age:
