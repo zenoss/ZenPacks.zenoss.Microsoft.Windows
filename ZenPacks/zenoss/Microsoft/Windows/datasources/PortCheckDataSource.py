@@ -65,7 +65,7 @@ class IPortCheckDataSourceInfo(IRRDDataSourceInfo):
         group=_t('Port Check'),
         title=_t('Port Check'),
         xtype='portcheck')
-    
+
 class PortCheckDataSourceInfo(RRDDataSourceInfo):
     """
     Pull in proxy values so they can be utilized within the PortCheck plugin.
@@ -105,23 +105,23 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
     def params(cls, datasource, context):
         return dict(
             ports=datasource.ports)
-        
-    #@defer.inlineCallbacks
+
+    # @defer.inlineCallbacks
     def collect(self, config):
         dsconf0 = config.datasources[0]
 
         try:
             self.json_ports = json.loads(dsconf0.params['ports'])
         except:
-            log.error('Unable to load ports.  Check configuration')
-        
+            log.error('{}: Unable to load ports.  Check configuration'.format(config.id))
+
         self.portDict = {}
         for port in self.json_ports:
             self.portDict[int(port['port'])] = port['desc']
-        self.scanner = PortCheckScanner(config.manageIp,portList=self.portDict.keys())
+        self.scanner = PortCheckScanner(config.manageIp, portList=self.portDict.keys())
         dl = self.scanner.prepare()
         return dl
-        
+
     def onSuccess(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
@@ -163,11 +163,11 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             pass
         # send clear events
         return data
-    
+
     def onError(self, results, config):
         data = self.new_data()
         dsconf0 = config.datasources[0]
-        
+
         # send error event
         eventClass = dsconf0.eventClass if dsconf0.eventClass else "/Status"
         eventkey = 'WindowsPortCheckError'

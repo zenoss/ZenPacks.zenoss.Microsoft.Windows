@@ -331,7 +331,7 @@ class CustomCommandStrategy(object):
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
-        log.debug('Trying to use the %s parser' % parserLoader.pluginName)
+        log.debug('{}: Trying to use the {} parser'.format(config.id, parserLoader.pluginName))
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
@@ -708,7 +708,7 @@ class PowershellClusterServiceStrategy(object):
         # Parse values
         stdout = parse_stdout(result, check_stderr=True)
         if stdout:
-            name, iscoregroup, ownernode, state, description, nodeid,\
+            name, iscoregroup, ownernode, state, description, nodeid, \
                 priority = stdout
             dsconf0 = dsconfs[0]
 

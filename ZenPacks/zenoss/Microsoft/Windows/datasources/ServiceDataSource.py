@@ -278,7 +278,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
-        log.debug('Windows services query results: {}'.format(results))
+        log.debug('{}: Windows services query results: {}'.format(config.id, results))
         try:
             serviceinfo = results[results.keys()[0]]
         except:
