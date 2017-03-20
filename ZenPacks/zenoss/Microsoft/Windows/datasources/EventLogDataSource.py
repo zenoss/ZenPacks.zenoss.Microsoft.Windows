@@ -233,7 +233,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        log.info('Start Collection of Events')
+        log.info('{} Start Collection of Events'.format(config.id))
 
         ds0 = config.datasources[0]
 
@@ -256,16 +256,18 @@ class EventLogPlugin(PythonDataSourcePlugin):
         res = None
         output = []
 
+        id_string = "device ({}) component ({})".format(config.id, ds0.component)
+
         try:
             res = yield query.run(eventlog, select, max_age, eventid, isxml)
         except Exception as e:
             if 'Password expired' in e.message:
                 raise e
-            log.error(e)
+            log.error("{}: {}".format(id_string, e))
         try:
             if res.stderr:
                 str_err = '\n'.join(res.stderr)
-                log.debug('Event query error: {}'.format(str_err))
+                log.debug('{}: Event query error: {}'.format(id_string, str_err))
                 if str_err.find('No events were found that match the specified selection criteria') != -1:
                     # no events found.  expected error.
                     pass
@@ -292,7 +294,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
         except ValueError as e:
-            log.error('Could not parse json: %r\n%s' % (output, e))
+            log.error('%s: Could not parse json: %r\n%s' % (id_string, output, e))
             raise
         defer.returnValue(value)
 
@@ -358,7 +360,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         severity = ZenEventClasses.Warning
         if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in msg:
             severity = ZenEventClasses.Critical
-        log.error(msg)
+        log.error("{}: {}".format(config.id, msg))
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:

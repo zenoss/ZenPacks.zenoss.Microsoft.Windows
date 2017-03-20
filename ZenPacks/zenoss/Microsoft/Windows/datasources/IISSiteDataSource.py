@@ -160,6 +160,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         iis_version = ds0.params['iis_version']
 
+        id_string = "device ({}) component ({})".format(config.id, ds0.component)
         if not iis_version:
             winrs = IISCommander(conn_info)
             version = yield winrs.get_iis_version()
@@ -169,9 +170,9 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 iis_version = re.match('Version (\d).*', version.stdout[0]).group(1)
             except (IndexError, AttributeError):
                 if version.stdout:
-                    log.error("Malformed version information: {}".format(version.stdout[0]))
+                    log.error("Malformed version information on {}: {}".format(id_string, version.stdout[0]))
                 if version.stderr:
-                    log.error("Error retrieving IIS Version: {}".format(version.stderr[0]))
+                    log.error("Error retrieving IIS version on {}: {}".format(id_string, version.stderr[0]))
                 defer.returnValue(None)
 
         if iis_version == 6:
