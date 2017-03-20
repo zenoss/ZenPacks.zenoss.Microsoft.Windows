@@ -36,5 +36,5 @@ class RemoveWinRMServices(ZenPackMigration):
             LOG.info('Attempting to remove incompatible Windows Services from {} device{}.'
                      .format(device_count, 's' if device_count > 1 else ''))
             for device in devices:
-                device.os.removeRelation('winrmservices')
+                device.os.removeRelation('winrmservices', suppress_events=True)
                 device.os.buildRelations()
