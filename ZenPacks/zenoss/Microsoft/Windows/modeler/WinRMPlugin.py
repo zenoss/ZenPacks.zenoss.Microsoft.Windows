@@ -96,10 +96,11 @@ class WinRMPlugin(PythonPlugin):
         """
         return self.associators
 
-    def client(self, conn_info):
-        '''
-        Return an EnumerateClient.
-        '''
+    def client(self, conn_info=None):
+        """Return an EnumerateClient if conn_info exists
+        """
+        if not conn_info:
+            return txwinrm.collect.WinrmCollectClient()
         return EnumerateClient(conn_info)
 
     def conn_info(self, device):
