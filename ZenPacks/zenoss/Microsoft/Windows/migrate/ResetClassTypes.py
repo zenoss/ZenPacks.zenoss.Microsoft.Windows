@@ -24,15 +24,17 @@ WARNING_MESSAGE = 'zenjobs must be stopped in order to fully complete the '\
                   'upgrade to version {} of the Microsoft Windows ZenPack! '\
                   'Please stop zenjobs and run the installation once more.  '\
                   'This is necessary when upgrading from previous versions due to'\
-                  ' internal changes in the ZenPack.  If you have previously '\
-                  'successfully installed this version, no further action is necessary.'
+                  ' the fact that the ZenPack is now based off of '\
+                  'ZenPacks.zenoss.ZenPacklib.  If you have previously successfully'\
+                  ' installed this version and all existing components and devices'\
+                  ' have been converted, no further action is necessary.'
 
 
 class ResetClassTypes(ZenPackMigration):
     version = Version(2, 7, 0)
 
     def migrate(self, pack):
-        log.info('Adding job to reset class types for Windows devices')
+        log.info('Adding job to remove any leftover winrmservices and reset class types for Windows devices and components.')
         if 'applications' in listFacades():
             from Products.ZenUtils.application import ApplicationState
             facade = getFacade('applications')
