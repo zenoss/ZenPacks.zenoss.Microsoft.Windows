@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -45,6 +45,7 @@ from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
+from txwinrm.util import UnauthorizedError
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -197,8 +198,23 @@ class ComplexLongRunningCommand(object):
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
-        return [LongCommandClient(createConnectionInfo(self.dsconf))
-                for i in xrange(num_commands)]
+
+        commands = []
+        try:
+            conn_info = createConnectionInfo(self.dsconf)
+        except UnauthorizedError as e:
+            LOG.error(
+                "{0}: Windows Perfmon connection info is not available for {0}."
+                " Error: {1}".format(self.dsconf.device, e))
+        else:
+            for _ in xrange(num_commands):
+                try:
+                    commands.append(LongCommandClient(conn_info))
+                except Exception as e:
+                    LOG.error("{}: Windows Perfmon error: {}".format(
+                        self.dsconf.device, e))
+
+        return commands
 
     @defer.inlineCallbacks
     def start(self, command_lines):
@@ -210,7 +226,8 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            yield command.start(self.ps_command, ps_script=command_line)
+            if command is not None:
+                yield command.start(self.ps_command, ps_script=command_line)
 
     @defer.inlineCallbacks
     def stop(self):
@@ -458,17 +475,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """
         deferreds = []
         for cmd in self.complex_command.commands:
-            try:
-                deferreds.append(cmd.receive())
-            except Exception as err:
-                LOG.error('{}: Windows Perfmon receive error {0}'.format(self.config.id, err))
+            if cmd is not None:
+                try:
+                    deferreds.append(cmd.receive())
+                except Exception as err:
+                    LOG.error('{}: Windows Perfmon receive error {0}'.format(
+                        self.config.id, err))
 
-        self.receive_deferreds = add_timeout(
-            defer.DeferredList(deferreds, consumeErrors=True),
-            OPERATION_TIMEOUT + 5)
+        if deferreds:
+            self.receive_deferreds = add_timeout(
+                defer.DeferredList(deferreds, consumeErrors=True),
+                OPERATION_TIMEOUT + 5)
 
-        self.receive_deferreds.addCallbacks(
-            self.onReceive, self.onReceiveFail)
+            self.receive_deferreds.addCallbacks(
+                self.onReceive, self.onReceiveFail)
 
     def _parse_deferred_result(self, result):
         """Group all stdout data and failures from each command result
