@@ -821,6 +821,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Check error message and generate appropriate event."""
         if 'Password expired' in errorMessage:
             PERSISTER.add_event(self.config.id, self.config.datasources, {
+                'eventClass': '/Status/Winrm/Auth/PasswordExpired',
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
                 'eventClassKey': 'MW|PasswordExpired',
@@ -828,6 +829,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'ipAddress': self.config.manageIp})
         elif 'Check username and password' in errorMessage:
             PERSISTER.add_event(self.config.id, self.config.datasources, {
+                'eventClass': '/Status/Winrm/Auth/WrongCredentials',
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
                 'eventClassKey': 'MW|WrongCredentials',
