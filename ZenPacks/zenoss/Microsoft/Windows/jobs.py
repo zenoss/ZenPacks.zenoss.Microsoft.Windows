@@ -11,6 +11,8 @@
 Zenpack's jobs.
 """
 
+from ZODB.transact import transact
+from transaction import commit
 from zope.event import notify
 from Products.Jobber.jobs import Job
 from Products.Zuul.catalog.events import IndexingEvent
@@ -18,7 +20,6 @@ from Products.Zuul.interfaces import ICatalogTool
 from Products.ZenUtils.events import pausedAndOptimizedIndexing
 
 # ZenPack Imports
-from ZenPacks.zenoss.Microsoft.Windows import progresslog
 from ZenPacks.zenoss.Microsoft.Windows.ClusterDisk import ClusterDisk
 from ZenPacks.zenoss.Microsoft.Windows.ClusterInterface import ClusterInterface
 from ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork import ClusterNetwork
@@ -72,7 +73,22 @@ class ResetClassTypes(Job):
         return "Reset class types for upgrade to new ZenPackLib classes."
 
     def _run(self, **kwargs):
-        results = ICatalogTool(self.dmd.getDmdRoot("Devices")).search(types=[
+        org = self.dmd.Devices.getOrganizer('/Server/Microsoft')
+        self.log.info('Searching for and removing incompatible winrmservices from devices.')
+        devices_cleaned = 0
+        for device in org.getSubDevicesGen():
+            finished = False
+            devices_cleaned += 1
+            # This could take several passes
+            while not finished:
+                self.remove_winrmservices(device)
+                finished = False if device.componentSearch(meta_type='WinRMService') else True
+            if not devices_cleaned % 25:
+                self.log.info('Committing devices with unclean winrmservices removed.')
+                commit()
+        commit()
+
+        results = ICatalogTool(org).search(types=[
             ClusterDisk,
             ClusterInterface,
             ClusterNetwork,
@@ -97,10 +113,24 @@ class ResetClassTypes(Job):
 
         objects_migrated = 0
 
+        self.log.info('Searching for components which need to be updated.')
         for result in results:
             if self.migrate_result(result):
                 objects_migrated += 1
+            if not objects_migrated % 1000:
+                self.log.info('Committing 1000 objects with class types reset.')
+                commit()
+        # commit the last bit of objects
+        self.log.info('Migrated {} components for use with ZenPacks.zenoss.ZenPackLib.'.format(objects_migrated))
+        commit()
 
+    @transact
+    def remove_winrmservices(self, device):
+        """Remove any stubborn WinRMServices"""
+        for component in device.componentSearch(meta_type='WinRMService'):
+            device.componentSearch.uncatalog_object(component.getPath())
+
+    @transact
     def migrate_result(self, result):
         """Return True if result needed to be migrated.
 
