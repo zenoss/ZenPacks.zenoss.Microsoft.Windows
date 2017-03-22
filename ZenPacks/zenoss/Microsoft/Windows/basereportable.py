@@ -190,7 +190,8 @@ from ZenPacks.zenoss.ZenETL.reportable import \
     DEFAULT_STRING_LENGTH, \
     BaseReportableFactory as ETLBaseReportableFactory, \
     BaseReportable as ETLBaseReportable, \
-    Reportable
+    Reportable,\
+    DeviceOrganizerReportable
 
 unused(Globals)
 
@@ -317,6 +318,16 @@ class BaseReportableFactory(ETLBaseReportableFactory):
                         yield BaseManyToManyReportable(
                             fromObject=self.context, toObject=remoteObject,
                             entity_class_name=entity_class_name)
+
+        for org in self.context.systems():
+            yield DeviceOrganizerReportable(org, self.context)
+
+        for grp in self.context.groups():
+            yield DeviceOrganizerReportable(grp, self.context)
+
+        if self.context.location() is not None:
+            yield DeviceOrganizerReportable(self.context.location(), self.context)
+
         if hasattr(self.context, 'os') \
                 and hasattr(self.context.os, 'software') \
                 and isinstance(self.context, Device):
