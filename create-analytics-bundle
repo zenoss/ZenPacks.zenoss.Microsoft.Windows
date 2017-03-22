@@ -551,7 +551,7 @@ def update_schema(schema, obj):
         for relName, relation in relations:
             if isinstance(relation, ToOne):
                 rel = getattr(obj, relName, None)
-                if not rel:
+                if not rel or relName is 'location':
                     continue
 
                 remote_obj = rel()

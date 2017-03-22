@@ -824,8 +824,8 @@
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Processes" id="set_os_process" description="">
       <items>
-        <item resourceId="JoinTree_1.dim_os_process.os_process_name" dimensionOrMeasure="Dimension" id="dim_os_process_os_process_name" label="Process Name"/>
-        <item resourceId="JoinTree_1.dim_os_process.os_process_supports__working_set_private" dimensionOrMeasure="Dimension" id="dim_os_process_os_process_supports__working_set_private" label="Supports Private Working Set"/>
+        <item resourceId="JoinTree_1.dim_osprocess.os_process_name" dimensionOrMeasure="Dimension" id="dim_osprocess_os_process_name" label="Process Name"/>
+        <item resourceId="JoinTree_1.dim_osprocess.os_process_supports__working_set_private" dimensionOrMeasure="Dimension" id="dim_osprocess_os_process_supports__working_set_private" label="Supports Private Working Set"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="IIS Sites" id="set_win_iis" description="">
@@ -1407,6 +1407,7 @@
         <field type="java.lang.String" id="device_id"/>
         <field type="java.lang.String" id="device_name"/>
         <field type="java.lang.String" id="device_type"/>
+        <field type="java.lang.String" id="device_class"/>
         <field type="java.lang.String" id="device_uid"/>
         <field type="java.lang.String" id="device_snmpindex"/>
         <field type="java.lang.Boolean" id="device_monitor"/>
@@ -3320,7 +3321,7 @@
         <field type="java.lang.Double" id="fct_min"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="dim_os_process" datasourceId="zenoss_reporting" id="dim_os_process">
+    <jdbcTable tableName="dim_osprocess" datasourceId="zenoss_reporting" id="dim_osprocess">
       <fieldList>
         <field type="java.lang.Integer" id="os_process_key"/>
         <field type="java.sql.Timestamp" id="os_process_deleted_at" dataSetExpression="if(os_process_deleted_at,null,0,1)"/>
@@ -4694,6 +4695,7 @@
         <field type="device_deleted_at" id="dim_device.device_deleted_at" dataSetExpression="if(dim_device.device_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_device.device_id"/>
         <field type="java.lang.String" id="dim_device.device_name"/>
+        <field type="java.lang.String" id="dim_device.device_class"/>
         <field type="java.lang.String" id="dim_device.device_type"/>
         <field type="java.lang.String" id="dim_device.device_uid"/>
         <field type="java.lang.String" id="dim_device.device_snmpindex"/>
@@ -5999,35 +6001,35 @@
         <field type="java.lang.Double" id="hourly_usedfilesystemspace__bytes.fct_avg"/>
         <field type="java.lang.Double" id="hourly_usedfilesystemspace__bytes.fct_max"/>
         <field type="java.lang.Double" id="hourly_usedfilesystemspace__bytes.fct_min"/>
-        <field type="java.lang.Integer" id="dim_os_process.os_process_key"/>
-        <field type="os_process_deleted_at" id="dim_os_process.os_process_deleted_at" dataSetExpression="if(dim_os_process.os_process_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_name"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_id"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_type"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_uid"/>
-        <field type="java.lang.Integer" id="dim_os_process.device_key"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_os_process.os_process_monitor"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_production_state"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_display_name"/>
-        <field type="java.lang.Boolean" id="dim_os_process.os_process_z_alert_on_restarts"/>
-        <field type="java.lang.Double" id="dim_os_process.os_process_z_fail_severity"/>
-        <field type="java.lang.Double" id="dim_os_process.os_process_min_process_count"/>
-        <field type="java.lang.Double" id="dim_os_process.os_process_max_process_count"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_include_regex"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_exclude_regex"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_replace_regex"/>
-        <field type="java.lang.String" id="dim_os_process.os_process_replacement"/>
-        <field type="java.lang.Boolean" id="dim_os_process.os_process_supports__working_set_private"/>
-        <field type="java.lang.Double" id="dim_os_process.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_os_process.dependents_count"/>
-        <field type="java.lang.Double" id="dim_os_process.maintenance_window_count"/>
-        <field type="java.lang.Double" id="dim_os_process.links_count"/>
-        <field type="java.lang.Integer" id="dim_os_process.pack_key"/>
-        <field type="java.lang.Integer" id="dim_os_process.software_key"/>
-        <field type="java.lang.Integer" id="dim_os_process.os_process_class_key"/>
-        <field type="java.lang.Double" id="dim_os_process.user_command_count"/>
+        <field type="java.lang.Integer" id="dim_osprocess.os_process_key"/>
+        <field type="os_process_deleted_at" id="dim_osprocess.os_process_deleted_at" dataSetExpression="if(dim_osprocess.os_process_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_name"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_id"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_type"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_uid"/>
+        <field type="java.lang.Integer" id="dim_osprocess.device_key"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_osprocess.os_process_monitor"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_production_state"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_pre_mw_production_state"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_display_name"/>
+        <field type="java.lang.Boolean" id="dim_osprocess.os_process_z_alert_on_restarts"/>
+        <field type="java.lang.Double" id="dim_osprocess.os_process_z_fail_severity"/>
+        <field type="java.lang.Double" id="dim_osprocess.os_process_min_process_count"/>
+        <field type="java.lang.Double" id="dim_osprocess.os_process_max_process_count"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_include_regex"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_exclude_regex"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_replace_regex"/>
+        <field type="java.lang.String" id="dim_osprocess.os_process_replacement"/>
+        <field type="java.lang.Boolean" id="dim_osprocess.os_process_supports__working_set_private"/>
+        <field type="java.lang.Double" id="dim_osprocess.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_osprocess.dependents_count"/>
+        <field type="java.lang.Double" id="dim_osprocess.maintenance_window_count"/>
+        <field type="java.lang.Double" id="dim_osprocess.links_count"/>
+        <field type="java.lang.Integer" id="dim_osprocess.pack_key"/>
+        <field type="java.lang.Integer" id="dim_osprocess.software_key"/>
+        <field type="java.lang.Integer" id="dim_osprocess.os_process_class_key"/>
+        <field type="java.lang.Double" id="dim_osprocess.user_command_count"/>
         <field type="java.lang.Integer" id="dim_win_iis.win_iis_key"/>
         <field type="win_iis_deleted_at" id="dim_win_iis.win_iis_deleted_at" dataSetExpression="if(dim_win_iis.win_iis_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_iis.win_iis_name"/>
@@ -7408,7 +7410,7 @@
           <joinString>left outer join hourly_usedfilesystemspace__bytes hourly_usedfilesystemspace__bytes on (dim_file_system.file_system_key == hourly_usedfilesystemspace__bytes.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_os_process dim_os_process on (dim_os_process.software_key == dim_software.software_key)</joinString>
+          <joinString>left outer join dim_osprocess dim_osprocess on (dim_osprocess.software_key == dim_software.software_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_win_iis dim_win_iis on (dim_win_iis.software_key == dim_software.software_key)</joinString>
