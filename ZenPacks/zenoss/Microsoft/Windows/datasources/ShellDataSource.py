@@ -1296,6 +1296,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = config.datasources[0]
         severity = ZenEventClasses.Clear
         msg = 'winrs: successful collection'
+        components = set([ds.component for ds in config.datasources])
 
         if not results:
             return data
@@ -1395,9 +1396,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     for db in getattr(strategy, 'valuemap', []):
                         dsconf = get_dsconf(dsconfs, db, param='contexttitle')
                         if dsconf:
-                            component = dsconf.component
+                            component = prepId(dsconf.component)
+                            eventClass = dsconf.eventClass or "/Status"
                         else:
-                            component = db
+                            component = prepId(db)
+                            eventClass = "/Status"
                         try:
                             dbstatuses = strategy.valuemap[db]['status']
                         except Exception:
@@ -1419,17 +1422,18 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             db_summary += lookup_databasesummary(dbstatus)
                         summary = 'Database {0} status is {1}.'.format(db,
                                                                        dbstatuses)
-                        data['events'].append(dict(
-                            eventClass=dsconf.eventClass or "/Status",
-                            eventClassKey='WinDatabaseStatus',
-                            eventKey=strategy.key,
-                            severity=max(db_severities),
-                            device=config.id,
-                            summary=summary,
-                            message=db_summary,
-                            dbstatus=dbstatuses,
-                            component=prepId(component)
-                        ))
+                        if component in components:
+                            data['events'].append(dict(
+                                eventClass=eventClass,
+                                eventClassKey='WinDatabaseStatus',
+                                eventKey=strategy.key,
+                                severity=max(db_severities),
+                                device=config.id,
+                                summary=summary,
+                                message=db_summary,
+                                dbstatus=dbstatuses,
+                                component=component
+                            ))
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
