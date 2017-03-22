@@ -536,7 +536,7 @@ class WinMSSQL(WinRMPlugin):
         try:
             for instance, errors in results['errors'].items():
                 if errors:
-                    msg = '{}: {}'.format(instance, '\n'.join(errors))
+                    msg = '{}: {}'.format(instance, sanitize_error(errors))
                     self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
                 else:
                     msg = 'Successful collection for {}'.format(instance)
@@ -545,6 +545,18 @@ class WinMSSQL(WinRMPlugin):
             # This is for unit tests to pass, no need to try and send events
             pass
         return maps
+
+
+def sanitize_error(error):
+    fullerror = '\n'.join(error)
+    try:
+        fullerror = fullerror[:fullerror.index('At line:') - 1]
+    except ValueError:
+        pass
+    if 'Failed to connect to server' in fullerror:
+        fullerror += ' Is SQL Server online?  Are your credentials correct?'
+        fullerror += ' Do you have "View server state" permissions?'
+    return fullerror
 
 
 def check_username(databases, instance, log):
