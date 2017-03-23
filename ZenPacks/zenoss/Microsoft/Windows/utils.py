@@ -576,6 +576,9 @@ def get_rrd_path(obj):
         d = obj.device()
         if not d:
             return "Devices/" + obj.id
-        skip = len(d.getPrimaryPath()) - 1
-        return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
-
+        # revert to 2.5 behavior if True
+        if getattr(d, 'zWinUseLegacyRRDPath', False):
+            skip = len(d.getPrimaryPath()) - 1
+            return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
+        else:
+            return super(obj.__class__, obj).rrdPath()

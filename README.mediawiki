@@ -794,6 +794,11 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 
 {{note}} HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.
 
+;zWinUseLegacyRRDPath
+: Whether to use older directory structure to manage RRD files.  Set this to True if upgrading directly from 2.5.x of this ZenPack if using Zenoss versions earlier than 5.x.  This setting has no effect on Zenoss versions 5.x and above.
+
+{{note}} The migration to ZenPackLib in version 2.6 of this ZenPack introduced an issue leading to apparent data loss in RRD graphs for filesystems, interfaces, and other components.  Since ZenPackLib uses a different directory heirarchy for RRD storage, component graphs after upgrade became empty (since the file paths changed).  This setting mitigates that issue for users upgrading directly from 2.5.x versions of this ZenPack.  The attempt is made during ZenPack installation to choose the correct version of this value.
+
 <br clear=all>
 
 === Configuring MSSQL Server Modeling/Monitoring ===
@@ -1292,6 +1297,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows ZP Does not allow compatible ports of 80/443 to be used (ZPS-622)
 * Fix Windows Zenpack may not properly detect IIS on 2012 servers. (ZPS-719)
 * Fix Long MSSQL Database names aren't parsed correctly because they exceed the powershell shell width (ZPS-944)
+* Mitigate RRD data losses associated with ZPL conversion (ZPS-1204)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)
