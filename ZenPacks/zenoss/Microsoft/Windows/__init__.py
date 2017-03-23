@@ -136,7 +136,10 @@ class ZenPack(schema.ZenPack):
                                                      'label': 'Windows KRB5 Include Directory'},
                             'zWinRMServerName': {'type': 'string',
                                                  'description': 'FQDN for domain authentication if resolution fails or different from AD',
-                                                 'label': 'Server Fully Qualified Domain Name'}
+                                                 'label': 'Server Fully Qualified Domain Name'},
+                            'zWinUseLegacyRRDPath': {'type': 'boolean',
+                                                 'description': 'Set this to True if upgrading directly from ZenPacks.zenoss.Microsoft.Windows 2.5.x',
+                                                 'label': 'Use Legacy style RRD filename path'}
                             }
 
     def install(self, app):
