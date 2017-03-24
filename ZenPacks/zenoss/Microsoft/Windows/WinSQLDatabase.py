@@ -14,6 +14,7 @@ from zenoss.protocols.protobufs.zep_pb2 import (
     SEVERITY_CLEAR, SEVERITY_CRITICAL, SEVERITY_ERROR,
     SEVERITY_INFO, SEVERITY_WARNING
 )
+from utils import get_rrd_path
 
 
 class WinSQLDatabase(schema.WinSQLDatabase):
@@ -21,6 +22,7 @@ class WinSQLDatabase(schema.WinSQLDatabase):
     Base class for WinSQLDatabase classes.
 
     """
+    rrdPath = get_rrd_path
 
     def getDBStatus(self):
         """Return database state"""
