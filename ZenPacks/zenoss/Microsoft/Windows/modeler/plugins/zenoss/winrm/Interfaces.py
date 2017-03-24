@@ -530,7 +530,7 @@ def filter_maps(objectmaps, device, log):
                 "zInterfaceMapIgnoreNames",
                 name, device.id)
 
-        elif ignore_types and ignore_types_search(om.type):
+        elif ignore_types and getattr(om, 'type', None) is not None and ignore_types_search(om.type):
             log.info(
                 "Ignoring %s on %s because it matches "
                 "zInterfaceMapIgnoreTypes",
