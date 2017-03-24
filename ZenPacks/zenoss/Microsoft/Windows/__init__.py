@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -137,6 +137,9 @@ class ZenPack(schema.ZenPack):
                             'zWinRMServerName': {'type': 'string',
                                                  'description': 'FQDN for domain authentication if resolution fails or different from AD',
                                                  'label': 'Server Fully Qualified Domain Name'},
+                            'zWinRMKrb5DisableRDNS': {'type': 'boolean',
+                                                      'description': 'Set to true to disable reverse DNS lookups by kerberos.  Only set at /Server/Microsoft level!',
+                                                      'label': 'Disable kerberos reverse DNS'}
                             }
 
     def install(self, app):

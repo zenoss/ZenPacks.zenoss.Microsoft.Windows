@@ -42,6 +42,9 @@ zProperties:
     default: /Devices/Server/Microsoft/Windows
   zWinRMKrb5includedir:
     default: ''
+  zWinRMKrb5DisableRDNS:
+    type: boolean
+    default: false
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService

@@ -1,9 +1,10 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
+#    'zWinRMKrb5DisableRDNS'
 #
 ##############################################################################
 
@@ -36,7 +37,8 @@ ConnectionInfoProperties = (
     'zWinRMLocale',
     'zWinRMEncoding',
     'zWinRSCodePage',
-    'zWinRMKrb5includedir'
+    'zWinRMKrb5includedir',
+    'kerberos_rdns'
 )
 
 
@@ -103,6 +105,7 @@ def createConnectionInfo(device_proxy):
     code_page = getattr(device_proxy, 'zWinRSCodePage', 65001)
 
     include_dir = getattr(device_proxy, 'zWinRMKrb5includedir', None)
+    disable_rdns = getattr(device_proxy, 'kerberos_rdns', False)
 
     return ConnectionInfo(
         hostname=hostname,
@@ -121,4 +124,5 @@ def createConnectionInfo(device_proxy):
         envelope_size=envelope_size,
         locale=locale,
         code_page=code_page,
-        include_dir=include_dir)
+        include_dir=include_dir,
+        disable_rdns=disable_rdns)
