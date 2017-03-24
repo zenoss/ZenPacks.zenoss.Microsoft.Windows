@@ -42,9 +42,6 @@ zProperties:
     default: /Devices/Server/Microsoft/Windows
   zWinRMKrb5includedir:
     default: ''
-  zWinUseLegacyRRDPath:
-    default: false
-    type: boolean
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService

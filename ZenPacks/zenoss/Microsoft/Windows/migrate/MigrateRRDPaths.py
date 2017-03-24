@@ -28,10 +28,11 @@ class MigrateRRDPaths(ZenPackMigration):
     version = Version(2, 7, 0)
 
     def migrate(self, pack):
+        # setting the default
+        pack.dmd.windows_using_legacy_rrd_paths = False
         if pack.prevZenPackVersion is None:
             return
         installed_version = pkg_resources.parse_version(pack.prevZenPackVersion)
         # we only want to set this if upgrading directly from 2.5.x
         if installed_version < pkg_resources.parse_version('2.6.0'):
-            LOG.info('Setting zWinUseLegacyRRDPath to True we are upgrading directly from 2.5.x')
-            pack.dmd.Devices.setZenProperty('zWinUseLegacyRRDPath', True)
+            pack.dmd.windows_using_legacy_rrd_paths = True
