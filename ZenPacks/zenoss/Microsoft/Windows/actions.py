@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -140,6 +140,7 @@ class WinCommandAction(IActionBase):
         locale = getattr(device, 'zWinRMLocale', 'en-US')
         code_page = getattr(device, 'zWinRSCodePage', 65001)
         include_dir = getattr(device, 'zWinRMKrb5includedir', None)
+        disable_rdns = getattr(device, 'kerberos_rdns', False)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -157,7 +158,8 @@ class WinCommandAction(IActionBase):
             envelope_size=envelope_size,
             locale=locale,
             code_page=code_page,
-            include_dir=include_dir)
+            include_dir=include_dir,
+            disable_rdns=disable_rdns)
 
     def _execute_command(self, device, command):
         """
