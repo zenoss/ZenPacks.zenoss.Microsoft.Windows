@@ -3954,50 +3954,40 @@ event_classes:
         example: IIS Service W3SVC_1 is in Stopped state
         remove: true
   /Status/Kerberos:
-    mappings:
-      Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
-        sequence: 1111
+    remove: true
   /Status/Kerberos/Auth:
     mappings:
       Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
+        eventClassKey: MW_Kerberos_Auth_Failure
         sequence: 1111
   /Status/Kerberos/Auth/Failure:
-    remove: true
     mappings:
       Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
+        eventClassKey: MW_Kerberos_Auth_Failure
         sequence: 1111
   /Status/Kerberos/Failure:
-    remove: true
     mappings:
       Failure Default:
-        eventClassKey: MW|Kerberos|Failure
+        eventClassKey: MW_Kerberos_Failure
         sequence: 1101
   /Status/Winrm:
     mappings:
       Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
+        eventClassKey: MW_WrongCredentials
         sequence: 1002
   /Status/Winrm/Ping:
     remove: true
   /Status/Winrm/Auth:
-    mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
-        sequence: 1002
-  /Status/Winrm/Auth/WrongCredentials:
     remove: true
+  /Status/Winrm/Auth/WrongCredentials:
     mappings:
       Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
+        eventClassKey: MW_WrongCredentials
         sequence: 1002
   /Status/Winrm/Auth/PasswordExpired:
-    remove: true
     mappings:
       Password Expired Default:
-        eventClassKey: MW|PasswordExpired
+        eventClassKey: MW_PasswordExpired
         sequence: 1001
   /Status/OSProcess:
     remove: false

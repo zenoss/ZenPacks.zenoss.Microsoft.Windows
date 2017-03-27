@@ -465,14 +465,14 @@ def kerberosErrorMsgCheck(config, events, error):
         if 'initial credentials' in error \
                 or 'authGSSClientStep failed' in error:
             append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'MW|Kerberos|Auth|Failure',
+                'eventClassKey': 'MW_Kerberos_Auth_Failure',
                 'severity': ZenEventClasses.Critical,
                 'summary': error,
                 'ipAddress': config.manageIp,
                 'device': config.id})
         else:
             append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'MW|Kerberos|Failure',
+                'eventClassKey': 'MW_Kerberos_Failure',
                 'severity': ZenEventClasses.Critical,
                 'summary': error,
                 'ipAddress': config.manageIp,
@@ -482,14 +482,12 @@ def kerberosErrorMsgCheck(config, events, error):
 def generateKerberosClearAuthEvents(config, events):
     """Generate clear authentication events."""
     append_event_datasource_plugin(config.datasources, events, {
-        'eventClass': '/Status/Kerberos/Auth/Failure',
-        'eventClassKey': 'MW|Kerberos|Auth|Failure',
+        'eventClassKey': 'MW_Kerberos_Auth_Failure',
         'severity': ZenEventClasses.Clear,
         'summary': 'No Kerberos auth failures',
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
-        'eventClass': '/Status/Kerberos/Failure',
-        'eventClassKey': 'MW|Kerberos|Failure',
+        'eventClassKey': 'MW_Kerberos_Failure',
         'severity': ZenEventClasses.Clear,
         'summary': 'No Kerberos failures',
         'device': config.id})
@@ -500,14 +498,14 @@ def errorMsgCheck(config, events, error):
     wrongCredsMessages = ('Check username and password', 'Username invalid',)
     if 'Password expired' in error:
         append_event_datasource_plugin(config.datasources, events, {
-            'eventClassKey': 'MW|PasswordExpired',
+            'eventClassKey': 'MW_PasswordExpired',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,
             'device': config.id})
     elif any(x in error for x in wrongCredsMessages):
         append_event_datasource_plugin(config.datasources, events, {
-            'eventClassKey': 'MW|WrongCredentials',
+            'eventClassKey': 'MW_WrongCredentials',
             'severity': ZenEventClasses.Critical,
             'summary': error,
             'ipAddress': config.manageIp,
@@ -519,14 +517,12 @@ def errorMsgCheck(config, events, error):
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
     append_event_datasource_plugin(config.datasources, events, {
-        'eventClass': '/Status/Winrm/Auth/PasswordExpired',
-        'eventClassKey': 'MW|PasswordExpired',
+        'eventClassKey': 'MW_PasswordExpired',
         'severity': ZenEventClasses.Clear,
         'summary': 'Password is not expired',
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
-        'eventClass': '/Status/Winrm/Auth/WrongCredentials',
-        'eventClassKey': 'MW|WrongCredentials',
+        'eventClassKey': 'MW_WrongCredentials',
         'severity': ZenEventClasses.Clear,
         'summary': 'Credentials are OK',
         'device': config.id})
@@ -556,6 +552,7 @@ def get_dsconf(dsconfs, component, param=None):
             return dsconf
     return None
 
+
 def has_metricfacade():
     '''return True if metricfacade can be imported'''
     try:
@@ -566,7 +563,9 @@ def has_metricfacade():
         return True
     return False
 
+
 HAS_METRICFACADE = has_metricfacade()
+
 
 def get_rrd_path(obj):
     """Preserve old-style RRD paths"""
