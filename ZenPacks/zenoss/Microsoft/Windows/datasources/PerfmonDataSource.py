@@ -821,35 +821,31 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Check error message and generate appropriate event."""
         if 'Password expired' in errorMessage:
             PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'eventClass': '/Status/Winrm/Auth/PasswordExpired',
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|PasswordExpired',
+                'eventClassKey': 'MW_PasswordExpired',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
         elif 'Check username and password' in errorMessage:
             PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'eventClass': '/Status/Winrm/Auth/WrongCredentials',
                 'device': self.config.id,
                 'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|WrongCredentials',
+                'eventClassKey': 'MW_WrongCredentials',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
         PERSISTER.add_event(self.config.id, self.config.datasources, {
-            'eventClass': '/Status/Winrm/Auth/PasswordExpired',
             'device': self.config.id,
             'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|PasswordExpired',
+            'eventClassKey': 'MW_PasswordExpired',
             'summary': 'Password is not expired',
             'ipAddress': self.config.manageIp})
         PERSISTER.add_event(self.config.id, self.config.datasources, {
-            'eventClass': '/Status/Winrm/Auth/WrongCredentials',
             'device': self.config.id,
             'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|WrongCredentials',
+            'eventClassKey': 'MW_WrongCredentials',
             'summary': 'Credentials are OK',
             'ipAddress': self.config.manageIp})
 
