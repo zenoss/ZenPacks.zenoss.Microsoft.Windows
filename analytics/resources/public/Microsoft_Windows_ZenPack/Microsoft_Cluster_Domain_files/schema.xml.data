@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <schema version="1.0" xmlns="http://www.jaspersoft.com/2007/SL/XMLSchema">
   <itemGroups>
-    <itemGroup resourceId="JoinTree_1" label="ClusterDevices" id="set_cluster_device" description="">
+    <itemGroup resourceId="JoinTree_1" label="Cluster Devices" id="set_cluster_device" description="">
       <itemGroups>
         <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_device_measures" description="">
           <itemGroups/>
@@ -342,8 +342,13 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Cluster Nodes" id="set_cluster_node" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_node_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_cluster_node.cluster_node_name" dimensionOrMeasure="Dimension" id="dim_cluster_node_cluster_node_name" label="Cluster Node Name"/>
         <item resourceId="JoinTree_1.dim_cluster_node.domain" dimensionOrMeasure="Dimension" id="dim_cluster_node_domain" label="Domain"/>
         <item resourceId="JoinTree_1.dim_cluster_node.ownernode" dimensionOrMeasure="Dimension" id="dim_cluster_node_ownernode" label="Owner Node"/>
         <item resourceId="JoinTree_1.dim_cluster_node.assignedvote" dimensionOrMeasure="Dimension" id="dim_cluster_node_assignedvote" label="Assigned Vote"/>
@@ -351,8 +356,13 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Cluster Disks" id="set_cluster_disk" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_disk_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_cluster_disk.cluster_disk_name" dimensionOrMeasure="Dimension" id="dim_cluster_disk_cluster_disk_name" label="Cluster Disk Name"/>
         <item resourceId="JoinTree_1.dim_cluster_disk.domain" dimensionOrMeasure="Dimension" id="dim_cluster_disk_domain" label="Domain"/>
         <item resourceId="JoinTree_1.dim_cluster_disk.ownernode" dimensionOrMeasure="Dimension" id="dim_cluster_disk_ownernode" label="Owner Node"/>
         <item resourceId="JoinTree_1.dim_cluster_disk.volumepath" dimensionOrMeasure="Dimension" id="dim_cluster_disk_volumepath" label="Volume Path"/>
@@ -364,8 +374,13 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Cluster Interfaces" id="set_cluster_interface" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_interface_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_cluster_interface.cluster_interface_name" dimensionOrMeasure="Dimension" id="dim_cluster_interface_cluster_interface_name" label="Cluster Interface Name"/>
         <item resourceId="JoinTree_1.dim_cluster_interface.domain" dimensionOrMeasure="Dimension" id="dim_cluster_interface_domain" label="Domain"/>
         <item resourceId="JoinTree_1.dim_cluster_interface.node" dimensionOrMeasure="Dimension" id="dim_cluster_interface_node" label="Node"/>
         <item resourceId="JoinTree_1.dim_cluster_interface.network" dimensionOrMeasure="Dimension" id="dim_cluster_interface_network" label="Network"/>
@@ -373,36 +388,57 @@
         <item resourceId="JoinTree_1.dim_cluster_interface.adapter" dimensionOrMeasure="Dimension" id="dim_cluster_interface_adapter" label="Adapter"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="ClusterDevices" id="set_ms_cluster_service" description="">
+    <itemGroup resourceId="JoinTree_1" label="Cluster Services" id="set_cluster_service" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_service_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_name" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_name" label="ClusterDevice Name"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_ownernode" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_ownernode" label="Owner Node"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_description" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_description" label="Description"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_coregroup" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_coregroup" label="Core Group"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_priority" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_priority" label="Priority"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_state" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_state" label="State"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_service.ms_cluster_service_domain" dimensionOrMeasure="Dimension" id="dim_ms_cluster_service_ms_cluster_service_domain" label="Domain"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_name" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_name" label="Cluster Service Name"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_domain" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_domain" label="Domain"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_ownernode" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_ownernode" label="Owner Node"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_description" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_coregroup" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_coregroup" label="Core Group"/>
+        <item resourceId="JoinTree_1.dim_cluster_service.cluster_service_priority" dimensionOrMeasure="Dimension" id="dim_cluster_service_cluster_service_priority" label="Priority"/>
       </items>
     </itemGroup>
-    <itemGroup resourceId="JoinTree_1" label="ClusterDevices" id="set_ms_cluster_resource" description="">
+    <itemGroup resourceId="JoinTree_1" label="Cluster Resources" id="set_cluster_resource" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_resource_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_name" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_name" label="ClusterDevice Name"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_ownernode" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_ownernode" label="Owner Node"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_description" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_description" label="Description"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_ownergroup" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_ownergroup" label="Owner Group"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_state" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_state" label="State"/>
-        <item resourceId="JoinTree_1.dim_ms_cluster_resource.ms_cluster_resource_domain" dimensionOrMeasure="Dimension" id="dim_ms_cluster_resource_ms_cluster_resource_domain" label="Domain"/>
+        <item resourceId="JoinTree_1.dim_cluster_resource.cluster_resource_name" dimensionOrMeasure="Dimension" id="dim_cluster_resource_cluster_resource_name" label="Cluster Resource Name"/>
+        <item resourceId="JoinTree_1.dim_cluster_resource.cluster_resource_domain" dimensionOrMeasure="Dimension" id="dim_cluster_resource_cluster_resource_domain" label="Domain"/>
+        <item resourceId="JoinTree_1.dim_cluster_resource.cluster_resource_ownernode" dimensionOrMeasure="Dimension" id="dim_cluster_resource_cluster_resource_ownernode" label="Owner Node"/>
+        <item resourceId="JoinTree_1.dim_cluster_resource.cluster_resource_description" dimensionOrMeasure="Dimension" id="dim_cluster_resource_cluster_resource_description" label="Description"/>
+        <item resourceId="JoinTree_1.dim_cluster_resource.cluster_resource_ownergroup" dimensionOrMeasure="Dimension" id="dim_cluster_resource_cluster_resource_ownergroup" label="Owner Group"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="Cluster Networks" id="set_cluster_network" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_cluster_network_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
-        <item resourceId="JoinTree_1.dim_cluster_network.cluster_network_name" dimensionOrMeasure="Dimension" id="dim_cluster_network_cluster_network_name" label="Cluster Network Name"/>
         <item resourceId="JoinTree_1.dim_cluster_network.domain" dimensionOrMeasure="Dimension" id="dim_cluster_network_domain" label="Domain"/>
         <item resourceId="JoinTree_1.dim_cluster_network.description" dimensionOrMeasure="Dimension" id="dim_cluster_network_description" label="Description"/>
         <item resourceId="JoinTree_1.dim_cluster_network.role" dimensionOrMeasure="Dimension" id="dim_cluster_network_role" label="Cluster Use"/>
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Instances" id="set_win_sql_instance" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_instance_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_name" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_name" label="SQL Instance Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_instance.win_sql_instance_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_instance_win_sql_instance_instancename" label="Instance Name"/>
@@ -413,6 +449,12 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Backups" id="set_win_sql_backup" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_backup_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_name" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_name" label="SQL Backup Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_backup.win_sql_backup_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_backup_win_sql_backup_instancename" label="Instance Name"/>
@@ -677,6 +719,12 @@
       </items>
     </itemGroup>
     <itemGroup resourceId="JoinTree_1" label="SQL Jobs" id="set_win_sql_job" description="">
+      <itemGroups>
+        <itemGroup resourceId="JoinTree_1" label="Measures" id="set_win_sql_job_measures" description="">
+          <itemGroups/>
+          <items/>
+        </itemGroup>
+      </itemGroups>
       <items>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_name" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_name" label="SQL Job Name"/>
         <item resourceId="JoinTree_1.dim_win_sql_job.win_sql_job_instancename" dimensionOrMeasure="Dimension" id="dim_win_sql_job_win_sql_job_instancename" label="Instance Name"/>
@@ -727,6 +775,7 @@
         <field type="java.lang.String" id="cluster_device_creatingdc"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Integer" id="device_class_key"/>
         <field type="java.lang.Integer" id="performance_conf_key"/>
@@ -736,9 +785,9 @@
         <field type="java.lang.Double" id="administrative_role_count"/>
         <field type="java.lang.Double" id="user_command_count"/>
         <field type="java.lang.Double" id="status_monitor_conf_count"/>
+        <field type="java.lang.Double" id="element_pool_count"/>
         <field type="java.lang.Double" id="my_sql_server_count"/>
       </fieldList>
-      <filterString>startsWith(device_class, '/Server/Microsoft') and endsWith(device_class, 'Cluster')</filterString>
     </jdbcTable>
     <jdbcTable tableName="dim_date" datasourceId="zenoss_reporting" id="dim_date">
       <fieldList>
@@ -1518,12 +1567,9 @@
       <fieldList>
         <field type="java.lang.Integer" id="cluster_node_key"/>
         <field type="java.sql.Timestamp" id="cluster_node_deleted_at" dataSetExpression="if(cluster_node_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="cluster_node_name"/>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.String" id="snmpindex"/>
         <field type="java.lang.Boolean" id="monitor"/>
-        <field type="java.lang.String" id="productionState"/>
-        <field type="java.lang.String" id="preMWProductionState"/>
         <field type="java.lang.String" id="domain"/>
         <field type="java.lang.String" id="ownernode"/>
         <field type="java.lang.String" id="assignedvote"/>
@@ -1535,12 +1581,9 @@
       <fieldList>
         <field type="java.lang.Integer" id="cluster_disk_key"/>
         <field type="java.sql.Timestamp" id="cluster_disk_deleted_at" dataSetExpression="if(cluster_disk_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="cluster_disk_name"/>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.String" id="snmpindex"/>
         <field type="java.lang.Boolean" id="monitor"/>
-        <field type="java.lang.String" id="productionState"/>
-        <field type="java.lang.String" id="preMWProductionState"/>
         <field type="java.lang.String" id="domain"/>
         <field type="java.lang.String" id="ownernode"/>
         <field type="java.lang.String" id="volumepath"/>
@@ -1556,12 +1599,9 @@
       <fieldList>
         <field type="java.lang.Integer" id="cluster_interface_key"/>
         <field type="java.sql.Timestamp" id="cluster_interface_deleted_at" dataSetExpression="if(cluster_interface_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="cluster_interface_name"/>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.String" id="snmpindex"/>
         <field type="java.lang.Boolean" id="monitor"/>
-        <field type="java.lang.String" id="productionState"/>
-        <field type="java.lang.String" id="preMWProductionState"/>
         <field type="java.lang.String" id="domain"/>
         <field type="java.lang.String" id="node"/>
         <field type="java.lang.String" id="network"/>
@@ -1570,68 +1610,62 @@
         <field type="java.lang.Integer" id="clusternode_key"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="dim_ms_cluster_service" datasourceId="zenoss_reporting" id="dim_ms_cluster_service">
+    <jdbcTable tableName="dim_cluster_service" datasourceId="zenoss_reporting" id="dim_cluster_service">
       <fieldList>
-        <field type="java.lang.Integer" id="ms_cluster_service_key"/>
-        <field type="java.sql.Timestamp" id="ms_cluster_service_deleted_at" dataSetExpression="if(ms_cluster_service_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="ms_cluster_service_name"/>
-        <field type="java.lang.String" id="ms_cluster_service_id"/>
-        <field type="java.lang.String" id="ms_cluster_service_type"/>
-        <field type="java.lang.String" id="ms_cluster_service_uid"/>
+        <field type="java.lang.Integer" id="cluster_service_key"/>
+        <field type="java.sql.Timestamp" id="cluster_service_deleted_at" dataSetExpression="if(cluster_service_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="cluster_service_name"/>
+        <field type="java.lang.String" id="cluster_service_id"/>
+        <field type="java.lang.String" id="cluster_service_type"/>
+        <field type="java.lang.String" id="cluster_service_uid"/>
         <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="ms_cluster_service_snmpindex"/>
-        <field type="java.lang.Boolean" id="ms_cluster_service_monitor"/>
-        <field type="java.lang.String" id="ms_cluster_service_production_state"/>
-        <field type="java.lang.String" id="ms_cluster_service_pre_mw_production_state"/>
-        <field type="java.lang.String" id="ms_cluster_service_ownernode"/>
-        <field type="java.lang.String" id="ms_cluster_service_description"/>
-        <field type="java.lang.Boolean" id="ms_cluster_service_coregroup"/>
-        <field type="java.lang.String" id="ms_cluster_service_priority"/>
-        <field type="java.lang.String" id="ms_cluster_service_state"/>
-        <field type="java.lang.String" id="ms_cluster_service_domain"/>
+        <field type="java.lang.String" id="cluster_service_snmpindex"/>
+        <field type="java.lang.Boolean" id="cluster_service_monitor"/>
+        <field type="java.lang.String" id="cluster_service_domain"/>
+        <field type="java.lang.String" id="cluster_service_ownernode"/>
+        <field type="java.lang.String" id="cluster_service_description"/>
+        <field type="java.lang.Boolean" id="cluster_service_coregroup"/>
+        <field type="java.lang.Double" id="cluster_service_priority"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="software_key"/>
-        <field type="java.lang.Double" id="ms_cluster_resource_count"/>
+        <field type="java.lang.Double" id="cluster_resource_count"/>
       </fieldList>
     </jdbcTable>
-    <jdbcTable tableName="dim_ms_cluster_resource" datasourceId="zenoss_reporting" id="dim_ms_cluster_resource">
+
+    <jdbcTable tableName="dim_cluster_resource" datasourceId="zenoss_reporting" id="dim_cluster_resource">
       <fieldList>
-        <field type="java.lang.Integer" id="ms_cluster_resource_key"/>
-        <field type="java.sql.Timestamp" id="ms_cluster_resource_deleted_at" dataSetExpression="if(ms_cluster_resource_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="ms_cluster_resource_name"/>
-        <field type="java.lang.String" id="ms_cluster_resource_id"/>
-        <field type="java.lang.String" id="ms_cluster_resource_type"/>
-        <field type="java.lang.String" id="ms_cluster_resource_uid"/>
+        <field type="java.lang.Integer" id="cluster_resource_key"/>
+        <field type="java.sql.Timestamp" id="cluster_resource_deleted_at" dataSetExpression="if(cluster_resource_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="cluster_resource_name"/>
+        <field type="java.lang.String" id="cluster_resource_id"/>
+        <field type="java.lang.String" id="cluster_resource_type"/>
+        <field type="java.lang.String" id="cluster_resource_uid"/>
         <field type="java.lang.Integer" id="device_key"/>
-        <field type="java.lang.String" id="ms_cluster_resource_snmpindex"/>
-        <field type="java.lang.Boolean" id="ms_cluster_resource_monitor"/>
-        <field type="java.lang.String" id="ms_cluster_resource_production_state"/>
-        <field type="java.lang.String" id="ms_cluster_resource_pre_mw_production_state"/>
-        <field type="java.lang.String" id="ms_cluster_resource_ownernode"/>
-        <field type="java.lang.String" id="ms_cluster_resource_description"/>
-        <field type="java.lang.String" id="ms_cluster_resource_ownergroup"/>
-        <field type="java.lang.String" id="ms_cluster_resource_state"/>
-        <field type="java.lang.String" id="ms_cluster_resource_domain"/>
+        <field type="java.lang.String" id="cluster_resource_snmpindex"/>
+        <field type="java.lang.Boolean" id="cluster_resource_monitor"/>
+        <field type="java.lang.String" id="cluster_resource_domain"/>
+        <field type="java.lang.String" id="cluster_resource_ownernode"/>
+        <field type="java.lang.String" id="cluster_resource_description"/>
+        <field type="java.lang.Boolean" id="cluster_resource_ownergroup"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
-        <field type="java.lang.Integer" id="ms_cluster_service_key"/>
+        <field type="java.lang.Integer" id="cluster_service_key"/>
       </fieldList>
     </jdbcTable>
     <jdbcTable tableName="dim_cluster_network" datasourceId="zenoss_reporting" id="dim_cluster_network">
       <fieldList>
         <field type="java.lang.Integer" id="cluster_network_key"/>
         <field type="java.sql.Timestamp" id="cluster_network_deleted_at" dataSetExpression="if(cluster_network_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="cluster_network_name"/>
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.String" id="snmpindex"/>
         <field type="java.lang.Boolean" id="monitor"/>
-        <field type="java.lang.String" id="productionState"/>
-        <field type="java.lang.String" id="preMWProductionState"/>
         <field type="java.lang.String" id="domain"/>
         <field type="java.lang.String" id="description"/>
         <field type="java.lang.Boolean" id="role"/>
@@ -1656,6 +1690,7 @@
         <field type="java.lang.String" id="win_sql_instance_cluster_node_server"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="software_key"/>
@@ -1681,6 +1716,7 @@
         <field type="java.lang.String" id="win_sql_backup_status"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="win_sql_instance_key"/>
@@ -1712,6 +1748,7 @@
         <field type="java.lang.String" id="win_sql_database_cluster_node_server"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="win_sql_instance_key"/>
@@ -2280,8 +2317,6 @@
         <field type="java.lang.Integer" id="device_key"/>
         <field type="java.lang.String" id="win_sql_job_snmpindex"/>
         <field type="java.lang.Boolean" id="win_sql_job_monitor"/>
-        <field type="java.lang.String" id="win_sql_job_production_state"/>
-        <field type="java.lang.String" id="win_sql_job_pre_mw_production_state"/>
         <field type="java.lang.String" id="win_sql_job_instancename"/>
         <field type="java.lang.String" id="win_sql_job_jobid"/>
         <field type="java.lang.String" id="win_sql_job_enabled"/>
@@ -2291,6 +2326,7 @@
         <field type="java.lang.String" id="win_sql_job_cluster_node_server"/>
         <field type="java.lang.Double" id="dependencies_count"/>
         <field type="java.lang.Double" id="dependents_count"/>
+        <field type="java.lang.Double" id="component_group_count"/>
         <field type="java.lang.Double" id="maintenance_window_count"/>
         <field type="java.lang.Double" id="links_count"/>
         <field type="java.lang.Integer" id="win_sql_instance_key"/>
@@ -2301,7 +2337,7 @@
         <field type="java.lang.Integer" id="dim_date.date_key"/>
         <field type="java.util.Date" id="dim_date.date_date"/>
         <field type="java.lang.Integer" id="dim_cluster_device.cluster_device_key"/>
-        <field type="cluster_device_deleted_at" id="dim_cluster_device.cluster_device_deleted_at" dataSetExpression="if(dim_cluster_device.cluster_device_deleted_at,null,0,1)"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_device.cluster_device_deleted_at" dataSetExpression="if(dim_cluster_device.cluster_device_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_cluster_device.cluster_device_id"/>
         <field type="java.lang.String" id="dim_cluster_device.cluster_device_name"/>
         <field type="java.lang.String" id="dim_cluster_device.cluster_device_type"/>
@@ -2332,6 +2368,7 @@
         <field type="java.lang.String" id="dim_cluster_device.cluster_device_creatingdc"/>
         <field type="java.lang.Double" id="dim_cluster_device.dependencies_count"/>
         <field type="java.lang.Double" id="dim_cluster_device.dependents_count"/>
+        <field type="java.lang.Double" id="dim_cluster_device.component_group_count"/>
         <field type="java.lang.Double" id="dim_cluster_device.maintenance_window_count"/>
         <field type="java.lang.Integer" id="dim_cluster_device.device_class_key"/>
         <field type="java.lang.Integer" id="dim_cluster_device.performance_conf_key"/>
@@ -2341,6 +2378,7 @@
         <field type="java.lang.Double" id="dim_cluster_device.administrative_role_count"/>
         <field type="java.lang.Double" id="dim_cluster_device.user_command_count"/>
         <field type="java.lang.Double" id="dim_cluster_device.status_monitor_conf_count"/>
+        <field type="java.lang.Double" id="dim_cluster_device.element_pool_count"/>
         <field type="java.lang.Double" id="dim_cluster_device.my_sql_server_count"/>
         <field type="java.lang.Integer" id="daily_dsclientbinds__sec.device_key"/>
         <field type="java.lang.Integer" id="daily_dsclientbinds__sec.component_key"/>
@@ -2855,26 +2893,20 @@
         <field type="java.lang.Double" id="hourly_smtpservermsgsdelivered__sec.fct_max"/>
         <field type="java.lang.Double" id="hourly_smtpservermsgsdelivered__sec.fct_min"/>
         <field type="java.lang.Integer" id="dim_cluster_node.cluster_node_key"/>
-        <field type="cluster_node_deleted_at" id="dim_cluster_node.cluster_node_deleted_at" dataSetExpression="if(dim_cluster_node.cluster_node_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_cluster_node.cluster_node_name"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_node.cluster_node_deleted_at" dataSetExpression="if(dim_cluster_node.cluster_node_deleted_at,null,0,1)"/>
         <field type="java.lang.Integer" id="dim_cluster_node.device_key"/>
         <field type="java.lang.String" id="dim_cluster_node.snmpindex"/>
         <field type="java.lang.Boolean" id="dim_cluster_node.monitor"/>
-        <field type="java.lang.String" id="dim_cluster_node.productionState"/>
-        <field type="java.lang.String" id="dim_cluster_node.preMWProductionState"/>
         <field type="java.lang.String" id="dim_cluster_node.domain"/>
         <field type="java.lang.String" id="dim_cluster_node.ownernode"/>
         <field type="java.lang.String" id="dim_cluster_node.assignedvote"/>
         <field type="java.lang.String" id="dim_cluster_node.currentvote"/>
         <field type="java.lang.Integer" id="dim_cluster_node.os_key"/>
         <field type="java.lang.Integer" id="dim_cluster_disk.cluster_disk_key"/>
-        <field type="cluster_disk_deleted_at" id="dim_cluster_disk.cluster_disk_deleted_at" dataSetExpression="if(dim_cluster_disk.cluster_disk_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_cluster_disk.cluster_disk_name"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_disk.cluster_disk_deleted_at" dataSetExpression="if(dim_cluster_disk.cluster_disk_deleted_at,null,0,1)"/>
         <field type="java.lang.Integer" id="dim_cluster_disk.device_key"/>
         <field type="java.lang.String" id="dim_cluster_disk.snmpindex"/>
         <field type="java.lang.Boolean" id="dim_cluster_disk.monitor"/>
-        <field type="java.lang.String" id="dim_cluster_disk.productionState"/>
-        <field type="java.lang.String" id="dim_cluster_disk.preMWProductionState"/>
         <field type="java.lang.String" id="dim_cluster_disk.domain"/>
         <field type="java.lang.String" id="dim_cluster_disk.ownernode"/>
         <field type="java.lang.String" id="dim_cluster_disk.volumepath"/>
@@ -2885,77 +2917,67 @@
         <field type="java.lang.String" id="dim_cluster_disk.assignedto"/>
         <field type="java.lang.Integer" id="dim_cluster_disk.clusternode_key"/>
         <field type="java.lang.Integer" id="dim_cluster_interface.cluster_interface_key"/>
-        <field type="cluster_interface_deleted_at" id="dim_cluster_interface.cluster_interface_deleted_at" dataSetExpression="if(dim_cluster_interface.cluster_interface_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_cluster_interface.cluster_interface_name"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_interface.cluster_interface_deleted_at" dataSetExpression="if(dim_cluster_interface.cluster_interface_deleted_at,null,0,1)"/>
         <field type="java.lang.Integer" id="dim_cluster_interface.device_key"/>
         <field type="java.lang.String" id="dim_cluster_interface.snmpindex"/>
         <field type="java.lang.Boolean" id="dim_cluster_interface.monitor"/>
-        <field type="java.lang.String" id="dim_cluster_interface.productionState"/>
-        <field type="java.lang.String" id="dim_cluster_interface.preMWProductionState"/>
         <field type="java.lang.String" id="dim_cluster_interface.domain"/>
         <field type="java.lang.String" id="dim_cluster_interface.node"/>
         <field type="java.lang.String" id="dim_cluster_interface.network"/>
         <field type="java.lang.String" id="dim_cluster_interface.ipaddresses"/>
         <field type="java.lang.String" id="dim_cluster_interface.adapter"/>
         <field type="java.lang.Integer" id="dim_cluster_interface.clusternode_key"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_service.ms_cluster_service_key"/>
-        <field type="ms_cluster_service_deleted_at" id="dim_ms_cluster_service.ms_cluster_service_deleted_at" dataSetExpression="if(dim_ms_cluster_service.ms_cluster_service_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_name"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_id"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_type"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_uid"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_service.device_key"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_ms_cluster_service.ms_cluster_service_monitor"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_production_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_ownernode"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_description"/>
-        <field type="java.lang.Boolean" id="dim_ms_cluster_service.ms_cluster_service_coregroup"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_priority"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_service.ms_cluster_service_domain"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_service.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_service.dependents_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_service.maintenance_window_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_service.links_count"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_service.software_key"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_service.ms_cluster_resource_count"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_resource.ms_cluster_resource_key"/>
-        <field type="ms_cluster_resource_deleted_at" id="dim_ms_cluster_resource.ms_cluster_resource_deleted_at" dataSetExpression="if(dim_ms_cluster_resource.ms_cluster_resource_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_name"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_id"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_type"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_uid"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_resource.device_key"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_snmpindex"/>
-        <field type="java.lang.Boolean" id="dim_ms_cluster_resource.ms_cluster_resource_monitor"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_production_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_pre_mw_production_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_ownernode"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_description"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_ownergroup"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_state"/>
-        <field type="java.lang.String" id="dim_ms_cluster_resource.ms_cluster_resource_domain"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_resource.dependencies_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_resource.dependents_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_resource.maintenance_window_count"/>
-        <field type="java.lang.Double" id="dim_ms_cluster_resource.links_count"/>
-        <field type="java.lang.Integer" id="dim_ms_cluster_resource.ms_cluster_service_key"/>
+        <field type="java.lang.Integer" id="dim_cluster_service.cluster_service_key"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_service.cluster_service_deleted_at" dataSetExpression="if(dim_cluster_service.cluster_service_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_name"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_id"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_type"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_uid"/>
+        <field type="java.lang.Integer" id="dim_cluster_service.device_key"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_cluster_service.cluster_service_monitor"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_domain"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_ownernode"/>
+        <field type="java.lang.String" id="dim_cluster_service.cluster_service_description"/>
+        <field type="java.lang.Boolean" id="dim_cluster_service.cluster_service_coregroup"/>
+        <field type="java.lang.Double" id="dim_cluster_service.cluster_service_priority"/>
+        <field type="java.lang.Double" id="dim_cluster_service.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_cluster_service.dependents_count"/>
+        <field type="java.lang.Double" id="dim_cluster_service.component_group_count"/>
+        <field type="java.lang.Double" id="dim_cluster_service.maintenance_window_count"/>
+        <field type="java.lang.Double" id="dim_cluster_service.links_count"/>
+        <field type="java.lang.Integer" id="dim_cluster_service.software_key"/>
+        <field type="java.lang.Double" id="dim_cluster_service.cluster_resource_count"/>
+        <field type="java.lang.Integer" id="dim_cluster_resource.cluster_resource_key"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_resource.cluster_resource_deleted_at" dataSetExpression="if(dim_cluster_resource.cluster_resource_deleted_at,null,0,1)"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_name"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_id"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_type"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_uid"/>
+        <field type="java.lang.Integer" id="dim_cluster_resource.device_key"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_snmpindex"/>
+        <field type="java.lang.Boolean" id="dim_cluster_resource.cluster_resource_monitor"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_domain"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_ownernode"/>
+        <field type="java.lang.String" id="dim_cluster_resource.cluster_resource_description"/>
+        <field type="java.lang.Boolean" id="dim_cluster_resource.cluster_resource_ownergroup"/>
+        <field type="java.lang.Double" id="dim_cluster_resource.dependencies_count"/>
+        <field type="java.lang.Double" id="dim_cluster_resource.dependents_count"/>
+        <field type="java.lang.Double" id="dim_cluster_resource.component_group_count"/>
+        <field type="java.lang.Double" id="dim_cluster_resource.maintenance_window_count"/>
+        <field type="java.lang.Double" id="dim_cluster_resource.links_count"/>
+        <field type="java.lang.Integer" id="dim_cluster_resource.cluster_service_key"/>
         <field type="java.lang.Integer" id="dim_cluster_network.cluster_network_key"/>
-        <field type="cluster_network_deleted_at" id="dim_cluster_network.cluster_network_deleted_at" dataSetExpression="if(dim_cluster_network.cluster_network_deleted_at,null,0,1)"/>
-        <field type="java.lang.String" id="dim_cluster_network.cluster_network_name"/>
+        <field type="java.sql.Timestamp" id="dim_cluster_network.cluster_network_deleted_at" dataSetExpression="if(dim_cluster_network.cluster_network_deleted_at,null,0,1)"/>
         <field type="java.lang.Integer" id="dim_cluster_network.device_key"/>
         <field type="java.lang.String" id="dim_cluster_network.snmpindex"/>
         <field type="java.lang.Boolean" id="dim_cluster_network.monitor"/>
-        <field type="java.lang.String" id="dim_cluster_network.productionState"/>
-        <field type="java.lang.String" id="dim_cluster_network.preMWProductionState"/>
         <field type="java.lang.String" id="dim_cluster_network.domain"/>
         <field type="java.lang.String" id="dim_cluster_network.description"/>
         <field type="java.lang.Boolean" id="dim_cluster_network.role"/>
         <field type="java.lang.Integer" id="dim_cluster_network.os_key"/>
         <field type="java.lang.Integer" id="dim_win_sql_instance.win_sql_instance_key"/>
-        <field type="win_sql_instance_deleted_at" id="dim_win_sql_instance.win_sql_instance_deleted_at" dataSetExpression="if(dim_win_sql_instance.win_sql_instance_deleted_at,null,0,1)"/>
+        <field type="java.sql.Timestamp" id="dim_win_sql_instance.win_sql_instance_deleted_at" dataSetExpression="if(dim_win_sql_instance.win_sql_instance_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_sql_instance.win_sql_instance_name"/>
         <field type="java.lang.String" id="dim_win_sql_instance.win_sql_instance_id"/>
         <field type="java.lang.String" id="dim_win_sql_instance.win_sql_instance_type"/>
@@ -2970,6 +2992,7 @@
         <field type="java.lang.String" id="dim_win_sql_instance.win_sql_instance_cluster_node_server"/>
         <field type="java.lang.Double" id="dim_win_sql_instance.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_sql_instance.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_instance.component_group_count"/>
         <field type="java.lang.Double" id="dim_win_sql_instance.maintenance_window_count"/>
         <field type="java.lang.Double" id="dim_win_sql_instance.links_count"/>
         <field type="java.lang.Integer" id="dim_win_sql_instance.software_key"/>
@@ -2977,7 +3000,7 @@
         <field type="java.lang.Double" id="dim_win_sql_instance.win_sql_database_count"/>
         <field type="java.lang.Double" id="dim_win_sql_instance.win_sql_job_count"/>
         <field type="java.lang.Integer" id="dim_win_sql_backup.win_sql_backup_key"/>
-        <field type="win_sql_backup_deleted_at" id="dim_win_sql_backup.win_sql_backup_deleted_at" dataSetExpression="if(dim_win_sql_backup.win_sql_backup_deleted_at,null,0,1)"/>
+        <field type="java.sql.Timestamp" id="dim_win_sql_backup.win_sql_backup_deleted_at" dataSetExpression="if(dim_win_sql_backup.win_sql_backup_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_sql_backup.win_sql_backup_name"/>
         <field type="java.lang.String" id="dim_win_sql_backup.win_sql_backup_id"/>
         <field type="java.lang.String" id="dim_win_sql_backup.win_sql_backup_type"/>
@@ -2991,11 +3014,12 @@
         <field type="java.lang.String" id="dim_win_sql_backup.win_sql_backup_status"/>
         <field type="java.lang.Double" id="dim_win_sql_backup.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_sql_backup.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_backup.component_group_count"/>
         <field type="java.lang.Double" id="dim_win_sql_backup.maintenance_window_count"/>
         <field type="java.lang.Double" id="dim_win_sql_backup.links_count"/>
         <field type="java.lang.Integer" id="dim_win_sql_backup.win_sql_instance_key"/>
         <field type="java.lang.Integer" id="dim_win_sql_database.win_sql_database_key"/>
-        <field type="win_sql_database_deleted_at" id="dim_win_sql_database.win_sql_database_deleted_at" dataSetExpression="if(dim_win_sql_database.win_sql_database_deleted_at,null,0,1)"/>
+        <field type="java.sql.Timestamp" id="dim_win_sql_database.win_sql_database_deleted_at" dataSetExpression="if(dim_win_sql_database.win_sql_database_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_sql_database.win_sql_database_name"/>
         <field type="java.lang.String" id="dim_win_sql_database.win_sql_database_id"/>
         <field type="java.lang.String" id="dim_win_sql_database.win_sql_database_type"/>
@@ -3018,6 +3042,7 @@
         <field type="java.lang.String" id="dim_win_sql_database.win_sql_database_cluster_node_server"/>
         <field type="java.lang.Double" id="dim_win_sql_database.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_sql_database.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_database.component_group_count"/>
         <field type="java.lang.Double" id="dim_win_sql_database.maintenance_window_count"/>
         <field type="java.lang.Double" id="dim_win_sql_database.links_count"/>
         <field type="java.lang.Integer" id="dim_win_sql_database.win_sql_instance_key"/>
@@ -3390,7 +3415,7 @@
         <field type="java.lang.Double" id="hourly_transactions__sec.fct_max"/>
         <field type="java.lang.Double" id="hourly_transactions__sec.fct_min"/>
         <field type="java.lang.Integer" id="dim_win_sql_job.win_sql_job_key"/>
-        <field type="win_sql_job_deleted_at" id="dim_win_sql_job.win_sql_job_deleted_at" dataSetExpression="if(dim_win_sql_job.win_sql_job_deleted_at,null,0,1)"/>
+        <field type="java.sql.Timestamp" id="dim_win_sql_job.win_sql_job_deleted_at" dataSetExpression="if(dim_win_sql_job.win_sql_job_deleted_at,null,0,1)"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_name"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_id"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_type"/>
@@ -3398,8 +3423,6 @@
         <field type="java.lang.Integer" id="dim_win_sql_job.device_key"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_snmpindex"/>
         <field type="java.lang.Boolean" id="dim_win_sql_job.win_sql_job_monitor"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_production_state"/>
-        <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_pre_mw_production_state"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_instancename"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_jobid"/>
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_enabled"/>
@@ -3409,11 +3432,11 @@
         <field type="java.lang.String" id="dim_win_sql_job.win_sql_job_cluster_node_server"/>
         <field type="java.lang.Double" id="dim_win_sql_job.dependencies_count"/>
         <field type="java.lang.Double" id="dim_win_sql_job.dependents_count"/>
+        <field type="java.lang.Double" id="dim_win_sql_job.component_group_count"/>
         <field type="java.lang.Double" id="dim_win_sql_job.maintenance_window_count"/>
         <field type="java.lang.Double" id="dim_win_sql_job.links_count"/>
         <field type="java.lang.Integer" id="dim_win_sql_job.win_sql_instance_key"/>
       </fieldList>
-      <filterString>startsWith(dim_device.device_class, '/Server/Microsoft') and endsWith(dim_device.device_class, 'Cluster')</filterString>
       <joinInfo alias="dim_cluster_device" referenceId="dim_cluster_device"/>
       <joinedDataSetList>
         <joinedDataSetRef>
@@ -3609,7 +3632,7 @@
           <joinString>left outer join hourly_smtpservermsgsdelivered__sec hourly_smtpservermsgsdelivered__sec on (dim_cluster_device.cluster_device_key == hourly_smtpservermsgsdelivered__sec.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_cluster_node dim_cluster_node on (dim_cluster_node.os_key == dim_software.software_key)</joinString>
+          <joinString>left outer join dim_cluster_node dim_cluster_node on (dim_cluster_node.device_key == dim_cluster_device.cluster_device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_cluster_disk dim_cluster_disk on (dim_cluster_disk.clusternode_key == dim_cluster_node.cluster_node_key)</joinString>
@@ -3618,16 +3641,16 @@
           <joinString>left outer join dim_cluster_interface dim_cluster_interface on (dim_cluster_interface.clusternode_key == dim_cluster_node.cluster_node_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_ms_cluster_service dim_ms_cluster_service on (dim_ms_cluster_service.software_key == dim_software.software_key)</joinString>
+          <joinString>left outer join dim_cluster_service dim_cluster_service on (dim_cluster_device.device_key == dim_cluster_service.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_ms_cluster_resource dim_ms_cluster_resource on (dim_ms_cluster_resource.ms_cluster_service_key == dim_ms_cluster_service.ms_cluster_service_key)</joinString>
+          <joinString>left outer join dim_cluster_resource dim_cluster_resource on (dim_cluster_resource.cluster_service_key == dim_cluster_service.cluster_service_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_cluster_network dim_cluster_network on (dim_cluster_network.os_key == dim_software.software_key)</joinString>
+          <joinString>left outer join dim_cluster_network dim_cluster_network on (dim_cluster_network.device_key == dim_cluster_service.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
-          <joinString>left outer join dim_win_sql_instance dim_win_sql_instance on (dim_win_sql_instance.software_key == dim_software.software_key)</joinString>
+          <joinString>left outer join dim_win_sql_instance dim_win_sql_instance on (dim_win_sql_instance.device_key == dim_cluster_service.device_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_win_sql_backup dim_win_sql_backup on (dim_win_sql_backup.win_sql_instance_key == dim_win_sql_instance.win_sql_instance_key)</joinString>
