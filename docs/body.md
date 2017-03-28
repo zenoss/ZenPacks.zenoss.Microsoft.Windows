@@ -1561,6 +1561,8 @@ If you see the following error, check the zenhub log for errors:
 Configuration for 10.111.5.171 unavailable -- is that the correct name?
 ```
 
+If you see an event stating that a plugin was disabled due to blocking, see the [PythonCollector ZenPack](/product/zenpacks/pythoncollector) documentation for steps to remedy this.
+
 ### Troubleshooting modeling/monitoring
 
 Version 2.6.0 introduces a command line option to save
