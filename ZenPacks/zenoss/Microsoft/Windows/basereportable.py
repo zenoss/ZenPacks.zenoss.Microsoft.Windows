@@ -419,8 +419,9 @@ class BaseReportable(ETLBaseReportable):
         # Human-friendly name that can change
         yield (eclass + '_name', 'string', self.context.titleOrId(), DEFAULT_STRING_LENGTH)
 
-        # Type
-        yield (eclass + '_type', 'string', self.context.meta_type, DEFAULT_STRING_LENGTH)
+        # Report filesystem type (ReFS, FAT, NTFS) for FileSystem components and meta_type for others.
+        type_attribute = 'type' if self.context.meta_type == 'FileSystem' else 'meta_type'
+        yield (eclass + '_type', 'string', getattr(self.context, type_attribute), DEFAULT_STRING_LENGTH)
 
         # UID
         yield (eclass + '_uid', 'string', self.uid, DEFAULT_STRING_LENGTH)
