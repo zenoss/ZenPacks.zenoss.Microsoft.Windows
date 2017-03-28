@@ -367,15 +367,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 e.message or "timeout")
             LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'device': self.config.id,
-                'eventClass': '/Status/Winrm',
-                'eventKey': 'Windows Perfmon Collection Error',
-                'severity': ZenEventClasses.Warning,
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
-
-            self._errorMsgCheck(e.message)
+            # prevent duplicate of auth failure messages
+            if not self._errorMsgCheck(e.message):
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
+                    'device': self.config.id,
+                    'eventClass': '/Status/Winrm',
+                    'eventKey': 'Windows Perfmon Collection Error',
+                    'severity': ZenEventClasses.Warning,
+                    'summary': errorMessage,
+                    'ipAddress': self.config.manageIp})
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
@@ -826,6 +826,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'eventClassKey': 'MW_PasswordExpired',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
+            return True
         elif 'Check username and password' in errorMessage:
             PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
@@ -833,6 +834,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'eventClassKey': 'MW_WrongCredentials',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
+            return True
+        return False
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
