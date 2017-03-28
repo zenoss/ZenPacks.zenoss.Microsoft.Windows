@@ -14,7 +14,7 @@ from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
-    ShellDataSourcePlugin
+    ShellDataSourcePlugin, DCDiagStrategy
 )
 
 
@@ -40,3 +40,31 @@ class TestShellDataSourcePlugin(BaseTestCase):
         data = self.plugin.onError(f, sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['severity'], 3)
+
+    def test_clean_output(self):
+        strategy = DCDiagStrategy()
+        strategy.run_tests = {'testFoo', 'testBar', 'testBaz'}
+
+        inp = [u'No Such Object',
+               u'......................... COMP-NAME failed test',
+               u'testFoo']
+        out = strategy._clean_output(inp)
+        self.assertEquals(out, [inp[0], inp[1] + ' ' + inp[2]])
+
+        inp2 = [u'Missing Expected Value',
+                u'......................... COMP-NAME failed test',
+                u'testBar']
+        out = strategy._clean_output(inp + inp2)
+        self.assertEquals(out, [inp[0], inp[1] + ' ' + inp[2],
+                                inp2[0], inp2[1] + ' ' + inp2[2]])
+
+        inp3 = [u'......................... COMP-NAME failed test testBaz']
+
+        out = strategy._clean_output(inp + inp3)
+        self.assertEquals(out, [inp[0], inp[1] + ' ' + inp[2]] + inp3)
+
+        out = strategy._clean_output(inp3 + inp)
+        self.assertEquals(out, inp3 + [inp[0], inp[1] + ' ' + inp[2]])
+
+        out = strategy._clean_output(inp3)
+        self.assertEquals(out, inp3)

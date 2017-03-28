@@ -255,7 +255,10 @@ class DCDiagStrategy(object):
             for ds in config.datasources:
                 if ds.params['resource'] == test_name:
                     return ds
-        output = result.stdout
+        # ZPS-1146: Correctly join output to avoid situations when test name
+        # jumps to next line:
+        # ......................... <COMP-NAME> failed test\n<TEST-NAME>
+        output = self._clean_output(result.stdout)
         collectedResults = ParsedResults()
         tests_in_error = set()
         if output:
@@ -310,6 +313,30 @@ class DCDiagStrategy(object):
                 'summary': msg,
                 'device': config.id})
         return collectedResults
+
+    def _clean_output(self, output):
+        if len(output) == 0:
+            return output
+
+        cleaned_lines = [output[0]]
+
+        for ln in output[1:]:
+            last_ln = cleaned_lines[-1]
+            joined_ln = '{} {}'.format(last_ln, ln)
+
+            # join last line with the current one in case if it contains
+            # "failed test <test-name>" where <test-name> is one of the run
+            # tests.
+            # BUT don't join them if current line also starts with dots (that's
+            # going to be another test result)
+            if last_ln.startswith('........') and not ln.startswith('........')\
+                    and any('failed test {}'.format(test) in joined_ln
+                            for test in self.run_tests)\
+                    and any(test in ln for test in self.run_tests):
+                cleaned_lines[-1] = joined_ln
+            else:
+                cleaned_lines.append(ln)
+        return cleaned_lines
 
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
