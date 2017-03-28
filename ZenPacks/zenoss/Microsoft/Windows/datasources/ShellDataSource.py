@@ -290,7 +290,8 @@ class DCDiagStrategy(object):
                         'severity': dsconf.severity,
                         'eventClassKey': 'WindowsActiveDirectoryStatus',
                         'eventKey': eventkey,
-                        'summary': msg,
+                        'summary': msg.split('.')[0],
+                        'message': msg,
                         'device': config.id})
                     error_str = ''
                 else:
@@ -310,7 +311,8 @@ class DCDiagStrategy(object):
                 'severity': ZenEventClasses.Clear,
                 'eventClassKey': 'WindowsActiveDirectoryStatus',
                 'eventKey': eventkey,
-                'summary': msg,
+                'summary': msg.split('.')[0],
+                'message': msg,
                 'device': config.id})
         return collectedResults
 
