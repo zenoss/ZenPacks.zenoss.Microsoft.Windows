@@ -138,7 +138,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \LogicalDisk({$here/instance_name})\% Disk Write Time
 * \LogicalDisk({$here/instance_name})\Free Megabytes
 
-;File Systems
+;Hard Disks
 * \PhysicalDisk({$here/instance_name})\Disk Read Bytes/sec
 * \PhysicalDisk({$here/instance_name})\% Disk Read Time
 * \PhysicalDisk({$here/instance_name})\Disk Write Bytes/sec
@@ -185,7 +185,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \NTDS\LDAP Successful Binds/sec
 * \NTDS\LDAP UDP operations/sec
 * \NTDS\LDAP Writes/sec
-* \Security System-Wide Statistics\NTLM Authentications
+* \NTDS\NTLM Authentications
 
 {{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
 
@@ -462,12 +462,14 @@ from Products.ZenRRD.CommandParser import CommandParser
             })
 </nowiki>
 
-# Select a windows target device
-# Navigate to Device (/Server/Microsoft)
-# On the right side panel, click '+' to add a 'Windows Shell' datasource
-# Provide name (eg. custom) and type (Windows Shell) for the datasource
-# View Edit and Details : strategy ->custom command and parser is test1
-# Run zenpython to collect the data zenpython run -v10 -d <devicename>
+# Select a windows target device.
+# Navigate to the Device (/Server/Microsoft) Monitoring Template.
+# On the Data Sources panel, click '+' to add a 'Windows Shell' datasource.
+# Provide name (eg. custom) and type (Windows Shell) for the datasource.
+# From the gear button, choose *View Edit and Details*.
+# Set the strategy to Custom Command and Parser to test1
+# Add a Windows command or Powershell script.
+# Run zenpython to collect the data `zenpython run -v10 -d <devicename>`
 # Check events after 5 minutes for the test1 event
 
 ;Powershell Scripting using Auto parser
@@ -630,6 +632,10 @@ WinRM Ping is a simple datasource that will attempt to retrieve basic data over 
 * The monitoring user account password has expired.
 
 This datasource is not enabled by default.
+
+== Collector Daemons
+
+*   zenpython
 
 == Requirements ==
 
@@ -795,6 +801,9 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 ;zWinRMKrb5DisableRDNS
 : Kerberos always performs a reverse lookup when obtaining a ticket to use the HTTP/HTTPS/WSMAN service principal.  If there are multiple names by which servers are known in your organization, or if you do not want to use reverse lookups, set this value to True.  Because this is a kerberos property, it can only be set one way or another.  You cannot mix and match this value and only the top level value at /Server/Microsoft will be honored.
 
+;zWinRMClusterNodeClass
+: Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
+
 {{note}} HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.
 
 <br clear=all>
@@ -935,37 +944,6 @@ This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Wind
 # Repeat steps 3-6 for each Windows device.
 
 {{note}} It is also possible to drag and drop selected Windows devices from one class to another.  You will need to remodel the devices after the move.
-
-Old Windows ZenPacks:
-* PySamba
-* WindowsMonitor
-* ActiveDirectory
-* IISMonitor
-* MSExchange
-* MSMQMonitor
-* MSSQLServer
-
-New Windows ZenPacks:
-* [[ZenPack:PythonCollector|PythonCollector]] is a requirement for this ZenPack. It provides the polling facility through the zenpython collector daemon.
-* This ZenPack (all the functionality of the old Windows ZenPacks is rolled into this one ZenPack)
-
-The old ZenPacks come as part of the Zenoss Core 4.2.x RPM. They can be installed on top of an RM install with the msmonitor RPM
-
-=== Using Old and New Windows ZenPacks Together ===
-
-There are some scenarios where it may be useful to use the old and new Windows ZenPacks together. In most cases this is as simple as putting servers you wish to be monitored by the new ZenPack in the /Server/Microsoft/Server device class and servers you wish to be monitored by the old ZenPack in the /Server/Windows/WMI device class.
-
-Due to this ZenPack's dependency on WinRM 2.0 it is not possible to monitor Windows versions earlier than Windows 2003 SP1. If you have a requirement to monitor these earlier Windows versions you must use the older [[ZenPack::Microsoft_Windows|WindowsMonitor ZenPack]] that uses DCOM/RPC instead of WinRM.
-
-There are also circumstances where you may currently be using the old Windows ZenPack and only want to initially use the new ZenPack for its new functionalities such as the ''Windows Shell'' datasource. This can be achieved using the following steps.
-
-# Keep the servers under the /Server/Windows/WMI device class.
-# Verify that all of the following configuration properties are set:
-#* ''zWinUser'': In DOMAIN\Username format for DCOM/RPC collection.
-#* ''zWinPassword'': Password for zWinUser account.
-#* ''zWinRMUser'': In username@example.com format for WinRM collection.
-#* ''zWinRMPassword'': Password for zWinRMUser account.
-# Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
 
 == Limitations of Current Release ==
 
@@ -1131,6 +1109,10 @@ If you see a corrupt counters error event, this indicates that the specified cou
 If you see the following error, check the zenhub log for errors:
 
 * Configuration for 10.111.5.171 unavailable -- is that the correct name?
+
+If you see an event stating that a plugin was disabled due to blocking, see the [[ZenPack:PythonCollector|PythonCollector ZenPack]] documentation for steps to remedy this.
+
+{{note}} Starting with v2.7.0, this should not occur for Windows data source plugins.
 
 === Troubleshooting modeling/monitoring ===
 
