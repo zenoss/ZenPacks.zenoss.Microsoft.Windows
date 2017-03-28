@@ -3956,10 +3956,7 @@ event_classes:
   /Status/Kerberos:
     remove: true
   /Status/Kerberos/Auth:
-    mappings:
-      Failure Default:
-        eventClassKey: MW_Kerberos_Auth_Failure
-        sequence: 1111
+    remove: true
   /Status/Kerberos/Auth/Failure:
     mappings:
       Failure Default:
@@ -3971,10 +3968,7 @@ event_classes:
         eventClassKey: MW_Kerberos_Failure
         sequence: 1101
   /Status/Winrm:
-    mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW_WrongCredentials
-        sequence: 1002
+    remove: true
   /Status/Winrm/Ping:
     remove: true
   /Status/Winrm/Auth:
