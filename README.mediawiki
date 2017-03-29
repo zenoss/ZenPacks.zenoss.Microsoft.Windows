@@ -955,6 +955,8 @@ The current release is known to have the following limitations.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
 * Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
+* The current release of this ZenPack uses the ZenPack SDK.  Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take quite a while to complete.
+* This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -1108,7 +1110,7 @@ If you see a corrupt counters error event, this indicates that the specified cou
 
 If you see the following error, check the zenhub log for errors:
 
-* Configuration for 10.111.5.171 unavailable -- is that the correct name?
+* Configuration for <device> unavailable -- is that the correct name?
 
 If you see an event stating that a plugin was disabled due to blocking, see the [[ZenPack:PythonCollector|PythonCollector ZenPack]] documentation for steps to remedy this.
 
@@ -1199,6 +1201,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ;Modeler Plugins
 * zenoss.winrm.CPUs
 * zenoss.winrm.FileSystems
+* zenoss.winrm.HardDisks
 * zenoss.winrm.IIS
 * zenoss.winrm.Interfaces
 * zenoss.winrm.OperatingSystem

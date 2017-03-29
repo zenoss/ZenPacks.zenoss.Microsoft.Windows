@@ -1292,6 +1292,7 @@ The current release is known to have the following limitations.
     the Windows Devices and Components class types used by the SDK.
     Depending on your Zenoss instance resources, this job could take
     quite a while to complete.
+-   This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1558,7 +1559,7 @@ been repaired on the device and zenpython has been restarted.
 If you see the following error, check the zenhub log for errors:
 
 ```
-Configuration for 10.111.5.171 unavailable -- is that the correct name?
+Configuration for <device> unavailable -- is that the correct name?
 ```
 
 If you see an event stating that a plugin was disabled due to blocking, see the [PythonCollector ZenPack](/product/zenpacks/pythoncollector) documentation for steps to remedy this.
@@ -1655,6 +1656,7 @@ Configuration Properties
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
 :   zenoss.winrm.FileSystems 
+:   zenoss.winrm.HardDisks 
 :   zenoss.winrm.IIS 
 :   zenoss.winrm.Interfaces 
 :   zenoss.winrm.OperatingSystem 

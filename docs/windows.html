@@ -1078,6 +1078,7 @@ test1(CommandParser):
 <li>Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.</li>
 <li>Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible. These will be removed upon installation. Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered. Any existing monitoring templates will still apply. Any services that were manually selected to be monitored will not. See the section on <a href="#configuring-service-monitoring">Configuring Service Monitoring</a>.</li>
 <li>The current release of this ZenPack uses the ZenPack SDK. Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take quite a while to complete.</li>
+<li>This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.</li>
 </ul>
 <p>A current list of known issues related to this ZenPack can be found with <a href="https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id">this JIRA query</a>. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can <a href="https://jira.zenoss.com/secure/Signup!default.jspa">create one here</a>.</p>
 <h3 id="kerberos-tickets">Kerberos Tickets</h3>
@@ -1180,7 +1181,7 @@ fs.file-max=10000</code></pre>
 <p>Other timeout issues on a domain could involve having a large Kerberos token. This could be caused by the user belonging to a large number of groups. See <a href="https://support.microsoft.com/en-us/kb/970875">kb 970875</a> for more information on the cause and resolution. Possible side effects of a large token include high CPU usage on the Windows server.</p>
 <p>If you see a corrupt counters error event, this indicates that the specified counters have been corrupted on the Windows device. No data will be collected for the specified counters until the counters have been repaired on the device and zenpython has been restarted.</p>
 <p>If you see the following error, check the zenhub log for errors:</p>
-<pre><code>Configuration for 10.111.5.171 unavailable -- is that the correct name?</code></pre>
+<pre><code>Configuration for &lt;device&gt; unavailable -- is that the correct name?</code></pre>
 <p>If you see an event stating that a plugin was disabled due to blocking, see the <a href="/product/zenpacks/pythoncollector">PythonCollector ZenPack</a> documentation for steps to remedy this.</p>
 <h3 id="troubleshooting-modelingmonitoring">Troubleshooting modeling/monitoring</h3>
 <p>Version 2.6.0 introduces a command line option to save modeling/monitoring results for troubleshooting. This option will save the results returned from a Windows server from a modeler or datasource plugin. This data can then be viewed/tested using unit tests to determine issues.</p>
@@ -1280,6 +1281,8 @@ fs.file-max=10000</code></pre>
 <dd>zenoss.winrm.CPUs
 </dd>
 <dd>zenoss.winrm.FileSystems
+</dd>
+<dd>zenoss.winrm.HardDisks
 </dd>
 <dd>zenoss.winrm.IIS
 </dd>
