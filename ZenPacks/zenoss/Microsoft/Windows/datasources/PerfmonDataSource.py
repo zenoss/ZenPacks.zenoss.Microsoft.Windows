@@ -379,8 +379,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
-        else:
-            self._generateClearAuthEvents()
 
         self.state = PluginStates.STARTED
         self.collected_samples = 0
@@ -624,8 +622,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        self._errorMsgCheck(e.message)
-
+        if not self._errorMsgCheck(e.message):
+            self._generateClearAuthEvents()
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -819,19 +817,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def _errorMsgCheck(self, errorMessage):
         """Check error message and generate appropriate event."""
-        if 'Password expired' in errorMessage:
+        wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
+        if any(x in errorMessage for x in wrongCredsMessages):
             PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW_PasswordExpired',
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
-            return True
-        elif 'Check username and password' in errorMessage:
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW_WrongCredentials',
+                'eventClassKey': 'AuthenticationFailure',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
             return True
@@ -841,15 +831,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Add clear authentication events to PERSISTER singleton."""
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW_PasswordExpired',
-            'summary': 'Password is not expired',
-            'ipAddress': self.config.manageIp})
-        PERSISTER.add_event(self.config.id, self.config.datasources, {
-            'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW_WrongCredentials',
-            'summary': 'Credentials are OK',
+            'eventClassKey': 'AuthenticationSuccess',
+            'summary': 'Authentication Successful',
             'ipAddress': self.config.manageIp})
 
 

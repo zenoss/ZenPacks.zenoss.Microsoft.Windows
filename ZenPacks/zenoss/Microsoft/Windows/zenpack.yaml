@@ -3955,34 +3955,20 @@ event_classes:
         remove: true
   /Status/Kerberos:
     remove: true
-  /Status/Kerberos/Auth:
-    remove: true
-  /Status/Kerberos/Auth/Failure:
     mappings:
-      Failure Default:
-        eventClassKey: MW_Kerberos_Auth_Failure
-        sequence: 1111
-  /Status/Kerberos/Failure:
-    mappings:
-      Failure Default:
-        eventClassKey: MW_Kerberos_Failure
-        sequence: 1101
+      KerberosAuthenticationSuccess: {}
+      KerberosAuthenticationFailure: {}
+      KerberosSuccess: {}
+      KerberosFailure: {}
   /Status/Winrm:
     remove: true
   /Status/Winrm/Ping:
     remove: true
   /Status/Winrm/Auth:
     remove: true
-  /Status/Winrm/Auth/WrongCredentials:
     mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW_WrongCredentials
-        sequence: 1002
-  /Status/Winrm/Auth/PasswordExpired:
-    mappings:
-      Password Expired Default:
-        eventClassKey: MW_PasswordExpired
-        sequence: 1001
+      AuthenticationSuccess: {}
+      AuthenticationFailure: {}
   /Status/OSProcess:
     remove: false
   /Status/Interface:

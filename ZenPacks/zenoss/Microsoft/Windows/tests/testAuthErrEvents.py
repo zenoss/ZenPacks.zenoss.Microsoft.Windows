@@ -41,16 +41,18 @@ class TestErrorEvents(BaseTestCase):
         error = 'kinit error server not in database'
         errorMsgCheck(self.config, events, error)
         self.assertEquals(len(events), 4)
-        event_class_keys = {0: 'MW_PasswordExpired',
-                            1: 'MW_WrongCredentials',
-                            2: 'MW_Kerberos_Auth_Failure',
-                            3: 'MW_Kerberos_Failure'}
-        for i in xrange(3):
-            self.assertEquals(events[i]['eventClassKey'], event_class_keys[i])
         generateClearAuthEvents(self.config, events)
-        self.assertEquals(len(events), 8)
-        for i in xrange(4, 7):
-            self.assertEquals(events[i]['eventClassKey'], event_class_keys[i - 4])
+
+        event_class_keys = {0: 'AuthenticationFailure',
+                            1: 'AuthenticationFailure',
+                            2: 'KerberosAuthenticationFailure',
+                            3: 'KerberosFailure',
+                            4: 'AuthenticationSuccess',
+                            5: 'KerberosAuthenticationSuccess',
+                            6: 'KerberosSuccess', }
+        for k, v in event_class_keys.items():
+            self.assertEquals(events[k]['eventClassKey'], v)
+        self.assertEquals(len(events), 7)
         for event in events:
             self.assertTrue('eventClass' not in event)
 
