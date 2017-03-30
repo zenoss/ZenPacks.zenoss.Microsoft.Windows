@@ -1,61 +1,15 @@
 <h1 id="microsoft-windows-zenpack">Microsoft Windows ZenPack</h1>
 <p>Monitoring for Microsoft Windows Devices.</p>
+<p>
+[zenoss-toc]
+</p>
 <h2 id="background">Background</h2>
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.7.0- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.0/ZenPacks.zenoss.Microsoft.Windows-2.7.0.egg" rel="nofollow">Download</a> :Released on 2017/ :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x</p>
-<p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x</p>
-<p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x</p>
-<p>Version 2.4.9- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.4.9/ZenPacks.zenoss.Microsoft.Windows-2.4.9.egg" rel="nofollow">Download</a> :Released on 2015/09/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x</p>
-<p>Version 2.3.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.3.2/ZenPacks.zenoss.Microsoft.Windows-2.3.2.egg" rel="nofollow">Download</a> :Released on 2015/03/05 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x</p>
-<p>Version 2.2.1- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.2.1/ZenPacks.zenoss.Microsoft.Windows-2.2.1.egg" rel="nofollow">Download</a> :Released on 2015/01/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Resource Manager 4.2.x</p>
-<p>Version 2.1.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.1.3/ZenPacks.zenoss.Microsoft.Windows-2.1.3.egg" rel="nofollow">Download</a> :Released on 2014/10/27 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Resource Manager 4.1.x, Zenoss Resource Manager 4.2.x</p>
-<h2>Contents</h2>
-<div id="TOC">
-<ul>
-<li><a href="#video">Video</a></li>
-<li><a href="#features">Features</a><ul>
-<li><a href="#discovery">Discovery</a></li>
-<li><a href="#performance-monitoring">Performance Monitoring</a></li>
-</ul></li>
-<li><a href="#thresholds">Thresholds</a></li>
-<li><a href="#event-management">Event Management</a><ul>
-<li><a href="#custom-commands">Custom Commands</a></li>
-<li><a href="#configuring-service-monitoring">Configuring Service Monitoring</a></li>
-<li><a href="#dcdiag">DCDiag</a></li>
-<li><a href="#winrm-ping">WinRM Ping</a></li>
-</ul></li>
-<li><a href="#collector-daemons">Collector Daemons</a></li>
-<li><a href="#requirements">Requirements</a><ul>
-<li><a href="#installing-kerberos-dependency">Installing Kerberos Dependency</a></li>
-</ul></li>
-<li><a href="#usage">Usage</a><ul>
-<li><a href="#port-requirements">Port Requirements</a></li>
-<li><a href="#adding-a-windows-device">Adding a Windows Device</a></li>
-<li><a href="#configuration-options">Configuration Options</a></li>
-<li><a href="#configuring-mssql-server-modelingmonitoring">Configuring MSSQL Server Modeling/Monitoring</a></li>
-<li><a href="#working-with-wincommand-notification-action">Working with WinCommand Notification Action</a></li>
-</ul></li>
-<li><a href="#setting-up-winrm-service-for-target-windows-machines">Setting up WinRM Service for Target Windows Machines</a></li>
-<li><a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a></li>
-<li><a href="#limitations-of-current-release">Limitations of Current Release</a><ul>
-<li><a href="#kerberos-tickets">Kerberos Tickets</a></li>
-</ul></li>
-<li><a href="#service-impact">Service Impact</a></li>
-<li><a href="#troubleshooting">Troubleshooting</a><ul>
-<li><a href="#troubleshooting-windows">Troubleshooting Windows</a></li>
-<li><a href="#troubleshooting-kerberos-error-messages">Troubleshooting Kerberos Error Messages</a></li>
-<li><a href="#troubleshooting-kerberos-authentication-with-wireshark">Troubleshooting Kerberos Authentication with Wireshark</a></li>
-<li><a href="#troubleshooting-services">Troubleshooting Services</a></li>
-<li><a href="#troubleshooting-monitoring">Troubleshooting monitoring</a></li>
-<li><a href="#troubleshooting-modelingmonitoring">Troubleshooting modeling/monitoring</a></li>
-</ul></li>
-<li><a href="#zenoss-analytics">Zenoss Analytics</a></li>
-<li><a href="#installed-items">Installed Items</a></li>
-<li><a href="#changes">Changes</a></li>
-</ul>
-</div>
+<p>Version 2.7.0- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.0/ZenPacks.zenoss.Microsoft.Windows-2.7.0.egg" rel="nofollow">Download</a> :Released on 2017/03/30 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.1.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <style>
 img.thumbnail {
     clear: right;
@@ -93,8 +47,8 @@ dd {
 </ul>
 <h3 id="discovery">Discovery</h3>
 <p>The following components will be automatically discovered through the Windows server address, username and password you provide. The properties and relationships will be periodically updated by modeling.</p>
-<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_device.png" class="thumbnail" title="Device"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_device.png" title="Device" class="thumbnail" /></a></p>
-<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_filesystem.png" class="thumbnail" title="File System"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_filesystem.png" title="File System" class="thumbnail" /></a></p>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_device2.png" class="thumbnail" title="Device"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_device2.png" title="Device" class="thumbnail" /></a></p>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_graphs2.png" class="thumbnail" title="Graphs"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_graphs2.png" title="Graphs" class="thumbnail" /></a></p>
 <dl>
 <dt>Server (Device)</dt>
 <dd><strong>Attributes:</strong> Name, Contact, Description, Serial Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory, Operating System, Cluster
@@ -111,29 +65,38 @@ dd {
 </dd>
 <dd><strong>Relationships:</strong> Device
 </dd>
+</dl>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_harddisk.png" class="thumbnail" title="Hard Disk"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_harddisk.png" title="Hard Disk" class="thumbnail" /></a></p>
+<dl>
 <dt>Hard Disks</dt>
 <dd><strong>Attributes:</strong> Name, Size, Number of Partitions, Disk Ids, Free Space, Capabilities
 </dd>
 <dd><strong>Relationships:</strong> Device, File Systems
 </dd>
-<dt>File Systems</dt>
+</dl>
+<p>File Systems</p>
+<dl>
+<dt><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_filesystem2.png" class="thumbnail" title="File System"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_filesystem2.png" title="File System" class="thumbnail" /></a></dt>
 <dd><strong>Attributes:</strong> Mount Point, Status, Storage Device, Type, Block Size, Total Blocks, Total Bytes, Maximum Name Length
 </dd>
 <dd><strong>Relationships:</strong> Device, Hard Disks
 </dd>
+</dl>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_interfaces2.png" class="thumbnail" title="Interfaces"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_interfaces2.png" title="Interfaces" class="thumbnail" /></a></p>
+<dl>
 <dt>Interfaces</dt>
 <dd><strong>Attributes:</strong> Name, Description, MAC Address, MTU, Speed, Duplex, Type, Administrative Status, Operational Status, IP Addresses
 </dd>
 <dd><strong>Relationships:</strong> Device
 </dd>
-</dl>
-<p>[[File:windows_interfaces.png|thumb|320px|Interfaces]]</p>
-<dl>
 <dt>Network Routes</dt>
 <dd><strong>Attributes:</strong> Destination, Next Hop, Interface, Protocol, Type
 </dd>
 <dd><strong>Relationships:</strong> Device
 </dd>
+</dl>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_processes.png" class="thumbnail" title="Processes"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_processes.png" title="Processes" class="thumbnail" /></a></p>
+<dl>
 <dt>Process Sets</dt>
 <dd><strong>Attributes:</strong> Name, Recent Matches, Process Class
 </dd>
@@ -149,6 +112,9 @@ dd {
 </dd>
 <dd><strong>Relationships:</strong> Device
 </dd>
+</dl>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_services2.png" class="thumbnail" title="Services"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_services2.png" title="Services" class="thumbnail" /></a></p>
+<dl>
 <dt>Cluster Services</dt>
 <dd><strong>Attributes:</strong> Name, Core Group, Owner Node, State, Description, Priority
 </dd>
@@ -187,6 +153,9 @@ dd {
 </dd>
 <dd><strong>Relationships:</strong> Device
 </dd>
+</dl>
+<p><a href="/sites/default/files/zenpack/Microsoft%20Windows/Windows_database.png" class="thumbnail" title="Databases"><img src="/sites/default/files/zenpack/Microsoft%20Windows/Windows_database.png" title="Databases" class="thumbnail" /></a></p>
+<dl>
 <dt>SQL Server Databases</dt>
 <dd><strong>Attributes:</strong> Name, Version, Owner, Last Backup, Last Log Backup, Accessible, Collation, Creation Date, Default File Group, Primary File Path, Recovery Model, Is System Object
 </dd>
@@ -208,349 +177,359 @@ dd {
 <p>Performance counters are collected using the PowerShell Get-Counter Cmdlet within a remote shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows Perfmon counters can also be collected by adding them to the appropriate monitoring template.</p>
 <dl>
 <dt>Device</dt>
-<dd>bytes
+<dd>\Memory\Available bytes
 </dd>
-<dd>Bytes
+<dd>\Memory\Committed Bytes
 </dd>
-<dd>Input/sec
+<dd>\Memory\Pages Input/sec
 </dd>
-<dd>Output/sec
+<dd>\Memory\Pages Output/sec
 </dd>
-<dd>File(_Total)% Usage
+<dd>\Paging File(_Total)\% Usage
 </dd>
-<dd>(_Total)% Privileged Time
+<dd>\Processor(_Total)\% Privileged Time
 </dd>
-<dd>(_Total)% Processor Time
+<dd>\Processor(_Total)\% Processor Time
 </dd>
-<dd>(_Total)% User Time
+<dd>\Processor(_Total)\% User Time
 </dd>
-<dd>Up Time
+<dd>\System\System Up Time
 </dd>
 <dt>File Systems</dt>
-<dd>({$here/instance_name})Read Bytes/sec
+<dd>\LogicalDisk({$here/instance_name})\Disk Read Bytes/sec
 </dd>
-<dd>({$here/instance_name})% Disk Read Time
+<dd>\LogicalDisk({$here/instance_name})\% Disk Read Time
 </dd>
-<dd>({$here/instance_name})Write Bytes/sec
+<dd>\LogicalDisk({$here/instance_name})\Disk Write Bytes/sec
 </dd>
-<dd>({$here/instance_name})% Disk Write Time
+<dd>\LogicalDisk({$here/instance_name})\% Disk Write Time
 </dd>
-<dd>({$here/instance_name})Megabytes
+<dd>\LogicalDisk({$here/instance_name})\Free Megabytes
 </dd>
 <dt>Hard Disks</dt>
-<dd>({$here/instance_name})Read Bytes/sec
+<dd>\PhysicalDisk({$here/instance_name})\Disk Read Bytes/sec
 </dd>
-<dd>({$here/instance_name})% Disk Read Time
+<dd>\PhysicalDisk({$here/instance_name})\% Disk Read Time
 </dd>
-<dd>({$here/instance_name})Write Bytes/sec
+<dd>\PhysicalDisk({$here/instance_name})\Disk Write Bytes/sec
 </dd>
-<dd>({$here/instance_name})% Disk Write Time
+<dd>\PhysicalDisk({$here/instance_name})\% Disk Write Time
 </dd>
 <dt>Interfaces</dt>
-<dd>Interface(${here/instance_name})Received/sec
+<dd>\Network Interface(${here/instance_name})\Bytes Received/sec
 </dd>
-<dd>Interface(${here/instance_name})Sent/sec
+<dd>\Network Interface(${here/instance_name})\Bytes Sent/sec
 </dd>
-<dd>Interface(${here/instance_name})Received Errors
+<dd>\Network Interface(${here/instance_name})\Packets Received Errors
 </dd>
-<dd>Interface(${here/instance_name})Received/sec
+<dd>\Network Interface(${here/instance_name})\Packets Received/sec
 </dd>
-<dd>Interface(${here/instance_name})Outbound Errors
+<dd>\Network Interface(${here/instance_name})\Packets Outbound Errors
 </dd>
-<dd>Interface(${here/instance_name})Sent/sec
+<dd>\Network Interface(${here/instance_name})\Packets Sent/sec
 </dd>
-<dt>;Interfaces on Windows 2012</dt>
-<dd>Adapter(${here/instance_name})Received/sec
+<dt>Interfaces on Windows 2012</dt>
+<dd>\Network Adapter(${here/instance_name})\Bytes Received/sec
 </dd>
-<dd>Adapter(${here/instance_name})Sent/sec
+<dd>\Network Adapter(${here/instance_name})\Bytes Sent/sec
 </dd>
-<dd>Adapter(${here/instance_name})Received Errors
+<dd>\Network Adapter(${here/instance_name})\Packets Received Errors
 </dd>
-<dd>Adapter(${here/instance_name})Received/sec
+<dd>\Network Adapter(${here/instance_name})\Packets Received/sec
 </dd>
-<dd>Adapter(${here/instance_name})Outbound Errors
+<dd>\Network Adapter(${here/instance_name})\Packets Outbound Errors
 </dd>
-<dd>Adapter(${here/instance_name})Sent/sec
+<dd>\Network Adapter(${here/instance_name})\Packets Sent/sec
 </dd>
 <dt>Active Directory</dt>
-<dd>Client Binds/sec
+<dd>\NTDS\DS Client Binds/sec
 </dd>
-<dd>Directory Reads/sec
+<dd>\NTDS\DS Directory Reads/sec
 </dd>
-<dd>Directory Searches/sec
+<dd>\NTDS\DS Directory Searches/sec
 </dd>
-<dd>Directory Writes/sec
+<dd>\NTDS\DS Directory Writes/sec
 </dd>
-<dd>Monitor List Size
+<dd>\NTDS\DS Monitor List Size
 </dd>
-<dd>Name Cache hit rate
+<dd>\NTDS\DS Name Cache hit rate
 </dd>
-<dd>Notify Queue Size
+<dd>\NTDS\DS Notify Queue Size
 </dd>
-<dd>Search sub-operations/sec
+<dd>\NTDS\DS Search sub-operations/sec
 </dd>
-<dd>Server Binds/sec
+<dd>\NTDS\DS Server Binds/sec
 </dd>
-<dd>Server Name Translations/sec
+<dd>\NTDS\DS Server Name Translations/sec
 </dd>
-<dd>Threads in Use
+<dd>\NTDS\DS Threads in Use
 </dd>
-<dd>AS Requests
+<dd>\NTDS\KDC AS Requests
 </dd>
-<dd>TGS Requests
+<dd>\NTDS\KDC TGS Requests
 </dd>
-<dd>Authentications
+<dd>\NTDS\Kerberos Authentications
 </dd>
-<dd>Active Threads
+<dd>\NTDS\LDAP Active Threads
 </dd>
-<dd>Bind Time
+<dd>\NTDS\LDAP Bind Time
 </dd>
-<dd>Client Sessions
+<dd>\NTDS\LDAP Client Sessions
 </dd>
-<dd>Closed Connections/sec
+<dd>\NTDS\LDAP Closed Connections/sec
 </dd>
-<dd>New Connections/sec
+<dd>\NTDS\LDAP New Connections/sec
 </dd>
-<dd>New SSL Connections/sec
+<dd>\NTDS\LDAP New SSL Connections/sec
 </dd>
-<dd>Searches/sec
+<dd>\NTDS\LDAP Searches/sec
 </dd>
-<dd>Successful Binds/sec
+<dd>\NTDS\LDAP Successful Binds/sec
 </dd>
-<dd>UDP operations/sec
+<dd>\NTDS\LDAP UDP operations/sec
 </dd>
-<dd>Writes/sec
+<dd>\NTDS\LDAP Writes/sec
 </dd>
-<dd>System-Wide StatisticsAuthentications
+<dd>\NTDS\NTLM Authentications
 </dd>
 </dl>
 <p>Note: The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.</p>
 <dl>
 <dt>Exchange 2007 &amp; 2010</dt>
-<dd>Mailbox(_Total)opens/sec
+<dd>\MSExchangeIS Mailbox(_Total)\Folder opens/sec
 </dd>
-<dd>Mailbox(_Total)delivery rate
+<dd>\MSExchangeIS Mailbox(_Total)\Local delivery rate
 </dd>
-<dd>Mailbox(_Total)Opens/sec
+<dd>\MSExchangeIS Mailbox(_Total)\Message Opens/sec
 </dd>
-<dd>Averaged Latency
+<dd>\MSExchangeIS\RPC Averaged Latency
 </dd>
-<dd>Operations/sec
+<dd>\MSExchangeIS\RPC Operations/sec
 </dd>
-<dd>Requests
+<dd>\MSExchangeIS\RPC Requests
 </dd>
-<dd>Queues(_Total)Mailbox Delivery Queue Length
+<dd>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
 </dd>
-<dd>SmtpSend(_Total)Sent/sec
+<dd>\MSExchangeTransport SmtpSend(_Total)\Messages Sent/sec
 </dd>
 <dt>Exchange 2013</dt>
-<dd>Store(_Total)opened/sec
+<dd>\MSExchangeIS Store(_Total)\Folders opened/sec
 </dd>
-<dd>Store(_Total)Delivered/sec
+<dd>\MSExchangeIS Store(_Total)\Messages Delivered/sec
 </dd>
-<dd>Store(_Total)opened/sec
+<dd>\MSExchangeIS Store(_Total)\Messages opened/sec
 </dd>
-<dd>Store Interface(_Total)Latency average (msec)
+<dd>\MSExchange Store Interface(_Total)\RPC Latency average (msec)
 </dd>
-<dd>Store Interface(_Total)Requests sent/sec
+<dd>\MSExchange Store Interface(_Total)\RPC Requests sent/sec
 </dd>
-<dd>Store Interface(_Total)Requests sent
+<dd>\MSExchange Store Interface(_Total)\RPC Requests sent
 </dd>
-<dd>Queues(_Total)Mailbox Delivery Queue Length
+<dd>\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
 </dd>
-<dd>Delivery SmtpSend(_Total)Sent/sec
+<dd>\MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
 </dd>
 </dl>
 <p>Note: If monitoring Exchange with a non-administrator user, the user must be a member of the Active Directory group &quot;Exchange View-Only Administrators&quot; for pre-2010 Exchange installations or &quot;View Only Organization Management&quot; for 2010 and later installations.</p>
 <p>Note: IIS Management Scripts and Tools needs to be installed on the server side in order to model and monitor IIS sites. This is done through the Add Roles and Features tool on the Windows Server under Web Server -&gt; Management Tools -&gt; IIS Management Scripts and Tools.</p>
 <dl>
 <dt>IIS</dt>
-<dd>Service(_Total)Received/sec
+<dd>\Web Service(_Total)\Bytes Received/sec
 </dd>
-<dd>Service(_Total)Sent/sec
+<dd>\Web Service(_Total)\Bytes Sent/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\CGI Requests/sec
 </dd>
-<dd>Service(_Total)Attempts/sec
+<dd>\Web Service(_Total)\Connection Attempts/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Copy Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Delete Requests/sec
 </dd>
-<dd>Service(_Total)Received/sec
+<dd>\Web Service(_Total)\Files Received/sec
 </dd>
-<dd>Service(_Total)Sent/sec
+<dd>\Web Service(_Total)\Files Sent/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Get Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Head Requests/sec
 </dd>
-<dd>Service(_Total)Extension Requests/sec
+<dd>\Web Service(_Total)\ISAPI Extension Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Lock Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Mkcol Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Move Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Options Requests/sec
 </dd>
-<dd>Service(_Total)Request Methods/sec
+<dd>\Web Service(_Total)\Other Request Methods/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Post Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Propfind Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Proppatch Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Put Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Search Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Trace Requests/sec
 </dd>
-<dd>Service(_Total)Requests/sec
+<dd>\Web Service(_Total)\Unlock Requests/sec
 </dd>
 <dt>IIS Sites</dt>
-<dd>Service(${here/sitename})Received/sec
+<dd>\Web Service(${here/sitename})\Bytes Received/sec
 </dd>
-<dd>Service(${here/sitename})Sent/sec
+<dd>\Web Service(${here/sitename})\Bytes Sent/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\CGI Requests/sec
 </dd>
-<dd>Service(${here/sitename})Attempts/sec
+<dd>\Web Service(${here/sitename})\Connection Attempts/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Copy Requests/sec
 </dd>
-<dd>Service(${here/sitename})Attempts/sec
+<dd>\Web Service(${here/sitename})\Connection Attempts/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Delete Requests/sec
 </dd>
-<dd>Service(${here/sitename})Received/sec
+<dd>\Web Service(${here/sitename})\Files Received/sec
 </dd>
-<dd>Service(${here/sitename})Sent/sec
+<dd>\Web Service(${here/sitename})\Files Sent/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Get Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Head Requests/sec
 </dd>
-<dd>Service(${here/sitename})Extension Requests/sec
+<dd>\Web Service(${here/sitename})\ISAPI Extension Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Lock Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Mkcol Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Move Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Options Requests/sec
 </dd>
-<dd>Service(${here/sitename})Request Methods/sec
+<dd>\Web Service(${here/sitename})\Other Request Methods/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Post Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Propfind Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Proppatch Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Put Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Search Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Trace Requests/sec
 </dd>
-<dd>Service(${here/sitename})Requests/sec
+<dd>\Web Service(${here/sitename})\Unlock Requests/sec
 </dd>
 </dl>
 <p>Note: The IIS monitoring template will only be used when IIS is found during modeling.</p>
 <p>Note: The IISAdmin service must be running in order to collect IIS data.</p>
 <p>The following metrics are collected directly via WMI over WinRM.</p>
-<p>Processes (Win32_PerfFormattedData_PerfProc_Process) * PercentProcessorTime * WorkingSet * WorkingSetPrivate</p>
+<dl>
+<dt>Processes (Win32_PerfFormattedData_PerfProc_Process)</dt>
+<dd>PercentProcessorTime
+</dd>
+<dd>WorkingSet
+</dd>
+<dd>WorkingSetPrivate
+</dd>
+</dl>
 <p><br class="clear"> Note: IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.</p>
 <p>SQL Server</p>
 <dl>
 <dt>The following performance counters are monitored via Powershell script per database:</dt>
-<dd><p>:Databases(<dbname>)Transactions</p>
+<dd><p>\SQLServer:Databases(&lt;dbname&gt;)\Active Transactions</p>
 </dd>
-<dd>:Databases(<dbname>)/Restore Throughput/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Backup/Restore Throughput/sec
 </dd>
-<dd>:Databases(<dbname>)Copy Rows/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Bulk Copy Rows/sec
 </dd>
-<dd>:Databases(<dbname>)Copy Throughput/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Bulk Copy Throughput/sec
 </dd>
-<dd>:Databases(<dbname>)Entries Count
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Entries Count
 </dd>
-<dd>:Databases(<dbname>)Entries Pinned Count
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Entries Pinned Count
 </dd>
-<dd>:Databases(<dbname>)Hit Ratio
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Hit Ratio
 </dd>
-<dd>:Databases(<dbname>)Hit Ratio Base
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Hit Ratio Base
 </dd>
-<dd>:Databases(<dbname>)Logical Scan Bytes/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\DBCC Logical Scan Bytes/sec
 </dd>
-<dd>:Databases(<dbname>)File(s) Size (KB)
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Data File(s) Size (KB)
 </dd>
-<dd>:Databases(<dbname>)Bytes Flushed/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Bytes Flushed/sec
 </dd>
-<dd>:Databases(<dbname>)Cache Hit Ratio
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Hit Ratio
 </dd>
-<dd>:Databases(<dbname>)Cache Hit Ratio Base
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Hit Ratio Base
 </dd>
-<dd>:Databases(<dbname>)Cache Reads/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Reads/sec
 </dd>
-<dd>:Databases(<dbname>)File(s) Size (KB)
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log File(s) Size (KB)
 </dd>
-<dd>:Databases(<dbname>)File(s) Used Size (KB)
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log File(s) Used Size (KB)
 </dd>
-<dd>:Databases(<dbname>)Flush Wait Time
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flush Wait Time
 </dd>
-<dd>:Databases(<dbname>)Flush Waits/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flush Waits/sec
 </dd>
-<dd>:Databases(<dbname>)Flushes/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flushes/sec
 </dd>
-<dd>:Databases(<dbname>)Growths
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Growths
 </dd>
-<dd>:Databases(<dbname>)Log Used
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Percent Log Used
 </dd>
-<dd>:Databases(<dbname>)Shrinks
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Shrinks
 </dd>
-<dd>:Databases(<dbname>)Truncations
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Truncations
 </dd>
-<dd>:Databases(<dbname>)Log Used
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Percent Log Used
 </dd>
-<dd>:Databases(<dbname>). Pending Xacts
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Repl. Pending Xacts
 </dd>
-<dd>:Databases(<dbname>). Trans. Rate
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Repl. Trans. Rate
 </dd>
-<dd>:Databases(<dbname>)Data Movement Bytes/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Shrink Data Movement Bytes/sec
 </dd>
-<dd>:Databases(<dbname>)/sec
+<dd>\SQLServer:Databases(&lt;dbname&gt;)\Transactions/sec
 </dd>
 </dl>
 <p>You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.</p>
-<p>Events will be sent depending upon one or more of the following statuses of the database</p>
 <dl>
-<dt>: AutoClosed: The database has been automatically closed.</dt>
-<dd>EmergencyMode: The database is in emergency mode.
+<dt>Database Statuses</dt>
+<dd>AutoClosed - The database has been automatically closed.
 </dd>
-<dd>Inaccessible: The database is inaccessible. The server might be switched off or the network connection has been interrupted.
+<dd>EmergencyMode - The database is in emergency mode.
 </dd>
-<dd>Normal: The database is available.
+<dd>Inaccessible - The database is inaccessible. The server might be switched off or the network connection has been interrupted.
 </dd>
-<dd>Offline: The database has been taken offline.
+<dd>Normal - The database is available.
 </dd>
-<dd>Recovering: The database is going through the recovery process.
+<dd>Offline - The database has been taken offline.
 </dd>
-<dd>RecoveryPending: The database is waiting to go through the recovery process.
+<dd>Recovering - The database is going through the recovery process.
 </dd>
-<dd>Restoring: The database is going through the restore process.
+<dd>RecoveryPending - The database is waiting to go through the recovery process.
 </dd>
-<dd>Shutdown: The server on which the database resides has been shut down.
+<dd>Restoring - The database is going through the restore process.
 </dd>
-<dd>Standby: The database is in standby mode.
+<dd>Shutdown - The server on which the database resides has been shut down.
 </dd>
-<dd>Suspect: The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
+<dd>Standby - The database is in standby mode.
 </dd>
-<dd><p>'Normal' will send a clear event</p>
+<dd>Suspect - The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
+</dd>
+<dt>Events</dt>
+<dd>'Normal' will send a clear event
 </dd>
 <dd>'EmergencyMode' will send a critical event
 </dd>
@@ -750,30 +729,45 @@ test1(CommandParser):
 <li>Enter *+MSSQLSERVER.** into the &quot;Inclusions(+)/Exclusions(-)&quot; text box and click save.</li>
 </ol>
 <p>The order of precedence for monitoring a service is: 1. User manually sets monitoring. 2. 'DefaultService' datasource from the WinService template associated with the service. 3. Datasource other than the DefaultService in the WinService template associated with the service. 4. Monitoring is enabled via the Infrastructure -&gt; Windows Services page.</p>
-<p>Windows Service Startmodes (Template vs Windows Services)</p>
-<table>
-<colgroup>
-<col width="13%" />
-<col width="43%" />
-<col width="43%" />
-</colgroup>
+<table border="2" cellpadding="1" cellspacing="1" style="width:800px;">
+<caption>
+<strong>Windows Service Startmodes (Template vs Windows Services)</strong>
+</caption>
 <thead>
-<tr class="header">
-<th align="left">Startmodes</th>
-<th align="left">Template includes Service startmode</th>
-<th align="left">Template excludes Service startmode</th>
+<tr>
+<th scope="col" style="text-align: center;">
+Startmodes
+</th>
+<th scope="col" style="text-align: center;">
+Template includes Service startmode
+</th>
+<th scope="col" style="text-align: center;">
+Template excludes Service startmode
+</th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="left">Windows Service Class includes Service startmode</td>
-<td align="left">monitored</td>
-<td align="left">monitored</td>
+<tr>
+<td>
+Windows Service Class includes Service startmode
+</td>
+<td>
+monitored
+</td>
+<td>
+monitored
+</td>
 </tr>
-<tr class="even">
-<td align="left">Windows Service Class excludes Service startmode</td>
-<td align="left">monitored</td>
-<td align="left">NOT monitored</td>
+<tr>
+<td>
+Windows Service Class excludes Service startmode
+</td>
+<td>
+monitored
+</td>
+<td>
+NOT monitored
+</td>
 </tr>
 </tbody>
 </table>
@@ -786,7 +780,7 @@ test1(CommandParser):
 <p>Beginning with version 2.4.0, you can now monitor the output of DCDiag. By default all dcdiag tests are enabled in the Active Directory monitoring template. If a test fails an error event is issued. You can also add other tests, such as DNS, and supply specific test parameters.</p>
 <p>See <a href="https://technet.microsoft.com/en-us/library/cc731968.aspx">DCDiag</a> for more information.</p>
 <p>Note: DCDiag must be run as a user with Administrator permissions. If you will be monitoring a Domain Controller with a non administrator user, you should disable these tests.</p>
-<p>=== PortCheck ===</p>
+<h3 id="portcheck">PortCheck</h3>
 <p>Beginning with version 2.4.0, you can now monitor specific ports in the Windows Zenpack. By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.</p>
 <p>You can add and remove any port you wish to be monitored by editing the PortCheck datasource in the Active Directory monitoring template.</p>
 <p>To monitor ports on a Windows server that is not a domain controller, simply create a new datasource and choose Windows PortCheck as the type. Then add the ports you wish to monitor with a short description of each.</p>
@@ -889,9 +883,12 @@ test1(CommandParser):
 </ol>
 <hr />
 <p>Alternatively you can use zenbatchload to add Windows servers from the command line. To do this, you must create a text file with hostname, username and password of all the servers you want to add. Multiple endpoints can be added under the same <em>/Devices/Server/Microsoft/Windows</em> section. Here is an example...</p>
-<p><syntaxhighlight lang="text"> /Devices/Server/Microsoft/Windows win2008-1d.example.com zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot; Win2012-1d.example.com zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot; </syntaxhighlight></p>
+<pre><code>/Devices/Server/Microsoft/Windows
+win2008-1d.example.com zWinRMUser=&quot;Administrator&quot;,
+zWinRMPassword=&quot;password&quot; Win2012-1d.example.com
+zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot;</code></pre>
 <p>You can then load the Windows servers into Zenoss Core or Resource Manager as devices with the following command.</p>
-<p><syntaxhighlight lang="bash"> zenbatchload <filename> </syntaxhighlight></p>
+<pre><code>zenbatchload &lt;filename&gt;</code></pre>
 <h3 id="configuration-options">Configuration Options</h3>
 <p>The <a href="adding-a-windows-device">Adding a Windows Device</a> steps shown above are for the simplest case of using Windows local authentication. The following configuration properties can be used to support monitoring other environments.</p>
 <ul>
@@ -995,9 +992,10 @@ test1(CommandParser):
 <p>Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.</p>
 <p><br class="clear"></p>
 <h3 id="configuring-mssql-server-modelingmonitoring">Configuring MSSQL Server Modeling/Monitoring</h3>
-<h5 id="supported-sql-server-versions">Supported SQL Server versions</h5>
 <dl>
-<dt>: SQL Server 2005</dt>
+<dt>Supported SQL Server versions</dt>
+<dd>SQL Server 2005
+</dd>
 <dd>SQL Server 2008
 </dd>
 <dd>SQL Server 2008 R2
@@ -1016,26 +1014,51 @@ test1(CommandParser):
 <li>SQL Server Authentication: In <em>zDBInstances</em> property provide user name and password for each SQL instance.</li>
 <li>Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.</li>
 </ul>
-<p>Use the following steps to configure SQL Server Authentication on your SQL Server: 1. Connect to SQL Instance using MSSQL Management Studio. 2. Select instance <em>Properties</em> &gt; <em>Security</em> and make sure that <em>SQL Server and Windows Authentication mode</em> is enabled. 3. Open <em>Security</em> &gt; <em>Logins</em>, select the user you specified in <em>zDBInstances</em> property or the <em>zWinRMUser</em> property if using Windows Authentication. 4. Check user <em>Properties</em> &gt; <em>Status</em> and make sure that the user is Enabled. 5. Check user <em>Properties</em> &gt; <em>Server Roles</em> and make sure that the user has the <em>public</em> role. a. If using an Administrator user, make sure it has the <em>sysadmin</em> role. b. If not using an Administrator user, check user <em>Properties</em> &gt; <em>Securables</em> and make sure the user has been granted <em>View server state</em> rights.</p>
+<p>Use the following steps to configure SQL Server Authentication on your SQL Server:</p>
+<ol style="list-style-type: decimal">
+<li>Connect to SQL Instance using MSSQL Management Studio.</li>
+<li>Select instance <em>Properties</em> &gt; <em>Security</em> and make sure that <em>SQL Server and Windows Authentication mode</em> is enabled.</li>
+<li>Open <em>Security</em> &gt; <em>Logins</em>, select the user you specified in <em>zDBInstances</em> property or the <em>zWinRMUser</em> property if using Windows Authentication.</li>
+<li>Check user <em>Properties</em> &gt; <em>Status</em> and make sure that the user is Enabled.</li>
+<li>Check user <em>Properties</em> &gt; <em>Server Roles</em> and make sure that the user has the <em>public</em> role.
+<ol style="list-style-type: lower-alpha">
+<li>If using an Administrator user, make sure it has the <em>sysadmin</em> role.</li>
+<li>If not using an Administrator user, check user <em>Properties</em> &gt; <em>Securables</em> and make sure the user has been granted <em>View server state</em> rights.</li>
+</ol></li>
+</ol>
 <h5 id="support-for-local-and-failover-cluster-sql-instances">Support for Local and Failover Cluster SQL instances:</h5>
 <p>This ZenPack adds support for both local and failover cluster SQL Server instances. Local SQL Server instances can be modeled/monitored within windows devices (devices in <em>Server/Microsoft/Windows</em> device class). SQL Server failover cluster instances can be modeled/monitored within cluster devices (devices in <em>Server/Microsoft/Cluster</em> device class).</p>
-<p>Use the following steps to model/monitor SQL Server instances: 1. Create a device in <em>Server/Microsoft/Windows</em> device class if you intend to model local SQL instances, or in <em>Server/Microsoft/Cluster</em> device class if you intend to model failover cluster instances. 2. Optionally specify the instance names to be modeled in <em>zDBInstances</em> zProperty. Provide user names and passwords if SQL Server Authentication is to be used. 3. Enable <em>zenoss.winrm.WinMSSQL</em> modeler plugin. 4. Remodel device.</p>
+<p>Use the following steps to model/monitor SQL Server instances:</p>
+<ol style="list-style-type: decimal">
+<li>Create a device in <em>Server/Microsoft/Windows</em> device class if you intend to model local SQL instances, or in <em>Server/Microsoft/Cluster</em> device class if you intend to model failover cluster instances.</li>
+<li>Optionally specify the instance names to be modeled in <em>zDBInstances</em> zProperty. Provide user names and passwords if SQL Server Authentication is to be used.</li>
+<li>Enable <em>zenoss.winrm.WinMSSQL</em> modeler plugin.</li>
+<li>Remodel device.</li>
+</ol>
 <h5 id="sql-server-monitoring">SQL Server Monitoring</h5>
 <p>The monitoring templates for SQL Server are component templates so there is no need to perform a bind. They will automatically be used to monitor databases, instances, and jobs.</p>
 <p>Note: The default instance of MSSQLSERVER appears as the host name.</p>
-<p>Note: The authenticated user will need to be granted permission to view the server state. For example, &quot;GRANT VIEW SERVER STATE TO 'MYDOMAIN_user'&quot; or through the GUI in SQL Server Management Studio. A Windows user must also be interactive, i.e. the account must not be denied local logon rights.</p>
+<p>Note: The authenticated user will need to be granted permission to view the server state. For example, &quot;GRANT VIEW SERVER STATE TO 'MYDOMAIN\zenoss_user'&quot; or through the GUI in SQL Server Management Studio. A Windows user must also be interactive, i.e. the account must not be denied local logon rights.</p>
 <h3 id="working-with-wincommand-notification-action">Working with WinCommand Notification Action</h3>
 <p>This ZenPack adds a new event notification action that can be used by the zenactiond daemon to allow an arbitrary command to be executed on the remote windows machine.</p>
-<p>Use the following steps to set up a notification: 1. Select <em>Events</em> &gt; <em>Triggers</em> from the Navigation Menu. 2. Create a trigger, selecting the rules that define it. 3. Select <em>Notifications</em> from the left panel. Add a new notification, enter a name for it and select <em>WinCommand</em> Action from the drop-down menu. Click Submit. 4. In the <em>Edit Notification</em> dialog on the <em>Notification</em> tab associate the trigger with the notification and optionally select the notification properties (Enabled, Send Clear, Send only on Initial Occurrence, Delay, Repeat). 5. On the <em>Content</em> tab of the notification specify the 'Windows CMD Command* to run when configured triggers are matched. You may optionally specify <em>Clear Windows CMD Command</em> to run when the triggering event clears. 6. Submit changes.</p>
+<p>Use the following steps to set up a notification:</p>
+<ol style="list-style-type: decimal">
+<li>Select <em>Events</em> &gt; <em>Triggers</em> from the Navigation Menu.</li>
+<li>Create a trigger, selecting the rules that define it.</li>
+<li>Select <em>Notifications</em> from the left panel. Add a new notification, enter a name for it and select <em>WinCommand</em> Action from the drop-down menu. Click Submit.</li>
+<li>In the <em>Edit Notification</em> dialog on the <em>Notification</em> tab associate the trigger with the notification and optionally select the notification properties (Enabled, Send Clear, Send only on Initial Occurrence, Delay, Repeat).</li>
+<li>On the <em>Content</em> tab of the notification specify the 'Windows CMD Command* to run when configured triggers are matched. You may optionally specify <em>Clear Windows CMD Command</em> to run when the triggering event clears.</li>
+<li>Submit changes.</li>
+</ol>
 <p>For more information please refer to <a href="http://community.zenoss.org/docs/DOC-10690">Working with Triggers and Notifications</a></p>
 <h2 id="setting-up-winrm-service-for-target-windows-machines">Setting up WinRM Service for Target Windows Machines</h2>
 <h4 id="group-policy">Group Policy</h4>
-<p>Navigate to Computer ConfigurationTemplatesComponentsRemote Management</p>
+<p>Navigate to Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management</p>
 <p>WinRMClient - No setting changes required for client</p>
 <p>WinRMService - Allow remote server management through WinRm</p>
 <p>HTTP (Windows default is HTTPS see note below for more information) - Allow unencrypted Traffic (Only necessary when using basic authentication)</p>
 <p>Basic Authentication (Windows default is Kerberos see note below for more information) - Allow Basic Authentication</p>
-<p>WinRS Computer ConfigurationTemplatesComponentsRemote Shell - Allow Remote Shell Access - Max number of processes per shell = 4294967295 - Max number of shells per user = 2147483647 - Shell Timeout = 7200000</p>
+<p>WinRS Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell - Allow Remote Shell Access - Max number of processes per shell = 4294967295 - Max number of shells per user = 2147483647 - Shell Timeout = 7200000</p>
 <h4 id="individual-machine-configuration">Individual Machine configuration</h4>
 <ul>
 <li>Open ports 5985 (http)/5986(https) for WinRM</li>
@@ -1051,10 +1074,10 @@ test1(CommandParser):
 <p>Note: If you are using kerberos on EL6 and higher to connect to your Windows Server, your data will be encrypted over HTTP. For kerberos on EL5, encryption is not supported so you must set the winrm AllowUnencrypted option to true.</p>
 <p>Note: If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.</p>
 <p>Note: In order to use a single domain user in a child domain or other trusted domain, set zWinKDC to the AD server of the user's domain. Then enter the trusted domain name and associated AD server in the zWinTrustedRealm and zWinTrustedKDC properties, respectively.</p>
-<p>Note: The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate certificate can be found at the following URL. http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate SPN record exists for Kerberos authentication.</p>
-<p><console> c:&gt;setspn -l hostname1 </console></p>
+<p>Note: The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate certificate can be found in the following <a href="http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx">technet article</a> Once the client has the correct certificate installed you only need to change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still having challenges setting up HTTPS on the client you can execute the following command on any AD server to verify the appropriate SPN record exists for Kerberos authentication.</p>
+<pre><code>c:\&gt;setspn -l hostname1</code></pre>
 <p>If you do not see a record with HTTPS/ at the beginning of the hostname you can create the record, but this is not typically necessary as Windows will use the HOST/ record as the default for most built in services. You can also use the zWinUseWsmanSPN property so that zenoss will use the WSMAN service principal. The WSMAN spn is created by running <em>winrm quickconfig</em>.</p>
-<p><console> c:&gt;setspn -s HTTPS/hostname1.zenoss.com hostname1 </console></p>
+<pre><code>c:\&gt;setspn -s HTTPS/hostname1.zenoss.com hostname1</code></pre>
 <h2 id="transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</h2>
 <p>If you are installing this ZenPack on an existing Zenoss system or upgrading from an earlier Zenoss version you may have a ZenPack named <em>ZenPacks.zenoss.WindowsMonitor</em> already installed on your system. You can check this by navigating to Advanced -&gt; ZenPacks.</p>
 <p>This ZenPack functionally supersedes <em>ZenPacks.zenoss.WindowsMonitor</em> for Windows platforms that support WinRM, but does not automatically migrate monitoring of your Microsoft Windows resources when installed. The ZenPacks can coexist gracefully to allow you time to manually transition monitoring to the newer ZenPack with better capabilities.</p>
@@ -1087,12 +1110,13 @@ test1(CommandParser):
 <p>To add a permanent location for you configuration file, you can make use of the zWinRMKrb5includedir property. This must be a location accessible from within a container and contain ONLY kerberos configuration file(s). If the location is invalid or contains files other than kerberos configuration files, it will be ignored and not added to the main krb5.conf file.</p>
 <p>Example:</p>
 <p>A common problem with Kerberos is that a reverse DNS lookup will result in multiple records returned, and not always the correct one. Kerberos by default always performs a forward and reverse lookup when establishing a ticket. To disable the reverse lookup, create a file in either the default location or in a user specified location and add the following:</p>
-<p><syntaxhighlight lang="text"> [libdefaults] rdns = false </syntaxhighlight></p>
+<pre><code>[libdefaults] 
+  rdns = false</code></pre>
 <p>See <a href="http://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html">krb5.conf</a> for more information on the includedir and other kerberos options.</p>
 <p>You can also supply multiple KDCs for a domain with the Windows ZenPack. This can be done using either a comma separated list in the zWinKDC property or supplying single KDCs for multiple devices or device classes under the /Server/Microsoft device class.</p>
 <p>This list also supports a simple regex to add, remove, and specify an admin_server.</p>
-<p>Adding a KDC - Use just the address or append a <em>+</em> to the beginning of the address to add a new kdc.</p>
-<p>Removing a KDC - Append a <em>-</em> to the beginning of the KDC address to remove an existing KDC from the krb5.conf file. This can be used if a KDC is no longer in service or if the wrong address was entered previously. This can be removed from zWinKDC once a ticket granting ticket for the user has been obtained and the krb5.conf file is correct.</p>
+<p>Adding a KDC - Use just the address or append a &quot;+&quot; to the beginning of the address to add a new kdc.</p>
+<p>Removing a KDC - Append a &quot;-&quot; to the beginning of the KDC address to remove an existing KDC from the krb5.conf file. This can be used if a KDC is no longer in service or if the wrong address was entered previously. This can be removed from zWinKDC once a ticket granting ticket for the user has been obtained and the krb5.conf file is correct.</p>
 <p>Specifying an admin_server - Optionally, use an asterisk, &quot;*&quot;, to denote the admin_server. If none is provided, the first kdc in the list will be used. The admin_server is used for any admin work, such as changing a password through kinit.</p>
 <p>For example, set zWinKDC to &quot;*10.10.10.10,10.10.10.20,+10.10.10.30,-10.10.10.40&quot; for specifying a comma separated list. 10.10.10.10 will be a kdc and admin_server, 10.10.10.20 and 10.10.10.30 will be added as kdcs, and 10.10.10.40 is no longer a valid kdc address and will be removed.</p>
 <p>Note: Removing one or more errant KDCs from the system can be a time consuming process, so we recommend double-checking that the addresses are valid when entering them into the zWinKDC property.</p>
@@ -1152,7 +1176,7 @@ kerberos authGSSClientStep failed (None)
 <p>While Zenoss is unable to extract a useful error message when this occurs, it turns out that Wireshark can get useful errors by looking at the kerberos packets sent between Zenoss, your domain controller (<em>zWinKDC</em>) and the monitored Windows server. Let's walk through an example of using <a href="http://www.wireshark.org/">Wireshark</a> to resolve an <em>authGSSClientStep failed</em> error.</p>
 <p>First install Wireshark on your system. It's GUI is easier to use than the command line equivalent.</p>
 <p>Next you will need to create a packet capture file on your Zenoss server. Assuming the Windows server you're trying to monitor is <em>192.0.2.101</em> and the domain controller (<em>zWinKDC</em>) is <em>203.0.113.10</em>, you would run the following command as the root user on your Zenoss server.</p>
-<p><console>tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10</console></p>
+<pre><code>tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10</code></pre>
 <p>This will start capturing all packets to or from those two IP addresses. It will continue to capture these packets until you type <em>CTRL-C</em>.</p>
 <p>Now you should attempt to remodel the Windows server where you're encountering the error. Once it completes, and fails, again you should go back to the terminal where tcpdump is running and type <em>CTRL-C</em>. You will now have a <em>kerberdebug.pcap</em> file in the directory where you ran the command.</p>
 <p>Copy <em>kerberdebug.pcap</em> to your system where you installed Wireshark. Start Wireshark and open <em>kerberdebug.pcap</em>. You should see something like the following.</p>
@@ -1187,7 +1211,7 @@ fs.file-max=10000</code></pre>
 <h3 id="troubleshooting-modelingmonitoring">Troubleshooting modeling/monitoring</h3>
 <p>Version 2.6.0 introduces a command line option to save modeling/monitoring results for troubleshooting. This option will save the results returned from a Windows server from a modeler or datasource plugin. This data can then be viewed/tested using unit tests to determine issues.</p>
 <p>Usage:</p>
-<p><syntaxhighlight lang="text"> export ZP_DUMP=1;zenmodeler run -d server1.example.com --collect=Interfaces; unset ZP_DUMP </syntaxhighlight></p>
+<pre><code>export ZP_DUMP=1;zenmodeler run -d server1.example.com --collect=Interfaces; unset ZP_DUMP</code></pre>
 <p>This will unload a pickle of the results to a file in the /tmp folder called Interfaces_process_XXXXXX.pickle.</p>
 <p>Note: Be sure to unset the environment variable to avoid unwanted pickle files.</p>
 <h2 id="zenoss-analytics">Zenoss Analytics</h2>

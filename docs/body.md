@@ -39,9 +39,9 @@ The following components will be automatically discovered through the
 Windows server address, username and password you provide. The
 properties and relationships will be periodically updated by modeling.
 
-[![][Windows_device.png]][Windows_device.png]
+[![][Windows_device2.png]][Windows_device2.png]
 
-[![][Windows_filesystem.png]][Windows_filesystem.png]
+[![][Windows_graphs2.png]][Windows_graphs2.png]
 
 Server (Device)
 :   **Attributes:** Name, Contact, Description, Serial
@@ -65,27 +65,33 @@ Processors
     Size and Speed, L3 Cache Size and Speed
 :   **Relationships:** Device
 
+[![][Windows_harddisk.png]][Windows_harddisk.png]
+
 Hard Disks
 :   **Attributes:** Name, Size, Number of Partitions, Disk Ids,
     Free Space, Capabilities
 :   **Relationships:** Device, File Systems
 
 File Systems
+
+[![][Windows_filesystem2.png]][Windows_filesystem2.png]
 :   **Attributes:** Mount Point, Status, Storage Device, Type,
     Block Size, Total Blocks, Total Bytes, Maximum Name Length
 :   **Relationships:** Device, Hard Disks
+
+[![][Windows_interfaces2.png]][Windows_interfaces2.png]
 
 Interfaces
 :   **Attributes:** Name, Description, MAC Address, MTU, Speed,
     Duplex, Type, Administrative Status, Operational Status, IP Addresses
 :   **Relationships:** Device
 
-[[File:windows\_interfaces.png|thumb|320px|Interfaces]]
-
 Network Routes
 :   **Attributes:** Destination, Next Hop, Interface,
     Protocol, Type
 :   **Relationships:** Device
+
+[![][Windows_processes.png]][Windows_processes.png]
 
 Process Sets
 :   **Attributes:** Name, Recent Matches, Process Class
@@ -98,6 +104,8 @@ Software
 Services
 :   **Attributes:** Name, Display Name, Start Mode, Account
 :   **Relationships:** Device
+
+[![][Windows_services2.png]][Windows_services2.png]
 
 Cluster Services
 :   **Attributes:** Name, Core Group, Owner Node, State,
@@ -134,6 +142,8 @@ SQL Server Instances
 :   **Attributes:** Name : Relationships: SQL Server databases
 :   **Relationships:** Device
 
+[![][Windows_database.png]][Windows_database.png]
+
 SQL Server Databases
 :   **Attributes:** Name, Version, Owner, Last Backup,
     Last Log Backup, Accessible, Collation, Creation Date, Default File
@@ -160,94 +170,94 @@ every 5 minutes by default. Any other Windows Perfmon counters can also
 be collected by adding them to the appropriate monitoring template.
 
 Device
-:   \Memory\Available bytes
-:   \Memory\Committed Bytes
-:   \Memory\Pages Input/sec
-:   \Memory\Pages Output/sec
-:   \Paging File(_Total)\% Usage
-:   \Processor(_Total)\% Privileged Time
-:   \Processor(_Total)\% Processor Time
-:   \Processor(_Total)\% User Time
-:   \System\System Up Time
+:   \\Memory\\Available bytes
+:   \\Memory\\Committed Bytes
+:   \\Memory\\Pages Input/sec
+:   \\Memory\\Pages Output/sec
+:   \\Paging File(_Total)\\% Usage
+:   \\Processor(_Total)\\% Privileged Time
+:   \\Processor(_Total)\\% Processor Time
+:   \\Processor(_Total)\\% User Time
+:   \\System\\System Up Time
 
 File Systems
-:   \LogicalDisk({$here/instance_name})\Disk Read Bytes/sec 
-:   \LogicalDisk({$here/instance_name})% Disk Read Time
-:   \LogicalDisk({$here/instance_name})\Disk Write Bytes/sec
-:   \LogicalDisk({$here/instance_name})% Disk Write Time
-:   \LogicalDisk({\$here/instance_name})\Free Megabytes
+:   \\LogicalDisk({$here/instance\_name})\\Disk Read Bytes/sec 
+:   \\LogicalDisk({$here/instance\_name})\\% Disk Read Time
+:   \\LogicalDisk({$here/instance\_name})\\Disk Write Bytes/sec
+:   \\LogicalDisk({$here/instance\_name})\\% Disk Write Time
+:   \\LogicalDisk({\$here/instance\_name})\\Free Megabytes
 
 Hard Disks
-:   \PhysicalDisk({$here/instance_name})\Disk Read Bytes/sec
-:   \PhysicalDisk({$here/instance_name})% Disk Read Time
-:   \PhysicalDisk({$here/instance_name})\Disk Write Bytes/sec
-:   \PhysicalDisk({$here/instance_name})% Disk Write Time
+:   \\PhysicalDisk({$here/instance\_name})\\Disk Read Bytes/sec
+:   \\PhysicalDisk({$here/instance\_name})\\% Disk Read Time
+:   \\PhysicalDisk({$here/instance\_name})\\Disk Write Bytes/sec
+:   \\PhysicalDisk({$here/instance\_name})\\% Disk Write Time
 
 Interfaces
-:   \Network Interface(${here/instance_name})\Bytes Received/sec
-:   \Network Interface(${here/instance\_name})\Bytes Sent/sec
-:   \Network Interface(${here/instance_name})\Packets Received Errors
-:   \Network Interface(${here/instance\_name})\Packets Received/sec
-:   \Network Interface(${here/instance_name})\Packets Outbound Errors
-:   \Network Interface(${here/instance\_name})\Packets Sent/sec
+:   \\Network Interface(${here/instance\_name})\\Bytes Received/sec
+:   \\Network Interface(${here/instance\_name})\\Bytes Sent/sec
+:   \\Network Interface(${here/instance\_name})\\Packets Received Errors
+:   \\Network Interface(${here/instance\_name})\\Packets Received/sec
+:   \\Network Interface(${here/instance\_name})\\Packets Outbound Errors
+:   \\Network Interface(${here/instance\_name})\\Packets Sent/sec
 
-;Interfaces on Windows 2012
-:   \Network Adapter(${here/instance_name})\Bytes Received/sec
-:   \Network Adapter(${here/instance\_name})\Bytes Sent/sec
-:   \Network Adapter(${here/instance_name})\Packets Received Errors
-:   \Network Adapter(${here/instance\_name})\Packets Received/sec
-:   \Network Adapter(${here/instance_name})\Packets Outbound Errors
-:   \Network Adapter(${here/instance\_name})\Packets Sent/sec
+Interfaces on Windows 2012
+:   \\Network Adapter(${here/instance\_name})\\Bytes Received/sec
+:   \\Network Adapter(${here/instance\_name})\\Bytes Sent/sec
+:   \\Network Adapter(${here/instance\_name})\\Packets Received Errors
+:   \\Network Adapter(${here/instance\_name})\\Packets Received/sec
+:   \\Network Adapter(${here/instance\_name})\\Packets Outbound Errors
+:   \\Network Adapter(${here/instance\_name})\\Packets Sent/sec
 
 Active Directory
-:   \NTDS\DS Client Binds/sec
-:   \NTDS\DS Directory Reads/sec
-:   \NTDS\DS Directory Searches/sec
-:   \NTDS\DS Directory Writes/sec
-:   \NTDS\DS Monitor List Size
-:   \NTDS\DS Name Cache hit rate
-:   \NTDS\DS Notify Queue Size
-:   \NTDS\DS Search sub-operations/sec
-:   \NTDS\DS Server Binds/sec
-:   \NTDS\DS Server Name Translations/sec
-:   \NTDS\DS Threads in Use
-:   \NTDS\KDC AS Requests
-:   \NTDS\KDC TGS Requests
-:   \NTDS\Kerberos Authentications
-:   \NTDS\LDAP Active Threads
-:   \NTDS\LDAP Bind Time
-:   \NTDS\LDAP Client Sessions
-:   \NTDS\LDAP Closed Connections/sec
-:   \NTDS\LDAP New Connections/sec
-:   \NTDS\LDAP New SSL Connections/sec
-:   \NTDS\LDAP Searches/sec
-:   \NTDS\LDAP Successful Binds/sec
-:   \NTDS\LDAP UDP operations/sec
-:   \NTDS\LDAP Writes/sec
-:   \Security System-Wide Statistics\NTLM Authentications
+:   \\NTDS\\DS Client Binds/sec
+:   \\NTDS\\DS Directory Reads/sec
+:   \\NTDS\\DS Directory Searches/sec
+:   \\NTDS\\DS Directory Writes/sec
+:   \\NTDS\\DS Monitor List Size
+:   \\NTDS\\DS Name Cache hit rate
+:   \\NTDS\\DS Notify Queue Size
+:   \\NTDS\\DS Search sub-operations/sec
+:   \\NTDS\\DS Server Binds/sec
+:   \\NTDS\\DS Server Name Translations/sec
+:   \\NTDS\\DS Threads in Use
+:   \\NTDS\\KDC AS Requests
+:   \\NTDS\\KDC TGS Requests
+:   \\NTDS\\Kerberos Authentications
+:   \\NTDS\\LDAP Active Threads
+:   \\NTDS\\LDAP Bind Time
+:   \\NTDS\\LDAP Client Sessions
+:   \\NTDS\\LDAP Closed Connections/sec
+:   \\NTDS\\LDAP New Connections/sec
+:   \\NTDS\\LDAP New SSL Connections/sec
+:   \\NTDS\\LDAP Searches/sec
+:   \\NTDS\\LDAP Successful Binds/sec
+:   \\NTDS\\LDAP UDP operations/sec
+:   \\NTDS\\LDAP Writes/sec
+:   \\NTDS\\NTLM Authentications
 
 Note: The Active Directory monitoring template will only be used when
 the server has the Primary or Backup Domain Controller role.
 
 Exchange 2007 & 2010 
-:   \MSExchangeIS Mailbox(_Total)\Folder opens/sec
-:   \MSExchangeIS Mailbox(_Total)\Local delivery rate 
-:   \MSExchangeIS Mailbox(_Total)\Message Opens/sec 
-:   \MSExchangeIS\RPC Averaged Latency 
-:   \MSExchangeIS\RPC Operations/sec
-:   \MSExchangeIS\RPC Requests 
-:   \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
-:   \MSExchangeTransport SmtpSend(_Total)\Messages Sent/sec
+:   \\MSExchangeIS Mailbox(_Total)\\Folder opens/sec
+:   \\MSExchangeIS Mailbox(_Total)\\Local delivery rate 
+:   \\MSExchangeIS Mailbox(_Total)\\Message Opens/sec 
+:   \\MSExchangeIS\\RPC Averaged Latency 
+:   \\MSExchangeIS\\RPC Operations/sec
+:   \\MSExchangeIS\\RPC Requests 
+:   \\MSExchangeTransport Queues(_Total)\\Active Mailbox Delivery Queue Length
+:   \\MSExchangeTransport SmtpSend(_Total)\\Messages Sent/sec
 
 Exchange 2013 
-:   \MSExchangeIS Store(_Total)\Folders opened/sec 
-:   \MSExchangeIS Store(_Total)\Messages Delivered/sec 
-:   \MSExchangeIS Store(_Total)\Messages opened/sec 
-:   \MSExchange Store Interface(_Total)\RPC Latency average (msec) 
-:   \MSExchange Store Interface(_Total)\RPC Requests sent/sec 
-:   \MSExchange Store Interface(_Total)\RPC Requests sent 
-:   \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
-:   \MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
+:   \\MSExchangeIS Store(_Total)\\Folders opened/sec 
+:   \\MSExchangeIS Store(_Total)\\Messages Delivered/sec 
+:   \\MSExchangeIS Store(_Total)\\Messages opened/sec 
+:   \\MSExchange Store Interface(_Total)\\RPC Latency average (msec) 
+:   \\MSExchange Store Interface(_Total)\\RPC Requests sent/sec 
+:   \\MSExchange Store Interface(_Total)\\RPC Requests sent 
+:   \\MSExchangeTransport Queues(_Total)\\Active Mailbox Delivery Queue Length
+:   \\MSExchange Delivery SmtpSend(_Total)\\Messages Sent/sec
 
 Note: If monitoring Exchange with a non-administrator user, the user
 must be a member of the Active Directory group "Exchange View-Only
@@ -261,55 +271,55 @@ through the Add Roles and Features tool on the Windows Server under Web
 Server -> Management Tools -> IIS Management Scripts and Tools.
 
 IIS
-:   \Web Service(_Total)\Bytes Received/sec
-:   \Web Service(_Total)\Bytes Sent/sec
-:   \Web Service(_Total)\CGI Requests/sec
-:   \Web Service(_Total)\Connection Attempts/sec
-:   \Web Service(_Total)\Copy Requests/sec
-:   \Web Service(_Total)\Delete Requests/sec
-:   \Web Service(_Total)\Files Received/sec
-:   \Web Service(_Total)\Files Sent/sec
-:   \Web Service(_Total)\Get Requests/sec
-:   \Web Service(_Total)\Head Requests/sec
-:   \Web Service(_Total)\ISAPI Extension Requests/sec
-:   \Web Service(_Total)\Lock Requests/sec
-:   \Web Service(_Total)\Mkcol Requests/sec
-:   \Web Service(_Total)\Move Requests/sec
-:   \Web Service(_Total)\Options Requests/sec
-:   \Web Service(_Total)\Other Request Methods/sec
-:   \Web Service(_Total)\Post Requests/sec
-:   \Web Service(_Total)\Propfind Requests/sec
-:   \Web Service(_Total)\Proppatch Requests/sec
-:   \Web Service(_Total)\Put Requests/sec
-:   \Web Service(_Total)\Search Requests/sec
-:   \Web Service(_Total)\Trace Requests/sec
-:   \Web Service(_Total)\Unlock Requests/sec
+:   \\Web Service(_Total)\\Bytes Received/sec
+:   \\Web Service(_Total)\\Bytes Sent/sec
+:   \\Web Service(_Total)\\CGI Requests/sec
+:   \\Web Service(_Total)\\Connection Attempts/sec
+:   \\Web Service(_Total)\\Copy Requests/sec
+:   \\Web Service(_Total)\\Delete Requests/sec
+:   \\Web Service(_Total)\\Files Received/sec
+:   \\Web Service(_Total)\\Files Sent/sec
+:   \\Web Service(_Total)\\Get Requests/sec
+:   \\Web Service(_Total)\\Head Requests/sec
+:   \\Web Service(_Total)\\ISAPI Extension Requests/sec
+:   \\Web Service(_Total)\\Lock Requests/sec
+:   \\Web Service(_Total)\\Mkcol Requests/sec
+:   \\Web Service(_Total)\\Move Requests/sec
+:   \\Web Service(_Total)\\Options Requests/sec
+:   \\Web Service(_Total)\\Other Request Methods/sec
+:   \\Web Service(_Total)\\Post Requests/sec
+:   \\Web Service(_Total)\\Propfind Requests/sec
+:   \\Web Service(_Total)\\Proppatch Requests/sec
+:   \\Web Service(_Total)\\Put Requests/sec
+:   \\Web Service(_Total)\\Search Requests/sec
+:   \\Web Service(_Total)\\Trace Requests/sec
+:   \\Web Service(_Total)\\Unlock Requests/sec
 
 IIS Sites 
-:   \Web Service(${here/sitename})\Bytes Received/sec
-:   \Web Service(${here/sitename})\Bytes Sent/sec
-:   \Web Service(${here/sitename})\CGI Requests/sec
-:   \Web Service(${here/sitename})\Connection Attempts/sec
-:   \Web Service(${here/sitename})\Copy Requests/sec
-:   \Web Service(${here/sitename})\Connection Attempts/sec
-:   \Web Service(${here/sitename})\Delete Requests/sec
-:   \Web Service(${here/sitename})\Files Received/sec
-:   \Web Service(${here/sitename})\Files Sent/sec
-:   \Web Service(${here/sitename})\Get Requests/sec
-:   \Web Service(${here/sitename})\Head Requests/sec
-:   \Web Service(${here/sitename})\ISAPI Extension Requests/sec 
-:   \Web Service(${here/sitename})\Lock Requests/sec
-:   \Web Service(${here/sitename})\Mkcol Requests/sec
-:   \Web Service(${here/sitename})\Move Requests/sec
-:   \Web Service(${here/sitename})\Options Requests/sec
-:   \Web Service(${here/sitename})\Other Request Methods/sec
-:   \Web Service(${here/sitename})\Post Requests/sec
-:   \Web Service(${here/sitename})\Propfind Requests/sec
-:   \Web Service(${here/sitename})\Proppatch Requests/sec
-:   \Web Service(${here/sitename})\Put Requests/sec
-:   \Web Service(${here/sitename})\Search Requests/sec
-:   \Web Service(${here/sitename})\Trace Requests/sec
-:   \Web Service(${here/sitename})\Unlock Requests/sec
+:   \\Web Service(${here/sitename})\\Bytes Received/sec
+:   \\Web Service(${here/sitename})\\Bytes Sent/sec
+:   \\Web Service(${here/sitename})\\CGI Requests/sec
+:   \\Web Service(${here/sitename})\\Connection Attempts/sec
+:   \\Web Service(${here/sitename})\\Copy Requests/sec
+:   \\Web Service(${here/sitename})\\Connection Attempts/sec
+:   \\Web Service(${here/sitename})\\Delete Requests/sec
+:   \\Web Service(${here/sitename})\\Files Received/sec
+:   \\Web Service(${here/sitename})\\Files Sent/sec
+:   \\Web Service(${here/sitename})\\Get Requests/sec
+:   \\Web Service(${here/sitename})\\Head Requests/sec
+:   \\Web Service(${here/sitename})\\ISAPI Extension Requests/sec 
+:   \\Web Service(${here/sitename})\\Lock Requests/sec
+:   \\Web Service(${here/sitename})\\Mkcol Requests/sec
+:   \\Web Service(${here/sitename})\\Move Requests/sec
+:   \\Web Service(${here/sitename})\\Options Requests/sec
+:   \\Web Service(${here/sitename})\\Other Request Methods/sec
+:   \\Web Service(${here/sitename})\\Post Requests/sec
+:   \\Web Service(${here/sitename})\\Propfind Requests/sec
+:   \\Web Service(${here/sitename})\\Proppatch Requests/sec
+:   \\Web Service(${here/sitename})\\Put Requests/sec
+:   \\Web Service(${here/sitename})\\Search Requests/sec
+:   \\Web Service(${here/sitename})\\Trace Requests/sec
+:   \\Web Service(${here/sitename})\\Unlock Requests/sec
 
 Note: The IIS monitoring template will only be used when IIS is found
 during modeling.
@@ -319,8 +329,10 @@ data.
 
 The following metrics are collected directly via WMI over WinRM.
 
-Processes (Win32\_PerfFormattedData\_PerfProc\_Process) \*
-PercentProcessorTime \* WorkingSet \* WorkingSetPrivate
+Processes (Win32\_PerfFormattedData\_PerfProc\_Process) 
+:   PercentProcessorTime 
+:   WorkingSet 
+:   WorkingSetPrivate
 
 <br class="clear">
 Note: IIS 6 Management compatibility role no longer needs to be
@@ -330,63 +342,56 @@ SQL Server
 
 The following performance counters are monitored via Powershell script per database:
 
-:   \SQLServer:Databases(<dbname>)\Active Transactions
-:   \SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
-:   \SQLServer:Databases(<dbname>)\Bulk Copy Rows/sec
-:   \SQLServer:Databases(<dbname>)\Bulk Copy Throughput/sec
-:   \SQLServer:Databases(<dbname>)\Cache Entries Count
-:   \SQLServer:Databases(<dbname>)\Cache Entries Pinned Count
-:   \SQLServer:Databases(<dbname>)\Cache Hit Ratio
-:   \SQLServer:Databases(<dbname>)\Cache Hit Ratio Base
-:   \SQLServer:Databases(<dbname>)\DBCC Logical Scan Bytes/sec
-:   \SQLServer:Databases(<dbname>)\Data File(s) Size (KB)
-:   \SQLServer:Databases(<dbname>)\Log Bytes Flushed/sec
-:   \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio
-:   \SQLServer:Databases(<dbname>)\Log Cache Hit Ratio Base
-:   \SQLServer:Databases(<dbname>)\Log Cache Reads/sec
-:   \SQLServer:Databases(<dbname>)\Log File(s) Size (KB)
-:   \SQLServer:Databases(<dbname>)\Log File(s) Used Size (KB)
-:   \SQLServer:Databases(<dbname>)\Log Flush Wait Time
-:   \SQLServer:Databases(<dbname>)\Log Flush Waits/sec
-:   \SQLServer:Databases(<dbname>)\Log Flushes/sec
-:   \SQLServer:Databases(<dbname>)\Log Growths
-:   \SQLServer:Databases(<dbname>)\Percent Log Used
-:   \SQLServer:Databases(<dbname>)\Log Shrinks
-:   \SQLServer:Databases(<dbname>)\Log Truncations
-:   \SQLServer:Databases(<dbname>)\Percent Log Used
-:   \SQLServer:Databases(<dbname>)\Repl. Pending Xacts
-:   \SQLServer:Databases(<dbname>)\Repl. Trans. Rate
-:   \SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
-:   \SQLServer:Databases(<dbname>)\Transactions/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Active Transactions
+:   \\SQLServer:Databases(\<dbname\>)\\Backup/Restore Throughput/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Bulk Copy Rows/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Bulk Copy Throughput/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Cache Entries Count
+:   \\SQLServer:Databases(\<dbname\>)\\Cache Entries Pinned Count
+:   \\SQLServer:Databases(\<dbname\>)\\Cache Hit Ratio
+:   \\SQLServer:Databases(\<dbname\>)\\Cache Hit Ratio Base
+:   \\SQLServer:Databases(\<dbname\>)\\DBCC Logical Scan Bytes/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Data File(s) Size (KB)
+:   \\SQLServer:Databases(\<dbname\>)\\Log Bytes Flushed/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Hit Ratio
+:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Hit Ratio Base
+:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Reads/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Log File(s) Size (KB)
+:   \\SQLServer:Databases(\<dbname\>)\\Log File(s) Used Size (KB)
+:   \\SQLServer:Databases(\<dbname\>)\\Log Flush Wait Time
+:   \\SQLServer:Databases(\<dbname\>)\\Log Flush Waits/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Log Flushes/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Log Growths
+:   \\SQLServer:Databases(\<dbname\>)\\Percent Log Used
+:   \\SQLServer:Databases(\<dbname\>)\\Log Shrinks
+:   \\SQLServer:Databases(\<dbname\>)\\Log Truncations
+:   \\SQLServer:Databases(\<dbname\>)\\Percent Log Used
+:   \\SQLServer:Databases(\<dbname\>)\\Repl. Pending Xacts
+:   \\SQLServer:Databases(\<dbname\>)\\Repl. Trans. Rate
+:   \\SQLServer:Databases(\<dbname\>)\\Shrink Data Movement Bytes/sec
+:   \\SQLServer:Databases(\<dbname\>)\\Transactions/sec
 
 You can enable/disable any of these or change the cycle time by editing
 the WinDatabase monitoring template.
 
-Events will be sent depending upon one or more of the following statuses
-of the database
+Database Statuses
+:   AutoClosed - The database has been automatically closed.
+:   EmergencyMode - The database is in emergency mode.
+:   Inaccessible - The database is inaccessible. The server might be switched off or the network connection has been interrupted.
+:   Normal - The database is available.
+:   Offline - The database has been taken offline.
+:   Recovering - The database is going through the recovery process.
+:   RecoveryPending - The database is waiting to go through the recovery process.
+:   Restoring - The database is going through the restore process.
+:   Shutdown - The server on which the database resides has been shut down.
+:   Standby - The database is in standby mode.
+:   Suspect - The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
 
-:   AutoClosed: The database has been automatically closed.
-:   EmergencyMode: The database is in emergency mode.
-:   Inaccessible: The database is inaccessible. The server might be
-    switched off or the network connection has been interrupted.
-:   Normal: The database is available.
-:   Offline: The database has been taken offline.
-:   Recovering: The database is going through the recovery process.
-:   RecoveryPending: The database is waiting to go through the recovery
-    process.
-:   Restoring: The database is going through the restore process.
-:   Shutdown: The server on which the database resides has been shut
-    down.
-:   Standby: The database is in standby mode.
-:   Suspect: The database has been marked as suspect. You will have to
-    check the data, and the database might have to be restored from a
-    backup.
-
+Events
 :   'Normal' will send a clear event
 :   'EmergencyMode' will send a critical event
 :   'Inaccessible', 'Suspect', 'Shutdown' will send Error events
-:   'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed',
-    'Offline' will send Warning events
+:   'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Warning events
 
 Status can be multiple items from above. For example, taking a database
 offline will set the status to 'Offline, AutoClosed'.
@@ -485,7 +490,7 @@ duplicate events.
 For example, a custom view that searches for events in the last hour,
 with severity of Warning or Critical, and Ids of 104, 110-115, 155 will
 result in the following XPath query:
-[![][EventDatasourceXML.PNG]][EventDatasourceXML.png]
+[![][EventDatasourceXML.png]][EventDatasourceXML.png]
 
 
     <QueryList> 
@@ -704,12 +709,7 @@ The order of precedence for monitoring a service is:
 3.  Datasource other than the DefaultService in the WinService template associated with the service.
 4.  Monitoring is enabled via the Infrastructure -> Windows Services page.
 
-Windows Service Startmodes (Template vs Windows Services)
-
-| Startmodes | Template includes Service startmode | Template excludes Service startmode |
-| ---------- | ----------------------------------- | ----------------------------------- |
-| Windows Service Class includes Service startmode | monitored | monitored |
-| Windows Service Class excludes Service startmode | monitored | NOT monitored|
+<table border="2" cellpadding="1" cellspacing="1" style="width:800px;"><caption><strong>Windows Service Startmodes (Template vs Windows Services)</strong></caption><thead><tr><th scope="col" style="text-align: center;">Startmodes</th><th scope="col" style="text-align: center;">Template includes Service startmode</th><th scope="col" style="text-align: center;">Template excludes Service startmode</th></tr></thead><tbody><tr><td>Windows Service Class includes Service startmode</td><td>monitored</td><td>monitored</td></tr><tr><td>Windows Service Class excludes Service startmode</td><td>monitored</td><td>NOT monitored</td></tr></tbody></table>
 
 Note: The Windows Service Template (default WinService) must have at
 least one datasource enabled for monitoring to function.
@@ -754,7 +754,7 @@ Note: DCDiag must be run as a user with Administrator permissions. If
 you will be monitoring a Domain Controller with a non administrator
 user, you should disable these tests.
 
-=== PortCheck ===
+### PortCheck
 
 Beginning with version 2.4.0, you can now monitor specific ports in the
 Windows Zenpack. By default, the ZenPack will monitor ports 9389, 3268,
@@ -896,15 +896,19 @@ username and password of all the servers you want to add. Multiple
 endpoints can be added under the same
 */Devices/Server/Microsoft/Windows* section. Here is an example...
 
-<syntaxhighlight lang="text"> /Devices/Server/Microsoft/Windows
+```
+/Devices/Server/Microsoft/Windows
 win2008-1d.example.com zWinRMUser="Administrator",
 zWinRMPassword="password" Win2012-1d.example.com
-zWinRMUser="Administrator", zWinRMPassword="password" </syntaxhighlight>
+zWinRMUser="Administrator", zWinRMPassword="password"
+```
 
 You can then load the Windows servers into Zenoss Core or Resource
 Manager as devices with the following command.
 
-<syntaxhighlight lang="bash"> zenbatchload <filename> </syntaxhighlight>
+```
+zenbatchload <filename>
+```
 
 ### Configuration Options
 
@@ -1057,7 +1061,7 @@ another device as well.
 
 ### Configuring MSSQL Server Modeling/Monitoring
 
-##### Supported SQL Server versions
+Supported SQL Server versions
 :   SQL Server 2005
 :   SQL Server 2008
 :   SQL Server 2008 R2
@@ -1073,6 +1077,7 @@ Note: In order to properly monitor SQL Server, the Client Tools SDK must be inst
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
+
 1.  Connect to SQL Instance using MSSQL Management Studio. 
 2.  Select instance *Properties* > *Security* and make sure that *SQL Server and Windows Authentication mode* is enabled. 
 3.  Open *Security* > *Logins*, select the user you specified in *zDBInstances* property or the *zWinRMUser* property if using Windows Authentication. 
@@ -1090,6 +1095,7 @@ SQL Server failover cluster instances can be modeled/monitored within
 cluster devices (devices in *Server/Microsoft/Cluster* device class).
 
 Use the following steps to model/monitor SQL Server instances: 
+
 1.  Create a device in *Server/Microsoft/Windows* device class if you
     intend to model local SQL instances, or in *Server/Microsoft/Cluster*
     device class if you intend to model failover cluster instances. 
@@ -1109,7 +1115,7 @@ Note: The default instance of MSSQLSERVER appears as the host name.
 
 Note: The authenticated user will need to be granted permission to
 view the server state. For example, "GRANT VIEW SERVER STATE TO
-'MYDOMAIN\zenoss_user'" or through the GUI in SQL Server Management
+'MYDOMAIN\\zenoss_user'" or through the GUI in SQL Server Management
 Studio. A Windows user must also be interactive, i.e. the account must not be
 denied local logon rights.
 
@@ -1120,6 +1126,7 @@ the zenactiond daemon to allow an arbitrary command to be executed on
 the remote windows machine.
 
 Use the following steps to set up a notification: 
+
 1.  Select *Events* > *Triggers* from the Navigation Menu. 
 2.  Create a trigger, selecting the rules that define it. 
 3.  Select *Notifications* from the left panel. Add a new notification, enter a name for it and select *WinCommand* Action from the drop-down menu. Click Submit. 
@@ -1140,7 +1147,7 @@ For more information please refer to
 
 #### Group Policy
 
-Navigate to Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Management
+Navigate to Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management
 
 WinRMClient 
 -   No setting changes required for client
@@ -1154,7 +1161,7 @@ HTTP (Windows default is HTTPS see note below for more information)
 Basic Authentication (Windows default is Kerberos see note below for more information)
 -   Allow Basic Authentication
 
-WinRS Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell
+WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Shell
 -   Allow Remote Shell Access
 -   Max number of processes per shell = 4294967295
 -   Max number of shells per user = 2147483647
@@ -1213,16 +1220,17 @@ we do not have notes on automating this task but are currently in the
 process of testing several options. To successfully encrypt your payload
 between the Zenoss server and the Windows client you must install a
 Server Authentication certificate on the client machine. The process for
-requesting and installing the appropriate certificate can be found at
-the following URL.
-http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
+requesting and installing the appropriate certificate can be found in
+the following [technet article](http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx)
 Once the client has the correct certificate installed you only need to
 change the zWinScheme to HTTPS and zWinRMPort to 5986. If you are still
 having challenges setting up HTTPS on the client you can execute the
 following command on any AD server to verify the appropriate SPN record
 exists for Kerberos authentication.
 
-<console> c:\>setspn -l hostname1 </console>
+```
+c:\>setspn -l hostname1
+```
 
 If you do not see a record with HTTPS/ at the beginning of the hostname
 you can create the record, but this is not typically necessary as
@@ -1231,7 +1239,9 @@ services.  You can also use the zWinUseWsmanSPN property so that zenoss
 will use the WSMAN service principal.  The WSMAN spn is created by
 running *winrm quickconfig*.
 
-<console> c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1 </console>
+```
+c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
+```
 
 Transitioning from WindowsMonitor
 ---------------------------------
@@ -1325,8 +1335,10 @@ establishing a ticket. To disable the reverse lookup, create a file in
 either the default location or in a user specified location and add the
 following:
 
-<syntaxhighlight lang="text"> [libdefaults] rdns = false
-</syntaxhighlight>
+```
+[libdefaults] 
+  rdns = false
+```
 
 See [krb5.conf](http://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html) 
 for more information on the includedir and other kerberos options.
@@ -1340,10 +1352,10 @@ This list also supports a simple regex to add, remove, and specify an
 admin_server.
 
 Adding a KDC
--   Use just the address or append a *+* to the beginning of the address to add a new kdc.
+-   Use just the address or append a "+" to the beginning of the address to add a new kdc.
 
 Removing a KDC
--   Append a *-* to the beginning of the KDC address to
+-   Append a "-" to the beginning of the KDC address to
     remove an existing KDC from the krb5.conf file. This can be used if a
     KDC is no longer in service or if the wrong address was entered
     previously. This can be removed from zWinKDC once a ticket granting
@@ -1475,7 +1487,9 @@ First install Wireshark on your system. It's GUI is easier to use than the comma
 
 Next you will need to create a packet capture file on your Zenoss server. Assuming the Windows server you're trying to monitor is *192.0.2.101* and the domain controller (*zWinKDC*) is *203.0.113.10*, you would run the following command as the root user on your Zenoss server.
 
-<console>tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10</console>
+```
+tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10
+```
 
 This will start capturing all packets to or from those two IP addresses. It will continue to capture these packets until you type *CTRL-C*.
 
@@ -1575,9 +1589,9 @@ determine issues.
 
 Usage:
 
-<syntaxhighlight lang="text"> 
+```
 export ZP_DUMP=1;zenmodeler run -d server1.example.com --collect=Interfaces; unset ZP_DUMP
-</syntaxhighlight>
+```
 
 This will unload a pickle of the results to a file in the /tmp folder
 called Interfaces_process_XXXXXX.pickle.
@@ -2060,12 +2074,14 @@ Changes
 
 -   Initial release of new Windows support using WinRM instead of DCOM/RPC.
 
-[Windows_device.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_device.png "Device" {.thumbnail}
-[Windows_filesystem.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_filesystem.png "File System" {.thumbnail}
-[Windows_graphs.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_graphs.png "Graphs" {.thumbnail}
-[Windows_interfaces.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_interfaces.png "Interfaces" {.thumbnail}
-[Windows_harddisk.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_.harddiskpng "Hard Disk" {.thumbnail}
-[Windows_services.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_services.png "Services" {.thumbnail}
+[Windows_device2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_device2.png "Device" {.thumbnail}
+[Windows_filesystem2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_filesystem2.png "File System" {.thumbnail}
+[Windows_graphs2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_graphs2.png "Graphs" {.thumbnail}
+[Windows_interfaces2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_interfaces2.png "Interfaces" {.thumbnail}
+[Windows_harddisk.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_harddisk.png "Hard Disk" {.thumbnail}
+[Windows_services2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_services2.png "Services" {.thumbnail}
+[Windows_processes.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_processes.png "Processes" {.thumbnail}
+[Windows_database.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_database.png "Databases" {.thumbnail}
 [winservice.png]: /sites/default/files/zenpack/Microsoft Windows/winservice.png "WinService" {.thumbnail}
 [CustomViewOptions.png]: /sites/default/files/zenpack/Microsoft Windows/CustomViewOptions.png "Custom View Options" {.thumbnail}
 [CustomViewXML.png]: /sites/default/files/zenpack/Microsoft Windows/CustomViewXML.png "Custom View XML" {.thumbnail}
