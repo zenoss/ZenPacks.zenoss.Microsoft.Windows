@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -9,10 +9,10 @@
 
 import json
 import logging
-log = logging.getLogger("zen.migrate")
 
 from Products.ZenModel.migrate.Migrate import Version
 from Products.ZenModel.ZenPack import ZenPackMigration
+log = logging.getLogger("zen.migrate")
 
 
 class MigrateDBInstances(ZenPackMigration):
@@ -45,7 +45,7 @@ class MigrateDBInstances(ZenPackMigration):
             # Successful load mean we already have proper value
             if not isinstance(json.loads(thing.zDBInstances), list):
                 raise
-        except:
+        except Exception:
             log.info("Migrating zDBInstances for %s", thing.getDmdKey())
 
             res = []
@@ -80,4 +80,3 @@ class MigrateDBInstances(ZenPackMigration):
                             })
             # print json.dumps(res)
             thing.setZenProperty('zDBInstances', json.dumps(res))
-

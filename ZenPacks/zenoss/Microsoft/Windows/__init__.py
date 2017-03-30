@@ -68,8 +68,6 @@ productNames = (
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
     '  You must update to the latest version of the Exchange Server ZenPack.'
-SEGFAULT_INFO = "If a Segmentation fault occurs, then run the installation "\
-    "once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older."
 
 
 def getOSKerberos(osrelease):
@@ -146,8 +144,6 @@ class ZenPack(schema.ZenPack):
         self.in_install = True
         super(ZenPack, self).install(app)
 
-        log.info(SEGFAULT_INFO)
-
         try:
             exchange_version = self.dmd.ZenPackManager.packs._getOb(
                 'ZenPacks.zenoss.Microsoft.Exchange').version
@@ -173,7 +169,6 @@ class ZenPack(schema.ZenPack):
                 os.environ['ZENHOME']))
             environmentfile.close()
 
-
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)
@@ -182,7 +177,6 @@ class ZenPack(schema.ZenPack):
 
         # updating these manually since ZPL 2.0 doesn't yet support these attributes
         self.update_event_class_mappings(app.zport.dmd)
-
 
         self.in_install = False
 

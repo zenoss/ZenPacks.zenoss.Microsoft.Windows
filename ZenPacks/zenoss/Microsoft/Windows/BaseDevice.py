@@ -12,10 +12,6 @@ Utilities that may cause Zope stuff to be imported.
 '''
 from . import schema
 
-from Products.ZenModel.Device import Device
-from Products.ZenModel.DeviceHW import DeviceHW
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenStatus import ZenStatus
 from Products.ZenUtils.ZenTales import talesEvalStr
 
 

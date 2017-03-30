@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015, 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -11,7 +11,6 @@
 
 # Logging
 import logging
-LOG = logging.getLogger("zen.Microsoft.Windows.migrate.{}".format(__name__))
 
 # Zenoss Imports
 from zope.event import notify
@@ -22,6 +21,7 @@ from Products.Zuul.interfaces import ICatalogTool
 
 # ZenPack Imports
 from ZenPacks.zenoss.Microsoft.Windows import progresslog
+LOG = logging.getLogger("zen.Microsoft.Windows.migrate.{}".format(__name__))
 
 
 # If the migration takes longer than this interval, a running progress
@@ -37,7 +37,7 @@ class ResetOSProcesses(ZenPackMigration):
         LOG.info("Reindexing Processes")
         results = ICatalogTool(pack.getDmdRoot("Devices")).search(types=(
             'ZenPacks.zenoss.Microsoft.Windows.OSProcess.OSProcess',
-            ))
+        ))
 
         if not results.total:
             return

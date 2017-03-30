@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2012-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -400,7 +400,6 @@ class WinMSSQL(WinRMPlugin):
                             owner_node.strip(), sqlserver)
                         om_database.systemobject = dbdict['systemobject']
                         om_database.recoverymodel = dbdict['recoverymodel']
-                        om_database.status = 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
 
                         database_oms.append(om_database)
                 elif in_backups:
