@@ -43,15 +43,15 @@ class TestServiceDataSourcePlugin(BaseTestCase):
                                      id=sentinel.id,
                                      datasources=self.ds,
                                      ))
-        self.assertEquals(len(data['events']), 6)
+        self.assertEquals(len(data['events']), 5)
         self.assertEquals(data['events'][0]['summary'],
                           'Service Alert: aspnet_state has changed to Stopped state')
         self.assertEquals(data['events'][1]['summary'],
                           'Windows Service Check: successful service collection')
         self.assertEquals(data['events'][2]['summary'], 
-                          'Password is not expired')
+                          'Authentication Successful')
         self.assertEquals(data['events'][3]['summary'],
-                          'Credentials are OK')
+                          'No Kerberos auth failures')
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ServiceDataSource.log', Mock())
     def test_onError(self):
