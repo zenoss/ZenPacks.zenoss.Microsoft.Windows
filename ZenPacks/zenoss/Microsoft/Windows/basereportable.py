@@ -471,6 +471,17 @@ class BaseReportable(ETLBaseReportable):
                     yield (propname + '_count', 'int', 0, MARKER_LENGTH)
 
 
+class MySQLReportable(BaseReportable):
+    def _getRelationProps(self):
+        for rel in super(MySQLReportable, self)._getRelationProps():
+            if rel[0] == 'win_sql_instance_key':
+                rel = ('win_sql_instance_key',
+                       'reference',
+                       IReportable(getattr(self.context, 'winsqlinstance', None)()).sid,
+                       MARKER_LENGTH)
+            yield rel
+
+
 class BaseManyToManyReportable(Reportable):
     implements(IReportable)
 
