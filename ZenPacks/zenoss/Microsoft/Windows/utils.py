@@ -12,7 +12,6 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import json
-from Products.ZenEvents import ZenEventClasses
 
 
 def addLocalLibPath():
@@ -459,6 +458,7 @@ def append_event_datasource_plugin(datasources, events, event):
     if event not in events:
         events.append(event)
 
+
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
     kerberos_messages = ['kerberos', 'kinit']
@@ -489,6 +489,7 @@ def errorMsgCheck(config, events, error):
                 'ipAddress': config.manageIp,
                 'device': config.id})
 
+
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
     append_event_datasource_plugin(config.datasources, events, {
@@ -503,6 +504,7 @@ def generateClearAuthEvents(config, events):
         'eventClassKey': 'KerberosSuccess',
         'summary': 'No Kerberos failures',
         'device': config.id})
+
 
 def get_dummy_dpconfig(ref_dp, id):
     """Return datapoint config based on reference datapoint config"""

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -9,7 +9,6 @@
 from . import schema
 from socket import gaierror
 from Products.ZenUtils.IpUtil import getHostByName
-from utils import cluster_state_string
 
 
 class ClusterNodeObject(schema.ClusterNodeObject):
@@ -35,4 +34,3 @@ class ClusterNodeObject(schema.ClusterNodeObject):
                 continue
             return node.get_host_device()
         return self.ownernodeentity()
-
