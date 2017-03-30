@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2012-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -26,9 +26,9 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
-addLocalLibPath()
+from txwinrm.WinRMClient import SingleCommandClient
 
-from txwinrm.shell import create_single_shot_command
+addLocalLibPath()
 
 
 class SQLCommander(object):
@@ -37,7 +37,7 @@ class SQLCommander(object):
     '''
 
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
@@ -93,26 +93,23 @@ class SQLCommander(object):
     '''
 
     def get_instances_names(self, is_cluster):
-        '''
-        Run script to retrieve DB instances' names and hostname either
+        """Run script to retrieve DB instances' names and hostname either
         available in the cluster or installed on the local machine,
         according to the 'is_cluster' parameter supplied.
-        '''
+        """
         psinstance_script = self.CLUSTER_INSTANCES_PS_SCRIPT if is_cluster \
             else self.LOCAL_INSTANCES_PS_SCRIPT
         return self.run_command(
-            psinstance_script.replace('\n', ' ') + self.HOSTNAME_PS_SCRIPT
+            psinstance_script + self.HOSTNAME_PS_SCRIPT
         )
 
     def run_command(self, pscommand):
-        '''
-        Run PowerShell command.
-        '''
+        """Run PowerShell command."""
         buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
-                       'Management.Automation.Host.Size (4096, 25);')
-        command = "{0} \"{1} & {{{2}}}\"".format(
-            self.PS_COMMAND, buffer_size, pscommand)
-        return self.winrs.run_command(command)
+                       'Management.Automation.Host.Size (4096, 512);')
+        script = "\"{0} & {{{1}}}\"".format(
+            buffer_size, pscommand.replace('\n', ' '))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class WinMSSQL(WinRMPlugin):
@@ -120,7 +117,7 @@ class WinMSSQL(WinRMPlugin):
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
         'getDeviceClassName'
-        )
+    )
 
     @defer.inlineCallbacks
     def collect(self, device, log):
@@ -164,6 +161,14 @@ class WinMSSQL(WinRMPlugin):
         instances = yield dbinstances
 
         maps = {}
+        if not instances:
+            log.info('{}:  No output while getting instance names.'
+                     '  zWinRMEnvelopeSize may not be large enough.'
+                     '  Increase the size and try again.'.format(self.name()))
+            defer.returnValue(maps)
+
+        maps['errors'] = {}
+        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         instance_oms = []
         database_oms = []
         backup_oms = []
@@ -183,7 +188,10 @@ class WinMSSQL(WinRMPlugin):
                 serverlist = server_config[key]
             if key == 'instances':
                 instance_version = value.split(':')
-                serverlist[''.join(instance_version[:-1]).strip()] = ''.join(instance_version[-1:]).strip()
+                if len(instance_version) > 1:
+                    serverlist[''.join(instance_version[:-1]).strip()] = ''.join(instance_version[-1:]).strip()
+                else:
+                    serverlist[value.strip()] = '0'
             else:
                 serverlist.append(value.strip())
             server_config[key] = serverlist
@@ -234,11 +242,10 @@ class WinMSSQL(WinRMPlugin):
             om_instance.instancename = instance_title
             om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
-                            owner_node.strip(), sqlserver)
+                owner_node.strip(), sqlserver)
             instance_oms.append(om_instance)
 
             sqlConnection = []
-
 
             # Look for specific instance creds first
             try:
@@ -258,9 +265,9 @@ class WinMSSQL(WinRMPlugin):
                     login_as_user = True
 
             # DB Connection Object
-            sqlConnection.append("$con = new-object " \
-                "('Microsoft.SqlServer.Management.Common.ServerConnection')" \
-                "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
+            sqlConnection.append("$con = new-object "
+                                 "('Microsoft.SqlServer.Management.Common.ServerConnection')"
+                                 "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
 
             if login_as_user:
                 # Login using windows credentials
@@ -273,43 +280,43 @@ class WinMSSQL(WinRMPlugin):
                 sqlConnection.append("$con.Connect();")
 
             # Connect to Database Server
-            sqlConnection.append("$server = new-object " \
-                "('Microsoft.SqlServer.Management.Smo.Server') $con;")
+            sqlConnection.append("$server = new-object "
+                                 "('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
             db_sqlConnection = []
             # Get database information
             db_sqlConnection.append('write-host "====Databases";')
-            db_sqlConnection.append('$server.Databases | foreach {' \
-                'write-host \"Name---\" $_,' \
-                '\"`tVersion---\" $_.Version,' \
-                '\"`tIsAccessible---\" $_.IsAccessible,' \
-                '\"`tID---\" $_.ID,' \
-                '\"`tOwner---\" $_.Owner,' \
-                '\"`tLastBackupDate---\" $_.LastBackupDate,'\
-                '\"`tCollation---\" $_.Collation,'\
-                '\"`tCreateDate---\" $_.CreateDate,'\
-                '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'\
-                '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'\
-                '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,' \
-                '\"`tSystemObject---\" $_.IsSystemObject,' \
-                '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel' \
-                '};')
+            db_sqlConnection.append('$server.Databases | foreach {'
+                                    'write-host \"Name---\" $_,'
+                                    '\"`tVersion---\" $_.Version,'
+                                    '\"`tIsAccessible---\" $_.IsAccessible,'
+                                    '\"`tID---\" $_.ID,'
+                                    '\"`tOwner---\" $_.Owner,'
+                                    '\"`tLastBackupDate---\" $_.LastBackupDate,'
+                                    '\"`tCollation---\" $_.Collation,'
+                                    '\"`tCreateDate---\" $_.CreateDate,'
+                                    '\"`tDefaultFileGroup---\" $_.DefaultFileGroup,'
+                                    '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'
+                                    '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,'
+                                    '\"`tSystemObject---\" $_.IsSystemObject,'
+                                    '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel'
+                                    '};')
 
             # Get SQL Backup Jobs information
             backup_sqlConnection = []
             backup_sqlConnection.append('write-host "====Backups";')
             # Get database information
-            backup_sqlConnection.append('$server.BackupDevices | foreach {' \
-                'write-host \"Name---\" $_.Name,' \
-                '\"`tDeviceType---\" $_.BackupDeviceType,' \
-                '\"`tPhysicalLocation---\" $_.PhysicalLocation,' \
-                '\"`tStatus---\" $_.State' \
-                '};')
+            backup_sqlConnection.append('try{$server.BackupDevices | foreach {'
+                                        'write-host \"Name---\" $_.Name,'
+                                        '\"`tDeviceType---\" $_.BackupDeviceType,'
+                                        '\"`tPhysicalLocation---\" $_.PhysicalLocation,'
+                                        '\"`tStatus---\" $_.State'
+                                        '}}catch{ continue };')
 
             # Get SQL Jobs information
             job_sqlConnection = []
             job_sqlConnection.append('write-host "====Jobs";')
-            job_sqlConnection.append("if ($server.JobServer -ne $null) {")
+            job_sqlConnection.append("try {")
             job_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
             job_sqlConnection.append("write-host 'jobname:'$job.Name;")
             job_sqlConnection.append("write-host 'enabled:'$job.IsEnabled;")
@@ -317,9 +324,14 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append("write-host 'description:'$job.Description;")
             job_sqlConnection.append("write-host 'datecreated:'$job.DateCreated;")
             job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
+            job_sqlConnection.append("catch { continue; }")
+
+            buffer_size = ['$Host.UI.RawUI.BufferSize = New-Object '
+                           'Management.Automation.Host.Size (4096, 512);']
 
             instance_info = yield winrs.run_command(
-                ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) + sqlConnection + db_sqlConnection +
+                ''.join(buffer_size + getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
+                        sqlConnection + db_sqlConnection +
                         backup_sqlConnection + job_sqlConnection)
             )
 
@@ -328,6 +340,7 @@ class WinMSSQL(WinRMPlugin):
             in_databases = False
             in_backups = False
             in_jobs = False
+            maps['errors'][om_instance.id] = instance_info.stderr
             for stdout_line in filter_sql_stdout(instance_info.stdout):
                 if stdout_line == 'assembly load error':
                     break
@@ -348,7 +361,6 @@ class WinMSSQL(WinRMPlugin):
                     continue
                 if in_databases:
                     dbobj = stdout_line
-                    #for dbobj in filter_sql_stdout(databases.stdout):
                     db = dbobj.split('\t')
                     dbdict = {}
 
@@ -362,12 +374,12 @@ class WinMSSQL(WinRMPlugin):
 
                     lastlogbackupdate = None
                     if ('lastlogbackupdate' in dbdict) \
-                    and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
+                       and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
                         lastlogbackupdate = dbdict['lastlogbackupdate']
 
                     lastbackupdate = None
                     if ('lastbackupdate' in dbdict) \
-                    and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
+                       and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
                         lastbackupdate = dbdict['lastbackupdate']
 
                     if ('id' in dbdict):
@@ -410,14 +422,14 @@ class WinMSSQL(WinRMPlugin):
 
                 elif in_jobs:
                     job = stdout_line
-                    # Make sure that the job description length does not go 
+                    # Make sure that the job description length does not go
                     # beyond the buffer size (4096 characters).
                     if ':' not in job:
                         continue
 
                     key, value = job.split(':', 1)
                     if key.strip() == 'jobname':
-                        #New Job Record
+                        # New Job Record
                         om_jobs = ObjectMap()
                         om_jobs.instancename = om_instance.id
                         om_jobs.title = value.strip()
@@ -519,7 +531,31 @@ class WinMSSQL(WinRMPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
+
+        try:
+            for instance, errors in results['errors'].items():
+                if errors:
+                    msg = '{}: {}'.format(instance, sanitize_error(errors))
+                    self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
+                else:
+                    msg = 'Successful collection for {}'.format(instance)
+                    self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
+        except KeyError:
+            # This is for unit tests to pass, no need to try and send events
+            pass
         return maps
+
+
+def sanitize_error(error):
+    fullerror = '\n'.join(error)
+    try:
+        fullerror = fullerror[:fullerror.index('At line:') - 1]
+    except ValueError:
+        pass
+    if 'Failed to connect to server' in fullerror:
+        fullerror += ' Is SQL Server online?  Are your credentials correct?'
+        fullerror += ' Do you have "View server state" permissions?'
+    return fullerror
 
 
 def check_username(databases, instance, log):

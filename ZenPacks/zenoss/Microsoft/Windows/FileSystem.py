@@ -1,21 +1,21 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
 from . import schema
-from .utils import get_properties
+from utils import get_rrd_path
+
 
 class FileSystem(schema.FileSystem):
     '''
     Model class for FileSystem.
     '''
-
-    _properties = get_properties(schema.FileSystem)
+    # preserve the old style path
+    rrdPath = get_rrd_path
 
     def monitored(self):
         '''
@@ -38,3 +38,9 @@ class FileSystem(schema.FileSystem):
         Return the total bytes of a filesytem for analytics
         """
         return self.blockSize * self.totalBlocks
+
+    def harddisk(self):
+        for hd in self.device().hw.harddisks():
+            if self.id in hd.fs_ids:
+                return hd
+        return None

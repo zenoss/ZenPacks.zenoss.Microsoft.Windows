@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -26,15 +26,15 @@ LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
 class RemoveWinRMServices(ZenPackMigration):
-    version = Version(2, 6, 3)
+    version = Version(2, 7, 0)
 
     def migrate(self, pack):
         org = pack.dmd.Devices.getOrganizer('/Server/Microsoft')
         devices = org.getSubDevices()
         device_count = len(devices)
         if device_count:
-            LOG.info('Removing incompatible Windows Services from {} device{}.'
+            LOG.info('Attempting to remove incompatible Windows Services from {} device{}.'
                      .format(device_count, 's' if device_count > 1 else ''))
             for device in devices:
-                device.os.removeRelation('winrmservices')
+                device.os.removeRelation('winrmservices', suppress_events=True)
                 device.os.buildRelations()

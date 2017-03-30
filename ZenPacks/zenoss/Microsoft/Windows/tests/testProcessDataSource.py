@@ -41,7 +41,7 @@ class TestProcessDataSourcePlugin(BaseTestCase):
             (x['summary'] for x in data['events']),
             (
                 'matching processes running', 'process scan successful', 
-                'Password is not expired', 'Credentials are OK',
-                'No Kerberos auth failures', 'No Kerberos failures',
+                'Authentication Successful', 'No Kerberos auth failures',
+                'No Kerberos failures'
             )
         )

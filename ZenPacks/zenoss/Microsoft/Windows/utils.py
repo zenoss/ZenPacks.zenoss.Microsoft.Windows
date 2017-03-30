@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -12,17 +12,7 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import json
-from Products.ZenEvents import ZenEventClasses
 
-def get_properties(klass):
-    '''
-        avoid duplicates when adding properties 
-        to ZPL schema-based class from a base class
-    '''
-    seen = set()
-    seen_add = seen.add
-    props = tuple([x for x in klass._properties if not (x.get('id') in seen or seen_add(x.get('id')))])
-    return props
 
 def addLocalLibPath():
     """
@@ -34,13 +24,31 @@ def addLocalLibPath():
     site.addsitedir(os.path.join(os.path.dirname(__file__), 'lib'))
 
 
+def lookup_databasesummary(value):
+    return {
+        'AutoClosed': 'The database has been automatically closed.',
+        'EmergencyMode': 'The database is in emergency mode.',
+        'Inaccessible': 'The database is inaccessible. The server might'
+        ' be switched off or the network connection has been interrupted.',
+        'Normal': 'The database is available.',
+        'Offline': 'The database has been taken offline.',
+        'Recovering': 'The database is going through the recovery process.',
+        'RecoveryPending': 'The database is waiting to go through the recovery process.',
+        'Restoring': 'The database is going through the restore process.',
+        'Shutdown': 'The server on which the database resides has been shut down.',
+        'Standby': 'The database is in standby mode.',
+        'Suspect': 'The database has been marked as suspect. You will have '
+        'to check the data, and the database might have to be restored from a backup.',
+    }.get(value, '')
+
+
 def lookup_adminpasswordstatus(value):
     return {
         1: 'Disabled',
         2: 'Enabled',
         3: 'Not Implemented',
         4: 'Unknown',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_chassisbootupstate(value):
@@ -51,7 +59,7 @@ def lookup_chassisbootupstate(value):
         4: 'Warning',
         5: 'Critical',
         6: 'Nonrecoverable',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_domainrole(value):
@@ -62,7 +70,7 @@ def lookup_domainrole(value):
         4: 'Member Server',
         5: 'Backup Domain Controller',
         6: 'Primary Domain Controller',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_powerstate(value):
@@ -74,7 +82,7 @@ def lookup_powerstate(value):
         5: 'Power Cycle',
         6: 'Power Off',
         7: 'Power Save - Warning',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def lookup_architecture(value):
@@ -86,7 +94,7 @@ def lookup_architecture(value):
         5: 'ARM',
         6: 'Itanium-based systems',
         9: 'x64',
-        }.get(value, 'unknown')
+    }.get(value, 'unknown')
 
 
 def parseDBUserNamePass(dbinstances='', username='', password=''):
@@ -118,7 +126,7 @@ def parseDBUserNamePass(dbinstances='', username='', password=''):
             # Retain the default behaviour, before zProps change.
             if not dbinstance:
                 dblogins['MSSQLSERVER'] = {
-                    'username': username, # 'sa',
+                    'username': username,  # 'sa',
                     'password': password,
                     'login_as_user':True
                 }
@@ -133,7 +141,7 @@ def filter_sql_stdout(val):
     Filters SQL stdout from service messages
     """
     # SQL 2005 returns in stdout when Win auth
-    return filter(lambda x: x!="LogonUser succedded", val)
+    return filter(lambda x: x != "LogonUser succedded", val)
 
 
 def getSQLAssembly(version=None):
@@ -167,6 +175,8 @@ def getSQLAssembly(version=None):
     ASSEMBLY_2005 = 'Version=9.0.242.0'
     ASSEMBLY_2008 = 'Version=10.0.0.0'
     ASSEMBLY_2012 = 'Version=11.0.0.0'
+    ASSEMBLY_2014 = 'Version=12.0.0.0'
+    ASSEMBLY_2016 = 'Version=13.0.0.0'
 
     MSSQL2005_CONNECTION_INFO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Connection,
@@ -183,10 +193,21 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2012,
         ASSEMBLY)
 
+    MSSQL2014_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2014,
+        ASSEMBLY)
+
+    MSSQL2016_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2016,
+        ASSEMBLY)
+
     MSSQL_CONNECTION_INFO = {9: MSSQL2005_CONNECTION_INFO,
                              10: MSSQL2008_CONNECTION_INFO,
                              11: MSSQL2012_CONNECTION_INFO,
-                             12: MSSQL2012_CONNECTION_INFO}
+                             12: MSSQL2014_CONNECTION_INFO,
+                             13: MSSQL2016_CONNECTION_INFO}
 
     MSSQL2005_SMO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Smo,
@@ -203,15 +224,32 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2012,
         ASSEMBLY)
 
+    MSSQL2014_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2014,
+        ASSEMBLY)
+
+    MSSQL2016_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2016,
+        ASSEMBLY)
+
     MSSQL_SMO = {9: MSSQL2005_SMO,
                  10: MSSQL2008_SMO,
                  11: MSSQL2012_SMO,
-                 12: MSSQL2012_SMO}
+                 12: MSSQL2014_SMO,
+                 13: MSSQL2016_SMO}
 
     ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
 
     sqlConnection = []
-    if version not in [9, 10, 11, 12]:
+    if version not in [9, 10, 11, 12, 13]:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2016_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2014_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2012_CONNECTION_INFO)
         sqlConnection.append("}catch{")
@@ -222,8 +260,14 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_CONNECTION_INFO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}")
+        sqlConnection.append("}}}}}")
 
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2016_SMO)
+        sqlConnection.append("}catch{")
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2014_SMO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2012_SMO)
         sqlConnection.append("}catch{")
@@ -234,7 +278,7 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_SMO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}")
+        sqlConnection.append("}}}}}")
     else:
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL_CONNECTION_INFO.get(version))
@@ -402,80 +446,115 @@ def save(f):
         return f(self, *args, **kwargs)
     return dumper
 
+
 '''
 Common datasource utilities.
 '''
 
-def kerberosErrorMsgCheck(config, events, error):
-    """Check error message and generate appropriate event."""
-    if any(x in error for x in ('kerberos', 'kinit',)):
-        if 'initial credentials' in error \
-                or 'authGSSClientStep failed' in error:
-            events.append({
-                'eventClassKey': 'MW|Kerberos|Auth|Failure',
-                'severity': ZenEventClasses.Critical,
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
-        else:
-            events.append({
-                'eventClassKey': 'MW|Kerberos|Failure',
-                'severity': ZenEventClasses.Critical,
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
 
-
-def generateKerberosClearAuthEvents(config, events):
-    """Generate clear authentication events."""
-    events.append({
-        'eventClass': '/Status/Kerberos/Auth/Failure',
-        'eventClassKey': 'MW|Kerberos|Auth|Failure',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'No Kerberos auth failures',
-        'device': config.id})
-    events.append({
-        'eventClass': '/Status/Kerberos/Failure',
-        'eventClassKey': 'MW|Kerberos|Failure',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'No Kerberos failures',
-        'device': config.id})
+def append_event_datasource_plugin(datasources, events, event):
+    event['plugin_classname'] = datasources[0].plugin_classname
+    event['datasources'] = ','.join([ds.datasource for ds in datasources])
+    if event not in events:
+        events.append(event)
 
 
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
-    wrongCredsMessages = ('Check username and password', 'Username invalid',)
-    if 'Password expired' in error:
-        events.append({
-            'eventClassKey': 'MW|PasswordExpired',
-            'severity': ZenEventClasses.Critical,
-            'summary': error,
-            'ipAddress': config.manageIp,
-            'device': config.id})
-    elif any(x in error for x in wrongCredsMessages):
-        events.append({
-            'eventClassKey': 'MW|WrongCredentials',
-            'severity': ZenEventClasses.Critical,
-            'summary': error,
-            'ipAddress': config.manageIp,
-            'device': config.id})
+    kerberos_messages = ['kerberos', 'kinit']
+    kerberos_auth_messages = ['initial credentials', 'authGSSClientStep failed']
+    wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
+
+    # see if this a kerberos issue
+    if any(x in error for x in kerberos_messages):
+        # if so, is it authentication or general failure
+        if any(y in error for y in kerberos_auth_messages):
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'KerberosAuthenticationFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+        else:
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'KerberosFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+    # otherwise check if this is a typical authentication failure
     else:
-        kerberosErrorMsgCheck(config, events, error)
+        if any(x in error for x in wrongCredsMessages):
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'AuthenticationFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
 
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
-    events.append({
-        'eventClass': '/Status/Winrm/Auth/PasswordExpired',
-        'eventClassKey': 'MW|PasswordExpired',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'Password is not expired',
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'AuthenticationSuccess',
+        'summary': 'Authentication Successful',
         'device': config.id})
-    events.append({
-        'eventClass': '/Status/Winrm/Auth/WrongCredentials',
-        'eventClassKey': 'MW|WrongCredentials',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'Credentials are OK',
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'KerberosAuthenticationSuccess',
+        'summary': 'No Kerberos auth failures',
+        'device': config.id})
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'KerberosSuccess',
+        'summary': 'No Kerberos failures',
         'device': config.id})
 
-    generateKerberosClearAuthEvents(config, events)
+
+def get_dummy_dpconfig(ref_dp, id):
+    """Return datapoint config based on reference datapoint config"""
+    dp_name = '{}_{}'.format(id, id)
+    dp_config = ref_dp.__class__()
+    dp_config.__dict__.update(ref_dp.__dict__)
+    dp_config.id = id
+    dp_config.dpName = dp_name
+    dp_config.component = ref_dp.component
+    if not isinstance(dp_config.rrdPath, dict):
+        dp_config.rrdPath = '/'.join(dp_config.rrdPath.split('/')[:-1] + [dp_name])
+    dp_config.rrdType = 'GAUGE'
+    return dp_config
+
+
+def get_dsconf(dsconfs, component, param=None):
+    for dsconf in dsconfs:
+        if component == dsconf.component:
+            return dsconf
+        elif component == dsconf.params.get(param, None):
+            return dsconf
+    return None
+
+
+def has_metricfacade():
+    '''return True if metricfacade can be imported'''
+    try:
+        from Products.Zuul.facades import metricfacade
+    except ImportError:
+        pass
+    else:
+        return True
+    return False
+
+
+HAS_METRICFACADE = has_metricfacade()
+
+
+def get_rrd_path(obj):
+    """Preserve old-style RRD paths"""
+    if HAS_METRICFACADE:
+        return super(obj.__class__, obj).rrdPath()
+    else:
+        d = obj.device()
+        if not d:
+            return "Devices/" + obj.id
+        # revert to 2.5 behavior if True
+        dmd_root = obj.getDmd()
+        if dmd_root and getattr(dmd_root, 'windows_using_legacy_rrd_paths', False):
+            skip = len(d.getPrimaryPath()) - 1
+            return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
+        else:
+            return super(obj.__class__, obj).rrdPath()

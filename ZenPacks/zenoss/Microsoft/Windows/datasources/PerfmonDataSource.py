@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -14,6 +14,7 @@ Collection is performed by executing the Get-Counter PowerShell Cmdlet
 via WinRS.
 '''
 
+import re
 import logging
 import collections
 import time
@@ -40,9 +41,11 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command, create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
+from txwinrm.util import UnauthorizedError
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -127,14 +130,14 @@ class DataPersister(object):
 
     def start(self, result=None):
         if result:
-            LOG.debug("data maintenance failed: %s", result)
+            LOG.debug("Windows Perfmon data maintenance failed: {}".format(result))
 
-        LOG.debug("starting data maintenance")
+        LOG.debug("Windows Perfmon starting data maintenance")
         d = LoopingCall(self.maintenance).start(self.maintenance_interval)
         d.addBoth(self.start)
 
     def maintenance(self):
-        LOG.debug("performing periodic data maintenance")
+        LOG.debug("Windows Perfmon performing periodic data maintenance")
         for device, data in self.devices.items():
             data_age = time.time() - data['last']
             if data_age > self.max_data_age:
@@ -151,7 +154,7 @@ class DataPersister(object):
                 'values': collections.defaultdict(dict),
                 'events': [],
                 'maps': [],
-                }
+            }
 
     def get(self, device):
         return self.devices[device].copy()
@@ -160,9 +163,9 @@ class DataPersister(object):
         if device in self.devices:
             del(self.devices[device])
 
-    def add_event(self, device, event):
+    def add_event(self, device, datasources, event):
         self.touch(device)
-        self.devices[device]['events'].append(event)
+        append_event_datasource_plugin(datasources, self.devices[device]['events'], event)
 
     def add_value(self, device, component, datasource, value, collect_time):
         self.touch(device)
@@ -182,42 +185,53 @@ PERSISTER = DataPersister()
 
 
 class ComplexLongRunningCommand(object):
-    '''
-    A complex command containing one or more long running commands,
+    """A complex command containing one or more long running commands,
     according to the number of commands supplied.
-    '''
+    """
 
     def __init__(self, dsconf, num_commands):
         self.dsconf = dsconf
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
+        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command'
 
     def _create_commands(self, num_commands):
-        '''
-        Create initial set of commands according to the number supplied.
-        '''
+        """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
-        return [create_long_running_command(createConnectionInfo(self.dsconf))
-                for i in xrange(num_commands)]
+
+        commands = []
+        try:
+            conn_info = createConnectionInfo(self.dsconf)
+        except UnauthorizedError as e:
+            LOG.error(
+                "{0}: Windows Perfmon connection info is not available for {0}."
+                " Error: {1}".format(self.dsconf.device, e))
+        else:
+            for _ in xrange(num_commands):
+                try:
+                    commands.append(LongCommandClient(conn_info))
+                except Exception as e:
+                    LOG.error("{}: Windows Perfmon error: {}".format(
+                        self.dsconf.device, e))
+
+        return commands
 
     @defer.inlineCallbacks
     def start(self, command_lines):
-        '''
-        Start a separate command for each command line.
+        """Start a separate command for each command line.
         If the number of commands has changed since the last start,
         create an appropriate set of commands.
-        '''
+        """
         if self.num_commands != len(command_lines):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            yield command.start(command_line)
+            if command is not None:
+                yield command.start(self.ps_command, ps_script=command_line)
 
     @defer.inlineCallbacks
     def stop(self):
-        '''
-        Stop all started commands.
-        '''
+        """Stop all started commands."""
         for command in self.commands:
             yield command.stop()
 
@@ -238,18 +252,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     counter_map = None
 
     command_line = (
-        'powershell -NoLogo -NonInteractive -NoProfile -Command "& {{'
-        '$CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;'
-        '[System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object \"System.Globalization.CultureInfo\" \"en-Us\";'
-        'Invoke-Command {{ '
+        '"& {{'
         '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
         '$FormatEnumerationLimit = -1; '
-        '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 25); '
+        '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 1024); '
         'get-counter -ea silentlycontinue '
         '-SampleInterval {SampleInterval} -MaxSamples {MaxSamples} '
         '-counter @({Counters}) '
-        '| Format-List -Property Readings; }};'
-        '[System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture; }}"'
+        '| Format-List -Property Readings;'
+        ' }}"'
     )
 
     def __init__(self, config):
@@ -275,7 +286,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
-            counter = dsconf.params['counter'].lower()
+            counter = dsconf.params['counter'].decode('utf-8').lower()
             ps_counter = convert_to_ps_counter(counter)
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
@@ -287,13 +298,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.network_failures = 0
 
     def _build_commandlines(self):
-        '''
-        Return a list of command lines needed to get data for all counters.
-        '''
+        """Return a list of command lines needed to get data for all counters."""
         # The max length of the cmd.exe command is 8192.
-        # The length of the powershell prefix is ~ 680 chars.
-        # Thus the line containing counters should not go beyond 7500 limit.
-        counters_limit = 7500
+        # The length of the powershell command line is ~ 420 chars.
+        # Thus the line containing counters should not go beyond 7700 limit.
+        counters_limit = 7700
 
         counters = sorted(self.ps_counter_map.keys())
 
@@ -301,7 +310,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # counters of the device equals to floor division of the current
         # counters_line length by the calculated limit, incremented by 1.
         self.num_commands = len(format_counters(counters)) // counters_limit + 1
-        LOG.debug('Creating {0} long running command(s)'.format(
+        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(self.config.id,
             self.num_commands))
 
         # Chunk a counter list into num_commands equal parts.
@@ -319,23 +328,23 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             context.device().id,
             datasource.getCycleTime(context),
             SOURCETYPE,
-            )
+        )
 
     @classmethod
     def params(cls, datasource, context):
         counter = datasource.talesEval(datasource.counter, context)
         if getattr(context, 'perfmonInstance', None):
-            counter = ''.join((context.perfmonInstance, counter))
+            if not re.match("\\\\.*\\\\.*", counter):
+                counter = ''.join((context.perfmonInstance, counter))
 
         return {'counter': counter}
 
     @defer.inlineCallbacks
     def collect(self, config):
-        '''
-        Collect for config.
+        """Collect for config.
 
         Called each collection interval.
-        '''
+        """
         yield self.start()
 
         data = yield self.get_data()
@@ -343,29 +352,33 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def start(self):
-        '''
-        Start the continuous command.
-        '''
+        """Start the continuous command."""
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
-        LOG.debug("starting Get-Counter on %s", self.config.id)
+        LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
 
         try:
             yield self.complex_command.start(self.commandlines)
         except Exception as e:
-            LOG.warn(
-                "Error on %s: %s",
+            errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
                 e.message or "timeout")
+            LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
-            self._errorMsgCheck(e.message)
+            # prevent duplicate of auth failure messages
+            if not self._errorMsgCheck(e.message):
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
+                    'device': self.config.id,
+                    'eventClass': '/Status/Winrm',
+                    'eventKey': 'Windows Perfmon Collection Error',
+                    'severity': ZenEventClasses.Warning,
+                    'summary': errorMessage,
+                    'ipAddress': self.config.manageIp})
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
-        else:
-            self._generateClearAuthEvents()
 
         self.state = PluginStates.STARTED
         self.collected_samples = 0
@@ -383,18 +396,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def get_data(self):
-        '''
-        Wait for data to arrive if necessary, then return it.
-        '''
+        """Wait for data to arrive if necessary, then return it."""
         data = PERSISTER.pop(self.config.id)
         if data and data['values']:
             defer.returnValue(data)
         if data and data['events']:
             for evt in data['events']:
-                PERSISTER.add_event(self.config.id, evt)
+                PERSISTER.add_event(self.config.id, self.config.datasources, evt)
 
         if hasattr(self, '_wait_for_data'):
-            LOG.debug("waiting for %s Get-Counter data", self.config.id)
+            LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
             self.data_deferred = defer.Deferred()
             try:
                 yield add_timeout(self.data_deferred, self.sample_interval)
@@ -407,12 +418,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def stop(self):
-        '''
-        Stop the continuous command.
-        '''
+        """Stop the continuous command."""
         if self.state != PluginStates.STARTED:
             LOG.debug(
-                "skipping Get-Counter stop on %s while it's %s",
+                "Windows Perfmon skipping Get-Counter stop on %s while it's %s",
                 self.config.id,
                 self.state)
 
@@ -444,7 +453,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
                 LOG.log(
                     log_level,
-                    "failed to stop Get-Counter on %s: %s",
+                    "Windows Perfmon failed to stop Get-Counter on %s: %s",
                     self.config.id, ex)
 
         self.state = PluginStates.STOPPED
@@ -453,36 +462,36 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def restart(self):
-        '''
-        Stop then start the long-running command.
-        '''
+        """Stop then start the long-running command."""
         yield self.stop()
         yield self.start()
         defer.returnValue(None)
 
     def receive(self):
-        '''
+        """
         Receive results from continuous command.
-        '''
+        """
         deferreds = []
         for cmd in self.complex_command.commands:
-            try:
-                deferreds.append(cmd.receive())
-            except Exception as err:
-                LOG.error('Receive error {0}'.format(err))
+            if cmd is not None:
+                try:
+                    deferreds.append(cmd.receive())
+                except Exception as err:
+                    LOG.error('{}: Windows Perfmon receive error {0}'.format(
+                        self.config.id, err))
 
-        self.receive_deferreds = add_timeout(
-            defer.DeferredList(deferreds, consumeErrors=True),
-            OPERATION_TIMEOUT + 5)
+        if deferreds:
+            self.receive_deferreds = add_timeout(
+                defer.DeferredList(deferreds, consumeErrors=True),
+                OPERATION_TIMEOUT + 5)
 
-        self.receive_deferreds.addCallbacks(
-            self.onReceive, self.onReceiveFail)
+            self.receive_deferreds.addCallbacks(
+                self.onReceive, self.onReceiveFail)
 
     def _parse_deferred_result(self, result):
-        '''
-        Group all stdout data and failures from each command result
+        """Group all stdout data and failures from each command result
         and return them as a tuple of two lists: (filures, results)
-        '''
+        """
         failures, results = [], []
 
         for index, command_result in enumerate(result):
@@ -507,7 +516,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def onReceive(self, result):
-        # Group the result of all commands into a single result.
+        """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
         collect_time = int(time.time())
@@ -516,7 +525,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         stdout_lines, sample_start = format_stdout(results)
 
         if stdout_lines:
-            LOG.debug("received Get-Counter data for %s", self.config.id)
+            LOG.debug("Windows Perfmon received Get-Counter data for %s", self.config.id)
             # Data persister will take care of data order.
             self.sample_buffer = collections.deque(stdout_lines)
 
@@ -533,7 +542,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
                 #   '\\web service(another web site)\\move requests/sec'
                 counter = '\\{}'.format(
-                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3]).decode('utf-8')
 
                 value = self.sample_buffer.popleft()
 
@@ -555,7 +564,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     PERSISTER.add_value(
                         self.config.id, component, datasource, value, collect_time)
             except Exception, err:
-                LOG.debug('Could not process a sample. Error: {}'.format(err))
+                LOG.debug('{}: Windows Perfmon could not process a sample. Error: {}'.format(self.config.id, err))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.callback(None)
@@ -590,11 +599,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.reportCorruptCounters(self.counter_map)
         else:
             if self.cycling:
-                LOG.debug('Result: {0}'.format(result))
+                LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
 
         self._generateClearAuthEvents()
 
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
+            'device': self.config.id,
+            'eventClass': '/Status/Winrm',
+            'eventKey': 'Windows Perfmon Collection Error',
+            'severity': ZenEventClasses.Clear,
+            'summary': 'Successful Perfmon Collection',
+            'ipAddress': self.config.manageIp})
         defer.returnValue(None)
 
     @defer.inlineCallbacks
@@ -606,8 +622,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        self._errorMsgCheck(e.message)
-
+        if not self._errorMsgCheck(e.message):
+            self._generateClearAuthEvents()
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -648,28 +664,24 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
-        '''
-        Bisect the counters to determine which of them are corrupt.
-        '''
-        command = lambda counters: (
-            "powershell -NoLogo -NonInteractive -NoProfile -Command "
-            "\"get-counter -counter @({0})\" ".format(
-                ', '.join("('{0}')".format(c) for c in counters))
-        )
+        """Bisect the counters to determine which of them are corrupt."""
+        ps_command = "powershell -NoLogo -NonInteractive -NoProfile -Command"
+        ps_script = lambda counters: (
+            "\"get-counter -counter @({})\"".format(format_counters(counters)))
 
         num_counters = len(counter_list)
 
         if num_counters == 0:
             pass
         elif num_counters == 1:
-            result = yield winrs.run_command(command(counter_list))
+            result = yield winrs.run_command(ps_command, ps_script(counter_list))
             if result.stderr:
                 corrupt_list.extend(counter_list)
         else:
-            mid_index = num_counters/2
+            mid_index = num_counters / 2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
-                result = yield winrs.run_command(command(counter_slice))
+                result = yield winrs.run_command(ps_command, ps_script(counter_slice))
                 if result.stderr:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)
@@ -678,15 +690,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def remove_corrupt_counters(self):
-        '''
-        Remove counters which return an error.
-        '''
-        LOG.debug('Performing check for corrupt counters')
+        """Remove counters which return an error."""
+        LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
         dsconf0 = self.config.datasources[0]
-        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+        winrs = SingleCommandClient(createConnectionInfo(dsconf0))
 
         counter_list = sorted(
-            set(self.ps_counter_map.keys())-set(CORRUPT_COUNTERS[dsconf0.device]))
+            set(self.ps_counter_map.keys()) - set(CORRUPT_COUNTERS[dsconf0.device]))
         corrupt_counters = yield self.search_corrupt_counters(winrs, counter_list, [])
 
         # Add newly found corrupt counters to the previously checked ones.
@@ -705,9 +715,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         defer.returnValue(None)
 
     def reportCorruptCounters(self, requested):
-        '''
-        Emit event for corrupt counters
-        '''
+        """Emit event for corrupt counters"""
         default_eventClass = '/Status/Winrm'
         dsconf0 = self.config.datasources[0]
 
@@ -726,7 +734,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Error,
                     'eventClass': event,
@@ -739,7 +747,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -748,9 +756,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 })
 
     def reportMissingCounters(self, requested, returned):
-        '''
-        Emit logs and events for counters requested but not returned.
-        '''
+        """Emit logs and events for counters requested but not returned."""
         missing_counters = set(requested).difference(returned)
         default_eventClass = '/Status/Winrm'
 
@@ -769,7 +775,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Info,
                     'eventClass': event,
@@ -782,7 +788,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -802,46 +808,31 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return ', '.join(counters)
 
     def cleanup(self, config):
-        '''
-        Cleanup any resources associated with this task.
+        """Cleanup any resources associated with this task.
 
         This can happen when zenpython terminates, or anytime config is
         deleted or modified.
-        '''
+        """
         return reactor.callLater(self.sample_interval, self.stop)
 
     def _errorMsgCheck(self, errorMessage):
         """Check error message and generate appropriate event."""
-        if 'Password expired' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
+        wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
+        if any(x in errorMessage for x in wrongCredsMessages):
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|PasswordExpired',
+                'eventClassKey': 'AuthenticationFailure',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
-        elif 'Check username and password' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|WrongCredentials',
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
+            return True
+        return False
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, {
-            'eventClass': '/Status/Winrm/Auth/PasswordExpired',
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|PasswordExpired',
-            'summary': 'Password is not expired',
-            'ipAddress': self.config.manageIp})
-        PERSISTER.add_event(self.config.id, {
-            'eventClass': '/Status/Winrm/Auth/WrongCredentials',
-            'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|WrongCredentials',
-            'summary': 'Credentials are OK',
+            'eventClassKey': 'AuthenticationSuccess',
+            'summary': 'Authentication Successful',
             'ipAddress': self.config.manageIp})
 
 
@@ -863,27 +854,23 @@ def convert_to_ps_counter(counter):
 
 
 def format_counters(ps_counters):
-    '''
-    Convert a list of supplied counters into a string, which will
+    """Convert a list of supplied counters into a string, which will
     be further used to cteate ps command line.
-    '''
+    """
     return ','.join(
-        "('{0}')".format(counter) for counter in ps_counters)
+        '(\\"{0}\\")'.format(counter) for counter in ps_counters)
 
 
 def chunkify(lst, n):
-    '''
-    Yield successive n-sized chunks from the list.
-    '''
+    """Yield successive n-sized chunks from the list."""
     return [lst[i::n] for i in xrange(n)]
 
 
 def format_stdout(stdout_lines):
-    '''
-    Return a tuple containing a list of stdout lines without the
+    """Return a tuple containing a list of stdout lines without the
     BOM marker and property name, and a bool value specifying if it
     is a start of a sample.
-    '''
+    """
     sample_start = False
     # Remove BOM marker(if present).
     if stdout_lines and stdout_lines[0] == unicode(codecs.BOM_UTF8, "utf8"):

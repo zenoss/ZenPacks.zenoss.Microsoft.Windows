@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -190,7 +190,8 @@ from ZenPacks.zenoss.ZenETL.reportable import \
     DEFAULT_STRING_LENGTH, \
     BaseReportableFactory as ETLBaseReportableFactory, \
     BaseReportable as ETLBaseReportable, \
-    Reportable
+    Reportable,\
+    DeviceOrganizerReportable
 
 unused(Globals)
 
@@ -317,6 +318,16 @@ class BaseReportableFactory(ETLBaseReportableFactory):
                         yield BaseManyToManyReportable(
                             fromObject=self.context, toObject=remoteObject,
                             entity_class_name=entity_class_name)
+
+        for org in self.context.systems():
+            yield DeviceOrganizerReportable(org, self.context)
+
+        for grp in self.context.groups():
+            yield DeviceOrganizerReportable(grp, self.context)
+
+        if self.context.location() is not None:
+            yield DeviceOrganizerReportable(self.context.location(), self.context)
+
         if hasattr(self.context, 'os') \
                 and hasattr(self.context.os, 'software') \
                 and isinstance(self.context, Device):
@@ -408,8 +419,9 @@ class BaseReportable(ETLBaseReportable):
         # Human-friendly name that can change
         yield (eclass + '_name', 'string', self.context.titleOrId(), DEFAULT_STRING_LENGTH)
 
-        # Type
-        yield (eclass + '_type', 'string', self.context.meta_type, DEFAULT_STRING_LENGTH)
+        # Report filesystem type (ReFS, FAT, NTFS) for FileSystem components and meta_type for others.
+        type_attribute = 'type' if self.context.meta_type == 'FileSystem' else 'meta_type'
+        yield (eclass + '_type', 'string', getattr(self.context, type_attribute), DEFAULT_STRING_LENGTH)
 
         # UID
         yield (eclass + '_uid', 'string', self.uid, DEFAULT_STRING_LENGTH)

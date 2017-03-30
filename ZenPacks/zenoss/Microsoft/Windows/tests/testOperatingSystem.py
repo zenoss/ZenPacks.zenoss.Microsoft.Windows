@@ -22,7 +22,7 @@ class TestOperatingSystem(BaseTestCase):
         self.results = StringAttributeObject()
         self.results.MSCluster = ()
         self.results.Win32_SystemEnclosure = [StringAttributeObject()]
-        self.results.Win32_ComputerSystem = [StringAttributeObject()]
+        self.results.Win32_ComputerSystem = [StringAttributeObject({'blah': 'blah'})]
         self.results.Win32_OperatingSystem = [StringAttributeObject()]
         self.results.exchange_version = Mock(stdout=['15'])
         self.results.ActiveDirectory = [StringAttributeObject()]

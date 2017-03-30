@@ -1,15 +1,11 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-import logging
-log = logging.getLogger("zen.MicrosoftWindows")
-
 from socket import gaierror
 
 from zope.event import notify
@@ -21,14 +17,17 @@ from Products.ZenUtils.IpUtil import getHostByName
 
 from . import schema
 
+
 class Device(schema.Device):
     '''
     Model class for a Windows operating system device.
     '''
 
     def getPingStatus(self):
-        return self.getStatus('/Status/Winrm/Ping') or \
-               self.getStatus('/Status/Ping')
+        pingStatus = self.getStatus('/Status/Winrm/Ping')
+        if not pingStatus:
+            return super(Device, self).getPingStatus()
+        return pingStatus
 
     def setClusterMachines(self, clusterdnsnames):
         '''
@@ -36,15 +35,17 @@ class Device(schema.Device):
         '''
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in clusterdnsnames:
-            try:
-                clusterip = getHostByName(clusterdnsname)
-            except(gaierror):
-                log.warning(
-                    'Unable to resolve hostname {0}'.format(clusterdnsname)
-                )
-                continue
+            device = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+            if not device:
+                try:
+                    clusterip = getHostByName(clusterdnsname)
+                except(gaierror):
+                    self.LOG.warning(
+                        'Unable to resolve hostname {0}'.format(clusterdnsname)
+                    )
+                    continue
 
-            device = deviceRoot.findDeviceByIdOrIp(clusterip)
+                device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames
@@ -211,6 +212,11 @@ class Device(schema.Device):
         """Generate all Cluster Services components."""
         for c in self.os.winservices():
             yield c
+
+    def all_harddisks(self):
+        """Generate all Hard Disk components."""
+        for hd in self.hw.harddisks():
+            yield hd
 
     def all_hyperv(self):
         # Look up for HyperV server with same IP

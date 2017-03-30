@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -27,13 +27,13 @@ class FileSystems(WinRMPlugin):
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zFileSystemMapIgnoreNames',
         'zFileSystemMapIgnoreTypes',
-        )
+    )
 
     queries = {
         'Win32_LogicalDisk': "SELECT * FROM Win32_LogicalDisk",
         'Win32_MappedLogicalDisk': "SELECT * FROM Win32_MappedLogicalDisk",
         'Win32_Volume': "SELECT * FROM Win32_Volume where DriveLetter=NULL",
-        }
+    }
 
     @save
     def process(self, device, results, log):
@@ -43,7 +43,12 @@ class FileSystems(WinRMPlugin):
 
         ignore_names = getattr(device, 'zFileSystemMapIgnoreNames', None)
         if ignore_names:
-            ignore_names_search = re.compile(ignore_names).search
+            try:
+                ignore_names_search = re.compile(ignore_names).search
+            except Exception as e:
+                log.warn("Invalid regular expression in zFileSystemMapIgnoreNames: {}".format(e.message))
+                ignore_names = None
+                pass
 
         ignore_types = getattr(device, 'zFileSystemMapIgnoreTypes', None)
 
@@ -91,7 +96,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         for disk in results.get('Win32_Volume', ()):
             mount = Win32_volume_mount(disk)
@@ -139,7 +145,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumFileNameLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         for disk in results.get('Win32_MappedLogicalDisk', ()):
             mount = win32_mapped_logicaldisk_mount(disk)
@@ -183,7 +190,8 @@ class FileSystems(WinRMPlugin):
                 'maxNameLen': disk.MaximumComponentLength,
                 'perfmonInstance': perfmonInstance,
                 'totalFiles': 0,
-                }))
+                'instance_name': disk.Name.rstrip('\\')
+            }))
 
         return rm
 

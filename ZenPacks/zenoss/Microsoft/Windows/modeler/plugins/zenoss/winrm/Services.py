@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013, 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -46,6 +46,7 @@ class Services(WinRMPlugin):
             om.startMode = service.StartMode
             om.startName = service.StartName
             om.description = service.Description
+            om.index_service = True
             rm.append(om)
 
         maps = []

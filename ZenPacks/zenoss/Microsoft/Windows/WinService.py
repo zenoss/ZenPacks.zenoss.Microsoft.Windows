@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -8,43 +8,22 @@
 ##############################################################################
 
 import re
-import logging
 import string
-from Globals import InitializeClass
 from AccessControl import ClassSecurityInfo
-from Products.ZenModel.WinService import WinService as BaseWinService
 from Products.ZenEvents import ZenEventClasses
-
-log = logging.getLogger('zen.MicrosoftWindows')
+from . import schema
 
 UNMONITORED = 0
 MONITORED = 1
 EXCLUDED = 2
 
 
-class WinService(BaseWinService):
+class WinService(schema.WinService):
     '''
     Model class for Windows Service.
     '''
 
-    description = None
-    usermonitor = False
-
-    _properties = BaseWinService._properties + (
-        {'id': 'description', 'label': 'Description', 'type': 'string'},
-        {'id': 'usermonitor', 'label': 'Manually Selected Monitor State',
-            'type': 'boolean'},
-    )
-
     security = ClassSecurityInfo()
-
-    def getClassObject(self):
-        """
-        Return the ServiceClass for this service.
-        """
-        if hasattr(self, 'serviceclass') and 'serviceclass' in self.getRelationshipNames():
-            return self.serviceclass()
-        return None
 
     def getRRDTemplateName(self):
         try:
@@ -65,7 +44,7 @@ class WinService(BaseWinService):
         try:
             regx = re.compile(service_regex, re.I)
         except re.error as e:
-            log.warn(e)
+            self.LOG.warn(e)
             return False
         if regx.match(self.serviceName):
             return True
@@ -89,10 +68,15 @@ class WinService(BaseWinService):
     def monitored(self):
         # Determine whether or not to monitor this service
         # Set necessary defaults
+        self.index_service = False
         self.alertifnot = 'Running'
         self.failSeverity = ZenEventClasses.Error
+        self.monitoredStartModes = []
+        if self.startMode is None:
+            return False
         # 1 - Check to see if the user has manually set monitor status
         if self.usermonitor:
+            self.monitoredStartModes = [self.startMode]
             return self.monitor
 
         # Check what our template says to do.
@@ -107,6 +91,7 @@ class WinService(BaseWinService):
                 if status is MONITORED:
                     self.failSeverity = datasource.severity
                     self.alertifnot = datasource.alertifnot
+                    self.monitoredStartModes = datasource.startmode.split(',')
                     return True
                 elif status is EXCLUDED:
                     return False
@@ -120,8 +105,10 @@ class WinService(BaseWinService):
                         if status is MONITORED:
                             self.failSeverity = datasource.severity
                             self.alertifnot = datasource.alertifnot
+                            self.monitoredStartModes = datasource.startmode.split(',')
                             ds_monitored = True
                         elif status is EXCLUDED:
+                            self.monitoredStartModes = []
                             return False
             if ds_monitored:
                 return True
@@ -132,8 +119,11 @@ class WinService(BaseWinService):
             valid_start = self.startMode in sc.monitoredStartModes
             # check the inherited zMonitor property
             self.failSeverity = self.getAqProperty("zFailSeverity")
+            sc_monitor = valid_start and self.getAqProperty('zMonitor')
+            if sc_monitor:
+                self.monitoredStartModes = sc.monitoredStartModes
 
-            return valid_start and self.getAqProperty('zMonitor')
+            return sc_monitor
 
         return False
 
@@ -145,5 +135,3 @@ class WinService(BaseWinService):
             *args, **kwargs)
         self.index_object()
         return tmpl
-
-InitializeClass(WinService)

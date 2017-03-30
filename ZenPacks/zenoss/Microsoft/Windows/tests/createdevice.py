@@ -14,7 +14,7 @@ import importlib
 from Products.ZenRelations.RelationshipBase import RelationshipBase
 from Products.ZenRelations.ToManyContRelationship import ToManyContRelationship
 
-LOG = logging.getLogger('zen.exchange')
+LOG = logging.getLogger('zen.Microsoft.Windows.tests')
 
 
 def require_zenpack(zenpack_name, default=None):
@@ -99,6 +99,7 @@ def create_device(dmd, device_name):
     from ZenPacks.zenoss.Microsoft.Windows.Interface import Interface
     from ZenPacks.zenoss.Microsoft.Windows.CPU import CPU
     from ZenPacks.zenoss.Microsoft.Windows.FileSystem import FileSystem
+    from ZenPacks.zenoss.Microsoft.Windows.HardDisk import HardDisk
     from ZenPacks.zenoss.Microsoft.Windows.OSProcess import OSProcess
     from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
     from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
@@ -115,8 +116,11 @@ def create_device(dmd, device_name):
     cpu1 = addContained(windows1.hw, 'cpus', CPU('cpu1'))
     cpu1.perfmonInstance = '/Processor(cpu1)/'
 
+    hdd1 = addContained(windows1.hw, 'harddisks', HardDisk('hdd1'))
+
     fs1 = addContained(windows1.os, 'filesystems', FileSystem('fs1'))
     fs1.perfmonInstance = '/filesystem(fs1)/'
+    hdd1.fs_ids = [fs1.id]
 
     addContained(windows1.os, 'processes', OSProcess('pr1'))
 
@@ -154,6 +158,10 @@ def create_cluster_device(dmd, device_name):
     from ZenPacks.zenoss.Microsoft.Windows.ClusterNode import ClusterNode
     from ZenPacks.zenoss.Microsoft.Windows.ClusterResource import ClusterResource
     from ZenPacks.zenoss.Microsoft.Windows.ClusterService import ClusterService
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
 
     node1 = addContained(cluster1.os, 'clusternodes', ClusterNode('node1'))
 
@@ -164,5 +172,9 @@ def create_cluster_device(dmd, device_name):
     addContained(service1, 'clusterresources', ClusterResource('resource1'))
 
     addContained(cluster1.os, 'clusternetworks', ClusterNetwork('network1'))
+    instance1 = addContained(cluster1.os, 'winsqlinstances', WinSQLInstance('instance1'))
+    addContained(instance1, 'backups', WinSQLBackup('backup1'))
+    addContained(instance1, 'databases', WinSQLDatabase('db1'))
+    addContained(instance1, 'jobs', WinSQLJob('job1'))
 
     return cluster1

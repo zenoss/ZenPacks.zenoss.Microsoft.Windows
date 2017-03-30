@@ -3,12 +3,12 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
-VERSION = "2.6.12"
+VERSION = "2.7.0"
 AUTHOR = "Zenoss"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft']
 PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft', 'ZenPacks.zenoss.Microsoft.Windows']
-INSTALL_REQUIRES = ['ZenPacks.zenoss.PythonCollector>=1.4']
+INSTALL_REQUIRES = ['ZenPacks.zenoss.ZenPackLib>=2.0.5', 'ZenPacks.zenoss.PythonCollector>=1.4']
 COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
@@ -67,7 +67,7 @@ setup(
 
     # Tell setuptools what non-python files should also be included
     # with the binary egg.
-    #package_data = {}
+    # package_data = {}
 
     # Indicate dependencies on other python modules or ZenPacks.  This line
     # is modified by zenoss when the ZenPack edit page is submitted.  Zenoss

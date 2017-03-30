@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -33,8 +33,8 @@ from ..utils import (
     check_for_network_error, save, errorMsgCheck, generateClearAuthEvents,)
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.collect import WinrmCollectClient, create_enum_info
-from txwinrm.shell import create_single_shot_command
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import SingleCommandClient, EnumerateClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -60,20 +60,20 @@ def string_to_lines(string):
 class IISCommander(object):
 
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
-    IIS_COMMAND= '''
+    IIS_COMMAND = '''
         $iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;
         Write-Host $iisversion.versionstring;
     '''
 
     def get_iis_version(self):
-        command = '{0} "& {{{1}}}"'.format(
-            self.PS_COMMAND, self.IIS_COMMAND.replace('\n', ' '))
-        return self.winrs.run_command(command)
+        script = '"& {{{}}}"'.format(
+            self.IIS_COMMAND.replace('\n', ' '))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class IISSiteDataSource(PythonDataSource):
@@ -160,6 +160,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         iis_version = ds0.params['iis_version']
 
+        id_string = "device ({}) component ({})".format(config.id, ds0.component)
         if not iis_version:
             winrs = IISCommander(conn_info)
             version = yield winrs.get_iis_version()
@@ -169,9 +170,9 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 iis_version = re.match('Version (\d).*', version.stdout[0]).group(1)
             except (IndexError, AttributeError):
                 if version.stdout:
-                    log.error("Malformed version information: {}".format(version.stdout[0]))
+                    log.error("Malformed version information on {}: {}".format(id_string, version.stdout[0]))
                 if version.stderr:
-                    log.error("Error retrieving IIS Version: {}".format(version.stderr[0]))
+                    log.error("Error retrieving IIS version on {}: {}".format(id_string, version.stderr[0]))
                 defer.returnValue(None)
 
         if iis_version == 6:
@@ -179,8 +180,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         else:
             WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7)]
 
-        winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        winrm = EnumerateClient(conn_info)
+        results = yield winrm.do_collect(WinRMQueries)
         log.debug(WinRMQueries)
         defer.returnValue(results)
 

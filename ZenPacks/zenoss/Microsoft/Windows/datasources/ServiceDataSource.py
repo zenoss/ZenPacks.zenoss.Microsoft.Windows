@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -26,6 +26,7 @@ from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
+from Products.ZenRRD.zencommand import DataPointConfig
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -34,10 +35,11 @@ from ..WinService import WinService
 
 from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import errorMsgCheck, generateClearAuthEvents
+from ..utils import errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.collect import WinrmCollectClient, create_enum_info
+from txwinrm.collect import create_enum_info
+from txwinrm.WinRMClient import EnumerateClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -45,6 +47,9 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
 STATE_RUNNING = 'Running'
 STATE_STOPPED = 'Stopped'
+STATE_RUNNING_PAUSED = 'Running, Paused'
+STATE_STOPPED_PAUSED = 'Stopped, Paused'
+STATE_PAUSED = 'Paused'
 
 MODE_NONE = 'None'
 MODE_AUTO = 'Auto'
@@ -140,7 +145,7 @@ class IServiceDataSourceInfo(IInfo):
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
-            [STATE_RUNNING, STATE_STOPPED]),)
+            [STATE_RUNNING, STATE_STOPPED, STATE_RUNNING_PAUSED, STATE_STOPPED_PAUSED]),)
 
     startmode = schema.Text(
         group=_t('Service Options'),
@@ -189,9 +194,14 @@ class ServiceDataSourceInfo(InfoBase):
 
     def post_update(self):
         if self.reindex:
+            for job in self._object.getDmdRoot('Devices').JobManager.getPendingJobs():
+                if job.type == ReindexWinServices.getJobType():
+                    log.info('ServiceDataSource: ReindexWinServices already pending')
+                    self.reindex = False
+                    return
             self._object.dmd.JobManager.addJob(ReindexWinServices,
                                                kwargs=dict(uid=self.uid))
-            self._reindex = False
+            self.reindex = False
 
     severity = property(get_severity, set_severity)
 
@@ -224,6 +234,10 @@ class ServicePlugin(PythonDataSourcePlugin):
             # Use Error by default
             params['severity'] = ZenEventClasses.Error
 
+        params['rrdpath'] = context.rrdPath() + '/'
+        if hasattr(context, 'getMetricMetadata'):
+            params['metricmetadata'] = context.getMetricMetadata()
+
         return params
 
     @defer.inlineCallbacks
@@ -239,8 +253,8 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         conn_info = createConnectionInfo(config.datasources[0])
 
-        winrm = WinrmCollectClient()
-        results = yield winrm.do_collect(conn_info, WinRMQueries)
+        winrm = EnumerateClient(conn_info)
+        results = yield winrm.do_collect(WinRMQueries)
 
         defer.returnValue(results)
 
@@ -264,7 +278,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
-        log.debug('Windows services query results: {}'.format(results))
+        log.debug('{}: Windows services query results: {}'.format(config.id, results))
         try:
             serviceinfo = results[results.keys()[0]]
         except:
@@ -279,15 +293,14 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
-
         for index, svc_info in enumerate(serviceinfo):
             if svc_info.Name not in services.keys():
                 continue
-            severity = ZenEventClasses.Clear
 
+            severity = ZenEventClasses.Clear
             service = services[svc_info.Name]
 
-            if svc_info.State != service['alertifnot']:
+            if svc_info.State not in [alertifnot.strip() for alertifnot in service['alertifnot'].split(',')]:
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
                     svc_info.Name,
                     svc_info.State
@@ -298,6 +311,20 @@ class ServicePlugin(PythonDataSourcePlugin):
                     svc_info.Name,
                     svc_info.State
                 )
+            dsconf = get_dsconf(config.datasources, svc_info.Name)
+            if dsconf:
+                dp = DataPointConfig()
+                dp.component = svc_info.Name
+                dp.rrdPath = dsconf.params['rrdpath']
+                dp.metadata = dsconf.params.get('metricmetadata', None)
+                dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
+                if svc_info.State.lower() == STATE_RUNNING.lower():
+                    data['values'][svc_info.Name]['state'] = 0
+                elif svc_info.State.lower() == STATE_STOPPED.lower():
+                    data['values'][svc_info.Name]['state'] = 1
+                elif svc_info.State.lower() == STATE_PAUSED.lower():
+                    data['values'][svc_info.Name]['state'] = 2
+
             # event for the service
             data['events'].append({
                 'service_name': svc_info.Name,

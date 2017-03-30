@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -21,7 +21,7 @@ from twisted.internet.error import (
     ConnectionRefusedError,
     TimeoutError,
     ConnectionLost,
-    )
+)
 from twisted.web._newclient import ResponseFailed
 from OpenSSL.SSL import Error as SSLError
 
@@ -29,8 +29,9 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm
-import txwinrm.collect # fix 'module' has no attribute 'collect' error on 4.1.1 
-import txwinrm.shell # fix 'module' has no attribute 'shell' error on 4.1.1
+import txwinrm.collect  # fix 'module' has no attribute 'collect' error on 4.1.1
+import txwinrm.shell  # fix 'module' has no attribute 'shell' error on 4.1.1
+from txwinrm.WinRMClient import EnumerateClient, SingleCommandClient, AssociatorClient, EnumInfo
 import zope.component
 
 from txwinrm.util import UnauthorizedError
@@ -55,6 +56,7 @@ class WinRMPlugin(PythonPlugin):
     queries = {}
     commands = {}
     powershell_commands = {}
+    associators = {}
     _eventService = zope.component.queryUtility(IEventService)
 
     def get_queries(self):
@@ -85,11 +87,21 @@ class WinRMPlugin(PythonPlugin):
         '''
         return self.powershell_commands
 
-    def client(self):
-        '''
-        Return a WinrmCollectClient.
-        '''
-        return txwinrm.collect.WinrmCollectClient()
+    def get_associators(self):
+        """
+        Return Associators list
+
+        To be overridden if commands need to be programmatically defined
+        instead of set in the class-level commands property.
+        """
+        return self.associators
+
+    def client(self, conn_info=None):
+        """Return an EnumerateClient if conn_info exists
+        """
+        if not conn_info:
+            return txwinrm.collect.WinrmCollectClient()
+        return EnumerateClient(conn_info)
 
     def conn_info(self, device):
         '''
@@ -142,10 +154,13 @@ class WinRMPlugin(PythonPlugin):
         message, args = (None, [device.id])
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
+            html_returned = "<title>404 - File or directory not found.</title>" in error[0]
+            if html_returned:
+                error = ['HTTP Status: 404. Be sure the WinRM compatibility listener has been configured']
             args.append(error[0])
-            if isinstance(error, UnauthorizedError):
+            if isinstance(error, UnauthorizedError) or html_returned:
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
-                            'http://wiki.zenoss.org/ZenPack:Microsoft_Windows#winrm_setup'
+                           'https://www.zenoss.com/product/zenpacks/microsoft-windows'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
         elif isinstance(error, TimeoutError):
@@ -169,7 +184,9 @@ class WinRMPlugin(PythonPlugin):
                     args.append(', '.join(reason.value.args[0][0]))
                 log.error(message, *args)
             return
-
+        elif isinstance(error, KeyError) and isinstance(error.message, EnumInfo):
+            message = "Error on %s: %s.  zWinRMEnvelopeSize may not be large enough.  Increase the size and try again."
+            args.append(error)
         else:
             message = "Error on %s: %s"
             args.append(error)
@@ -178,15 +195,20 @@ class WinRMPlugin(PythonPlugin):
         self._send_event(message % tuple(args), device.id, 3, eventClass='/Status/Winrm')
 
     def _send_event(self, reason, id, severity, force=False,
-                    key='ConnectionError', eventClass='/Status'):
+                    key='ConnectionError', eventClass='/Status', summary=None):
         """
         Send event for device with specified id, severity and
         error message.
         """
         log.debug('Sending event: %s' % reason)
         if self._eventService:
+            if not summary:
+                if severity != 0:
+                    summary = 'Modeler plugin zenoss.winrm.{} returned no results.'.format(self.__class__.__name__)
+                else:
+                    summary = 'Modeler plugin zenoss.winrm.{} successful.'.format(self.__class__.__name__)
             self._eventService.sendEvent(dict(
-                summary='Modeler plugin zenoss.winrm.%s returned no results.' % self.__class__.__name__,
+                summary=summary,
                 message=reason,
                 eventClass=eventClass,
                 eventClassKey=key,
@@ -220,8 +242,8 @@ class WinRMPlugin(PythonPlugin):
         This method can be overridden if more complex collection is
         required.
         '''
-        client = self.client()
         conn_info = self.conn_info(device)
+        client = self.client(conn_info)
 
         results = {}
         queries = self.get_queries()
@@ -235,9 +257,9 @@ class WinRMPlugin(PythonPlugin):
 
             try:
                 query_results = yield client.do_collect(
-                    conn_info, query_map.iterkeys())
+                    query_map.iterkeys())
                 msg = "connection for %s is established"
-                self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
             except Exception as e:
                 self.log_error(log, device, e)
             else:
@@ -247,6 +269,34 @@ class WinRMPlugin(PythonPlugin):
             # Unset winrm logging. Will fallback to root logger level.
             # winrm_log.setLevel(logging.NOTSET)
 
+        # Get associators.
+        associators = self.get_associators()
+
+        if associators:
+            assoc_client = AssociatorClient(conn_info)
+            for assoc_key, associator in associators.iteritems():
+                try:
+                    if not associator.get('kwargs'):
+                        assoc_result = yield assoc_client.associate(
+                            associator['seed_class'],
+                            associator['associations'])
+                    else:
+                        assoc_result = yield assoc_client.associate(
+                            associator['seed_class'],
+                            associator['associations'],
+                            **associator['kwargs'])
+
+                except Exception as e:
+                    if 'No results for seed class' in e.message:
+                        message = 'No results returned for {}. Check WinRM server'\
+                                  ' configuration and z properties.'.format(self.name())
+                        e = Exception(message)
+                    self.log_error(log, device, e)
+                else:
+                    msg = "connection for %s is established"
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
+                    results[assoc_key] = assoc_result
+
         # Get a copy of the class' commands.
         commands = dict(self.get_commands())
 
@@ -254,17 +304,19 @@ class WinRMPlugin(PythonPlugin):
         powershell_commands = self.get_powershell_commands()
         if powershell_commands:
             for psc_key, psc in powershell_commands.iteritems():
-                commands[psc_key] = '{0} "& {{{1}}}"'.format(
-                    POWERSHELL_PREFIX, psc)
+                commands[psc_key] = '"& {{{}}}"'.format(psc)
 
         if commands:
-            winrs = txwinrm.shell.create_single_shot_command(conn_info)
-
+            winrs_client = SingleCommandClient(conn_info)
             for command_key, command in commands.iteritems():
                 try:
-                    results[command_key] = yield winrs.run_command(command)
+                    if command.startswith('"&'):
+                        results[command_key] = yield winrs_client.run_command(POWERSHELL_PREFIX,
+                                                                              ps_script=command)
+                    else:
+                        results[command_key] = yield winrs_client.run_command(command)
                     msg = 'shell command completed successfully for %s'
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm/Ping')
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
                     self.log_error(log, device, e)
 

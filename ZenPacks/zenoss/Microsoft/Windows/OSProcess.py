@@ -1,16 +1,13 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
 from . import schema
-from .utils import get_properties
-
-from Products.ZenModel.OSProcess import OSProcess as BaseOSProcess
+from utils import get_rrd_path
 
 
 class OSProcess(schema.OSProcess):
@@ -22,10 +19,8 @@ class OSProcess(schema.OSProcess):
     counters available.
     '''
 
-    _properties = get_properties(schema.OSProcess)
-
-    def getClassObject(self):
-        return BaseOSProcess.getClassObject(self)
+    # preserve the old style path
+    rrdPath = get_rrd_path
 
     def getRRDTemplateName(self):
         '''

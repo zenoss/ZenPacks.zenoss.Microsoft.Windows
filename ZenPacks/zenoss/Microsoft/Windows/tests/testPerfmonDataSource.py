@@ -8,6 +8,7 @@
 ##############################################################################
 
 from itertools import repeat
+from collections import namedtuple
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel
@@ -17,6 +18,10 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource import (
     convert_to_ps_counter,
     DataPersister,
 )
+
+
+class DataSource(namedtuple('DataSource', ['plugin_classname', 'datasource'])):
+    pass
 
 
 class TestDataPersister(BaseTestCase):
@@ -43,7 +48,16 @@ class TestDataPersister(BaseTestCase):
         self.assertEquals(len(self.dp.devices), 0)
 
     def test_add_event(self):
-        self.dp.add_event(sentinel.device0, sentinel.event0)
+        event0 = {
+            'device': 'device',
+            'eventClass': '/Status/Winrm',
+            'eventKey': 'Windows Perfmon Collection Error',
+            'severity': 3,
+            'summary': 'errorMessage',
+            'ipAddress': '10.10.10.10'}
+        datasources = DataSource('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource',
+                                 'test_add_event')
+        self.dp.add_event(sentinel.device0, [datasources], event0)
         self.assertEquals(len(self.dp.devices[sentinel.device0]['events']), 1)
 
     def test_add_value(self):
@@ -72,7 +86,7 @@ class TestConvert_to_ps_counter(BaseTestCase):
 
 class TestFormat_counters(BaseTestCase):
     def test_format_counters(self):
-        self.assertEquals(format_counters(['a', 'b']), "('a'),('b')")
+        self.assertEquals(format_counters(['a', 'b']), '(\\"a\\"),(\\"b\\")')
 
 
 class TestFormat_stdout(BaseTestCase):

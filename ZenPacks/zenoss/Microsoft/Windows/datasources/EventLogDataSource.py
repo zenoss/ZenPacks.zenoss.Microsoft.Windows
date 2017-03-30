@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -37,7 +37,7 @@ from ..utils import save, errorMsgCheck, generateClearAuthEvents
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -152,14 +152,14 @@ class EventLogInfo(InfoBase):
                 time_match = re.match('(.*TimeCreated)(\[.*?\])(.*)', filter_text)
                 if time_match:
                     # easy to replace with our time filter
-                    filter_text = time_match.group(1)+TIME_CREATED+time_match.group(3)
+                    filter_text = time_match.group(1) + TIME_CREATED + time_match.group(3)
                 else:
                     # need to insert our time filter
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
-                    filter_text = notime_match.group(1)+INSERT_TIME+notime_match.group(2)
+                    filter_text = notime_match.group(1) + INSERT_TIME + notime_match.group(2)
                 node.childNodes[0].data = filter_text
             xml_query = prettify_xml(in_filter_xml)
-            # undo replacement of single quotes with double            
+            # undo replacement of single quotes with double
             xml_query = re.sub(r"(\w+)='(\w+)'", r'\1="\2"', xml_query)
             # remove the xml header and replace any "&amp;" with "&"
             header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
@@ -233,7 +233,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @defer.inlineCallbacks
     def collect(self, config):
-        log.info('Start Collection of Events')
+        log.info('{} Start Collection of Events'.format(config.id))
 
         ds0 = config.datasources[0]
 
@@ -256,16 +256,18 @@ class EventLogPlugin(PythonDataSourcePlugin):
         res = None
         output = []
 
+        id_string = "device ({}) component ({})".format(config.id, ds0.component)
+
         try:
             res = yield query.run(eventlog, select, max_age, eventid, isxml)
         except Exception as e:
             if 'Password expired' in e.message:
                 raise e
-            log.error(e)
+            log.error("{}: {}".format(id_string, e))
         try:
             if res.stderr:
                 str_err = '\n'.join(res.stderr)
-                log.debug('Event query error: {}'.format(str_err))
+                log.debug('{}: Event query error: {}'.format(id_string, str_err))
                 if str_err.find('No events were found that match the specified selection criteria') != -1:
                     # no events found.  expected error.
                     pass
@@ -292,7 +294,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
                 value = [value]
         except ValueError as e:
-            log.error('Could not parse json: %r\n%s' % (output, e))
+            log.error('%s: Could not parse json: %r\n%s' % (id_string, output, e))
             raise
         defer.returnValue(value)
 
@@ -313,7 +315,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventGroup=ds['eventlog'],
             component=evt['Source'],
             ntevid=evt['InstanceId'],
-            summary=evt['Message'],
+            summary=evt.get('Message', '').split('.')[0],
+            message=evt.get('Message', ''),
             severity=severity,
             user=evt['UserName'],
             originaltime=evt['TimeGenerated'],
@@ -334,13 +337,14 @@ class EventLogPlugin(PythonDataSourcePlugin):
         for evt in results:
             data['events'].append(self._makeEvent(evt, config))
 
-        data['events'].append({
-            'device': config.id,
-            'summary': 'Windows EventLog: successful event collection',
-            'severity': ZenEventClasses.Clear,
-            'eventKey': 'WindowsEventCollection',
-            'eventClassKey': 'WindowsEventLogSuccess',
-        })
+        for ds in config.datasources:
+            data['events'].append({
+                'device': config.id,
+                'summary': 'Windows EventLog: successful event collection',
+                'severity': ZenEventClasses.Clear,
+                'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
+                'eventClassKey': 'WindowsEventLogSuccess',
+            })
 
         generateClearAuthEvents(config, data['events'])
 
@@ -356,30 +360,31 @@ class EventLogPlugin(PythonDataSourcePlugin):
         severity = ZenEventClasses.Warning
         if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in msg:
             severity = ZenEventClasses.Critical
-        log.error(msg)
+        log.error("{}: {}".format(config.id, msg))
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
-            data['events'].append({
-                'severity': severity,
-                'eventClassKey': 'WindowsEventCollectionError',
-                'eventKey': 'WindowsEventCollection',
-                'summary': msg,
-                'device': config.id
-            })
+            for ds in config.datasources:
+                data['events'].append({
+                    'severity': severity,
+                    'eventClassKey': 'WindowsEventCollectionError',
+                    'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
+                    'summary': msg,
+                    'device': config.id
+                })
         return data
 
 
 class EventLogQuery(object):
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
 
     PS_SCRIPT = '''
         $FormatEnumerationLimit = -1;
-        $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 25);
+        $Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 1024);
         function sstring($s) {{
             if ($s -eq $null) {{
                 return "";
@@ -483,14 +488,7 @@ class EventLogQuery(object):
                 @($events | ? $selector) | EventLogRecordToJSON
             }}
         }};
-        function Use-en-US ([ScriptBlock]$script= (throw))
-        {{
-            $CurrentCulture = [System.Threading.Thread]::CurrentThread.CurrentCulture;
-            [System.Threading.Thread]::CurrentThread.CurrentCulture = New-Object "System.Globalization.CultureInfo" "en-Us";
-            Invoke-Command $script;
-            [System.Threading.Thread]::CurrentThread.CurrentCulture = $CurrentCulture;
-        }};
-        Use-en-US {{get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}"}};
+        get_new_recent_entries -logname "{eventlog}" -selector {selector} -max_age {max_age} -eventid "{eventid}";
     '''
 
     def run(self, eventlog, selector, max_age, eventid, isxml):
@@ -502,8 +500,7 @@ class EventLogQuery(object):
         else:
             filter_xml = FILTER_XML.replace('"', r'\"')
         ps_script = ' '.join([x.strip() for x in self.PS_SCRIPT.split('\n')])
-        command = "{0} \"& {{{1}}}\"".format(
-            self.PS_COMMAND,
+        script = "\"& {{{}}}\"".format(
             ps_script.replace('\n', ' ').replace('"', r'\"').format(
                 eventlog=eventlog or 'System',
                 selector=selector or '{$True}',
@@ -512,8 +509,8 @@ class EventLogQuery(object):
                 filter_xml=filter_xml
             )
         )
-        log.debug('sending event script: {}'.format(command))
-        return self.winrs.run_command(command)
+        log.debug('sending event script: {}'.format(script))
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
 
 class EventLogException(Exception):

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -56,6 +56,7 @@ from ..utils import (
 
 # Requires that txwinrm_utils is already imported.
 import txwinrm.collect
+from txwinrm.WinRMClient import EnumerateClient
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
@@ -72,15 +73,15 @@ VALID_DATAPOINTS = frozenset({
     'Frequency_Sys100NS',
     'HandleCount',
     'IDProcess',
-    'IODataBytesPerSec',
-    'IODataOperationsPerSec',
-    'IOOtherBytesPerSec',
-    'IOOtherOperationsPerSec',
-    'IOReadBytesPerSec',
-    'IOReadOperationsPerSec',
-    'IOWriteBytesPerSec',
-    'IOWriteOperationsPerSec',
-    'PageFaultsPerSec',
+    'IODataBytesPersec',
+    'IODataOperationsPersec',
+    'IOOtherBytesPersec',
+    'IOOtherOperationsPersec',
+    'IOReadBytesPersec',
+    'IOReadOperationsPersec',
+    'IOWriteBytesPersec',
+    'IOWriteOperationsPersec',
+    'PageFaultsPersec',
     'PageFileBytes',
     'PageFileBytesPeak',
     'PercentPrivilegedTime',
@@ -240,7 +241,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             (context, 'alertOnRestart', 'alertOnRestart'),
             (context, 'severity', 'getFailSeverity'),
             (context, 'generatedId', 'generatedId'),
-            )
+        )
 
         params = {}
 
@@ -255,15 +256,15 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return params
 
     def collect(self, config):
-        client = txwinrm.collect.WinrmCollectClient()
         conn_info = createConnectionInfo(config.datasources[0])
+        client = EnumerateClient(conn_info)
 
         # Always query Win32_Process. This is where we get process
         # status and count.
         queries = [
             'SELECT Name, ExecutablePath, CommandLine, ProcessId '
             'FROM Win32_Process',
-            ]
+        ]
 
         # Query only for the superset of attributes needed to satisfy
         # the configured datapoints across all processes.
@@ -278,7 +279,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 "Removing invalid datapoints for %s: %s",
                 config.id, ', '.join(invalid_datapoints))
 
-            perf_attrs.remove(invalid_datapoints)
+            perf_attrs.difference_update(invalid_datapoints)
 
         # Only query Win32_PerfFormattedData_PerfProc_Process if its
         # necessary to satisfy the configured datapoints.
@@ -289,7 +290,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                     ', '.join(perf_attrs)))
 
         return client.do_collect(
-            conn_info, map(txwinrm.collect.create_enum_info, queries))
+            map(txwinrm.collect.create_enum_info, queries))
 
     @save
     def onSuccess(self, results, config):

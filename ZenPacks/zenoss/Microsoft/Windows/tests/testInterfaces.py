@@ -6,6 +6,10 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
+# Zenoss Imports
+import Globals  # noqa
+from Products.ZenUtils.Utils import unused
+unused(Globals)
 
 from mock import Mock, sentinel
 
@@ -21,13 +25,13 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.Interfaces i
 class TestInterfaces(BaseTestCase):
     def setUp(self):
         self.results = load_pickle(self, 'results')
+        self.results['win32_pnpentity'] = {'Win32_PnPEntity': {'12': self.results['Win32_NetworkAdapter']}}
         self.device = load_pickle(self, 'device')
         self.plugin = Interfaces()
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(len(data.maps), 13)
-
         eth0 = data.maps[12]
         self.assertEquals(eth0.adminStatus, 1)
         self.assertEquals(eth0.description, "Local Area Connection 2")
@@ -36,7 +40,7 @@ class TestInterfaces(BaseTestCase):
         self.assertEquals(eth0.ifindex, '14')
         self.assertEquals(eth0.interfaceName, "Intel(R) PRO/1000 MT Network Connection")
         self.assertEquals(eth0.macaddress, "00:50:56:8D:45:FC")
-        self.assertEquals(eth0.perfmonInstance, "\\Network Interface(Intel[R] PRO_1000 MT Network Connection)")
+        self.assertEquals(eth0.perfmonInstance, '\\Network Interface(WAN Miniport [SSTP])')
         self.assertEquals(eth0.setIpAddresses, ['192.168.240.37/23', 'fe80::a930:96ad:f65e:b3ba/64'])
         self.assertEquals(eth0.speed, 1000000000)
         self.assertEquals(eth0.title, "Intel(R) PRO/1000 MT Network Connection")
@@ -99,3 +103,20 @@ class TestTeamInterfaces(BaseTestCase):
         self.assertEquals(data.maps[8].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2)")
         self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter#1)")
         self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestInterfaces))
+    suite.addTest(makeSuite(TestHelpers))
+    suite.addTest(makeSuite(TestInterfacesCounters))
+    suite.addTest(makeSuite(TestTeamInterfaces))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

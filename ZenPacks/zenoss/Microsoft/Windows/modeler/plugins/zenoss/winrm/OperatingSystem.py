@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -70,14 +70,16 @@ class OperatingSystem(WinRMPlugin):
             )
         maps = []
 
+        if not computerSystem:
+            # if no results for computerSystem, then there is a WMI permission error
+            log.warn('No results returned for OperatingSystem plugin.'
+                     '  Check WMI namespace and DCOM permissions.')
+            return maps
         # Device Map
         device_om = ObjectMap()
-        try:
-            device_om.snmpSysName = computerSystem.Name
-            device_om.snmpContact = computerSystem.PrimaryOwnerName
-            device_om.snmpDescr = computerSystem.Caption
-        except AttributeError:
-            log.warn('No results returned for Win32_ComputerSystem.  Check WMI namespace and DCOM permissions.')
+        device_om.snmpSysName = computerSystem.Name
+        device_om.snmpContact = computerSystem.PrimaryOwnerName
+        device_om.snmpDescr = computerSystem.Caption
         device_om.ip_and_hostname = self.get_ip_and_hostname(device.manageIp)
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
@@ -90,13 +92,10 @@ class OperatingSystem(WinRMPlugin):
         else:
             device_om.msexchangeversion = ''
         # Cluster Information
-        try:
-            clusterlist = []
-            for cluster in clusterInformation:
-                clusterlist.append(cluster.Name + '.' + computerSystem.Domain)
-            device_om.setClusterMachines = clusterlist
-        except (AttributeError):
-            pass
+        clusterlist = []
+        for cluster in clusterInformation:
+            clusterlist.append(cluster.Name + '.' + computerSystem.Domain)
+        device_om.setClusterMachines = clusterlist
 
         # if domainrole is 4 or 5 then this is a DC
         # Standalone Workstation (0)
@@ -105,57 +104,43 @@ class OperatingSystem(WinRMPlugin):
         # Member Server (3)
         # Backup Domain Controller (4)
         # Primary Domain Controller (5)
-        if computerSystem.DomainRole in (BACKUPDC, PRIMARYDC):
+        device_om.domain_controller = False
+        if hasattr(computerSystem, 'DomainRole') and getattr(computerSystem, 'DomainRole', None) in (BACKUPDC, PRIMARYDC):
             device_om.domain_controller = True
-        else:
-            device_om.domain_controller = False
 
         maps.append(device_om)
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
+        hw_om.serialNumber = operatingSystem.SerialNumber if operatingSystem else ''
+        hw_om.tag = sysEnclosure.Tag
+        hw_om.setProductKey = MultiArgs(
+            computerSystem.Model,
+            computerSystem.Manufacturer)
         try:
-            hw_om.serialNumber = operatingSystem.SerialNumber if operatingSystem else ''
-        except AttributeError:
-            log.warn('No results returned for Win32_OperatingSystem.  Check WMI namespace and DCOM permissions.')
-        try:
-            hw_om.tag = sysEnclosure.Tag
-            hw_om.setProductKey = MultiArgs(
-                computerSystem.Model,
-                computerSystem.Manufacturer)
-        except AttributeError:
-            log.warn('No results returned for Win32_SystemEnclosure.  Check WMI namespace and DCOM permissions.')
-
-        try:
-            assert operatingSystem is not None
             hw_om.totalMemory = 1024 * int(operatingSystem.TotalVisibleMemorySize)
         except AttributeError:
             log.warn(
                 "Win32_OperatingSystem query did not respond with "
                 "TotalVisibleMemorySize: {0}"
                 .format(pformat(sorted(vars(operatingSystem).keys()))))
-        except AssertionError:
-            log.warn('No results returned for Win32_OperatingSystem.  Check WMI namespace and DCOM permissions.')
 
         maps.append(hw_om)
 
         # Operating System Map
         os_om = ObjectMap(compname='os')
-        try:
-            os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
+        os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
 
-            operatingSystem.Caption = re.sub(
-                r'\s*\S*Microsoft\S*\s*', '', operatingSystem.Caption)
+        operatingSystem.Caption = re.sub(
+            r'\s*\S*Microsoft\S*\s*', '', operatingSystem.Caption)
 
-            osCaption = '{} - {}'.format(
-                operatingSystem.Caption,
-                operatingSystem.CSDVersion)
+        osCaption = '{} - {}'.format(
+            operatingSystem.Caption,
+            operatingSystem.CSDVersion)
 
-            os_om.setProductKey = MultiArgs(
-                osCaption,
-                operatingSystem.Manufacturer)
-        except AttributeError:
-            pass
+        os_om.setProductKey = MultiArgs(
+            osCaption,
+            operatingSystem.Manufacturer)
         maps.append(os_om)
 
         return maps

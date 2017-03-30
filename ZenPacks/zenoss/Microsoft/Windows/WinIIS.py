@@ -1,21 +1,18 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
-
-import logging
 from . import schema
-log = logging.getLogger("zen.MicrosoftWindows")
+from utils import get_rrd_path
 
 
 class WinIIS(schema.WinIIS):
     '''
-    Base class for WinIIS classes.
-    
-    This file exists to avoid ZenPack upgrade issues
+    Model class for WinIIS.
     '''
-
+    # preserve the old style path
+    rrdPath = get_rrd_path

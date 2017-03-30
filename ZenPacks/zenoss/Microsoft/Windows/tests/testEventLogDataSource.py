@@ -24,17 +24,18 @@ class TestDataSourcePlugin(BaseTestCase):
              'EventID': u'10120',
              'InstanceId': u'468872',
              'MachineName': u'machine',
-             'Message': sentinel.message,
+             'Message': u'WinRM Event Message. Second sentence of message.',
              'Source': u'WinRM',
              'TimeGenerated': u'05/30/2014 18:27:22',
              'UserName': u''}
         ], Mock(
             id=sentinel.id,
-            datasources=[Mock(params={'eventlog': sentinel.eventlog})],
+            datasources=[Mock(params={'eventlog': sentinel.eventlog},
+                              datasource='DataSource')],
         ))
 
-        self.assertEquals(len(res['events']), 6)
-        self.assertEquals(res['events'][0]['summary'], sentinel.message)
+        self.assertEquals(len(res['events']), 5)
+        self.assertEquals(res['events'][0]['summary'], u'WinRM Event Message')
         self.assertEquals(res['events'][0]['eventGroup'], sentinel.eventlog)
 
 

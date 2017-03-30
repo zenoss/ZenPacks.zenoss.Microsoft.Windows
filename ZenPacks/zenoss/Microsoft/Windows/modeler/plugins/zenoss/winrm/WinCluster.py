@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -14,20 +14,21 @@ Windows Cluster System Collection
 from socket import gaierror
 from twisted.internet import defer
 
-from Products.DataCollector.plugins.DataMaps import  ObjectMap, RelationshipMap
+from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import asyncIpLookup
 from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
 
+from txwinrm.WinRMClient import SingleCommandClient
+
 addLocalLibPath()
 
-from txwinrm.shell import create_single_shot_command
 
 class ClusterCommander(object):
     def __init__(self, conn_info):
-        self.winrs = create_single_shot_command(conn_info)
+        self.winrs = SingleCommandClient(conn_info)
 
     pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
@@ -37,14 +38,13 @@ class ClusterCommander(object):
     psClusterCommands.append("import-module failoverclusters;")
 
     def run_command(self, command):
-        ''' Run command for powershell failover clusters '''
+        """Run command for powershell failover clusters"""
         if isinstance(command, str):
             command = command.splitlines()
-        command = "{0} \"& {{{1}}}\"".format(
-            self.pscommand,
+        command = "\"& {{{}}}\"".format(
             ''.join(self.psClusterCommands + command)
         )
-        return self.winrs.run_command(command)
+        return self.winrs.run_command(self.pscommand, ps_script=command)
 
 
 class WinCluster(WinRMPlugin):
@@ -83,7 +83,7 @@ class WinCluster(WinRMPlugin):
         clusternode = yield cmd.run_command(
             "get-clusternode | foreach {%s};" % pipejoin(
                 '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State')
-            )
+        )
 
         clusterDiskCommand = []
         clusterDiskCommand.append(
@@ -108,7 +108,7 @@ class WinCluster(WinRMPlugin):
             "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
-            )
+        )
 
         clusterDiskCommand.append(
             "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
@@ -137,7 +137,7 @@ class WinCluster(WinRMPlugin):
             "$physicaldisk | foreach { %s };} }" % pipejoin(
                 '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
                 '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
-            )
+        )
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
 
         clusterNetworkCommand = []
@@ -194,7 +194,7 @@ class WinCluster(WinRMPlugin):
         # Cluster Resource Maps
         res_spliter_index = results['resources'].index("====")
         resources = results['resources'][:res_spliter_index]
-        applications = results['resources'][res_spliter_index+1:]
+        applications = results['resources'][res_spliter_index + 1:]
 
         # This section is for ClusterService class
         for resource in resources:
@@ -306,7 +306,7 @@ class WinCluster(WinRMPlugin):
         # This section is for ClusterInterface class
         net_spliter_index = results['clusternetworks'].index("====")
         clusternetworks = results['clusternetworks'][:net_spliter_index]
-        nodeinterfaces = results['clusternetworks'][net_spliter_index+1:]
+        nodeinterfaces = results['clusternetworks'][net_spliter_index + 1:]
 
         for interface in nodeinterfaces:
             intfline = interface.split("|")
@@ -377,4 +377,3 @@ class WinCluster(WinRMPlugin):
             objmaps=map_networks_oms
         ))
         return maps
-
