@@ -21,20 +21,28 @@ import logging
 # Zenoss Imports
 from Products.ZenModel.migrate.Migrate import Version
 from Products.ZenModel.ZenPack import ZenPackMigration
+from Products.Zuul.interfaces import ICatalogTool
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
 
 class RemoveWinRMServices(ZenPackMigration):
-    version = Version(2, 7, 0)
+    version = Version(2, 7, 1)
 
     def migrate(self, pack):
-        org = pack.dmd.Devices.getOrganizer('/Server/Microsoft')
-        devices = org.getSubDevices()
-        device_count = len(devices)
-        if device_count:
-            LOG.info('Attempting to remove incompatible Windows Services from {} device{}.'
-                     .format(device_count, 's' if device_count > 1 else ''))
-            for device in devices:
+
+        results = ICatalogTool(pack.getDmdRoot("Devices")).search(types=(
+            'ZenPacks.zenoss.Microsoft.Windows.BaseDevice.BaseDevice',
+        ))
+
+        if not results.total:
+            return
+
+        LOG.info('Removing incompatible Windows Services from %s devices', results.total)
+
+        for r in results:
+            try:
+                device = r.getObject()
                 device.os.removeRelation('winrmservices', suppress_events=True)
-                device.os.buildRelations()
+            except Exception:
+                continue
