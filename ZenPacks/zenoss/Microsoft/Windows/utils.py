@@ -454,7 +454,6 @@ Common datasource utilities.
 
 def append_event_datasource_plugin(datasources, events, event):
     event['plugin_classname'] = datasources[0].plugin_classname
-    event['datasources'] = ','.join([ds.datasource for ds in datasources])
     if event not in events:
         events.append(event)
 
