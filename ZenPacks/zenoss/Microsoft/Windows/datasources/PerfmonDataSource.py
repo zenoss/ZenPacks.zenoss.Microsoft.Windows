@@ -44,7 +44,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
+from txwinrm.shell import create_long_running_command, create_single_shot_command
 from txwinrm.util import UnauthorizedError
 import codecs
 
@@ -193,7 +193,7 @@ class ComplexLongRunningCommand(object):
         self.dsconf = dsconf
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
-        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command'
+        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command '
 
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
@@ -209,7 +209,7 @@ class ComplexLongRunningCommand(object):
         else:
             for _ in xrange(num_commands):
                 try:
-                    commands.append(LongCommandClient(conn_info))
+                    commands.append(create_long_running_command(conn_info))
                 except Exception as e:
                     LOG.error("{}: Windows Perfmon error: {}".format(
                         self.dsconf.device, e))
@@ -227,7 +227,7 @@ class ComplexLongRunningCommand(object):
 
         for command, command_line in zip(self.commands, command_lines):
             if command is not None:
-                yield command.start(self.ps_command, ps_script=command_line)
+                yield command.start(self.ps_command + command_line)
 
     @defer.inlineCallbacks
     def stop(self):
@@ -693,7 +693,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Remove counters which return an error."""
         LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
         dsconf0 = self.config.datasources[0]
-        winrs = SingleCommandClient(createConnectionInfo(dsconf0))
+        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
 
         counter_list = sorted(
             set(self.ps_counter_map.keys()) - set(CORRUPT_COUNTERS[dsconf0.device]))
