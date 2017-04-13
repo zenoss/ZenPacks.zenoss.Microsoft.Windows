@@ -1721,6 +1721,9 @@ Monitoring Templates
 
 Changes
 -------
+2.7.1
+-   Honor template severity for MS SQL Instance events (ZPS-1323)
+-   Honor template severity for MS SQL Job events (ZPS-1322)
 
 2.7.0
 
