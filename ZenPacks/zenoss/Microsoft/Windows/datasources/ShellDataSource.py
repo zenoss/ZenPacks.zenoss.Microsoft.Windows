@@ -602,7 +602,7 @@ class PowershellMSSQLJobStrategy(object):
             try:
                 currentstate = {
                     'Succeeded': ZenEventClasses.Clear,
-                    'Failed': ZenEventClasses.Critical
+                    'Failed':  dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
                     component,
