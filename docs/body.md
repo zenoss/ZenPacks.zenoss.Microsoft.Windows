@@ -1736,6 +1736,7 @@ Changes
 -   Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)
 -   Fix Microsoft Windows: Graphs missing datapoints every other zenpython cycle (ZPS-1321)
 -   Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
+-   Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)
 
 2.7.0
 

@@ -12,6 +12,7 @@ A datasource that uses WinRS to collect Windows Service Status
 
 """
 import logging
+import time
 
 from zope.component import adapts
 from zope.interface import implements
@@ -293,6 +294,7 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
+        timestamp = int(time.mktime(time.localtime()))
         for index, svc_info in enumerate(serviceinfo):
             if svc_info.Name not in services.keys():
                 continue
@@ -319,11 +321,11 @@ class ServicePlugin(PythonDataSourcePlugin):
                 dp.metadata = dsconf.params.get('metricmetadata', None)
                 dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
                 if svc_info.State.lower() == STATE_RUNNING.lower():
-                    data['values'][svc_info.Name]['state'] = 0
+                    data['values'][svc_info.Name]['state'] = (0, timestamp)
                 elif svc_info.State.lower() == STATE_STOPPED.lower():
-                    data['values'][svc_info.Name]['state'] = 1
+                    data['values'][svc_info.Name]['state'] = (1, timestamp)
                 elif svc_info.State.lower() == STATE_PAUSED.lower():
-                    data['values'][svc_info.Name]['state'] = 2
+                    data['values'][svc_info.Name]['state'] = (2, timestamp)
 
             # event for the service
             data['events'].append({
