@@ -57,6 +57,7 @@ class ReindexWinServices(Job):
         template = self.dmd.unrestrictedTraverse(uid)
 
         for service in template.getAffectedServices():
+            self.log.info('Indexing service {} on {}'.format(service.serviceName, service.device().id))
             service.index_object()
 
 
