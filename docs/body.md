@@ -14,6 +14,9 @@ br.clear {
 dd {
     font-size: smaller;
 }
+pp {
+    font-size: 14px;
+}
 </style>
 
 Video
@@ -342,34 +345,34 @@ SQL Server
 
 The following performance counters are monitored via Powershell script per database:
 
-:   \\SQLServer:Databases(\<dbname\>)\\Active Transactions
-:   \\SQLServer:Databases(\<dbname\>)\\Backup/Restore Throughput/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Bulk Copy Rows/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Bulk Copy Throughput/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Cache Entries Count
-:   \\SQLServer:Databases(\<dbname\>)\\Cache Entries Pinned Count
-:   \\SQLServer:Databases(\<dbname\>)\\Cache Hit Ratio
-:   \\SQLServer:Databases(\<dbname\>)\\Cache Hit Ratio Base
-:   \\SQLServer:Databases(\<dbname\>)\\DBCC Logical Scan Bytes/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Data File(s) Size (KB)
-:   \\SQLServer:Databases(\<dbname\>)\\Log Bytes Flushed/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Hit Ratio
-:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Hit Ratio Base
-:   \\SQLServer:Databases(\<dbname\>)\\Log Cache Reads/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Log File(s) Size (KB)
-:   \\SQLServer:Databases(\<dbname\>)\\Log File(s) Used Size (KB)
-:   \\SQLServer:Databases(\<dbname\>)\\Log Flush Wait Time
-:   \\SQLServer:Databases(\<dbname\>)\\Log Flush Waits/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Log Flushes/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Log Growths
-:   \\SQLServer:Databases(\<dbname\>)\\Percent Log Used
-:   \\SQLServer:Databases(\<dbname\>)\\Log Shrinks
-:   \\SQLServer:Databases(\<dbname\>)\\Log Truncations
-:   \\SQLServer:Databases(\<dbname\>)\\Percent Log Used
-:   \\SQLServer:Databases(\<dbname\>)\\Repl. Pending Xacts
-:   \\SQLServer:Databases(\<dbname\>)\\Repl. Trans. Rate
-:   \\SQLServer:Databases(\<dbname\>)\\Shrink Data Movement Bytes/sec
-:   \\SQLServer:Databases(\<dbname\>)\\Transactions/sec
+:   \\Active Transactions
+:   \\Backup/Restore Throughput/sec
+:   \\Bulk Copy Rows/sec
+:   \\Bulk Copy Throughput/sec
+:   \\Cache Entries Count
+:   \\Cache Entries Pinned Count
+:   \\Cache Hit Ratio
+:   \\Cache Hit Ratio Base
+:   \\DBCC Logical Scan Bytes/sec
+:   \\Data File(s) Size (KB)
+:   \\Log Bytes Flushed/sec
+:   \\Log Cache Hit Ratio
+:   \\Log Cache Hit Ratio Base
+:   \\Log Cache Reads/sec
+:   \\Log File(s) Size (KB)
+:   \\Log File(s) Used Size (KB)
+:   \\Log Flush Wait Time
+:   \\Log Flush Waits/sec
+:   \\Log Flushes/sec
+:   \\Log Growths
+:   \\Percent Log Used
+:   \\Log Shrinks
+:   \\Log Truncations
+:   \\Percent Log Used
+:   \\Repl. Pending Xacts
+:   \\Repl. Trans. Rate
+:   \\Shrink Data Movement Bytes/sec
+:   \\Transactions/sec
 
 You can enable/disable any of these or change the cycle time by editing
 the WinDatabase monitoring template.
@@ -645,6 +648,7 @@ monitoring for the service component.
 ##### Enable monitoring by default for the WinRM service wherever it is enabled.
 
 Option 1 
+
 1.  Navigate to Advanced -\> Monitoring Templates. 
 2.  Verify the list of templates is grouped by template. 
 3.  Expand the *WinService* tree. 
@@ -659,6 +663,7 @@ Option 1
 12. Tick the *Auto* checkbox under *Service Options* and click save.
 
 Option 2
+
 1.  Navigate to Infrastructure -> Windows Services.
 2.  Locate the WinRM service.
 3.  Select the start modes desired for this service.
@@ -709,7 +714,7 @@ The order of precedence for monitoring a service is:
 3.  Datasource other than the DefaultService in the WinService template associated with the service.
 4.  Monitoring is enabled via the Infrastructure -> Windows Services page.
 
-<table border="2" cellpadding="1" cellspacing="1" style="width:800px;"><caption><strong>Windows Service Startmodes (Template vs Windows Services)</strong></caption><thead><tr><th scope="col" style="text-align: center;">Startmodes</th><th scope="col" style="text-align: center;">Template includes Service startmode</th><th scope="col" style="text-align: center;">Template excludes Service startmode</th></tr></thead><tbody><tr><td>Windows Service Class includes Service startmode</td><td>monitored</td><td>monitored</td></tr><tr><td>Windows Service Class excludes Service startmode</td><td>monitored</td><td>NOT monitored</td></tr></tbody></table>
+<table border="2" cellpadding="1" cellspacing="1" style="width:600px;"><caption><strong>Windows Service Startmodes (Template vs Windows Services)</strong></caption><thead><tr><th scope="col" style="text-align: center;"><pp>Startmodes</pp></th><th scope="col" style="text-align: center;"><pp>Template includes Service startmode</pp></th><th scope="col" style="text-align: center;"><pp>Template excludes Service startmode</pp></th></tr></thead><tbody><tr><td><pp>Windows Service Class includes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>monitored</pp></td></tr><tr><td><pp>Windows Service Class excludes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>NOT monitored</pp></td></tr></tbody></table>
 
 Note: The Windows Service Template (default WinService) must have at
 least one datasource enabled for monitoring to function.
@@ -756,10 +761,7 @@ user, you should disable these tests.
 
 ### PortCheck
 
-Beginning with version 2.4.0, you can now monitor specific ports in the
-Windows Zenpack. By default, the ZenPack will monitor ports 9389, 3268,
-3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active
-Directory monitoring template.
+The Windows Zenpack monitors specific ports on domain controllers. By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.
 
 You can add and remove any port you wish to be monitored by editing the
 PortCheck datasource in the Active Directory monitoring template.
@@ -1467,6 +1469,12 @@ Realm not local to KDC while getting initial credentials
     the beginning of the incorrect address in the zWinKDC property to
     remove it from the list of KDCs for a domain.
 
+<blockquote>
+Message stream modified
+</blockquote>
+
+-   This indicates that Windows was unable to decrypt the kerberos encrypted payload.  This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account.  For example, many IIS servers will do this.  To fix this, set the zWinUseWsmanSPN property.
+
 ### Troubleshooting Kerberos Authentication with Wireshark
 
 There are many reasons for kerberos authentication not to work, and a
@@ -1721,6 +1729,13 @@ Monitoring Templates
 
 Changes
 -------
+
+2.7.1
+
+-   Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
+-   Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)
+-   Fix Microsoft Windows: Graphs missing datapoints every other zenpython cycle (ZPS-1321)
+-   Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
 
 2.7.0
 

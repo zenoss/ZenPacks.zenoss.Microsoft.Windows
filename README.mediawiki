@@ -1048,6 +1048,10 @@ You should also ensure that the correct name is returned for lookups.
 
 * This indicates that one or more of the defined KDCs for a domain are incorrect.  Add a ''-'' to the beginning of the errant KDC address to the beginning of the incorrect address in the zWinKDC property to remove it from the list of KDCs for a domain.
 
+<blockquote>Message stream modified</blockquote>
+
+* This indicates that Windows was unable to decrypt the kerberos encrypted payload.  This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account.  For example, many IIS servers will do this.  To fix this, set the zWinUseWsmanSPN property.
+
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
 There are many reasons for kerberos authentication not to work, and a lot of them result in the following unhelpful error message.
@@ -1250,6 +1254,12 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * ClusterInterface (in /Server/Microsoft/Cluster)
 
 == Changes ==
+
+;2.7.1
+* Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
+* Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)
+* Fix Microsoft Windows: Graphs missing datapoints every other zenpython cycle (ZPS-1321)
+* Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
 
 ;2.7.0
 * Added support for Hard Disk association with storage servers
