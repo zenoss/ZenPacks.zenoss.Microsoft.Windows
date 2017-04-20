@@ -3,6 +3,8 @@ Microsoft Windows ZenPack
 
 Monitoring for Microsoft Windows Devices.
 
+<p>[zenoss-toc]</p>
+
 Background
 ----------
 

@@ -602,7 +602,7 @@ class PowershellMSSQLJobStrategy(object):
             try:
                 currentstate = {
                     'Succeeded': ZenEventClasses.Clear,
-                    'Failed': ZenEventClasses.Critical
+                    'Failed':  dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
                     component,
@@ -1355,7 +1355,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             for dsconf, value in strategy.parse_result(dsconfs, result):
                 currentstate = {
                     'Running': ZenEventClasses.Clear,
-                    'Stopped': ZenEventClasses.Critical
+                    'Stopped': dsconf.severity
                 }.get(value[1], ZenEventClasses.Info)
 
                 summary = 'MSSQL Instance {0} is {1}.'.format(

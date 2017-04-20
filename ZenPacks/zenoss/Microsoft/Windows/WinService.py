@@ -70,7 +70,11 @@ class WinService(schema.WinService):
         # Set necessary defaults
         self.index_service = False
         self.alertifnot = 'Running'
-        self.failSeverity = ZenEventClasses.Error
+        # check the inherited zMonitor property
+        try:
+            self.failSeverity = self.getAqProperty("zFailSeverity")
+        except Exception:
+            self.failSeverity = ZenEventClasses.Error
         self.monitoredStartModes = []
         if self.startMode is None:
             return False
@@ -117,8 +121,6 @@ class WinService(schema.WinService):
         sc = self.getClassObject()
         if sc:
             valid_start = self.startMode in sc.monitoredStartModes
-            # check the inherited zMonitor property
-            self.failSeverity = self.getAqProperty("zFailSeverity")
             sc_monitor = valid_start and self.getAqProperty('zMonitor')
             if sc_monitor:
                 self.monitoredStartModes = sc.monitoredStartModes
