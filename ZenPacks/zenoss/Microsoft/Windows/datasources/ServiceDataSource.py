@@ -12,6 +12,8 @@ A datasource that uses WinRS to collect Windows Service Status
 
 """
 import logging
+import time
+import re
 
 from zope.component import adapts
 from zope.interface import implements
@@ -27,6 +29,7 @@ from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
 from Products.ZenRRD.zencommand import DataPointConfig
+from Products.AdvancedQuery import MatchRegexp
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -56,6 +59,7 @@ MODE_AUTO = 'Auto'
 MODE_DISABLED = 'Disabled'
 MODE_MANUAL = 'Manual'
 MODE_ANY = 'Any'
+INVALID_REGEX = 'Ignoring invalid regular expression found in WinService datasource {}: {}'
 
 
 def string_to_lines(string):
@@ -104,7 +108,27 @@ class ServiceDataSource(PythonDataSource):
 
         # Template is in a device class.
         else:
-            results = ICatalogTool(deviceclass.primaryAq()).search(WinService)
+            query = None
+            # Let's be smart and get only what will be affected
+            if template.id == 'WinService':
+                for exp in self.in_exclusions.split(','):
+                    regex = exp.strip().lstrip('+-')
+                    try:
+                        re.compile(regex)
+                    except re.error:
+                        log.debug(INVALID_REGEX.format(self.id, regex))
+                        continue
+                    if not query:
+                        query = MatchRegexp('id', regex)
+                    else:
+                        query |= MatchRegexp('id', regex)
+                # this should not occur, but just in case
+                if not query:
+                    query = MatchRegexp('id', '.*')
+            else:
+                # component template for specific service
+                query = MatchRegexp('id', template.id)
+            results = ICatalogTool(deviceclass.primaryAq()).search(WinService, query=query)
             for result in results:
                 try:
                     service = result.getObject()
@@ -293,6 +317,7 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
+        timestamp = int(time.mktime(time.localtime()))
         for index, svc_info in enumerate(serviceinfo):
             if svc_info.Name not in services.keys():
                 continue
@@ -319,11 +344,11 @@ class ServicePlugin(PythonDataSourcePlugin):
                 dp.metadata = dsconf.params.get('metricmetadata', None)
                 dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
                 if svc_info.State.lower() == STATE_RUNNING.lower():
-                    data['values'][svc_info.Name]['state'] = 0
+                    data['values'][svc_info.Name]['state'] = (0, timestamp)
                 elif svc_info.State.lower() == STATE_STOPPED.lower():
-                    data['values'][svc_info.Name]['state'] = 1
+                    data['values'][svc_info.Name]['state'] = (1, timestamp)
                 elif svc_info.State.lower() == STATE_PAUSED.lower():
-                    data['values'][svc_info.Name]['state'] = 2
+                    data['values'][svc_info.Name]['state'] = (2, timestamp)
 
             # event for the service
             data['events'].append({
