@@ -1730,6 +1730,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.2
+
+-   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
+
 2.7.1
 
 -   Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
@@ -1738,6 +1742,8 @@ Changes
 -   Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
 -   Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)
 -   Fix Editing a Windows Service (WinService) Locks Up Zope and Times Out (ZPS-1342)
+-   Fix Windows ZP HardDisk Modeler does not check the value of SerialNumber before running strip (ZPS-1279)
+-   Fix Windows 2.7.0 WinService migrate script only updates template bound at /Server/Microsoft (ZPS-1280)
 
 2.7.0
 
