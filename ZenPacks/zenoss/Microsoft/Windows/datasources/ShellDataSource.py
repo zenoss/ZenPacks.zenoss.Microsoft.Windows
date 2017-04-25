@@ -481,7 +481,7 @@ class PowershellMSSQLStrategy(object):
                                       " +[char]39+$db_name+[char]39;")
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
-                                      'else { Write-Host "databasename:"$db_name;}'
+                                      'Write-Host "databasename:"$db_name;'
                                       '$status = $db.Status;write-host "databasestatus:"$status;}}')
         script = "\"& {{{}}}\"".format(
             ''.join([BUFFER_SIZE] +
