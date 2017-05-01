@@ -45,6 +45,7 @@ from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command, create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient
 from txwinrm.util import UnauthorizedError
 import codecs
 
@@ -227,7 +228,7 @@ class ComplexLongRunningCommand(object):
 
         for command, command_line in zip(self.commands, command_lines):
             if command is not None:
-                yield command.start(self.ps_command + command_line)
+                yield command.start(self.ps_command, ps_script=command_line)
 
     @defer.inlineCallbacks
     def stop(self):
@@ -693,7 +694,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Remove counters which return an error."""
         LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
         dsconf0 = self.config.datasources[0]
-        winrs = create_single_shot_command(createConnectionInfo(dsconf0))
+        winrs = SingleCommandClient(createConnectionInfo(dsconf0))
 
         counter_list = sorted(
             set(self.ps_counter_map.keys()) - set(CORRUPT_COUNTERS[dsconf0.device]))
