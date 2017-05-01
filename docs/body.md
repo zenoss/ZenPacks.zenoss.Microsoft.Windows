@@ -1167,7 +1167,7 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 -   Allow Remote Shell Access
 -   Max number of processes per shell = 4294967295
 -   Max number of shells per user = 2147483647
--   Shell Timeout = 7200000
+-   Shell Timeout = 600000
 
 #### Individual Machine configuration
 
@@ -1177,7 +1177,7 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 
 -   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 -   winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
--   winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
+-   winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
@@ -1244,6 +1244,8 @@ running *winrm quickconfig*.
 ```
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 ```
+
+Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
 
 Transitioning from WindowsMonitor
 ---------------------------------
@@ -1733,6 +1735,7 @@ Changes
 2.7.2
 
 -   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
+-   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
 
 2.7.1
 
