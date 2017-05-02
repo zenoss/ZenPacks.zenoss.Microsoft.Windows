@@ -839,6 +839,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
 # Helper functions for PerfmonDataSource plugin.
 def convert_to_ps_counter(counter):
+    counter = counter.replace('$', '`$')
     esc_counter = counter.encode("unicode_escape")
     start_indx = esc_counter.find('(')
     end_indx = esc_counter.rfind(')')
