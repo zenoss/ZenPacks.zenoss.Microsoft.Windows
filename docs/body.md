@@ -1736,6 +1736,7 @@ Changes
 
 -   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
 -   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+-   Fix Counters with $ in their name are being shown as missing (ZPS-1404)
 
 2.7.1
 
