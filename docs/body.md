@@ -1167,7 +1167,7 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 -   Allow Remote Shell Access
 -   Max number of processes per shell = 4294967295
 -   Max number of shells per user = 2147483647
--   Shell Timeout = 7200000
+-   Shell Timeout = 600000
 
 #### Individual Machine configuration
 
@@ -1177,7 +1177,7 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 
 -   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 -   winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
--   winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
+-   winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
@@ -1245,6 +1245,8 @@ running *winrm quickconfig*.
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 ```
 
+Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
+
 Transitioning from WindowsMonitor
 ---------------------------------
 
@@ -1302,10 +1304,19 @@ The current release is known to have the following limitations.
     component classes have changed from pre-2.6.x versions of the ZenPack.
     During installation, the ZenPack will create a job that will update
     the Windows Devices and Components class types used by the SDK.
-    Depending on your Zenoss instance resources, this job could take
-    quite a while to complete.
+    Depending on your Zenoss instance resources, this job could take a very long time to complete.  If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:
+
+```
+In [1]: from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
+
+In [2]: dmd.JobManager.addJob(ResetClassTypes)
+
+In [3]: commit()
+```
+
 -   This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 -    When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
+-   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1730,6 +1741,13 @@ Monitoring Templates
 Changes
 -------
 
+2.7.2
+
+-   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
+-   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+-   Fix Counters with $ in their name are being shown as missing (ZPS-1404)
+-   Fix Microsoft Windows: v2.7.x shows errors in zenrelationscan, zenchkrels (ZPS-1442)
+
 2.7.1
 
 -   Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
@@ -1738,6 +1756,8 @@ Changes
 -   Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
 -   Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)
 -   Fix Editing a Windows Service (WinService) Locks Up Zope and Times Out (ZPS-1342)
+-   Fix Windows ZP HardDisk Modeler does not check the value of SerialNumber before running strip (ZPS-1279)
+-   Fix Windows 2.7.0 WinService migrate script only updates template bound at /Server/Microsoft (ZPS-1280)
 
 2.7.0
 

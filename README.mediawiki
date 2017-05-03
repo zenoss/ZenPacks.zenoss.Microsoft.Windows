@@ -889,7 +889,7 @@ Computer Configuration\Policies\Administrative Templates\Windows Components\Wind
 * Allow Remote Shell Access
 * Max number of processes per shell = 4294967295
 * Max number of shells per user = 2147483647
-* Shell Timeout = 7200000
+* Shell Timeout = 600000
 
 Individual Machine configuration
 
@@ -899,7 +899,7 @@ Individual Machine configuration
 
 * winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 * winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
-* winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
+* winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth '@{Basic="true"}'
@@ -929,6 +929,8 @@ If you do not see a record with HTTPS/ at the beginning of the hostname you can 
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 </console>
 
+{{note}} The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
+
 == Transitioning from WindowsMonitor ==
 
 If you are installing this ZenPack on an existing Zenoss system or upgrading from an earlier Zenoss version you may have a ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' already installed on your system. You can check this by navigating to Advanced -> ZenPacks.
@@ -955,9 +957,19 @@ The current release is known to have the following limitations.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
 * Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
-* The current release of this ZenPack uses the ZenPack SDK.  Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take quite a while to complete.
+* The current release of this ZenPack uses the ZenPack SDK.  Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take a very long time to complete.  If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:
+
+<console>
+In [1]: from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
+
+In [2]: dmd.JobManager.addJob(ResetClassTypes)
+
+In [3]: commit()
+</console>
+
 * This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 * When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
+* If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -1255,6 +1267,12 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.7.2
+* Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
+* Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+* Fix Counters with $ in their name are being shown as missing (ZPS-1404)
+* Fix Microsoft Windows: v2.7.x shows errors in zenrelationscan, zenchkrels (ZPS-1442)
+
 ;2.7.1
 * Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
 * Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)
@@ -1262,6 +1280,8 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
 * Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)
 * Fix Editing a Windows Service (WinService) Locks Up Zope and Times Out (ZPS-1342)
+* Fix Windows ZP HardDisk Modeler does not check the value of SerialNumber before running strip (ZPS-1279)
+* Fix Windows 2.7.0 WinService migrate script only updates template bound at /Server/Microsoft (ZPS-1280)
 
 ;2.7.0
 * Added support for Hard Disk association with storage servers
