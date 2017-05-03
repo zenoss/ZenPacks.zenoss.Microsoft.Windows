@@ -47,6 +47,7 @@ zProperties:
     default: false
 
 class_relationships:
+  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmiis) 1:MC (os)WinIIS
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winsqlinstances) 1:MC (os)WinSQLInstance

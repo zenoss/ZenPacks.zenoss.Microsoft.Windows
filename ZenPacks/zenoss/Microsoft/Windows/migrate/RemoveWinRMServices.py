@@ -7,42 +7,48 @@
 #
 ##############################################################################
 
-"""Remove Windows services.
+"""Reset meta_type and portal_type for objects that need it."""
 
-ZEN-24347
-winrmservices need to be removed as they are incompatible with the WinService
-class.
-
-"""
-
-# Logging
 import logging
+import os
+import re
 
 # Zenoss Imports
 from Products.ZenModel.migrate.Migrate import Version
 from Products.ZenModel.ZenPack import ZenPackMigration
-from Products.Zuul.interfaces import ICatalogTool
+from Products.Zuul import listFacades, getFacade
+from ZenPacks.zenoss.Microsoft.Windows.jobs import RemoveWinRMServices as RemoveWinRMServicesJob
 
-LOG = logging.getLogger('zen.MicrosoftWindows')
+log = logging.getLogger('zen.Microsoft.Windows.migrate.RemoveWinRMServices')
+WARNING_MESSAGE = 'zenjobs must be stopped in order to fully complete the '\
+                  'upgrade to version {} of the Microsoft Windows ZenPack! '\
+                  'Please stop zenjobs and run the installation once more.  '\
+                  'Alternatively, you can add the job manually.  '\
+                  'This is necessary when upgrading from previous versions to'\
+                  ' completely remove incompatible Windows Services.'\
+                  ' If you have previously successfully installed this version'\
+                  ' and/or all existing services in the winrmservices relationship'\
+                  ' have been removed, no further action is necessary.'
 
 
 class RemoveWinRMServices(ZenPackMigration):
-    version = Version(2, 7, 1)
+    version = Version(2, 7, 2)
 
     def migrate(self, pack):
+        log.info('Adding job to remove any leftover winrmservices.')
+        if 'applications' in listFacades():
+            from Products.ZenUtils.application import ApplicationState
+            facade = getFacade('applications')
+            for service in facade.queryMasterDaemons():
+                if service.name == 'zenjobs' and service.state == ApplicationState.RUNNING:
+                    log.warn(WARNING_MESSAGE.format(self.version.short()))
+                    return
+        else:
+            zenhome = os.environ.get('ZENHOME', None)
+            if zenhome:
+                for f in os.listdir('{}/var'.format(zenhome)):
+                    if re.match('zenjobs-.*\.pid', f):
+                        log.warn(WARNING_MESSAGE.format(self.version.short()))
+                        return
 
-        results = ICatalogTool(pack.getDmdRoot("Devices")).search(types=(
-            'ZenPacks.zenoss.Microsoft.Windows.BaseDevice.BaseDevice',
-        ))
-
-        if not results.total:
-            return
-
-        LOG.info('Removing incompatible Windows Services from %s devices', results.total)
-
-        for r in results:
-            try:
-                device = r.getObject()
-                device.os.removeRelation('winrmservices', suppress_events=True)
-            except Exception:
-                continue
+        pack.JobManager.addJob(RemoveWinRMServicesJob)
