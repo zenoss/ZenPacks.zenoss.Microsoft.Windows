@@ -7,7 +7,7 @@
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.7.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.2/ZenPacks.zenoss.Microsoft.Windows-2.7.2.egg" rel="nofollow">Download</a> :Released on 2017/05/03 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.7.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.3/ZenPacks.zenoss.Microsoft.Windows-2.7.3.egg" rel="nofollow">Download</a> :Released on 2017/05/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <style>
@@ -1437,6 +1437,11 @@ fs.file-max=10000</code></pre>
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.7.3</p>
+<ul>
+<li>Fix MicrosoftWindows ZP has problems disks/mount points with &quot;&quot; in their name. (ZPS-1368)</li>
+<li>Fix Microsoft Windows: Migrate script takes long time to run, no feedback (ZPS-1473)</li>
+</ul>
 <p>2.7.2</p>
 <ul>
 <li>Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)</li>
