@@ -44,7 +44,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command, create_single_shot_command
+from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
 from txwinrm.util import UnauthorizedError
 import codecs
@@ -79,7 +79,7 @@ class PerfmonDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},
-        )
+    )
 
 
 class IPerfmonDataSourceInfo(IRRDDataSourceInfo):
@@ -288,7 +288,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
             counter = dsconf.params['counter'].decode('utf-8').lower()
-            ps_counter = convert_to_ps_counter(counter)
+            ps_counter = counter.replace('$', '`$')
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
 
@@ -835,24 +835,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'eventClassKey': 'AuthenticationSuccess',
             'summary': 'Authentication Successful',
             'ipAddress': self.config.manageIp})
-
-
-# Helper functions for PerfmonDataSource plugin.
-def convert_to_ps_counter(counter):
-    counter = counter.replace('$', '`$')
-    esc_counter = counter.encode("unicode_escape")
-    start_indx = esc_counter.find('(')
-    end_indx = esc_counter.rfind(')')
-    resource = esc_counter[start_indx + 1:end_indx]
-    if '\u' in resource and start_indx != -1 and end_indx != -1:
-        ps_repr = resource.replace('\u', '+[char]0x')
-        ps_counter = [esc_counter[:start_indx]]
-        ps_counter.append("('")
-        ps_counter.append(ps_repr)
-        ps_counter.append("+'")
-        ps_counter.append(esc_counter[end_indx:])
-        return ''.join(ps_counter).decode('string_escape')
-    return counter
 
 
 def format_counters(ps_counters):
