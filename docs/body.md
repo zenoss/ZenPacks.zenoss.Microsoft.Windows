@@ -1741,6 +1741,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.3
+
+-   Fix MicrosoftWindows ZP has problems disks/mount points with "\U" in their name. (ZPS-1368)
+
 2.7.2
 
 -   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
