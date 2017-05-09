@@ -87,6 +87,7 @@ class IISSiteDataSource(PythonDataSource):
     sourcetypes = ('Windows IIS Site',)
     sourcetype = sourcetypes[0]
     statusname = '${here/statusname}'
+    iis_version = None
 
     plugin_classname = ZENPACKID + \
         '.datasources.IISSiteDataSource.IISSiteDataSourcePlugin'

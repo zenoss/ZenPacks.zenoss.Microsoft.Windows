@@ -2,8 +2,8 @@
 Releases
 --------
 
-Version 2.7.1- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.1/ZenPacks.zenoss.Microsoft.Windows-2.7.1.egg" rel="nofollow">Download</a>
-:Released on 2017/04/20
+Version 2.7.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.3/ZenPacks.zenoss.Microsoft.Windows-2.7.3.egg" rel="nofollow">Download</a>
+:Released on 2017/05/09
 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a>
 :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x
 

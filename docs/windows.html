@@ -7,9 +7,9 @@
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.7.0- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.0/ZenPacks.zenoss.Microsoft.Windows-2.7.0.egg" rel="nofollow">Download</a> :Released on 2017/03/30 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.7.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.3/ZenPacks.zenoss.Microsoft.Windows-2.7.3.egg" rel="nofollow">Download</a> :Released on 2017/05/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
-<p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.1.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <style>
 img.thumbnail {
     clear: right;
@@ -25,6 +25,9 @@ br.clear {
 }
 dd {
     font-size: smaller;
+}
+pp {
+    font-size: 14px;
 }
 </style>
 <h2 id="video">Video</h2>
@@ -446,61 +449,61 @@ dd {
 <p>SQL Server</p>
 <dl>
 <dt>The following performance counters are monitored via Powershell script per database:</dt>
-<dd><p>\SQLServer:Databases(&lt;dbname&gt;)\Active Transactions</p>
+<dd><p>\Active Transactions</p>
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Backup/Restore Throughput/sec
+<dd>\Backup/Restore Throughput/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Bulk Copy Rows/sec
+<dd>\Bulk Copy Rows/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Bulk Copy Throughput/sec
+<dd>\Bulk Copy Throughput/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Entries Count
+<dd>\Cache Entries Count
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Entries Pinned Count
+<dd>\Cache Entries Pinned Count
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Hit Ratio
+<dd>\Cache Hit Ratio
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Cache Hit Ratio Base
+<dd>\Cache Hit Ratio Base
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\DBCC Logical Scan Bytes/sec
+<dd>\DBCC Logical Scan Bytes/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Data File(s) Size (KB)
+<dd>\Data File(s) Size (KB)
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Bytes Flushed/sec
+<dd>\Log Bytes Flushed/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Hit Ratio
+<dd>\Log Cache Hit Ratio
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Hit Ratio Base
+<dd>\Log Cache Hit Ratio Base
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Cache Reads/sec
+<dd>\Log Cache Reads/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log File(s) Size (KB)
+<dd>\Log File(s) Size (KB)
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log File(s) Used Size (KB)
+<dd>\Log File(s) Used Size (KB)
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flush Wait Time
+<dd>\Log Flush Wait Time
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flush Waits/sec
+<dd>\Log Flush Waits/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Flushes/sec
+<dd>\Log Flushes/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Growths
+<dd>\Log Growths
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Percent Log Used
+<dd>\Percent Log Used
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Shrinks
+<dd>\Log Shrinks
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Log Truncations
+<dd>\Log Truncations
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Percent Log Used
+<dd>\Percent Log Used
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Repl. Pending Xacts
+<dd>\Repl. Pending Xacts
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Repl. Trans. Rate
+<dd>\Repl. Trans. Rate
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Shrink Data Movement Bytes/sec
+<dd>\Shrink Data Movement Bytes/sec
 </dd>
-<dd>\SQLServer:Databases(&lt;dbname&gt;)\Transactions/sec
+<dd>\Transactions/sec
 </dd>
 </dl>
 <p>You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.</p>
@@ -689,8 +692,30 @@ test1(CommandParser):
 </ol>
 <p>Note: Once monitoring has been enabled or disabled for a service, no monitoring template will apply. To reset this option for a service, uncheck the 'Manually Selected Monitor State' box in the Details of the service and save the change. This check box does not enable or disable monitoring for the service component.</p>
 <h5 id="enable-monitoring-by-default-for-the-winrm-service-wherever-it-is-enabled.">Enable monitoring by default for the WinRM service wherever it is enabled.</h5>
-<p>Option 1 1. Navigate to Advanced -&gt; Monitoring Templates. 2. Verify the list of templates is grouped by template. 3. Expand the <em>WinService</em> tree. 4. Click once to select the <em>/Server/Microsoft</em> copy. 5. Choose <em>Copy / Override Template</em> from the Template gear menu at the bottom left of the page. 6. Select <em>/Server/Microsoft (Create Copy)</em> from the target list then click submit. 7. Expand the resulting <em>copy_of_WinService</em> tree. 8. Select the <em>/Server/Microsoft</em> copy. 9. Choose <em>View and Edit Details</em> from the Template gear menu at the bottom left of the page. 10. Change the template's name to <em>WinRM</em>. 11. Edit the datasource and optionally select the <em>Update services immediately</em> option. 12. Tick the <em>Auto</em> checkbox under <em>Service Options</em> and click save.</p>
-<p>Option 2 1. Navigate to Infrastructure -&gt; Windows Services. 2. Locate the WinRM service. 3. Select the start modes desired for this service. 4. Enable monitoring by setting a Local Value. 5. Optionally select a Local Failure Severity. 6. Save.</p>
+<p>Option 1</p>
+<ol style="list-style-type: decimal">
+<li>Navigate to Advanced -&gt; Monitoring Templates.</li>
+<li>Verify the list of templates is grouped by template.</li>
+<li>Expand the <em>WinService</em> tree.</li>
+<li>Click once to select the <em>/Server/Microsoft</em> copy.</li>
+<li>Choose <em>Copy / Override Template</em> from the Template gear menu at the bottom left of the page.</li>
+<li>Select <em>/Server/Microsoft (Create Copy)</em> from the target list then click submit.</li>
+<li>Expand the resulting <em>copy_of_WinService</em> tree.</li>
+<li>Select the <em>/Server/Microsoft</em> copy.</li>
+<li>Choose <em>View and Edit Details</em> from the Template gear menu at the bottom left of the page.</li>
+<li>Change the template's name to <em>WinRM</em>.</li>
+<li>Edit the datasource and optionally select the <em>Update services immediately</em> option.</li>
+<li>Tick the <em>Auto</em> checkbox under <em>Service Options</em> and click save.</li>
+</ol>
+<p>Option 2</p>
+<ol style="list-style-type: decimal">
+<li>Navigate to Infrastructure -&gt; Windows Services.</li>
+<li>Locate the WinRM service.</li>
+<li>Select the start modes desired for this service.</li>
+<li>Enable monitoring by setting a Local Value.</li>
+<li>Optionally select a Local Failure Severity.</li>
+<li>Save.</li>
+</ol>
 <p>Note: Setting a service to be monitored in this fashion will enable monitoring for the service regardless of device class.</p>
 <h5 id="enabledisable-monitoring-by-default-for-the-winrm-service-for-a-select-group-of-servers.">Enable/Disable monitoring by default for the WinRM service for a select group of servers.</h5>
 <ol style="list-style-type: decimal">
@@ -729,44 +754,44 @@ test1(CommandParser):
 <li>Enter *+MSSQLSERVER.** into the &quot;Inclusions(+)/Exclusions(-)&quot; text box and click save.</li>
 </ol>
 <p>The order of precedence for monitoring a service is: 1. User manually sets monitoring. 2. 'DefaultService' datasource from the WinService template associated with the service. 3. Datasource other than the DefaultService in the WinService template associated with the service. 4. Monitoring is enabled via the Infrastructure -&gt; Windows Services page.</p>
-<table border="2" cellpadding="1" cellspacing="1" style="width:800px;">
+<table border="2" cellpadding="1" cellspacing="1" style="width:600px;">
 <caption>
 <strong>Windows Service Startmodes (Template vs Windows Services)</strong>
 </caption>
 <thead>
 <tr>
 <th scope="col" style="text-align: center;">
-Startmodes
+<pp>Startmodes</pp>
 </th>
 <th scope="col" style="text-align: center;">
-Template includes Service startmode
+<pp>Template includes Service startmode</pp>
 </th>
 <th scope="col" style="text-align: center;">
-Template excludes Service startmode
+<pp>Template excludes Service startmode</pp>
 </th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>
-Windows Service Class includes Service startmode
+<pp>Windows Service Class includes Service startmode</pp>
 </td>
 <td>
-monitored
+<pp>monitored</pp>
 </td>
 <td>
-monitored
+<pp>monitored</pp>
 </td>
 </tr>
 <tr>
 <td>
-Windows Service Class excludes Service startmode
+<pp>Windows Service Class excludes Service startmode</pp>
 </td>
 <td>
-monitored
+<pp>monitored</pp>
 </td>
 <td>
-NOT monitored
+<pp>NOT monitored</pp>
 </td>
 </tr>
 </tbody>
@@ -781,7 +806,7 @@ NOT monitored
 <p>See <a href="https://technet.microsoft.com/en-us/library/cc731968.aspx">DCDiag</a> for more information.</p>
 <p>Note: DCDiag must be run as a user with Administrator permissions. If you will be monitoring a Domain Controller with a non administrator user, you should disable these tests.</p>
 <h3 id="portcheck">PortCheck</h3>
-<p>Beginning with version 2.4.0, you can now monitor specific ports in the Windows Zenpack. By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.</p>
+<p>The Windows Zenpack monitors specific ports on domain controllers. By default, the ZenPack will monitor ports 9389, 3268, 3269, 88, 464, 389, 636, 445, 135, and 3389, as part of the Active Directory monitoring template.</p>
 <p>You can add and remove any port you wish to be monitored by editing the PortCheck datasource in the Active Directory monitoring template.</p>
 <p>To monitor ports on a Windows server that is not a domain controller, simply create a new datasource and choose Windows PortCheck as the type. Then add the ports you wish to monitor with a short description of each.</p>
 <p>See <a href="https://technet.microsoft.com/en-us/library/dd772723%28v=ws.10%29.aspx">Active Directory port usage</a> for more information.</p>
@@ -1058,7 +1083,7 @@ zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot;</code>
 <p>WinRMService - Allow remote server management through WinRm</p>
 <p>HTTP (Windows default is HTTPS see note below for more information) - Allow unencrypted Traffic (Only necessary when using basic authentication)</p>
 <p>Basic Authentication (Windows default is Kerberos see note below for more information) - Allow Basic Authentication</p>
-<p>WinRS Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell - Allow Remote Shell Access - Max number of processes per shell = 4294967295 - Max number of shells per user = 2147483647 - Shell Timeout = 7200000</p>
+<p>WinRS Computer Configuration\Policies\Administrative Templates\Windows Components\Windows Remote Shell - Allow Remote Shell Access - Max number of processes per shell = 4294967295 - Max number of shells per user = 2147483647 - Shell Timeout = 600000</p>
 <h4 id="individual-machine-configuration">Individual Machine configuration</h4>
 <ul>
 <li>Open ports 5985 (http)/5986(https) for WinRM</li>
@@ -1066,7 +1091,7 @@ zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot;</code>
 <li><p>winrm quickconfig</p></li>
 <li>winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser=&quot;4294967295&quot;}'</li>
 <li>winrm s winrm/config/winrs '@{MaxShellsPerUser=&quot;2147483647&quot;}'</li>
-<li><p>winrm s winrm/config/winrs '@{IdleTimeout=&quot;7200000&quot;}'</p></li>
+<li><p>winrm s winrm/config/winrs '@{IdleTimeout=&quot;600000&quot;}'</p></li>
 </ul>
 <p>Basic Authentication (Windows default is Kerberos see note below for more information) - winrm s winrm/config/service/auth '@{Basic=&quot;true&quot;}' - winrm s winrm/config/service '@{AllowUnencrypted=&quot;true&quot;}'</p>
 <p>Note: The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.</p>
@@ -1078,6 +1103,7 @@ zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot;</code>
 <pre><code>c:\&gt;setspn -l hostname1</code></pre>
 <p>If you do not see a record with HTTPS/ at the beginning of the hostname you can create the record, but this is not typically necessary as Windows will use the HOST/ record as the default for most built in services. You can also use the zWinUseWsmanSPN property so that zenoss will use the WSMAN service principal. The WSMAN spn is created by running <em>winrm quickconfig</em>.</p>
 <pre><code>c:\&gt;setspn -s HTTPS/hostname1.zenoss.com hostname1</code></pre>
+<p>Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server. It should be between 5-15 minutes.</p>
 <h2 id="transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</h2>
 <p>If you are installing this ZenPack on an existing Zenoss system or upgrading from an earlier Zenoss version you may have a ZenPack named <em>ZenPacks.zenoss.WindowsMonitor</em> already installed on your system. You can check this by navigating to Advanced -&gt; ZenPacks.</p>
 <p>This ZenPack functionally supersedes <em>ZenPacks.zenoss.WindowsMonitor</em> for Windows platforms that support WinRM, but does not automatically migrate monitoring of your Microsoft Windows resources when installed. The ZenPacks can coexist gracefully to allow you time to manually transition monitoring to the newer ZenPack with better capabilities.</p>
@@ -1100,9 +1126,17 @@ zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quot;password&quot;</code>
 <li>Payload encryption is not supported on EL5 systems. This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.</li>
 <li>Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.</li>
 <li>Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible. These will be removed upon installation. Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered. Any existing monitoring templates will still apply. Any services that were manually selected to be monitored will not. See the section on <a href="#configuring-service-monitoring">Configuring Service Monitoring</a>.</li>
-<li>The current release of this ZenPack uses the ZenPack SDK. Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take quite a while to complete.</li>
+<li>The current release of this ZenPack uses the ZenPack SDK. Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take a very long time to complete. If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:</li>
+</ul>
+<pre><code>In [1]: from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
+
+In [2]: dmd.JobManager.addJob(ResetClassTypes)
+
+In [3]: commit()</code></pre>
+<ul>
 <li>This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.</li>
 <li>When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log. This is expected and is a known defect in ZenPackLib.</li>
+<li>If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.</li>
 </ul>
 <p>A current list of known issues related to this ZenPack can be found with <a href="https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id">this JIRA query</a>. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can <a href="https://jira.zenoss.com/secure/Signup!default.jspa">create one here</a>.</p>
 <h3 id="kerberos-tickets">Kerberos Tickets</h3>
@@ -1167,6 +1201,12 @@ Realm not local to KDC while getting initial credentials
 </blockquote>
 <ul>
 <li>This indicates that one or more of the defined KDCs for a domain are incorrect. Add a <em>-</em> to the beginning of the errant KDC address to the beginning of the incorrect address in the zWinKDC property to remove it from the list of KDCs for a domain.</li>
+</ul>
+<blockquote>
+Message stream modified
+</blockquote>
+<ul>
+<li>This indicates that Windows was unable to decrypt the kerberos encrypted payload. This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account. For example, many IIS servers will do this. To fix this, set the zWinUseWsmanSPN property.</li>
 </ul>
 <h3 id="troubleshooting-kerberos-authentication-with-wireshark">Troubleshooting Kerberos Authentication with Wireshark</h3>
 <p>There are many reasons for kerberos authentication not to work, and a lot of them result in the following unhelpful error message.</p>
@@ -1397,6 +1437,29 @@ fs.file-max=10000</code></pre>
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.7.3</p>
+<ul>
+<li>Fix MicrosoftWindows ZP has problems disks/mount points with &quot;&quot; in their name. (ZPS-1368)</li>
+<li>Fix Microsoft Windows: Migrate script takes long time to run, no feedback (ZPS-1473)</li>
+</ul>
+<p>2.7.2</p>
+<ul>
+<li>Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)</li>
+<li>Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)</li>
+<li>Fix Counters with $ in their name are being shown as missing (ZPS-1404)</li>
+<li>Fix Microsoft Windows: v2.7.x shows errors in zenrelationscan, zenchkrels (ZPS-1442)</li>
+</ul>
+<p>2.7.1</p>
+<ul>
+<li>Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)</li>
+<li>Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)</li>
+<li>Fix Microsoft Windows: Graphs missing datapoints every other zenpython cycle (ZPS-1321)</li>
+<li>Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)</li>
+<li>Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)</li>
+<li>Fix Editing a Windows Service (WinService) Locks Up Zope and Times Out (ZPS-1342)</li>
+<li>Fix Windows ZP HardDisk Modeler does not check the value of SerialNumber before running strip (ZPS-1279)</li>
+<li>Fix Windows 2.7.0 WinService migrate script only updates template bound at /Server/Microsoft (ZPS-1280)</li>
+</ul>
 <p>2.7.0</p>
 <ul>
 <li>Added support for Hard Disk association with storage servers</li>

@@ -1741,6 +1741,11 @@ Monitoring Templates
 Changes
 -------
 
+2.7.3
+
+-   Fix MicrosoftWindows ZP has problems disks/mount points with "\U" in their name. (ZPS-1368)
+-   Fix Microsoft Windows: Migrate script takes long time to run, no feedback (ZPS-1473)
+
 2.7.2
 
 -   Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
