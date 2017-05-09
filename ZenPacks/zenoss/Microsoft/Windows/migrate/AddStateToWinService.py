@@ -11,6 +11,9 @@ import logging
 from Products.ZenModel.ZenPack import ZenPackMigration
 from Products.ZenModel.migrate.Migrate import Version
 from Products.Zuul.interfaces import ICatalogTool
+from Products.ZenModel.RRDTemplate import RRDTemplate
+from ZenPacks.zenoss.Microsoft.Windows import progresslog
+PROGRESS_LOG_INTERVAL = 10
 
 log = logging.getLogger('zen.Microsoft.Windows.migrate.AddStateToWinService')
 
@@ -26,40 +29,28 @@ class AddStateToWinService(ZenPackMigration):
             ds.component = '${here/id}'
             ds.manage_addRRDDataPoint('state')
 
-    def add_to_organizer(self, organizer):
-        for t in organizer.getRRDTemplates():
-            if getattr(t, 'targetPythonClass', '') == 'ZenPacks.zenoss.Microsoft.Windows.WinService':
-                dc = t.deviceClass()
-                if dc is None:
-                    dc = t.getPrimaryParent()
-                # skip inherited templates
-                if dc.getPrimaryUrlPath() == organizer.getPrimaryUrlPath():
-                    self.add_state_ds_dp(t)
-
     def migrate(self, dmd):
         # Add state datasource/datapoint to subclasses
-        log.info('Updating WinService templates on subclasses and devices.')
-        organizer = dmd.Devices.getOrganizer('/Server/Microsoft')
-        if organizer:
-            for suborg in organizer.getSubOrganizers():
-                self.add_to_organizer(suborg)
-
-        # Add state ds/dp to any local device templates
-        results = ICatalogTool(dmd.getDmdRoot("Devices")).search(types=(
-            'ZenPacks.zenoss.Microsoft.Windows.BaseDevice.BaseDevice',
-        ))
-
-        if not results.total:
+        # This will catch any device specific templates and make this migration quicker
+        results = ICatalogTool(dmd.Devices.Server.Microsoft).search(RRDTemplate)
+        if results.total == 0:
             return
-
-        for r in results:
+        log.info('Searching for WinService templates.')
+        templates = []
+        for result in results:
             try:
-                dev = r.getObject()
+                template = result.getObject()
             except Exception:
                 continue
-            if hasattr(dev.os, 'winservices'):
-                for service in dev.os.winservices():
-                    for template in service.getRRDTemplates():
-                        template_path = template.getRRDPath()
-                        if template_path.find(dev.id) >= 0:
-                            self.add_state_ds_dp(template)
+            if getattr(template, 'targetPythonClass', '') == 'ZenPacks.zenoss.Microsoft.Windows.WinService':
+                templates.append(template)
+
+        progress = progresslog.ProgressLogger(
+            log,
+            prefix="WinService state",
+            total=results.total,
+            interval=PROGRESS_LOG_INTERVAL)
+
+        for template in templates:
+            progress.increment()
+            self.add_state_ds_dp(template)
