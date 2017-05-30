@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -25,10 +25,24 @@ class AddHardDiskPlugin(ZenPackMigration):
     version = Version(2, 7, 0)
 
     def migrate(self, pack):
+        new_plugin = 'zenoss.winrm.HardDisks'
+        ref_plugin = 'zenoss.winrm.FileSystems'
+
         dcObject = pack.dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
         zCollectorPlugins = dcObject.zCollectorPlugins
-        if 'zenoss.winrm.HardDisks' not in zCollectorPlugins:
-            log.debug('Adding HardDisks modler plugin to zCollectorPlugins for'
+        if new_plugin not in zCollectorPlugins:
+            log.debug('Adding HardDisks modeler plugin to zCollectorPlugins for'
                       ' /Server/Microsoft/Windows')
-            zCollectorPlugins.append('zenoss.winrm.HardDisks')
+            zCollectorPlugins.append(new_plugin)
             dcObject.setZenProperty('zCollectorPlugins', zCollectorPlugins)
+
+        # apply also to any sub-device classes or devices with locally defined plugins
+        for ob in dcObject.getOverriddenObjects("zCollectorPlugins", showDevices=True):
+            collector_plugins = ob.zCollectorPlugins
+            # skip if object doesn't use the FileSystems plugin
+            if ref_plugin not in collector_plugins:
+                continue
+            if new_plugin not in collector_plugins:
+                log.debug('Adding HardDisks modeler plugin to zCollectorPlugins for {}'.format(ob.getDmdKey()))
+                collector_plugins.append(new_plugin)
+                ob.setZenProperty('zCollectorPlugins', collector_plugins)

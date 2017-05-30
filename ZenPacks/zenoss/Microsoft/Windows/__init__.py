@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -68,8 +68,6 @@ productNames = (
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
     '  You must update to the latest version of the Exchange Server ZenPack.'
-SEGFAULT_INFO = "If a Segmentation fault occurs, then run the installation "\
-    "once more.  This is a known issue that only occurs when upgrading from v2.1.3 or older."
 
 
 def getOSKerberos(osrelease):
@@ -105,7 +103,7 @@ class ZenPack(schema.ZenPack):
                                                'description': 'Domain controller IP or resolvable hostname',
                                                'label': 'Windows Key Distribution Center (Trusted)'},
                             'zWinRMLocale': {'type': 'string',
-                                             'description': 'Communication locale to use for monitoring',
+                                             'description': 'Communication locale to use for monitoring.  Reserved for future use.',
                                              'label': 'Windows Locale'},
                             'zWinRMEnvelopeSize': {'type': 'int',
                                                    'description': 'Used when WinRM configuration setting "MaxEnvelopeSizekb" exceeds default of 512k',
@@ -136,14 +134,15 @@ class ZenPack(schema.ZenPack):
                                                      'label': 'Windows KRB5 Include Directory'},
                             'zWinRMServerName': {'type': 'string',
                                                  'description': 'FQDN for domain authentication if resolution fails or different from AD',
-                                                 'label': 'Server Fully Qualified Domain Name'}
+                                                 'label': 'Server Fully Qualified Domain Name'},
+                            'zWinRMKrb5DisableRDNS': {'type': 'boolean',
+                                                      'description': 'Set to true to disable reverse DNS lookups by kerberos.  Only set at /Server/Microsoft level!',
+                                                      'label': 'Disable kerberos reverse DNS'}
                             }
 
     def install(self, app):
         self.in_install = True
         super(ZenPack, self).install(app)
-
-        log.info(SEGFAULT_INFO)
 
         try:
             exchange_version = self.dmd.ZenPackManager.packs._getOb(
@@ -175,6 +174,10 @@ class ZenPack(schema.ZenPack):
             self.installBinFile(utilname)
 
         self.cleanup_zProps(app.zport.dmd)
+
+        # updating these manually since ZPL 2.0 doesn't yet support these attributes
+        self.update_event_class_mappings(app.zport.dmd)
+
         self.in_install = False
 
     def remove(self, app, leaveObjects=False):
@@ -224,6 +227,31 @@ class ZenPack(schema.ZenPack):
             [x for x in devices._properties if x['id'] != 'zDBInstancesPassword']
         )
 
+    def update_event_class_mappings(self, dmd):
+        """ZPL 2.0 doesn't support these attributes, so setting them here"""
+        # clear classes for each failure type
+        clear_class_mappings = {'AuthenticationFailure': ['/Status/Winrm/Auth/instances/AuthenticationSuccess'],
+                                'KerberosFailure': ['/Status/Kerberos/instances/KerberosSuccess'],
+                                'KerberosAuthenticationFailure': ['/Status/Kerberos/instances/KerberosAuthenticationSuccess'],
+                                }
+        for path in ['/Status/Winrm/Auth', '/Status/Kerberos']:
+            org = dmd.Events.getOrganizer(path)
+            if org:
+                for s in ['AuthenticationSuccess', 'KerberosSuccess', 'KerberosAuthenticationSuccess' ]:
+                    try:
+                        success = org.findObject(s)
+                        if success:
+                            success.setZenProperty('zEventSeverity', 0)
+                    except AttributeError:
+                        continue
+                for f in ['AuthenticationFailure', 'KerberosFailure', 'KerberosAuthenticationFailure']:
+                    try:
+                        failure = org.findObject(f)
+                        if failure:
+                            failure.setZenProperty('zEventSeverity', 5)
+                            failure.setZenProperty('zEventClearClasses', clear_class_mappings.get(f, []))
+                    except AttributeError:
+                        continue
 
 # Patch last to avoid import recursion problems.
 from ZenPacks.zenoss.Microsoft.Windows import patches  # NOQA: imported for side effects.

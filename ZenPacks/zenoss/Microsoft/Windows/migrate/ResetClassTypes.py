@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -9,125 +9,46 @@
 
 """Reset meta_type and portal_type for objects that need it."""
 
-# Logging
 import logging
-LOG = logging.getLogger("zen.Microsoft.Windows.migrate.{}".format(__name__))
+import os
+import re
 
 # Zenoss Imports
-from zope.event import notify
 from Products.ZenModel.migrate.Migrate import Version
 from Products.ZenModel.ZenPack import ZenPackMigration
-from Products.Zuul.catalog.events import IndexingEvent
-from Products.Zuul.interfaces import ICatalogTool
+from Products.Zuul import listFacades, getFacade
+from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes as ResetClassTypesJob
 
-# ZenPack Imports
-from ZenPacks.zenoss.Microsoft.Windows import progresslog
-from ZenPacks.zenoss.Microsoft.Windows.ClusterDisk import ClusterDisk
-from ZenPacks.zenoss.Microsoft.Windows.ClusterInterface import ClusterInterface
-from ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork import ClusterNetwork
-from ZenPacks.zenoss.Microsoft.Windows.ClusterNode import ClusterNode
-from ZenPacks.zenoss.Microsoft.Windows.ClusterResource import ClusterResource
-from ZenPacks.zenoss.Microsoft.Windows.ClusterService import ClusterService
-from ZenPacks.zenoss.Microsoft.Windows.CPU import CPU
-from ZenPacks.zenoss.Microsoft.Windows.FileSystem import FileSystem
-from ZenPacks.zenoss.Microsoft.Windows.Interface import Interface
-from ZenPacks.zenoss.Microsoft.Windows.OSProcess import OSProcess
-from ZenPacks.zenoss.Microsoft.Windows.TeamInterface import TeamInterface
-from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
-from ZenPacks.zenoss.Microsoft.Windows.WinSQLBackup import WinSQLBackup
-from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
-from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
-from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
-from ZenPacks.zenoss.Microsoft.Windows.WinService import WinService
-
-
-# If the migration takes longer than this interval, a running progress
-# showing elapsed and estimated remaining time will be logged this
-# often. The value is in seconds.
-PROGRESS_LOG_INTERVAL = 10
+log = logging.getLogger('zen.Microsoft.Windows.migrate.ResetClassTypes')
+WARNING_MESSAGE = 'zenjobs must be stopped in order to fully complete the '\
+                  'upgrade to version {} of the Microsoft Windows ZenPack! '\
+                  'Please stop zenjobs and run the installation once more.  '\
+                  'Alternatively, you can add the job manually.  '\
+                  'This is necessary when upgrading from previous versions due to'\
+                  ' the fact that the ZenPack is now based off of '\
+                  'ZenPacks.zenoss.ZenPacklib.  If you have previously successfully'\
+                  ' installed this version and all existing components and devices'\
+                  ' have been converted, no further action is necessary.'
 
 
 class ResetClassTypes(ZenPackMigration):
     version = Version(2, 7, 0)
 
     def migrate(self, pack):
-        LOG.info("searching for objects")
-        results = ICatalogTool(pack.getDmdRoot("Devices")).search(types=[
-            ClusterDisk,
-            ClusterInterface,
-            ClusterNetwork,
-            ClusterNode,
-            ClusterResource,
-            ClusterService,
-            CPU,
-            FileSystem,
-            Interface,
-            OSProcess,
-            TeamInterface,
-            WinIIS,
-            WinSQLBackup,
-            WinSQLDatabase,
-            WinSQLInstance,
-            WinSQLJob,
-            WinService,
-            ])
-
-        if not results.total:
-            LOG.info("no objects to migrate")
-            return
-
-        LOG.info("starting: %s total objects", results.total)
-        progress = progresslog.ProgressLogger(
-            LOG,
-            prefix="progress",
-            total=results.total,
-            interval=PROGRESS_LOG_INTERVAL)
-
-        objects_migrated = 0
-
-        for result in results:
-            if self.migrate_result(result):
-                objects_migrated += 1
-
-            progress.increment()
-
-        LOG.info(
-            "finished: %s of %s objects required migration",
-            objects_migrated,
-            results.total)
-
-    def migrate_result(self, result):
-        """Return True if result needed to be migrated.
-
-        Delete instance properties that shadow class properties, and reindex
-        the object if its resulting meta_type no longer matches its indexed
-        meta_type.
-
-        """
-        try:
-            obj = result.getObject()
-        except Exception:
-            return False
-
-        migrated = False
-
-        try:
-            del(obj.meta_type)
-        except Exception:
-            pass
+        log.info('Adding job to reset class types for Windows devices and components.')
+        if 'applications' in listFacades():
+            from Products.ZenUtils.application import ApplicationState
+            facade = getFacade('applications')
+            for service in facade.queryMasterDaemons():
+                if service.name == 'zenjobs' and service.state == ApplicationState.RUNNING:
+                    log.warn(WARNING_MESSAGE.format(self.version.short()))
+                    return
         else:
-            migrated = True
+            zenhome = os.environ.get('ZENHOME', None)
+            if zenhome:
+                for f in os.listdir('{}/var'.format(zenhome)):
+                    if re.match('zenjobs-.*\.pid', f):
+                        log.warn(WARNING_MESSAGE.format(self.version.short()))
+                        return
 
-        try:
-            del(obj.portal_type)
-        except Exception:
-            pass
-        else:
-            migrated = True
-
-        if result.meta_type != obj.meta_type:
-            obj.index_object()
-            notify(IndexingEvent(obj))
-            migrated = True
-
-        return migrated
+        pack.JobManager.addJob(ResetClassTypesJob)

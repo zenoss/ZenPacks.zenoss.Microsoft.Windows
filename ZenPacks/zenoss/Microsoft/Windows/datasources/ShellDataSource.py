@@ -48,13 +48,13 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
     check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf,
+    save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     lookup_databasesummary)
 from EventLogDataSource import string_to_lines
 
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.util import UnauthorizedError, RequestError
+from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -93,6 +93,8 @@ WARNING_STATUSES = (
     'Offline',
     'Unknown'
 )
+
+BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
 
 gsm = getGlobalSiteManager()
 
@@ -246,14 +248,17 @@ class DCDiagStrategy(object):
         return dcdiagcommand
 
     def parse_result(self, config, result):
-        if result.stderr:
-            log.debug('DCDiag error: {0}' + ''.join(result.stderr))
+        log.debug('DCDiag error on {}: {}'.format(config.id, '\n'.join(result.stderr)))
+        log.debug('DCDiag results on {}: {}'.format(config.id, '\n'.join(result.stdout)))
 
         def get_datasource(test_name):
             for ds in config.datasources:
                 if ds.params['resource'] == test_name:
                     return ds
-        output = result.stdout
+        # ZPS-1146: Correctly join output to avoid situations when test name
+        # jumps to next line:
+        # ......................... <COMP-NAME> failed test\n<TEST-NAME>
+        output = self._clean_output(result.stdout)
         collectedResults = ParsedResults()
         tests_in_error = set()
         if output:
@@ -285,7 +290,8 @@ class DCDiagStrategy(object):
                         'severity': dsconf.severity,
                         'eventClassKey': 'WindowsActiveDirectoryStatus',
                         'eventKey': eventkey,
-                        'summary': msg,
+                        'summary': msg.split('.')[0],
+                        'message': msg,
                         'device': config.id})
                     error_str = ''
                 else:
@@ -305,9 +311,34 @@ class DCDiagStrategy(object):
                 'severity': ZenEventClasses.Clear,
                 'eventClassKey': 'WindowsActiveDirectoryStatus',
                 'eventKey': eventkey,
-                'summary': msg,
+                'summary': msg.split('.')[0],
+                'message': msg,
                 'device': config.id})
         return collectedResults
+
+    def _clean_output(self, output):
+        if len(output) == 0:
+            return output
+
+        cleaned_lines = [output[0]]
+
+        for ln in output[1:]:
+            last_ln = cleaned_lines[-1]
+            joined_ln = '{} {}'.format(last_ln, ln)
+
+            # join last line with the current one in case if it contains
+            # "failed test <test-name>" where <test-name> is one of the run
+            # tests.
+            # BUT don't join them if current line also starts with dots (that's
+            # going to be another test result)
+            if last_ln.startswith('........') and not ln.startswith('........')\
+                    and any('failed test {}'.format(test) in joined_ln
+                            for test in self.run_tests)\
+                    and any(test in ln for test in self.run_tests):
+                cleaned_lines[-1] = joined_ln
+            else:
+                cleaned_lines.append(ln)
+        return cleaned_lines
 
 
 gsm.registerUtility(DCDiagStrategy(), IStrategy, 'DCDiag')
@@ -321,15 +352,15 @@ class CustomCommandStrategy(object):
     def build_command_line(self, script, usePowershell):
         if not usePowershell:
             return script, None
-        script = script.replace('"', "'")
+        script = script.replace('"', r'\"')
         pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
                     '-Command'
-        return pscommand, '"{}"'.format(script)
+        return pscommand, '"{}{}"'.format(BUFFER_SIZE, script)
 
     def parse_result(self, config, result):
         dsconf = config.datasources[0]
         parserLoader = dsconf.params['parser']
-        log.debug('Trying to use the %s parser' % parserLoader.pluginName)
+        log.debug('{}: Trying to use the {} parser'.format(config.id, parserLoader.pluginName))
 
         # Build emulated Zencommand Cmd object
         cmd = WinCmd()
@@ -364,7 +395,8 @@ class CustomCommandStrategy(object):
         # Give error feedback to user
         eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
-            log.debug(result.stderr)
+            errors = '\n'.join(result.stderr)
+            log.debug('Custom command errors on {}: {}'.format(config.id, errors))
             try:
                 err_index = [i for i, val in enumerate(result.stderr) if "At line:" in val][0]
                 msg = 'Custom Command error: ' + ''.join(result.stderr[:err_index])
@@ -378,6 +410,7 @@ class CustomCommandStrategy(object):
                 'summary': msg,
                 'device': config.id})
         else:
+            log.debug('Custom command results on {}: {}'.format(config.id, cmd.result.output))
             msg = 'Custom Command success'
             collectedResult.events.append({
                 'eventClass': eventClass,
@@ -448,10 +481,13 @@ class PowershellMSSQLStrategy(object):
                                       " +[char]39+$db_name+[char]39;")
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
         counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
-                                      'else { Write-Host "databasename:"$db_name;}'
+                                      'Write-Host "databasename:"$db_name;'
                                       '$status = $db.Status;write-host "databasestatus:"$status;}}')
         script = "\"& {{{}}}\"".format(
-            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + counters_sqlConnection))
+            ''.join([BUFFER_SIZE] +
+                    getSQLAssembly(sqlConnection.version) +
+                    sqlConnection.sqlConnection +
+                    counters_sqlConnection))
         return pscommand, script
 
     def parse_result(self, dsconfs, result):
@@ -517,7 +553,10 @@ class PowershellMSSQLJobStrategy(object):
         jobs_sqlConnection.append("'|CurrentRunStatus:'$job.CurrentRunStatus;")
         jobs_sqlConnection.append("}}")
         script = "\"& {{{}}}\"".format(
-            ''.join(getSQLAssembly(sqlConnection.version) + sqlConnection.sqlConnection + jobs_sqlConnection))
+            ''.join([BUFFER_SIZE] +
+                    getSQLAssembly(sqlConnection.version) +
+                    sqlConnection.sqlConnection +
+                    jobs_sqlConnection))
         return pscommand, script
 
     def parse_result(self, dsconfs, result):
@@ -563,7 +602,7 @@ class PowershellMSSQLJobStrategy(object):
             try:
                 currentstate = {
                     'Succeeded': ZenEventClasses.Clear,
-                    'Failed': ZenEventClasses.Critical
+                    'Failed':  dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
                     component,
@@ -606,6 +645,7 @@ class PowershellClusterResourceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
@@ -670,6 +710,7 @@ class PowershellClusterServiceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clustergroupitems = ('$_.Name', '$_.IsCoreGroup', '$_.OwnerNode', '$_.State',
@@ -696,7 +737,7 @@ class PowershellClusterServiceStrategy(object):
         # Parse values
         stdout = parse_stdout(result, check_stderr=True)
         if stdout:
-            name, iscoregroup, ownernode, state, description, nodeid,\
+            name, iscoregroup, ownernode, state, description, nodeid, \
                 priority = stdout
             dsconf0 = dsconfs[0]
 
@@ -730,6 +771,7 @@ class PowershellClusterNodeStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusternodeitems = pipejoin(
@@ -791,6 +833,7 @@ class PowershellClusterDiskStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterdiskitems = pipejoin(
@@ -865,7 +908,7 @@ class PowershellClusterDiskStrategy(object):
         stdout = parse_stdout(result, check_stderr=True)
         if stdout:
             dskid, name, volumepath, ownernode, disknum, \
-            partitionnum, size, freespace, state = stdout
+                partitionnum, size, freespace, state = stdout
             dsconf0 = dsconfs[0]
 
             compObject = ObjectMap()
@@ -901,6 +944,7 @@ class PowershellClusterNetworkStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusternetworkitems = pipejoin(
@@ -958,6 +1002,7 @@ class PowershellClusterInterfaceStrategy(object):
 
     def build_command_line(self, resource, componenttype):
         psClusterCommands = []
+        psClusterCommands.append(BUFFER_SIZE)
         psClusterCommands.append("import-module failoverclusters;")
 
         clusterinterfaceitems = pipejoin(
@@ -1006,8 +1051,9 @@ class PowershellClusterInterfaceStrategy(object):
         else:
             log.debug('Error in parsing cluster Interface data')
 
+
 gsm.registerUtility(PowershellClusterInterfaceStrategy(),
-    IStrategy, 'powershell Cluster Interface')
+                    IStrategy, 'powershell Cluster Interface')
 
 
 class PowershellMSSQLInstanceStrategy(object):
@@ -1020,6 +1066,7 @@ class PowershellMSSQLInstanceStrategy(object):
             "-OutputFormat TEXT -Command "
 
         psInstanceCommands = []
+        psInstanceCommands.append(BUFFER_SIZE)
         psInstanceCommands.append("$inst = Get-Service -DisplayName 'SQL Server ({0})';".format(instance))
         psInstanceCommands.append("Write-Host $inst.Status'|'$inst.Name;")
 
@@ -1058,6 +1105,7 @@ class PowershellMSSQLInstanceStrategy(object):
                 yield dsconf, value
         else:
             log.debug('Error in parsing mssql instance data')
+
 
 gsm.registerUtility(PowershellMSSQLInstanceStrategy(), IStrategy, 'powershell MSSQL Instance')
 
@@ -1277,6 +1325,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = config.datasources[0]
         severity = ZenEventClasses.Clear
         msg = 'winrs: successful collection'
+        components = set([ds.component for ds in config.datasources])
 
         if not results:
             return data
@@ -1306,7 +1355,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             for dsconf, value in strategy.parse_result(dsconfs, result):
                 currentstate = {
                     'Running': ZenEventClasses.Clear,
-                    'Stopped': ZenEventClasses.Critical
+                    'Stopped': dsconf.severity
                 }.get(value[1], ZenEventClasses.Info)
 
                 summary = 'MSSQL Instance {0} is {1}.'.format(
@@ -1376,9 +1425,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     for db in getattr(strategy, 'valuemap', []):
                         dsconf = get_dsconf(dsconfs, db, param='contexttitle')
                         if dsconf:
-                            component = dsconf.component
+                            component = prepId(dsconf.component)
+                            eventClass = dsconf.eventClass or "/Status"
                         else:
-                            component = db
+                            component = prepId(db)
+                            eventClass = "/Status"
                         try:
                             dbstatuses = strategy.valuemap[db]['status']
                         except Exception:
@@ -1400,17 +1451,18 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             db_summary += lookup_databasesummary(dbstatus)
                         summary = 'Database {0} status is {1}.'.format(db,
                                                                        dbstatuses)
-                        data['events'].append(dict(
-                            eventClass=dsconf.eventClass or "/Status",
-                            eventClassKey='WinDatabaseStatus',
-                            eventKey=strategy.key,
-                            severity=max(db_severities),
-                            device=config.id,
-                            summary=summary,
-                            message=db_summary,
-                            dbstatus=dbstatuses,
-                            component=prepId(component)
-                        ))
+                        if component in components:
+                            data['events'].append(dict(
+                                eventClass=eventClass,
+                                eventClassKey='WinDatabaseStatus',
+                                eventKey=strategy.key,
+                                severity=max(db_severities),
+                                device=config.id,
+                                summary=summary,
+                                message=db_summary,
+                                dbstatus=dbstatuses,
+                                component=component
+                            ))
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(

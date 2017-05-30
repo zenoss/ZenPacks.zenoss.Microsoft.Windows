@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -12,10 +12,6 @@ Utilities that may cause Zope stuff to be imported.
 '''
 from . import schema
 
-from Products.ZenModel.Device import Device
-from Products.ZenModel.DeviceHW import DeviceHW
-from Products.ZenModel.ManagedEntity import ManagedEntity
-from Products.ZenModel.ZenStatus import ZenStatus
 from Products.ZenUtils.ZenTales import talesEvalStr
 
 
@@ -74,3 +70,16 @@ class BaseDevice(schema.BaseDevice):
 
         # Fall back to an empty string.
         return ''
+
+    def kerberos_rdns(self):
+        """Return reverse dns setting.
+        It should only be set at the
+        /Server/Microsoft device class level.
+        """
+        try:
+            org = self.getDmd().Devices.getOrganizer('/Server/Microsoft')
+        except Exception:
+            return False
+
+        disable_rdns = org.getProperty('zWinRMKrb5DisableRDNS') or False
+        return disable_rdns

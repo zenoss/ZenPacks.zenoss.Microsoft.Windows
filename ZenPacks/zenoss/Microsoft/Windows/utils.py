@@ -12,7 +12,6 @@ Basic utilities that don't cause any Zope stuff to be imported.
 '''
 
 import json
-from Products.ZenEvents import ZenEventClasses
 
 
 def addLocalLibPath():
@@ -447,83 +446,63 @@ def save(f):
         return f(self, *args, **kwargs)
     return dumper
 
+
 '''
 Common datasource utilities.
 '''
 
-def kerberosErrorMsgCheck(config, events, error):
-    """Check error message and generate appropriate event."""
-    if any(x in error for x in ('kerberos', 'kinit',)):
-        if 'initial credentials' in error \
-                or 'authGSSClientStep failed' in error:
-            events.append({
-                'eventClassKey': 'MW|Kerberos|Auth|Failure',
-                'severity': ZenEventClasses.Critical,
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
-        else:
-            events.append({
-                'eventClassKey': 'MW|Kerberos|Failure',
-                'severity': ZenEventClasses.Critical,
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
 
-
-def generateKerberosClearAuthEvents(config, events):
-    """Generate clear authentication events."""
-    events.append({
-        'eventClass': '/Status/Kerberos/Auth/Failure',
-        'eventClassKey': 'MW|Kerberos|Auth|Failure',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'No Kerberos auth failures',
-        'device': config.id})
-    events.append({
-        'eventClass': '/Status/Kerberos/Failure',
-        'eventClassKey': 'MW|Kerberos|Failure',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'No Kerberos failures',
-        'device': config.id})
+def append_event_datasource_plugin(datasources, events, event):
+    event['plugin_classname'] = datasources[0].plugin_classname
+    if event not in events:
+        events.append(event)
 
 
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
-    wrongCredsMessages = ('Check username and password', 'Username invalid',)
-    if 'Password expired' in error:
-        events.append({
-            'eventClassKey': 'MW|PasswordExpired',
-            'severity': ZenEventClasses.Critical,
-            'summary': error,
-            'ipAddress': config.manageIp,
-            'device': config.id})
-    elif any(x in error for x in wrongCredsMessages):
-        events.append({
-            'eventClassKey': 'MW|WrongCredentials',
-            'severity': ZenEventClasses.Critical,
-            'summary': error,
-            'ipAddress': config.manageIp,
-            'device': config.id})
+    kerberos_messages = ['kerberos', 'kinit']
+    kerberos_auth_messages = ['initial credentials', 'authGSSClientStep failed']
+    wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
+
+    # see if this a kerberos issue
+    if any(x in error for x in kerberos_messages):
+        # if so, is it authentication or general failure
+        if any(y in error for y in kerberos_auth_messages):
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'KerberosAuthenticationFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+        else:
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'KerberosFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
+    # otherwise check if this is a typical authentication failure
     else:
-        kerberosErrorMsgCheck(config, events, error)
+        if any(x in error for x in wrongCredsMessages):
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClassKey': 'AuthenticationFailure',
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'device': config.id})
 
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
-    events.append({
-        'eventClass': '/Status/Winrm/Auth/PasswordExpired',
-        'eventClassKey': 'MW|PasswordExpired',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'Password is not expired',
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'AuthenticationSuccess',
+        'summary': 'Authentication Successful',
         'device': config.id})
-    events.append({
-        'eventClass': '/Status/Winrm/Auth/WrongCredentials',
-        'eventClassKey': 'MW|WrongCredentials',
-        'severity': ZenEventClasses.Clear,
-        'summary': 'Credentials are OK',
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'KerberosAuthenticationSuccess',
+        'summary': 'No Kerberos auth failures',
         'device': config.id})
-
-    generateKerberosClearAuthEvents(config, events)
+    append_event_datasource_plugin(config.datasources, events, {
+        'eventClassKey': 'KerberosSuccess',
+        'summary': 'No Kerberos failures',
+        'device': config.id})
 
 
 def get_dummy_dpconfig(ref_dp, id):
@@ -547,3 +526,34 @@ def get_dsconf(dsconfs, component, param=None):
         elif component == dsconf.params.get(param, None):
             return dsconf
     return None
+
+
+def has_metricfacade():
+    '''return True if metricfacade can be imported'''
+    try:
+        from Products.Zuul.facades import metricfacade
+    except ImportError:
+        pass
+    else:
+        return True
+    return False
+
+
+HAS_METRICFACADE = has_metricfacade()
+
+
+def get_rrd_path(obj):
+    """Preserve old-style RRD paths"""
+    if HAS_METRICFACADE:
+        return super(obj.__class__, obj).rrdPath()
+    else:
+        d = obj.device()
+        if not d:
+            return "Devices/" + obj.id
+        # revert to 2.5 behavior if True
+        dmd_root = obj.getDmd()
+        if dmd_root and getattr(dmd_root, 'windows_using_legacy_rrd_paths', False):
+            skip = len(d.getPrimaryPath()) - 1
+            return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
+        else:
+            return super(obj.__class__, obj).rrdPath()

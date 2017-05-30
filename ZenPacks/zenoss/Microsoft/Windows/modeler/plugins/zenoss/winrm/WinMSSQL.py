@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2012, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2012-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -326,8 +326,12 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
             job_sqlConnection.append("catch { continue; }")
 
+            buffer_size = ['$Host.UI.RawUI.BufferSize = New-Object '
+                           'Management.Automation.Host.Size (4096, 512);']
+
             instance_info = yield winrs.run_command(
-                ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) + sqlConnection + db_sqlConnection +
+                ''.join(buffer_size + getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
+                        sqlConnection + db_sqlConnection +
                         backup_sqlConnection + job_sqlConnection)
             )
 
@@ -396,7 +400,6 @@ class WinMSSQL(WinRMPlugin):
                             owner_node.strip(), sqlserver)
                         om_database.systemobject = dbdict['systemobject']
                         om_database.recoverymodel = dbdict['recoverymodel']
-                        om_database.status = 'Up' if dbdict['isaccessible'] == 'True' else 'Down'
 
                         database_oms.append(om_database)
                 elif in_backups:
@@ -529,14 +532,30 @@ class WinMSSQL(WinRMPlugin):
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
 
-        for instance, errors in results['errors'].items():
-            if errors:
-                msg = '{}: {}'.format(instance, '\n'.join(errors))
-                self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
-            else:
-                msg = 'Successful collection for {}'.format(instance)
-                self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
+        try:
+            for instance, errors in results['errors'].items():
+                if errors:
+                    msg = '{}: {}'.format(instance, sanitize_error(errors))
+                    self._send_event(msg, device.id, 3, summary='Unsuccessful SQL Server collection')
+                else:
+                    msg = 'Successful collection for {}'.format(instance)
+                    self._send_event(msg, device.id, 0, summary='Successful SQL Server collection')
+        except KeyError:
+            # This is for unit tests to pass, no need to try and send events
+            pass
         return maps
+
+
+def sanitize_error(error):
+    fullerror = '\n'.join(error)
+    try:
+        fullerror = fullerror[:fullerror.index('At line:') - 1]
+    except ValueError:
+        pass
+    if 'Failed to connect to server' in fullerror:
+        fullerror += ' Is SQL Server online?  Are your credentials correct?'
+        fullerror += ' Do you have "View server state" permissions?'
+    return fullerror
 
 
 def check_username(databases, instance, log):

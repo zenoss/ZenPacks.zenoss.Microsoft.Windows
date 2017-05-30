@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -96,10 +96,11 @@ class WinRMPlugin(PythonPlugin):
         """
         return self.associators
 
-    def client(self, conn_info):
-        '''
-        Return an EnumerateClient.
-        '''
+    def client(self, conn_info=None):
+        """Return an EnumerateClient if conn_info exists
+        """
+        if not conn_info:
+            return txwinrm.collect.WinrmCollectClient()
         return EnumerateClient(conn_info)
 
     def conn_info(self, device):
@@ -153,8 +154,11 @@ class WinRMPlugin(PythonPlugin):
         message, args = (None, [device.id])
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
+            html_returned = "<title>404 - File or directory not found.</title>" in error[0]
+            if html_returned:
+                error = ['HTTP Status: 404. Be sure the WinRM compatibility listener has been configured']
             args.append(error[0])
-            if isinstance(error, UnauthorizedError):
+            if isinstance(error, UnauthorizedError) or html_returned:
                 message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
                            'https://www.zenoss.com/product/zenpacks/microsoft-windows'
         elif isinstance(error, ConnectionRefusedError):
@@ -282,11 +286,15 @@ class WinRMPlugin(PythonPlugin):
                             associator['associations'],
                             **associator['kwargs'])
 
-                    msg = "connection for %s is established"
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
+                    if 'No results for seed class' in e.message:
+                        message = 'No results returned for {}. Check WinRM server'\
+                                  ' configuration and z properties.'.format(self.name())
+                        e = Exception(message)
                     self.log_error(log, device, e)
                 else:
+                    msg = "connection for %s is established"
+                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                     results[assoc_key] = assoc_result
 
         # Get a copy of the class' commands.

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -35,15 +35,17 @@ class Device(schema.Device):
         '''
         deviceRoot = self.dmd.getDmdRoot("Devices")
         for clusterdnsname in clusterdnsnames:
-            try:
-                clusterip = getHostByName(clusterdnsname)
-            except(gaierror):
-                self.LOG.warning(
-                    'Unable to resolve hostname {0}'.format(clusterdnsname)
-                )
-                continue
+            device = deviceRoot.findDeviceByIdOrIp(clusterdnsname)
+            if not device:
+                try:
+                    clusterip = getHostByName(clusterdnsname)
+                except(gaierror):
+                    self.LOG.warning(
+                        'Unable to resolve hostname {0}'.format(clusterdnsname)
+                    )
+                    continue
 
-            device = deviceRoot.findDeviceByIdOrIp(clusterip)
+                device = deviceRoot.findDeviceByIdOrIp(clusterip)
             if device:
                 # Cluster device already exists
                 self.clusterdevices = clusterdnsnames

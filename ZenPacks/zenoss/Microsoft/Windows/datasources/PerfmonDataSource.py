@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2016, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -41,9 +41,12 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..utils import append_event_datasource_plugin
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
+from txwinrm.shell import create_long_running_command
+from txwinrm.WinRMClient import SingleCommandClient
+from txwinrm.util import UnauthorizedError
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -76,7 +79,7 @@ class PerfmonDataSource(PythonDataSource):
 
     _properties = PythonDataSource._properties + (
         {'id': 'counter', 'type': 'string'},
-        )
+    )
 
 
 class IPerfmonDataSourceInfo(IRRDDataSourceInfo):
@@ -128,7 +131,7 @@ class DataPersister(object):
 
     def start(self, result=None):
         if result:
-            LOG.debug("Windows Perfmon data maintenance failed: %s", result)
+            LOG.debug("Windows Perfmon data maintenance failed: {}".format(result))
 
         LOG.debug("Windows Perfmon starting data maintenance")
         d = LoopingCall(self.maintenance).start(self.maintenance_interval)
@@ -161,9 +164,9 @@ class DataPersister(object):
         if device in self.devices:
             del(self.devices[device])
 
-    def add_event(self, device, event):
+    def add_event(self, device, datasources, event):
         self.touch(device)
-        self.devices[device]['events'].append(event)
+        append_event_datasource_plugin(datasources, self.devices[device]['events'], event)
 
     def add_value(self, device, component, datasource, value, collect_time):
         self.touch(device)
@@ -191,13 +194,28 @@ class ComplexLongRunningCommand(object):
         self.dsconf = dsconf
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
-        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command'
+        self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command '
 
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
-        return [LongCommandClient(createConnectionInfo(self.dsconf))
-                for i in xrange(num_commands)]
+
+        commands = []
+        try:
+            conn_info = createConnectionInfo(self.dsconf)
+        except UnauthorizedError as e:
+            LOG.error(
+                "{0}: Windows Perfmon connection info is not available for {0}."
+                " Error: {1}".format(self.dsconf.device, e))
+        else:
+            for _ in xrange(num_commands):
+                try:
+                    commands.append(create_long_running_command(conn_info))
+                except Exception as e:
+                    LOG.error("{}: Windows Perfmon error: {}".format(
+                        self.dsconf.device, e))
+
+        return commands
 
     @defer.inlineCallbacks
     def start(self, command_lines):
@@ -209,7 +227,8 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            yield command.start(self.ps_command, ps_script=command_line)
+            if command is not None:
+                yield command.start(self.ps_command, ps_script=command_line)
 
     @defer.inlineCallbacks
     def stop(self):
@@ -268,8 +287,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
-            counter = dsconf.params['counter'].lower()
-            ps_counter = convert_to_ps_counter(counter)
+            counter = dsconf.params['counter'].decode('utf-8').lower()
+            ps_counter = counter.replace('$', '`$')
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
             self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
 
@@ -292,7 +311,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # counters of the device equals to floor division of the current
         # counters_line length by the calculated limit, incremented by 1.
         self.num_commands = len(format_counters(counters)) // counters_limit + 1
-        LOG.debug('Windows Perfmon Creating {0} long running command(s)'.format(
+        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(self.config.id,
             self.num_commands))
 
         # Chunk a counter list into num_commands equal parts.
@@ -347,22 +366,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
                 e.message or "timeout")
-            LOG.warn(errorMessage)
+            LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'eventClass': '/Status/Winrm',
-                'eventKey': 'Windows Perfmon Collection Error',
-                'severity': ZenEventClasses.Warning,
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
-
-            self._errorMsgCheck(e.message)
+            # prevent duplicate of auth failure messages
+            if not self._errorMsgCheck(e.message):
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
+                    'device': self.config.id,
+                    'eventClass': '/Status/Winrm',
+                    'eventKey': 'Windows Perfmon Collection Error',
+                    'severity': ZenEventClasses.Warning,
+                    'summary': errorMessage,
+                    'ipAddress': self.config.manageIp})
 
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
-        else:
-            self._generateClearAuthEvents()
 
         self.state = PluginStates.STARTED
         self.collected_samples = 0
@@ -386,7 +403,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             defer.returnValue(data)
         if data and data['events']:
             for evt in data['events']:
-                PERSISTER.add_event(self.config.id, evt)
+                PERSISTER.add_event(self.config.id, self.config.datasources, evt)
 
         if hasattr(self, '_wait_for_data'):
             LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
@@ -457,17 +474,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """
         deferreds = []
         for cmd in self.complex_command.commands:
-            try:
-                deferreds.append(cmd.receive())
-            except Exception as err:
-                LOG.error('Windows Perfmon receive error {0}'.format(err))
+            if cmd is not None:
+                try:
+                    deferreds.append(cmd.receive())
+                except Exception as err:
+                    LOG.error('{}: Windows Perfmon receive error {0}'.format(
+                        self.config.id, err))
 
-        self.receive_deferreds = add_timeout(
-            defer.DeferredList(deferreds, consumeErrors=True),
-            OPERATION_TIMEOUT + 5)
+        if deferreds:
+            self.receive_deferreds = add_timeout(
+                defer.DeferredList(deferreds, consumeErrors=True),
+                OPERATION_TIMEOUT + 5)
 
-        self.receive_deferreds.addCallbacks(
-            self.onReceive, self.onReceiveFail)
+            self.receive_deferreds.addCallbacks(
+                self.onReceive, self.onReceiveFail)
 
     def _parse_deferred_result(self, result):
         """Group all stdout data and failures from each command result
@@ -523,7 +543,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 #   '\\\\amazona-q2r281f\\web service(another web site)\\move requests/sec'
                 #   '\\web service(another web site)\\move requests/sec'
                 counter = '\\{}'.format(
-                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3])
+                    self.sample_buffer.popleft().strip(' :').split('\\', 3)[3]).decode('utf-8')
 
                 value = self.sample_buffer.popleft()
 
@@ -545,7 +565,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     PERSISTER.add_value(
                         self.config.id, component, datasource, value, collect_time)
             except Exception, err:
-                LOG.debug('Windows Perfmon could not process a sample. Error: {}'.format(err))
+                LOG.debug('{}: Windows Perfmon could not process a sample. Error: {}'.format(self.config.id, err))
 
         if self.data_deferred and not self.data_deferred.called:
             self.data_deferred.callback(None)
@@ -580,12 +600,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.reportCorruptCounters(self.counter_map)
         else:
             if self.cycling:
-                LOG.debug('Windows Perfmon Result: {0}'.format(result))
+                LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
 
         self._generateClearAuthEvents()
 
-        PERSISTER.add_event(self.config.id, {
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
             'eventClass': '/Status/Winrm',
             'eventKey': 'Windows Perfmon Collection Error',
@@ -603,8 +623,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        self._errorMsgCheck(e.message)
-
+        if not self._errorMsgCheck(e.message):
+            self._generateClearAuthEvents()
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -672,7 +692,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     @defer.inlineCallbacks
     def remove_corrupt_counters(self):
         """Remove counters which return an error."""
-        LOG.debug('Performing check for corrupt counters')
+        LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
         dsconf0 = self.config.datasources[0]
         winrs = SingleCommandClient(createConnectionInfo(dsconf0))
 
@@ -715,7 +735,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Error,
                     'eventClass': event,
@@ -728,7 +748,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -756,7 +776,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Info,
                     'eventClass': event,
@@ -769,7 +789,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             component, datasource, event_class = requested.get(req_counter, (None, None, None))
             event_class = event_class or default_eventClass
             if event_class not in events:
-                PERSISTER.add_event(self.config.id, {
+                PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Clear,
                     'eventClass': event_class or default_eventClass,
@@ -798,54 +818,23 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def _errorMsgCheck(self, errorMessage):
         """Check error message and generate appropriate event."""
-        if 'Password expired' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
+        wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
+        if any(x in errorMessage for x in wrongCredsMessages):
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
                 'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|PasswordExpired',
+                'eventClassKey': 'AuthenticationFailure',
                 'summary': errorMessage,
                 'ipAddress': self.config.manageIp})
-        elif 'Check username and password' in errorMessage:
-            PERSISTER.add_event(self.config.id, {
-                'device': self.config.id,
-                'severity': ZenEventClasses.Critical,
-                'eventClassKey': 'MW|WrongCredentials',
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
+            return True
+        return False
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, {
-            'eventClass': '/Status/Winrm/Auth/PasswordExpired',
+        PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|PasswordExpired',
-            'summary': 'Password is not expired',
+            'eventClassKey': 'AuthenticationSuccess',
+            'summary': 'Authentication Successful',
             'ipAddress': self.config.manageIp})
-        PERSISTER.add_event(self.config.id, {
-            'eventClass': '/Status/Winrm/Auth/WrongCredentials',
-            'device': self.config.id,
-            'severity': ZenEventClasses.Clear,
-            'eventClassKey': 'MW|WrongCredentials',
-            'summary': 'Credentials are OK',
-            'ipAddress': self.config.manageIp})
-
-
-# Helper functions for PerfmonDataSource plugin.
-def convert_to_ps_counter(counter):
-    esc_counter = counter.encode("unicode_escape")
-    start_indx = esc_counter.find('(')
-    end_indx = esc_counter.rfind(')')
-    resource = esc_counter[start_indx + 1:end_indx]
-    if '\u' in resource and start_indx != -1 and end_indx != -1:
-        ps_repr = resource.replace('\u', '+[char]0x')
-        ps_counter = [esc_counter[:start_indx]]
-        ps_counter.append("('")
-        ps_counter.append(ps_repr)
-        ps_counter.append("+'")
-        ps_counter.append(esc_counter[end_indx:])
-        return ''.join(ps_counter).decode('string_escape')
-    return counter
 
 
 def format_counters(ps_counters):

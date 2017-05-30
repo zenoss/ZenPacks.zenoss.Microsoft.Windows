@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -530,7 +530,7 @@ def filter_maps(objectmaps, device, log):
                 "zInterfaceMapIgnoreNames",
                 name, device.id)
 
-        elif ignore_types and ignore_types_search(om.type):
+        elif ignore_types and getattr(om, 'type', None) is not None and ignore_types_search(om.type):
             log.info(
                 "Ignoring %s on %s because it matches "
                 "zInterfaceMapIgnoreTypes",

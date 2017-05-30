@@ -1,4 +1,3 @@
-
 This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.
 
 {{note}} This ZenPack supersedes the earlier ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' for Windows platforms that support WinRM. If you have ''ZenPacks.zenoss.WindowsMonitor'' installed on your system, please read the [[#Transitioning from WindowsMonitor]] section below.
@@ -118,8 +117,6 @@ The following components will be automatically discovered through the Windows se
 
 Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a remove shell (WinRS). The following metrics will be collected every 5 minutes by default. Any other Windows Perfmon counters can also be collected by adding them to the appropriate monitoring template.
 
-{{note}} Performance counters are language specific, so you must use the counter(s) for your service account's language.  The counters listed below are shipped with the ZenPack.  If your server does not have the English language pack installed and it is not possible to install it, Zenoss recommends creating a subclass below ''/Server/Microsoft/Windows'', making copies of the existing templates, and replacing the counters in the datasources with the non-English equivalents.  You ''must'' also update the zWinRMLocale property with the appropriate culture of your service account.  For example, native French locale would be 'fr-FR'.  The full list of cultures can be found at https://msdn.microsoft.com/en-us/library/ee825488(v=cs.20).aspx.
-
 [[File:windows_graphs.png|thumb|320px|Device-level graphs]]
 [[File:windows_filesystem.png|thumb|320px|File systems]]
 
@@ -141,7 +138,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \LogicalDisk({$here/instance_name})\% Disk Write Time
 * \LogicalDisk({$here/instance_name})\Free Megabytes
 
-;File Systems
+;Hard Disks
 * \PhysicalDisk({$here/instance_name})\Disk Read Bytes/sec
 * \PhysicalDisk({$here/instance_name})\% Disk Read Time
 * \PhysicalDisk({$here/instance_name})\Disk Write Bytes/sec
@@ -188,7 +185,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \NTDS\LDAP Successful Binds/sec
 * \NTDS\LDAP UDP operations/sec
 * \NTDS\LDAP Writes/sec
-* \Security System-Wide Statistics\NTLM Authentications
+* \NTDS\NTLM Authentications
 
 {{note}} The Active Directory monitoring template will only be used when the server has the Primary or Backup Domain Controller role.
 
@@ -465,12 +462,14 @@ from Products.ZenRRD.CommandParser import CommandParser
             })
 </nowiki>
 
-# Select a windows target device
-# Navigate to Device (/Server/Microsoft)
-# On the right side panel, click '+' to add a 'Windows Shell' datasource
-# Provide name (eg. custom) and type (Windows Shell) for the datasource
-# View Edit and Details : strategy ->custom command and parser is test1
-# Run zenpython to collect the data zenpython run -v10 -d <devicename>
+# Select a windows target device.
+# Navigate to the Device (/Server/Microsoft) Monitoring Template.
+# On the Data Sources panel, click '+' to add a 'Windows Shell' datasource.
+# Provide name (eg. custom) and type (Windows Shell) for the datasource.
+# From the gear button, choose *View Edit and Details*.
+# Set the strategy to Custom Command and Parser to test1
+# Add a Windows command or Powershell script.
+# Run zenpython to collect the data `zenpython run -v10 -d <devicename>`
 # Check events after 5 minutes for the test1 event
 
 ;Powershell Scripting using Auto parser
@@ -496,7 +495,7 @@ There are multiple ways to configure Windows service monitoring depending on if 
 * Cycle Time - Frequency of how often the datasource will query service status
 * Update services immediately - Changes will be picked up during modeling.  To have changes take effect immediately, check this box to start a job to index all services on all devices.  This job could take several minutes to complete as it will update every service component on every Windows device in the system.
 * Service Options - Select the start type(s) to monitor.  Add any services to include/exclude using a regex
-* Service Status - Choose to be alerted if a service is either not Running or not Stopped
+* Service Status - Choose to be alerted if a service is either not Running, not Stopped, not Paused, not Running or Paused, or not Stopped or Paused.
 
 See the following examples:
 
@@ -634,6 +633,10 @@ WinRM Ping is a simple datasource that will attempt to retrieve basic data over 
 
 This datasource is not enabled by default.
 
+== Collector Daemons
+
+*   zenpython
+
 == Requirements ==
 
 This ZenPack has the following requirements.
@@ -704,6 +707,8 @@ If IIS is installed, one of the following namespaces depending upon IIS version
 
 The ZenPack communicates with a Windows device over port 5985 for HTTP or 5986 for HTTPS requests.  Compatible ports of 80 and 443 are also acceptable.
 For domain authentication, Kerberos communicates on port 88 of the KDC and on port 749 of the Admin Server.
+
+{{note}} If using the compatibility ports of 80 or 443, you must create the appropriate listener in your server's WinRM configuration.
 
 === Adding a Windows Device ===
 
@@ -785,13 +790,19 @@ The [[#Adding a Windows Device]] steps shown above are for the simplest case of 
 : This property is used when the winrm configuration setting for MaxEnvelopeSizekb exceeds the default of 512k.  Some WMI queries return large amounts of data and this envelope size may need to be enlarged.  A possible symptom of this is seeing an xml parsing error during collection.
 
 ;zWinRMLocale
-: The locale to use for communicating with a Windows server.  The default is ''en-US''.
+: The locale to use for communicating with a Windows server.  The default is ''en-US''.  This property is reserved for future use.
 
 ;zWinRSCodePage
 : The code page which is in use on the Windows Server for the monitoring user account.  The default is to use 65001, the identifier for unicode.  The full list is here: https://msdn.microsoft.com/en-us/library/windows/desktop/dd317756(v=vs.85).aspx.  To determine the code page in use on a Windows server, run <code>chcp</code> at a command prompt.
 
 ;zWinRMKrb5includedir
 : Optional directory which contains one or more kerberos configuration files.  This is useful when extra kerberos options are needed, such as disabling reverse dns lookup.  See http://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html for a description of ''includedir'' and krb5.conf options available.  The directory must exist and contain only kerberos configuration files.  If the directory contains non-kerberos configuration files, it will be ignored.
+
+;zWinRMKrb5DisableRDNS
+: Kerberos always performs a reverse lookup when obtaining a ticket to use the HTTP/HTTPS/WSMAN service principal.  If there are multiple names by which servers are known in your organization, or if you do not want to use reverse lookups, set this value to True.  Because this is a kerberos property, it can only be set one way or another.  You cannot mix and match this value and only the top level value at /Server/Microsoft will be honored.
+
+;zWinRMClusterNodeClass
+: Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
 
 {{note}} HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.
 
@@ -878,7 +889,7 @@ Computer Configuration\Policies\Administrative Templates\Windows Components\Wind
 * Allow Remote Shell Access
 * Max number of processes per shell = 4294967295
 * Max number of shells per user = 2147483647
-* Shell Timeout = 7200000
+* Shell Timeout = 600000
 
 Individual Machine configuration
 
@@ -888,7 +899,7 @@ Individual Machine configuration
 
 * winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 * winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
-* winrm s winrm/config/winrs '@{IdleTimeout="7200000"}'
+* winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth '@{Basic="true"}'
@@ -918,6 +929,8 @@ If you do not see a record with HTTPS/ at the beginning of the hostname you can 
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 </console>
 
+{{note}} The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
+
 == Transitioning from WindowsMonitor ==
 
 If you are installing this ZenPack on an existing Zenoss system or upgrading from an earlier Zenoss version you may have a ZenPack named ''ZenPacks.zenoss.WindowsMonitor'' already installed on your system. You can check this by navigating to Advanced -> ZenPacks.
@@ -934,37 +947,6 @@ This ZenPack functionally supersedes ''ZenPacks.zenoss.WindowsMonitor'' for Wind
 
 {{note}} It is also possible to drag and drop selected Windows devices from one class to another.  You will need to remodel the devices after the move.
 
-Old Windows ZenPacks:
-* PySamba
-* WindowsMonitor
-* ActiveDirectory
-* IISMonitor
-* MSExchange
-* MSMQMonitor
-* MSSQLServer
-
-New Windows ZenPacks:
-* [[ZenPack:PythonCollector|PythonCollector]] is a requirement for this ZenPack. It provides the polling facility through the zenpython collector daemon.
-* This ZenPack (all the functionality of the old Windows ZenPacks is rolled into this one ZenPack)
-
-The old ZenPacks come as part of the Zenoss Core 4.2.x RPM. They can be installed on top of an RM install with the msmonitor RPM
-
-=== Using Old and New Windows ZenPacks Together ===
-
-There are some scenarios where it may be useful to use the old and new Windows ZenPacks together. In most cases this is as simple as putting servers you wish to be monitored by the new ZenPack in the /Server/Microsoft/Server device class and servers you wish to be monitored by the old ZenPack in the /Server/Windows/WMI device class.
-
-Due to this ZenPack's dependency on WinRM 2.0 it is not possible to monitor Windows versions earlier than Windows 2003 SP1. If you have a requirement to monitor these earlier Windows versions you must use the older [[ZenPack::Microsoft_Windows|WindowsMonitor ZenPack]] that uses DCOM/RPC instead of WinRM.
-
-There are also circumstances where you may currently be using the old Windows ZenPack and only want to initially use the new ZenPack for its new functionalities such as the ''Windows Shell'' datasource. This can be achieved using the following steps.
-
-# Keep the servers under the /Server/Windows/WMI device class.
-# Verify that all of the following configuration properties are set:
-#* ''zWinUser'': In DOMAIN\Username format for DCOM/RPC collection.
-#* ''zWinPassword'': Password for zWinUser account.
-#* ''zWinRMUser'': In username@example.com format for WinRM collection.
-#* ''zWinRMPassword'': Password for zWinRMUser account.
-# Create a monitoring template containing a ''Windows Shell'' datasource and bind it to the server.
-
 == Limitations of Current Release ==
 
 The current release is known to have the following limitations.
@@ -975,6 +957,19 @@ The current release is known to have the following limitations.
 * Payload encryption is not supported on EL5 systems.  This is due to the fact that the default kerberos library on EL5 systems does not contain the necessary functionality.
 * Current functionality for monitoring Server 2003 has not been removed from the ZenPack, but no future development will be done for Server 2003.
 * Starting with version 2.6.0 of the ZenPack, existing Windows Service components are no longer compatible.  These will be removed upon installation.  Once the device is modeled with the Services plugin enabled, Windows Service components will be discovered.  Any existing monitoring templates will still apply.  Any services that were manually selected to be monitored will not.  See the section on [[#Configuring Service Monitoring|Configuring Service Monitoring]].
+* The current release of this ZenPack uses the ZenPack SDK.  Some component classes have changed from pre-2.6.x versions of the ZenPack. During installation, the ZenPack will create a job that will update the Windows Devices and Components class types used by the SDK. Depending on your Zenoss instance resources, this job could take a very long time to complete.  If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:
+
+<console>
+In [1]: from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
+
+In [2]: dmd.JobManager.addJob(ResetClassTypes)
+
+In [3]: commit()
+</console>
+
+* This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
+* When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
+* If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -983,15 +978,6 @@ A current list of known issues related to this ZenPack can be found with [https:
 The ZenPack will automatically generate a kerberos configuration file, krb5.conf, in the $ZENHOME/var/krb5/ directory.  To use a custom configuration file, place it in the $ZENHOME/var/krb5/config/ directory.  In Zenoss 5.x, this location is in a container so you will need to be certain to commit any changes made.  Upgrading Zenoss will lose these changes, so you will need to update your container after upgrade.  The file name can be anything that contains alphanumeric, dashes, and underscores.
 
 To add a permanent location for you configuration file, you can make use of the zWinRMKrb5includedir property.  This must be a location accessible from within a container and contain ONLY kerberos configuration file(s).  If the location is invalid or contains files other than kerberos configuration files, it will be ignored and not added to the main krb5.conf file.
-
-Example:
-
-A common problem with Kerberos is that a reverse DNS lookup will result in multiple records returned, and not always the correct one.  Kerberos by default always performs a forward and reverse lookup when establishing a ticket.  To disable the reverse lookup, create a file in either the default location or in a user specified location and add the following:
-
-<syntaxhighlight lang="text">
-[libdefaults]
-  rdns = False
-</syntaxhighlight>
 
 See http://web.mit.edu/kerberos/krb5-devel/doc/admin/conf_files/krb5_conf.html for more information on the includedir and other kerberos options.
 
@@ -1062,14 +1048,9 @@ If you see 100% CPU usage on a domain controller and your forest functional leve
 
 * More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name.  The best solution varies over different domains and it is left to the user to decide which is best for their environment.
 
-One solution is to disable reverse DNS lookups for kerberos.  This can be achieved by creating a file with the following contents:
+One solution is to disable reverse DNS lookups for kerberos. This can be achieved by setting the zWinRMDisableRDNS property to True.  If you use this option, you *MUST* only set it in at the /Server/Microsoft device class level.
 
-<syntaxhighlight lang="text">
-[libdefaults]
-  rdns = False
-</syntaxhighlight>
-
-Then place the file into either the /opt/zenoss/var/krb5/config directory or into any other directory that you specify using the zWinRMKrb5includedir property.  See the description for zWinRMKrb5includedir for more information.
+You should also ensure that the correct name is returned for lookups.
 
 <blockquote>Preauthentication failed while getting initial credentials.</blockquote>
 
@@ -1078,6 +1059,10 @@ Then place the file into either the /opt/zenoss/var/krb5/config directory or int
 <blockquote>Realm not local to KDC while getting initial credentials</blockquote>
 
 * This indicates that one or more of the defined KDCs for a domain are incorrect.  Add a ''-'' to the beginning of the errant KDC address to the beginning of the incorrect address in the zWinKDC property to remove it from the list of KDCs for a domain.
+
+<blockquote>Message stream modified</blockquote>
+
+* This indicates that Windows was unable to decrypt the kerberos encrypted payload.  This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account.  For example, many IIS servers will do this.  To fix this, set the zWinUseWsmanSPN property.
 
 === Troubleshooting Kerberos Authentication with Wireshark ===
 
@@ -1142,7 +1127,11 @@ If you see a corrupt counters error event, this indicates that the specified cou
 
 If you see the following error, check the zenhub log for errors:
 
-* Configuration for 10.111.5.171 unavailable -- is that the correct name?
+* Configuration for <device> unavailable -- is that the correct name?
+
+If you see an event stating that a plugin was disabled due to blocking, see the [[ZenPack:PythonCollector|PythonCollector ZenPack]] documentation for steps to remedy this.
+
+{{note}} Starting with v2.7.0, this should not occur for Windows data source plugins.
 
 === Troubleshooting modeling/monitoring ===
 
@@ -1229,6 +1218,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 ;Modeler Plugins
 * zenoss.winrm.CPUs
 * zenoss.winrm.FileSystems
+* zenoss.winrm.HardDisks
 * zenoss.winrm.IIS
 * zenoss.winrm.Interfaces
 * zenoss.winrm.OperatingSystem
@@ -1277,21 +1267,43 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.7.3
+* Fix MicrosoftWindows ZP has problems disks/mount points with "\U" in their name. (ZPS-1368)
+* Fix Microsoft Windows: Migrate script takes long time to run, no feedback (ZPS-1473)
+
+;2.7.2
+* Fix WinRS: Failed collection local variable 'databasename' referenced before assignment on a.device.title (ZPS-1271)
+* Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+* Fix Counters with $ in their name are being shown as missing (ZPS-1404)
+* Fix Microsoft Windows: v2.7.x shows errors in zenrelationscan, zenchkrels (ZPS-1442)
+
+;2.7.1
+* Fix Microsoft Windows: Honor template severity for MS SQL Instance events (ZPS-1323)
+* Fix Microsoft Windows: Honor template severity for MS SQL Job events (ZPS-1322)
+* Fix Microsoft Windows: Graphs missing datapoints every other zenpython cycle (ZPS-1321)
+* Fix Microsoft Windows: datasource in event details can make the event unreadable on one screen(ZPS-1293)
+* Fix Microsoft Windows: service datapoint should provide timestamp (ZPS-1341)
+* Fix Editing a Windows Service (WinService) Locks Up Zope and Times Out (ZPS-1342)
+* Fix Windows ZP HardDisk Modeler does not check the value of SerialNumber before running strip (ZPS-1279)
+* Fix Windows 2.7.0 WinService migrate script only updates template bound at /Server/Microsoft (ZPS-1280)
+
 ;2.7.0
 * Added support for Hard Disk association with storage servers
 * Added Session Management to lower number of connections to Windows Servers
 * Added option to specify winrm envelope size
-* Added localization support
 * Added ability to allow multiple KDCs for single domain
 * Added ability to specify user supplied kerberos configuration directory
 * Added support for Windows Server 2016
 * Added support for SQL Server 2014, 2016
+* Added Paused as valid Windows Service state to monitor
 * Improved support for SQL Server database Status
 * Fix ShellDataSource Doesn't Associate Event Severity or Class from Data Sources (ZPS-491)
 * Fix Modifying the WinService template causes parallel reindexing of the same components (ZPS-570)
 * Fix MicrosoftWindows - Device status become down after adding device using local authentication (ZPS-713)
 * Fix Windows ZP Does not allow compatible ports of 80/443 to be used (ZPS-622)
 * Fix Windows Zenpack may not properly detect IIS on 2012 servers. (ZPS-719)
+* Fix Long MSSQL Database names aren't parsed correctly because they exceed the powershell shell width (ZPS-944)
+* Mitigate RRD data losses associated with ZPL conversion (ZPS-1204)
 
 ;2.6.12
 * Fix ZenPack throws traceback when non windows data source is added (ZPS-661)

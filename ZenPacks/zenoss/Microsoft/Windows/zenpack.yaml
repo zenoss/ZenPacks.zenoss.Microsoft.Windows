@@ -42,8 +42,12 @@ zProperties:
     default: /Devices/Server/Microsoft/Windows
   zWinRMKrb5includedir:
     default: ''
+  zWinRMKrb5DisableRDNS:
+    type: boolean
+    default: false
 
 class_relationships:
+  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmservices) 1:MC (os)WinService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winrmiis) 1:MC (os)WinIIS
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winsqlinstances) 1:MC (os)WinSQLInstance
@@ -110,6 +114,7 @@ classes:
         default: None
       ip_and_hostname:
         default: None
+        label: IP and Host Name
       domain_controller:
         label: MS Exchange Version
         type: boolean
@@ -386,8 +391,6 @@ classes:
         default: None
       cores:
         label: Cores
-      cores:
-        label: Cores
       threads:
         label: Threads
       cacheSpeedL2:
@@ -443,6 +446,7 @@ classes:
       fs_ids:
         type: lines
         details_display: false
+        label: File System IDs
       freespace:
         label: Free
         type: int
@@ -581,6 +585,7 @@ classes:
           -1: Unknown
           0: Running
           1: Stopped
+          2: Paused
         datapoint: state_state
         datapoint_cached: true
         datapoint_default: -1
@@ -589,6 +594,8 @@ classes:
       usermonitor:
         label: Manually Selected Monitor State
         type: boolean
+      index_service:
+        details_display: false
 
   WinIIS:
     label: IIS Site
@@ -779,16 +786,12 @@ device_classes:
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.Software, zenoss.winrm.HardDisks]
       zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS]
-      zDBInstances:
-      - {instance: MSSQLSERVER, passwd: '', user: ''}
   /Server/Microsoft/Cluster:
     remove: true
     description: Windows Cluster
     protocol: WinRM
     zProperties:
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.WinCluster]
-      zDBInstances:
-      - {instance: MSSQLSERVER, passwd: '', user: ''}
       zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS]
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
     templates:
@@ -3881,7 +3884,7 @@ device_classes:
             datapoints:
               DiskReadTime:
                 rrdtype: GAUGE
-                aliases: {diskReadTime: null}
+                aliases: {hd_diskReadTime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Read Time
           DiskWriteBytesSec:
             type: Windows Perfmon
@@ -3889,7 +3892,7 @@ device_classes:
             datapoints:
               DiskWriteBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskWriteBytes__sec: null}
+                aliases: {hd_diskWriteBytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Write Bytes/sec
           DiskWriteTime:
             type: Windows Perfmon
@@ -3897,7 +3900,7 @@ device_classes:
             datapoints:
               DiskWriteTime:
                 rrdtype: GAUGE
-                aliases: {diskWriteTime: null}
+                aliases: {hd_diskWriteTime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Write Time
           DiskReadBytesSec:
             type: Windows Perfmon
@@ -3905,7 +3908,7 @@ device_classes:
             datapoints:
               DiskReadBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskReadBytes__sec: null}
+                aliases: {hd_diskReadBytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Read Bytes/sec
         graphs:
           Throughput:
@@ -3952,51 +3955,21 @@ event_classes:
         example: IIS Service W3SVC_1 is in Stopped state
         remove: true
   /Status/Kerberos:
-    mappings:
-      Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
-        sequence: 1111
-  /Status/Kerberos/Auth:
-    mappings:
-      Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
-        sequence: 1111
-  /Status/Kerberos/Auth/Failure:
     remove: true
     mappings:
-      Failure Default:
-        eventClassKey: MW|Kerberos|Auth|Failure
-        sequence: 1111
-  /Status/Kerberos/Failure:
-    remove: true
-    mappings:
-      Failure Default:
-        eventClassKey: MW|Kerberos|Failure
-        sequence: 1101
+      KerberosAuthenticationSuccess: {}
+      KerberosAuthenticationFailure: {}
+      KerberosSuccess: {}
+      KerberosFailure: {}
   /Status/Winrm:
-    mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
-        sequence: 1002
+    remove: true
   /Status/Winrm/Ping:
     remove: true
   /Status/Winrm/Auth:
-    mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
-        sequence: 1002
-  /Status/Winrm/Auth/WrongCredentials:
     remove: true
     mappings:
-      Wrong Credentials Default:
-        eventClassKey: MW|WrongCredentials
-        sequence: 1002
-  /Status/Winrm/Auth/PasswordExpired:
-    remove: true
-    mappings:
-      Password Expired Default:
-        eventClassKey: MW|PasswordExpired
-        sequence: 1001
+      AuthenticationSuccess: {}
+      AuthenticationFailure: {}
   /Status/OSProcess:
     remove: false
   /Status/Interface:

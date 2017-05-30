@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -75,14 +75,23 @@ class HardDisks(WinRMPlugin):
                 size = int(drive.Size)
             except TypeError:
                 size = 0
-            serialNumber = drive.SerialNumber.strip() if drive.SerialNumber else ''
+
+            # drive.SerialNumber could be None.  let's make it ''
+            serialNumber = ''
+            if hasattr(drive, 'SerialNumber'):
+                if drive.SerialNumber is None:
+                    drive.SerialNumber = ''
+                serialNumber = drive.SerialNumber.strip()
             product_key = MultiArgs(drive.Model, drive.Manufacturer)
+            capabilities = ''
+            if hasattr(drive, 'CapabilityDescriptions') and drive.CapabilityDescriptions:
+                capabilities = drive.CapabilityDescriptions
             rm.append(self.objectMap({
                 'id': self.prepId(drive.PNPDeviceID),
                 'title': drive.Caption,
                 'size': size,
                 'partitions': num_partitions,
-                'capabilities': drive.CapabilityDescriptions,
+                'capabilities': capabilities,
                 'serialNumber': serialNumber,
                 'freespace': freespace,
                 'disk_ids': make_disk_ids(drive),
@@ -127,7 +136,9 @@ def make_disk_ids(disk_drive):
     disk_ids.append(pnpDevice)
 
     # Append SerialNumber
-    serial = disk_drive.SerialNumber.strip() if disk_drive.SerialNumber else None
+    serial = None
+    if hasattr(disk_drive, 'SerialNumber'):
+        serial = disk_drive.SerialNumber.strip()
     if not serial:
         return disk_ids
 

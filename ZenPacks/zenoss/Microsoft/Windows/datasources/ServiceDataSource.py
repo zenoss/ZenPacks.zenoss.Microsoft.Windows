@@ -12,6 +12,8 @@ A datasource that uses WinRS to collect Windows Service Status
 
 """
 import logging
+import time
+import re
 
 from zope.component import adapts
 from zope.interface import implements
@@ -27,6 +29,7 @@ from Products.Zuul.utils import severityId
 from Products.ZenEvents import ZenEventClasses
 from Products.ZenUtils.Utils import prepId
 from Products.ZenRRD.zencommand import DataPointConfig
+from Products.AdvancedQuery import MatchRegexp
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -47,12 +50,16 @@ ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
 STATE_RUNNING = 'Running'
 STATE_STOPPED = 'Stopped'
+STATE_RUNNING_PAUSED = 'Running, Paused'
+STATE_STOPPED_PAUSED = 'Stopped, Paused'
+STATE_PAUSED = 'Paused'
 
 MODE_NONE = 'None'
 MODE_AUTO = 'Auto'
 MODE_DISABLED = 'Disabled'
 MODE_MANUAL = 'Manual'
 MODE_ANY = 'Any'
+INVALID_REGEX = 'Ignoring invalid regular expression found in WinService datasource {}: {}'
 
 
 def string_to_lines(string):
@@ -101,7 +108,27 @@ class ServiceDataSource(PythonDataSource):
 
         # Template is in a device class.
         else:
-            results = ICatalogTool(deviceclass.primaryAq()).search(WinService)
+            query = None
+            # Let's be smart and get only what will be affected
+            if template.id == 'WinService':
+                for exp in self.in_exclusions.split(','):
+                    regex = exp.strip().lstrip('+-')
+                    try:
+                        re.compile(regex)
+                    except re.error:
+                        log.debug(INVALID_REGEX.format(self.id, regex))
+                        continue
+                    if not query:
+                        query = MatchRegexp('id', regex)
+                    else:
+                        query |= MatchRegexp('id', regex)
+                # this should not occur, but just in case
+                if not query:
+                    query = MatchRegexp('id', '.*')
+            else:
+                # component template for specific service
+                query = MatchRegexp('id', template.id)
+            results = ICatalogTool(deviceclass.primaryAq()).search(WinService, query=query)
             for result in results:
                 try:
                     service = result.getObject()
@@ -142,7 +169,7 @@ class IServiceDataSourceInfo(IInfo):
         group=_t('Service Status'),
         title=_t('Alert if service is NOT in this state'),
         vocabulary=SimpleVocabulary.fromValues(
-            [STATE_RUNNING, STATE_STOPPED]),)
+            [STATE_RUNNING, STATE_STOPPED, STATE_RUNNING_PAUSED, STATE_STOPPED_PAUSED]),)
 
     startmode = schema.Text(
         group=_t('Service Options'),
@@ -275,7 +302,7 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'Status': 'OK'}
         '''
         data = self.new_data()
-        log.debug('Windows services query results: {}'.format(results))
+        log.debug('{}: Windows services query results: {}'.format(config.id, results))
         try:
             serviceinfo = results[results.keys()[0]]
         except:
@@ -290,6 +317,7 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # build dictionary of datasource service info
         services = self.buildServicesDict(config.datasources)
+        timestamp = int(time.mktime(time.localtime()))
         for index, svc_info in enumerate(serviceinfo):
             if svc_info.Name not in services.keys():
                 continue
@@ -297,7 +325,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Clear
             service = services[svc_info.Name]
 
-            if svc_info.State != service['alertifnot']:
+            if svc_info.State not in [alertifnot.strip() for alertifnot in service['alertifnot'].split(',')]:
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
                     svc_info.Name,
                     svc_info.State
@@ -315,8 +343,13 @@ class ServicePlugin(PythonDataSourcePlugin):
                 dp.rrdPath = dsconf.params['rrdpath']
                 dp.metadata = dsconf.params.get('metricmetadata', None)
                 dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
-                data['values'][svc_info.Name]['state'] = 1 if svc_info.State.lower()\
-                    == 'stopped' else 0
+                if svc_info.State.lower() == STATE_RUNNING.lower():
+                    data['values'][svc_info.Name]['state'] = (0, timestamp)
+                elif svc_info.State.lower() == STATE_STOPPED.lower():
+                    data['values'][svc_info.Name]['state'] = (1, timestamp)
+                elif svc_info.State.lower() == STATE_PAUSED.lower():
+                    data['values'][svc_info.Name]['state'] = (2, timestamp)
+
             # event for the service
             data['events'].append({
                 'service_name': svc_info.Name,
