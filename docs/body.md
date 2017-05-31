@@ -1741,6 +1741,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.5
+
+-   Fix Windows ZP uses a lot of RAM when it contains hundreds of components due to checking for IIS (ZPS-1576)
+
 2.7.3
 
 -   Fix MicrosoftWindows ZP has problems disks/mount points with "\U" in their name. (ZPS-1368)

@@ -119,6 +119,10 @@ classes:
         label: MS Exchange Version
         type: boolean
         default: false
+      is_iis:
+        type: boolean
+        default: false
+        display: false
     impacts:
       - all_filesystems
       - all_processes
