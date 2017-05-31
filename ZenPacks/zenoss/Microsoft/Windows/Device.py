@@ -107,15 +107,6 @@ class Device(schema.Device):
                     clusterdnsname))
         return _clusterdevices
 
-    def is_iis(self):
-        '''Return True if an IIS server'''
-        # if we have IIS components, then we are IIS server
-        from ZenPacks.zenoss.Microsoft.Windows.WinIIS import WinIIS
-        for component in self.getDeviceComponents():
-            if isinstance(component, WinIIS):
-                return True
-        return False
-
     def is_ntds(self):
         '''Return True if an NTDS/AD server'''
         # redundancy check domain_controller in case of LPU not returning NTDS or no services modeled
@@ -137,7 +128,7 @@ class Device(schema.Device):
         templates = []
         for template in super(Device, self).getRRDTemplates():
             # skip IIS template if not installed
-            if 'IIS' in template.id and not self.is_iis():
+            if 'IIS' in template.id and not self.is_iis:
                 continue
             if 'Active Directory' in template.id:
                 # skip Active Director template if not installed
