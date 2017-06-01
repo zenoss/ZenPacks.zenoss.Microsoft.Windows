@@ -1741,6 +1741,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.6
+
+-   Fix traceback during modeling (ZPS-1599)
+
 2.7.5
 
 -   Fix Windows ZP uses a lot of RAM when it contains hundreds of components due to checking for IIS (ZPS-1576)
