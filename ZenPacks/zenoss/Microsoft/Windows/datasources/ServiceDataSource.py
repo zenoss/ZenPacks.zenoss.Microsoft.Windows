@@ -264,6 +264,17 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         return params
 
+    def __init__(self, config=None):
+        """Initialize plugin. Executed when task is created."""
+        # Add a "state_state" datapoint to every datasource. This corresponds
+        # to the built-in datasource in the WinService monitoring template.
+        for datasource in getattr(config, 'datasources', []):
+            dp = DataPointConfig()
+            dp.component = getattr(datasource, 'component', None)
+            dp.rrdPath = datasource.params.get('rrdpath', None)
+            dp.metadata = datasource.params.get('metricmetadata', None)
+            datasource.points.append(get_dummy_dpconfig(dp, 'state'))
+
     @defer.inlineCallbacks
     def collect(self, config):
 
@@ -336,19 +347,13 @@ class ServicePlugin(PythonDataSourcePlugin):
                     svc_info.Name,
                     svc_info.State
                 )
-            dsconf = get_dsconf(config.datasources, svc_info.Name)
-            if dsconf:
-                dp = DataPointConfig()
-                dp.component = svc_info.Name
-                dp.rrdPath = dsconf.params['rrdpath']
-                dp.metadata = dsconf.params.get('metricmetadata', None)
-                dsconf.points.append(get_dummy_dpconfig(dp, 'state'))
-                if svc_info.State.lower() == STATE_RUNNING.lower():
-                    data['values'][svc_info.Name]['state'] = (0, timestamp)
-                elif svc_info.State.lower() == STATE_STOPPED.lower():
-                    data['values'][svc_info.Name]['state'] = (1, timestamp)
-                elif svc_info.State.lower() == STATE_PAUSED.lower():
-                    data['values'][svc_info.Name]['state'] = (2, timestamp)
+
+            if svc_info.State.lower() == STATE_RUNNING.lower():
+                data['values'][svc_info.Name]['state'] = (0, timestamp)
+            elif svc_info.State.lower() == STATE_STOPPED.lower():
+                data['values'][svc_info.Name]['state'] = (1, timestamp)
+            elif svc_info.State.lower() == STATE_PAUSED.lower():
+                data['values'][svc_info.Name]['state'] = (2, timestamp)
 
             # event for the service
             data['events'].append({
