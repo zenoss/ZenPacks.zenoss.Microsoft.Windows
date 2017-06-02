@@ -1741,6 +1741,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.7
+
+-   Fix redundant publishing of service state datapoints (ZPS-1604)
+
 2.7.6
 
 -   Fix traceback during modeling (ZPS-1599)
