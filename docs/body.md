@@ -1741,6 +1741,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.8
+
+-   Fix WinRM ZP: HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
+
 2.7.7
 
 -   Fix redundant publishing of service state datapoints (ZPS-1604)
