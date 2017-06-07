@@ -127,7 +127,6 @@ class DataPersister(object):
 
     def __init__(self):
         self.devices = {}
-        self.start()
 
     def start(self, result=None):
         if result:
@@ -393,6 +392,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if not self.cycling:
             yield self.receive_deferreds
 
+        PERSISTER.start()
         defer.returnValue(None)
 
     @defer.inlineCallbacks
