@@ -151,6 +151,7 @@ class WinRMPlugin(PythonPlugin):
         '''
         Log an approppriate message for error occurring on device.
         '''
+        severity = 4
         message, args = (None, [device.id])
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
@@ -172,7 +173,7 @@ class WinRMPlugin(PythonPlugin):
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
         elif type(error) == Exception and "Credentials cache file" in error.message:
             message = "Credentials cache file not found. Please make sure that this file exist and server has  access to it."
-        elif type(error) == Exception and error.message.startswith('kerberos authGSSClientStep failed'):
+        elif type(error) == Exception and 'kerberos' in error.message.lower():
             message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
         elif isinstance(error, ResponseFailed):
             for reason in error.reasons:
@@ -192,7 +193,7 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
-        self._send_event(message % tuple(args), device.id, 3, eventClass='/Status/Winrm')
+        self._send_event(message % tuple(args), device.id, severity, eventClass='/Status/Winrm')
 
     def _send_event(self, reason, id, severity, force=False,
                     key='ConnectionError', eventClass='/Status', summary=None):
@@ -242,7 +243,12 @@ class WinRMPlugin(PythonPlugin):
         This method can be overridden if more complex collection is
         required.
         '''
-        conn_info = self.conn_info(device)
+        try:
+            conn_info = self.conn_info(device)
+        except UnauthorizedError as e:
+            msg = "Error on {}: {}".format(device.id, e.message)
+            self._send_event(msg, device.id, 4, eventClass='/Status/Winrm', summary=msg)
+            raise e
         client = self.client(conn_info)
 
         results = {}
