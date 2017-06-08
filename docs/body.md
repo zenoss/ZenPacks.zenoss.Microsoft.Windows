@@ -1745,6 +1745,7 @@ Changes
 
 -   Fix WinRM ZP: HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
 -   Fix Windows: log line in maintenance() function shows in incorrect logs (ZPS-1600)
+-   Fix Windows: Failed model job does not result in event (ZPS-1608)
 
 2.7.7
 
