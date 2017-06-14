@@ -1,5 +1,5 @@
 ################################
-# These variables are overwritten by Zenoss when the ZenPack  1
+# These variables are overwritten by Zenoss when the ZenPack  1g
 # or saved.  Do not modify them directly here.4
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
