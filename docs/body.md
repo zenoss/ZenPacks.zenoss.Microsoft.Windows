@@ -1747,6 +1747,7 @@ Changes
 -   Fix Log line for "periodic maintenance" shows in incorrect logs (ZPS-1600)
 -   Fix Failed model job does not result in event (ZPS-1608)
 -   Fix Performance tables are not created even though performance batch is successful (ZPS-1605)
+-   Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)
 
 2.7.7
 
