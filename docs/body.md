@@ -1748,6 +1748,8 @@ Changes
 -   Fix Failed model job does not result in event (ZPS-1608)
 -   Fix Performance tables are not created even though performance batch is successful (ZPS-1605)
 -   Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)
+-   Fix Custom command needs to allow datapoints with non-zero exit codes
+
 
 2.7.7
 
