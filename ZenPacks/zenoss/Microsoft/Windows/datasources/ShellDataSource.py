@@ -373,7 +373,27 @@ class CustomCommandStrategy(object):
         cmd.component = dsconf.params['contextcompname']
 
         # Pass the severity from the datasource to the command parsers
-        cmd.severity = dsconf.severity
+        # If Nagios, check the status for severity
+        cmd.result.output = '\n'.join(result.stdout)
+        if parserLoader.pluginName in ('Nagios', 'Auto'):
+            try:
+                status, data = cmd.result.output.split('|', 1)
+                if 'OK' in status:
+                    severity = ZenEventClasses.Clear
+                elif 'WARNING' in status:
+                    severity = ZenEventClasses.Warning
+                elif 'CRITICAL' in status:
+                    severity = ZenEventClasses.Critical
+                else:
+                    severity = dsconf.severity
+            except Exception:
+                severity = dsconf.severity
+        else:
+            severity = dsconf.severity
+        cmd.severity = severity
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
+        cmd.eventClass = eventClass
+        cmd.eventKey = dsconf.eventKey
 
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
@@ -386,14 +406,12 @@ class CustomCommandStrategy(object):
             cmd.points.append(point)
 
         cmd.usePowershell = dsconf.params['usePowershell']
-        cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
 
         collectedResult = ParsedResults()
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         # Give error feedback to user
-        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
             errors = '\n'.join(result.stderr)
             log.debug('Custom command errors on {}: {}'.format(config.id, errors))
@@ -1335,6 +1353,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             cmdResult = strategy.parse_result(config, result)
             data['events'] = cmdResult.events
             if result.exit_code == 0:
+                dsconf = dsconfs[0]
+                for dp, value in cmdResult.values:
+                    data['values'][dsconf.component][dp.id] = value, 'N'
+            elif len(cmdResult.values) != 0:
                 dsconf = dsconfs[0]
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
