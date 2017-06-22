@@ -1748,7 +1748,8 @@ Changes
 -   Fix Failed model job does not result in event (ZPS-1608)
 -   Fix Performance tables are not created even though performance batch is successful (ZPS-1605)
 -   Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)
--   Fix Custom command needs to allow datapoints with non-zero exit codes
+-   Fix Custom command needs to allow datapoints with non-zero exit codes (ZPS-1366)
+-   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693)
 
 
 2.7.7
