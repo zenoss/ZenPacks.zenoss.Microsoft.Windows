@@ -21,6 +21,7 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
+from twisted.web._newclient import ResponseNeverReceived
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -643,9 +644,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 self.network_failures += 1
         # Handle errors on which we should start over.
         else:
-            retry, level, msg = (
+            level = logging.WARN
+            if isinstance(e, ResponseNeverReceived):
+                level = logging.DEBUG
+            retry, msg = (
                 False,
-                logging.WARN,
                 "receive failure on {}: {}"
                 .format(self.config.id, e))
 
