@@ -121,6 +121,7 @@ class WinMSSQL(WinRMPlugin):
 
     @defer.inlineCallbacks
     def collect(self, device, log):
+        self.log = log
         # Check if the device is a cluster device.
         isCluster = True if 'Microsoft/Cluster' in device.getDeviceClassName \
             else False
@@ -162,13 +163,13 @@ class WinMSSQL(WinRMPlugin):
 
         maps = {}
         if not instances:
-            log.info('{}:  No output while getting instance names.'
-                     '  zWinRMEnvelopeSize may not be large enough.'
-                     '  Increase the size and try again.'.format(self.name()))
+            self.log.info('{}:  No output while getting instance names.'
+                          '  zWinRMEnvelopeSize may not be large enough.'
+                          '  Increase the size and try again.'.format(self.name()))
             defer.returnValue(maps)
 
         maps['errors'] = {}
-        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
+        self.log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         instance_oms = []
         database_oms = []
         backup_oms = []
@@ -216,12 +217,12 @@ class WinMSSQL(WinRMPlugin):
                     conn_info = self.conn_info(device)
                     winrs = SQLCommander(conn_info)
                 except ValueError:
-                    log.error('Owner node for DB Instance {0} was not found'.format(
+                    self.log.error('Owner node for DB Instance {0} was not found'.format(
                         instance))
                     continue
 
             if instance not in dblogins:
-                log.info("DB Instance {0} found but was not set in zDBInstances.  "
+                self.log.info("DB Instance {0} found but was not set in zDBInstances.  "
                          "Using default credentials.".format(instance))
 
             instance_title = instance
@@ -317,14 +318,14 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection = []
             job_sqlConnection.append('write-host "====Jobs";')
             job_sqlConnection.append("try {")
-            job_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
-            job_sqlConnection.append("write-host 'jobname:'$job.Name;")
-            job_sqlConnection.append("write-host 'enabled:'$job.IsEnabled;")
-            job_sqlConnection.append("write-host 'jobid:'$job.JobID;")
-            job_sqlConnection.append("write-host 'description:'$job.Description;")
-            job_sqlConnection.append("write-host 'datecreated:'$job.DateCreated;")
-            job_sqlConnection.append("write-host 'username:'$job.OwnerLoginName;}}")
-            job_sqlConnection.append("catch { continue; }")
+            job_sqlConnection.append("$server.JobServer.Jobs | foreach {")
+            job_sqlConnection.append('write-host \"jobname---\" $_.Name,')
+            job_sqlConnection.append('\"`tenabled---\" $_.IsEnabled,')
+            job_sqlConnection.append('\"`tjobid---\" $_.JobID,')
+            job_sqlConnection.append('\"`tdescription---\" $_.Description,')
+            job_sqlConnection.append('\"`tdatecreated---\" $_.DateCreated,')
+            job_sqlConnection.append('\"`tusername---\" $_.OwnerLoginName')
+            job_sqlConnection.append("}}catch { continue; }")
 
             buffer_size = ['$Host.UI.RawUI.BufferSize = New-Object '
                            'Management.Automation.Host.Size (4096, 512);']
@@ -335,7 +336,7 @@ class WinMSSQL(WinRMPlugin):
                         backup_sqlConnection + job_sqlConnection)
             )
 
-            log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
+            self.log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
             check_username(instance_info, instance, log)
             in_databases = False
             in_backups = False
@@ -360,95 +361,26 @@ class WinMSSQL(WinRMPlugin):
                     in_jobs = True
                     continue
                 if in_databases:
-                    dbobj = stdout_line
-                    db = dbobj.split('\t')
-                    dbdict = {}
-
-                    for dbitem in db:
-                        try:
-                            key, value = dbitem.split('---')
-                            dbdict[key.lower()] = value.strip()
-                        except (ValueError):
-                            log.info('Error parsing returned values : {0}'.format(
-                                dbitem))
-
-                    lastlogbackupdate = None
-                    if ('lastlogbackupdate' in dbdict) \
-                       and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
-                        lastlogbackupdate = dbdict['lastlogbackupdate']
-
-                    lastbackupdate = None
-                    if ('lastbackupdate' in dbdict) \
-                       and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
-                        lastbackupdate = dbdict['lastbackupdate']
-
-                    if ('id' in dbdict):
-                        om_database = ObjectMap()
-                        om_database.id = self.prepId(instance + dbdict['id'])
-                        om_database.title = dbdict['name'][1:-1]
-                        om_database.instancename = om_instance.id
-                        om_database.version = dbdict['version']
-                        om_database.owner = dbdict['owner']
-                        om_database.lastbackupdate = lastbackupdate
-                        om_database.lastlogbackupdate = lastlogbackupdate
-                        om_database.isaccessible = dbdict['isaccessible']
-                        om_database.collation = dbdict['collation']
-                        om_database.createdate = str(dbdict['createdate'])
-                        om_database.defaultfilegroup = dbdict['defaultfilegroup']
-                        om_database.primaryfilepath = dbdict['primaryfilepath']
-                        om_database.cluster_node_server = '{0}//{1}'.format(
-                            owner_node.strip(), sqlserver)
-                        om_database.systemobject = dbdict['systemobject']
-                        om_database.recoverymodel = dbdict['recoverymodel']
-
-                        database_oms.append(om_database)
+                    om_database = self.get_db_om(om_instance,
+                                                 instance,
+                                                 owner_node,
+                                                 sqlserver,
+                                                 stdout_line)
+                    database_oms.append(om_database)
                 elif in_backups:
-                    backupobj = stdout_line
-                    backup = backupobj.split('\t')
-                    backupdict = {}
-
-                    for backupitem in backup:
-                        key, value = backupitem.split('---')
-                        backupdict[key.lower()] = value.strip()
-
-                    om_backup = ObjectMap()
-                    om_backup.id = self.prepId(instance + backupdict['name'])
-                    om_backup.title = backupdict['name']
-                    om_backup.devicetype = backupdict['devicetype']
-                    om_backup.physicallocation = backupdict['physicallocation']
-                    om_backup.status = backupdict['status']
-                    om_backup.instancename = om_instance.id
+                    om_backup = self.get_backup_om(om_instance,
+                                                   instance,
+                                                   stdout_line)
                     backup_oms.append(om_backup)
 
                 elif in_jobs:
-                    job = stdout_line
-                    # Make sure that the job description length does not go
-                    # beyond the buffer size (4096 characters).
-                    if ':' not in job:
-                        continue
-
-                    key, value = job.split(':', 1)
-                    if key.strip() == 'jobname':
-                        # New Job Record
-                        om_jobs = ObjectMap()
-                        om_jobs.instancename = om_instance.id
-                        om_jobs.title = value.strip()
-                        om_jobs.cluster_node_server = '{0}//{1}'.format(
-                            owner_node.strip(), sqlserver)
-                    else:
-                        if key.strip() == 'jobid':
-                            om_jobs.jobid = value.strip()
-                            om_jobs.id = self.prepId(om_jobs.jobid)
-                        elif key.strip() == 'enabled':
-                            om_jobs.enabled = 'Yes'\
-                                if value.strip() == 'True' else 'No'
-                        elif key.strip() == 'description':
-                            om_jobs.description = value.strip()
-                        elif key.strip() == 'datecreated':
-                            om_jobs.datecreated = str(value)
-                        elif key.strip() == 'username':
-                            om_jobs.username = value.strip()
-                            jobs_oms.append(om_jobs)
+                    om_job = self.get_job_om(device,
+                                             sqlserver,
+                                             om_instance,
+                                             owner_node,
+                                             stdout_line)
+                    if om_job:
+                        jobs_oms.append(om_job)
 
         maps['clear'] = eventmessage
         maps['databases'] = database_oms
@@ -458,6 +390,96 @@ class WinMSSQL(WinRMPlugin):
         maps['device'] = device_om
 
         defer.returnValue(maps)
+
+    def get_db_om(self, om_instance, instance, owner_node, sqlserver, stdout_line):
+        dbobj = stdout_line
+        db = dbobj.split('\t')
+        dbdict = {}
+
+        for dbitem in db:
+            try:
+                key, value = dbitem.split('---')
+                dbdict[key.lower()] = value.strip()
+            except (ValueError):
+                self.log.info('Error parsing returned values : {0}'.format(
+                    dbitem))
+
+        lastlogbackupdate = None
+        if ('lastlogbackupdate' in dbdict) \
+           and (dbdict['lastlogbackupdate'][:8] != '1/1/0001'):
+            lastlogbackupdate = dbdict['lastlogbackupdate']
+
+        lastbackupdate = None
+        if ('lastbackupdate' in dbdict) \
+           and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
+            lastbackupdate = dbdict['lastbackupdate']
+
+        if ('id' in dbdict):
+            om_database = ObjectMap()
+            om_database.id = self.prepId(instance + dbdict['id'])
+            om_database.title = dbdict['name'][1:-1]
+            om_database.instancename = om_instance.id
+            om_database.version = dbdict['version']
+            om_database.owner = dbdict['owner']
+            om_database.lastbackupdate = lastbackupdate
+            om_database.lastlogbackupdate = lastlogbackupdate
+            om_database.isaccessible = dbdict['isaccessible']
+            om_database.collation = dbdict['collation']
+            om_database.createdate = str(dbdict['createdate'])
+            om_database.defaultfilegroup = dbdict['defaultfilegroup']
+            om_database.primaryfilepath = dbdict['primaryfilepath']
+            om_database.cluster_node_server = '{0}//{1}'.format(
+                owner_node.strip(), sqlserver)
+            om_database.systemobject = dbdict['systemobject']
+            om_database.recoverymodel = dbdict['recoverymodel']
+        return om_database
+
+    def get_backup_om(self, om_instance, instance, stdout_line):
+        backupobj = stdout_line
+        backup = backupobj.split('\t')
+        backupdict = {}
+
+        for backupitem in backup:
+            key, value = backupitem.split('---')
+            backupdict[key.lower()] = value.strip()
+
+        om_backup = ObjectMap()
+        om_backup.id = self.prepId(instance + backupdict['name'])
+        om_backup.title = backupdict['name']
+        om_backup.devicetype = backupdict['devicetype']
+        om_backup.physicallocation = backupdict['physicallocation']
+        om_backup.status = backupdict['status']
+        om_backup.instancename = om_instance.id
+        return om_backup
+
+    def get_job_om(self, device, sqlserver, om_instance, owner_node, stdout_line):
+        jobobj = stdout_line
+        # Make sure that the job description length does not go
+        # beyond the buffer size (4096 characters).
+        job = jobobj.split('\t')
+        jobdict = {}
+
+        for jobitem in job:
+            key, value = jobitem.split('---')
+            jobdict[key.lower()] = value.strip()
+
+        om_job = ObjectMap()
+        om_job.instancename = om_instance.id
+        om_job.title = jobdict['jobname']
+        om_job.cluster_node_server = '{0}//{1}'.format(
+            owner_node.strip(), sqlserver)
+        om_job.jobid = jobdict['jobid']
+        om_job.id = self.prepId(om_job.jobid)
+        om_job.enabled = 'Yes' if jobdict['enabled'] == 'True' else 'No'
+        om_job.description = jobdict['description']
+        om_job.datecreated = str(jobdict['datecreated'])
+        om_job.username = jobdict['username']
+        if not om_job.jobid:
+            if not om_job.title:
+                self.log.debug('Skipping job with no title or id on {}.'.format(device.id))
+                return None
+            om_job.jobid = self.prepId('sqljob_{}_{}'.format(om_job.instancename, om_job.title))
+        return om_job
 
     @save
     def process(self, device, results, log):
@@ -510,6 +532,15 @@ class WinMSSQL(WinRMPlugin):
             compname="os",
             modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
             objmaps=results['instances']))
+
+        # send empty oms if no jobs, dbs, backups for an instance
+        for instance in results['instances']:
+            if instance.id not in map_backups_instance_oms:
+                map_backups_instance_oms[instance.id] = []
+            if instance.id not in map_jobs_instance_oms:
+                map_jobs_instance_oms[instance.id] = []
+            if instance.id not in map_dbs_instance_oms:
+                map_dbs_instance_oms[instance.id] = []
 
         for instance, backups in map_backups_instance_oms.items():
             maps.append(RelationshipMap(

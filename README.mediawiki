@@ -1267,6 +1267,23 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.7.8
+* Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
+* Fix Log line for "periodic maintenance" shows in incorrect logs (ZPS-1600)
+* Fix Failed model job does not result in event (ZPS-1608)
+* Fix Performance tables are not created even though performance batch is successful (ZPS-1605)
+* Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)
+
+;2.7.7
+* Fix redundant publishing of service state datapoints (ZPS-1604)
+
+;2.7.6
+* Fix traceback during modeling (ZPS-1599)
+
+;2.7.5
+* Fix Windows ZP uses a lot of RAM when it contains hundreds of components due to checking for IIS (ZPS-1576)
+* Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
+
 ;2.7.3
 * Fix MicrosoftWindows ZP has problems disks/mount points with "\U" in their name. (ZPS-1368)
 * Fix Microsoft Windows: Migrate script takes long time to run, no feedback (ZPS-1473)

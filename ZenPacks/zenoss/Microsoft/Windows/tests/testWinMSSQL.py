@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2014, all rights reserved.
@@ -6,6 +7,8 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
+
+import Globals  # noqa
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject
@@ -56,6 +59,14 @@ RESULTS = dict(clear='Error parsing zDBInstances',
                    version='706'))]
                )
 
+STDOUT_LINES = [
+    "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple",
+    "Name--- rtc_rtc\tDeviceType--- Disk \tPhysicalLocation--- c:\\Backup\\rtc.bak \tStatus---Existing",
+    "jobname--- syspolicy_purge_history \tenabled--- True \tjobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 \tdescription--- No description available. \tdatecreated--- 6/2/2017 6:13:28 PM \tusername--- sa",
+    "jobname--- \tenabled--- \tjobid--- \tdescription--- \tdatecreated--- \tusername--- ",
+    "jobname--- job1 \tenabled--- True \tjobid--- \tdescription--- description \tdatecreated--- \tusername--- sa"
+]
+
 
 class TestProcesses(BaseTestCase):
     def setUp(self):
@@ -65,10 +76,6 @@ class TestProcesses(BaseTestCase):
     def test_process(self):
         data = self.plugin.process(self.device, RESULTS, Mock())
         self.assertEquals(len(data), 5)
-        self.assertEquals(data[0].sqlhostname, 'dbhost0')
-
-        # import pdb
-        # pdb.set_trace()
         self.assertEquals(data[0].sqlhostname, 'dbhost0')
 
         self.assertEquals(data[1].maps[0].title, 'RTC')
@@ -105,3 +112,82 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].systemobject, 'False')
         self.assertEquals(data[4].maps[0].title, 'db0')
         self.assertEquals(data[4].maps[0].version, '706')
+
+        # if empty jobs, backups, or databases we need to send empty list of object maps
+        RESULTS['jobs'] = []
+        RESULTS['backups'] = []
+        RESULTS['databases'] = []
+        data = self.plugin.process(self.device, RESULTS, Mock())
+        for x in xrange(2, 5):
+            self.assertEquals(data[x].maps, [])
+
+    def test_oms(self):
+        self.plugin.log = Mock()
+        db_om = self.plugin.get_db_om(StringAttributeObject(),
+                                      "instance",
+                                      "owner_node",
+                                      "sqlserver",
+                                      STDOUT_LINES[0])
+        self.assertEquals(db_om.id, 'instance1')
+        self.assertEquals(db_om.collation, 'SQL_Latin1_General_CP1_CI_AS')
+        self.assertEquals(db_om.defaultfilegroup, 'PRIMARY')
+        self.assertEquals(db_om.owner, 'sa')
+        self.assertEquals(db_om.cluster_node_server, 'owner_node//sqlserver')
+        self.assertEquals(db_om.createdate, '4/8/2003 9:13:36 AM')
+        self.assertEquals(db_om.instancename, 'id')
+        self.assertEquals(db_om.isaccessible, 'True')
+        self.assertIsNone(db_om.lastbackupdate)
+        self.assertIsNone(db_om.lastlogbackupdate)
+        self.assertEquals(db_om.primaryfilepath, 'C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA')
+        self.assertEquals(db_om.recoverymodel, 'Simple')
+        self.assertEquals(db_om.systemobject, 'True')
+        self.assertEquals(db_om.version, '782')
+        self.assertEquals(db_om.title, 'master')
+        backup_om = self.plugin.get_backup_om(StringAttributeObject(),
+                                              "instance",
+                                              STDOUT_LINES[1])
+        self.assertEquals(backup_om.instancename, 'id')
+        self.assertEquals(backup_om.title, 'rtc_rtc')
+        self.assertEquals(backup_om.devicetype, 'Disk')
+        self.assertEquals(backup_om.physicallocation, 'c:\\Backup\\rtc.bak')
+        self.assertEquals(backup_om.status, 'Existing')
+        good_job_om = self.plugin.get_job_om(StringAttributeObject(),
+                                             "sqlserver",
+                                             StringAttributeObject(),
+                                             "owner_node",
+                                             STDOUT_LINES[2])
+        self.assertEquals(good_job_om.title, 'syspolicy_purge_history')
+        self.assertEquals(good_job_om.enabled, 'Yes')
+        self.assertEquals(good_job_om.instancename, 'id')
+        self.assertEquals(good_job_om.jobid, '6f8d0472-e19a-4e66-9d23-dcbaa0463571')
+        self.assertEquals(good_job_om.description, 'No description available.')
+        self.assertEquals(good_job_om.datecreated, '6/2/2017 6:13:28 PM')
+        self.assertEquals(good_job_om.username, 'sa')
+        self.assertEquals(good_job_om.cluster_node_server, 'owner_node//sqlserver')
+        # check for job with blanks - ZPS-1676
+        bad_job_om = self.plugin.get_job_om(StringAttributeObject(),
+                                            "sqlserver",
+                                            StringAttributeObject(),
+                                            "owner_node",
+                                            STDOUT_LINES[3])
+        self.assertIsNone(bad_job_om)
+        good_job_om = self.plugin.get_job_om(StringAttributeObject(),
+                                             "sqlserver",
+                                             StringAttributeObject(),
+                                             "owner_node",
+                                             STDOUT_LINES[4])
+        self.assertEquals(good_job_om.jobid, 'sqljob_id_job1')
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestProcesses))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

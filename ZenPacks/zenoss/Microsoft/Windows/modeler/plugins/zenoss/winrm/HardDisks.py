@@ -58,23 +58,27 @@ class HardDisks(WinRMPlugin):
             instance_name = '{}'.format(drive.Index)
             try:
                 for partition in partitions[drive.DeviceID]:
-                    utilization += int(partition.Size)
+                    try:
+                        partsize = int(partition.Size)
+                    except (TypeError, ValueError):
+                        partsize = 0
+                    utilization += partsize
                     for volume in volumes[partition.DeviceID]:
                         fs_ids.append(self.prepId(volume.DeviceID))
                         instance_name += ' {}'.format(volume.DeviceID)
             except Exception:
                 log.debug("No partitions for drive {} on {}.".format(instance_name, device.id))
-            freespace = int(drive.Size) - utilization
+            try:
+                size = int(drive.Size)
+            except (TypeError, ValueError):
+                size = 0
+            freespace = size - utilization
             if freespace < 0:
                 freespace = 0
             try:
                 num_partitions = int(drive.Partitions)
             except TypeError:
                 num_partitions = 0
-            try:
-                size = int(drive.Size)
-            except TypeError:
-                size = 0
 
             # drive.SerialNumber could be None.  let's make it ''
             serialNumber = ''

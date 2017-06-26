@@ -119,6 +119,10 @@ classes:
         label: MS Exchange Version
         type: boolean
         default: false
+      is_iis:
+        type: boolean
+        default: false
+        display: false
     impacts:
       - all_filesystems
       - all_processes
@@ -888,7 +892,7 @@ device_classes:
               mseisRPCAveragedLatency:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCAveragedLatency: null}
+                aliases: {mseisrpcaveragedlatency: null}
             counter: \MSExchangeIS\RPC Averaged Latency
           mseisRPCOperationsPerSec:
             type: Windows Perfmon
@@ -897,7 +901,7 @@ device_classes:
               mseisRPCOperationsPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCOperations__sec: null}
+                aliases: {mseisrpcoperations__sec: null}
             counter: \MSExchangeIS\RPC Operations/sec
           smtpServerLocalQueueLength:
             type: Windows Perfmon
@@ -906,7 +910,7 @@ device_classes:
               smtpServerLocalQueueLength:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {smtpServerLocalQueueLength: null}
+                aliases: {smtpserverlocalqueuelength: null}
             counter: \SMTP Server(_Total)\Local Queue Length
           smtpServerMessagesDeliveredPerSec:
             type: Windows Perfmon
@@ -915,7 +919,7 @@ device_classes:
               smtpServerMessagesDeliveredPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {smtpServerMsgsDelivered__sec: null}
+                aliases: {smtpservermsgsdelivered__sec: null}
             counter: \SMTP Server(_Total)\Messages Delivered/sec
           mseisMailboxLocalDeliveryRate:
             type: Windows Perfmon
@@ -924,7 +928,7 @@ device_classes:
               mseisMailboxLocalDeliveryRate:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxLocalDeliveryRate: null}
+                aliases: {mseismailboxlocaldeliveryrate: null}
             counter: \MSExchangeIS Mailbox(_Total)\Local delivery rate
           mseisMailboxMessageOpensPerSec:
             type: Windows Perfmon
@@ -933,7 +937,7 @@ device_classes:
               mseisMailboxMessageOpensPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxMessageOpens__sec: null}
+                aliases: {mseismailboxmessageopens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
           mseisRPCRequests:
             type: Windows Perfmon
@@ -942,7 +946,7 @@ device_classes:
               mseisRPCRequests:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCRequests: null}
+                aliases: {mseisrpcrequests: null}
             counter: \MSExchangeIS\RPC Requests
           mseisMailboxFolderOpensPerSec:
             type: Windows Perfmon
@@ -951,7 +955,7 @@ device_classes:
               mseisMailboxFolderOpensPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxFolderOpens__sec: null}
+                aliases: {mseismailboxfolderopens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
         graphs:
           Exchange - Mailbox Operations:
@@ -1012,7 +1016,7 @@ device_classes:
             datapoints:
               mseisRPCAveragedLatency:
                 rrdtype: GAUGE
-                aliases: {mseisRPCAveragedLatency: null}
+                aliases: {mseisrpcaveragedlatency: null}
             counter: \MSExchangeIS\RPC Averaged Latency
           mseisRPCOperationsPerSec:
             type: Windows Perfmon
@@ -1020,7 +1024,7 @@ device_classes:
             datapoints:
               mseisRPCOperationsPerSec:
                 rrdtype: GAUGE
-                aliases: {mseisRPCOperations__sec: null}
+                aliases: {mseisrpcoperations__sec: null}
             counter: \MSExchangeIS\RPC Operations/sec
           smtpServerLocalQueueLength:
             type: Windows Perfmon
@@ -1028,7 +1032,7 @@ device_classes:
             datapoints:
               smtpServerLocalQueueLength:
                 rrdtype: GAUGE
-                aliases: {smtpServerLocalQueueLength: null}
+                aliases: {smtpserverlocalqueuelength: null}
             counter: \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue
               Length
           smtpServerMessagesDeliveredPerSec:
@@ -1037,7 +1041,7 @@ device_classes:
             datapoints:
               smtpServerMessagesDeliveredPerSec:
                 rrdtype: GAUGE
-                aliases: {smtpServerMsgsDelivered__sec: null}
+                aliases: {smtpservermsgsdelivered__sec: null}
             counter: \MSExchangeTransport SmtpSend(_Total)\Messages Sent/sec
           mseisMailboxLocalDeliveryRate:
             type: Windows Perfmon
@@ -1045,7 +1049,7 @@ device_classes:
             datapoints:
               mseisMailboxLocalDeliveryRate:
                 rrdtype: GAUGE
-                aliases: {mseisMailboxLocalDeliveryRate: null}
+                aliases: {mseismailboxlocaldeliveryrate: null}
             counter: \MSExchangeIS Mailbox(_Total)\Local delivery rate
           mseisMailboxMessageOpensPerSec:
             type: Windows Perfmon
@@ -1053,7 +1057,7 @@ device_classes:
             datapoints:
               mseisMailboxMessageOpensPerSec:
                 rrdtype: GAUGE
-                aliases: {mseisMailboxMessageOpens__sec: null}
+                aliases: {mseismailboxmessageopens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Message Opens/sec
           mseisRPCRequests:
             type: Windows Perfmon
@@ -1061,7 +1065,7 @@ device_classes:
             datapoints:
               mseisRPCRequests:
                 rrdtype: GAUGE
-                aliases: {mseisRPCRequests: null}
+                aliases: {mseisrpcrequests: null}
             counter: \MSExchangeIS\RPC Requests
           mseisMailboxFolderOpensPerSec:
             type: Windows Perfmon
@@ -1069,7 +1073,7 @@ device_classes:
             datapoints:
               mseisMailboxFolderOpensPerSec:
                 rrdtype: GAUGE
-                aliases: {mseisMailboxFolderOpens__sec: null}
+                aliases: {mseismailboxfolderopens__sec: null}
             counter: \MSExchangeIS Mailbox(_Total)\Folder opens/sec
         graphs:
           Exchange - Mailbox Operations:
@@ -1131,7 +1135,7 @@ device_classes:
               iisPostRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisPostRequests__sec: null}
+                aliases: {iispostrequests__sec: null}
             counter: \Web Service(_Total)\Post Requests/sec
           iisISAPIExtensionRequests:
             type: Windows Perfmon
@@ -1140,7 +1144,7 @@ device_classes:
               iisISAPIExtensionRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisISAPIExtensionRequests__sec: null}
+                aliases: {iisisapiextensionrequests__sec: null}
             counter: \Web Service(_Total)\ISAPI Extension Requests/sec
           iisGetRequests:
             type: Windows Perfmon
@@ -1149,7 +1153,7 @@ device_classes:
               iisGetRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisGetRequests__sec: null}
+                aliases: {iisgetrequests__sec: null}
             counter: \Web Service(_Total)\Get Requests/sec
           iisLockRequests:
             type: Windows Perfmon
@@ -1158,7 +1162,7 @@ device_classes:
               iisLockRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisLockRequests__sec: null}
+                aliases: {iislockrequests__sec: null}
             counter: \Web Service(_Total)\Lock Requests/sec
           iisFilesReceived:
             type: Windows Perfmon
@@ -1167,7 +1171,7 @@ device_classes:
               iisFilesReceived:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisFilesReceived__sec: null}
+                aliases: {iisfilesreceived__sec: null}
             counter: \Web Service(_Total)\Files Received/sec
           iisCopyRequests:
             type: Windows Perfmon
@@ -1176,7 +1180,7 @@ device_classes:
               iisCopyRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisCopyRequests__sec: null}
+                aliases: {iiscopyrequests__sec: null}
             counter: \Web Service(_Total)\Copy Requests/sec
           iisConnectionAttempts:
             type: Windows Perfmon
@@ -1185,7 +1189,7 @@ device_classes:
               iisConnectionAttempts:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisConnectionAttempts__sec: null}
+                aliases: {iisconnectionattempts__sec: null}
             counter: \Web Service(_Total)\Connection Attempts/sec
           iisOtherRequestMethods:
             type: Windows Perfmon
@@ -1194,7 +1198,7 @@ device_classes:
               iisOtherRequestMethods:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisOtherRequestMethods__sec: null}
+                aliases: {iisotherrequestmethods__sec: null}
             counter: \Web Service(_Total)\Other Request Methods/sec
           iisUnlockRequests:
             type: Windows Perfmon
@@ -1203,7 +1207,7 @@ device_classes:
               iisUnlockRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisUnlockRequests__sec: null}
+                aliases: {iisunlockrequests__sec: null}
             counter: \Web Service(_Total)\Unlock Requests/sec
           iisSearchRequests:
             type: Windows Perfmon
@@ -1212,7 +1216,7 @@ device_classes:
               iisSearchRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisSearchRequests__sec: null}
+                aliases: {iissearchrequests__sec: null}
             counter: \Web Service(_Total)\Search Requests/sec
           iisTraceRequests:
             type: Windows Perfmon
@@ -1221,7 +1225,7 @@ device_classes:
               iisTraceRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisTraceRequests__sec: null}
+                aliases: {iistracerequests__sec: null}
             counter: \Web Service(_Total)\Trace Requests/sec
           iisDeleteRequests:
             type: Windows Perfmon
@@ -1230,7 +1234,7 @@ device_classes:
               iisDeleteRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisDeleteRequests__sec: null}
+                aliases: {iisdeleterequests__sec: null}
             counter: \Web Service(_Total)\Delete Requests/sec
           iisPropfindRequests:
             type: Windows Perfmon
@@ -1239,7 +1243,7 @@ device_classes:
               iisPropfindRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisPropfindRequests__sec: null}
+                aliases: {iispropfindrequests__sec: null}
             counter: \Web Service(_Total)\Propfind Requests/sec
           iisMkcolRequests:
             type: Windows Perfmon
@@ -1248,7 +1252,7 @@ device_classes:
               iisMkcolRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisMkcolRequests__sec: null}
+                aliases: {iismkcolrequests__sec: null}
             counter: \Web Service(_Total)\Mkcol Requests/sec
           iisMoveRequests:
             type: Windows Perfmon
@@ -1257,7 +1261,7 @@ device_classes:
               iisMoveRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisMoveRequests__sec: null}
+                aliases: {iismoverequests__sec: null}
             counter: \Web Service(_Total)\Move Requests/sec
           iisOptionsRequests:
             type: Windows Perfmon
@@ -1266,7 +1270,7 @@ device_classes:
               iisOptionsRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisOptionsRequests__sec: null}
+                aliases: {iisoptionsrequests__sec: null}
             counter: \Web Service(_Total)\Options Requests/sec
           iisPutRequests:
             type: Windows Perfmon
@@ -1275,7 +1279,7 @@ device_classes:
               iisPutRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisPutRequests__sec: null}
+                aliases: {iisputrequests__sec: null}
             counter: \Web Service(_Total)\Put Requests/sec
           iisBytesSent:
             type: Windows Perfmon
@@ -1284,7 +1288,7 @@ device_classes:
               iisBytesSent:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisSent__bytes: null}
+                aliases: {iissent__bytes: null}
             counter: \Web Service(_Total)\Bytes Sent/sec
           iisCurrentConnections:
             type: Windows Perfmon
@@ -1293,7 +1297,7 @@ device_classes:
               iisCurrentConnections:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisCurrentConnections: null}
+                aliases: {iiscurrentconnections: null}
             counter: \Web Service(_Total)\Current Connections
           iisFilesSent:
             type: Windows Perfmon
@@ -1302,7 +1306,7 @@ device_classes:
               iisFilesSent:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisFilesSent__sec: null}
+                aliases: {iisfilessent__sec: null}
             counter: \Web Service(_Total)\Files Sent/sec
           iisBytesReceived:
             type: Windows Perfmon
@@ -1311,7 +1315,7 @@ device_classes:
               iisBytesReceived:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisReceived__bytes: null}
+                aliases: {iisreceived__bytes: null}
             counter: \Web Service(_Total)\Bytes Received/sec
           iisProppatchRequests:
             type: Windows Perfmon
@@ -1320,7 +1324,7 @@ device_classes:
               iisProppatchRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisProppatchRequests__sec: null}
+                aliases: {iisproppatchrequests__sec: null}
             counter: \Web Service(_Total)\Proppatch Requests/sec
           iisCGIRequests:
             type: Windows Perfmon
@@ -1329,7 +1333,7 @@ device_classes:
               iisCGIRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisCGIRequests: null}
+                aliases: {iiscgirequests: null}
             counter: \Web Service(_Total)\CGI Requests/sec
           iisHeadRequests:
             type: Windows Perfmon
@@ -1338,7 +1342,7 @@ device_classes:
               iisHeadRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {iisHeadRequests__sec: null}
+                aliases: {iisheadrequests__sec: null}
             counter: \Web Service(_Total)\Head Requests/sec
         graphs:
           IIS - Connections:
@@ -2051,7 +2055,7 @@ device_classes:
               LogFileSize:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {logSize__kbytes: null}
+                aliases: {logsize__kbytes: null}
             cycletime: '300'
             resource: Log File(s) Size (KB)
             strategy: powershell MSSQL
@@ -2070,7 +2074,7 @@ device_classes:
               CacheHitRatio:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {cacheHitRatio__pct: null}
+                aliases: {cachehitratio__pct: null}
             cycletime: '300'
             resource: Cache Hit Ratio
             strategy: powershell MSSQL
@@ -2080,7 +2084,7 @@ device_classes:
               LogCacheHitRatio:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logCacheHitRatio__pct: null}
+                aliases: {logcachehitratio__pct: null}
             cycletime: '300'
             resource: Log Cache Hit Ratio
             strategy: powershell MSSQL
@@ -2090,7 +2094,7 @@ device_classes:
               CacheEntriesCount:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {cacheEntries: null}
+                aliases: {cacheentries: null}
             cycletime: '300'
             resource: Cache Entries Count
             strategy: powershell MSSQL
@@ -2109,7 +2113,7 @@ device_classes:
               DBCCLogicalScanBytesSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {DBCCLogicalScanBytes__sec: null}
+                aliases: {dbcclogicalscanbytes__sec: null}
             cycletime: '300'
             resource: DBCC Logical Scan Bytes/sec
             strategy: powershell MSSQL
@@ -2128,7 +2132,7 @@ device_classes:
               ShrinkDataMovementBytesSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {shrinkDataMovementBytes__sec: null}
+                aliases: {shrinkdatamovementbytes__sec: null}
             cycletime: '300'
             resource: Shrink Data Movement Bytes/sec
             strategy: powershell MSSQL
@@ -2138,7 +2142,7 @@ device_classes:
               PercentLogUsed:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {logUsed__pct: null}
+                aliases: {logused__pct: null}
             cycletime: '300'
             resource: Percent Log Used
             strategy: powershell MSSQL
@@ -2148,7 +2152,7 @@ device_classes:
               BulkCopyRowsSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {bulkCopyRows__sec: null}
+                aliases: {bulkcopyrows__sec: null}
             cycletime: '300'
             resource: Bulk Copy Rows/sec
             strategy: powershell MSSQL
@@ -2158,7 +2162,7 @@ device_classes:
               LogFileUsedSize:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {logSizeUsed__kbytes: null}
+                aliases: {logsizeused__kbytes: null}
             cycletime: '300'
             resource: Log File(s) Used Size (KB)
             strategy: powershell MSSQL
@@ -2168,7 +2172,7 @@ device_classes:
               LogGrowths:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logGrowths__sec: null}
+                aliases: {loggrowths__sec: null}
             cycletime: '300'
             resource: Log Growths
             strategy: powershell MSSQL
@@ -2178,7 +2182,7 @@ device_classes:
               LogTruncations:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logTruncations__sec: null}
+                aliases: {logtruncations__sec: null}
             cycletime: '300'
             resource: Log Truncations
             strategy: powershell MSSQL
@@ -2188,7 +2192,7 @@ device_classes:
               LogFlushWaitTime:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {logFlushWaitTime__sec: null}
+                aliases: {logflushwaittime__sec: null}
             cycletime: '300'
             resource: Log Flush Wait Time
             strategy: powershell MSSQL
@@ -2198,7 +2202,7 @@ device_classes:
               LogShrinks:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logShrinks__sec: null}
+                aliases: {logshrinks__sec: null}
             cycletime: '300'
             resource: Log Shrinks
             strategy: powershell MSSQL
@@ -2208,7 +2212,7 @@ device_classes:
               BulkCopyThroughputSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {bulkCopyThroughput__sec: null}
+                aliases: {bulkcopythroughput__sec: null}
             cycletime: '300'
             resource: Bulk Copy Throughput/sec
             strategy: powershell MSSQL
@@ -2218,7 +2222,7 @@ device_classes:
               LogBytesFlushedSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logBytesFlushed__sec: null}
+                aliases: {logbytesflushed__sec: null}
             cycletime: '300'
             resource: Log Bytes Flushed/sec
             strategy: powershell MSSQL
@@ -2228,7 +2232,7 @@ device_classes:
               LogFlushesSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logFlushes__sec: null}
+                aliases: {logflushes__sec: null}
             cycletime: '300'
             resource: Log Flushes/sec
             strategy: powershell MSSQL
@@ -2257,7 +2261,7 @@ device_classes:
               CacheEntriesPinnedCount:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {cacheEntriesPinned: null}
+                aliases: {cacheentriespinned: null}
             cycletime: '300'
             resource: Cache Entries Pinned Count
             strategy: powershell MSSQL
@@ -2267,7 +2271,7 @@ device_classes:
               ActiveTransactions:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {activeTransactions: null}
+                aliases: {activetransactions: null}
             cycletime: '300'
             resource: Active Transactions
             strategy: powershell MSSQL
@@ -2277,7 +2281,7 @@ device_classes:
               BackupRestoreThroughputSec:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {backupRestoreThroughput__sec: null}
+                aliases: {backuprestorethroughput__sec: null}
             cycletime: '300'
             resource: Backup/Restore Throughput/sec
             strategy: powershell MSSQL
@@ -2287,7 +2291,7 @@ device_classes:
               DataFileSize:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {fileSize__kbytes: null}
+                aliases: {filesize__kbytes: null}
             cycletime: '300'
             resource: Data File(s) Size (KB)
             strategy: powershell MSSQL
@@ -2297,7 +2301,7 @@ device_classes:
               ReplTransRate:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {replTransactions__sec: null}
+                aliases: {repltransactions__sec: null}
             cycletime: '300'
             resource: Repl. Trans. Rate
             strategy: powershell MSSQL
@@ -2307,7 +2311,7 @@ device_classes:
               LogCacheHitRatioBase:
                 rrdtype: DERIVE
                 rrdmin: 0
-                aliases: {logCacheHitRatioBase__pct: null}
+                aliases: {logcachehitratiobase__pct: null}
             cycletime: '300'
             resource: Log Cache Hit Ratio Base
             strategy: powershell MSSQL
@@ -2500,7 +2504,7 @@ device_classes:
             datapoints:
               DiskReadTime:
                 rrdtype: GAUGE
-                aliases: {diskReadTime: null}
+                aliases: {diskreadtime: null}
             counter: \% Disk Read Time
           DiskWriteBytesSec:
             type: Windows Perfmon
@@ -2508,7 +2512,7 @@ device_classes:
             datapoints:
               DiskWriteBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskWriteBytes__sec: null}
+                aliases: {diskwritebytes__sec: null}
             counter: \Disk Write Bytes/sec
           DiskWriteTime:
             type: Windows Perfmon
@@ -2516,7 +2520,7 @@ device_classes:
             datapoints:
               DiskWriteTime:
                 rrdtype: GAUGE
-                aliases: {diskWriteTime: null}
+                aliases: {diskwritetime: null}
             counter: \% Disk Write Time
           DiskReadBytesSec:
             type: Windows Perfmon
@@ -2524,7 +2528,7 @@ device_classes:
             datapoints:
               DiskReadBytesSec:
                 rrdtype: GAUGE
-                aliases: {diskReadBytes__sec: null}
+                aliases: {diskreadbytes__sec: null}
             counter: \Disk Read Bytes/sec
           FreeMegabytes:
             type: Windows Perfmon
@@ -2532,7 +2536,7 @@ device_classes:
             datapoints:
               FreeMegabytes:
                 rrdtype: GAUGE
-                aliases: {usedFilesystemSpace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
+                aliases: {usedfilesystemspace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
             counter: \Free Megabytes
         graphs:
           Utilization:
@@ -2602,7 +2606,7 @@ device_classes:
             datapoints:
               MemoryAvailableBytes:
                 rrdtype: GAUGE
-                aliases: {memoryAvailable__bytes: null}
+                aliases: {memoryavailable__bytes: null}
             counter: \Memory\Available bytes
           ProcessorTotalProcessorTime:
             type: Windows Perfmon
@@ -2749,7 +2753,7 @@ device_classes:
               ldapNewConnectionsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapNewConnections__sec: null}
+                aliases: {ldapnewconnections__sec: null}
             counter: \NTDS\LDAP New Connections/sec
           ldapSuccessfulBinds:
             type: Windows Perfmon
@@ -2758,7 +2762,7 @@ device_classes:
               ldapSuccessfulBinds:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapSuccessfulBinds: null}
+                aliases: {ldapsuccessfulbinds: null}
             counter: \NTDS\LDAP Successful Binds/sec
           dsSearchSuboperationsSec:
             type: Windows Perfmon
@@ -2767,7 +2771,7 @@ device_classes:
               dsSearchSuboperationsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsSearchSuboperations__sec: null}
+                aliases: {dssearchsuboperations__sec: null}
             counter: \NTDS\DS Search sub-operations/sec
           dsThreadsInUse:
             type: Windows Perfmon
@@ -2776,7 +2780,7 @@ device_classes:
               dsThreadsInUse:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsThreadsInUse: null}
+                aliases: {dsthreadsinuse: null}
             counter: \NTDS\DS Threads in Use
           ldapBindTime:
             type: Windows Perfmon
@@ -2785,7 +2789,7 @@ device_classes:
               ldapBindTime:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapBindTime: null}
+                aliases: {ldapbindtime: null}
             counter: \NTDS\LDAP Bind Time
           kdcTgsRequests:
             type: Windows Perfmon
@@ -2794,7 +2798,7 @@ device_classes:
               kdcTgsRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {kdcTgsRequests: null}
+                aliases: {kdctgsrequests: null}
             counter: \Security System-Wide Statistics\KDC TGS Requests
           SystemLog:
             type: Windows Shell
@@ -2828,7 +2832,7 @@ device_classes:
               dsServerNameTranslationsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsServerNameTranslations__sec: null}
+                aliases: {dsservernametranslations__sec: null}
             counter: \NTDS\DS Server Name Translations/sec
           MachineAccount:
             type: Windows Shell
@@ -2843,7 +2847,7 @@ device_classes:
               dsServerBindsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsServerBinds__sec: null}
+                aliases: {dsserverbinds__sec: null}
             counter: \NTDS\DS Server Binds/sec
           FSMOCheck:
             type: Windows Shell
@@ -2858,7 +2862,7 @@ device_classes:
               dsDirectoryReadsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsDirectoryReads__sec: null}
+                aliases: {dsdirectoryreads__sec: null}
             counter: \NTDS\DS Directory Reads/sec
           DFSREvent:
             type: Windows Shell
@@ -2873,7 +2877,7 @@ device_classes:
               ldapActiveThreads:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapActiveThreads: null}
+                aliases: {ldapactivethreads: null}
             counter: \NTDS\LDAP Active Threads
           ntlmAuthentications:
             type: Windows Perfmon
@@ -2882,7 +2886,7 @@ device_classes:
               ntlmAuthentications:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ntlmAuthentications: null}
+                aliases: {ntlmauthentications: null}
             counter: \Security System-Wide Statistics\NTLM Authentications
           LocatorCheck:
             type: Windows Shell
@@ -2903,7 +2907,7 @@ device_classes:
               dsClientBindsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsClientBinds__sec: null}
+                aliases: {dsclientbinds__sec: null}
             counter: \NTDS\DS Client Binds/sec
           kdcAsRequests:
             type: Windows Perfmon
@@ -2912,7 +2916,7 @@ device_classes:
               kdcAsRequests:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {kdcAsRequests: null}
+                aliases: {kdcasrequests: null}
             counter: \Security System-Wide Statistics\KDC AS Requests
           VerifyEnterpriseReferences:
             type: Windows Shell
@@ -2927,7 +2931,7 @@ device_classes:
               dsDirectoryWritesSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsDirectoryWrites__sec: null}
+                aliases: {dsdirectorywrites__sec: null}
             counter: \NTDS\DS Directory Writes/sec
           Services:
             type: Windows Shell
@@ -2942,7 +2946,7 @@ device_classes:
               ldapWritesSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapWrites__sec: null}
+                aliases: {ldapwrites__sec: null}
             counter: \NTDS\LDAP Writes/sec
           SysVolCheck:
             type: Windows Shell
@@ -2963,7 +2967,7 @@ device_classes:
               kerberosAuthentications:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {kerberosAuthentications: null}
+                aliases: {kerberosauthentications: null}
             counter: \Security System-Wide Statistics\Kerberos Authentications
           ldapClientSessions:
             type: Windows Perfmon
@@ -2972,7 +2976,7 @@ device_classes:
               ldapClientSessions:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapClientSessions: null}
+                aliases: {ldapclientsessions: null}
             counter: \NTDS\LDAP Client Sessions
           CrossRefValidation:
             type: Windows Shell
@@ -2987,7 +2991,7 @@ device_classes:
               ldapSearchesSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapSearches__sec: null}
+                aliases: {ldapsearches__sec: null}
             counter: \NTDS\LDAP Searches/sec
           Replications:
             type: Windows Shell
@@ -3002,7 +3006,7 @@ device_classes:
               ldapUdpOperationsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapUdpOperations__sec: null}
+                aliases: {ldapudpoperations__sec: null}
             counter: \NTDS\LDAP UDP operations/sec
           Advertising:
             type: Windows Shell
@@ -3023,7 +3027,7 @@ device_classes:
               ldapNewSSLConnectionsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapNewSSLConnections__sec: null}
+                aliases: {ldapnewsslconnections__sec: null}
             counter: \NTDS\LDAP New SSL Connections/sec
           VerifyReferences:
             type: Windows Shell
@@ -3038,7 +3042,7 @@ device_classes:
               ldapClosedConnectionsSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {ldapClosedConnections__sec: null}
+                aliases: {ldapclosedconnections__sec: null}
             counter: \NTDS\LDAP Closed Connections/sec
           CheckSDRefDom:
             type: Windows Shell
@@ -3053,7 +3057,7 @@ device_classes:
               dsNotifyQueueSize:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsNotifyQueueSize: null}
+                aliases: {dsnotifyqueuesize: null}
             counter: \NTDS\DS Notify Queue Size
           dsNameCacheHitRate:
             type: Windows Perfmon
@@ -3062,7 +3066,7 @@ device_classes:
               dsNameCacheHitRate:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsNameCacheHitRate__pct: null}
+                aliases: {dsnamecachehitrate__pct: null}
             counter: \NTDS\DS Name Cache hit rate
           RidManager:
             type: Windows Shell
@@ -3089,7 +3093,7 @@ device_classes:
               dsDirectorySearchesSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {dsDirectorySearches__sec: null}
+                aliases: {dsdirectorysearches__sec: null}
             counter: \NTDS\DS Directory Searches/sec
           ObjectsReplicated:
             type: Windows Shell
@@ -3268,7 +3272,7 @@ device_classes:
               mseisRPCAveragedLatency:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCAveragedLatency: null}
+                aliases: {mseisrpcaveragedlatency: null}
             counter: \MSExchange Store Interface(_Total)\RPC Latency average (msec)
           mseisRPCOperationsPerSec:
             type: Windows Perfmon
@@ -3277,7 +3281,7 @@ device_classes:
               mseisRPCOperationsPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCOperations__sec: null}
+                aliases: {mseisrpcoperations__sec: null}
             counter: \MSExchange Store Interface(_Total)\RPC Requests sent/sec
           smtpServerLocalQueueLength:
             type: Windows Perfmon
@@ -3286,7 +3290,7 @@ device_classes:
               smtpServerLocalQueueLength:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {smtpServerLocalQueueLength: null}
+                aliases: {smtpserverlocalqueuelength: null}
             counter: \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue
               Length
           smtpServerMessagesDeliveredPerSec:
@@ -3296,7 +3300,7 @@ device_classes:
               smtpServerMessagesDeliveredPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {smtpServerMsgsDelivered__sec: null}
+                aliases: {smtpservermsgsdelivered__sec: null}
             counter: \MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
           mseisMailboxLocalDeliveryRate:
             type: Windows Perfmon
@@ -3305,7 +3309,7 @@ device_classes:
               mseisMailboxLocalDeliveryRate:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxLocalDeliveryRate: null}
+                aliases: {mseismailboxlocaldeliveryrate: null}
             counter: \MSExchangeIS Store(_Total)\Messages Delivered/sec
           mseisMailboxMessageOpensPerSec:
             type: Windows Perfmon
@@ -3314,7 +3318,7 @@ device_classes:
               mseisMailboxMessageOpensPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxMessageOpens__sec: null}
+                aliases: {mseismailboxmessageopens__sec: null}
             counter: \MSExchangeIS Store(_Total)\Messages opened/sec
           mseisRPCRequests:
             type: Windows Perfmon
@@ -3323,7 +3327,7 @@ device_classes:
               mseisRPCRequests:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisRPCRequests: null}
+                aliases: {mseisrpcrequests: null}
             counter: \MSExchange Store Interface(_Total)\RPC Requests sent
           mseisMailboxFolderOpensPerSec:
             type: Windows Perfmon
@@ -3332,7 +3336,7 @@ device_classes:
               mseisMailboxFolderOpensPerSec:
                 rrdtype: GAUGE
                 description: Microsoft Exchange monitoring.
-                aliases: {mseisMailboxFolderOpens__sec: null}
+                aliases: {mseismailboxfolderopens__sec: null}
             counter: \MSExchangeIS Store(_Total)\Folders opened/sec
         graphs:
           Exchange - Mailbox Operations:
@@ -3398,7 +3402,7 @@ device_classes:
             datapoints:
               iisPostRequests:
                 rrdtype: GAUGE
-                aliases: {iisSitePostRequests__sec: null}
+                aliases: {iissitepostrequests__sec: null}
             counter: \Web Service(${here/sitename})\Post Requests/sec
           iisISAPIExtensionRequests:
             type: Windows Perfmon
@@ -3406,7 +3410,7 @@ device_classes:
             datapoints:
               iisISAPIExtensionRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteISAPIExtensionReqs__sec: null}
+                aliases: {iissiteisapiextensionreqs__sec: null}
             counter: \Web Service(${here/sitename})\ISAPI Extension Requests/sec
           iisGetRequests:
             type: Windows Perfmon
@@ -3414,7 +3418,7 @@ device_classes:
             datapoints:
               iisGetRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteGetRequests__sec: null}
+                aliases: {iissitegetrequests__sec: null}
             counter: \Web Service(${here/sitename})\Get Requests/sec
           iisLockRequests:
             type: Windows Perfmon
@@ -3422,7 +3426,7 @@ device_classes:
             datapoints:
               iisLockRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteLockRequests__sec: null}
+                aliases: {iissitelockrequests__sec: null}
             counter: \Web Service(${here/sitename})\Lock Requests/sec
           iisFilesReceived:
             type: Windows Perfmon
@@ -3430,7 +3434,7 @@ device_classes:
             datapoints:
               iisFilesReceived:
                 rrdtype: GAUGE
-                aliases: {iisSiteFilesReceived__sec: null}
+                aliases: {iissitefilesreceived__sec: null}
             counter: \Web Service(${here/sitename})\Files Received/sec
           iisCopyRequests:
             type: Windows Perfmon
@@ -3438,7 +3442,7 @@ device_classes:
             datapoints:
               iisCopyRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteCopyRequests__sec: null}
+                aliases: {iissitecopyrequests__sec: null}
             counter: \Web Service(${here/sitename})\Copy Requests/sec
           iisConnectionAttempts:
             type: Windows Perfmon
@@ -3446,7 +3450,7 @@ device_classes:
             datapoints:
               iisConnectionAttempts:
                 rrdtype: GAUGE
-                aliases: {iisSiteConnectionAttempts__sec: null}
+                aliases: {iissiteconnectionattempts__sec: null}
             counter: \Web Service(${here/sitename})\Connection Attempts/sec
           iisOtherRequestMethods:
             type: Windows Perfmon
@@ -3454,7 +3458,7 @@ device_classes:
             datapoints:
               iisOtherRequestMethods:
                 rrdtype: GAUGE
-                aliases: {iisSiteOtherRequestMethods__sec: null}
+                aliases: {iissiteotherrequestmethods__sec: null}
             counter: \Web Service(${here/sitename})\Other Request Methods/sec
           iisUnlockRequests:
             type: Windows Perfmon
@@ -3462,7 +3466,7 @@ device_classes:
             datapoints:
               iisUnlockRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteUnlockRequests__sec: null}
+                aliases: {iissiteunlockrequests__sec: null}
             counter: \Web Service(${here/sitename})\Unlock Requests/sec
           iisSearchRequests:
             type: Windows Perfmon
@@ -3470,7 +3474,7 @@ device_classes:
             datapoints:
               iisSearchRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteSearchRequests__sec: null}
+                aliases: {iissitesearchrequests__sec: null}
             counter: \Web Service(${here/sitename})\Search Requests/sec
           iisTraceRequests:
             type: Windows Perfmon
@@ -3478,7 +3482,7 @@ device_classes:
             datapoints:
               iisTraceRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteTraceRequests__sec: null}
+                aliases: {iissitetracerequests__sec: null}
             counter: \Web Service(${here/sitename})\Trace Requests/sec
           iisDeleteRequests:
             type: Windows Perfmon
@@ -3486,7 +3490,7 @@ device_classes:
             datapoints:
               iisDeleteRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteDeleteRequests__sec: null}
+                aliases: {iissitedeleterequests__sec: null}
             counter: \Web Service(${here/sitename})\Delete Requests/sec
           iisPropfindRequests:
             type: Windows Perfmon
@@ -3494,7 +3498,7 @@ device_classes:
             datapoints:
               iisPropfindRequests:
                 rrdtype: GAUGE
-                aliases: {iisSitePropfindRequests__sec: null}
+                aliases: {iissitepropfindrequests__sec: null}
             counter: \Web Service(${here/sitename})\Propfind Requests/sec
           iisMkcolRequests:
             type: Windows Perfmon
@@ -3502,7 +3506,7 @@ device_classes:
             datapoints:
               iisMkcolRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteMkcolRequests__sec: null}
+                aliases: {iissitemkcolrequests__sec: null}
             counter: \Web Service(${here/sitename})\Mkcol Requests/sec
           iisMoveRequests:
             type: Windows Perfmon
@@ -3510,7 +3514,7 @@ device_classes:
             datapoints:
               iisMoveRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteMoveRequests__sec: null}
+                aliases: {iissitemoverequests__sec: null}
             counter: \Web Service(${here/sitename})\Move Requests/sec
           iisOptionsRequests:
             type: Windows Perfmon
@@ -3518,7 +3522,7 @@ device_classes:
             datapoints:
               iisOptionsRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteOptionsRequests__sec: null}
+                aliases: {iissiteoptionsrequests__sec: null}
             counter: \Web Service(${here/sitename})\Options Requests/sec
           iisPutRequests:
             type: Windows Perfmon
@@ -3526,7 +3530,7 @@ device_classes:
             datapoints:
               iisPutRequests:
                 rrdtype: GAUGE
-                aliases: {iisSitePutRequests__sec: null}
+                aliases: {iissiteputrequests__sec: null}
             counter: \Web Service(${here/sitename})\Put Requests/sec
           iisBytesSent:
             type: Windows Perfmon
@@ -3534,7 +3538,7 @@ device_classes:
             datapoints:
               iisBytesSent:
                 rrdtype: GAUGE
-                aliases: {iisSiteSent__bytes: null}
+                aliases: {iissitesent__bytes: null}
             counter: \Web Service(${here/sitename})\Bytes Sent/sec
           iisCurrentConnections:
             type: Windows Perfmon
@@ -3542,7 +3546,7 @@ device_classes:
             datapoints:
               iisCurrentConnections:
                 rrdtype: GAUGE
-                aliases: {iisSiteCurrentConnections: null}
+                aliases: {iissitecurrentconnections: null}
             counter: \Web Service(${here/sitename})\Current Connections
           iisFilesSent:
             type: Windows Perfmon
@@ -3550,7 +3554,7 @@ device_classes:
             datapoints:
               iisFilesSent:
                 rrdtype: GAUGE
-                aliases: {iisSiteFilesSent__sec: null}
+                aliases: {iissitefilessent__sec: null}
             counter: \Web Service(${here/sitename})\Files Sent/sec
           iisBytesReceived:
             type: Windows Perfmon
@@ -3558,7 +3562,7 @@ device_classes:
             datapoints:
               iisBytesReceived:
                 rrdtype: GAUGE
-                aliases: {iisSiteReceived__bytes: null}
+                aliases: {iissitereceived__bytes: null}
             counter: \Web Service(${here/sitename})\Bytes Received/sec
           iisProppatchRequests:
             type: Windows Perfmon
@@ -3566,7 +3570,7 @@ device_classes:
             datapoints:
               iisProppatchRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteProppatchRequests__sec: null}
+                aliases: {iissiteproppatchrequests__sec: null}
             counter: \Web Service(${here/sitename})\Proppatch Requests/sec
           iisCGIRequests:
             type: Windows Perfmon
@@ -3574,7 +3578,7 @@ device_classes:
             datapoints:
               iisCGIRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteCGIRequests: null}
+                aliases: {iissitecgirequests: null}
             counter: \Web Service(${here/sitename})\CGI Requests/sec
           iisHeadRequests:
             type: Windows Perfmon
@@ -3582,7 +3586,7 @@ device_classes:
             datapoints:
               iisHeadRequests:
                 rrdtype: GAUGE
-                aliases: {iisSiteHeadRequests__sec: null}
+                aliases: {iissiteheadrequests__sec: null}
             counter: \Web Service(${here/sitename})\Head Requests/sec
         graphs:
           IIS - Connections:
@@ -3733,7 +3737,7 @@ device_classes:
             datapoints:
               bytesSentSec:
                 rrdtype: GAUGE
-                aliases: {outputOctets__bytes: null}
+                aliases: {outputoctets__bytes: null}
             counter: \Bytes Sent/sec
           packetsReceivedErrors:
             type: Windows Perfmon
@@ -3741,7 +3745,7 @@ device_classes:
             datapoints:
               packetsReceivedErrors:
                 rrdtype: GAUGE
-                aliases: {ifInErrors: null}
+                aliases: {ifinerrors: null}
             counter: \Packets Received Errors
           packetsSentSec:
             type: Windows Perfmon
@@ -3750,7 +3754,7 @@ device_classes:
               packetsSentSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {packetsSent__sec: null}
+                aliases: {packetssent__sec: null}
             counter: \Packets Sent/sec
           bytesReceivedSec:
             type: Windows Perfmon
@@ -3758,7 +3762,7 @@ device_classes:
             datapoints:
               bytesReceivedSec:
                 rrdtype: GAUGE
-                aliases: {inputOctets__bytes: null}
+                aliases: {inputoctets__bytes: null}
             counter: \Bytes Received/sec
           packetsSentErrors:
             type: Windows Perfmon
@@ -3766,7 +3770,7 @@ device_classes:
             datapoints:
               packetsSentErrors:
                 rrdtype: GAUGE
-                aliases: {ifOutErrors: null}
+                aliases: {ifouterrors: null}
             counter: \Packets Outbound Errors
           packetsReceivedSec:
             type: Windows Perfmon
@@ -3775,7 +3779,7 @@ device_classes:
               packetsReceivedSec:
                 rrdtype: GAUGE
                 rrdmin: 0
-                aliases: {packetsReceived__sec: null}
+                aliases: {packetsreceived__sec: null}
             counter: \Packets Received/sec
         graphs:
           Throughput:
@@ -3884,7 +3888,7 @@ device_classes:
             datapoints:
               DiskReadTime:
                 rrdtype: GAUGE
-                aliases: {hd_diskReadTime: null}
+                aliases: {hd_diskreadtime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Read Time
           DiskWriteBytesSec:
             type: Windows Perfmon
@@ -3892,7 +3896,7 @@ device_classes:
             datapoints:
               DiskWriteBytesSec:
                 rrdtype: GAUGE
-                aliases: {hd_diskWriteBytes__sec: null}
+                aliases: {hd_diskwritebytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Write Bytes/sec
           DiskWriteTime:
             type: Windows Perfmon
@@ -3900,7 +3904,7 @@ device_classes:
             datapoints:
               DiskWriteTime:
                 rrdtype: GAUGE
-                aliases: {hd_diskWriteTime: null}
+                aliases: {hd_diskwritetime: null}
             counter: \PhysicalDisk(${here/instance_name})\% Disk Write Time
           DiskReadBytesSec:
             type: Windows Perfmon
@@ -3908,7 +3912,7 @@ device_classes:
             datapoints:
               DiskReadBytesSec:
                 rrdtype: GAUGE
-                aliases: {hd_diskReadBytes__sec: null}
+                aliases: {hd_diskreadbytes__sec: null}
             counter: \PhysicalDisk(${here/instance_name})\Disk Read Bytes/sec
         graphs:
           Throughput:

@@ -18,6 +18,7 @@ namespace:
 '''
 
 from Products.ZenEvents import ZenEventClasses
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 from txwinrm.collect import create_enum_info
@@ -105,6 +106,9 @@ class IIS(WinRMPlugin):
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
+        device_om = ObjectMap()
+        device_om.is_iis = True
+        maps = [device_om]
         rm = self.relMap()
         if results.get('IIsWebServerSetting'):
             for iisSite in results.get('IIsWebServerSetting', ()):
@@ -140,4 +144,5 @@ class IIS(WinRMPlugin):
                 except AttributeError:
                     pass
 
-        return rm
+        maps.append(rm)
+        return maps
