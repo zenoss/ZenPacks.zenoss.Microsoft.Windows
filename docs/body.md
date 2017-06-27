@@ -1750,6 +1750,7 @@ Changes
 -   Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)
 -   Fix Custom command needs to allow datapoints with non-zero exit codes (ZPS-1366)
 -   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693)
+-   Fix Microsoft Windows - Cluster MSSQL server is at 100% CPU utilization (ZPS-1697)
 
 
 2.7.7

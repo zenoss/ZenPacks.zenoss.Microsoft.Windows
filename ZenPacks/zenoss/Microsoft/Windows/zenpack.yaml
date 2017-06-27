@@ -71,7 +71,6 @@ classes:
     base: [zenpacklib.OSComponent]
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       getState:
         label: State
@@ -82,15 +81,16 @@ classes:
       domain:
         label: Domain
         default: ''
+        grid_display: false
 
   ClusterNodeObject:
     base: [ClusterObject]
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       ownernode:
         label: Owner Node
+        grid_display: false
       get_host_device:
         label: Cluster Node
         grid_display: true
@@ -207,13 +207,14 @@ classes:
     order: 5
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       description:
         label: Description
+        order: 3
       ownergroup:
         label: Owner Group
         type: boolean
+        grid_display: false
         default: False
     monitoring_templates: [ClusterResource]
     impacts: []
@@ -229,7 +230,6 @@ classes:
     order: 6
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       description:
         label: Description
@@ -260,7 +260,6 @@ classes:
     order: 1
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       assignedvote:
         label: Assigned Vote
@@ -289,7 +288,6 @@ classes:
     order: 2
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       volumepath:
         label: Volume Path
@@ -323,7 +321,6 @@ classes:
     order: 4
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       description:
         label: Description
@@ -354,10 +351,10 @@ classes:
     order: 3
     properties:
       DEFAULTS:
-        grid_display: false
         default: None
       node:
         label: Node
+        grid_display: false
       get_network:
         label: Network
         grid_display: true
@@ -367,12 +364,14 @@ classes:
         order: 2
       network:
         label: Network
+        grid_display: false
       ipaddresses:
         label: IP Addresses
         grid_display: true
         order: 3
       adapter:
         label: Adapter
+        grid_display: false
     monitoring_templates: [ClusterInterface]
     impacts: [clusternode]
     impacted_by: []
@@ -802,69 +801,57 @@ device_classes:
       ClusterNode:
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
                 description: Used to monitor the state of the Cluster Nodes.
             cycletime: '300'
-            resource: get-clusternode
-            strategy: powershell Cluster Nodes
       ClusterDisk:
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
                 description: Used to monitor the state of the Cluster Disks.
             cycletime: '300'
-            resource: get-clustersharedvolume
-            strategy: powershell Cluster Disks
       ClusterNetwork:
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
                 description: Used to monitor the state of the Cluster Networks.
             cycletime: '300'
-            resource: get-clusternetwork
-            strategy: powershell Cluster Network
       ClusterResource:
         description: Used to monitor the state of the Cluster Resources.
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
             cycletime: '300'
-            resource: get-clusterresource
-            strategy: powershell Cluster Resources
       ClusterInterface:
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
                 description: Used to monitor the state of the Cluster Interfaces.
             cycletime: '300'
-            resource: get-clusternetworkinterface
-            strategy: powershell Cluster Interface
       ClusterService:
         description: Used to monitor the state of the Cluster Service.
         datasources:
           state:
-            type: Windows Shell
+            type: Windows Cluster
             datapoints:
               state:
                 rrdtype: GAUGE
             cycletime: '300'
-            resource: get-clustergroup
-            strategy: powershell Cluster Services
   /Server/Microsoft:
     remove: true
     zProperties:
@@ -3814,17 +3801,6 @@ device_classes:
               Send:
                 dpName: packetsSentErrors_packetsSentErrors
                 format: '%7.2lf%s'
-      Cluster:
-        datasources:
-          state:
-            type: Windows Shell
-            datapoints:
-              state:
-                rrdtype: GAUGE
-                description: State collection for Cluster Services
-            cycletime: '300'
-            resource: get-clustergroup
-            strategy: powershell Cluster Services
       OSProcess:
         description: Microsoft Windows per-process monitoring.
         targetPythonClass: Products.ZenModel.OSProcess
