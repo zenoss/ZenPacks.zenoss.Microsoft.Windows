@@ -14,7 +14,6 @@ See Products.ZenModel.ZenPack._getClassesByPath() to understand how this class
 gets discovered as a datasource type in Zenoss.
 """
 
-import time
 import logging
 from traceback import format_exc
 
@@ -218,7 +217,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
                 continue
             comp = prepId(comp)
-            data['values'][comp]['state'] = cluster_state_value(state), int(time.mktime(time.localtime()))
+            data['values'][comp]['state'] = cluster_state_value(state), 'N'
             dsconf = get_dsconf(config.datasources, str(comp), param='contexttitle')
             if dsconf is None:
                 # component probably not modeled, see ZEN-23142
