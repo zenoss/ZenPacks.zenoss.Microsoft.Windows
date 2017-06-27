@@ -33,5 +33,3 @@ class ClusterObject(schema.ClusterObject):
             return 'Unknown'
 
         return cluster_state_string(state)
-
-
