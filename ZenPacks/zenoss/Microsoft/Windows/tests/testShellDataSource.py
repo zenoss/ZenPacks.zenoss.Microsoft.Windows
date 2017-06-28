@@ -10,6 +10,7 @@
 
 import Globals
 
+from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
 from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
@@ -99,6 +100,34 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(len(data['events']), 9)
         self.assertEquals(data['events'][0]['severity'], 5)
         self.assertEquals(data['events'][0]['eventClass'], '/Status/Nagios/Test')
+
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    def test_sql_no_counters(self):
+        parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_162846')[0]
+        stdout = [u'databasename : db01',
+                  u'databasestatus:Normal',
+                  u'databasename:master',
+                  u'databasestatus:Normal',
+                  u'databasename : msdb',
+                  u'databasestatus:Normal',
+                  u'databasename : tempdb',
+                  u'databasestatus:Normal',
+                  u'databasename : model',
+                  u'databasestatus:Normal']
+        sql_config = Mock()
+        sql_config.datasources = parms[1]
+        sql_config.id = sql_config.datasources[0].device
+        results = (parms[0], parms[1], CommandResponse(stdout, [], 0))
+        data = self.plugin.onSuccess(results, sql_config)
+        self.assertEquals(len(data['values']), 0)
+        self.assertEquals(len(data['events']), 16)
+        # we should see status of databases even if no counters are returned.
+        for x in xrange(5):
+            self.assertEquals('The database is available.', data['events'][x]['message'])
+        for x in xrange(5, 10):
+            self.assertEquals(
+                'Error parsing data in powershell MSSQL strategy for "ActiveTransactions" datasource',
+                data['events'][x]['summary'])
 
 
 def test_suite():
