@@ -63,12 +63,6 @@ WINRS_SOURCETYPE = 'Windows Shell'
 AVAILABLE_STRATEGIES = [
     'Custom Command',
     'powershell MSSQL',
-    'powershell Cluster Services',
-    'powershell Cluster Resources',
-    'powershell Cluster Nodes',
-    'powershell Cluster Disks',
-    'powershell Cluster Network',
-    'powershell Cluster Interface',
     'DCDiag',
     'powershell MSSQL Instance',
     'powershell MSSQL Job'
@@ -373,7 +367,27 @@ class CustomCommandStrategy(object):
         cmd.component = dsconf.params['contextcompname']
 
         # Pass the severity from the datasource to the command parsers
-        cmd.severity = dsconf.severity
+        # If Nagios, check the status for severity
+        cmd.result.output = '\n'.join(result.stdout)
+        if parserLoader.pluginName in ('Nagios', 'Auto'):
+            try:
+                status, data = cmd.result.output.split('|', 1)
+                if 'OK' in status:
+                    severity = ZenEventClasses.Clear
+                elif 'WARNING' in status:
+                    severity = ZenEventClasses.Warning
+                elif 'CRITICAL' in status:
+                    severity = ZenEventClasses.Critical
+                else:
+                    severity = dsconf.severity
+            except Exception:
+                severity = dsconf.severity
+        else:
+            severity = dsconf.severity
+        cmd.severity = severity
+        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
+        cmd.eventClass = eventClass
+        cmd.eventKey = dsconf.eventKey
 
         # Add the device id to the config for compatibility with parsers
         config.device = config.id
@@ -386,14 +400,12 @@ class CustomCommandStrategy(object):
             cmd.points.append(point)
 
         cmd.usePowershell = dsconf.params['usePowershell']
-        cmd.result.output = '\n'.join(result.stdout)
         cmd.result.exitCode = result.exit_code
 
         collectedResult = ParsedResults()
         parser = parserLoader.create()
         parser.processResults(cmd, collectedResult)
         # Give error feedback to user
-        eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
         if result.stderr:
             errors = '\n'.join(result.stderr)
             log.debug('Custom command errors on {}: {}'.format(config.id, errors))
@@ -633,429 +645,6 @@ class PowershellMSSQLJobStrategy(object):
 gsm.registerUtility(PowershellMSSQLJobStrategy(), IStrategy, 'powershell MSSQL Job')
 
 
-class PowershellClusterResourceStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterResource'
-
-    def build_command_line(self, resource, componenttype):
-        # Clustering Command opening
-
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
-
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clusterappitems = ('$_.Name', '$_.OwnerGroup', '$_.OwnerNode', '$_.State',
-                           '$_.Description')
-
-        psClusterCommands.append(
-            "{0} -name '{1}' | foreach {{{2}}};".format(
-                componenttype, resource, " + '|' + ".join(clusterappitems))
-        )
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand, script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-
-        # Parse values
-        stdout = parse_stdout(result)
-        if stdout:
-            name, ownergroup, ownernode, state, description = stdout
-            dsconf0 = dsconfs[0]
-
-            resourceID = 'res-{0}'.format(name)
-            compObject = ObjectMap()
-            compObject.id = prepId(resourceID)
-            compObject.title = name
-            compObject.ownernode = ownernode
-            compObject.description = description
-            compObject.ownergroup = ownergroup
-            compObject.state = state
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (resourceID, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster resource data')
-
-
-gsm.registerUtility(PowershellClusterResourceStrategy(), IStrategy, 'powershell Cluster Resources')
-
-
-class PowershellClusterServiceStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterService'
-
-    def build_command_line(self, resource, componenttype):
-        # Clustering Command opening
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
-
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clustergroupitems = ('$_.Name', '$_.IsCoreGroup', '$_.OwnerNode', '$_.State',
-                             '$_.Description', '$_.Id', '$_.Priority')
-
-        psClusterCommands.append(
-            "{0} -name '{1}' | foreach {{{2}}};".format(
-                componenttype, resource, " + '|' + ".join(clustergroupitems)
-            ))
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand, script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        # Parse values
-        stdout = parse_stdout(result, check_stderr=True)
-        if stdout:
-            name, iscoregroup, ownernode, state, description, nodeid, \
-                priority = stdout
-            dsconf0 = dsconfs[0]
-
-            compObject = ObjectMap()
-            compObject.id = prepId(nodeid)
-            compObject.title = name
-            compObject.coregroup = iscoregroup
-            compObject.ownernode = ownernode
-            compObject.state = state
-            compObject.description = description
-            compObject.priority = priority
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (name, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster service data')
-
-
-gsm.registerUtility(PowershellClusterServiceStrategy(), IStrategy, 'powershell Cluster Services')
-
-
-class PowershellClusterNodeStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterNode'
-
-    def build_command_line(self, resource, componenttype):
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clusternodeitems = pipejoin(
-            '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State'
-        )
-
-        psClusterCommands.append(
-            "{0} -name '{1}' | foreach {{{2}}};".format(
-                componenttype, resource, clusternodeitems
-            ))
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand(), script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        # Parse values
-        stdout = parse_stdout(result, check_stderr=True)
-        if stdout:
-            name, node_weight, dynamic_weight, nodeid, state = stdout
-            dsconf0 = dsconfs[0]
-
-            nodeID = 'node-{0}'.format(nodeid)
-            compObject = ObjectMap()
-            compObject.id = prepId(nodeID)
-            compObject.title = name
-            compObject.ownernode = name
-            compObject.assignedvote = node_weight
-            compObject.currentvote = dynamic_weight
-            compObject.state = state
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (name, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster service data')
-
-
-gsm.registerUtility(PowershellClusterNodeStrategy(),
-                    IStrategy, 'powershell Cluster Nodes')
-
-
-class PowershellClusterDiskStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterDisk'
-
-    def build_command_line(self, resource, componenttype):
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clusterdiskitems = pipejoin(
-            '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-            '$_.PartitionNumber $_.Size $_.FreeSpace $_.State')
-
-        psClusterCommands.append(
-            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{"
-            "Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}};"
-            "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable volumeerr -erroraction 'silentlycontinue'|"
-            "where{$_.Name -eq '%s'};"
-            "if( -Not $volumeerr){"
-            "foreach ($volume in $clsSharedVolume) {"
-            "$volumeowner = $volume.OwnerNode.Name;"
-            "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where { $_.Volume -eq $csvVolume}).Disknumber;"
-            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{"
-                "Id = $csvVolume.substring(11, $csvVolume.length-13);"
-                "Name = $volume.Name;"
-                "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;"
-                "OwnerNode = $volumeowner;"
-                "DiskNumber = $csvdisknumber;"
-                "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;"
-                "Size = $volume.SharedVolumeInfo.Partition.Size;"
-                "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
-                "State = $volume.State;"
-            "}; $csvtophysicaldisk | foreach { %s };};}" % (resource, clusterdiskitems)
-        )
-
-        psClusterCommands.append(
-            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
-            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};},"
-            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};},"
-            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};},"
-            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};},"
-            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};"
-            "$clsDisk = get-clusterresource -errorvariable diskerr -erroraction 'silentlycontinue'|"
-            "where{$_.Name -eq '%s'}| where { $_.ResourceType -eq 'Physical Disk'};"
-            "if( -Not $diskerr){"
-            "foreach ($disk in $clsDisk) {"
-            "$founddisk = $diskInfo | where { $_.FileSystemLabel -eq $disk.Name};"
-            "if ($founddisk -ne $null) {"
-            "$diskowner = $disk.OwnerNode.Name;"
-            "$disknumber = $founddisk.DiskNumber;"
-            "$diskpartition = $founddisk.PartitionNumber;"
-            "$disksize = $founddisk.Size;"
-            "$disksizeremain = $founddisk.SizeRemaining;"
-            "$diskvolume = $founddisk.Volume.substring(3);"
-            "$physicaldisk = New-Object -TypeName PSObject -Property @{"
-            "Id = $diskvolume.substring(8, $diskvolume.length-10);"
-            "Name = $disk.Name;VolumePath = $diskvolume;"
-            "OwnerNode = $diskowner;DiskNumber = $disknumber;"
-            "PartitionNumber = $diskpartition;Size = $disksize;"
-            "FreeSpace = $disksizeremain;State = $disk.State;};"
-            "$physicaldisk | foreach { %s };};};}" % (resource, clusterdiskitems)
-        )
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand, script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        # Parse values
-        stdout = parse_stdout(result, check_stderr=True)
-        if stdout:
-            dskid, name, volumepath, ownernode, disknum, \
-                partitionnum, size, freespace, state = stdout
-            dsconf0 = dsconfs[0]
-
-            compObject = ObjectMap()
-            compObject.id = prepId(dskid)
-            compObject.title = name
-            compObject.volumepath = volumepath
-            compObject.ownernode = ownernode
-            compObject.disknumber = disknum
-            compObject.partitionnumber = partitionnum
-            compObject.size = sizeof_fmt(size)
-            compObject.freespace = sizeof_fmt(freespace)
-            compObject.state = state
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (name, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster disk data')
-
-
-gsm.registerUtility(PowershellClusterDiskStrategy(),
-                    IStrategy, 'powershell Cluster Disks')
-
-
-class PowershellClusterNetworkStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterNetwork'
-
-    def build_command_line(self, resource, componenttype):
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clusternetworkitems = pipejoin(
-            '$_.Id $_.Name $_.Description $_.State'
-        )
-
-        psClusterCommands.append("{0} -name '{1}' " \
-            " | foreach {{{2}}};".format(componenttype,
-            resource, clusternetworkitems
-            ))
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand(), script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        # Parse values
-        stdout = parse_stdout(result, check_stderr=True)
-        if stdout:
-            netid, name, description, state = stdout
-            dsconf0 = dsconfs[0]
-
-            compObject = ObjectMap()
-            compObject.id = prepId(netid)
-            compObject.title = name
-            compObject.description = description
-            compObject.state = state
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (name, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster network data')
-
-gsm.registerUtility(PowershellClusterNetworkStrategy(),
-    IStrategy, 'powershell Cluster Network')
-
-
-class PowershellClusterInterfaceStrategy(object):
-    implements(IStrategy)
-
-    key = 'ClusterInterface'
-
-    def build_command_line(self, resource, componenttype):
-        psClusterCommands = []
-        psClusterCommands.append(BUFFER_SIZE)
-        psClusterCommands.append("import-module failoverclusters;")
-
-        clusterinterfaceitems = pipejoin(
-                '$_.Id $_.Name $_.Node $_.Network '
-                '$_.ipv4addresses $_.Adapter $_.State')
-
-        psClusterCommands.append("{0} -name '{1}' " \
-            " | foreach {{{2}}};".format(componenttype,
-            resource, clusterinterfaceitems))
-
-        script = "\"& {{{}}}\"".format(
-            ''.join(psClusterCommands))
-        return pscommand(), script
-
-    def parse_result(self, dsconfs, result):
-
-        if result.exit_code != 0:
-            counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
-            return
-        # Parse values
-        stdout = parse_stdout(result, check_stderr=True)
-        if stdout:
-            intfid, name, node, network, ipaddress, adapter, state = stdout
-            dsconf0 = dsconfs[0]
-
-            compObject = ObjectMap()
-            compObject.id = prepId(intfid)
-            compObject.title = name
-            compObject.node = node
-            compObject.network = network
-            compObject.ipaddresses = ipaddress
-            compObject.adapter = adapter
-            compObject.state = state
-            compObject.compname = dsconf0.params['contextcompname']
-            compObject.modname = dsconf0.params['contextmodname']
-            compObject.relname = dsconf0.params['contextrelname']
-
-            for dsconf in dsconfs:
-                value = (name, state, compObject)
-                timestamp = int(time.mktime(time.localtime()))
-                yield dsconf, value, timestamp
-        else:
-            log.debug('Error in parsing cluster Interface data')
-
-
-gsm.registerUtility(PowershellClusterInterfaceStrategy(),
-                    IStrategy, 'powershell Cluster Interface')
-
-
 class PowershellMSSQLInstanceStrategy(object):
     implements(IStrategy)
 
@@ -1151,12 +740,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         resource = datasource.talesEval(datasource.resource, context)
         if not resource.startswith('\\') and \
             datasource.strategy not in ('powershell MSSQL',
-                                        'powershell Cluster Services',
-                                        'powershell Cluster Resources',
-                                        'powershell Cluster Nodes',
-                                        'powershell Cluster Disks',
-                                        'powershell Cluster Network',
-                                        'powershell Cluster Interface',
                                         'Custom Command',
                                         'DCDiag',
                                         'powershell MSSQL Instance',
@@ -1194,8 +777,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         contexttitle = context.title
 
         servername = context.device().title
-        if contexttitle == servername and resource == 'get-clustergroup':
-            contexttitle = ''
 
         if len(servername) == 0:
             servername = ''
@@ -1287,19 +868,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 else:
                     cmd_line_input = dsconf0.params['instanceid']
             command_line, script = strategy.build_command_line(cmd_line_input)
-        elif dsconf0.params['strategy'] in ('powershell Cluster Services'
-                                            'powershell Cluster Resources'
-                                            'powershell Cluster Nodes'
-                                            'powershell Cluster Disks'
-                                            'powershell Cluster Network'
-                                            'powershell Cluster Interface'):
-
-            resource = dsconf0.params['contexttitle']
-            if not resource:
-                return
-            componenttype = dsconf0.params['resource']
-            command_line, script = strategy.build_command_line(resource, componenttype)
-
         elif dsconf0.params['strategy'] == 'Custom Command':
             check_datasource(dsconf0)
             script = dsconf0.params['script']
@@ -1335,6 +903,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             cmdResult = strategy.parse_result(config, result)
             data['events'] = cmdResult.events
             if result.exit_code == 0:
+                dsconf = dsconfs[0]
+                for dp, value in cmdResult.values:
+                    data['values'][dsconf.component][dp.id] = value, 'N'
+            elif len(cmdResult.values) != 0:
                 dsconf = dsconfs[0]
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'

@@ -8,7 +8,6 @@
 #
 ##############################################################################
 
-from collections import namedtuple
 import Globals  # noqa
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock
@@ -189,6 +188,9 @@ def create_results():
     accumulator = ItemsAccumulator()
     accumulator.new_item()
     get_items(accumulator, Win32_DiskDrive)
+    Win32_DiskDrive['Size'] = 'None'
+    accumulator.new_item()
+    get_items(accumulator, Win32_DiskDrive)
     results = {'diskdrives': {
         'Win32_DiskDrive': accumulator.items,
         'Win32_LogicalDiskToPartition': {},
@@ -216,12 +218,13 @@ class TestHardDisks(BaseTestCase):
 
     def testZPS1279(self):
         data = self.plugin.process(StringAttributeObject(), self.results, Mock())
-        self.assertEquals(len(data.maps), 1)
+        self.assertEquals(len(data.maps), 2)
         self.assertEquals(data.maps[0].serialNumber, '')
         self.assertEquals(data.maps[0].id, 'SCSI_DISK_VEN_VMWARE_PROD_VIRTUAL_DISK_4_3B5019BE_0_000000')
         self.assertEquals(data.maps[0].partitions, 2)
         self.assertEquals(data.maps[0].disk_ids, ['\\\\.\\PHYSICALDRIVE0',
                                                   'SCSI\\DISK&VEN_VMWARE&PROD_VIRTUAL_DISK\\4&3B5019BE&0&000000'])
+        self.assertEquals(data.maps[1].size, 0)
 
 
 def test_suite():
