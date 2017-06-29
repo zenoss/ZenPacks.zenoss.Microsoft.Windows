@@ -7,7 +7,7 @@
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.7.6- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.6/ZenPacks.zenoss.Microsoft.Windows-2.7.6.egg" rel="nofollow">Download</a> :Released on 2017/06/01 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
+<p>Version 2.7.8- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.8/ZenPacks.zenoss.Microsoft.Windows-2.7.8.egg" rel="nofollow">Download</a> :Released on 2017/06/29 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <style>
@@ -1137,6 +1137,7 @@ In [3]: commit()</code></pre>
 <li>This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.</li>
 <li>When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log. This is expected and is a known defect in ZenPackLib.</li>
 <li>If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.</li>
+<li>The &quot;powershell Cluster&quot; strategies in the Windows Shell datasource are deprecated. Cluster component status is now collected via the &quot;Windows Cluster&quot; datasource.</li>
 </ul>
 <p>A current list of known issues related to this ZenPack can be found with <a href="https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id">this JIRA query</a>. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can <a href="https://jira.zenoss.com/secure/Signup!default.jspa">create one here</a>.</p>
 <h3 id="kerberos-tickets">Kerberos Tickets</h3>
@@ -1437,6 +1438,21 @@ fs.file-max=10000</code></pre>
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.7.8</p>
+<ul>
+<li>Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)</li>
+<li>Fix Log line for &quot;periodic maintenance&quot; shows in incorrect logs (ZPS-1600)</li>
+<li>Fix Failed model job does not result in event (ZPS-1608)</li>
+<li>Fix Performance tables are not created even though performance batch is successful (ZPS-1605)</li>
+<li>Fix Traceback modelling with WinMSSQL plugin (ZPS-1676)</li>
+<li>Fix Custom command needs to allow datapoints with non-zero exit codes (ZPS-1366)</li>
+<li>Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693)</li>
+<li>Fix Microsoft Windows - Cluster MSSQL server is at 100% CPU utilization (ZPS-1697)</li>
+</ul>
+<p>2.7.7</p>
+<ul>
+<li>Fix redundant publishing of service state datapoints (ZPS-1604)</li>
+</ul>
 <p>2.7.6</p>
 <ul>
 <li>Fix traceback during modeling (ZPS-1599)</li>
