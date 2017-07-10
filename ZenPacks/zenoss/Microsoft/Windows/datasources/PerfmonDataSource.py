@@ -21,7 +21,12 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
-from twisted.web._newclient import ResponseNeverReceived
+try:
+    from twisted.web._newclient import ResponseNeverReceived
+except ImportError:
+    ResponseNeverReceived = str
+    pass
+
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
