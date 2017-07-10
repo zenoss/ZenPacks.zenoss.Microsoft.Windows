@@ -1742,6 +1742,10 @@ Monitoring Templates
 Changes
 -------
 
+2.7.9
+
+-   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
+
 2.7.8
 
 -   Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
