@@ -10,7 +10,7 @@
 from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
-from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock, MagicMock
+from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ProcessDataSource import ProcessDataSourcePlugin
@@ -40,8 +40,7 @@ class TestProcessDataSourcePlugin(BaseTestCase):
         self.assertItemsEqual(
             (x['summary'] for x in data['events']),
             (
-                'matching processes running', 'process scan successful', 
-                'Authentication Successful', 'No Kerberos auth failures',
-                'No Kerberos failures'
+                'matching processes running', 'process scan successful',
+                'Authentication Successful', 'No Kerberos failures'
             )
         )

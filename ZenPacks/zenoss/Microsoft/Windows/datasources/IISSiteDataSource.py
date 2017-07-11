@@ -206,10 +206,16 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             sitestatus
         )
 
+        if sitestatus == 'Running':
+            severity = ZenEventClasses.Clear
+        else:
+            severity = ds0.severity
+
         data['events'].append({
             'eventClassKey': 'IISSiteStatus',
             'eventKey': 'IISSite',
-            'severity': ZenEventClasses.Info,
+            'severity': severity,
+            'eventClass': ds0.eventClass,
             'summary': evtmessage.decode('UTF-8'),
             'component': prepId(ds0.component),
             'device': config.id,
@@ -237,7 +243,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         # only need the one event
         if not data['events']:
             data['events'].append({
-                'eventClass': event_class,
+                'eventClass': '/Status',
                 'severity': ZenEventClasses.Warning,
                 'eventClassKey': 'IISSiteStatusError',
                 'eventKey': 'IISSite',

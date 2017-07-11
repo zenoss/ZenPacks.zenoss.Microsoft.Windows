@@ -842,6 +842,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'device': self.config.id,
             'eventClassKey': 'AuthenticationSuccess',
             'summary': 'Authentication Successful',
+            'severity': ZenEventClasses.Clear,
             'ipAddress': self.config.manageIp})
 
 

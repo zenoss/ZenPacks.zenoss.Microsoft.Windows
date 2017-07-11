@@ -461,24 +461,15 @@ def append_event_datasource_plugin(datasources, events, event):
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
     kerberos_messages = ['kerberos', 'kinit']
-    kerberos_auth_messages = ['initial credentials', 'authGSSClientStep failed']
     wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
 
     # see if this a kerberos issue
     if any(x in error for x in kerberos_messages):
-        # if so, is it authentication or general failure
-        if any(y in error for y in kerberos_auth_messages):
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'KerberosAuthenticationFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
-        else:
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'KerberosFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
+        append_event_datasource_plugin(config.datasources, events, {
+            'eventClassKey': 'KerberosFailure',
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'device': config.id})
     # otherwise check if this is a typical authentication failure
     else:
         if any(x in error for x in wrongCredsMessages):
@@ -494,14 +485,12 @@ def generateClearAuthEvents(config, events):
     append_event_datasource_plugin(config.datasources, events, {
         'eventClassKey': 'AuthenticationSuccess',
         'summary': 'Authentication Successful',
-        'device': config.id})
-    append_event_datasource_plugin(config.datasources, events, {
-        'eventClassKey': 'KerberosAuthenticationSuccess',
-        'summary': 'No Kerberos auth failures',
+        'severity': 0,
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
         'eventClassKey': 'KerberosSuccess',
         'summary': 'No Kerberos failures',
+        'severity': 0,
         'device': config.id})
 
 

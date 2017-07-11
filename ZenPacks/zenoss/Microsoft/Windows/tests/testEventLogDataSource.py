@@ -34,7 +34,7 @@ class TestDataSourcePlugin(BaseTestCase):
                               datasource='DataSource')],
         ))
 
-        self.assertEquals(len(res['events']), 5)
+        self.assertEquals(len(res['events']), 4)
         self.assertEquals(res['events'][0]['summary'], u'WinRM Event Message')
         self.assertEquals(res['events'][0]['eventGroup'], sentinel.eventlog)
 
