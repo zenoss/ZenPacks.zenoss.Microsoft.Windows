@@ -60,7 +60,7 @@ class TestClusterDataSourcePlugin(BaseTestCase):
         self.assertEquals(len(data['values']), 24)
         for comp, value in RESULTS.iteritems():
             self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value))
-        self.assertEquals(len(data['events']), 27)
+        self.assertEquals(len(data['events']), 26)
 
 
 def test_suite():

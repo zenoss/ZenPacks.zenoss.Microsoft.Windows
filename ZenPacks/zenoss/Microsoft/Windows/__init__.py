@@ -17,6 +17,7 @@ import re
 import logging
 
 from Products.ZenUtils.Utils import zenPath
+from Products.ZenEvents import ZenEventClasses
 
 try:
     from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge, DSVRelationshipProvider, RelationshipEdgeError
@@ -231,24 +232,23 @@ class ZenPack(schema.ZenPack):
         """ZPL 2.0 doesn't support these attributes, so setting them here"""
         # clear classes for each failure type
         clear_class_mappings = {'AuthenticationFailure': ['/Status/Winrm/Auth/instances/AuthenticationSuccess'],
-                                'KerberosFailure': ['/Status/Kerberos/instances/KerberosSuccess'],
-                                'KerberosAuthenticationFailure': ['/Status/Kerberos/instances/KerberosAuthenticationSuccess'],
+                                'KerberosFailure': ['/Status/Kerberos/instances/KerberosSuccess']
                                 }
         for path in ['/Status/Winrm/Auth', '/Status/Kerberos']:
             org = dmd.Events.getOrganizer(path)
             if org:
-                for s in ['AuthenticationSuccess', 'KerberosSuccess', 'KerberosAuthenticationSuccess' ]:
+                for s in ['AuthenticationSuccess', 'KerberosSuccess']:
                     try:
                         success = org.findObject(s)
                         if success:
-                            success.setZenProperty('zEventSeverity', 0)
+                            success.setZenProperty('zEventSeverity', ZenEventClasses.Clear)
                     except AttributeError:
                         continue
-                for f in ['AuthenticationFailure', 'KerberosFailure', 'KerberosAuthenticationFailure']:
+                for f in ['AuthenticationFailure', 'KerberosFailure']:
                     try:
                         failure = org.findObject(f)
                         if failure:
-                            failure.setZenProperty('zEventSeverity', 5)
+                            failure.setZenProperty('zEventSeverity', ZenEventClasses.Error)
                             failure.setZenProperty('zEventClearClasses', clear_class_mappings.get(f, []))
                     except AttributeError:
                         continue

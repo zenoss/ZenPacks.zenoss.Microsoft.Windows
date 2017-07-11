@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2015, all rights reserved.
@@ -7,6 +8,7 @@
 #
 ##############################################################################
 
+import Globals
 from itertools import repeat
 from collections import namedtuple
 
@@ -84,3 +86,19 @@ class TestFormat_stdout(BaseTestCase):
     def test_format_stdout(self):
         self.assertEquals(format_stdout([]), ([], False))
         self.assertEquals(format_stdout(["Readings : "]), ([""], True))
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestFormat_stdout))
+    suite.addTest(makeSuite(TestFormat_counters))
+    suite.addTest(makeSuite(TestDataPersister))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

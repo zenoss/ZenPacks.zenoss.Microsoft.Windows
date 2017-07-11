@@ -45,16 +45,19 @@ class TestErrorEvents(BaseTestCase):
 
         event_class_keys = {0: 'AuthenticationFailure',
                             1: 'AuthenticationFailure',
-                            2: 'KerberosAuthenticationFailure',
+                            2: 'KerberosFailure',
                             3: 'KerberosFailure',
                             4: 'AuthenticationSuccess',
-                            5: 'KerberosAuthenticationSuccess',
-                            6: 'KerberosSuccess', }
+                            5: 'KerberosSuccess', }
         for k, v in event_class_keys.items():
             self.assertEquals(events[k]['eventClassKey'], v)
-        self.assertEquals(len(events), 7)
+        self.assertEquals(len(events), 6)
         for event in events:
             self.assertTrue('eventClass' not in event)
+        self.assertTrue('severity' in events[4])
+        self.assertEquals(events[4]['severity'], 0)
+        self.assertTrue('severity' in events[5])
+        self.assertEquals(events[5]['severity'], 0)
 
 
 def test_suite():

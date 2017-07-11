@@ -3937,8 +3937,6 @@ event_classes:
   /Status/Kerberos:
     remove: true
     mappings:
-      KerberosAuthenticationSuccess: {}
-      KerberosAuthenticationFailure: {}
       KerberosSuccess: {}
       KerberosFailure: {}
   /Status/Winrm:
