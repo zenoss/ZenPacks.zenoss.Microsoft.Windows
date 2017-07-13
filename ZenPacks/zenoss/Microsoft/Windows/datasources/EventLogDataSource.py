@@ -19,8 +19,6 @@ import xml.dom.minidom
 from xml.dom.ext import PrettyPrint
 from StringIO import StringIO
 
-from twisted.internet import defer
-
 from zope.component import adapts
 from zope.interface import implements
 from Products.Zuul.infos import InfoBase
@@ -208,12 +206,12 @@ class EventLogPlugin(PythonDataSourcePlugin):
     def params(cls, datasource, context):
         te = lambda x: datasource.talesEval(x, context)
         query = datasource.query
-        query_error = True
 
         try:
             query = te(' '.join(string_to_lines(datasource.query)))
             query_error = False
         except Exception:
+            query_error = True
             pass
         try:
             xml.dom.minidom.parseString(query)
@@ -222,16 +220,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
             use_xml = False
 
         return dict(
-                eventlog=te(datasource.eventlog),
-                query=query,
-                query_error=query_error,
-                max_age=te(datasource.max_age),
-                eventid=te(datasource.id),
-                use_xml=use_xml,
-                eventClass=datasource.eventClass
-            )
+            eventlog=te(datasource.eventlog),
+            query=query,
+            query_error=query_error,
+            max_age=te(datasource.max_age),
+            eventid=te(datasource.id),
+            use_xml=use_xml,
+            eventClass=datasource.eventClass
+        )
 
-    @defer.inlineCallbacks
     def collect(self, config):
         log.info('{} Start Collection of Events'.format(config.id))
 
@@ -240,7 +237,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
         if ds0.params['query_error']:
             e = EventLogException('Please verify EventQuery on datasource %s'
                                   % ds0.params['eventid'])
-            value = [e]
             raise e
 
         conn_info = createConnectionInfo(ds0)
@@ -253,96 +249,115 @@ class EventLogPlugin(PythonDataSourcePlugin):
         eventid = ds0.params['eventid']
         isxml = ds0.params['use_xml']
 
-        res = None
-        output = []
+        return query.run(eventlog, select, max_age, eventid, isxml)
 
-        id_string = "device ({}) component ({})".format(config.id, ds0.component)
+    @save
+    def onSuccess(self, results, config):
+        # Should only ever be 1 datasource
+        log.debug('EventLog Results: {}'.format(results))
+        ds0 = config.datasources[0]
 
+        eventlog = ds0.params['eventlog']
+
+        def _makeEvent(evt):
+            ds = ds0.params
+            assert isinstance(evt, dict)
+            severity = {
+                'Error': ZenEventClasses.Error,
+                'Warning': ZenEventClasses.Warning,
+                'Information': ZenEventClasses.Info,
+                'SuccessAudit': ZenEventClasses.Info,
+                'FailureAudit': ZenEventClasses.Info,
+            }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
+
+            evt = dict(
+                device=config.id,
+                eventClassKey='{}_{}'.format(evt['Source'], evt['InstanceId']),
+                eventGroup=ds['eventlog'],
+                component=evt['Source'],
+                ntevid=evt['InstanceId'],
+                summary=evt.get('Message', '').split('.')[0],
+                message=evt.get('Message', ''),
+                severity=severity,
+                user=evt['UserName'],
+                originaltime=evt['TimeGenerated'],
+                computername=evt['MachineName'],
+                eventidentifier=evt['EventID'],
+            )
+            # Fixes ZEN-23024
+            # only assign event class if other than '/Unknown', otherwise
+            # the user should use event class mappings
+            eventClass = ds.get('eventClass')
+            if eventClass and eventClass != '/Unknown':
+                evt['eventClass'] = eventClass
+            return evt
+
+        data = self.new_data()
         try:
-            res = yield query.run(eventlog, select, max_age, eventid, isxml)
-        except Exception as e:
-            if 'Password expired' in e.message:
-                raise e
-            log.error("{}: {}".format(id_string, e))
-        try:
-            if res.stderr:
-                str_err = '\n'.join(res.stderr)
-                log.debug('{}: Event query error: {}'.format(id_string, str_err))
+            if results.stderr:
+                str_err = '\n'.join(results.stderr)
+                log.debug('{}: Event query error: {}'.format(config.id, str_err))
                 if str_err.find('No events were found that match the specified selection criteria') != -1:
                     # no events found.  expected error.
                     pass
                 elif (str_err.startswith('Get-WinEvent : The specified channel could not be found.')) \
                         or "does not exist" in str_err:
-                    err_msg = "Event Log '%s' does not exist in %s" % (eventlog, ds0.device)
+                    err_msg = "Event Log '{}' does not exist in {}".format(eventlog, config.id)
                     raise MissedEventLogException(err_msg)
                 elif str_err.startswith('Where-Object : Cannot bind parameter \'FilterScript\'. Cannot convert the'):
                     err_msg = "EventQuery value provided in datasource '{}' is not valid".format(ds0.params['eventid'])
                     raise InvalidEventQueryValue(err_msg)
+                elif str_err and len(results.stdout):
+                    # events found, but also ps error
+                    # could be no big deal, but could show a problem with query or permissions
+                    ps_err_msg = "Received the following error during query: {}.".format(str_err)
+                    data['events'].append({
+                        'device': config.id,
+                        'summary': 'Windows EventLog: Received PowerShell error during event collection',
+                        'message': ps_err_msg,
+                        'severity': ZenEventClasses.Warning,
+                        'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
+                        'eventClass': '/Status/Winrm',
+                        'eventClassKey': 'WindowsEventLogWarning',
+                    })
                 else:
                     raise EventLogException(str_err)
-            output = '\n'.join(res.stdout)
+            output = '\n'.join(results.stdout)
         except AttributeError:
+            output = '[]'
             pass
         try:
             log.debug(output)
-            value = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
-            if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
-                value = [value]
+            event_results = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
+            if isinstance(event_results, dict):  # ConvertTo-Json for list of one element returns just that element
+                event_results = [event_results]
         except UnicodeDecodeError:
             # replace unknown characters with '?'
-            value = json.loads(unicode(output.decode("utf-8", "replace")))
-            if isinstance(value, dict):  # ConvertTo-Json for list of one element returns just that element
-                value = [value]
+            event_results = json.loads(unicode(output.decode("utf-8", "replace")))
+            if isinstance(event_results, dict):  # ConvertTo-Json for list of one element returns just that element
+                event_results = [event_results]
         except ValueError as e:
-            log.error('%s: Could not parse json: %r\n%s' % (id_string, output, e))
+            log.error('%s: Could not parse json: %r\n%s' % (config.id, output, e))
             raise
-        defer.returnValue(value)
 
-    def _makeEvent(self, evt, config):
-        ds = config.datasources[0].params
-        assert isinstance(evt, dict)
-        severity = {
-            'Error': ZenEventClasses.Error,
-            'Warning': ZenEventClasses.Warning,
-            'Information': ZenEventClasses.Info,
-            'SuccessAudit': ZenEventClasses.Info,
-            'FailureAudit': ZenEventClasses.Info,
-        }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
+        for evt in event_results:
+            data['events'].append(_makeEvent(evt))
 
-        evt = dict(
-            device=config.id,
-            eventClassKey='%s_%s' % (evt['Source'], evt['InstanceId']),
-            eventGroup=ds['eventlog'],
-            component=evt['Source'],
-            ntevid=evt['InstanceId'],
-            summary=evt.get('Message', '').split('.')[0],
-            message=evt.get('Message', ''),
-            severity=severity,
-            user=evt['UserName'],
-            originaltime=evt['TimeGenerated'],
-            computername=evt['MachineName'],
-            eventidentifier=evt['EventID'],
-        )
-        # Fixes ZEN-23024
-        # only assign event class if other than '/Unknown', otherwise
-        # the user should use event class mappings
-        eventClass = ds.get('eventClass')
-        if eventClass and eventClass != '/Unknown':
-            evt['eventClass'] = eventClass
-        return evt
+        data['events'].append({
+            'device': config.id,
+            'summary': 'Windows EventLog: successful event collection',
+            'severity': ZenEventClasses.Clear,
+            'eventKey': 'WindowsEventCollection: {}'.format(ds0.params.get('eventid', '')),
+            'eventClassKey': 'WindowsEventLogSuccess',
+        })
 
-    @save
-    def onSuccess(self, results, config):
-        data = self.new_data()
-        for evt in results:
-            data['events'].append(self._makeEvent(evt, config))
-
-        for ds in config.datasources:
+        if 'ps_err_msg' not in locals():
             data['events'].append({
                 'device': config.id,
-                'summary': 'Windows EventLog: successful event collection',
+                'summary': 'Windows EventLog: No PowerShell errors during event collection',
                 'severity': ZenEventClasses.Clear,
-                'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
+                'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
+                'eventClass': '/Status/Winrm',
                 'eventClassKey': 'WindowsEventLogSuccess',
             })
 
@@ -370,6 +385,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
                     'eventClassKey': 'WindowsEventCollectionError',
                     'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
                     'summary': msg,
+                    'message': msg,
+                    'eventClass': ds.eventClass,
                     'device': config.id
                 })
         return data

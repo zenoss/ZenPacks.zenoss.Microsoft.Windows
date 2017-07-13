@@ -3936,22 +3936,9 @@ event_classes:
         remove: true
   /Status/Kerberos:
     remove: true
-    mappings:
-      KerberosAuthenticationSuccess: {}
-      KerberosAuthenticationFailure: {}
-      KerberosSuccess: {}
-      KerberosFailure: {}
   /Status/Winrm:
     remove: true
   /Status/Winrm/Ping:
     remove: true
   /Status/Winrm/Auth:
     remove: true
-    mappings:
-      AuthenticationSuccess: {}
-      AuthenticationFailure: {}
-  /Status/OSProcess:
-    remove: false
-  /Status/Interface:
-    remove: false
-

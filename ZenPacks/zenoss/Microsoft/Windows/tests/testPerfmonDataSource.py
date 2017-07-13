@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2015, all rights reserved.
@@ -7,6 +8,7 @@
 #
 ##############################################################################
 
+import Globals
 from itertools import repeat
 from collections import namedtuple
 
@@ -41,6 +43,10 @@ class TestDataPersister(BaseTestCase):
     def test_get(self):
         device = self.dp.get(sentinel.device0)
         self.assertEquals(device['maps'], [])
+
+    def test_get_events(self):
+        events = self.dp.get_events(sentinel.device0)
+        self.assertEquals(len(events), 0)
 
     def test_remove(self):
         self.dp.remove(sentinel.device0)
@@ -84,3 +90,19 @@ class TestFormat_stdout(BaseTestCase):
     def test_format_stdout(self):
         self.assertEquals(format_stdout([]), ([], False))
         self.assertEquals(format_stdout(["Readings : "]), ([""], True))
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestFormat_stdout))
+    suite.addTest(makeSuite(TestFormat_counters))
+    suite.addTest(makeSuite(TestDataPersister))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

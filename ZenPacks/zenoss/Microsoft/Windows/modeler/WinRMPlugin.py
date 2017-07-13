@@ -14,6 +14,7 @@ import socket
 from xml.etree.cElementTree import ParseError as cParseError
 
 from Products.DataCollector.plugins.CollectorPlugin import PythonPlugin
+from Products.ZenEvents import ZenEventClasses
 
 from twisted.internet import defer
 from twisted.internet.error import (
@@ -148,11 +149,12 @@ class WinRMPlugin(PythonPlugin):
             yield (key, enuminfo)
 
     def log_error(self, log, device, error):
-        '''
+        """
         Log an approppriate message for error occurring on device.
-        '''
-        severity = 4
+        """
+        severity = ZenEventClasses.Error
         message, args = (None, [device.id])
+        eventClass = '/Status/Winrm'
         if isinstance(error, txwinrm.collect.RequestError):
             message = "Query error on %s: %s"
             html_returned = "<title>404 - File or directory not found.</title>" in error[0]
@@ -160,7 +162,7 @@ class WinRMPlugin(PythonPlugin):
                 error = ['HTTP Status: 404. Be sure the WinRM compatibility listener has been configured']
             args.append(error[0])
             if isinstance(error, UnauthorizedError) or html_returned:
-                message += ' or check server WinRM settings \n Please refer to txwinrm documentation at '\
+                message += ' or check server WinRM settings \n Please refer to winrm documentation at '\
                            'https://www.zenoss.com/product/zenpacks/microsoft-windows'
         elif isinstance(error, ConnectionRefusedError):
             message = "Connection refused on %s: Verify WinRM setup"
@@ -172,9 +174,11 @@ class WinRMPlugin(PythonPlugin):
         elif isinstance(error, cParseError) and 'line 1, column 0' in error.msg:
             message = "Error on %s: Check WinRM AllowUnencrypted is set to true"
         elif type(error) == Exception and "Credentials cache file" in error.message:
-            message = "Credentials cache file not found. Please make sure that this file exist and server has  access to it."
+            message = "Credentials cache file not found. Please make sure that this file exists and server has access to it."
+            eventClass = '/Status/Kerberos'
         elif type(error) == Exception and 'kerberos' in error.message.lower():
-            message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser and zWinRMPassword property is configured correctly"
+            message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser, and zWinRMPassword properties are configured correctly"
+            eventClass = '/Status/Kerberos'
         elif isinstance(error, ResponseFailed):
             for reason in error.reasons:
                 if isinstance(reason.value, ConnectionLost):
@@ -193,7 +197,7 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
-        self._send_event(message % tuple(args), device.id, severity, eventClass='/Status/Winrm')
+        self._send_event(message % tuple(args), device.id, severity, eventClass=eventClass)
 
     def _send_event(self, reason, id, severity, force=False,
                     key='ConnectionError', eventClass='/Status', summary=None):
@@ -204,7 +208,7 @@ class WinRMPlugin(PythonPlugin):
         log.debug('Sending event: %s' % reason)
         if self._eventService:
             if not summary:
-                if severity != 0:
+                if severity != ZenEventClasses.Clear:
                     summary = 'Modeler plugin zenoss.winrm.{} returned no results.'.format(self.__class__.__name__)
                 else:
                     summary = 'Modeler plugin zenoss.winrm.{} successful.'.format(self.__class__.__name__)
@@ -237,17 +241,17 @@ class WinRMPlugin(PythonPlugin):
 
     @defer.inlineCallbacks
     def collect(self, device, log):
-        '''
+        """
         Collect results of the class' queries and commands.
 
         This method can be overridden if more complex collection is
         required.
-        '''
+        """
         try:
             conn_info = self.conn_info(device)
         except UnauthorizedError as e:
             msg = "Error on {}: {}".format(device.id, e.message)
-            self._send_event(msg, device.id, 4, eventClass='/Status/Winrm', summary=msg)
+            self._send_event(msg, device.id, ZenEventClasses.Error, eventClass='/Status/Winrm', summary=msg)
             raise e
         client = self.client(conn_info)
 
@@ -264,16 +268,11 @@ class WinRMPlugin(PythonPlugin):
             try:
                 query_results = yield client.do_collect(
                     query_map.iterkeys())
-                msg = "connection for %s is established"
-                self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
             except Exception as e:
                 self.log_error(log, device, e)
             else:
                 for info, data in query_results.iteritems():
                     results[query_map[info]] = data
-
-            # Unset winrm logging. Will fallback to root logger level.
-            # winrm_log.setLevel(logging.NOTSET)
 
         # Get associators.
         associators = self.get_associators()
@@ -299,8 +298,6 @@ class WinRMPlugin(PythonPlugin):
                         e = Exception(message)
                     self.log_error(log, device, e)
                 else:
-                    msg = "connection for %s is established"
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                     results[assoc_key] = assoc_result
 
         # Get a copy of the class' commands.
@@ -321,9 +318,11 @@ class WinRMPlugin(PythonPlugin):
                                                                               ps_script=command)
                     else:
                         results[command_key] = yield winrs_client.run_command(command)
-                    msg = 'shell command completed successfully for %s'
-                    self._send_event(msg % device.id, device.id, 0, eventClass='/Status/Winrm')
                 except Exception as e:
                     self.log_error(log, device, e)
+
+        msg = 'Collection completed for %s'
+        for eventClass in ('/Status/Winrm', '/Status/Kerberos'):
+            self._send_event(msg % device.id, device.id, ZenEventClasses.Clear, eventClass)
 
         defer.returnValue(results)

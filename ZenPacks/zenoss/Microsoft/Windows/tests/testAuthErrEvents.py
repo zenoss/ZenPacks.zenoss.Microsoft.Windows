@@ -43,18 +43,21 @@ class TestErrorEvents(BaseTestCase):
         self.assertEquals(len(events), 4)
         generateClearAuthEvents(self.config, events)
 
+        self.assertEquals(len(events), 6)
         event_class_keys = {0: 'AuthenticationFailure',
                             1: 'AuthenticationFailure',
-                            2: 'KerberosAuthenticationFailure',
+                            2: 'KerberosFailure',
                             3: 'KerberosFailure',
                             4: 'AuthenticationSuccess',
-                            5: 'KerberosAuthenticationSuccess',
-                            6: 'KerberosSuccess', }
+                            5: 'KerberosSuccess', }
         for k, v in event_class_keys.items():
             self.assertEquals(events[k]['eventClassKey'], v)
-        self.assertEquals(len(events), 7)
-        for event in events:
-            self.assertTrue('eventClass' not in event)
+            if k <= 3:
+                self.assertEquals(events[k]['severity'], 4)
+            else:
+                self.assertEquals(events[k]['severity'], 0)
+            self.assertTrue('eventClass' in events[k])
+            self.assertRegexpMatches(events[k]['eventKey'], 'Kerberos|Authentication\|windows_test')
 
 
 def test_suite():

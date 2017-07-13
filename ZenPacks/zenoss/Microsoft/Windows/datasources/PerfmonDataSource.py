@@ -21,7 +21,12 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
-from twisted.web._newclient import ResponseNeverReceived
+try:
+    from twisted.web._newclient import ResponseNeverReceived
+except ImportError:
+    ResponseNeverReceived = str
+    pass
+
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -42,7 +47,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import append_event_datasource_plugin
+from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClearAuthEvents
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
@@ -159,6 +164,10 @@ class DataPersister(object):
 
     def get(self, device):
         return self.devices[device].copy()
+
+    def get_events(self, device):
+        self.touch(device)
+        return self.devices[device]['events']
 
     def remove(self, device):
         if device in self.devices:
@@ -369,7 +378,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
             # prevent duplicate of auth failure messages
-            if not self._errorMsgCheck(e.message):
+            if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
                 PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'eventClass': '/Status/Winrm',
@@ -604,7 +613,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
 
-        self._generateClearAuthEvents()
+        generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
@@ -624,8 +633,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        if not self._errorMsgCheck(e.message):
-            self._generateClearAuthEvents()
+        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -837,6 +846,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'device': self.config.id,
             'eventClassKey': 'AuthenticationSuccess',
             'summary': 'Authentication Successful',
+            'severity': ZenEventClasses.Clear,
             'ipAddress': self.config.manageIp})
 
 
