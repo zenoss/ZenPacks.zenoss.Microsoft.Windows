@@ -176,9 +176,6 @@ class ZenPack(schema.ZenPack):
 
         self.cleanup_zProps(app.zport.dmd)
 
-        # updating these manually since ZPL 2.0 doesn't yet support these attributes
-        self.update_event_class_mappings(app.zport.dmd)
-
         self.in_install = False
 
     def remove(self, app, leaveObjects=False):
@@ -227,31 +224,6 @@ class ZenPack(schema.ZenPack):
         devices._properties = tuple(
             [x for x in devices._properties if x['id'] != 'zDBInstancesPassword']
         )
-
-    def update_event_class_mappings(self, dmd):
-        """ZPL 2.0 doesn't support these attributes, so setting them here"""
-        # clear classes for each failure type
-        clear_class_mappings = {'AuthenticationFailure': ['/Status/Winrm/Auth/instances/AuthenticationSuccess'],
-                                'KerberosFailure': ['/Status/Kerberos/instances/KerberosSuccess']
-                                }
-        for path in ['/Status/Winrm/Auth', '/Status/Kerberos']:
-            org = dmd.Events.getOrganizer(path)
-            if org:
-                for s in ['AuthenticationSuccess', 'KerberosSuccess']:
-                    try:
-                        success = org.findObject(s)
-                        if success:
-                            success.setZenProperty('zEventSeverity', ZenEventClasses.Clear)
-                    except AttributeError:
-                        continue
-                for f in ['AuthenticationFailure', 'KerberosFailure']:
-                    try:
-                        failure = org.findObject(f)
-                        if failure:
-                            failure.setZenProperty('zEventSeverity', ZenEventClasses.Error)
-                            failure.setZenProperty('zEventClearClasses', clear_class_mappings.get(f, []))
-                    except AttributeError:
-                        continue
 
 # Patch last to avoid import recursion problems.
 from ZenPacks.zenoss.Microsoft.Windows import patches  # NOQA: imported for side effects.

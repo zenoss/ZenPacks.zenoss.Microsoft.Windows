@@ -40,7 +40,7 @@ class TestServiceDataSourcePlugin(BaseTestCase):
 
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, MagicMock(
-                                     id=sentinel.id,
+                                     id="windows_test",
                                      datasources=self.ds,
                                      ))
         self.assertEquals(len(data['events']), 4)

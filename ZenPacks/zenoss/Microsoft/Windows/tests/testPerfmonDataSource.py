@@ -44,6 +44,10 @@ class TestDataPersister(BaseTestCase):
         device = self.dp.get(sentinel.device0)
         self.assertEquals(device['maps'], [])
 
+    def test_get_events(self):
+        events = self.dp.get_events(sentinel.device0)
+        self.assertEquals(len(events), 0)
+
     def test_remove(self):
         self.dp.remove(sentinel.device0)
         self.assertEquals(len(self.dp.devices), 0)
