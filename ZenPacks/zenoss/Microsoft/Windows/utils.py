@@ -7,9 +7,9 @@
 #
 ##############################################################################
 
-'''
-Basic utilities that don't cause any Zope stuff to be imported.
-'''
+"""
+Basic utilities that doesn't cause any Zope stuff to be imported.
+"""
 
 import json
 
@@ -466,29 +466,41 @@ def errorMsgCheck(config, events, error):
     # see if this a kerberos issue
     if any(x in error for x in kerberos_messages):
         append_event_datasource_plugin(config.datasources, events, {
+            'eventClass': '/Status/Kerberos',
             'eventClassKey': 'KerberosFailure',
+            'eventKey': '|'.join(('Kerberos', config.id)),
             'summary': error,
             'ipAddress': config.manageIp,
+            'severity': 4,
             'device': config.id})
+        return True
     # otherwise check if this is a typical authentication failure
-    else:
-        if any(x in error for x in wrongCredsMessages):
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'AuthenticationFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
+    elif any(x in error for x in wrongCredsMessages):
+        append_event_datasource_plugin(config.datasources, events, {
+            'eventClass': '/Status/Winrm/Auth',
+            'eventClassKey': 'AuthenticationFailure',
+            'eventKey': '|'.join(('Authentication', config.id)),
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'severity': 4,
+            'device': config.id})
+        return True
+    return False
 
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
     append_event_datasource_plugin(config.datasources, events, {
+        'eventClass': '/Status/Winrm/Auth',
         'eventClassKey': 'AuthenticationSuccess',
+        'eventKey': '|'.join(('Authentication', config.id)),
         'summary': 'Authentication Successful',
         'severity': 0,
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
+        'eventClass': '/Status/Kerberos',
         'eventClassKey': 'KerberosSuccess',
+        'eventKey': '|'.join(('Kerberos', config.id)),
         'summary': 'No Kerberos failures',
         'severity': 0,
         'device': config.id})

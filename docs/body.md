@@ -1745,6 +1745,7 @@ Changes
 2.7.9
 
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
+-   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
 
 2.7.8
 

@@ -23,7 +23,7 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
 
     def test_onSuccess(self):
         data = self.plugin.onSuccess({}, MagicMock(
-            id=sentinel.id,
+            id="windows_test",
             datasources=[MagicMock(datasource='IISSiteDataSource',
                                    params={'eventlog': sentinel.eventlog})],
         ))
