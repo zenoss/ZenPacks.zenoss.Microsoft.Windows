@@ -616,10 +616,17 @@ classes:
         order: 2
       caption:
         label: Caption
-      status:
+      iisStatus:
         label: Status
         grid_display: true
         order: 3
+        enum:
+          -1: Unknown
+          0: Running
+          1: Stopped
+        datapoint: sitecheck_status
+        datapoint_cached: true
+        datapoint_default: -1
       statusname:
         label: Status Name
       iis_version:
@@ -3383,6 +3390,9 @@ device_classes:
             type: Windows IIS Site
             eventClass: /Status
             cycletime: '300'
+            datapoints:
+              status:
+                rrdtype: GAUGE
           iisPostRequests:
             type: Windows Perfmon
             component: ${here/id}
@@ -3914,26 +3924,6 @@ device_classes:
                 format: '%7.2lf%%'
 
 event_classes:
-  /Status:
-    mappings:
-      WindowsServiceLog:
-        eventClassKey: WindowsServiceLog
-        sequence: 10
-        transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
-          \    if getattr(component, 'state') != currentstate:\n        setattr(component,\
-          \ 'state', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'Service\
-          \ (.*): (.*) has changed to (.*) state', msg)\n\nchange_properties(summaryObj.group(3))"
-        example: 'Service Alert: ALG has changed to Stopped state'
-        remove: true
-      IISSiteStatus:
-        eventClassKey: IISSiteStatus
-        sequence: 10
-        transform: "import re\n\n@transact\ndef change_properties(currentstate):\n\
-          \    if getattr(component, 'status') != currentstate:\n        setattr(component,\
-          \ 'status', currentstate)\n\nmsg = evt.summary\nsummaryObj = re.match(r'IIS\
-          \ Service (.*) is in (.*) state', msg)\n\nchange_properties(summaryObj.group(2))"
-        example: IIS Service W3SVC_1 is in Stopped state
-        remove: true
   /Status/Kerberos:
     remove: true
   /Status/Winrm:

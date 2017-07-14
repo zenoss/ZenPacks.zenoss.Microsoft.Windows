@@ -26,6 +26,5 @@ class TestIIS(BaseTestCase):
         self.assertEquals(len(data[1].maps), 1)
         self.assertEquals(data[1].maps[0].iis_version, 6)
         self.assertEquals(data[1].maps[0].sitename, "ServerComment")
-        self.assertEquals(data[1].maps[0].status, "Running")
         self.assertEquals(data[1].maps[0].statusname, "Name")
         self.assertEquals(data[1].maps[0].title, "ServerComment")

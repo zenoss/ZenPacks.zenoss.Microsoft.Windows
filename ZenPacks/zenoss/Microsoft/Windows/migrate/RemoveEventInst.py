@@ -11,13 +11,14 @@ import logging
 from Products.ZenModel.ZenPack import ZenPackMigration
 from Products.ZenModel.migrate.Migrate import Version
 from Products.Zuul.interfaces import ICatalogTool
-from Products.AdvancedQuery import Eq, Or
+from Products.AdvancedQuery import In
 from Products.ZenEvents.EventClassInst import EventClassInst
 
 log = logging.getLogger('zen.Microsoft.Windows.migrate.RemoveEventInst')
 BAD_PATHS = (
     '/Status/Kerberos/Auth',
     '/Status/Kerberos/Failure',
+    '/Status/Winrm',
     '/Status/Winrm/Auth/PasswordExpired',
     '/Status/Winrm/Auth/WrongCredentials')
 KRB_INSTANCES = (
@@ -30,6 +31,14 @@ AUTH_INSTANCES = (
     'Wrong Credentials Default',
     'AuthenticationSuccess',
     'AuthenticationFailure')
+WIN_INSTANCES = (
+    'WindowsServiceLog',
+    'IISSiteStatus')
+PATH_INSTANCES = {
+    '/Status/Kerberos': KRB_INSTANCES,
+    '/Status/Winrm/Auth': AUTH_INSTANCES,
+    '/Status': WIN_INSTANCES
+}
 
 
 class RemoveEventInst(ZenPackMigration):
@@ -39,6 +48,7 @@ class RemoveEventInst(ZenPackMigration):
 
     def migrate(self, dmd):
         # Remove unnecessary sub classes
+        log.info('Searching for deprecated Event Class subclasses and mappings to remove.')
         for path in BAD_PATHS:
             try:
                 org = dmd.Events.getOrganizer(path)
@@ -47,21 +57,15 @@ class RemoveEventInst(ZenPackMigration):
             dmd.Events.manage_deleteOrganizer(org.getDmdKey())
 
         # Remove unnecessary mappings
-        # Kerberos
-        krb_org = dmd.Events.getOrganizer('/Status/Kerberos')
-        query = Or(Eq('id', KRB_INSTANCES[0]),
-                   Eq('id', KRB_INSTANCES[1]),
-                   Eq('id', KRB_INSTANCES[2]),
-                   Eq('id', KRB_INSTANCES[3]),
-                   Eq('id', KRB_INSTANCES[4]))
-        krb_res = ICatalogTool(krb_org).search(EventClassInst, query=query)
-        # Auth
-        auth_org = dmd.Events.getOrganizer('/Status/Winrm/Auth')
-        query = Or(Eq('id', AUTH_INSTANCES[0]),
-                   Eq('id', AUTH_INSTANCES[1]),
-                   Eq('id', AUTH_INSTANCES[2]))
-        auth_res = ICatalogTool(auth_org).search(EventClassInst, query=query)
-        if krb_res.total or auth_res.total:
-            log.info('Removing unnecessary Event Class Instances')
-            krb_org.removeInstances(KRB_INSTANCES)
-            auth_org.removeInstances(AUTH_INSTANCES)
+        def remove_mapping(path, instances):
+            try:
+                org = dmd.Events.getOrganizer(path)
+                results = ICatalogTool(org).search(EventClassInst, query=In('id', instances))
+                if results.total:
+                    log.info('Removing deprecated Event Class Instances from {}'.format(path))
+                    org.removeInstances(instances)
+            except Exception:
+                pass
+
+        for path, instances in PATH_INSTANCES.iteritems():
+            remove_mapping(path, instances)

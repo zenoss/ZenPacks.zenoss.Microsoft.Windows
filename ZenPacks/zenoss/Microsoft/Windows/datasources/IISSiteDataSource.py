@@ -188,7 +188,6 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
     @save
     def onSuccess(self, results, config):
-
         data = self.new_data()
         ds0 = config.datasources[0]
         try:
@@ -205,6 +204,9 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             ds0.config_key[4],
             sitestatus
         )
+        data['values'][ds0.component]['status'] = {
+            'Running': 0,
+            'Stopped': 1}.get(sitestatus, -1), 'N'
 
         if sitestatus == 'Running':
             severity = ZenEventClasses.Clear
