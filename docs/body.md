@@ -1746,6 +1746,8 @@ Changes
 
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
+-   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
+-   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
 
 2.7.8
 

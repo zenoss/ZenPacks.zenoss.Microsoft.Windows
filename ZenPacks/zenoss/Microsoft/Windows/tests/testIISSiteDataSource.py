@@ -9,9 +9,11 @@
 ##############################################################################
 
 import Globals  # noqa
+import pprint
 from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import MagicMock, sentinel
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle_file
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.IISSiteDataSource import IISSiteDataSourcePlugin
 
@@ -22,14 +24,17 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         super(TestIISSiteDataSourcePlugin, self).setUp()
 
     def test_onSuccess(self):
-        data = self.plugin.onSuccess({}, MagicMock(
+        results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_111125')[0]
+        data = self.plugin.onSuccess(results, MagicMock(
             id="windows_test",
             datasources=[MagicMock(datasource='IISSiteDataSource',
                                    params={'eventlog': sentinel.eventlog})],
         ))
-        self.assertEquals(len(data['events']), 4)
+        self.assertEquals(len(data['events']), 4, msg='Expected 4 events: {}'.format(pprint.pformat(data['events'])))
         self.assertEquals("Monitoring ok", data['events'][1]['summary'])
-        self.assertIn("is in Unknown state", data['events'][0]['summary'])
+        self.assertIn("is in Stopped state", data['events'][0]['summary'])
+        self.assertEquals(len(data['values']), 1)
+        self.assertEquals(data['values'][data['values'].keys()[0]]['status'], (1, 'N'))
 
     def test_onError(self):
         f = None
