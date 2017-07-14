@@ -118,10 +118,6 @@ class IIS(WinRMPlugin):
                 om.title = iisSite.ServerComment
                 om.iis_version = self.iis_version or 6
                 om.sitename = iisSite.ServerComment  # Default Web Site
-                if iisSite.ServerAutoStart == 'false':
-                    om.status = 'Stopped'
-                else:
-                    om.status = 'Running'
 
                 for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
                     if (iisVirt.Name == iisSite.Name + "/ROOT") or (iisVirt.Name == iisSite.Name + "/root"):
@@ -135,10 +131,6 @@ class IIS(WinRMPlugin):
                     om.id = self.prepId(iisSite.Id)
                     om.title = om.statusname = om.sitename = iisSite.Name
                     om.iis_version = self.iis_version or 7
-                    if iisSite.ServerAutoStart == 'false':
-                        om.status = 'Stopped'
-                    else:
-                        om.status = 'Running'
                     om.apppool = iisSite.ApplicationPool
                     rm.append(om)
                 except AttributeError:
