@@ -388,7 +388,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         if isinstance(result, Failure):
             result = result.value
             if isinstance(result, error.TimeoutError):
-                result = 'Timeout while connecting to host'
+                result.message = 'Timeout while connecting to host'
                 prefix = ''
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         log.error(msg)
