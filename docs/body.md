@@ -1748,6 +1748,7 @@ Changes
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
 -   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
 -   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
+-   Fix collection hanging caused by network timeouts. (ZPS-1765)
 
 2.7.8
 
