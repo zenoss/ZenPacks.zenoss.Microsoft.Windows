@@ -52,7 +52,7 @@ from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClear
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.util import UnauthorizedError
+from txwinrm.util import UnauthorizedError, RequestError
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -457,21 +457,26 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 yield add_timeout(
                     self.complex_command.stop(),
                     self.cycletime)
-            except Exception, ex:
-                if 'canceled by the user' in ex.message:
-                    # This means the command finished naturally before
-                    # we got a chance to stop it. Totally normal.
-                    log_level = logging.DEBUG
+            except (RequestError, Exception) as ex:
+                if 'the request contained invalid selectors for the resource' in ex.message:
+                    # shell was lost due to reboot, service restart, or other circumstance
+                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
+                              ' will attempt to restart on the next cycle.')
                 else:
-                    # Otherwise this could result in leaking active
-                    # operations on the Windows server and should be
-                    # logged as a warning.
-                    log_level = logging.WARN
+                    if 'canceled by the user' in ex.message:
+                        # This means the command finished naturally before
+                        # we got a chance to stop it. Totally normal.
+                        log_level = logging.DEBUG
+                    else:
+                        # Otherwise this could result in leaking active
+                        # operations on the Windows server and should be
+                        # logged as a warning.
+                        log_level = logging.WARN
 
-                LOG.log(
-                    log_level,
-                    "Windows Perfmon failed to stop Get-Counter on %s: %s",
-                    self.config.id, ex)
+                    LOG.log(
+                        log_level,
+                        "Windows Perfmon failed to stop Get-Counter on %s: %s",
+                        self.config.id, ex)
 
         self.state = PluginStates.STOPPED
 
