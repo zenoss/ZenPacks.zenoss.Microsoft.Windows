@@ -52,7 +52,7 @@ from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClear
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.util import UnauthorizedError
+from txwinrm.util import UnauthorizedError, RequestError
 import codecs
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
@@ -275,18 +275,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def __init__(self, config):
         self.config = config
-        self.reset()
+        self.cycletime = config.datasources[0].cycletime
 
-    def reset(self):
-        self.state = PluginStates.STOPPED
-
-        dsconf0 = self.config.datasources[0]
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
 
         # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
-            self.sample_interval = dsconf0.cycletime
+            self.sample_interval = self.cycletime
             self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
@@ -303,9 +299,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
-        self.complex_command = ComplexLongRunningCommand(
-            dsconf0, self.num_commands)
+        self.reset()
+
+    def reset(self):
+        self.state = PluginStates.STOPPED
         self.network_failures = 0
+
+        self.complex_command = ComplexLongRunningCommand(
+            self.config.datasources[0],
+            self.num_commands)
 
     def _build_commandlines(self):
         """Return a list of command lines needed to get data for all counters."""
@@ -370,7 +372,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.state = PluginStates.STARTING
 
         try:
-            yield self.complex_command.start(self.commandlines)
+            yield add_timeout(
+                self.complex_command.start(self.commandlines),
+                self.cycletime)
         except Exception as e:
             errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
@@ -450,22 +454,29 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.complex_command:
             try:
-                yield self.complex_command.stop()
-            except Exception, ex:
-                if 'canceled by the user' in ex.message:
-                    # This means the command finished naturally before
-                    # we got a chance to stop it. Totally normal.
-                    log_level = logging.DEBUG
+                yield add_timeout(
+                    self.complex_command.stop(),
+                    self.cycletime)
+            except (RequestError, Exception) as ex:
+                if 'the request contained invalid selectors for the resource' in ex.message:
+                    # shell was lost due to reboot, service restart, or other circumstance
+                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
+                              ' will attempt to restart on the next cycle.')
                 else:
-                    # Otherwise this could result in leaking active
-                    # operations on the Windows server and should be
-                    # logged as a warning.
-                    log_level = logging.WARN
+                    if 'canceled by the user' in ex.message:
+                        # This means the command finished naturally before
+                        # we got a chance to stop it. Totally normal.
+                        log_level = logging.DEBUG
+                    else:
+                        # Otherwise this could result in leaking active
+                        # operations on the Windows server and should be
+                        # logged as a warning.
+                        log_level = logging.WARN
 
-                LOG.log(
-                    log_level,
-                    "Windows Perfmon failed to stop Get-Counter on %s: %s",
-                    self.config.id, ex)
+                    LOG.log(
+                        log_level,
+                        "Windows Perfmon failed to stop Get-Counter on %s: %s",
+                        self.config.id, ex)
 
         self.state = PluginStates.STOPPED
 
@@ -599,7 +610,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
             try:
-                yield self.remove_corrupt_counters()
+                yield add_timeout(
+                    self.remove_corrupt_counters(),
+                    self.cycletime)
             except Exception:
                 pass
             if self.ps_counter_map.keys():
