@@ -51,6 +51,7 @@ from ..utils import (
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     lookup_databasesummary)
 from EventLogDataSource import string_to_lines
+from . import send_to_debug
 
 
 # Requires that txwinrm_utils is already imported.
@@ -1113,6 +1114,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
                 event_class = '/Status'
+            elif send_to_debug(result):
+                logg = log.debug
 
         logg(msg)
         data = self.new_data()

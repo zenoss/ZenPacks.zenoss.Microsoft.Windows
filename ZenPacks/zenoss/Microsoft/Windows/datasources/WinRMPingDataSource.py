@@ -32,6 +32,7 @@ from ..utils import errorMsgCheck, generateClearAuthEvents
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
 from txwinrm.WinRMClient import EnumerateClient
+from . import send_to_debug
 
 log = logging.getLogger('zen.MicrosoftWindows')
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -153,7 +154,10 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
 
     def onError(self, results, config):
         data = self.new_data()
-        log.error('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
+        logg = log.error
+        if send_to_debug(results):
+            logg = log.debug
+        logg('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
 
         errorMsgCheck(config, data['events'], results.value.message)
 
