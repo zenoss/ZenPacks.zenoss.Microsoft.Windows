@@ -38,7 +38,8 @@ from ..WinService import WinService
 
 from ..jobs import ReindexWinServices
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig, get_dsconf
+from ..utils import errorMsgCheck, generateClearAuthEvents, get_dummy_dpconfig
+from . import send_to_debug
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
@@ -391,7 +392,10 @@ class ServicePlugin(PythonDataSourcePlugin):
                 result.message = 'Timeout while connecting to host'
                 prefix = ''
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
-        log.error(msg)
+        logg = log.error
+        if send_to_debug(result):
+            logg = log.debug
+        logg(msg)
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.message)
         if not data['events']:

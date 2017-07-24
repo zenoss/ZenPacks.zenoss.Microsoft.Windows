@@ -35,6 +35,7 @@ from ..utils import (
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
 from txwinrm.WinRMClient import SingleCommandClient, EnumerateClient
+from . import send_to_debug
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -239,7 +240,10 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
     def onError(self, result, config):
         msg, event_class = check_for_network_error(result, config)
-        log.error("IISSiteDataSource error on %s: %s", config.id, msg)
+        logg = log.error
+        if send_to_debug(result):
+            logg = log.debug
+        logg("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         # only need the one event

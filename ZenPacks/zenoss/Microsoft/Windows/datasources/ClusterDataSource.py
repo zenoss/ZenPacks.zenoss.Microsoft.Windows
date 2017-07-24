@@ -36,6 +36,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
     check_for_network_error, pipejoin, cluster_state_value,
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf)
+from . import send_to_debug
 
 
 # Requires that txwinrm_utils is already imported.
@@ -271,6 +272,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
                 event_class = '/Status'
+            elif send_to_debug(result):
+                logg = log.debug
             else:
                 eventKey = 'datasourceWarning_{0}'.format(
                     config.datasources[0].datasource

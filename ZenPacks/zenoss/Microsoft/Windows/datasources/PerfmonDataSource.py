@@ -21,11 +21,6 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
-try:
-    from twisted.web._newclient import ResponseNeverReceived
-except ImportError:
-    ResponseNeverReceived = str
-    pass
 
 from twisted.internet.task import LoopingCall
 
@@ -54,6 +49,7 @@ from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
 from txwinrm.util import UnauthorizedError, RequestError
 import codecs
+from . import send_to_debug
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
@@ -667,7 +663,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Handle errors on which we should start over.
         else:
             level = logging.WARN
-            if isinstance(e, ResponseNeverReceived):
+            if send_to_debug(failure):
                 level = logging.DEBUG
             retry, msg = (
                 False,
