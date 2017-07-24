@@ -36,6 +36,7 @@ from ..utils import save, errorMsgCheck, generateClearAuthEvents
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 # Requires that txwinrm_utils is already imported.
 from txwinrm.WinRMClient import SingleCommandClient
+from . import send_to_debug
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -367,6 +368,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
+        logg = log.error
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(result.value.message, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
@@ -375,7 +377,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
         severity = ZenEventClasses.Warning
         if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in msg:
             severity = ZenEventClasses.Critical
-        log.error("{}: {}".format(config.id, msg))
+        if send_to_debug(result):
+            logg = log.debug
+        logg.error("{}: {}".format(config.id, msg))
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
