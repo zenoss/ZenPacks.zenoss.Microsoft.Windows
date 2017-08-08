@@ -1751,6 +1751,7 @@ Changes
 -   Fix collection hanging caused by network timeouts. (ZPS-1765)
 -   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693, ZPS-1692)
 -   Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
+-   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
 
 
 2.7.8
