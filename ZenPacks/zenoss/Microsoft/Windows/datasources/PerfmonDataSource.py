@@ -69,6 +69,7 @@ class PerfmonDataSource(PythonDataSource):
 
     sourcetype = SOURCETYPE
     sourcetypes = (SOURCETYPE,)
+    eventClass = '/Status'
 
     plugin_classname = (
         ZENPACKID + '.datasources.PerfmonDataSource.PerfmonDataSourcePlugin')
