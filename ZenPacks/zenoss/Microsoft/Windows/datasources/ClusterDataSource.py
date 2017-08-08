@@ -72,6 +72,7 @@ class ClusterDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
+    eventClass = '/Status'
 
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]

@@ -1753,7 +1753,7 @@ Changes
 -   Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
 -   Fix Newlines in mssql job descriptions cause parse failure. (ZPS-1813)
 -   Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
-
+-   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
 
 
 2.7.8
