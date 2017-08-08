@@ -338,49 +338,57 @@ class WinMSSQL(WinRMPlugin):
 
             self.log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
             check_username(instance_info, instance, log)
-            in_databases = False
-            in_backups = False
-            in_jobs = False
             maps['errors'][om_instance.id] = instance_info.stderr
-            for stdout_line in filter_sql_stdout(instance_info.stdout):
-                if stdout_line == 'assembly load error':
-                    break
-                if stdout_line == '====Databases':
-                    in_databases = True
-                    in_backups = False
-                    in_jobs = False
-                    continue
-                elif stdout_line == '====Backups':
-                    in_databases = False
-                    in_backups = True
-                    in_jobs = False
-                    continue
-                elif stdout_line == '====Jobs':
-                    in_databases = False
-                    in_backups = False
-                    in_jobs = True
-                    continue
-                if in_databases:
+            stdout = filter_sql_stdout(instance_info.stdout)
+            try:
+                db_index = stdout.index('====Databases')
+            except ValueError:
+                db_index = None
+            try:
+                backup_index = stdout.index('====Backups')
+            except ValueError:
+                backup_index = None
+            try:
+                job_index = stdout.index('====Jobs')
+            except ValueError:
+                job_index = None
+            if db_index is not None and backup_index is not None:
+                for stdout_line in stdout[db_index + 1:backup_index]:
+                    if stdout_line == 'assembly load error':
+                        break
                     om_database = self.get_db_om(om_instance,
                                                  instance,
                                                  owner_node,
                                                  sqlserver,
                                                  stdout_line)
-                    database_oms.append(om_database)
-                elif in_backups:
+                    if om_database:
+                        database_oms.append(om_database)
+            if backup_index is not None and job_index is not None:
+                for stdout_line in stdout[backup_index + 1:job_index]:
                     om_backup = self.get_backup_om(om_instance,
                                                    instance,
                                                    stdout_line)
-                    backup_oms.append(om_backup)
+                    if om_backup:
+                        backup_oms.append(om_backup)
 
-                elif in_jobs:
+            if job_index is not None:
+                job_line = ''
+                for stdout_line in stdout[job_index + 1:]:
+                    # account for newlines in description
+                    if not job_line:
+                        job_line = stdout_line
+                    else:
+                        job_line = '\n'.join((job_line, stdout_line))
+                    if 'username---' not in stdout_line:
+                        continue
                     om_job = self.get_job_om(device,
                                              sqlserver,
                                              om_instance,
                                              owner_node,
-                                             stdout_line)
+                                             job_line)
                     if om_job:
                         jobs_oms.append(om_job)
+                    job_line = ''
 
         maps['clear'] = eventmessage
         maps['databases'] = database_oms
@@ -414,6 +422,7 @@ class WinMSSQL(WinRMPlugin):
            and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
             lastbackupdate = dbdict['lastbackupdate']
 
+        om_database = None
         if ('id' in dbdict):
             om_database = ObjectMap()
             om_database.id = self.prepId(instance + dbdict['id'])
@@ -443,13 +452,14 @@ class WinMSSQL(WinRMPlugin):
             key, value = backupitem.split('---')
             backupdict[key.lower()] = value.strip()
 
-        om_backup = ObjectMap()
-        om_backup.id = self.prepId(instance + backupdict['name'])
-        om_backup.title = backupdict['name']
-        om_backup.devicetype = backupdict['devicetype']
-        om_backup.physicallocation = backupdict['physicallocation']
-        om_backup.status = backupdict['status']
-        om_backup.instancename = om_instance.id
+        if ('name' in backupdict):
+            om_backup = ObjectMap()
+            om_backup.id = self.prepId(instance + backupdict['name'])
+            om_backup.title = backupdict['name']
+            om_backup.devicetype = backupdict['devicetype']
+            om_backup.physicallocation = backupdict['physicallocation']
+            om_backup.status = backupdict['status']
+            om_backup.instancename = om_instance.id
         return om_backup
 
     def get_job_om(self, device, sqlserver, om_instance, owner_node, stdout_line):

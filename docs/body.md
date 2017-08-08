@@ -1751,6 +1751,9 @@ Changes
 -   Fix collection hanging caused by network timeouts. (ZPS-1765)
 -   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693, ZPS-1692)
 -   Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
+-   Fix Newlines in mssql job descriptions cause parse failure. (ZPS-1813)
+-   Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
+
 
 
 2.7.8
