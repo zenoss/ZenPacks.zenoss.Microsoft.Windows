@@ -64,7 +64,11 @@ STDOUT_LINES = [
     "Name--- rtc_rtc\tDeviceType--- Disk \tPhysicalLocation--- c:\\Backup\\rtc.bak \tStatus---Existing",
     "jobname--- syspolicy_purge_history \tenabled--- True \tjobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 \tdescription--- No description available. \tdatecreated--- 6/2/2017 6:13:28 PM \tusername--- sa",
     "jobname--- \tenabled--- \tjobid--- \tdescription--- \tdatecreated--- \tusername--- ",
-    "jobname--- job1 \tenabled--- True \tjobid--- \tdescription--- description \tdatecreated--- \tusername--- sa"
+    "jobname--- job1 \tenabled--- True \tjobid--- \tdescription--- description \tdatecreated--- \tusername--- sa",
+    "jobname--- job2 \tenabled--- True \tjobid--- \tdescription--- description ",
+    "more description",
+    "one more line",
+    "\tdatecreated--- \tusername--- sa"
 ]
 
 
@@ -177,6 +181,14 @@ class TestProcesses(BaseTestCase):
                                              "owner_node",
                                              STDOUT_LINES[4])
         self.assertEquals(good_job_om.jobid, 'sqljob_id_job1')
+        job_line = '\n'.join(STDOUT_LINES[5:])
+        multiline_desc_om = self.plugin.get_job_om(StringAttributeObject(),
+                                                   "sqlserver",
+                                                   StringAttributeObject(),
+                                                   "owner_node",
+                                                   job_line)
+        expected = "description \n" + '\n'.join(STDOUT_LINES[6:8])
+        self.assertEquals(multiline_desc_om.description, expected)
 
 
 def test_suite():
