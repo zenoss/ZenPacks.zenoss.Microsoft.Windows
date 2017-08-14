@@ -897,23 +897,27 @@ Individual Machine configuration
 * Run command prompt as Administrator
 * winrm quickconfig
 
-* winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
-* winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
+* winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}' or a reasonable large number
+* winrm s winrm/config/winrs '@{MaxShellsPerUser="5"}'
 * winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
 * winrm s winrm/config/service/auth '@{Basic="true"}'
 * winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
-{{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not want to set these to the max, then a value of 50 should be adequate. The default is 5 on both, which will cause problems because Zenoss will open up concurrent requests for each WQL query and set of Perfmon counters.
+{{note}} The ZenPack will attempt to use a single remote shell per device.
+
+{{note}} The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.  The winrshost.exe process is the remote shell on a Windows Server.
+
+{{note}} The above instructions use the max values for MaxConcurrentOperationsPerUser. If you do not want to set this value to the max, then a value of 50 should be adequate. The default is 5, which will cause problems because Zenoss will open up concurrent requests for a set of Perfmon counters and any other shell based datasource.
 
 {{note}} If you choose to use Basic authentication it is highly recommended that you also configure HTTPS. If you do not use the HTTPS protocol your user name and password will be sent over in clear text. If you have challenges setting up HTTPS on the Windows clients but require the user name and password to be encrypted, then using the Kerberos authentication is the best option. HTTPS is not required for Kerberos but is recommended. If you choose to use Kerberos authentication, then your payload will be encrypted.
 
 {{note}} If you are using kerberos on EL6 and higher to connect to your Windows Server, your data will be encrypted over HTTP.  For kerberos on EL5, encryption is not supported so you must set the winrm AllowUnencrypted option to true.
 
-{{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to sent TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.
+{{note}} If you choose to take the WinRM default configurations you must supply Kerberos authentication settings in the zProperties. The Kerberos authentication process requires a ticket granting server. In the Microsoft Active Directory environment the AD Server is also the KDC. The zWinKDC value must be set to the IP address of the AD Server and the collector must be able to send TCP/IP packets to this server. Once this is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and the zWinRMPassword must be set correctly for this user account.  The domain name MUST be the name of the domain, not an alias for the domain.
 
-{{note}} In order to use a single domain user in a child domain or other trusted domain, set zWinKDC to the AD server of the user's domain.  Then enter the trusted domain name and associated AD server in the zWinTrustedRealm and zWinTrustedKDC properties, respectively.
+{{note}} In order to use a single domain user in a child domain or other trusted domain, set zWinKDC to the domain controller of the user's domain.  Then enter the trusted domain name and associated domain controller in the zWinTrustedRealm and zWinTrustedKDC properties, respectively.
 
 {{note}} The HTTPS setup must be completed on each client. At this time we do not have notes on automating this task but are currently in the process of testing several options. To successfully encrypt your payload between the Zenoss server and the Windows client you must install a Server Authentication certificate on the client machine. The process for requesting and installing the appropriate  certificate can be found at the following URL.
 http://blogs.technet.com/b/meamcs/archive/2012/02/25/how-to-force-winrm-to-listen-interfaces-over-https.aspx
@@ -928,8 +932,6 @@ If you do not see a record with HTTPS/ at the beginning of the hostname you can 
 <console>
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 </console>
-
-{{note}} The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
 
 == Transitioning from WindowsMonitor ==
 
@@ -1279,6 +1281,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Newlines in mssql job descriptions cause parse failure. (ZPS-1813)
 * Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
 * Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+* Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
 
 ;2.7.8
 * Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)

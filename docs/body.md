@@ -1152,21 +1152,26 @@ For more information please refer to
 Navigate to Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management
 
 WinRMClient 
+
 -   No setting changes required for client
 
 WinRMService
+
 -   Allow remote server management through WinRm
 
 HTTP (Windows default is HTTPS see note below for more information)
+
 -   Allow unencrypted Traffic (Only necessary when using basic authentication)
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
+
 -   Allow Basic Authentication
 
 WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Shell
+
 -   Allow Remote Shell Access
--   Max number of processes per shell = 4294967295
--   Max number of shells per user = 2147483647
+-   Max number of processes per shell = 4294967295 or a reasonable large number
+-   Max number of shells per user = 5
 -   Shell Timeout = 600000
 
 #### Individual Machine configuration
@@ -1175,19 +1180,24 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 -   Run command prompt as Administrator
 -   winrm quickconfig
 
--   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
--   winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
+-   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}' or a reasonable large number
+-   winrm s winrm/config/winrs '@{MaxShellsPerUser="5"}'
 -   winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
+
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
 -   winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
+Note: The ZenPack will attempt to use a single remote shell per device.
+
+Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.  The winrshost.exe process is the remote shell on a Windows Server.
+
 Note: The above instructions use the max values for
-MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not
-want to set these to the max, then a value of 50 should be adequate. The
-default is 5 on both, which will cause problems because Zenoss will open
-up concurrent requests for each WQL query and set of Perfmon counters.
+MaxConcurrentOperationsPerUser. If you do not want to set this value to 
+the max, then a value of 50 should be adequate. The default is 5, which 
+will cause problems because Zenoss will open up concurrent requests 
+for a set of Perfmon counters and any other shell based datasource.
 
 Note: If you choose to use Basic authentication it is highly
 recommended that you also configure HTTPS. If you do not use the HTTPS
@@ -1208,13 +1218,14 @@ supply Kerberos authentication settings in the zProperties. The Kerberos
 authentication process requires a ticket granting server. In the
 Microsoft Active Directory environment the AD Server is also the KDC.
 The zWinKDC value must be set to the IP address of the AD Server and the
-collector must be able to sent TCP/IP packets to this server. Once this
+collector must be able to send TCP/IP packets to this server. Once this
 is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and
-the zWinRMPassword must be set correctly for this user account.
+the zWinRMPassword must be set correctly for this user account.  The 
+domain name MUST be the name of the domain, not an alias for the domain.
 
 Note: In order to use a single domain user in a child domain or other
 trusted domain, set zWinKDC to the AD server of the user's domain. Then
-enter the trusted domain name and associated AD server in the
+enter the trusted domain name and associated domain controller in the
 zWinTrustedRealm and zWinTrustedKDC properties, respectively.
 
 Note: The HTTPS setup must be completed on each client. At this time
@@ -1244,8 +1255,6 @@ running *winrm quickconfig*.
 ```
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 ```
-
-Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
 
 Transitioning from WindowsMonitor
 ---------------------------------
@@ -1754,6 +1763,7 @@ Changes
 -   Fix Newlines in mssql job descriptions cause parse failure. (ZPS-1813)
 -   Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
 -   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+-   Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
 
 
 2.7.8
