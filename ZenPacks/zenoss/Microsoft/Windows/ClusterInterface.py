@@ -23,6 +23,8 @@ class ClusterInterface(schema.ClusterInterface):
         return None
 
     def get_host_device(self):
-        ''''''
-        deviceRoot = self.dmd.getDmdRoot("Devices")
+        """"""
+        if not self.ipaddresses:
+            return None
+        deviceRoot = self.dmd.getDmdRoot("Devices").getOrganizer('/Server/Microsoft')
         return deviceRoot.findDeviceByIdOrIp(self.ipaddresses)

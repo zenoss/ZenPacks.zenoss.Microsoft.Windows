@@ -1282,6 +1282,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
 * Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
 * Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
+* Fix Windows link to device with no ip instead of cluster node is present in grid of Cluster Nodes component (ZPS-1852)
 
 ;2.7.8
 * Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
