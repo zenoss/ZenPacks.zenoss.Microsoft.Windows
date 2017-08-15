@@ -1287,6 +1287,14 @@ the move.
 
 The current release is known to have the following limitations.
 
+-   Non-Cluster components are no longer valid on a Cluster device.  
+    Cluster devices should only use the OperatingSystem, WinCluster, 
+    and WinMSSQL modeler plugins because the nodes of a cluster may 
+    have differing components such as Interfaces, FileSystems and 
+    Processors.  If you have upgraded from a version previous to 2.5.0, 
+    and you still have the following components you should remove 
+    them from your Cluster device:  Interfaces/WindowsInterfaces, 
+    FileSystems, Processors, Services/Windows Services, Processes.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
 -   The custom widget for MSSQL Server credentials is not compatible
     with Zenoss 4.1.x, therefore the *zDBInstances* property in this
