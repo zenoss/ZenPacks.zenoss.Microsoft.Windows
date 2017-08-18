@@ -119,7 +119,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         sql_config.id = sql_config.datasources[0].device
         results = (parms[0], parms[1], CommandResponse(stdout, [], 0))
         data = self.plugin.onSuccess(results, sql_config)
-        self.assertEquals(len(data['values']), 0)
+        self.assertEquals(len(data['values']), 5)
         self.assertEquals(len(data['events']), 15)
         # we should see status of databases even if no counters are returned.
         for x in xrange(5):
