@@ -13,6 +13,20 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 
+DB_STATUSES = {
+    1: 'AutoClosed',
+    2: 'EmergencyMode',
+    4: 'Inaccessible',
+    8: 'Normal',
+    16: 'Offline',
+    32: 'Recovering',
+    64: 'RecoveryPending',
+    128: 'Restoring',
+    256: 'Shutdown',
+    512: 'Standby',
+    1024: 'Suspect'
+}
+
 
 def addLocalLibPath():
     """
@@ -40,6 +54,22 @@ def lookup_databasesummary(value):
         'Suspect': 'The database has been marked as suspect. You will have '
         'to check the data, and the database might have to be restored from a backup.',
     }.get(value, '')
+
+
+def lookup_database_status(value):
+    return {
+        'AutoClosed': 1,
+        'EmergencyMode': 2,
+        'Inaccessible': 4,
+        'Normal': 8,
+        'Offline': 16,
+        'Recovering': 32,
+        'RecoveryPending': 64,
+        'Restoring': 128,
+        'Shutdown': 256,
+        'Standby': 512,
+        'Suspect': 1024
+    }.get(value.strip(), 0)
 
 
 def lookup_adminpasswordstatus(value):

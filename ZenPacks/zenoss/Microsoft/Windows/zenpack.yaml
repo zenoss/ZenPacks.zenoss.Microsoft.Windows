@@ -2309,6 +2309,15 @@ device_classes:
             cycletime: '300'
             resource: Log Cache Hit Ratio Base
             strategy: powershell MSSQL
+          status:
+            type: Windows Shell
+            datapoints:
+              status:
+                rrdtype: GAUGE
+                rrdmin: 0
+            cycletime: '300'
+            resource: status
+            strategy: powershell MSSQL
         graphs:
           Transactions:
             units: transactions
@@ -3924,6 +3933,14 @@ device_classes:
                 format: '%7.2lf%%'
 
 event_classes:
+  /Status:
+    remove: false
+    mappings:
+      WinDatabaseStatus:
+        eventClassKey: WinDatabaseStatus
+        sequence: 10
+        remove: true
+        example: Database master status is Normal
   /Status/Kerberos:
     remove: true
   /Status/Winrm:
