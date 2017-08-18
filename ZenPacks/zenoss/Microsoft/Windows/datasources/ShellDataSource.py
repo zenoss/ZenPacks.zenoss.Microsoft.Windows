@@ -47,8 +47,8 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
-    check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
+    check_for_network_error, save, errorMsgCheck,
+    generateClearAuthEvents, get_dsconf,
     lookup_databasesummary, lookup_database_status)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
@@ -595,7 +595,7 @@ class PowershellMSSQLJobStrategy(object):
             try:
                 currentstate = {
                     'Succeeded': ZenEventClasses.Clear,
-                    'Failed':  dsconf.severity
+                    'Failed': dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
                     component,
@@ -609,7 +609,7 @@ class PowershellMSSQLJobStrategy(object):
                     'summary': msg,
                     'device': dsconf.device,
                     'component': dsconf.component})
-            except:
+            except Exception:
                 msg = 'Missing or no data returned when querying job "{}"'.format(component)
                 collectedResults.events.append({
                     'eventClass': eventClass,
@@ -912,9 +912,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 }.get(value[1], ZenEventClasses.Info)
 
                 summary = 'MSSQL Instance {0} is {1}.'.format(
-                        dsconf.component,
-                        value[1].strip()
-                    )
+                    dsconf.component,
+                    value[1].strip()
+                )
 
                 data['events'].append(dict(
                     eventClass='/Status',
@@ -948,34 +948,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 checked_result = False
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                     checked_result = True
-                    if dsconf.datasource == 'state':
-                        try:
-                            state = value[1]
-                        except (IndexError, Exception):
-                            continue
-                        currentstate = {
-                            'Online': ZenEventClasses.Clear,
-                            'Offline': ZenEventClasses.Critical,
-                            'PartialOnline': ZenEventClasses.Error,
-                            'Failed': ZenEventClasses.Critical
-                        }.get(state, ZenEventClasses.Info)
-
-                        data['events'].append(dict(
-                            eventClass=dsconf.eventClass or "/Status",
-                            eventClassKey='winrs{0}'.format(strategy.key),
-                            eventKey=strategy.key,
-                            severity=currentstate,
-                            summary='Last state of component was {0}'.format(state),
-                            device=config.id,
-                            component=prepId(dsconf.component)
-                        ))
-
-                        data['values'][dsconf.component]['state'] = cluster_state_value(state), timestamp
-                    else:
-                        if dsconf.datasource != 'status':
-                            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                    if dsconf.datasource != 'status' or\
+                       (dsconf.datasource == 'status' and strategy.key != "PowershellMSSQL"):
+                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
-                    # send db status events
+                    # get db status
                     for db in getattr(strategy, 'valuemap', []):
                         dsconf = get_dsconf(dsconfs, db, param='contexttitle')
                         if dsconf:
@@ -990,8 +967,16 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             dbstatuses = 'Unknown'
                         db_summary = ''
                         status = 0
+                        severity = ZenEventClasses.Info
+                        warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
                         for dbstatus in dbstatuses.split(','):
+                            # create bitmask for status display
                             status += lookup_database_status(dbstatus)
+                            # determine severity
+                            if dbstatus in warnings:
+                                severity = ZenEventClasses.Warning
+                            elif dbstatus == 'Normal':
+                                severity = ZenEventClasses.Clear
                             if db_summary:
                                 db_summary += ' '
                             db_summary += lookup_databasesummary(dbstatus)
@@ -1002,7 +987,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                 eventClass=eventClass,
                                 eventClassKey='WinDatabaseStatus',
                                 eventKey=strategy.key,
-                                severity=ZenEventClasses.Info,
+                                severity=severity,
                                 device=config.id,
                                 summary=summary,
                                 message=db_summary,
@@ -1149,8 +1134,8 @@ def get_script(datasource, context):
     te = lambda x: datasource.talesEval(x, context)
     try:
         script = te(' '.join(string_to_lines(datasource.script)))
-    except:
+    except Exception:
         script = ''
-        log.error('Invalid tales expression in custom command script: %s' % \
+        log.error('Invalid tales expression in custom command script: %s' %
                   str(datasource.script))
     return script

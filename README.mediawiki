@@ -330,11 +330,17 @@ Events will be sent depending upon one or more of the following statuses of the 
 * Suspect: The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
 
 'Normal' will send a clear event
-'EmergencyMode' will send a critical event
-'Inaccessible', 'Suspect', 'Shutdown' will send Error events
-'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Warning events
+'EmergencyMode', 'Suspect', 'Inaccessible' will send a critical event
+'Shutdown', 'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Info events
 
-Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.
+Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.  Transforms can be applied in the WinDatabaseStatus event mapping under /Status.  You can raise/lower the severity of the status, or drop it altogether.
+
+For example, to raise the severity of the Offline status:
+
+<nowiki>
+if 'Offline' in evt.summary:
+    evt.severity = 4
+</nowiki>
 
 The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.
 
@@ -451,7 +457,7 @@ Logon to the zenoss server and create a python file called test1.py in /opt/zeno
 
 The content of test1.py
 
- <nowiki>
+<nowiki>
 from Products.ZenRRD.CommandParser import CommandParser
  class test1(CommandParser):
     def processResults(self, cmd, result):

@@ -3933,6 +3933,14 @@ device_classes:
                 format: '%7.2lf%%'
 
 event_classes:
+  /Status:
+    remove: false
+    mappings:
+      WinDatabaseStatus:
+        eventClassKey: WinDatabaseStatus
+        sequence: 10
+        remove: true
+        example: Database master status is Normal
   /Status/Kerberos:
     remove: true
   /Status/Winrm:

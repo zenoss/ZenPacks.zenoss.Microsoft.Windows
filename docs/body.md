@@ -378,6 +378,7 @@ You can enable/disable any of these or change the cycle time by editing
 the WinDatabase monitoring template.
 
 Database Statuses
+
 :   AutoClosed - The database has been automatically closed.
 :   EmergencyMode - The database is in emergency mode.
 :   Inaccessible - The database is inaccessible. The server might be switched off or the network connection has been interrupted.
@@ -391,13 +392,19 @@ Database Statuses
 :   Suspect - The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
 
 Events
-:   'Normal' will send a clear event
-:   'EmergencyMode' will send a critical event
-:   'Inaccessible', 'Suspect', 'Shutdown' will send Error events
-:   'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Warning events
 
-Status can be multiple items from above. For example, taking a database
-offline will set the status to 'Offline, AutoClosed'.
+:   'Normal' will send a clear event
+:   'EmergencyMode', 'Suspect', 'Inaccessible' will send a critical event
+:   'Shutdown', 'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Info events
+
+Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.  Transforms can be applied in the WinDatabaseStatus event mapping under /Status.  You can raise/lower the severity of the status, or drop it altogether.
+
+For example, to raise the severity of the Offline status:
+
+```python
+if 'Offline' in evt.summary:
+    evt.severity = 4
+```
 
 The WinDBInstance monitoring template will monitor the status of a SQL
 Server instance to inform the user if it is up or down.
