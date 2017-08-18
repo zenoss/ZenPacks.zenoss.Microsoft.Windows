@@ -2311,6 +2311,7 @@ device_classes:
             strategy: powershell MSSQL
           status:
             type: Windows Shell
+            eventClass: /Status
             datapoints:
               status:
                 rrdtype: GAUGE
