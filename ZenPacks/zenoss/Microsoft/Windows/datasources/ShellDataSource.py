@@ -49,7 +49,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
 from ..utils import (
     check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
-    lookup_databasesummary)
+    lookup_databasesummary, lookup_database_status)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
 
@@ -68,26 +68,6 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL Instance',
     'powershell MSSQL Job'
 ]
-
-CRITICAL_STATUSES = (
-    'EmergencyMode',
-)
-
-ERROR_STATUSES = (
-    'Inaccessible',
-    'Suspect',
-    'Shutdown',
-)
-
-WARNING_STATUSES = (
-    'RecoveryPending',
-    'Restoring',
-    'Recovering',
-    'Standby',
-    'AutoClosed',
-    'Offline',
-    'Unknown'
-)
 
 BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
 
@@ -992,7 +972,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
                         data['values'][dsconf.component]['state'] = cluster_state_value(state), timestamp
                     else:
-                        data['values'][dsconf.component][dsconf.datasource] = value, timestamp
+                        if dsconf.datasource != 'status':
+                            data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
                     # send db status events
                     for db in getattr(strategy, 'valuemap', []):
@@ -1008,17 +989,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         except Exception:
                             dbstatuses = 'Unknown'
                         db_summary = ''
-                        db_severities = set()
+                        status = 0
                         for dbstatus in dbstatuses.split(','):
-                            dbstatus = dbstatus.strip()
-                            if dbstatus == 'Normal':
-                                db_severities.add(ZenEventClasses.Clear)
-                            elif dbstatus in WARNING_STATUSES:
-                                db_severities.add(ZenEventClasses.Warning)
-                            elif dbstatus in ERROR_STATUSES:
-                                db_severities.add(ZenEventClasses.Error)
-                            elif dbstatus in CRITICAL_STATUSES:
-                                db_severities.add(ZenEventClasses.Critical)
+                            status += lookup_database_status(dbstatus)
                             if db_summary:
                                 db_summary += ' '
                             db_summary += lookup_databasesummary(dbstatus)
@@ -1029,13 +1002,14 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                 eventClass=eventClass,
                                 eventClassKey='WinDatabaseStatus',
                                 eventKey=strategy.key,
-                                severity=max(db_severities),
+                                severity=ZenEventClasses.Info,
                                 device=config.id,
                                 summary=summary,
                                 message=db_summary,
                                 dbstatus=dbstatuses,
                                 component=component
                             ))
+                            data['values'][dsconf.component]['status'] = status, 'N'
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(

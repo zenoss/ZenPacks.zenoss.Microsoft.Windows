@@ -1759,7 +1759,7 @@ Monitoring Templates
 Changes
 -------
 
-2.7.9
+2.8.0
 
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
@@ -1773,6 +1773,8 @@ Changes
 -   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
 -   Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
 -   Fix Windows link to device with no ip instead of cluster node is present in grid of Cluster Nodes component (ZPS-1852)
+-   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
+
 
 
 2.7.8
