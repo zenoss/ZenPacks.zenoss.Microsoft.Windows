@@ -21,7 +21,7 @@ log = logging.getLogger('zen.Microsoft.Windows.migrate.AddDPToIISDataSource')
 class AddDPToIISDataSource(ZenPackMigration):
     # Main class that contains the migrate() method.
     # Note version setting.
-    version = Version(2, 7, 9)
+    version = Version(2, 8, 0)
 
     def add_status_dp(self, datasource):
         if not datasource:

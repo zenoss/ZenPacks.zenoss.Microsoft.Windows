@@ -8,13 +8,7 @@
 ##############################################################################
 
 from . import schema
-from Products import Zuul
-from zenoss.protocols.protobufs.zep_pb2 import (
-    STATUS_NEW, STATUS_ACKNOWLEDGED,
-    SEVERITY_CLEAR, SEVERITY_CRITICAL, SEVERITY_ERROR,
-    SEVERITY_INFO, SEVERITY_WARNING
-)
-from utils import get_rrd_path
+from utils import get_rrd_path, DB_STATUSES
 
 
 class WinSQLDatabase(schema.WinSQLDatabase):
@@ -26,37 +20,22 @@ class WinSQLDatabase(schema.WinSQLDatabase):
 
     def getDBStatus(self):
         """Return database state"""
-        status = 'Unknown'
+        dbstatus = 'Unknown'
         if not self.monitored():
-            return status
-        instance = getattr(self, 'winsqlinstance', None)
-        if instance and instance().getStatus():
-            return status
+            return dbstatus
 
-        zep = Zuul.getFacade("zep", self.dmd)
+        dbstatus = ''
         try:
-            event_filter = zep.createEventFilter(
-                tags=[self.getUUID()],
-                status=[STATUS_NEW, STATUS_ACKNOWLEDGED],
-                severity=[SEVERITY_CLEAR, SEVERITY_CRITICAL, SEVERITY_ERROR,
-                          SEVERITY_INFO, SEVERITY_WARNING],
-                event_class=filter(None, ['/Status/*']))
-
-            status = 'Normal'
-            summaries = zep.getEventSummariesGenerator(filter=event_filter)
-            for summary in summaries:
-                try:
-                    occurrence = summary['occurrence'][0]
-                except Exception:
-                    continue
-                else:
-                    for detail in occurrence.get('details', []):
-                        if detail.get('name', '') == 'dbstatus':
-                            status = detail.get('value', ['Unknown'])[0]
+            # use a bitmask to determine all statuses for the database
+            status_value = int(self.cacheRRDValue('status', None))
+            for key, status in DB_STATUSES.iteritems():
+                if key & status_value != 0:
+                    if dbstatus:
+                        dbstatus += ', '
+                    dbstatus += status
         except Exception:
-            pass
-
-        return status
+            dbstatus = 'Unknown'
+        return dbstatus
 
     def monitored(self):
         instance = getattr(self, 'winsqlinstance', None)
