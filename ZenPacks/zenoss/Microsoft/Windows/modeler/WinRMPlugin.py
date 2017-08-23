@@ -177,7 +177,9 @@ class WinRMPlugin(PythonPlugin):
             message = "Credentials cache file not found. Please make sure that this file exists and server has access to it."
             eventClass = '/Status/Kerberos'
         elif type(error) == Exception and 'kerberos' in error.message.lower():
-            message = "Unable to connect to %s. Please make sure zWinKDC, zWinRMUser, and zWinRMPassword properties are configured correctly"
+            message = error.message + "  Unable to connect to %s. Please make sure zWinKDC"\
+                ", zWinRMUser, zWinRMServerName, and zWinRMPassword "\
+                "properties are configured correctly"
             eventClass = '/Status/Kerberos'
         elif isinstance(error, ResponseFailed):
             for reason in error.reasons:
@@ -323,6 +325,6 @@ class WinRMPlugin(PythonPlugin):
 
         msg = 'Collection completed for %s'
         for eventClass in ('/Status/Winrm', '/Status/Kerberos'):
-            self._send_event(msg % device.id, device.id, ZenEventClasses.Clear, eventClass)
+            self._send_event(msg % device.id, device.id, ZenEventClasses.Clear, eventClass=eventClass)
 
         defer.returnValue(results)
