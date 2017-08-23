@@ -515,8 +515,11 @@ class EventLogQuery(object):
     def run(self, eventlog, selector, max_age, eventid, isxml):
         if selector.strip() == '*':
             selector = '{$True}'
+        else:
+            selector = selector.replace('\n', ' ').replace('"', r'\"')
+
         if isxml:
-            filter_xml = selector.replace('\n', ' ').replace('"', r'\"')
+            filter_xml = selector
             selector = '{$True}'
         else:
             filter_xml = FILTER_XML.replace('"', r'\"')
