@@ -742,6 +742,8 @@ classes:
         label: Roles
       cluster_node_server:
         label: Cluster Node Server
+      perfmon_instance:
+        label: Perfmon Counter Instance Name
     monitoring_templates: [WinDBInstance]
     impacts: [backups, databases, jobs]
     impacted_by: [device]
@@ -1575,6 +1577,180 @@ device_classes:
             cycletime: '300'
             resource: status
             strategy: powershell MSSQL Instance
+          BufferCacheHitRatio:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BufferCacheHitRatio:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {buffer_cache_hit_ratio: null}
+            counter: \${here/perfmon_instance}:Buffer Manager\Buffer cache hit ratio
+          PageLifeExpectancy:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              PageLifeExpectancy:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {page_life_expectancy: null}
+            counter: \${here/perfmon_instance}:Buffer Manager\Page life expectancy
+          BatchRequestsPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BatchRequestsPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {batch_requests__sec: null}
+            counter: \${here/perfmon_instance}:SQL Statistics\Batch Requests/Sec
+          SQLCompilationsPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SQLCompilationsPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sql_compilations__sec: null}
+            counter: \${here/perfmon_instance}:SQL Statistics\SQL Compilations/Sec
+          SQLReCompilationsPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SQLReCompilationsPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sql_recompilations__sec: null}
+            counter: \${here/perfmon_instance}:SQL Statistics\SQL Re-Compilations/Sec
+          UserConnections:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              UserConnections:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {user_connections: null}
+            counter: \${here/perfmon_instance}:General Statistics\User Connections
+          LockWaitsPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              LockWaitsPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {lock_waits__sec: null}
+            counter: \${here/perfmon_instance}:Locks(_Total)\Lock Waits/Sec
+          PageSplitsPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              PageSplitsPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {page_splits__sec: null}
+            counter: \${here/perfmon_instance}:Access Methods\Page Splits/Sec
+          ProcessesBlocked:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              ProcessesBlocked:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {processes_blocked: null}
+            counter: \${here/perfmon_instance}:General Statistics\Processes Blocked
+          CheckpointPagesPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              CheckpointPagesPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {checkpoint_pages__sec: null}
+            counter: \${here/perfmon_instance}:Buffer Manager\Checkpoint Pages/Sec
+          DeadlocksPerSec:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              DeadlocksPerSec:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {deadlocks__sec: null}
+            counter: \${here/perfmon_instance}:Locks(_Total)\Number of Deadlocks/sec
+        graphs:
+          Buffer Cache Hit Ratio:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Cache Hit Ratio:
+                dpName: BufferCacheHitRatio_BufferCacheHitRatio
+                format: '%7.2lf%%'
+          Page Life Expectancy:
+            units: seconds
+            miny: 0
+            graphpoints:
+              Page Life:
+                dpName: PageLifeExpectancy_PageLifeExpectancy
+                format: '%7.21f%'
+          Batch Requests:
+            units: batches/sec
+            miny: 0
+            graphpoints:
+              Batches:
+                dpName: BatchRequestsPerSec_BatchRequestsPerSec
+                format: '%7.21f%'
+          Compilations:
+            units: compilatios/sec
+            miny: 0
+            graphpoints:
+              Compilations:
+                dpName: SQLCompilationsPerSec_SQLCompilationsPerSec
+                format: '%7.21f%'
+              Re-Compilations:
+                dpName: SQLReCompilationsPerSec_SQLReCompilationsPerSec
+                format: '%7.21f%'
+          Connections:
+            units: connections
+            miny: 0
+            graphpoints:
+              User Connections:
+                dpName: UserConnections_UserConnections
+                format: '%7.21f%'
+          Lock Waits:
+            units: lock waits/sec
+            miny: 0
+            graphpoints:
+              Locks:
+                dpName: LockWaitsPerSec_LockWaitsPerSec
+                format: '%7.21f%'
+          Page Splits:
+            units: page splits/sec
+            miny: 0
+            graphpoints:
+              Splits:
+                dpName: PageSplitsPerSec_PageSplitsPerSec
+                format: '%7.21f%'
+          Processes Blocked:
+            units: processes
+            miny: 0
+            graphpoints:
+              Processes:
+                dpName: ProcessesBlocked_ProcessesBlocked
+                format: '%7.21f%'
+          Checkpoint Pages:
+            units: checkpoint pages/sec
+            miny: 0
+            graphpoints:
+              Pages:
+                dpName: CheckpointPagesPerSec_CheckpointPagesPerSec
+                format: '%7.21f%'
+          Deadlocks:
+            units: deadlocks/sec
+            miny: 0
+            graphpoints:
+              Deadlocks:
+                dpName: DeadlocksPerSec_DeadlocksPerSec
+                format: '%7.21f%'
       Active Directory 2003:
         description: Microsoft Active Directory
         thresholds:

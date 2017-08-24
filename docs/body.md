@@ -341,10 +341,22 @@ Processes (Win32\_PerfFormattedData\_PerfProc\_Process)
 Note: IIS 6 Management compatibility role no longer needs to be
 installed on the server side in order to use the IIS Sites component.
 
-SQL Server
+SQL Server Instance
+:   \\SQLServer:Buffer Manager\\Buffer cache hit ratio
+:   \\SQLServer:Buffer Manager\\Page life expectancy
+:   \\SQLServer:SQL Statistics\\Batch Requests/Sec
+:   \\SQLServer:SQL Statistics\\SQL Compilations/Sec
+:   \\SQLServer:SQL Statistics\\SQL Re-Compilations/Sec
+:   \\SQLServer:General Statistics\\User Connections
+:   \\SQLServer:Locks(_Total)\\Lock Waits/Sec
+:   \\SQLServer:Access Methods\\Page Splits/Sec
+:   \\SQLServer:General Statistic\\Processes Blocked
+:   \\SQLServer:Buffer Manager\\Checkpoint Pages/Sec
+:   \\SQLServer:Locks(_Total)\\Number of Deadlocks/sec
 
-The following performance counters are monitored via Powershell script per database:
+Note: For a named instance, the counter instance will be `\\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
 
+SQL Server Database
 :   \\Active Transactions
 :   \\Backup/Restore Throughput/sec
 :   \\Bulk Copy Rows/sec
@@ -373,9 +385,6 @@ The following performance counters are monitored via Powershell script per datab
 :   \\Repl. Trans. Rate
 :   \\Shrink Data Movement Bytes/sec
 :   \\Transactions/sec
-
-You can enable/disable any of these or change the cycle time by editing
-the WinDatabase monitoring template.
 
 Database Statuses
 
@@ -1781,6 +1790,8 @@ Changes
 -   Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
 -   Fix Windows link to device with no ip instead of cluster node is present in grid of Cluster Nodes component (ZPS-1852)
 -   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
+-   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
+-   Added SQL Server instance performance counters
 
 
 
