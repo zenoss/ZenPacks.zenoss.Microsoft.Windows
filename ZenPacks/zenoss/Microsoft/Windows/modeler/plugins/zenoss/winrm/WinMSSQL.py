@@ -223,7 +223,7 @@ class WinMSSQL(WinRMPlugin):
 
             if instance not in dblogins:
                 self.log.info("DB Instance {0} found but was not set in zDBInstances.  "
-                         "Using default credentials.".format(instance))
+                              "Using default credentials.".format(instance))
 
             instance_title = instance
             if instance == 'MSSQLSERVER':
@@ -239,8 +239,13 @@ class WinMSSQL(WinRMPlugin):
 
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance_title)
-            om_instance.title = instance_title
-            om_instance.instancename = instance_title
+            if instance == 'MSSQLSERVER':
+                om_instance.perfmon_instance = 'SQLServer'
+                om_instance.title = '{}(MSSQLSERVER)'.format(instance_title)
+            else:
+                om_instance.perfmon_instance = 'MSSQL${}'.format(instance)
+                om_instance.title = instance_title
+            om_instance.instancename = instance
             om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
                 owner_node.strip(), sqlserver)
