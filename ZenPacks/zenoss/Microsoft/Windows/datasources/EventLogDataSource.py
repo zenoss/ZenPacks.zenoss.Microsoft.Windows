@@ -379,7 +379,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             severity = ZenEventClasses.Critical
         if send_to_debug(result):
             logg = log.debug
-        logg.error("{}: {}".format(config.id, msg))
+        logg("{}: {}".format(config.id, msg))
         data = self.new_data()
         errorMsgCheck(config, data['events'], result.value.message)
         if not data['events']:
