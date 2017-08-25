@@ -11,7 +11,6 @@ from zope.interface import implements
 from Products.Zuul.infos.component.ipinterface import IpInterfaceInfo
 from Products.Zuul.infos.component.winservice import WinServiceInfo
 from Products.Zuul.infos import ProxyProperty
-from Products.Zuul.decorators import info
 
 from . import schema
 from ZenPacks.zenoss.Microsoft.Windows.interfaces import (
@@ -27,12 +26,6 @@ class WinServiceInfo(schema.WinServiceInfo, WinServiceInfo):
     implements(IWinServiceInfo)
 
     usermonitor = ProxyProperty('usermonitor')
-
-    @property
-    @info
-    def formatted_description(self):
-        return '<div style="white-space: normal;">{}</div>'.format(
-            self._object.description)
 
     @property
     def monitored(self):
