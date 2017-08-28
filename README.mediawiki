@@ -264,10 +264,13 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \Web Service(${here/sitename})\Search Requests/sec
 * \Web Service(${here/sitename})\Trace Requests/sec
 * \Web Service(${here/sitename})\Unlock Requests/sec
+* \APP_POOL_WAS(${here/apppool})\Current Application Pool State
 
 {{note}} The IIS monitoring template will only be used when IIS is found during modeling.
 
 {{note}} The IISAdmin service must be running in order to collect IIS data.
+
+=== Processes ===
 
 The following metrics are collected directly via WMI.
 
@@ -275,11 +278,6 @@ The following metrics are collected directly via WMI.
 * PercentProcessorTime
 * WorkingSet
 * WorkingSetPrivate
-
-<br clear=all>
-
-{{note}} IIS 6 Management compatibility role no longer needs to be installed on the server side in order to use the IIS Sites component.
-
 
 === SQL Server Instances ===
 
@@ -327,6 +325,8 @@ The following metrics are collected directly via WMI.
 * \SQLServer:Databases(<dbname>)\Repl. Trans. Rate
 * \SQLServer:Databases(<dbname>)\Shrink Data Movement Bytes/sec
 * \SQLServer:Databases(<dbname>)\Transactions/sec
+
+Collected via PowerShell SQL connection to server instance.
 
 You can enable/disable any of these or change the cycle time by editing the WinDatabase monitoring template.
 
@@ -429,11 +429,14 @@ Simply copy this and paste into the eventlog datasource Event Query field and sa
 {{note}} The query for servers with .NET 3.5 and later uses the Get-WinEvent PowerShell cmdlet.  If your server does not have one of these later versions, we will revert to using the Get-EventLog cmdlet.  It is recommended, but not required, to install .NET version 3.5 SP1 or higher.  If you have a mix of these servers using the same Event Log Data Source, you can mix and match the differing powershell queries.  e.g. <code>{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }</code>
 
 To change event severity follow the steps:
-# go to IIS Site events, and click on '/Status' event class.
-# find 'EventClass Mappings' section and click on 'IISSiteStatus' link
-# click the ''Edit'' button
-# in the 'Transform' section, add "<code>evt.severity = NUM</code>" where NUM is one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical) at the bottom
-# click the ''Save'' button
+# Navigate to the desired event class to map the event, for example '/Status'.
+# Edit the mapping instance
+## Select the desired mapping instance and either double click or click the gear icon at the top of the pane.
+## If the mapping does not exist:
+### Create a new one by clicking the ''+'' button at the top of the pane
+### Use the format of ProviderName_EventId for the mapping name and eventClassKey, e.g. EventService_1001
+# Click on the 'Transforms' tab, add "<code>evt.severity = NUM</code>" where NUM is one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical) at the bottom
+# click the ''Submit'' button
 
 === Custom Commands ===
 You can use the custom command datasource in the Windows ZenPack to create custom data points, graphs and thresholds.
@@ -697,9 +700,7 @@ The Least Privileged User requires the following privileges and permissions:
 ** "Root/RSOP/Computer"
 ** "Root/WMI"
 ** "Root/CIMv2/Security/MicrosoftTpm"
-If IIS is installed, one of the following namespaces depending upon IIS version
-** "Root/Webadministration"
-** "Root/microsoftiisv2"
+** "Root/Webadministration" If IIS is installed
 * Permission to use the winrm service
 * ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys
 ** "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib",
@@ -1308,6 +1309,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
 * Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
 * Added SQL Server instance performance counters
+* Added Application Pool Status check for IIS Application Pools
 
 ;2.7.8
 * Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)

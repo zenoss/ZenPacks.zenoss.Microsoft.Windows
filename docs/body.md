@@ -323,6 +323,7 @@ IIS Sites
 :   \\Web Service(${here/sitename})\\Search Requests/sec
 :   \\Web Service(${here/sitename})\\Trace Requests/sec
 :   \\Web Service(${here/sitename})\\Unlock Requests/sec
+:   \\APP\_POOL\_WAS(${here/apppool})\\Current Application Pool State
 
 Note: The IIS monitoring template will only be used when IIS is found
 during modeling.
@@ -330,16 +331,12 @@ during modeling.
 Note: The IISAdmin service must be running in order to collect IIS
 data.
 
-The following metrics are collected directly via WMI over WinRM.
-
 Processes (Win32\_PerfFormattedData\_PerfProc\_Process) 
 :   PercentProcessorTime 
 :   WorkingSet 
 :   WorkingSetPrivate
 
-<br class="clear">
-Note: IIS 6 Management compatibility role no longer needs to be
-installed on the server side in order to use the IIS Sites component.
+Collected directly via WMI over WinRM.
 
 SQL Server Instance
 :   \\SQLServer:Buffer Manager\\Buffer cache hit ratio
@@ -385,6 +382,8 @@ SQL Server Database
 :   \\Repl. Trans. Rate
 :   \\Shrink Data Movement Bytes/sec
 :   \\Transactions/sec
+
+Collected via PowerShell SQL connection to server instance.
 
 Database Statuses
 
@@ -546,12 +545,14 @@ Source, you can mix and match the differing powershell queries. e.g.
 
 To change event severity follow the steps: 
 
-1.  Navigate to Event Classes, and click on */Status* event class. 
-2.  Click *Add new EventClass Mappings* button.
-3.  In the *Transform* section, add "`evt.severity = NUM`" where NUM is
-    one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical)
-    at the bottom 
-4.  Click the *Save* button
+1.  Navigate to the desired event class to map the event, for example '/Status'.
+2.  Edit the mapping instance
+    a. Select the desired mapping instance and either double click or click the gear icon at the top of the pane.
+    b. If the mapping does not exist:
+        i. Create a new one by clicking the ''+'' button at the top of the pane
+        ii. Use the format of ProviderName\_EventId for the mapping name and eventClassKey, e.g. EventService\_1001
+3. Click on the 'Transforms' tab, add "<code>evt.severity = NUM</code>" where NUM is one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical) at the bottom
+4. click the ''Submit'' button
 
 ### Custom Commands
 
@@ -855,8 +856,8 @@ The Least Privileged User requires the following privileges and permissions:
     -   "Root/RSOP" 
     -   "Root/RSOP/Computer"
     -   "Root/WMI"
-    -   "Root/CIMv2/Security/MicrosoftTpm" If IIS is installed, one of the following namespaces depending upon IIS version
-        -   "Root/Webadministration" or "Root/microsoftiisv2"
+    -   "Root/CIMv2/Security/MicrosoftTpm"
+    -   "Root/Webadministration" - If IIS is installed
 -   Permission to use the winrm service
 -   ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys 
     -   "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib"
@@ -1792,7 +1793,7 @@ Changes
 -   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
 -   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
 -   Added SQL Server instance performance counters
-
+-   Added Application Pool Status check for IIS Application Pools
 
 
 2.7.8
