@@ -25,7 +25,6 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
 
     def test_onSuccess(self):
         results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_151931')[0]
-        # results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_111125')[0]
         data = self.plugin.onSuccess(results, MagicMock(
             id="windows_test",
             datasources=[MagicMock(datasource='IISSiteDataSource',

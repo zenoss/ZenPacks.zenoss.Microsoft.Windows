@@ -202,7 +202,11 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             pass
         app_pool = None
         app_pool_statuses = {}
-        for line in results[1].stdout:
+        try:
+            stdout = results[1].stdout
+        except Exception:
+            stdout = []
+        for line in stdout:
             if app_pool is None:
                 match = re.match('.*app_pool_was\((.*)\).*', line)
                 if match:
