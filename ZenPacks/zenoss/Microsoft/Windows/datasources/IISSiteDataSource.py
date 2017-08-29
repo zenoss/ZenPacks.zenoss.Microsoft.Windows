@@ -30,7 +30,8 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
-    check_for_network_error, save, errorMsgCheck, generateClearAuthEvents,)
+    check_for_network_error, save, errorMsgCheck, generateClearAuthEvents,
+    APP_POOL_STATUSES)
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
@@ -70,6 +71,11 @@ class IISCommander(object):
         $iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;
         Write-Host $iisversion.versionstring;
     '''
+
+    def get_app_pool_status(self):
+        script = '"& {$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size(4096, 1024);'\
+                 ' get-counter \'\APP_POOL_WAS(*)\Current Application Pool State\'}'
+        return self.winrs.run_command(self.PS_COMMAND, ps_script=script)
 
     def get_iis_version(self):
         script = '"& {{{}}}"'.format(
@@ -129,14 +135,10 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
     @classmethod
     def config_key(cls, datasource, context):
-        params = cls.params(datasource, context)
         return(
             context.device().id,
             datasource.getCycleTime(context),
-            datasource.id,
             datasource.plugin_classname,
-            params.get('statusname'),
-            params.get('iis_version'),
         )
 
     @classmethod
@@ -145,6 +147,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         params['statusname'] = context.statusname
         params['iis_version'] = context.iis_version
+        params['apppool'] = context.apppool.decode('utf-8').lower()
 
         return params
 
@@ -154,17 +157,17 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         ds0 = config.datasources[0]
         conn_info = createConnectionInfo(ds0)
 
-        wql_iis6 = 'select ServerAutoStart from IIsWebServerSetting where name="{0}"'.format(
+        wql_iis6 = 'select name, ServerAutoStart from IIsWebServerSetting'.format(
             ds0.params['statusname'])
 
-        wql_iis7 = 'select ServerAutoStart from Site where name="{0}"'.format(
+        wql_iis7 = 'select name, ServerAutoStart from Site'.format(
             ds0.params['statusname'])
 
         iis_version = ds0.params['iis_version']
 
         id_string = "device ({}) component ({})".format(config.id, ds0.component)
+        winrs = IISCommander(conn_info)
         if not iis_version:
-            winrs = IISCommander(conn_info)
             version = yield winrs.get_iis_version()
             # version should be in 'Version x.x' format
             # 7 and above use the same namespace/query
@@ -183,46 +186,90 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7)]
 
         winrm = EnumerateClient(conn_info)
-        results = yield winrm.do_collect(WinRMQueries)
+        winrm_results = yield winrm.do_collect(WinRMQueries)
         log.debug(WinRMQueries)
-        defer.returnValue(results)
+        winrs_results = yield winrs.get_app_pool_status()
+        defer.returnValue((winrm_results, winrs_results))
 
     @save
     def onSuccess(self, results, config):
         data = self.new_data()
-        ds0 = config.datasources[0]
+        site_results = {}
         try:
-            sitestatusinfo = results[results.keys()[0]]
-        except (IndexError, AttributeError):
-            sitestatusinfo = None
-        sitestatus = 'Unknown'
+            for result in results[0][results[0].keys()[0]]:
+                site_results[result.Name] = result.ServerAutoStart
+        except Exception:
+            pass
+        app_pool = None
+        app_pool_statuses = {}
+        try:
+            stdout = results[1].stdout
+        except Exception:
+            stdout = []
+        for line in stdout:
+            if app_pool is None:
+                match = re.match('.*app_pool_was\((.*)\).*', line)
+                if match:
+                    app_pool = match.group(1)
+            else:
+                app_pool_statuses[app_pool] = int(line)
+                app_pool = None
 
-        if sitestatusinfo:
-            sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
-                sitestatusinfo[0].ServerAutoStart, 'Unknown')
+        for ds in config.datasources:
+            try:
+                sitestatusinfo = site_results[ds.params['statusname']]
+            except Exception:
+                sitestatusinfo = None
+            sitestatus = 'Unknown'
 
-        evtmessage = 'IIS Service {0} is in {1} state'.format(
-            ds0.config_key[4],
-            sitestatus
-        )
-        data['values'][ds0.component]['status'] = {
-            'Running': 0,
-            'Stopped': 1}.get(sitestatus, -1), 'N'
+            if sitestatusinfo:
+                sitestatus = {'true': 'Running', 'false': 'Stopped'}.get(
+                    sitestatusinfo, 'Unknown')
 
-        if sitestatus == 'Running':
-            severity = ZenEventClasses.Clear
-        else:
-            severity = ds0.severity
+            evtmessage = 'IIS Service {0} is in {1} state'.format(
+                ds.params['statusname'],
+                sitestatus
+            )
+            data['values'][ds.component]['status'] = {
+                'Running': 0,
+                'Stopped': 1}.get(sitestatus, -1), 'N'
 
-        data['events'].append({
-            'eventClassKey': 'IISSiteStatus',
-            'eventKey': 'IISSite',
-            'severity': severity,
-            'eventClass': ds0.eventClass,
-            'summary': evtmessage.decode('UTF-8'),
-            'component': prepId(ds0.component),
-            'device': config.id,
-        })
+            if sitestatus == 'Running':
+                severity = ZenEventClasses.Clear
+            else:
+                severity = ds.severity
+
+            data['events'].append({
+                'eventClassKey': 'IISSiteStatus',
+                'eventKey': 'IISSite',
+                'severity': severity,
+                'eventClass': ds.eventClass,
+                'summary': evtmessage.decode('UTF-8'),
+                'component': prepId(ds.component),
+                'device': config.id,
+            })
+            try:
+                pool_status = app_pool_statuses[ds.params['apppool']]
+            except Exception:
+                pool_status = -1
+            data['values'][ds.component]['appPoolState'] = pool_status, 'N'
+            evtmessage = 'Application Pool {} is in {} state'.format(
+                ds.params['apppool'], APP_POOL_STATUSES.get(pool_status, 'Unkown'))
+
+            if pool_status == 3:
+                severity = ZenEventClasses.Clear
+            else:
+                severity = ds.severity
+
+            data['events'].append({
+                'eventClassKey': 'IISAppPoolStatus',
+                'eventKey': 'IISSite',
+                'severity': severity,
+                'eventClass': ds.eventClass,
+                'summary': evtmessage.decode('UTF-8'),
+                'component': prepId(ds.component),
+                'device': config.id
+            })
 
         # Clear previous error event
         data['events'].append({
