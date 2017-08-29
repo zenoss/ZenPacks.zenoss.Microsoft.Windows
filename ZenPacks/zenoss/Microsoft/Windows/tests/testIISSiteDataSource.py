@@ -24,17 +24,20 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         super(TestIISSiteDataSourcePlugin, self).setUp()
 
     def test_onSuccess(self):
-        results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_111125')[0]
+        results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_151931')[0]
         data = self.plugin.onSuccess(results, MagicMock(
             id="windows_test",
             datasources=[MagicMock(datasource='IISSiteDataSource',
-                                   params={'eventlog': sentinel.eventlog})],
+                                   params={'eventlog': sentinel.eventlog,
+                                           'statusname': 'Default Web Site',
+                                           'apppool': 'defaultapppool'})],
         ))
-        self.assertEquals(len(data['events']), 4, msg='Expected 4 events: {}'.format(pprint.pformat(data['events'])))
-        self.assertEquals("Monitoring ok", data['events'][1]['summary'])
-        self.assertIn("is in Stopped state", data['events'][0]['summary'])
-        self.assertEquals(len(data['values']), 1)
-        self.assertEquals(data['values'][data['values'].keys()[0]]['status'], (1, 'N'))
+        self.assertEquals(len(data['events']), 5, msg='Expected 5 events: {}'.format(pprint.pformat(data['events'])))
+        self.assertEquals("Monitoring ok", data['events'][2]['summary'])
+        self.assertIn("is in Running state", data['events'][0]['summary'])
+        self.assertIn("is in Running state", data['events'][1]['summary'])
+        self.assertEquals(data['values'][data['values'].keys()[0]]['status'], (0, 'N'))
+        self.assertEquals(data['values'][data['values'].keys()[0]]['appPoolState'], (3, 'N'))
 
     def test_onError(self):
         f = None

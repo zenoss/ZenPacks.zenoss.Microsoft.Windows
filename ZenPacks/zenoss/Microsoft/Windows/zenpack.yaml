@@ -614,18 +614,35 @@ classes:
         label: Application Pool
         grid_display: true
         order: 2
+      app_pool_state:
+        label: Application Pool State
+        label_width: 180
+        order: 3
+        grid_display: true
+        enum:
+          -1: Unknown
+          1: Uninitialized
+          2: Initialized
+          3: Running
+          4: Disabling
+          5: Disabled
+          6: Shutdown Pending
+          7: Delete Pending
+        datapoint: sitecheck_appPoolState
+        datapoint_cached: false
+        datapoint_default: -1
       caption:
         label: Caption
       iisStatus:
         label: Status
         grid_display: true
-        order: 3
+        order: 4
         enum:
           -1: Unknown
           0: Running
           1: Stopped
         datapoint: sitecheck_status
-        datapoint_cached: true
+        datapoint_cached: false
         datapoint_default: -1
       statusname:
         label: Status Name
@@ -3574,10 +3591,12 @@ device_classes:
         datasources:
           sitecheck:
             type: Windows IIS Site
-            eventClass: /Status
+            eventClass: /Status/IIS
             cycletime: '300'
             datapoints:
               status:
+                rrdtype: GAUGE
+              appPoolState:
                 rrdtype: GAUGE
           iisPostRequests:
             type: Windows Perfmon
@@ -4118,6 +4137,8 @@ event_classes:
         sequence: 10
         remove: true
         example: Database master status is Normal
+  /Status/IIS:
+    remove: true
   /Status/Kerberos:
     remove: true
   /Status/Winrm:

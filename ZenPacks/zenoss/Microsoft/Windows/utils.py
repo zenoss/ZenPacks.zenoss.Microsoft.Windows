@@ -13,6 +13,16 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 
+APP_POOL_STATUSES = {
+    1: 'Uninitialized',
+    2: 'Initialized',
+    3: 'Running',
+    4: 'Disabling',
+    5: 'Disabled',
+    6: 'Shutdown Pending',
+    7: 'Delete Pending'
+}
+
 DB_STATUSES = {
     1: 'AutoClosed',
     2: 'EmergencyMode',
