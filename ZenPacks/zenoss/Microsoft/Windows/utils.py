@@ -359,7 +359,7 @@ def get_processNameAndArgs(item):
     return (name, args)
 
 
-def check_for_network_error(result, config):
+def check_for_network_error(result, config, default_class='/Unknown'):
     '''
     Checks value for timeout/no route to host tracebacks
     '''
@@ -380,7 +380,7 @@ def check_for_network_error(result, config):
         result.value.message, config
     )
 
-    return msg, '/Unknown'
+    return msg, default_class
 
 
 def prepare_zDBInstances(inst):
@@ -504,7 +504,7 @@ def errorMsgCheck(config, events, error):
     wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
 
     # see if this a kerberos issue
-    if any(x in error for x in kerberos_messages):
+    if any(x in error.lower() for x in kerberos_messages):
         append_event_datasource_plugin(config.datasources, events, {
             'eventClass': '/Status/Kerberos',
             'eventClassKey': 'KerberosFailure',

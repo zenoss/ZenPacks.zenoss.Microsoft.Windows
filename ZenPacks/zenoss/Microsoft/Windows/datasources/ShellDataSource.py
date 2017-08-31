@@ -1060,7 +1060,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @save
     def onError(self, result, config):
         logg = log.error
-        msg, event_class = check_for_network_error(result, config)
+        msg, event_class = check_for_network_error(
+            result, config, default_class='/Status/Winrm')
         eventKey = 'winrsCollection'
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
