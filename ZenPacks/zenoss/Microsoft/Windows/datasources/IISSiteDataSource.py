@@ -286,7 +286,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
-        msg, event_class = check_for_network_error(result, config)
+        msg, event_class = check_for_network_error(
+            result, config, default_class='/Status/IIS')
         logg = log.error
         if send_to_debug(result):
             logg = log.debug
@@ -296,7 +297,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         # only need the one event
         if not data['events']:
             data['events'].append({
-                'eventClass': '/Status',
+                'eventClass': event_class,
                 'severity': ZenEventClasses.Warning,
                 'eventClassKey': 'IISSiteStatusError',
                 'eventKey': 'IISSite',
