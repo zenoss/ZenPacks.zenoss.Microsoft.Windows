@@ -629,7 +629,7 @@ classes:
           6: Shutdown Pending
           7: Delete Pending
         datapoint: sitecheck_appPoolState
-        datapoint_cached: false
+        datapoint_cached: true
         datapoint_default: -1
       caption:
         label: Caption
@@ -642,7 +642,7 @@ classes:
           0: Running
           1: Stopped
         datapoint: sitecheck_status
-        datapoint_cached: false
+        datapoint_cached: true
         datapoint_default: -1
       statusname:
         label: Status Name

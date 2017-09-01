@@ -1778,10 +1778,12 @@ Changes
 
 2.8.0
 
+-   Added SQL Server instance performance counters
+-   Added Application Pool Status check for IIS Application Pools
+-   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
 -   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
--   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
 -   Fix collection hanging caused by network timeouts. (ZPS-1765)
 -   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693, ZPS-1692)
 -   Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
@@ -1792,9 +1794,7 @@ Changes
 -   Fix Windows link to device with no ip instead of cluster node is present in grid of Cluster Nodes component (ZPS-1852)
 -   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
 -   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
--   Added SQL Server instance performance counters
--   Added Application Pool Status check for IIS Application Pools
-
+-   Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
 
 2.7.8
 
