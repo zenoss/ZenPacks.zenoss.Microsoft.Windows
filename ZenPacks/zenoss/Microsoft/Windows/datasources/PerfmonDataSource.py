@@ -233,6 +233,7 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
+            LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
             if command is not None:
                 yield command.start(self.ps_command, ps_script=command_line)
 

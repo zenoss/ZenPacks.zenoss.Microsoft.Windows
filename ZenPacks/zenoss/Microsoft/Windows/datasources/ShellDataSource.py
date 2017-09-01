@@ -492,7 +492,7 @@ class PowershellMSSQLStrategy(object):
             for dsconf in dsconfs:
                 dsconf.params['counter'] = dsconf
             counters = dsconf.params['counter']
-            log.info(
+            log.debug(
                 'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
                     result.exit_code, counters, dsconf.device))
