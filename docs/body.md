@@ -1795,6 +1795,7 @@ Changes
 -   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
 -   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
 -   Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
+-   Update message for DNS lookup failed events (ZPS-1938)
 
 2.7.8
 
