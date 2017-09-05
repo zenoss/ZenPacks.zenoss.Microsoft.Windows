@@ -39,7 +39,9 @@ OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 from ZenPacks.zenoss.ZenPackLib import zenpacklib
 
-CFG = zenpacklib.load_yaml([os.path.join(os.path.dirname(__file__), 'zenpack.yaml')])
+zenpack_files = ('zenpack.yaml', 'event_classes.yaml', 'device_classes.yaml')
+yaml_files = [os.path.join(os.path.dirname(__file__), yaml_file) for yaml_file in zenpack_files]
+CFG = zenpacklib.load_yaml(yaml_files)
 
 schema = CFG.zenpack_module.schema
 

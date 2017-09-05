@@ -1,0 +1,23 @@
+name: ZenPacks.zenoss.Microsoft.Windows
+
+event_classes:
+  /Status:
+    remove: false
+    mappings:
+      WinDatabaseStatus:
+        eventClassKey: WinDatabaseStatus
+        sequence: 10
+        remove: true
+        example: Database master status is Normal
+  /Status/IIS:
+    remove: true
+  /Status/Kerberos:
+    remove: true
+  /Status/Winrm:
+    remove: true
+  /Status/Winrm/Ping:
+    remove: true
+  /Status/Winrm/Auth:
+    remove: true
+  /Status/IIS:
+    remove: true
