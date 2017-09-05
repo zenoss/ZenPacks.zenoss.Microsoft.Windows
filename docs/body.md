@@ -576,6 +576,9 @@ Windows ZenPack to create custom data points, graphs and thresholds.
     *   Create datapoint(s) to collect the data for graphing.
     *   Create custom parser to send event or transform data.
 
+Note: Avoid using double quotes in Write-Host argument strings. Coupled with Nagios parser it may lead to
+'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs.
+
 #### Example usage
 
 ##### Script with TALES expression 
@@ -1352,6 +1355,7 @@ In [3]: commit()
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 -   Beginning with version 2.8.0, the ZenPack will begin using a single remote shell for executing commands and PowerShell scripts.  Due to backwards compatibility with previous versions and other ZenPacks that use the txwinrm communication mechanisms, you may still see multiple remote shells until older versions of the ZenPack are no longer in use in your environment or the ZenPacks are updated to use the new mechanism.
+-   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1797,6 +1801,7 @@ Changes
 -   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
 -   Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
 -   Update message for DNS lookup failed events (ZPS-1938)
+-   Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
 
 2.7.8
 

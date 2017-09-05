@@ -456,6 +456,8 @@ You can use the custom command datasource in the Windows ZenPack to create custo
 ** Create datapoint(s) to collect the data for graphing
 ** Create custom parser to send event or transform data
 
+{{note}} Avoid using double quotes in Write-Host argument strings. Coupled with Nagios parser it may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
+
 ==== Example usage ====
 
 ;Script with TALES expression
@@ -996,6 +998,7 @@ In [3]: commit()
 * When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 * If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 * The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
+* Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
@@ -1312,6 +1315,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
 * Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
 * Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
+* Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
 
 ;2.7.8
 * Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
