@@ -1348,10 +1348,10 @@ In [2]: dmd.JobManager.addJob(ResetClassTypes)
 In [3]: commit()
 ```
 
--   This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 -   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
+-   Beginning with version 2.8.0, the ZenPack will begin using a single remote shell for executing commands and PowerShell scripts.  Due to backwards compatibility with previous versions and other ZenPacks that use the txwinrm communication mechanisms, you may still see multiple remote shells until older versions of the ZenPack are no longer in use in your environment or the ZenPacks are updated to use the new mechanism.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1781,6 +1781,7 @@ Changes
 -   Added SQL Server instance performance counters
 -   Added Application Pool Status check for IIS Application Pools
 -   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
+-   Added single remote shell usage for plugins that execute remote commands.
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
 -   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
