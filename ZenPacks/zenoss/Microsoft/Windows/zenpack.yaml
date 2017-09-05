@@ -1708,66 +1708,66 @@ device_classes:
             graphpoints:
               Page Life:
                 dpName: PageLifeExpectancy_PageLifeExpectancy
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Batch Requests:
             units: batches/sec
             miny: 0
             graphpoints:
               Batches:
                 dpName: BatchRequestsPerSec_BatchRequestsPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Compilations:
             units: compilatios/sec
             miny: 0
             graphpoints:
               Compilations:
                 dpName: SQLCompilationsPerSec_SQLCompilationsPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
               Re-Compilations:
                 dpName: SQLReCompilationsPerSec_SQLReCompilationsPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Connections:
             units: connections
             miny: 0
             graphpoints:
               User Connections:
                 dpName: UserConnections_UserConnections
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Lock Waits:
             units: lock waits/sec
             miny: 0
             graphpoints:
               Locks:
                 dpName: LockWaitsPerSec_LockWaitsPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Page Splits:
             units: page splits/sec
             miny: 0
             graphpoints:
               Splits:
                 dpName: PageSplitsPerSec_PageSplitsPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Processes Blocked:
             units: processes
             miny: 0
             graphpoints:
               Processes:
                 dpName: ProcessesBlocked_ProcessesBlocked
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Checkpoint Pages:
             units: checkpoint pages/sec
             miny: 0
             graphpoints:
               Pages:
                 dpName: CheckpointPagesPerSec_CheckpointPagesPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
           Deadlocks:
             units: deadlocks/sec
             miny: 0
             graphpoints:
               Deadlocks:
                 dpName: DeadlocksPerSec_DeadlocksPerSec
-                format: '%7.21f%'
+                format: '%7.2lf%s'
       Active Directory 2003:
         description: Microsoft Active Directory
         thresholds:
