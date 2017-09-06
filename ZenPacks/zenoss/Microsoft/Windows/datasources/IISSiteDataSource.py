@@ -263,7 +263,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
             data['events'].append({
                 'eventClassKey': 'IISAppPoolStatus',
-                'eventKey': 'IISSite',
+                'eventKey': 'IISAppPool',
                 'severity': severity,
                 'eventClass': ds.eventClass,
                 'summary': evtmessage.decode('UTF-8'),
