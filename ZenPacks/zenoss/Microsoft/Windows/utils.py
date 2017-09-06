@@ -359,7 +359,7 @@ def get_processNameAndArgs(item):
     return (name, args)
 
 
-def check_for_network_error(result, config, default_class='/Unknown'):
+def check_for_network_error(result, config, default_class='/Status/Winrm'):
     '''
     Checks value for timeout/no route to host tracebacks
     '''
