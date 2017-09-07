@@ -1042,7 +1042,8 @@ important.
         setting for MaxEnvelopeSizekb exceeds the default of 512k. Some WMI
         queries return large amounts of data and this envelope size may need to
         be enlarged. A possible symptom of this is seeing an xml parsing error
-        during collection.
+        during collection or "Check WMI namespace and DCOM permission" returned
+        from the OperatingSystem modeler plugin.
 
 -   zWinRMLocale
     :   The locale to use for communicating with a Windows
