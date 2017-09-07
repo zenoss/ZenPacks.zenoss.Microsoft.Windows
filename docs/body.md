@@ -1584,15 +1584,6 @@ The following are the most common errors:
 
 ### Troubleshooting Services
 
-If you see an event error that shows "The maximum number of concurrent
-operations for this user has been exceeded", you will need to increase
-the number of concurrent operations per user in the winrm config. For
-example: 
-
-```
-winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="5000"}'
-```
-
 If you see an "Index out of range" error, this could indicate a low
 number of available file handles in Linux. The default is 1024. To view
 this information on your system, enter 'ulimit -n'. To increase this
@@ -1609,10 +1600,13 @@ fs.file-max=10000
 The first step in troubleshooting any monitoring issues is to scan the
 zenpython log for errors.
 
-While monitoring, possible network connectivity issues may occur while
-trying to complete the Get-Counter command. If you experience
-OperationTimeout errors, it may be a solution to decrease value of
-*zWinPerfmonInterval* property to 30 seconds.
+If you see OperationTimeout errors in the zenpython log, this is normal.  
+The reason for this is that we run the Get-Counter PowerShell cmdlet 
+over the course of two polling cycles and pull 2 samples by default.  
+There is a 60 second timeout when attempting to receive data.  If the 
+receive request does not finish within 60 seconds, you will see an 
+OperationTimeout.  You can decrease zWinPerfmonInterval to a lower 
+value, which will pull samples more frequently.
 
 Other timeout issues on a domain could involve having a large Kerberos
 token. This could be caused by the user belonging to a large number of
@@ -1652,6 +1646,15 @@ called Interfaces_process_XXXXXX.pickle.
 
 Note: Be sure to unset the environment variable to avoid unwanted
 pickle files.
+
+If you see an event error that shows "The maximum number of concurrent
+operations for this user has been exceeded", you will need to increase
+the number of concurrent operations per user in the winrm config. For
+example: 
+
+```
+winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
+```
 
 ## Zenoss Analytics
 

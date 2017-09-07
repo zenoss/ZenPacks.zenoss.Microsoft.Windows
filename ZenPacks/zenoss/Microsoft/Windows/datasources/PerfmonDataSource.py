@@ -280,7 +280,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
             self.sample_interval = self.cycletime
-            self.max_samples = max(3600 / self.sample_interval, 1)
+            self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
             self.max_samples = 1
