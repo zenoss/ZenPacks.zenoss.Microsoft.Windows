@@ -13,6 +13,7 @@ from Products.ZenModel.migrate.Migrate import Version
 from Products.Zuul.interfaces import ICatalogTool
 from Products.AdvancedQuery import In
 from Products.ZenEvents.EventClassInst import EventClassInst
+from Products.Zuul.utils import safe_hasattr
 
 log = logging.getLogger('zen.Microsoft.Windows.migrate.RemoveEventInst')
 BAD_PATHS = (
@@ -63,7 +64,9 @@ class RemoveEventInst(ZenPackMigration):
                 results = ICatalogTool(org).search(EventClassInst, query=In('id', instances))
                 if results.total:
                     log.info('Removing deprecated Event Class Instances from {}'.format(path))
-                    org.removeInstances(instances)
+                    for instance in instances:
+                        if safe_hasattr(org, instance):
+                            org.removeInstances([instance])
             except Exception:
                 pass
 
