@@ -1807,6 +1807,7 @@ Changes
 -   Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
 -   Update message for DNS lookup failed events (ZPS-1938)
 -   Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
+-   Fix events for IIS Site components (ZPS-2126)
 
 2.7.8
 
