@@ -1210,8 +1210,6 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
 -   winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
-Note: The ZenPack will attempt to use a single remote shell per device.
-
 Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.  The winrshost.exe process is the remote shell on a Windows Server.
 
 Note: The above instructions use the max values for
@@ -1355,7 +1353,6 @@ In [3]: commit()
 -   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
--   Beginning with version 2.8.0, the ZenPack will begin using a single remote shell for executing commands and PowerShell scripts.  Due to backwards compatibility with previous versions and other ZenPacks that use the txwinrm communication mechanisms, you may still see multiple remote shells until older versions of the ZenPack are no longer in use in your environment or the ZenPacks are updated to use the new mechanism.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
 
 A current list of known issues related to this ZenPack can be found with
@@ -1791,7 +1788,6 @@ Changes
 -   Added SQL Server instance performance counters
 -   Added Application Pool Status check for IIS Application Pools
 -   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
--   Added single remote shell usage for plugins that execute remote commands.
 -   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
 -   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
 -   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
