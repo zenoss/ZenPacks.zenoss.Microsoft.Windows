@@ -345,7 +345,7 @@ class CustomCommandStrategy(object):
 
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
-        cmd.component = dsconf.params['contextcompname']
+        cmd.component = dsconf.component
 
         # Pass the severity from the datasource to the command parsers
         # If Nagios, check the status for severity
