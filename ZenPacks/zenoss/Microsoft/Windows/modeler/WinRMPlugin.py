@@ -189,8 +189,6 @@ class WinRMPlugin(PythonPlugin):
                 elif isinstance(reason.value, SSLError):
                     message = "Connection lost for %s. SSL Error: %s."
                     args.append(', '.join(reason.value.args[0][0]))
-                log.error(message, *args)
-            return
         elif isinstance(error, KeyError) and isinstance(error.message, txwinrm.collect.EnumInfo):
             message = "Error on %s: %s.  zWinRMEnvelopeSize may not be large enough.  Increase the size and try again."
             args.append(error)
@@ -199,7 +197,8 @@ class WinRMPlugin(PythonPlugin):
             args.append(error)
 
         log.error(message, *args)
-        self._send_event(message % tuple(args), device.id, severity, eventClass=eventClass)
+        self.error_occurred = message % tuple(args)
+        self._send_event(self.error_occurred, device.id, severity, eventClass=eventClass)
 
     def _send_event(self, reason, id, severity, force=False,
                     key='ConnectionError', eventClass='/Status', summary=None):

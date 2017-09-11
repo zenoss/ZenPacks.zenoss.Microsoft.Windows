@@ -67,7 +67,23 @@ class IIS(WinRMPlugin):
         orig.queries = self.queries
         orig.powershell_commands = self.powershell_commands
         conn_info = self.conn_info(device)
+
+        def send_event(msg, severity, summary=None):
+            self._send_event(msg,
+                             device.id,
+                             severity,
+                             eventClass='/Status/Winrm',
+                             key='IISSites',
+                             summary=summary)
+
         output = yield orig.collect(device, log)
+
+        if hasattr(orig, 'error_occurred'):
+            send_event(orig.error_occurred, ZenEventClasses.Error)
+            defer.returnValue(None)
+        else:
+            msg = 'Collection completed for {}'.format(device.id)
+            send_event(msg, ZenEventClasses.Clear)
 
         version_results = output.get('version')
         if version_results and version_results.stdout:
@@ -86,18 +102,14 @@ class IIS(WinRMPlugin):
             except IndexError:
                 pool = 'Unknown'
             iisSite.ApplicationPool = pool
-        if not output:
+        if not output.get('IIs7Site') and not output.get('IIsWebServerSetting'):
             msg = 'No IIS sites found on {}. Ensure that IIS Management Scripts'\
                 ' and Tools have been installed.'.format(device.id)
             log.warn(msg)
-            self._send_event(msg,
-                             device.id,
-                             ZenEventClasses.Warning,
-                             eventClass='/Status/Winrm',
-                             key='IISSites', summary=msg)
+            send_event(msg, ZenEventClasses.Warning, summary=msg)
         else:
             msg = "Found IIS sites on {}.".format(device.id)
-            self._send_event(msg, device.id, ZenEventClasses.Clear, eventClass='/Status/Winrm', key='IISSites')
+            send_event(msg, ZenEventClasses.Clear)
         defer.returnValue(output)
 
     @save
