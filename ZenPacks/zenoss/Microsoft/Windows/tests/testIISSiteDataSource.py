@@ -53,6 +53,27 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         self.assertEquals(data['events'][0]['device'], sentinel.id)
         self.assertIn("IISSite: Failed collection", data['events'][0]['summary'])
 
+    def test_onError_status(self):
+        winrm_errors = [Exception(), Exception('foo')]
+        kerberos_errors = map(Exception,
+                              ['kerberos authGSSClientStep failed',
+                               'Server not found in Kerberos database',
+                               'kinit error getting initial credentials'])
+
+        config = MagicMock(
+            id='127.0.0.1',
+            datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
+        )
+
+        for err in winrm_errors:
+            data = self.plugin.onError(Failure(err), config)
+            self.assertEquals(data['events'][0]['eventClass'], '/Status/IIS')
+
+        for err in kerberos_errors:
+            data = self.plugin.onError(Failure(err), config)
+            self.assertEquals(data['events'][0]['eventClass'],
+                              '/Status/Kerberos')
+
 
 def test_suite():
     """Return test suite for this module."""
