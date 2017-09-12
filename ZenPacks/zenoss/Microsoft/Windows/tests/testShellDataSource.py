@@ -45,6 +45,22 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['severity'], 3)
 
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    def test_onError_status(self):
+        winrm_errors = [Exception(), Exception('foo')]
+        kerberos_errors = map(Exception,
+                              ['kerberos authGSSClientStep failed',
+                               'Server not found in Kerberos database',
+                               'kinit error getting initial credentials'])
+
+        for err in winrm_errors:
+            data = self.plugin.onError(Failure(err), self.config)
+            self.assertEquals(data['events'][0]['eventClass'], '/Status/Winrm')
+
+        for err in kerberos_errors:
+            data = self.plugin.onError(Failure(err), self.config)
+            self.assertEquals(data['events'][0]['eventClass'], '/Status/Kerberos')
+
     def test_clean_output(self):
         strategy = DCDiagStrategy()
         strategy.run_tests = {'testFoo', 'testBar', 'testBaz'}
