@@ -19,7 +19,6 @@ log = logging.getLogger('zen.Microsoft.Windows.migrate.RemoveEventInst')
 BAD_PATHS = (
     '/Status/Kerberos/Auth',
     '/Status/Kerberos/Failure',
-    '/Status/Winrm',
     '/Status/Winrm/Auth/PasswordExpired',
     '/Status/Winrm/Auth/WrongCredentials')
 KRB_INSTANCES = (
@@ -45,18 +44,9 @@ PATH_INSTANCES = {
 class RemoveEventInst(ZenPackMigration):
     # Main class that contains the migrate() method.
     # Note version setting.
-    version = Version(2, 7, 9)
+    version = Version(2, 8, 0)
 
     def migrate(self, dmd):
-        # Remove unnecessary sub classes
-        log.info('Searching for deprecated Event Class subclasses and mappings to remove.')
-        for path in BAD_PATHS:
-            try:
-                org = dmd.Events.getOrganizer(path)
-            except Exception:
-                continue
-            dmd.Events.manage_deleteOrganizer(org.getDmdKey())
-
         # Remove unnecessary mappings
         def remove_mapping(path, instances):
             try:
@@ -72,3 +62,12 @@ class RemoveEventInst(ZenPackMigration):
 
         for path, instances in PATH_INSTANCES.iteritems():
             remove_mapping(path, instances)
+
+        # Remove unnecessary sub classes
+        log.info('Searching for deprecated Event Class subclasses and mappings to remove.')
+        for path in BAD_PATHS:
+            try:
+                org = dmd.Events.getOrganizer(path)
+            except Exception:
+                continue
+            dmd.Events.manage_deleteOrganizer(org.getDmdKey())
