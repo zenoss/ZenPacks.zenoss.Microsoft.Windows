@@ -62,20 +62,39 @@ RESULTS = dict(clear='Error parsing zDBInstances',
 STDOUT_LINES = [
     "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple",
     "Name--- rtc_rtc\tDeviceType--- Disk \tPhysicalLocation--- c:\\Backup\\rtc.bak \tStatus---Existing",
-    "jobname--- syspolicy_purge_history \tenabled--- True \tjobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 \tdescription--- No description available. \tdatecreated--- 6/2/2017 6:13:28 PM \tusername--- sa",
-    "jobname--- \tenabled--- \tjobid--- \tdescription--- \tdatecreated--- \tusername--- ",
-    "jobname--- job1 \tenabled--- True \tjobid--- \tdescription--- description \tdatecreated--- \tusername--- sa",
-    "jobname--- job2 \tenabled--- True \tjobid--- \tdescription--- description ",
+    "job_jobname--- syspolicy_purge_history job_enabled--- True job_jobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 job_description--- No description available. job_datecreated--- 6/2/2017 6:13:28 PM job_username--- sa",
+    "job_jobname--- job_enabled--- job_jobid--- job_description--- job_datecreated--- job_username--- ",
+    "job_jobname--- job1 job_enabled--- True job_jobid--- job_description--- description job_datecreated--- job_username--- sa",
+    "job_jobname--- job2 job_enabled--- True job_jobid--- job_description--- description ",
     "more description",
     "one more line",
-    "\tdatecreated--- \tusername--- sa"
+    "job_datecreated--- job_username--- sa"
 ]
+
+COGNIZANT_RESULTS = [
+    u'job_jobname--- APP_Job_uspInsertShiftWasteEventsWeekly job_enabled--- False job_jobid--- 94c66ad2-c2fb-4425-879c-7d1f0457b11e'
+    ' job_description--- Application job : Run SP uspInsertShiftWasteEventsWeekly every Wednesday 00:10 AM',
+    u'job_datecreated--- 8/7/2013 12:11:46 AM job_username--- wwAdmin']
 
 
 class TestProcesses(BaseTestCase):
     def setUp(self):
         self.plugin = WinMSSQL()
         self.device = StringAttributeObject()
+
+    def test_cognizant(self):
+        job_line = '\n'.join(COGNIZANT_RESULTS)
+        job_om = self.plugin.get_job_om(StringAttributeObject(),
+                                        "instance",
+                                        StringAttributeObject(),
+                                        "sqlserver",
+                                        job_line)
+        self.assertEquals(job_om.title, 'APP_Job_uspInsertShiftWasteEventsWeekly')
+        self.assertEquals(job_om.enabled, 'No')
+        self.assertEquals(job_om.jobid, '94c66ad2-c2fb-4425-879c-7d1f0457b11e')
+        self.assertEquals(job_om.description, 'Application job : Run SP uspInsertShiftWasteEventsWeekly every Wednesday 00:10 AM')
+        self.assertEquals(job_om.datecreated, '8/7/2013 12:11:46 AM')
+        self.assertEquals(job_om.username, 'wwAdmin')
 
     def test_process(self):
         data = self.plugin.process(self.device, RESULTS, Mock())
