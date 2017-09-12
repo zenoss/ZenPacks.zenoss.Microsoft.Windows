@@ -28,8 +28,10 @@ class UpdateDNSErrorEvent(object):
         if evt.severity == ZenEventClasses.Clear:
             return
 
-        if evt.DeviceClass and '/Server/Microsoft/Windows' in evt.DeviceClass or \
-                '/Server/Microsoft/Cluster' in evt.DeviceClass:
+        if not evt.DeviceClass:
+            return
+
+        if '/Server/Microsoft/Windows' in evt.DeviceClass or '/Server/Microsoft/Cluster' in evt.DeviceClass:
             if PATTERN.search(evt.message):
                 clarity = ' Please check configuration of zWinRMServerName property and check the DNS server settings.'
                 evt.message = evt.message + clarity
