@@ -324,12 +324,12 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append('write-host "====Jobs";')
             job_sqlConnection.append("try {")
             job_sqlConnection.append("$server.JobServer.Jobs | foreach {")
-            job_sqlConnection.append('write-host \"jobname---\" $_.Name,')
-            job_sqlConnection.append('\"`tenabled---\" $_.IsEnabled,')
-            job_sqlConnection.append('\"`tjobid---\" $_.JobID,')
-            job_sqlConnection.append('\"`tdescription---\" $_.Description,')
-            job_sqlConnection.append('\"`tdatecreated---\" $_.DateCreated,')
-            job_sqlConnection.append('\"`tusername---\" $_.OwnerLoginName')
+            job_sqlConnection.append('write-host \"job_jobname---\" $_.Name,')
+            job_sqlConnection.append('\"job_enabled---\" $_.IsEnabled,')
+            job_sqlConnection.append('\"job_jobid---\" $_.JobID,')
+            job_sqlConnection.append('\"job_description---\" $_.Description,')
+            job_sqlConnection.append('\"job_datecreated---\" $_.DateCreated,')
+            job_sqlConnection.append('\"job_username---\" $_.OwnerLoginName')
             job_sqlConnection.append("}}catch { continue; }")
 
             buffer_size = ['$Host.UI.RawUI.BufferSize = New-Object '
@@ -384,7 +384,7 @@ class WinMSSQL(WinRMPlugin):
                         job_line = stdout_line
                     else:
                         job_line = '\n'.join((job_line, stdout_line))
-                    if 'username---' not in stdout_line:
+                    if 'job_username---' not in stdout_line:
                         continue
                     om_job = self.get_job_om(device,
                                              sqlserver,
@@ -471,24 +471,34 @@ class WinMSSQL(WinRMPlugin):
         jobobj = stdout_line
         # Make sure that the job description length does not go
         # beyond the buffer size (4096 characters).
-        job = jobobj.split('\t')
+        job_properties = (
+            'job_username',
+            'job_datecreated',
+            'job_description',
+            'job_jobid',
+            'job_enabled',
+            'job_jobname')
         jobdict = {}
 
-        for jobitem in job:
+        prev_index = len(jobobj)
+        for prop in job_properties:
+            start = jobobj.index(prop)
+            jobitem = jobobj[start:prev_index]
+            prev_index = start
             key, value = jobitem.split('---')
             jobdict[key.lower()] = value.strip()
 
         om_job = ObjectMap()
         om_job.instancename = om_instance.id
-        om_job.title = jobdict['jobname']
+        om_job.title = jobdict['job_jobname']
         om_job.cluster_node_server = '{0}//{1}'.format(
             owner_node.strip(), sqlserver)
-        om_job.jobid = jobdict['jobid']
+        om_job.jobid = jobdict['job_jobid']
         om_job.id = self.prepId(om_job.jobid)
-        om_job.enabled = 'Yes' if jobdict['enabled'] == 'True' else 'No'
-        om_job.description = jobdict['description']
-        om_job.datecreated = str(jobdict['datecreated'])
-        om_job.username = jobdict['username']
+        om_job.enabled = 'Yes' if jobdict['job_enabled'] == 'True' else 'No'
+        om_job.description = jobdict['job_description']
+        om_job.datecreated = str(jobdict['job_datecreated'])
+        om_job.username = jobdict['job_username']
         if not om_job.jobid:
             if not om_job.title:
                 self.log.debug('Skipping job with no title or id on {}.'.format(device.id))

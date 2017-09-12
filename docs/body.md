@@ -1805,6 +1805,7 @@ Changes
 -   Update message for DNS lookup failed events (ZPS-1938)
 -   Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
 -   Fix events for IIS Site components (ZPS-2126)
+-   Fix malformed sql job results show 'too many values to unpack' error (ZPS-2143)
 
 2.7.8
 
