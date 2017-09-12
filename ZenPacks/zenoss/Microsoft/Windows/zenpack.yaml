@@ -366,6 +366,7 @@ classes:
       network:
         label: Network
         grid_display: false
+        details_display: false
       ipaddresses:
         label: IP Addresses
         grid_display: true
