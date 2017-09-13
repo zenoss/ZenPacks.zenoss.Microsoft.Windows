@@ -1314,6 +1314,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
 * Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
 * Fix malformed sql job results show 'too many values to unpack' error (ZPS-2143)
+* Fix Windows Shell Data Source Sets the Component to an Unconventional Value (ZPS-2055)
 
 ;2.7.8
 * Fix HardDisks with a size of 'None' cause unhandled exceptions in modeling (ZPS-1424)
