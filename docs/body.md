@@ -1806,6 +1806,7 @@ Changes
 -   Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
 -   Fix events for IIS Site components (ZPS-2126)
 -   Fix malformed sql job results show 'too many values to unpack' error (ZPS-2143)
+-   Fix Windows Shell Data Source Sets the Component to an Unconventional Value (ZPS-2055)
 
 2.7.8
 
