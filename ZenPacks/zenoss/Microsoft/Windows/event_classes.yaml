@@ -13,11 +13,9 @@ event_classes:
     remove: true
   /Status/Kerberos:
     remove: true
+  /Status/Winrm/Ping: {}
+  /Status/Winrm/Auth: {}
   /Status/Winrm:
-    remove: true
-  /Status/Winrm/Ping:
-    remove: true
-  /Status/Winrm/Auth:
     remove: true
   /Status/Interface:
     remove: true
