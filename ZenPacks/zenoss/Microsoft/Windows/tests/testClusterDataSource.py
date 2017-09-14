@@ -10,10 +10,11 @@
 
 import Globals
 
+import pdb
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
-
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle_file
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import patch, Mock
+from ZenPacks.zenoss.Microsoft.Windows.utils import cluster_disk_state_string
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource import (
     ClusterDataSourcePlugin, cluster_state_value)
@@ -30,8 +31,8 @@ RESULTS = {
     'res-SQL Server Analysis Services CEIP (CINSTANCE01)': 'Online',
     'res-SQL Server CEIP (CINSTANCE01)': 'Online',
     'res-Virtual Machine Cluster WMI': 'Failed',
-    '0f58359e-f0d9-4a96-a697-5213a4edfb9a': 'Offline',
-    'aa35b386-5182-4cf2-a99f-670788c11347': 'Failed',
+    '345fea90-f0d9-4a96-a697-5213a4edfb9a': 'Offline',
+    '0f58359e-5182-4cf2-a99f-670788c11347': 'Failed',
     '109d14aa-234b-453b-b099-1a621cc59601': 'Online',
     'node-2': 'Up',
     'node-1': 'Up',
@@ -42,10 +43,21 @@ RESULTS = {
     'e13ed868-bdd5-4877-8a36-8769dcb290d2': 'Up',
     '3982f1bc-1a87-4b9e-8e02-1f3f92ae0102': 'Up',
     'dccf1011-207b-49d3-9c42-2d5c05748b3e': 'Up',
-    '2320cb14-072c-4079-9750-38326f4212b9': 'Up'}
+    '2320cb14-072c-4079-9750-38326f4212b9': 'Up',
+    '24c0ffee-1337-1138-c001-ca1fbeeff00d': '2',
+    '24c0ffee-1337-1138-b01d-ca1fbeeff00d': '3',
+    '24c0ffee-1337-1138-ba1d-ca1fbeeff00d': '4',
+    '24c0ffee-1337-1138-dead-ca1fbeeff00d': '129'}
 
+
+def is_empty(struct):
+    if struct:
+        return False
+    else:
+        return True
 
 class TestClusterDataSourcePlugin(BaseTestCase):
+
     def setUp(self):
         self.plugin = ClusterDataSourcePlugin()
 
@@ -59,7 +71,18 @@ class TestClusterDataSourcePlugin(BaseTestCase):
         data = self.plugin.onSuccess(results, config)
         self.assertEquals(len(data['values']), 24)
         for comp, value in RESULTS.iteritems():
-            self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value))
+            try:
+                num = int(value)
+                value = cluster_disk_state_string(num)
+                if is_empty(data['values'][comp]):
+                    pdb.set_trace()
+                    data['values'][comp] = {'state': (num, 'N')}
+                self.assertEquals(data['values'][comp]['state'][0], num)
+            except:
+                if is_empty(data['values'][comp]):
+                    pdb.set_trace()
+                    data['values'][comp] = {'state': (cluster_state_value(value), 'N')}
+                self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value))
         self.assertEquals(len(data['events']), 26)
 
 

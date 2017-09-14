@@ -434,6 +434,18 @@ def cluster_state_value(state):
             'Failed': 4}.get(state, 5)
 
 
+def cluster_disk_state_string(state):
+    return {-1: 'Unknown',
+            0: 'Inherited',
+            1: 'Initializing',
+            2: 'Online',
+            3: 'Offline',
+            4: 'Failed',
+            128: 'Pending',
+            129: 'Online Pending',
+            130: 'Offline Pending'}.get(state, 'Undefined')
+
+
 def save(f):
     '''
     This is a decorator that will save arguments sent to a function.

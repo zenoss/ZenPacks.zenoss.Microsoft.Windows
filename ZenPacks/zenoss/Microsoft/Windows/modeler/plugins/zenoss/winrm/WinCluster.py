@@ -11,6 +11,7 @@
 Windows Cluster System Collection
 
 """
+import logging
 from socket import gaierror
 from twisted.internet import defer
 
@@ -24,7 +25,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
 from txwinrm.WinRMClient import SingleCommandClient
 
 addLocalLibPath()
-
+log = logging.getLogger("zen.MicrosoftCluster")
 
 class ClusterCommander(object):
     def __init__(self, conn_info):
@@ -111,34 +112,33 @@ class WinCluster(WinRMPlugin):
         )
 
         clusterDiskCommand.append(
-            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
-            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};},"
-            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};},"
-            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};},"
-            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};},"
-            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};"
-            "$clusterDisk = get-clusterresource | where { $_.ResourceType -eq 'Physical Disk'};"
-            "foreach ($disk in $clusterDisk) {"
-            "$founddisk = $diskInfo | where { $_.FileSystemLabel -eq $disk.Name};"
-            "if ($founddisk -ne $null) {"
-            "$diskowner = $disk.OwnerNode.Name;"
-            "$disknumber = $founddisk.DiskNumber;"
-            "$diskpartition = $founddisk.PartitionNumber;"
-            "$disksize = $founddisk.Size;"
-            "$disksizeremain = $founddisk.SizeRemaining;"
-            "$diskvolume = $founddisk.Volume.substring(3);"
+            "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources | foreach {"
+            "$rsc = $_;"
+            "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
+            "$disks | foreach {"
+            "$dsk = $_;"
+            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "$partitions | foreach {"
+            "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{"
-            "Id = $diskvolume.substring(8, $diskvolume.length-10);"
-            "Name = $disk.Name;VolumePath = $diskvolume;"
-            "OwnerNode = $diskowner;DiskNumber = $disknumber;"
-            "PartitionNumber = $diskpartition;Size = $disksize;"
-            "FreeSpace = $disksizeremain;State = $disk.State;"
-            "OwnerGroup = $disk.OwnerGroup.Name;};"
-            "$physicaldisk | foreach { %s };} }" % pipejoin(
-                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            "Id = $rsc.Id;"
+            "OwnerNode = $rsc.OwnerNode;"
+            "OwnerGroup = $rsc.OwnerGroup;"
+            "Name = $rsc.Name;"
+            "VolumePath = $prt.Path;"
+            "DiskNumber = $dsk.Number;"
+            "PartitionNumber = $prt.PartitionNumber;"
+            "Size = $prt.TotalSize * 1mb;"
+            "FreeSpace = $prt.FreeSpace * 1mb;"
+            "State = $rsc.State;"
+            "}}}}; $physicaldisk | foreach { %s }" % pipejoin(
+                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
         )
+
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
+        for item in clusterdisk.stdout:
+            log.debug('\t*****  %s', item)
 
         clusterNetworkCommand = []
         clusterNetworkCommand.append(
