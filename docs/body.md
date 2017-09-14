@@ -338,22 +338,35 @@ Processes (Win32\_PerfFormattedData\_PerfProc\_Process)
 
 Collected directly via WMI over WinRM.
 
-SQL Server Instance
+SQL Server Instance - WinDBInstance template
 :   \\SQLServer:Buffer Manager\\Buffer cache hit ratio
 :   \\SQLServer:Buffer Manager\\Page life expectancy
 :   \\SQLServer:SQL Statistics\\Batch Requests/Sec
 :   \\SQLServer:SQL Statistics\\SQL Compilations/Sec
 :   \\SQLServer:SQL Statistics\\SQL Re-Compilations/Sec
 :   \\SQLServer:General Statistics\\User Connections
-:   \\SQLServer:Locks(_Total)\\Lock Waits/Sec
+:   \\SQLServer:Locks(\_Total)\\Lock Waits/Sec
 :   \\SQLServer:Access Methods\\Page Splits/Sec
 :   \\SQLServer:General Statistic\\Processes Blocked
 :   \\SQLServer:Buffer Manager\\Checkpoint Pages/Sec
-:   \\SQLServer:Locks(_Total)\\Number of Deadlocks/sec
+:   \\SQLServer:Locks(\_Total)\\Number of Deadlocks/sec
 
 Note: For a named instance, the counter instance will be `\\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
 
-SQL Server Database
+We show the following graphs for an instance:
+
+Buffer Cache Hit Ratio
+Page Life Expectancy
+Batch Requests
+Compilations
+Connections
+Lock Waits
+Page Splits
+Processes Blocked
+Checkpoint Pages
+Deadlocks
+
+SQL Server Database - WinDatabase template
 :   \\Active Transactions
 :   \\Backup/Restore Throughput/sec
 :   \\Bulk Copy Rows/sec
@@ -931,9 +944,8 @@ endpoints can be added under the same
 
 ```
 /Devices/Server/Microsoft/Windows
-win2008-1d.example.com zWinRMUser="Administrator",
-zWinRMPassword="password" Win2012-1d.example.com
-zWinRMUser="Administrator", zWinRMPassword="password"
+win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
+Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 ```
 
 You can then load the Windows servers into Zenoss Core or Resource
@@ -1365,6 +1377,7 @@ In [3]: commit()
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
+-   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).

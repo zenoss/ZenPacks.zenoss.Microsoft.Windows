@@ -281,6 +281,8 @@ The following metrics are collected directly via WMI.
 
 === SQL Server Instances ===
 
+WinDBInstance template
+
 * \SQLServer:Buffer Manager\Buffer cache hit ratio
 * \SQLServer:Buffer Manager\Page life expectancy
 * \SQLServer:SQL Statistics\Batch Requests/Sec
@@ -295,7 +297,23 @@ The following metrics are collected directly via WMI.
 
 {{note}} For a named instance, the counter instance will be `\\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
 
+We show the following graphs for an instance:
+
+Buffer Cache Hit Ratio
+Page Life Expectancy
+Batch Requests
+Compilations
+Connections
+Lock Waits
+Page Splits
+Processes Blocked
+Checkpoint Pages
+Deadlocks
+
+
 === SQL Server Databases ===
+
+WinDatabase template
 
 * \SQLServer:Databases(<dbname>)\Active Transactions
 * \SQLServer:Databases(<dbname>)\Backup/Restore Throughput/sec
@@ -1002,6 +1020,7 @@ In [3]: commit()
 * If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 * The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 * Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
+* You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 
 A current list of known issues related to this ZenPack can be found with [https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack(s)%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20(closed%2C%20%22awaiting%20verification%22)%20ORDER%20BY%20priority%20DESC%2C%20id this JIRA query]. You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [https://jira.zenoss.com/secure/Signup!default.jspa create one here].
 
