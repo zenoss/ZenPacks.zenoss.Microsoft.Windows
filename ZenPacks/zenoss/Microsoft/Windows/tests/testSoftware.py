@@ -31,6 +31,9 @@ class TestProcesses(BaseTestCase):
                                                   'Vendor=Sunway Systems|',
                                                   'DisplayName=Soft x86 - 1.0.0;'
                                                   'InstallDate=19700101;'
+                                                  'Vendor=Sunway Systems|',
+                                                  'DisplayName=Soft x86 - 1.0.0;'
+                                                  'InstallDate=19700101;'
                                                   'Vendor=Вендор|',
                                                   'DisplayName=;xxx;yyy|',
                                                   'DisplayName=Software;InstallDate=;Vendor=SoftCorp'
