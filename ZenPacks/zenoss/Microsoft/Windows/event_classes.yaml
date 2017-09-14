@@ -19,5 +19,5 @@ event_classes:
     remove: true
   /Status/Winrm/Auth:
     remove: true
-  /Status/IIS:
+  /Status/Interface:
     remove: true
