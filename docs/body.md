@@ -1653,7 +1653,7 @@ Configuration for <device> unavailable -- is that the correct name?
 
 If you see an event stating that a plugin was disabled due to blocking, see the [PythonCollector ZenPack](/product/zenpacks/pythoncollector) documentation for steps to remedy this.
 
-If you see 'SNMP agent down - no response received' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
+If you see 'SNMP agent down - no response received' or 'Unable to read processes' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
 
 ### Troubleshooting modeling/monitoring
 

@@ -1179,7 +1179,7 @@ If you see an event stating that a plugin was disabled due to blocking, see the 
 
 {{note}} Starting with v2.7.0, this should not occur for Windows data source plugins.
 
-If you see 'SNMP agent down - no response received' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
+If you see 'SNMP agent down - no response received' or 'Unable to read processes' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
 
 === Troubleshooting modeling/monitoring ===
 
