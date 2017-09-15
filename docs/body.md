@@ -1378,6 +1378,7 @@ In [3]: commit()
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
+-   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
