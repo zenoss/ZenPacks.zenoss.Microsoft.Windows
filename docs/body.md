@@ -1835,6 +1835,7 @@ Changes
 -   Fix Windows Shell Data Source Sets the Component to an Unconventional Value (ZPS-2055)
 -   Fix Unknown Software manufacturers (ZPS-2139). This change fixes the problem only on a new devices. To apply to existing -- please delete Software records manually
 -   Fix some software shows up duplicated (ZPS-1245)
+-   Tested with Zenoss Resource Manager 5.3.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.7
 
 2.7.8
 
