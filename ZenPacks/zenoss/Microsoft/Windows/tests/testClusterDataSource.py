@@ -11,9 +11,10 @@
 import Globals
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
-
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle_file
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import patch, Mock
+from ZenPacks.zenoss.Microsoft.Windows.utils import cluster_disk_state_string
+from Products.ZenModel.ZVersion import VERSION
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource import (
     ClusterDataSourcePlugin, cluster_state_value)
@@ -36,31 +37,43 @@ RESULTS = {
     'node-2': 'Up',
     'node-1': 'Up',
     'node-4': 'Up',
-    'node-3': 'Up',
     'be4033dc-1f74-477f-9f07-3780e1782250': 'Up',
     '2bccf6d0-c176-4020-ac9f-d8babed4b1c6': 'Up',
     'e13ed868-bdd5-4877-8a36-8769dcb290d2': 'Up',
     '3982f1bc-1a87-4b9e-8e02-1f3f92ae0102': 'Up',
-    'dccf1011-207b-49d3-9c42-2d5c05748b3e': 'Up',
-    '2320cb14-072c-4079-9750-38326f4212b9': 'Up'}
+    '860caaf4-595a-44e6-be70-285a9bb3733d': '2'}
 
+
+def is_empty(struct):
+    if struct:
+        return False
+    else:
+        return True
 
 class TestClusterDataSourcePlugin(BaseTestCase):
+
     def setUp(self):
         self.plugin = ClusterDataSourcePlugin()
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_onSuccess(self):
+        if VERSION.startswith('4'):
+            return
         datasources = load_pickle_file(self, 'cluster_datasources')
-        results = load_pickle_file(self, 'ClusterDataSourcePlugin_onSuccess_104454')[0]
+        results = load_pickle_file(self, 'ClusterDataSourcePlugin_onSuccess_161027')[0]
         config = Mock()
         config.datasources = datasources
         config.id = datasources[0].device
         data = self.plugin.onSuccess(results, config)
-        self.assertEquals(len(data['values']), 24)
+        self.assertEquals(len(data['values']), 22)
         for comp, value in RESULTS.iteritems():
-            self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value))
-        self.assertEquals(len(data['events']), 27)
+            try:
+                num = int(value)
+                value = cluster_disk_state_string(num)
+                self.assertEquals(data['values'][comp]['state'], num)
+            except Exception:
+                self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value), 'found {}'.format(value))
+        self.assertEquals(len(data['events']), 26)
 
 
 def test_suite():

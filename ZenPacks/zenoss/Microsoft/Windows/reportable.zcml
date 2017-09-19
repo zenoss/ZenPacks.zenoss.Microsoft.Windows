@@ -114,7 +114,7 @@
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 
-  <adapter factory=".basereportable.BaseReportable"
+  <adapter factory=".basereportable.MySQLReportable"
            for=".WinSQLBackup.WinSQLBackup"
            provides="Products.Zuul.interfaces.IReportable"
            />
@@ -124,7 +124,7 @@
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 
-  <adapter factory=".basereportable.BaseReportable"
+  <adapter factory=".basereportable.MySQLReportable"
            for=".WinSQLDatabase.WinSQLDatabase"
            provides="Products.Zuul.interfaces.IReportable"
            />
@@ -134,7 +134,7 @@
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 
-  <adapter factory=".basereportable.BaseReportable"
+  <adapter factory=".basereportable.MySQLReportable"
            for=".WinSQLInstance.WinSQLInstance"
            provides="Products.Zuul.interfaces.IReportable"
            />
@@ -144,7 +144,7 @@
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 
-  <adapter factory=".basereportable.BaseReportable"
+  <adapter factory=".basereportable.MySQLReportable"
            for=".WinSQLJob.WinSQLJob"
            provides="Products.Zuul.interfaces.IReportable"
            />

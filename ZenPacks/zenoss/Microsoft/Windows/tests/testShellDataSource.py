@@ -31,7 +31,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
         self.assertEquals(len(data['values']), 12)
-        self.assertEquals(len(data['events']), 30)
+        self.assertEquals(len(data['events']), 29)
         self.assertFalse(all(e['severity'] for e in data['events']))
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
@@ -44,6 +44,22 @@ class TestShellDataSourcePlugin(BaseTestCase):
         data = self.plugin.onError(f, sentinel)
         self.assertEquals(len(data['events']), 1)
         self.assertEquals(data['events'][0]['severity'], 3)
+
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    def test_onError_status(self):
+        winrm_errors = [Exception(), Exception('foo')]
+        kerberos_errors = map(Exception,
+                              ['kerberos authGSSClientStep failed',
+                               'Server not found in Kerberos database',
+                               'kinit error getting initial credentials'])
+
+        for err in winrm_errors:
+            data = self.plugin.onError(Failure(err), self.config)
+            self.assertEquals(data['events'][0]['eventClass'], '/Status/Winrm')
+
+        for err in kerberos_errors:
+            data = self.plugin.onError(Failure(err), self.config)
+            self.assertEquals(data['events'][0]['eventClass'], '/Status/Kerberos')
 
     def test_clean_output(self):
         strategy = DCDiagStrategy()
@@ -84,7 +100,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         data = self.plugin.onSuccess(win_results, nagios_ok)
         self.assertEquals(len(data['values'][None]), 4)
         self.assertEquals(data['values'][None]['default_criticals'], (0.0, 'N'))
-        self.assertEquals(len(data['events']), 9)
+        self.assertEquals(len(data['events']), 8)
         self.assertEquals(data['events'][0]['severity'], 0)
         # now test nagios with a CRITICAL return code and exit_code of 2
         # CRITICAL - (11 errors) - testing ...|default_lines=12 default_warnings=0 default_criticals=11 default_unknowns=0
@@ -97,7 +113,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         data = self.plugin.onSuccess(win_results, nagios_critical)
         self.assertEquals(len(data['values'][None]), 4)
         self.assertEquals(data['values'][None]['default_criticals'], (11.0, 'N'))
-        self.assertEquals(len(data['events']), 9)
+        self.assertEquals(len(data['events']), 8)
         self.assertEquals(data['events'][0]['severity'], 5)
         self.assertEquals(data['events'][0]['eventClass'], '/Status/Nagios/Test')
 
@@ -119,8 +135,8 @@ class TestShellDataSourcePlugin(BaseTestCase):
         sql_config.id = sql_config.datasources[0].device
         results = (parms[0], parms[1], CommandResponse(stdout, [], 0))
         data = self.plugin.onSuccess(results, sql_config)
-        self.assertEquals(len(data['values']), 0)
-        self.assertEquals(len(data['events']), 16)
+        self.assertEquals(len(data['values']), 5)
+        self.assertEquals(len(data['events']), 15)
         # we should see status of databases even if no counters are returned.
         for x in xrange(5):
             self.assertEquals('The database is available.', data['events'][x]['message'])

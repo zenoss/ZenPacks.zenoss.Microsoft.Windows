@@ -21,7 +21,7 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
-from twisted.web._newclient import ResponseNeverReceived
+
 from twisted.internet.task import LoopingCall
 
 from zope.component import adapts, queryUtility
@@ -42,13 +42,14 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
 
 from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
-from ..utils import append_event_datasource_plugin
+from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClearAuthEvents
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.util import UnauthorizedError
+from txwinrm.util import UnauthorizedError, RequestError
 import codecs
+from . import send_to_debug
 
 LOG = logging.getLogger('zen.MicrosoftWindows')
 
@@ -68,6 +69,7 @@ class PerfmonDataSource(PythonDataSource):
 
     sourcetype = SOURCETYPE
     sourcetypes = (SOURCETYPE,)
+    eventClass = '/Status'
 
     plugin_classname = (
         ZENPACKID + '.datasources.PerfmonDataSource.PerfmonDataSourcePlugin')
@@ -160,6 +162,10 @@ class DataPersister(object):
     def get(self, device):
         return self.devices[device].copy()
 
+    def get_events(self, device):
+        self.touch(device)
+        return self.devices[device]['events']
+
     def remove(self, device):
         if device in self.devices:
             del(self.devices[device])
@@ -227,6 +233,7 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
+            LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
             if command is not None:
                 yield command.start(self.ps_command, ps_script=command_line)
 
@@ -266,18 +273,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def __init__(self, config):
         self.config = config
-        self.reset()
+        self.cycletime = config.datasources[0].cycletime
 
-    def reset(self):
-        self.state = PluginStates.STOPPED
-
-        dsconf0 = self.config.datasources[0]
         preferences = queryUtility(ICollectorPreferences, 'zenpython')
         self.cycling = preferences.options.cycle
 
         # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
-            self.sample_interval = dsconf0.cycletime
+            self.sample_interval = self.cycletime
             self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
@@ -294,9 +297,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
-        self.complex_command = ComplexLongRunningCommand(
-            dsconf0, self.num_commands)
+        self.reset()
+
+    def reset(self):
+        self.state = PluginStates.STOPPED
         self.network_failures = 0
+
+        self.complex_command = ComplexLongRunningCommand(
+            self.config.datasources[0],
+            self.num_commands)
 
     def _build_commandlines(self):
         """Return a list of command lines needed to get data for all counters."""
@@ -361,7 +370,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.state = PluginStates.STARTING
 
         try:
-            yield self.complex_command.start(self.commandlines)
+            yield add_timeout(
+                self.complex_command.start(self.commandlines),
+                self.cycletime)
         except Exception as e:
             errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
@@ -369,7 +380,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
             # prevent duplicate of auth failure messages
-            if not self._errorMsgCheck(e.message):
+            if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
                 PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'eventClass': '/Status/Winrm',
@@ -441,22 +452,29 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.complex_command:
             try:
-                yield self.complex_command.stop()
-            except Exception, ex:
-                if 'canceled by the user' in ex.message:
-                    # This means the command finished naturally before
-                    # we got a chance to stop it. Totally normal.
-                    log_level = logging.DEBUG
+                yield add_timeout(
+                    self.complex_command.stop(),
+                    self.cycletime)
+            except (RequestError, Exception) as ex:
+                if 'the request contained invalid selectors for the resource' in ex.message:
+                    # shell was lost due to reboot, service restart, or other circumstance
+                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
+                              ' will attempt to restart on the next cycle.')
                 else:
-                    # Otherwise this could result in leaking active
-                    # operations on the Windows server and should be
-                    # logged as a warning.
-                    log_level = logging.WARN
+                    if 'canceled by the user' in ex.message:
+                        # This means the command finished naturally before
+                        # we got a chance to stop it. Totally normal.
+                        log_level = logging.DEBUG
+                    else:
+                        # Otherwise this could result in leaking active
+                        # operations on the Windows server and should be
+                        # logged as a warning.
+                        log_level = logging.WARN
 
-                LOG.log(
-                    log_level,
-                    "Windows Perfmon failed to stop Get-Counter on %s: %s",
-                    self.config.id, ex)
+                    LOG.log(
+                        log_level,
+                        "Windows Perfmon failed to stop Get-Counter on %s: %s",
+                        self.config.id, ex)
 
         self.state = PluginStates.STOPPED
 
@@ -590,7 +608,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
             try:
-                yield self.remove_corrupt_counters()
+                yield add_timeout(
+                    self.remove_corrupt_counters(),
+                    self.cycletime)
             except Exception:
                 pass
             if self.ps_counter_map.keys():
@@ -604,7 +624,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
 
-        self._generateClearAuthEvents()
+        generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
@@ -624,8 +644,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        if not self._errorMsgCheck(e.message):
-            self._generateClearAuthEvents()
+        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -645,7 +665,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Handle errors on which we should start over.
         else:
             level = logging.WARN
-            if isinstance(e, ResponseNeverReceived):
+            if send_to_debug(failure):
                 level = logging.DEBUG
             retry, msg = (
                 False,
@@ -837,6 +857,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'device': self.config.id,
             'eventClassKey': 'AuthenticationSuccess',
             'summary': 'Authentication Successful',
+            'severity': ZenEventClasses.Clear,
             'ipAddress': self.config.manageIp})
 
 

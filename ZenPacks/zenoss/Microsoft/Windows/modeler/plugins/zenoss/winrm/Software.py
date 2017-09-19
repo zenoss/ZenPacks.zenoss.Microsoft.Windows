@@ -67,6 +67,7 @@ class Software(WinRMPlugin):
                     key, value = keyvalues.split('=')
                 except ValueError:
                     continue
+                value = str(value)
                 try:
                     if key == "Vendor":
                         checkValidId(None, value, allow_dup=False)
@@ -86,6 +87,11 @@ class Software(WinRMPlugin):
             vendor = softwareDict['Vendor'].strip() if softwareDict['Vendor'].strip() != '' else 'Unknown'
 
             om.setProductKey = MultiArgs(om.id, vendor)
+
+            if any(om.setProductKey.args == x.setProductKey.args for x in rm.maps):
+                # https://jira.zenoss.com/browse/ZPS-1245
+                # Do not report duplicate software, even if Windows reports it
+                continue
 
             try:
                 installDate = DateTime(softwareDict['InstallDate'])

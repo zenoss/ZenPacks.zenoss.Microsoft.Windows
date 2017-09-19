@@ -66,6 +66,7 @@ class ReindexWinServices(Job):
         for service in template.getAffectedServices():
             self.log.info('Indexing service {} on {}'.format(service.serviceName, service.device().id))
             service.index_object()
+            service._p_invalidate()
 
 
 class RemoveWinRMServices(Job):

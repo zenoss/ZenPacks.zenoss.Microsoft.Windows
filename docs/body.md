@@ -323,6 +323,7 @@ IIS Sites
 :   \\Web Service(${here/sitename})\\Search Requests/sec
 :   \\Web Service(${here/sitename})\\Trace Requests/sec
 :   \\Web Service(${here/sitename})\\Unlock Requests/sec
+:   \\APP\_POOL\_WAS(${here/apppool})\\Current Application Pool State
 
 Note: The IIS monitoring template will only be used when IIS is found
 during modeling.
@@ -330,21 +331,42 @@ during modeling.
 Note: The IISAdmin service must be running in order to collect IIS
 data.
 
-The following metrics are collected directly via WMI over WinRM.
-
 Processes (Win32\_PerfFormattedData\_PerfProc\_Process) 
 :   PercentProcessorTime 
 :   WorkingSet 
 :   WorkingSetPrivate
 
-<br class="clear">
-Note: IIS 6 Management compatibility role no longer needs to be
-installed on the server side in order to use the IIS Sites component.
+Collected directly via WMI over WinRM.
 
-SQL Server
+SQL Server Instance - WinDBInstance template
+:   \\SQLServer:Buffer Manager\\Buffer cache hit ratio
+:   \\SQLServer:Buffer Manager\\Page life expectancy
+:   \\SQLServer:SQL Statistics\\Batch Requests/Sec
+:   \\SQLServer:SQL Statistics\\SQL Compilations/Sec
+:   \\SQLServer:SQL Statistics\\SQL Re-Compilations/Sec
+:   \\SQLServer:General Statistics\\User Connections
+:   \\SQLServer:Locks(\_Total)\\Lock Waits/Sec
+:   \\SQLServer:Access Methods\\Page Splits/Sec
+:   \\SQLServer:General Statistic\\Processes Blocked
+:   \\SQLServer:Buffer Manager\\Checkpoint Pages/Sec
+:   \\SQLServer:Locks(\_Total)\\Number of Deadlocks/sec
 
-The following performance counters are monitored via Powershell script per database:
+Note: For a named instance, the counter instance will be `\\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
 
+We show the following graphs for an instance:
+
+Buffer Cache Hit Ratio
+Page Life Expectancy
+Batch Requests
+Compilations
+Connections
+Lock Waits
+Page Splits
+Processes Blocked
+Checkpoint Pages
+Deadlocks
+
+SQL Server Database - WinDatabase template
 :   \\Active Transactions
 :   \\Backup/Restore Throughput/sec
 :   \\Bulk Copy Rows/sec
@@ -374,10 +396,10 @@ The following performance counters are monitored via Powershell script per datab
 :   \\Shrink Data Movement Bytes/sec
 :   \\Transactions/sec
 
-You can enable/disable any of these or change the cycle time by editing
-the WinDatabase monitoring template.
+Collected via PowerShell SQL connection to server instance.
 
 Database Statuses
+
 :   AutoClosed - The database has been automatically closed.
 :   EmergencyMode - The database is in emergency mode.
 :   Inaccessible - The database is inaccessible. The server might be switched off or the network connection has been interrupted.
@@ -391,13 +413,19 @@ Database Statuses
 :   Suspect - The database has been marked as suspect. You will have to check the data, and the database might have to be restored from a backup.
 
 Events
-:   'Normal' will send a clear event
-:   'EmergencyMode' will send a critical event
-:   'Inaccessible', 'Suspect', 'Shutdown' will send Error events
-:   'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Warning events
 
-Status can be multiple items from above. For example, taking a database
-offline will set the status to 'Offline, AutoClosed'.
+:   'Normal' will send a clear event
+:   'EmergencyMode', 'Suspect', 'Inaccessible' will send a critical event
+:   'Shutdown', 'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Info events
+
+Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.  Transforms can be applied in the WinDatabaseStatus event mapping under /Status.  You can raise/lower the severity of the status, or drop it altogether.
+
+For example, to raise the severity of the Offline status:
+
+```python
+if 'Offline' in evt.summary:
+    evt.severity = 4
+```
 
 The WinDBInstance monitoring template will monitor the status of a SQL
 Server instance to inform the user if it is up or down.
@@ -530,12 +558,14 @@ Source, you can mix and match the differing powershell queries. e.g.
 
 To change event severity follow the steps: 
 
-1.  Navigate to Event Classes, and click on */Status* event class. 
-2.  Click *Add new EventClass Mappings* button.
-3.  In the *Transform* section, add "`evt.severity = NUM`" where NUM is
-    one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical)
-    at the bottom 
-4.  Click the *Save* button
+1.  Navigate to the desired event class to map the event, for example '/Status'.
+2.  Edit the mapping instance
+    a. Select the desired mapping instance and either double click or click the gear icon at the top of the pane.
+    b. If the mapping does not exist:
+        i. Create a new one by clicking the ''+'' button at the top of the pane
+        ii. Use the format of ProviderName\_EventId for the mapping name and eventClassKey, e.g. EventService\_1001
+3. Click on the 'Transforms' tab, add "<code>evt.severity = NUM</code>" where NUM is one of (0: Clear, 1: Debug, 2: Info, 3: Warning, 4: Error, 5: Critical) at the bottom
+4. click the ''Submit'' button
 
 ### Custom Commands
 
@@ -558,6 +588,9 @@ Windows ZenPack to create custom data points, graphs and thresholds.
 -   Viewing script output
     *   Create datapoint(s) to collect the data for graphing.
     *   Create custom parser to send event or transform data.
+
+Note: Avoid using double quotes in Write-Host argument strings. Coupled with Nagios parser it may lead to
+'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs.
 
 #### Example usage
 
@@ -807,11 +840,22 @@ This ZenPack has the following requirements.
 System Kerberos RPM
 :   The operating system's kerberos RPM must be installed. See the [Installing Kerberos Dependency](#installing-kerberos-dependency) section for details.
 
-Note: During ZenPack installation, a job to reindex Windows Services
-may start. It is recommended to either stop zenjobs before installing or
+Note: During ZenPack installation, two jobs may be created, depending on
+which version is already installed.  The first is a mandatory job that resets
+the python class types of existing Windows devices and components.  This job
+will run if upgrading to v2.7.0 or above.  The second is a job to remove
+incompatible Windows Services.  This second job will run if upgrading to v2.7.2
+or above.  It is recommended to either stop zenjobs before installing or
 to wait until the job finishes before restarting Zenoss. If you restart
 before the job finishes, you may need to Abort and/or Delete the job
-after the restart.
+after the restart.  It is also possible to manually run this job by importing
+it into zendmd and adding it to the JobManager.
+
+```python
+from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
+dmd.JobManager.addJob(ResetClassTypesJob)
+commit()
+```
 
 ### Installing Kerberos Dependency
 
@@ -839,8 +883,8 @@ The Least Privileged User requires the following privileges and permissions:
     -   "Root/RSOP" 
     -   "Root/RSOP/Computer"
     -   "Root/WMI"
-    -   "Root/CIMv2/Security/MicrosoftTpm" If IIS is installed, one of the following namespaces depending upon IIS version
-        -   "Root/Webadministration" or "Root/microsoftiisv2"
+    -   "Root/CIMv2/Security/MicrosoftTpm"
+    -   "Root/Webadministration" - If IIS is installed
 -   Permission to use the winrm service
 -   ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys 
     -   "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib"
@@ -900,9 +944,8 @@ endpoints can be added under the same
 
 ```
 /Devices/Server/Microsoft/Windows
-win2008-1d.example.com zWinRMUser="Administrator",
-zWinRMPassword="password" Win2012-1d.example.com
-zWinRMUser="Administrator", zWinRMPassword="password"
+win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
+Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 ```
 
 You can then load the Windows servers into Zenoss Core or Resource
@@ -1022,7 +1065,8 @@ important.
         setting for MaxEnvelopeSizekb exceeds the default of 512k. Some WMI
         queries return large amounts of data and this envelope size may need to
         be enlarged. A possible symptom of this is seeing an xml parsing error
-        during collection.
+        during collection or "Check WMI namespace and DCOM permission" returned
+        from the OperatingSystem modeler plugin.
 
 -   zWinRMLocale
     :   The locale to use for communicating with a Windows
@@ -1152,21 +1196,26 @@ For more information please refer to
 Navigate to Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Management
 
 WinRMClient 
+
 -   No setting changes required for client
 
 WinRMService
+
 -   Allow remote server management through WinRm
 
 HTTP (Windows default is HTTPS see note below for more information)
+
 -   Allow unencrypted Traffic (Only necessary when using basic authentication)
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
+
 -   Allow Basic Authentication
 
 WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Components\\Windows Remote Shell
+
 -   Allow Remote Shell Access
--   Max number of processes per shell = 4294967295
--   Max number of shells per user = 2147483647
+-   Max number of processes per shell = 4294967295 or a reasonable large number
+-   Max number of shells per user = 5
 -   Shell Timeout = 600000
 
 #### Individual Machine configuration
@@ -1175,19 +1224,22 @@ WinRS Computer Configuration\\Policies\\Administrative Templates\\Windows Compon
 -   Run command prompt as Administrator
 -   winrm quickconfig
 
--   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
--   winrm s winrm/config/winrs '@{MaxShellsPerUser="2147483647"}'
+-   winrm s winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}' or a reasonable large number
+-   winrm s winrm/config/winrs '@{MaxShellsPerUser="5"}'
 -   winrm s winrm/config/winrs '@{IdleTimeout="600000"}'
 
 Basic Authentication (Windows default is Kerberos see note below for more information)
+
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
 -   winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
+Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.  The winrshost.exe process is the remote shell on a Windows Server.
+
 Note: The above instructions use the max values for
-MaxConcurrentOperationsPerUser and WinRS MaxShellsPerUser. If you do not
-want to set these to the max, then a value of 50 should be adequate. The
-default is 5 on both, which will cause problems because Zenoss will open
-up concurrent requests for each WQL query and set of Perfmon counters.
+MaxConcurrentOperationsPerUser. If you do not want to set this value to 
+the max, then a value of 50 should be adequate. The default is 5, which 
+will cause problems because Zenoss will open up concurrent requests 
+for a set of Perfmon counters and any other shell based datasource.
 
 Note: If you choose to use Basic authentication it is highly
 recommended that you also configure HTTPS. If you do not use the HTTPS
@@ -1208,13 +1260,14 @@ supply Kerberos authentication settings in the zProperties. The Kerberos
 authentication process requires a ticket granting server. In the
 Microsoft Active Directory environment the AD Server is also the KDC.
 The zWinKDC value must be set to the IP address of the AD Server and the
-collector must be able to sent TCP/IP packets to this server. Once this
+collector must be able to send TCP/IP packets to this server. Once this
 is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and
-the zWinRMPassword must be set correctly for this user account.
+the zWinRMPassword must be set correctly for this user account.  The 
+domain name MUST be the name of the domain, not an alias for the domain.
 
 Note: In order to use a single domain user in a child domain or other
 trusted domain, set zWinKDC to the AD server of the user's domain. Then
-enter the trusted domain name and associated AD server in the
+enter the trusted domain name and associated domain controller in the
 zWinTrustedRealm and zWinTrustedKDC properties, respectively.
 
 Note: The HTTPS setup must be completed on each client. At this time
@@ -1244,8 +1297,6 @@ running *winrm quickconfig*.
 ```
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 ```
-
-Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.
 
 Transitioning from WindowsMonitor
 ---------------------------------
@@ -1278,6 +1329,14 @@ the move.
 
 The current release is known to have the following limitations.
 
+-   Non-Cluster components are no longer valid on a Cluster device.  
+    Cluster devices should only use the OperatingSystem, WinCluster, 
+    and WinMSSQL modeler plugins because the nodes of a cluster may 
+    have differing components such as Interfaces, FileSystems and 
+    Processors.  If you have upgraded from a version previous to 2.5.0, 
+    and you still have the following components you should remove 
+    them from your Cluster device:  Interfaces/WindowsInterfaces, 
+    FileSystems, Processors, Services/Windows Services, Processes.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
 -   The custom widget for MSSQL Server credentials is not compatible
     with Zenoss 4.1.x, therefore the *zDBInstances* property in this
@@ -1314,10 +1373,13 @@ In [2]: dmd.JobManager.addJob(ResetClassTypes)
 In [3]: commit()
 ```
 
--   This is the last version of the Microsoft Windows ZenPack where we provide fixes for Windows 2008.
 -   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
+-   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
+-   If you are upgrading from a version previous to 2.5.0, you may see the IIS modeler plugin as a default modeler plugin on the /Server/Microsoft/Windows device class. Current versions do not set IIS as a default plugin. Also, by default, only the OperatingSystem and WinCluster plugins should be enabled by default on the /Server/Microsoft/Cluster class. The CPUs, FileSystems, IIS, Interfaces, Services, Processes, and Software plugins do not apply to Cluster devices and should be removed.
+-   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
+-   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1550,15 +1612,6 @@ The following are the most common errors:
 
 ### Troubleshooting Services
 
-If you see an event error that shows "The maximum number of concurrent
-operations for this user has been exceeded", you will need to increase
-the number of concurrent operations per user in the winrm config. For
-example: 
-
-```
-winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="5000"}'
-```
-
 If you see an "Index out of range" error, this could indicate a low
 number of available file handles in Linux. The default is 1024. To view
 this information on your system, enter 'ulimit -n'. To increase this
@@ -1575,10 +1628,13 @@ fs.file-max=10000
 The first step in troubleshooting any monitoring issues is to scan the
 zenpython log for errors.
 
-While monitoring, possible network connectivity issues may occur while
-trying to complete the Get-Counter command. If you experience
-OperationTimeout errors, it may be a solution to decrease value of
-*zWinPerfmonInterval* property to 30 seconds.
+If you see OperationTimeout errors in the zenpython log, this is normal.  
+The reason for this is that we run the Get-Counter PowerShell cmdlet 
+over the course of two polling cycles and pull 2 samples by default.  
+There is a 60 second timeout when attempting to receive data.  If the 
+receive request does not finish within 60 seconds, you will see an 
+OperationTimeout.  You can decrease zWinPerfmonInterval to a lower 
+value, which will pull samples more frequently.
 
 Other timeout issues on a domain could involve having a large Kerberos
 token. This could be caused by the user belonging to a large number of
@@ -1599,6 +1655,8 @@ Configuration for <device> unavailable -- is that the correct name?
 
 If you see an event stating that a plugin was disabled due to blocking, see the [PythonCollector ZenPack](/product/zenpacks/pythoncollector) documentation for steps to remedy this.
 
+If you see 'SNMP agent down - no response received' or 'Unable to read processes' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
+
 ### Troubleshooting modeling/monitoring
 
 Version 2.6.0 introduces a command line option to save
@@ -1618,6 +1676,15 @@ called Interfaces_process_XXXXXX.pickle.
 
 Note: Be sure to unset the environment variable to avoid unwanted
 pickle files.
+
+If you see an event error that shows "The maximum number of concurrent
+operations for this user has been exceeded", you will need to increase
+the number of concurrent operations per user in the winrm config. For
+example: 
+
+```
+winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
+```
 
 ## Zenoss Analytics
 
@@ -1741,6 +1808,34 @@ Monitoring Templates
 
 Changes
 -------
+
+2.8.0
+
+-   Added SQL Server instance performance counters
+-   Added Application Pool Status check for IIS Application Pools
+-   Removed WindowsServiceLog, IISSiteStatus, Kerberos, and Authentication event class mappings.
+-   Fix Microsoft Windows 2.7.8 pack install without RPS712 breaks zenpack command (ZPS-1729)
+-   Fix Microsoft Windows ZenPack floods event server (ZPS-1752)
+-   Fix Windows ZenPack: IISSiteStatus transform can result in AttributeError (ZPS-490)
+-   Fix collection hanging caused by network timeouts. (ZPS-1765)
+-   Fix Shutting down the Zenpython daemon creates unnecessary and or mis-catagorized logging connection failure events in zenpython.log (ZPS-1693, ZPS-1692)
+-   Fix Microsoft Windows: zenpython memory usage increases until restart required (ZPS-1584)
+-   Fix Newlines in mssql job descriptions cause parse failure. (ZPS-1813)
+-   Fix MicrosoftWindows - Cluster component datasources missing default event class (ZPS-1810)
+-   Fix ZP Microsoft Windows 2.7.0 - conhost.exe and winrshost.exe are opened without closing (ZPS-1354)
+-   Fix zenjobs consumes excessive memory for some actions (ZPS-1783)
+-   Fix Windows link to device with no ip instead of cluster node is present in grid of Cluster Nodes component (ZPS-1852)
+-   Fix Windows - Loading of SQL Databases is worse in comparison with Zenoss 4.2.5 and Windows 2.6.4 on Zenoss 5.2.1 (ZPS-1154)
+-   Fix Windows ZenPack does not show the default sql server name as MSSQLSERVER (ZPS-2031)
+-   Fix Multiple zenpython instances on a collector sometimes results in incomplete krb5.conf (ZPS-2072)
+-   Update message for DNS lookup failed events (ZPS-1938)
+-   Added Windows Shell Custom Command datasources usage with Nagios parser limitations (ZPS-1286).
+-   Fix events for IIS Site components (ZPS-2126)
+-   Fix malformed sql job results show 'too many values to unpack' error (ZPS-2143)
+-   Fix Windows Shell Data Source Sets the Component to an Unconventional Value (ZPS-2055)
+-   Fix Unknown Software manufacturers (ZPS-2139). This change fixes the problem only on a new devices. To apply to existing -- please delete Software records manually
+-   Fix some software shows up duplicated (ZPS-1245)
+-   Tested with Zenoss Resource Manager 5.3.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.7
 
 2.7.8
 

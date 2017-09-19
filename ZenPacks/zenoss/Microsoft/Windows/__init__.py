@@ -17,6 +17,7 @@ import re
 import logging
 
 from Products.ZenUtils.Utils import zenPath
+from Products.ZenEvents import ZenEventClasses
 
 try:
     from ZenPacks.zenoss.Impact.impactd.relations import ImpactEdge, DSVRelationshipProvider, RelationshipEdgeError
@@ -38,7 +39,9 @@ OLD_DEVTYPE_PROTOCOL = 'WMI'
 
 from ZenPacks.zenoss.ZenPackLib import zenpacklib
 
-CFG = zenpacklib.load_yaml([os.path.join(os.path.dirname(__file__), 'zenpack.yaml')])
+zenpack_files = ('zenpack.yaml', 'event_classes.yaml', 'device_classes.yaml')
+yaml_files = [os.path.join(os.path.dirname(__file__), yaml_file) for yaml_file in zenpack_files]
+CFG = zenpacklib.load_yaml(yaml_files)
 
 schema = CFG.zenpack_module.schema
 
@@ -175,9 +178,6 @@ class ZenPack(schema.ZenPack):
 
         self.cleanup_zProps(app.zport.dmd)
 
-        # updating these manually since ZPL 2.0 doesn't yet support these attributes
-        self.update_event_class_mappings(app.zport.dmd)
-
         self.in_install = False
 
     def remove(self, app, leaveObjects=False):
@@ -226,32 +226,6 @@ class ZenPack(schema.ZenPack):
         devices._properties = tuple(
             [x for x in devices._properties if x['id'] != 'zDBInstancesPassword']
         )
-
-    def update_event_class_mappings(self, dmd):
-        """ZPL 2.0 doesn't support these attributes, so setting them here"""
-        # clear classes for each failure type
-        clear_class_mappings = {'AuthenticationFailure': ['/Status/Winrm/Auth/instances/AuthenticationSuccess'],
-                                'KerberosFailure': ['/Status/Kerberos/instances/KerberosSuccess'],
-                                'KerberosAuthenticationFailure': ['/Status/Kerberos/instances/KerberosAuthenticationSuccess'],
-                                }
-        for path in ['/Status/Winrm/Auth', '/Status/Kerberos']:
-            org = dmd.Events.getOrganizer(path)
-            if org:
-                for s in ['AuthenticationSuccess', 'KerberosSuccess', 'KerberosAuthenticationSuccess' ]:
-                    try:
-                        success = org.findObject(s)
-                        if success:
-                            success.setZenProperty('zEventSeverity', 0)
-                    except AttributeError:
-                        continue
-                for f in ['AuthenticationFailure', 'KerberosFailure', 'KerberosAuthenticationFailure']:
-                    try:
-                        failure = org.findObject(f)
-                        if failure:
-                            failure.setZenProperty('zEventSeverity', 5)
-                            failure.setZenProperty('zEventClearClasses', clear_class_mappings.get(f, []))
-                    except AttributeError:
-                        continue
 
 # Patch last to avoid import recursion problems.
 from ZenPacks.zenoss.Microsoft.Windows import patches  # NOQA: imported for side effects.

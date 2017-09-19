@@ -11,6 +11,7 @@
 Windows Cluster System Collection
 
 """
+import logging
 from socket import gaierror
 from twisted.internet import defer
 
@@ -24,7 +25,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
 from txwinrm.WinRMClient import SingleCommandClient
 
 addLocalLibPath()
-
+log = logging.getLogger("zen.MicrosoftCluster")
 
 class ClusterCommander(object):
     def __init__(self, conn_info):
@@ -63,7 +64,7 @@ class WinCluster(WinRMPlugin):
         cmd = ClusterCommander(conn_info)
 
         domain = yield cmd.run_command("(gwmi WIN32_ComputerSystem).Domain;")
-        domain = domain.stdout[0]
+        domain = domain.stdout[0] if domain.stdout else ''
 
         resourceCommand = []
         resourceCommand.append(
@@ -111,34 +112,33 @@ class WinCluster(WinRMPlugin):
         )
 
         clusterDiskCommand.append(
-            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
-            "@{Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId};},"
-            "@{Name='DriveLetter';Expression={Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter};},"
-            "@{Name='FileSystemLabel';Expression={Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel};},"
-            "@{Name='Size';Expression={Get-Volume -Partition $_ | Select -ExpandProperty Size};},"
-            "@{Name='SizeRemaining';Expression={Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining};};"
-            "$clusterDisk = get-clusterresource | where { $_.ResourceType -eq 'Physical Disk'};"
-            "foreach ($disk in $clusterDisk) {"
-            "$founddisk = $diskInfo | where { $_.FileSystemLabel -eq $disk.Name};"
-            "if ($founddisk -ne $null) {"
-            "$diskowner = $disk.OwnerNode.Name;"
-            "$disknumber = $founddisk.DiskNumber;"
-            "$diskpartition = $founddisk.PartitionNumber;"
-            "$disksize = $founddisk.Size;"
-            "$disksizeremain = $founddisk.SizeRemaining;"
-            "$diskvolume = $founddisk.Volume.substring(3);"
+            "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources | foreach {"
+            "$rsc = $_;"
+            "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
+            "$disks | foreach {"
+            "$dsk = $_;"
+            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "$partitions | foreach {"
+            "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{"
-            "Id = $diskvolume.substring(8, $diskvolume.length-10);"
-            "Name = $disk.Name;VolumePath = $diskvolume;"
-            "OwnerNode = $diskowner;DiskNumber = $disknumber;"
-            "PartitionNumber = $diskpartition;Size = $disksize;"
-            "FreeSpace = $disksizeremain;State = $disk.State;"
-            "OwnerGroup = $disk.OwnerGroup.Name;};"
-            "$physicaldisk | foreach { %s };} }" % pipejoin(
-                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            "Id = $rsc.Id;"
+            "OwnerNode = $rsc.OwnerNode;"
+            "OwnerGroup = $rsc.OwnerGroup;"
+            "Name = $rsc.Name;"
+            "VolumePath = $prt.Path;"
+            "DiskNumber = $dsk.Number;"
+            "PartitionNumber = $prt.PartitionNumber;"
+            "Size = $prt.TotalSize * 1mb;"
+            "FreeSpace = $prt.FreeSpace * 1mb;"
+            "State = $rsc.State;"
+            "}}}}; $physicaldisk | foreach { %s }" % pipejoin(
+                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
         )
+
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
+        for item in clusterdisk.stdout:
+            log.debug('\t*****  %s', item)
 
         clusterNetworkCommand = []
         clusterNetworkCommand.append(
@@ -156,13 +156,15 @@ class WinCluster(WinRMPlugin):
         maps['resources'] = resource.stdout
 
         nodes = {}
-        for node in clusternode.stdout:
-            node_name = node.split('|')[0] + '.' + domain
-            try:
-                nodes[node_name] = yield asyncIpLookup(node_name)
-            except(gaierror):
-                log.warning('Unable to resolve hostname {0}'.format(node_name))
-                continue
+        if domain:
+            for node in clusternode.stdout:
+                node_name = node.split('|')[0] + '.' + domain
+                try:
+                    nodes[node_name] = yield asyncIpLookup(node_name)
+                except(gaierror):
+                    log.warning('Unable to resolve hostname {0}'.format(node_name))
+                    continue
+
         maps['nodes'] = nodes
         maps['nodes_data'] = clusternode.stdout
         maps['clusterdisk'] = clusterdisk.stdout
@@ -192,9 +194,14 @@ class WinCluster(WinRMPlugin):
         maps.append(cs_om)
 
         # Cluster Resource Maps
-        res_spliter_index = results['resources'].index("====")
-        resources = results['resources'][:res_spliter_index]
-        applications = results['resources'][res_spliter_index + 1:]
+        resources = []
+        applications = []
+
+        resources_res = results['resources']
+        if resources_res:
+            res_spliter_index = resources_res.index("====")
+            resources = resources_res[:res_spliter_index]
+            applications = resources_res[res_spliter_index + 1:]
 
         # This section is for ClusterService class
         for resource in resources:
@@ -304,9 +311,14 @@ class WinCluster(WinRMPlugin):
                 map_disks_to_node[nodeid] = disksom
 
         # This section is for ClusterInterface class
-        net_spliter_index = results['clusternetworks'].index("====")
-        clusternetworks = results['clusternetworks'][:net_spliter_index]
-        nodeinterfaces = results['clusternetworks'][net_spliter_index + 1:]
+        clusternetworks = []
+        nodeinterfaces = []
+
+        cluster_network_res = results['clusternetworks']
+        if cluster_network_res:
+            net_spliter_index = cluster_network_res.index("====")
+            clusternetworks = cluster_network_res[:net_spliter_index]
+            nodeinterfaces = cluster_network_res[net_spliter_index + 1:]
 
         for interface in nodeinterfaces:
             intfline = interface.split("|")

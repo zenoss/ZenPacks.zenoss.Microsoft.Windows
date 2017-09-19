@@ -49,6 +49,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
 from .. import ZENPACK_NAME
+from . import send_to_debug
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
     get_processNameAndArgs, get_processText, save, errorMsgCheck,
@@ -462,14 +463,18 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             'severity': Event.Clear,
             'eventClass': Status_OSProcess,
             'summary': 'process scan successful',
-            })
+        })
 
         generateClearAuthEvents(config, data['events'])
 
         return data
 
     def onError(self, error, config):
-        LOG.error("%s process scan error: %s", config.id, error.value)
+        logg = LOG.error
+        if send_to_debug(error):
+            logg = LOG.debug
+        msg = "{} process scan error: {}".format(config.id, error.value)
+        logg(msg)
 
         data = self.new_data()
         errorMsgCheck(config, data['events'], error.value.message)
@@ -479,6 +484,6 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 'severity': Event.Error,
                 'eventClass': Status_OSProcess,
                 'summary': 'process scan error: {}'.format(error.value),
-                })
+            })
 
         return data

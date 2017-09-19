@@ -35,7 +35,9 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
     check_for_network_error, pipejoin, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dsconf)
+    save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
+    cluster_disk_state_string)
+from . import send_to_debug
 
 
 # Requires that txwinrm_utils is already imported.
@@ -71,6 +73,7 @@ class ClusterDataSource(PythonDataSource):
     ZENPACKID = ZENPACKID
     component = '${here/id}'
     cycletime = 300
+    eventClass = '/Status'
 
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
@@ -163,31 +166,28 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         )
 
         psClusterCommands.append(
-            "$diskInfo = Get-Disk | Get-Partition | Select DiskNumber, PartitionNumber,"
-            "@{{Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId}};}},"
-            "@{{Name='DriveLetter';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty DriveLetter}};}},"
-            "@{{Name='FileSystemLabel';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty FileSystemLabel}};}},"
-            "@{{Name='Size';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty Size}};}},"
-            "@{{Name='SizeRemaining';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty SizeRemaining}};}};"
-            "$clsDisk = get-clusterresource -errorvariable diskerr -erroraction"
-            " 'silentlycontinue'| where {{ $_.ResourceType -eq 'Physical Disk'}};"
-            "if( -Not $diskerr){{"
-            "foreach ($disk in $clsDisk) {{"
-            "$founddisk = $diskInfo | where {{ $_.FileSystemLabel -eq $disk.Name}};"
-            "if ($founddisk -ne $null) {{"
-            "$diskowner = $disk.OwnerNode.Name;"
-            "$disknumber = $founddisk.DiskNumber;"
-            "$diskpartition = $founddisk.PartitionNumber;"
-            "$disksize = $founddisk.Size;"
-            "$disksizeremain = $founddisk.SizeRemaining;"
-            "$diskvolume = $founddisk.Volume.substring(3);"
+            "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources | foreach {{"
+            "$rsc = $_;"
+            "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
+            "$disks | foreach {{"
+            "$dsk = $_;"
+            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "$partitions | foreach {{"
+            "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $diskvolume.substring(8, $diskvolume.length-10);"
-            "Name = $disk.Name;VolumePath = $diskvolume;"
-            "OwnerNode = $diskowner;DiskNumber = $disknumber;"
-            "PartitionNumber = $diskpartition;Size = $disksize;"
-            "FreeSpace = $disksizeremain;State = $disk.State;}};"
-            "$physicaldisk | foreach {{{}}} }};}};}}".format(cluster_id_items)
+            "Id = $rsc.Id;"
+            "Name = $rsc.Name;"
+            "VolumePath = $prt.Path;"
+            "OwnerNode = $rsc.OwnerNode;"
+            "OwnerGroup = $rsc.OwnerGroup;"
+            "DiskNumber = $dsk.Number;"
+            "PartitionNumber = $prt.PartitionNumber;"
+            "Size = $prt.Size * 1mb;"
+            "FreeSpace = $prt.FreeSpace * 1mb;"
+            "State = $rsc.State;"
+            "}}; }} }} }}; $physicaldisk | foreach {{{}}}"
+            "".format(cluster_id_items)
         )
 
         script = "\"& {{{}}}\"".format(''.join(psClusterCommands))
@@ -197,10 +197,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
     def collect(self, config):
         conn_info = createConnectionInfo(config.datasources[0])
         command = SingleCommandClient(conn_info)
-
         pscommand, script = self.build_command_line()
         results = yield command.run_command(pscommand, script)
-
+        for item in results.stdout:
+            log.debug('\t*****  %s', item)
         defer.returnValue(results)
 
     @save
@@ -217,7 +217,13 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
                 continue
             comp = prepId(comp)
-            data['values'][comp]['state'] = cluster_state_value(state), 'N'
+            try:
+                # specific for cluster disk component
+                data['values'][comp]['state'] = int(state)
+                state = cluster_disk_state_string(int(state))
+            except:
+                # handles all other cases
+                data['values'][comp]['state'] = cluster_state_value(state), 'N'
             dsconf = get_dsconf(config.datasources, str(comp), param='contexttitle')
             if dsconf is None:
                 # component probably not modeled, see ZEN-23142
@@ -271,6 +277,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
                 event_class = '/Status'
+            elif send_to_debug(result):
+                logg = log.debug
             else:
                 eventKey = 'datasourceWarning_{0}'.format(
                     config.datasources[0].datasource

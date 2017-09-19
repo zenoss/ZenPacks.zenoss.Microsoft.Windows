@@ -47,10 +47,11 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
-    check_for_network_error, pipejoin, sizeof_fmt, cluster_state_value,
-    save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
-    lookup_databasesummary)
+    check_for_network_error, save, errorMsgCheck,
+    generateClearAuthEvents, get_dsconf,
+    lookup_databasesummary, lookup_database_status)
 from EventLogDataSource import string_to_lines
+from . import send_to_debug
 
 
 # Requires that txwinrm_utils is already imported.
@@ -67,26 +68,6 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL Instance',
     'powershell MSSQL Job'
 ]
-
-CRITICAL_STATUSES = (
-    'EmergencyMode',
-)
-
-ERROR_STATUSES = (
-    'Inaccessible',
-    'Suspect',
-    'Shutdown',
-)
-
-WARNING_STATUSES = (
-    'RecoveryPending',
-    'Restoring',
-    'Recovering',
-    'Standby',
-    'AutoClosed',
-    'Offline',
-    'Unknown'
-)
 
 BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
 
@@ -364,7 +345,10 @@ class CustomCommandStrategy(object):
 
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
-        cmd.component = dsconf.params['contextcompname']
+        if dsconf.component is not None and len(dsconf.component):
+            cmd.component = dsconf.component
+        else:
+            cmd.component = dsconf.params['contextcompname']
 
         # Pass the severity from the datasource to the command parsers
         # If Nagios, check the status for severity
@@ -511,7 +495,7 @@ class PowershellMSSQLStrategy(object):
             for dsconf in dsconfs:
                 dsconf.params['counter'] = dsconf
             counters = dsconf.params['counter']
-            log.info(
+            log.debug(
                 'Non-zero exit code ({0}) for counters, {1}, on {2}'
                 .format(
                     result.exit_code, counters, dsconf.device))
@@ -614,7 +598,7 @@ class PowershellMSSQLJobStrategy(object):
             try:
                 currentstate = {
                     'Succeeded': ZenEventClasses.Clear,
-                    'Failed':  dsconf.severity
+                    'Failed': dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
                     component,
@@ -628,7 +612,7 @@ class PowershellMSSQLJobStrategy(object):
                     'summary': msg,
                     'device': dsconf.device,
                     'component': dsconf.component})
-            except:
+            except Exception:
                 msg = 'Missing or no data returned when querying job "{}"'.format(component)
                 collectedResults.events.append({
                     'eventClass': eventClass,
@@ -931,9 +915,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 }.get(value[1], ZenEventClasses.Info)
 
                 summary = 'MSSQL Instance {0} is {1}.'.format(
-                        dsconf.component,
-                        value[1].strip()
-                    )
+                    dsconf.component,
+                    value[1].strip()
+                )
 
                 data['events'].append(dict(
                     eventClass='/Status',
@@ -967,33 +951,11 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 checked_result = False
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                     checked_result = True
-                    if dsconf.datasource == 'state':
-                        try:
-                            state = value[1]
-                        except (IndexError, Exception):
-                            continue
-                        currentstate = {
-                            'Online': ZenEventClasses.Clear,
-                            'Offline': ZenEventClasses.Critical,
-                            'PartialOnline': ZenEventClasses.Error,
-                            'Failed': ZenEventClasses.Critical
-                        }.get(state, ZenEventClasses.Info)
-
-                        data['events'].append(dict(
-                            eventClass=dsconf.eventClass or "/Status",
-                            eventClassKey='winrs{0}'.format(strategy.key),
-                            eventKey=strategy.key,
-                            severity=currentstate,
-                            summary='Last state of component was {0}'.format(state),
-                            device=config.id,
-                            component=prepId(dsconf.component)
-                        ))
-
-                        data['values'][dsconf.component]['state'] = cluster_state_value(state), timestamp
-                    else:
+                    if dsconf.datasource != 'status' or\
+                       (dsconf.datasource == 'status' and strategy.key != "PowershellMSSQL"):
                         data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
-                    # send db status events
+                    # get db status
                     for db in getattr(strategy, 'valuemap', []):
                         dsconf = get_dsconf(dsconfs, db, param='contexttitle')
                         if dsconf:
@@ -1007,17 +969,17 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                         except Exception:
                             dbstatuses = 'Unknown'
                         db_summary = ''
-                        db_severities = set()
+                        status = 0
+                        severity = ZenEventClasses.Info
+                        warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
                         for dbstatus in dbstatuses.split(','):
-                            dbstatus = dbstatus.strip()
-                            if dbstatus == 'Normal':
-                                db_severities.add(ZenEventClasses.Clear)
-                            elif dbstatus in WARNING_STATUSES:
-                                db_severities.add(ZenEventClasses.Warning)
-                            elif dbstatus in ERROR_STATUSES:
-                                db_severities.add(ZenEventClasses.Error)
-                            elif dbstatus in CRITICAL_STATUSES:
-                                db_severities.add(ZenEventClasses.Critical)
+                            # create bitmask for status display
+                            status += lookup_database_status(dbstatus)
+                            # determine severity
+                            if dbstatus in warnings:
+                                severity = ZenEventClasses.Warning
+                            elif dbstatus == 'Normal':
+                                severity = ZenEventClasses.Clear
                             if db_summary:
                                 db_summary += ' '
                             db_summary += lookup_databasesummary(dbstatus)
@@ -1028,13 +990,14 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                 eventClass=eventClass,
                                 eventClassKey='WinDatabaseStatus',
                                 eventKey=strategy.key,
-                                severity=max(db_severities),
+                                severity=severity,
                                 device=config.id,
                                 summary=summary,
                                 message=db_summary,
                                 dbstatus=dbstatuses,
                                 component=component
                             ))
+                            data['values'][dsconf.component]['status'] = status, 'N'
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
@@ -1100,7 +1063,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @save
     def onError(self, result, config):
         logg = log.error
-        msg, event_class = check_for_network_error(result, config)
+        msg, event_class = check_for_network_error(
+            result, config, default_class='/Status/Winrm')
         eventKey = 'winrsCollection'
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
@@ -1113,6 +1077,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
                 event_class = '/Status'
+            elif send_to_debug(result):
+                logg = log.debug
 
         logg(msg)
         data = self.new_data()
@@ -1172,8 +1138,8 @@ def get_script(datasource, context):
     te = lambda x: datasource.talesEval(x, context)
     try:
         script = te(' '.join(string_to_lines(datasource.script)))
-    except:
+    except Exception:
         script = ''
-        log.error('Invalid tales expression in custom command script: %s' % \
+        log.error('Invalid tales expression in custom command script: %s' %
                   str(datasource.script))
     return script

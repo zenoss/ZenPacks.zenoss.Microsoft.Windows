@@ -7,11 +7,35 @@
 #
 ##############################################################################
 
-'''
-Basic utilities that don't cause any Zope stuff to be imported.
-'''
+"""
+Basic utilities that doesn't cause any Zope stuff to be imported.
+"""
 
 import json
+
+APP_POOL_STATUSES = {
+    1: 'Uninitialized',
+    2: 'Initialized',
+    3: 'Running',
+    4: 'Disabling',
+    5: 'Disabled',
+    6: 'Shutdown Pending',
+    7: 'Delete Pending'
+}
+
+DB_STATUSES = {
+    1: 'AutoClosed',
+    2: 'EmergencyMode',
+    4: 'Inaccessible',
+    8: 'Normal',
+    16: 'Offline',
+    32: 'Recovering',
+    64: 'RecoveryPending',
+    128: 'Restoring',
+    256: 'Shutdown',
+    512: 'Standby',
+    1024: 'Suspect'
+}
 
 
 def addLocalLibPath():
@@ -40,6 +64,22 @@ def lookup_databasesummary(value):
         'Suspect': 'The database has been marked as suspect. You will have '
         'to check the data, and the database might have to be restored from a backup.',
     }.get(value, '')
+
+
+def lookup_database_status(value):
+    return {
+        'AutoClosed': 1,
+        'EmergencyMode': 2,
+        'Inaccessible': 4,
+        'Normal': 8,
+        'Offline': 16,
+        'Recovering': 32,
+        'RecoveryPending': 64,
+        'Restoring': 128,
+        'Shutdown': 256,
+        'Standby': 512,
+        'Suspect': 1024
+    }.get(value.strip(), 0)
 
 
 def lookup_adminpasswordstatus(value):
@@ -319,7 +359,7 @@ def get_processNameAndArgs(item):
     return (name, args)
 
 
-def check_for_network_error(result, config):
+def check_for_network_error(result, config, default_class='/Status/Winrm'):
     '''
     Checks value for timeout/no route to host tracebacks
     '''
@@ -340,7 +380,7 @@ def check_for_network_error(result, config):
         result.value.message, config
     )
 
-    return msg, '/Unknown'
+    return msg, default_class
 
 
 def prepare_zDBInstances(inst):
@@ -392,6 +432,18 @@ def cluster_state_value(state):
             'Offline': 2,
             'PartialOnline': 3,
             'Failed': 4}.get(state, 5)
+
+
+def cluster_disk_state_string(state):
+    return {-1: 'Unknown',
+            0: 'Inherited',
+            1: 'Initializing',
+            2: 'Online',
+            3: 'Offline',
+            4: 'Failed',
+            128: 'Pending',
+            129: 'Online Pending',
+            130: 'Offline Pending'}.get(state, 'Undefined')
 
 
 def save(f):
@@ -461,47 +513,48 @@ def append_event_datasource_plugin(datasources, events, event):
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
     kerberos_messages = ['kerberos', 'kinit']
-    kerberos_auth_messages = ['initial credentials', 'authGSSClientStep failed']
     wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
 
     # see if this a kerberos issue
-    if any(x in error for x in kerberos_messages):
-        # if so, is it authentication or general failure
-        if any(y in error for y in kerberos_auth_messages):
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'KerberosAuthenticationFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
-        else:
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'KerberosFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
+    if any(x in error.lower() for x in kerberos_messages):
+        append_event_datasource_plugin(config.datasources, events, {
+            'eventClass': '/Status/Kerberos',
+            'eventClassKey': 'KerberosFailure',
+            'eventKey': '|'.join(('Kerberos', config.id)),
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'severity': 4,
+            'device': config.id})
+        return True
     # otherwise check if this is a typical authentication failure
-    else:
-        if any(x in error for x in wrongCredsMessages):
-            append_event_datasource_plugin(config.datasources, events, {
-                'eventClassKey': 'AuthenticationFailure',
-                'summary': error,
-                'ipAddress': config.manageIp,
-                'device': config.id})
+    elif any(x in error for x in wrongCredsMessages):
+        append_event_datasource_plugin(config.datasources, events, {
+            'eventClass': '/Status/Winrm/Auth',
+            'eventClassKey': 'AuthenticationFailure',
+            'eventKey': '|'.join(('Authentication', config.id)),
+            'summary': error,
+            'ipAddress': config.manageIp,
+            'severity': 4,
+            'device': config.id})
+        return True
+    return False
 
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
     append_event_datasource_plugin(config.datasources, events, {
+        'eventClass': '/Status/Winrm/Auth',
         'eventClassKey': 'AuthenticationSuccess',
+        'eventKey': '|'.join(('Authentication', config.id)),
         'summary': 'Authentication Successful',
+        'severity': 0,
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
-        'eventClassKey': 'KerberosAuthenticationSuccess',
-        'summary': 'No Kerberos auth failures',
-        'device': config.id})
-    append_event_datasource_plugin(config.datasources, events, {
+        'eventClass': '/Status/Kerberos',
         'eventClassKey': 'KerberosSuccess',
+        'eventKey': '|'.join(('Kerberos', config.id)),
         'summary': 'No Kerberos failures',
+        'severity': 0,
         'device': config.id})
 
 

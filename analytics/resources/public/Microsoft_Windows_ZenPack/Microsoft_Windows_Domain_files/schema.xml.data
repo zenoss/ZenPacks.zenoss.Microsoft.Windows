@@ -7572,6 +7572,9 @@
           <joinString>left outer join dim_win_sql_database dim_win_sql_database on (dim_win_sql_database.win_sql_instance_key == dim_win_sql_instance.win_sql_instance_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
+          <joinString>left outer join dim_win_sql_job dim_win_sql_job on (dim_win_sql_job.win_sql_instance_key == dim_win_sql_instance.win_sql_instance_key)</joinString>
+        </joinedDataSetRef>
+        <joinedDataSetRef>
           <joinString>left outer join daily_activetransactions daily_activetransactions on (dim_win_sql_database.win_sql_database_key == daily_activetransactions.component_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
@@ -7708,9 +7711,6 @@
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join hourly_transactions__sec hourly_transactions__sec on (dim_win_sql_database.win_sql_database_key == hourly_transactions__sec.component_key)</joinString>
-        </joinedDataSetRef>
-        <joinedDataSetRef>
-          <joinString>left outer join dim_win_sql_job dim_win_sql_job on (dim_win_sql_job.win_sql_instance_key == dim_win_sql_instance.win_sql_instance_key)</joinString>
         </joinedDataSetRef>
         <joinedDataSetRef>
           <joinString>left outer join dim_ip_route_entry dim_ip_route_entry on (dim_ip_route_entry.device_key == dim_device.device_key)</joinString>
