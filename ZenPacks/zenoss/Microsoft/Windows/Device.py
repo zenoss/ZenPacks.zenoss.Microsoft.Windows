@@ -145,7 +145,8 @@ class Device(schema.Device):
                 exch = self.getRRDTemplateByName(self.msexchangeversion)
                 if exch:
                     template = exch
-            templates.append(template)
+            if template not in templates:
+                templates.append(template)
 
         return templates
 
