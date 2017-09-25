@@ -485,7 +485,7 @@ class WinMSSQL(WinRMPlugin):
             start = jobobj.index(prop)
             jobitem = jobobj[start:prev_index]
             prev_index = start
-            key, value = jobitem.split('---')
+            key, value = jobitem.split('---', 1)
             jobdict[key.lower()] = value.strip()
 
         om_job = ObjectMap()
