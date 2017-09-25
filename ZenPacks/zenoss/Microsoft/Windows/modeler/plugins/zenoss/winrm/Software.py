@@ -88,7 +88,7 @@ class Software(WinRMPlugin):
 
             om.setProductKey = MultiArgs(om.id, vendor)
 
-            if any(om.setProductKey == x.setProductKey for x in rm.maps):
+            if any(om.setProductKey.args == x.setProductKey.args for x in rm.maps):
                 # https://jira.zenoss.com/browse/ZPS-1245
                 # Do not report duplicate software, even if Windows reports it
                 continue
