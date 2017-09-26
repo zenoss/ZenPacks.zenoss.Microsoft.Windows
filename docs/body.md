@@ -1812,6 +1812,7 @@ Changes
 2.8.1
 
 -   Fix "Error in zenoss.winrm.WinMSSQL: too many values to unpack" (ZPS-2206)
+-   Fix Not all bound monitoring templates listed on device overview page (ZPS-2187)
 
 2.8.0
 
