@@ -1809,6 +1809,10 @@ Monitoring Templates
 Changes
 -------
 
+2.8.1
+
+-   Fix "Error in zenoss.winrm.WinMSSQL: too many values to unpack" (ZPS-2206)
+
 2.8.0
 
 -   Added SQL Server instance performance counters

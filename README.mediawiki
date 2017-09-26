@@ -1321,6 +1321,9 @@ Installing this ZenPack will add the following items to your Zenoss system.
 
 == Changes ==
 
+;2.8.1
+* Fix "Error in zenoss.winrm.WinMSSQL: too many values to unpack" (ZPS-2206)
+
 ;2.8.0
 * Added SQL Server instance performance counters
 * Added Application Pool Status check for IIS Application Pools
