@@ -18,7 +18,7 @@ from xml.parsers.expat import ExpatError
 import xml.dom.minidom
 from xml.dom.ext import PrettyPrint
 from StringIO import StringIO
-
+from twisted.internet.defer import returnValue
 from zope.component import adapts
 from zope.interface import implements
 from Products.Zuul.infos import InfoBase
@@ -30,6 +30,8 @@ from Products.ZenEvents import ZenEventClasses
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
+
+from ..txcoroutine import coroutine
 
 from ..utils import save, errorMsgCheck, generateClearAuthEvents
 
@@ -87,7 +89,7 @@ class IEventLogInfo(IInfo):
         xtype='eventclass'
     )
     component = schema.TextLine(
-       title=_t(u'Component')
+        title=_t(u'Component')
     )
     cycletime = schema.TextLine(
         title=_t(u'Cycle Time (seconds)')
@@ -230,6 +232,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             eventClass=datasource.eventClass
         )
 
+    @coroutine
     def collect(self, config):
         log.info('{} Start Collection of Events'.format(config.id))
 
@@ -250,7 +253,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         eventid = ds0.params['eventid']
         isxml = ds0.params['use_xml']
 
-        return query.run(eventlog, select, max_age, eventid, isxml)
+        results = yield query.run(eventlog, select, max_age, eventid, isxml)
+        returnValue(results)
 
     @save
     def onSuccess(self, results, config):

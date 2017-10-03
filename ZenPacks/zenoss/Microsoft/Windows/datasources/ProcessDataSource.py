@@ -19,6 +19,7 @@ import re
 
 from zope.component import adapts
 from zope.interface import implements
+from twisted.internet.defer import returnValue
 
 from Products.ZenEvents import Event
 from Products.ZenEvents.ZenEventClasses import Status_OSProcess
@@ -28,6 +29,7 @@ from Products.Zuul.form import schema
 from Products.Zuul.infos import InfoBase, ProxyProperty
 from Products.Zuul.interfaces import IInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from ..txcoroutine import coroutine
 
 try:
     # Introduced in Zenoss 4.2 2013-10-15 RPS.
@@ -256,6 +258,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
         return params
 
+    @coroutine
     def collect(self, config):
         conn_info = createConnectionInfo(config.datasources[0])
         client = EnumerateClient(conn_info)
@@ -290,8 +293,9 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 'FROM Win32_PerfFormattedData_PerfProc_Process'.format(
                     ', '.join(perf_attrs)))
 
-        return client.do_collect(
+        results = yield client.do_collect(
             map(txwinrm.collect.create_enum_info, queries))
+        returnValue(results)
 
     @save
     def onSuccess(self, results, config):
