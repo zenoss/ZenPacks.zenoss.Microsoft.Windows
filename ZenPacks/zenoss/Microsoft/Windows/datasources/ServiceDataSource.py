@@ -44,7 +44,7 @@ from . import send_to_debug
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
 from txwinrm.WinRMClient import EnumerateClient
-
+from ..txcoroutine import coroutine
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -276,7 +276,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             dp.metadata = datasource.params.get('metricmetadata', None)
             datasource.points.append(get_dummy_dpconfig(dp, 'state'))
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
 
         log.debug('{0}:Start Collection of Services'.format(config.id))
