@@ -210,6 +210,7 @@ Perfmon counters are collected using the PowerShell Get-Counter Cmdlet within a 
 * \MSExchange Delivery SmtpSend(_Total)\Messages Sent/sec
 
 {{note}} If monitoring Exchange with a non-administrator user, the user must be a member of the Active Directory group "Exchange View-Only Administrators" for pre-2010 Exchange installations or "View Only Organization Management" for 2010 and later installations.
+{{note}} When Microsoft.Exchange ZenPack is installed, \MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length and \MSExchangeIS\RPC Averaged Latency will be disabled since the same metrics are collected by Exchange ZenPack.
 
 ; IIS
 
