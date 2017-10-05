@@ -31,6 +31,7 @@ from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
+from ..txcoroutine import coroutine
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
@@ -38,7 +39,6 @@ from ..utils import (
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     cluster_disk_state_string)
 from . import send_to_debug
-
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
@@ -193,7 +193,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         script = "\"& {{{}}}\"".format(''.join(psClusterCommands))
         return pscommand, script
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         conn_info = createConnectionInfo(config.datasources[0])
         command = SingleCommandClient(conn_info)
