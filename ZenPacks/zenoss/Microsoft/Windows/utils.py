@@ -512,6 +512,8 @@ def append_event_datasource_plugin(datasources, events, event):
 
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
+    if isinstance(error, list):
+        error = ' '.join([str(i) for i in error])
     kerberos_messages = ['kerberos', 'kinit']
     wrongCredsMessages = ['Check username and password', 'Username invalid', 'Password expired']
 

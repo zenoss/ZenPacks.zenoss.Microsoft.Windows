@@ -1327,6 +1327,7 @@ Installing this ZenPack will add the following items to your Zenoss system.
 * Fix Not all bound monitoring templates listed on device overview page (ZPS-2187)
 * Fix cannot concatenate 'str' and 'NoneType' objects" during Lync modeling (ZPS-2203)
 * Fix collection hanging caused by network timeouts by applying fix for twisted bug. (ZPS-1765)
+* Fix 'list' object has no attribute 'lower' (ZPS-2242)
 
 ;2.8.0
 * Added SQL Server instance performance counters
