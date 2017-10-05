@@ -117,7 +117,6 @@ classes:
         default: None
         label: IP and Host Name
       domain_controller:
-        label: MS Exchange Version
         type: boolean
         default: false
       is_iis:
