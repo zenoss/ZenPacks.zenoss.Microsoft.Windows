@@ -16,10 +16,9 @@ gets discovered as a datasource type in Zenoss.
 import json
 import logging
 
-from zope.interface import Interface
 from zope.component import adapts
 from zope.interface import implements
-
+from twisted.internet.defer import returnValue
 from Products.Zuul.interfaces import IRRDDataSourceInfo
 from Products.Zuul.utils import ZuulMessageFactory as _t
 from Products.Zuul.form import schema
@@ -27,6 +26,8 @@ from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.Zuul.infos import ProxyProperty
 from Products.ZenUtils import PortScan
 from Products.ZenEvents import ZenEventClasses
+
+from ..txcoroutine import coroutine
 
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
@@ -111,7 +112,7 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
         return dict(
             ports=datasource.ports)
 
-    # @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         dsconf0 = config.datasources[0]
 
@@ -124,8 +125,8 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
         for port in self.json_ports:
             self.portDict[int(port['port'])] = port['desc']
         self.scanner = PortCheckScanner(config.manageIp, portList=self.portDict.keys())
-        dl = self.scanner.prepare()
-        return dl
+        results = yield self.scanner.prepare()
+        returnValue(results)
 
     def onSuccess(self, results, config):
         data = self.new_data()

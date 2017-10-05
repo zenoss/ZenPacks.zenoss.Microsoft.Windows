@@ -43,6 +43,8 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
+from ..txcoroutine import coroutine
+
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -828,7 +830,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                       dsconf.params['version'])
         return sqlConnection, conn_info
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         dsconf0 = config.datasources[0]
         conn_info = createConnectionInfo(dsconf0)
