@@ -646,14 +646,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
+        if isinstance(e.message, list):
+            errorMsg = ' '.join([str(i) for i in e.message])
+        else:
+            errorMsg = e.message
+        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
             generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
                 True,
                 logging.DEBUG,
-                "OperationTimeout on {}"
+                "OperationTimeout on {}.  This timeout is expected when zWinPerfmonInterval is >= 60s."
                 .format(self.config.id))
 
         elif isinstance(e, ConnectError):

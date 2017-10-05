@@ -59,6 +59,13 @@ class TestErrorEvents(BaseTestCase):
             self.assertTrue('eventClass' in events[k])
             self.assertRegexpMatches(events[k]['eventKey'], 'Kerberos|Authentication\|windows_test')
 
+        events = []
+        error = ['Connection Lost']
+        try:
+            errorMsgCheck(self.config, events, error)
+        except Exception:
+            self.fail('errorMsgCheck should handle a list as input for error')
+
 
 def test_suite():
     """Return test suite for this module."""
