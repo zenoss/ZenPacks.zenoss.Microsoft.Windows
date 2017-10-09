@@ -922,7 +922,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 )
 
                 data['events'].append(dict(
-                    eventClass='/Status',
+                    eventClass=dsconf.eventClass or '/Status',
                     eventClassKey='winrsCollection {0}'.format(strategy.key),
                     eventKey=strategy.key,
                     severity=currentstate,
