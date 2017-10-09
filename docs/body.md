@@ -1820,6 +1820,7 @@ Changes
 -   Fix cannot concatenate 'str' and 'NoneType' objects" during Lync modeling (ZPS-2203)
 -   Fix collection hanging caused by network timeouts by applying fix for twisted bug. (ZPS-1765)
 -   Fix 'list' object has no attribute 'lower' (ZPS-2242)
+-   Fix Using the exit code for Windows Shell Datasource to generate events can result in a second error. (ZPS-2252)
 
 2.8.0
 

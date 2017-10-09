@@ -896,11 +896,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 dsconf = dsconfs[0]
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
-            else:
-                msg = 'No output from script for {0} on {1}'.format(
-                    dsconf0.datasource, config)
-                log.warn(msg)
-                severity = ZenEventClasses.Warning
         elif strategy.key == 'DCDiag':
             diagResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
