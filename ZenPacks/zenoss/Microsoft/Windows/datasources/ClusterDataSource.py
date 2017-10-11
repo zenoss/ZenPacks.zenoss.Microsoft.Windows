@@ -291,8 +291,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
                 eventClass=event_class,
                 severity=ZenEventClasses.Warning,

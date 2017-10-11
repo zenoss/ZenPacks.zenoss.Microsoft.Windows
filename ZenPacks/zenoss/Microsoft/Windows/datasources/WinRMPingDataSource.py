@@ -161,9 +161,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
 
-        errorMsgCheck(config, data['events'], results.value.message)
-
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], results.value.message):
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',
                 'severity': ZenEventClasses.Critical,

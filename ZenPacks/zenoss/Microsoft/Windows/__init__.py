@@ -140,7 +140,10 @@ class ZenPack(schema.ZenPack):
                                                  'label': 'Server Fully Qualified Domain Name'},
                             'zWinRMKrb5DisableRDNS': {'type': 'boolean',
                                                       'description': 'Set to true to disable reverse DNS lookups by kerberos.  Only set at /Server/Microsoft level!',
-                                                      'label': 'Disable kerberos reverse DNS'}
+                                                      'label': 'Disable kerberos reverse DNS'},
+                            'zWinRMKRBErrorThreshold': {'type': 'int',
+                                                        'description': 'When network connections are poor, send fewer error events.',
+                                                        'label': 'Connection error event threshold'}
                             }
 
     def install(self, app):

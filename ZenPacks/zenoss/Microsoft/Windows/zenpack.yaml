@@ -46,6 +46,9 @@ zProperties:
   zWinRMKrb5DisableRDNS:
     type: boolean
     default: false
+  zWinRMKRBErrorThreshold:
+    type: int
+    default: 1
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService

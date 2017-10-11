@@ -295,9 +295,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        # only need the one event
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
+            # only need the one event
             data['events'].append({
                 'eventClass': event_class,
                 'severity': ZenEventClasses.Warning,
