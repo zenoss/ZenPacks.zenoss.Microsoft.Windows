@@ -510,6 +510,10 @@ def append_event_datasource_plugin(datasources, events, event):
         events.append(event)
 
 
+# used to keep track of the number of kerberos error events per device
+krb_error_events = {}
+
+
 def errorMsgCheck(config, events, error):
     """Check error message and generate an appropriate event."""
     if isinstance(error, list):
@@ -519,14 +523,24 @@ def errorMsgCheck(config, events, error):
 
     # see if this a kerberos issue
     if any(x in error.lower() for x in kerberos_messages):
-        append_event_datasource_plugin(config.datasources, events, {
-            'eventClass': '/Status/Kerberos',
-            'eventClassKey': 'KerberosFailure',
-            'eventKey': '|'.join(('Kerberos', config.id)),
-            'summary': error,
-            'ipAddress': config.manageIp,
-            'severity': 4,
-            'device': config.id})
+        try:
+            threshold = getattr(config.datasources[0], 'zWinRMKRBErrorThreshold', 0)
+        except Exception:
+            threshold = -1
+        global krb_error_events
+        if config.id not in krb_error_events:
+            krb_error_events[config.id] = 0
+        krb_error_events[config.id] += 1
+        if krb_error_events[config.id] >= threshold:
+            append_event_datasource_plugin(config.datasources, events, {
+                'eventClass': '/Status/Kerberos',
+                'eventClassKey': 'KerberosFailure',
+                'eventKey': '|'.join(('Kerberos', config.id)),
+                'summary': error,
+                'ipAddress': config.manageIp,
+                'severity': 4,
+                'device': config.id})
+            krb_error_events[config.id] = 0
         return True
     # otherwise check if this is a typical authentication failure
     elif any(x in error for x in wrongCredsMessages):
@@ -544,6 +558,8 @@ def errorMsgCheck(config, events, error):
 
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
+    # reset event counter
+    krb_error_events[config.id] = 0
     append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Winrm/Auth',
         'eventClassKey': 'AuthenticationSuccess',

@@ -38,6 +38,7 @@ ConnectionInfoProperties = (
     'zWinRMEncoding',
     'zWinRSCodePage',
     'zWinRMKrb5includedir',
+    'zWinRMKRBErrorThreshold',
     'kerberos_rdns'
 )
 

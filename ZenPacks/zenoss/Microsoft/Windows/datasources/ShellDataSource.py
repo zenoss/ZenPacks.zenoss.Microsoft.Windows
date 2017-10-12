@@ -689,7 +689,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties + (
         'sqlhostname',
-        'cluster_node_server',
+        'cluster_node_server'
     )
 
     @classmethod
@@ -1079,8 +1079,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
                 eventClass=event_class,
                 severity=ZenEventClasses.Warning,
