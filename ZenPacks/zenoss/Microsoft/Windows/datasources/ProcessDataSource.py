@@ -481,8 +481,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         logg(msg)
 
         data = self.new_data()
-        errorMsgCheck(config, data['events'], error.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], error.value.message):
             data['events'].append({
                 'device': config.id,
                 'severity': Event.Error,

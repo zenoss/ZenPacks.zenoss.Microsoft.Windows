@@ -397,8 +397,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg(msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.message):
             data['events'].append({
                 'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,

@@ -1101,6 +1101,9 @@ important.
 -   zWinRMClusterNodeClass
     :   Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
 
+-   zWinRMKRBErrorThreshold
+    :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1821,6 +1824,7 @@ Changes
 -   Fix collection hanging caused by network timeouts by applying fix for twisted bug. (ZPS-1765)
 -   Fix 'list' object has no attribute 'lower' (ZPS-2242)
 -   Fix Using the exit code for Windows Shell Datasource to generate events can result in a second error. (ZPS-2252)
+-   Add an error event threshold added so that we can eliminate error noise on systems with poor connections (ZPS-2068)
 
 2.8.0
 

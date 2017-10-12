@@ -181,6 +181,7 @@ def string_to_lines(string):
     log.warn('Could not convert string to lines: %s' % str(string))
     return []
 
+
 def prettify_xml(xml):
     '''preserve XML formatting'''
     iostream = StringIO()
@@ -385,8 +386,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg("{}: {}".format(config.id, msg))
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
             for ds in config.datasources:
                 data['events'].append({
                     'severity': severity,
