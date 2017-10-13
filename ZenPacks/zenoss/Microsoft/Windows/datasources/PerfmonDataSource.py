@@ -871,8 +871,14 @@ def format_counters(ps_counters):
     """Convert a list of supplied counters into a string, which will
     be further used to cteate ps command line.
     """
-    return ','.join(
-        '(\\"{0}\\")'.format(counter) for counter in ps_counters)
+    counters = []
+    for counter in ps_counters:
+        # this will be the best we can do for some foreign language counters
+        if "'" in counter or u'\u2019' in counter:
+            counters.append('(\\"{0}\\")'.format(counter))
+        else:
+            counters.append("('{0}')".format(counter))
+    return ','.join(counters)
 
 
 def chunkify(lst, n):
