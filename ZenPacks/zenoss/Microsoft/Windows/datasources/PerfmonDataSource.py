@@ -873,11 +873,9 @@ def format_counters(ps_counters):
     """
     counters = []
     for counter in ps_counters:
-        # this will be the best we can do for some foreign language counters
-        if "'" in counter or u'\u2019' in counter:
-            counters.append('(\\"{0}\\")'.format(counter))
-        else:
-            counters.append("('{0}')".format(counter))
+        # check for unicode apostrophe present in foreign langs
+        counter = counter.replace(u'\u2019', "'+[char]8217+'")
+        counters.append("('{0}')".format(counter))
     return ','.join(counters)
 
 
