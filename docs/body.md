@@ -1826,6 +1826,7 @@ Changes
 -   Fix Using the exit code for Windows Shell Datasource to generate events can result in a second error. (ZPS-2252)
 -   Add an error event threshold added so that we can eliminate error noise on systems with poor connections (ZPS-2068)
 -   Fix Windows - No perf data, see "The process cannot access the file because it is being used by another process." in debug log (ZPS-2298)
+-   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
 
 2.8.0
 
