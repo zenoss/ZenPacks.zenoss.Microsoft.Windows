@@ -280,6 +280,7 @@ class WinCluster(WinRMPlugin):
                 node_ownergroups[node_om.title] = node_om.id
 
             map_nodes_oms.append(node_om)
+            map_disks_to_node[node_om.id] = []
 
         # This section is for ClusterDisk class
         clusterdisk = results['clusterdisk']
