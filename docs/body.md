@@ -1827,6 +1827,7 @@ Changes
 -   Add an error event threshold added so that we can eliminate error noise on systems with poor connections (ZPS-2068)
 -   Fix Windows - No perf data, see "The process cannot access the file because it is being used by another process." in debug log (ZPS-2298)
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
+-   Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)
 
 2.8.0
 
