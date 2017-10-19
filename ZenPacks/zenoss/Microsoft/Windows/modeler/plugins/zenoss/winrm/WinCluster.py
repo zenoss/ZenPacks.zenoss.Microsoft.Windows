@@ -27,6 +27,7 @@ from txwinrm.WinRMClient import SingleCommandClient
 addLocalLibPath()
 log = logging.getLogger("zen.MicrosoftCluster")
 
+
 class ClusterCommander(object):
     def __init__(self, conn_info):
         self.winrs = SingleCommandClient(conn_info)
@@ -113,15 +114,12 @@ class WinCluster(WinRMPlugin):
 
         clusterDiskCommand.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
-            "$resources | foreach {"
-            "$rsc = $_;"
+            "foreach ($rsc in $resources) {{"
             "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
-            "$disks | foreach {"
-            "$dsk = $_;"
+            "foreach ($dsk in $disks) {{"
             "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
-            "$partitions | foreach {"
-            "$prt = $_;"
-            "$physicaldisk = New-Object -TypeName PSObject -Property @{"
+            "foreach ($prt in $partitions) {{"
+            "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $rsc.Id;"
             "OwnerNode = $rsc.OwnerNode;"
             "OwnerGroup = $rsc.OwnerGroup;"
@@ -132,8 +130,8 @@ class WinCluster(WinRMPlugin):
             "Size = $prt.TotalSize * 1mb;"
             "FreeSpace = $prt.FreeSpace * 1mb;"
             "State = $rsc.State;"
-            "}}}}; $physicaldisk | foreach { %s }" % pipejoin(
-                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            "}}; $physicaldisk | foreach {{{}}} }}}}}};".format(pipejoin(
+                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup'))
         )
 
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
@@ -282,6 +280,7 @@ class WinCluster(WinRMPlugin):
                 node_ownergroups[node_om.title] = node_om.id
 
             map_nodes_oms.append(node_om)
+            map_disks_to_node[node_om.id] = []
 
         # This section is for ClusterDisk class
         clusterdisk = results['clusterdisk']

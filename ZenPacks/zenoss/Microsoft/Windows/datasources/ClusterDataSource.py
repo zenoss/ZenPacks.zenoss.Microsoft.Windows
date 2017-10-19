@@ -167,13 +167,11 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         psClusterCommands.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
-            "$resources | foreach {{"
-            "$rsc = $_;"
+            "foreach ($rsc in $resources) {{"
             "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
-            "$disks | foreach {{"
-            "$dsk = $_;"
+            "foreach ($dsk in $disks) {{"
             "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
-            "$partitions | foreach {{"
+            "foreach ($prt in $partitions) {{"
             "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $rsc.Id;"
@@ -186,7 +184,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "Size = $prt.Size * 1mb;"
             "FreeSpace = $prt.FreeSpace * 1mb;"
             "State = $rsc.State;"
-            "}}; }} }} }}; $physicaldisk | foreach {{{}}}"
+            "}}; $physicaldisk | foreach {{{}}} }} }} }};"
             "".format(cluster_id_items)
         )
 

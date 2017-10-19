@@ -1115,7 +1115,6 @@ another device as well.
 ### Configuring MSSQL Server Modeling/Monitoring
 
 Supported SQL Server versions
-:   SQL Server 2005
 :   SQL Server 2008
 :   SQL Server 2008 R2
 :   SQL Server 2012
@@ -1826,6 +1825,9 @@ Changes
 -   Fix Using the exit code for Windows Shell Datasource to generate events can result in a second error. (ZPS-2252)
 -   Add an error event threshold added so that we can eliminate error noise on systems with poor connections (ZPS-2068)
 -   Fix Windows - No perf data, see "The process cannot access the file because it is being used by another process." in debug log (ZPS-2298)
+-   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
+-   Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)
+-   Update documentation to remove support for SQL Server 2005 (ZPS-2340)
 
 2.8.0
 
