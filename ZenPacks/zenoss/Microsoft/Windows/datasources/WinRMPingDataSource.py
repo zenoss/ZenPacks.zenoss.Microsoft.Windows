@@ -29,6 +29,8 @@ from twisted.internet import defer
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import errorMsgCheck, generateClearAuthEvents
 
+from ..txcoroutine import coroutine
+
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
 from txwinrm.WinRMClient import EnumerateClient
@@ -118,7 +120,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
 
         return params
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
 
         ds0 = config.datasources[0]
@@ -159,9 +161,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
 
-        errorMsgCheck(config, data['events'], results.value.message)
-
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], results.value.message):
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',
                 'severity': ZenEventClasses.Critical,

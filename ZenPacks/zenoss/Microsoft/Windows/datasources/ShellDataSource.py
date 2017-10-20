@@ -43,6 +43,8 @@ from Products.ZenRRD.CommandParser import ParsedResults
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
 
+from ..txcoroutine import coroutine
+
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -687,7 +689,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties + (
         'sqlhostname',
-        'cluster_node_server',
+        'cluster_node_server'
     )
 
     @classmethod
@@ -828,7 +830,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                       dsconf.params['version'])
         return sqlConnection, conn_info
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         dsconf0 = config.datasources[0]
         conn_info = createConnectionInfo(dsconf0)
@@ -894,11 +896,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 dsconf = dsconfs[0]
                 for dp, value in cmdResult.values:
                     data['values'][dsconf.component][dp.id] = value, 'N'
-            else:
-                msg = 'No output from script for {0} on {1}'.format(
-                    dsconf0.datasource, config)
-                log.warn(msg)
-                severity = ZenEventClasses.Warning
         elif strategy.key == 'DCDiag':
             diagResult = strategy.parse_result(config, result)
             dsconf = dsconfs[0]
@@ -920,7 +917,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 )
 
                 data['events'].append(dict(
-                    eventClass='/Status',
+                    eventClass=dsconf.eventClass or '/Status',
                     eventClassKey='winrsCollection {0}'.format(strategy.key),
                     eventKey=strategy.key,
                     severity=currentstate,
@@ -1082,8 +1079,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
                 eventClass=event_class,
                 severity=ZenEventClasses.Warning,

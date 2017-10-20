@@ -31,6 +31,7 @@ from Products.Zuul.infos.template import RRDDataSourceInfo
 from Products.ZenEvents import ZenEventClasses
 from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
     import PythonDataSource, PythonDataSourcePlugin
+from ..txcoroutine import coroutine
 
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
@@ -38,7 +39,6 @@ from ..utils import (
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     cluster_disk_state_string)
 from . import send_to_debug
-
 
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
@@ -167,13 +167,11 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         psClusterCommands.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
-            "$resources | foreach {{"
-            "$rsc = $_;"
+            "foreach ($rsc in $resources) {{"
             "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
-            "$disks | foreach {{"
-            "$dsk = $_;"
+            "foreach ($dsk in $disks) {{"
             "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
-            "$partitions | foreach {{"
+            "foreach ($prt in $partitions) {{"
             "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $rsc.Id;"
@@ -186,14 +184,14 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "Size = $prt.Size * 1mb;"
             "FreeSpace = $prt.FreeSpace * 1mb;"
             "State = $rsc.State;"
-            "}}; }} }} }}; $physicaldisk | foreach {{{}}}"
+            "}}; $physicaldisk | foreach {{{}}} }} }} }};"
             "".format(cluster_id_items)
         )
 
         script = "\"& {{{}}}\"".format(''.join(psClusterCommands))
         return pscommand, script
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         conn_info = createConnectionInfo(config.datasources[0])
         command = SingleCommandClient(conn_info)
@@ -291,8 +289,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         logg(msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
                 eventClass=event_class,
                 severity=ZenEventClasses.Warning,

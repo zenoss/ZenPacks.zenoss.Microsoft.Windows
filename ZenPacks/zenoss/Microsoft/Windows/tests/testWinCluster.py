@@ -25,7 +25,7 @@ class TestProcesses(BaseTestCase):
         self.results = StringAttributeObject()
         self.results['domain'] = 'domain0'
         self.results['nodes'] = ['node0', 'node1']
-        self.results['nodes_data'] = ['node0|1|1|2|state0']
+        self.results['nodes_data'] = ['node0|1|1|2|state0', 'node1|1|1|1|state0']
         self.results['clusterdisk'] = [
             '2beb|disk1|Vol{2beb}|node0|1|1|2147199|1937045|Online|service',
             'b10c641b-29df-4aff-ab26-53769e793770|CSV Disk|C:\ClusterStorage\Volume1|node0|2|1|2147199||Online|Cluster Shared Volume',
@@ -49,19 +49,21 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[1].maps[0].domain, 'domain0')
         self.assertEquals(data[1].maps[0].ownernode, 'node0')
         self.assertEquals(data[1].maps[0].title, 'title0')
-        self.assertEquals(data[4].maps[0].id, '2beb')
-        self.assertEquals(data[4].maps[0].freespace, '1.85MB')
-        self.assertEquals(data[4].maps[0].size, '2.05MB')
-        self.assertEquals(data[4].maps[0].ownernode, 'node0')
-        self.assertEquals(data[4].maps[0].partitionnumber, '1')
-        self.assertEquals(data[4].maps[0].disknumber, '1')
-        self.assertEquals(data[4].maps[0].domain, 'domain0')
-        self.assertEquals(data[4].maps[0].title, 'disk1')
-        self.assertEquals(data[4].maps[0].volumepath, 'Vol{2beb}')
-        self.assertEquals(data[4].maps[0].assignedto, 'service')
+        self.assertEquals(len(data[4].maps), 0)
+
+        self.assertEquals(data[5].maps[0].id, '2beb')
+        self.assertEquals(data[5].maps[0].freespace, '1.85MB')
+        self.assertEquals(data[5].maps[0].size, '2.05MB')
+        self.assertEquals(data[5].maps[0].ownernode, 'node0')
+        self.assertEquals(data[5].maps[0].partitionnumber, '1')
+        self.assertEquals(data[5].maps[0].disknumber, '1')
+        self.assertEquals(data[5].maps[0].domain, 'domain0')
+        self.assertEquals(data[5].maps[0].title, 'disk1')
+        self.assertEquals(data[5].maps[0].volumepath, 'Vol{2beb}')
+        self.assertEquals(data[5].maps[0].assignedto, 'service')
 
         # Test for missing freespace ZEN-21242
-        self.assertEquals(data[4].maps[1].freespace, 'N/A')
+        self.assertEquals(data[5].maps[1].freespace, 'N/A')
 
 
 def test_suite():

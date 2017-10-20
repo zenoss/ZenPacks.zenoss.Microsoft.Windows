@@ -16,7 +16,7 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.utils import errorMsgCheck, generateClearAuthEvents
 
 
-class DataSource(namedtuple('DataSource', ['plugin_classname', 'datasource'])):
+class DataSource(namedtuple('DataSource', ['plugin_classname', 'datasource', 'zWinRMKRBErrorThreshold'])):
     pass
 
 
@@ -27,7 +27,7 @@ class Config(namedtuple('Config', ['manageIp', 'id', 'datasources'])):
 class TestErrorEvents(BaseTestCase):
     def setUp(self):
         datasources = DataSource('ZenPacks.zenoss.Microsoft.Windows.datasources.TestDataSource',
-                                 'test_error_event')
+                                 'test_error_event', 1)
         self.config = Config('10.10.10.10', 'windows_test', [datasources])
 
     def testErrorMsgCheck(self):
@@ -41,6 +41,7 @@ class TestErrorEvents(BaseTestCase):
         error = 'kinit error server not in database'
         errorMsgCheck(self.config, events, error)
         self.assertEquals(len(events), 4)
+
         generateClearAuthEvents(self.config, events)
 
         self.assertEquals(len(events), 6)
@@ -58,6 +59,26 @@ class TestErrorEvents(BaseTestCase):
                 self.assertEquals(events[k]['severity'], 0)
             self.assertTrue('eventClass' in events[k])
             self.assertRegexpMatches(events[k]['eventKey'], 'Kerberos|Authentication\|windows_test')
+
+        events = []
+        error = ['Connection Lost']
+        try:
+            errorMsgCheck(self.config, events, error)
+        except Exception:
+            self.fail('errorMsgCheck should handle a list as input for error')
+
+    def testErrorThreshold(self):
+        datasources = DataSource('ZenPacks.zenoss.Microsoft.Windows.datasources.TestDataSource',
+                                 'test_error_event', 2)
+        config = Config('10.10.10.10', 'windows_test', [datasources])
+        events = []
+        error = 'kinit error getting initial credentials'
+        rtn = errorMsgCheck(config, events, error)
+        self.assertTrue(rtn)
+        self.assertEquals(len(events), 0)
+
+        errorMsgCheck(config, events, error)
+        self.assertEquals(len(events), 1)
 
 
 def test_suite():

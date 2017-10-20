@@ -267,6 +267,10 @@ must be a member of the Active Directory group "Exchange View-Only
 Administrators" for pre-2010 Exchange installations or "View Only
 Organization Management" for 2010 and later installations.
 
+Note: When Microsoft.Exchange ZenPack is installed,
+\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+and \MSExchangeIS\RPC Averaged Latency will be disabled since the same
+metrics are collected by Exchange ZenPack.
 
 Note: IIS Management Scripts and Tools needs to be installed on the
 server side in order to model and monitor IIS sites. This is done
@@ -1097,6 +1101,9 @@ important.
 -   zWinRMClusterNodeClass
     :   Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
 
+-   zWinRMKRBErrorThreshold
+    :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1108,7 +1115,6 @@ another device as well.
 ### Configuring MSSQL Server Modeling/Monitoring
 
 Supported SQL Server versions
-:   SQL Server 2005
 :   SQL Server 2008
 :   SQL Server 2008 R2
 :   SQL Server 2012
@@ -1808,6 +1814,20 @@ Monitoring Templates
 
 Changes
 -------
+
+2.8.1
+
+-   Fix "Error in zenoss.winrm.WinMSSQL: too many values to unpack" (ZPS-2206)
+-   Fix Not all bound monitoring templates listed on device overview page (ZPS-2187)
+-   Fix cannot concatenate 'str' and 'NoneType' objects" during Lync modeling (ZPS-2203)
+-   Fix collection hanging caused by network timeouts by applying fix for twisted bug. (ZPS-1765)
+-   Fix 'list' object has no attribute 'lower' (ZPS-2242)
+-   Fix Using the exit code for Windows Shell Datasource to generate events can result in a second error. (ZPS-2252)
+-   Add an error event threshold added so that we can eliminate error noise on systems with poor connections (ZPS-2068)
+-   Fix Windows - No perf data, see "The process cannot access the file because it is being used by another process." in debug log (ZPS-2298)
+-   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
+-   Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)
+-   Update documentation to remove support for SQL Server 2005 (ZPS-2340)
 
 2.8.0
 

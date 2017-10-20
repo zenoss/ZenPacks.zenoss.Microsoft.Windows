@@ -44,6 +44,8 @@ from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClearAuthEvents
 
+from ..txcoroutine import coroutine
+
 # Requires that txwinrm_utils is already imported.
 from txwinrm.shell import create_long_running_command
 from txwinrm.WinRMClient import SingleCommandClient
@@ -223,7 +225,7 @@ class ComplexLongRunningCommand(object):
 
         return commands
 
-    @defer.inlineCallbacks
+    @coroutine
     def start(self, command_lines):
         """Start a separate command for each command line.
         If the number of commands has changed since the last start,
@@ -237,7 +239,7 @@ class ComplexLongRunningCommand(object):
             if command is not None:
                 yield command.start(self.ps_command, ps_script=command_line)
 
-    @defer.inlineCallbacks
+    @coroutine
     def stop(self):
         """Stop all started commands."""
         for command in self.commands:
@@ -349,7 +351,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         return {'counter': counter}
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         """Collect for config.
 
@@ -360,7 +362,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         data = yield self.get_data()
         defer.returnValue(data)
 
-    @defer.inlineCallbacks
+    @coroutine
     def start(self):
         """Start the continuous command."""
         if self.state != PluginStates.STOPPED:
@@ -407,7 +409,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         PERSISTER.start()
         defer.returnValue(None)
 
-    @defer.inlineCallbacks
+    @coroutine
     def get_data(self):
         """Wait for data to arrive if necessary, then return it."""
         data = PERSISTER.pop(self.config.id)
@@ -429,7 +431,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(PERSISTER.pop(self.config.id))
 
-    @defer.inlineCallbacks
+    @coroutine
     def stop(self):
         """Stop the continuous command."""
         if self.state != PluginStates.STARTED:
@@ -480,7 +482,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
-    @defer.inlineCallbacks
+    @coroutine
     def restart(self):
         """Stop then start the long-running command."""
         yield self.stop()
@@ -534,7 +536,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         return failures, results
 
-    @defer.inlineCallbacks
+    @coroutine
     def onReceive(self, result):
         """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
@@ -635,7 +637,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'ipAddress': self.config.manageIp})
         defer.returnValue(None)
 
-    @defer.inlineCallbacks
+    @coroutine
     def onReceiveFail(self, failure):
         e = failure.value
 
@@ -644,14 +646,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         retry, level, msg = (False, None, None)  # NOT USED.
 
-        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
+        if isinstance(e.message, list):
+            errorMsg = ' '.join([str(i) for i in e.message])
+        else:
+            errorMsg = e.message
+        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
             generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
                 True,
                 logging.DEBUG,
-                "OperationTimeout on {}"
+                "OperationTimeout on {}.  This timeout is expected when zWinPerfmonInterval is >= 60s."
                 .format(self.config.id))
 
         elif isinstance(e, ConnectError):
@@ -686,7 +692,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(None)
 
-    @defer.inlineCallbacks
+    @coroutine
     def search_corrupt_counters(self, winrs, counter_list, corrupt_list):
         """Bisect the counters to determine which of them are corrupt."""
         ps_command = "powershell -NoLogo -NonInteractive -NoProfile -Command"
@@ -712,7 +718,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         defer.returnValue(corrupt_list)
 
-    @defer.inlineCallbacks
+    @coroutine
     def remove_corrupt_counters(self):
         """Remove counters which return an error."""
         LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
@@ -865,8 +871,12 @@ def format_counters(ps_counters):
     """Convert a list of supplied counters into a string, which will
     be further used to cteate ps command line.
     """
-    return ','.join(
-        '(\\"{0}\\")'.format(counter) for counter in ps_counters)
+    counters = []
+    for counter in ps_counters:
+        # check for unicode apostrophe present in foreign langs
+        counter = counter.replace(u'\u2019', "'+[char]8217+'")
+        counters.append("('{0}')".format(counter))
+    return ','.join(counters)
 
 
 def chunkify(lst, n):

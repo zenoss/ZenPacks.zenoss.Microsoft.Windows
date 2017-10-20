@@ -33,6 +33,8 @@ from ..utils import (
     check_for_network_error, save, errorMsgCheck, generateClearAuthEvents,
     APP_POOL_STATUSES)
 
+from ..txcoroutine import coroutine
+
 # Requires that txwinrm_utils is already imported.
 from txwinrm.collect import create_enum_info
 from txwinrm.WinRMClient import SingleCommandClient, EnumerateClient
@@ -151,7 +153,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
         return params
 
-    @defer.inlineCallbacks
+    @coroutine
     def collect(self, config):
         log.debug('{0}:Start Collection of IIS Sites'.format(config.id))
         ds0 = config.datasources[0]
@@ -293,9 +295,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             logg = log.debug
         logg("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
-        errorMsgCheck(config, data['events'], result.value.message)
-        # only need the one event
-        if not data['events']:
+        if not errorMsgCheck(config, data['events'], result.value.message):
+            # only need the one event
             data['events'].append({
                 'eventClass': event_class,
                 'severity': ZenEventClasses.Warning,

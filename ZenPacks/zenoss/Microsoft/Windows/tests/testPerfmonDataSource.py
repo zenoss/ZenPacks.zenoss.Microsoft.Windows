@@ -1,7 +1,9 @@
 #!/usr/bin/env python
+# coding=utf-8
+
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015-2017, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -83,7 +85,8 @@ class TestDataPersister(BaseTestCase):
 
 class TestFormat_counters(BaseTestCase):
     def test_format_counters(self):
-        self.assertEquals(format_counters(['a', 'b']), '(\\"a\\"),(\\"b\\")')
+        self.assertEquals(format_counters(['a', 'b']), "('a'),('b')")
+        self.assertEquals(format_counters(["\Système\Temps d’activité système"]), "('\Système\Temps d'+[char]8217+'activité système')")
 
 
 class TestFormat_stdout(BaseTestCase):
