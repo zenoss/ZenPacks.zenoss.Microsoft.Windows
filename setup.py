@@ -1,6 +1,6 @@
 ################################
-# These variables are overwritten by Zenoss when the ZenPack is exported
-# or saved.  Do not modify them directly here.
+# These variables are overwritten by Zenoss when the ZenPack  1g
+# or saved.  Do not modify them directly here.4
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
 VERSION = "2.8.1"
@@ -12,7 +12,7 @@ INSTALL_REQUIRES = ['ZenPacks.zenoss.ZenPackLib>=2.0.5', 'ZenPacks.zenoss.Python
 COMPAT_ZENOSS_VERS = ">=4.2"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
-################################
+################################ 
 # Zenoss will not overwrite any changes you make below here.
 
 import os
