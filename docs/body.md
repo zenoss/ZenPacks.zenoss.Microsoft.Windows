@@ -1815,6 +1815,10 @@ Monitoring Templates
 Changes
 -------
 
+2.8.2
+
+-   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
+
 2.8.1
 
 -   Fix "Error in zenoss.winrm.WinMSSQL: too many values to unpack" (ZPS-2206)
