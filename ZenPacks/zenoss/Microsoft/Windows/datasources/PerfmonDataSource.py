@@ -293,9 +293,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
             counter = dsconf.params['counter'].decode('utf-8').lower()
-            ps_counter = counter.replace('$', '`$')
             self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
-            self.ps_counter_map[ps_counter] = (dsconf.component, dsconf.datasource)
+            self.ps_counter_map[counter] = (dsconf.component, dsconf.datasource)
 
         self._build_commandlines()
 
