@@ -76,7 +76,7 @@ class WinCluster(WinRMPlugin):
         )
         resourceCommand.append('write-host "====";')
         resourceCommand.append(
-            'get-clusterresource | foreach {%s};' % pipejoin(
+            "get-clusterresource | where { $_.ResourceType.name -ne 'Physical Disk'} | foreach {%s};" % pipejoin(
                 '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description'
             )
         )
