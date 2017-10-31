@@ -130,7 +130,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         cluster_name_items = pipejoin('$_.Name $_.State')
 
         psClusterCommands.append(
-            "get-clusterresource | foreach {{'res-'+{}}};".format(cluster_name_items)
+            "get-clusterresource | where {{ $_.ResourceType.name -ne 'Physical Disk'}} | foreach {{'res-'+{}}};".format(cluster_name_items)
         )
 
         psClusterCommands.append(
@@ -169,23 +169,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
             "foreach ($resource in $resources) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
-            "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
-            "foreach ($dsk in $disks) {{"
-            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
-            "foreach ($prt in $partitions) {{"
-            "$prt = $_;"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $rsc.Id;"
-            "Name = $rsc.Name;"
-            "VolumePath = $prt.Path;"
-            "OwnerNode = $rsc.OwnerNode;"
-            "OwnerGroup = $rsc.OwnerGroup;"
-            "DiskNumber = $dsk.Number;"
-            "PartitionNumber = $prt.PartitionNumber;"
-            "Size = $prt.Size * 1mb;"
-            "FreeSpace = $prt.FreeSpace * 1mb;"
-            "State = $rsc.State;"
-            "}}; $physicaldisk | foreach {{{}}} }} }} }};"
+            "State = $resource.State;"
+            "}}; $physicaldisk | foreach {{{}}} }};"
             "".format(cluster_id_items)
         )
 
@@ -220,7 +207,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 # specific for cluster disk component
                 data['values'][comp]['state'] = int(state)
                 state = cluster_disk_state_string(int(state))
-            except:
+            except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
             dsconf = get_dsconf(config.datasources, str(comp), param='contexttitle')
