@@ -30,6 +30,7 @@ from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 PRIMARYDC = '5'
 BACKUPDC = '4'
+OS_DOMAIN_CONTROLLER = '2'
 
 
 class OperatingSystem(WinRMPlugin):
@@ -77,9 +78,9 @@ class OperatingSystem(WinRMPlugin):
             return maps
         # Device Map
         device_om = ObjectMap()
-        device_om.snmpSysName = computerSystem.Name
-        device_om.snmpContact = computerSystem.PrimaryOwnerName
-        device_om.snmpDescr = computerSystem.Caption
+        device_om.snmpSysName = getattr(computerSystem, 'Name', getattr(operatingSystem, 'CSName', 'Unknown')).strip()
+        device_om.snmpContact = getattr(computerSystem, 'PrimaryOwnerName', getattr(operatingSystem, 'RegisteredUser', 'Unknown')).strip()
+        device_om.snmpDescr = getattr(computerSystem, 'Caption', getattr(operatingSystem, 'Caption', 'Unknown')).strip()
         device_om.ip_and_hostname = self.get_ip_and_hostname(device.manageIp)
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
@@ -94,7 +95,7 @@ class OperatingSystem(WinRMPlugin):
         # Cluster Information
         clusterlist = []
         for cluster in clusterInformation:
-            clusterlist.append(cluster.Name + '.' + computerSystem.Domain)
+            clusterlist.append(getattr(cluster, 'Name', '') + '.' + getattr(computerSystem, 'Domain', ''))
         device_om.setClusterMachines = clusterlist
 
         # if domainrole is 4 or 5 then this is a DC
@@ -105,18 +106,21 @@ class OperatingSystem(WinRMPlugin):
         # Backup Domain Controller (4)
         # Primary Domain Controller (5)
         device_om.domain_controller = False
-        if hasattr(computerSystem, 'DomainRole') and getattr(computerSystem, 'DomainRole', None) in (BACKUPDC, PRIMARYDC):
+        if getattr(computerSystem, 'DomainRole', '0') in (BACKUPDC, PRIMARYDC) or\
+           getattr(operatingSystem, 'ProductType', '0') == OS_DOMAIN_CONTROLLER:
             device_om.domain_controller = True
 
         maps.append(device_om)
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
-        hw_om.serialNumber = operatingSystem.SerialNumber if operatingSystem else ''
-        hw_om.tag = sysEnclosure.Tag
+        hw_om.serialNumber = getattr(operatingSystem, 'SerialNumber', '') if operatingSystem else ''
+        hw_om.tag = getattr(sysEnclosure, 'Tag', 'Unknown')
+        model = getattr(computerSystem, 'Model', 'Unknown')
+        manufacturer = getattr(computerSystem, 'Manufacturer', getattr(operatingSystem, 'Manufacturer', 'Microsoft Corporation'))
         hw_om.setProductKey = MultiArgs(
-            computerSystem.Model,
-            computerSystem.Manufacturer)
+            model,
+            manufacturer)
         try:
             hw_om.totalMemory = 1024 * int(operatingSystem.TotalVisibleMemorySize)
         except AttributeError:
@@ -129,18 +133,18 @@ class OperatingSystem(WinRMPlugin):
 
         # Operating System Map
         os_om = ObjectMap(compname='os')
-        os_om.totalSwap = int(operatingSystem.TotalVirtualMemorySize) * 1024
+        os_om.totalSwap = int(getattr(operatingSystem, 'TotalVirtualMemorySize', '0')) * 1024
 
         operatingSystem.Caption = re.sub(
-            r'\s*\S*Microsoft\S*\s*', '', operatingSystem.Caption)
+            r'\s*\S*Microsoft\S*\s*', '', getattr(operatingSystem, 'Caption', 'Unknown'))
 
         osCaption = '{} - {}'.format(
-            operatingSystem.Caption,
-            operatingSystem.CSDVersion)
+            getattr(operatingSystem, 'Caption', 'Unknown'),
+            getattr(operatingSystem, 'CSDVersion', 'Unknown'))
 
         os_om.setProductKey = MultiArgs(
             osCaption,
-            operatingSystem.Manufacturer)
+            getattr(operatingSystem, 'Manufacturer', 'Microsoft Corporation'))
         maps.append(os_om)
 
         return maps

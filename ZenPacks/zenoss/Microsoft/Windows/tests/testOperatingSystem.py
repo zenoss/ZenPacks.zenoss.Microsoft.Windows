@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2014, all rights reserved.
@@ -7,12 +8,15 @@
 #
 ##############################################################################
 
+import Globals
+
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock, patch
-from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle, load_pickle_file
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.OperatingSystem import OperatingSystem
+from txwinrm.enumerate import ItemsAccumulator
 
 
 class TestOperatingSystem(BaseTestCase):
@@ -57,3 +61,59 @@ class TestDomainController(BaseTestCase):
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data[0].domain_controller, True)
+
+
+class TestEmptyWin32_ComputerSystem(BaseTestCase):
+    """
+    Test if a device is a domain controller
+    """
+    def setUp(self):
+        self.plugin = OperatingSystem()
+        self.device = StringAttributeObject()
+        self.results = load_pickle_file(self, 'OperatingSystem_process_170952')[0]
+
+    def test_process(self):
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data[0].snmpDescr, 'Microsoft Windows Server 2008 R2 Datacenter')
+        self.assertEquals(data[0].snmpSysName, '847198-W2008R2')
+        self.assertFalse(data[0].domain_controller)
+
+
+class TestEmptyWMIClasses(BaseTestCase):
+    '''
+    Test if a device is a domain controller
+    '''
+    def setUp(self):
+        self.plugin = OperatingSystem()
+        self.device = StringAttributeObject()
+        acc = ItemsAccumulator()
+        acc.new_item()
+        self.results = {'Win32_SystemEnclosure': acc.items,
+                        'Win32_ComputerSystem': acc.items,
+                        'Win32_OperatingSystem': acc.items,
+                        'exchange_version': Mock(stdout=['15'])}
+
+    def test_process(self):
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data[0].snmpDescr, 'Unknown')
+        self.assertEquals(data[0].snmpContact, 'Unknown')
+        self.assertEquals(data[0].snmpSysName, 'Unknown')
+
+        self.assertEquals(data[1].tag, 'Unknown')
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestEmptyWMIClasses))
+    suite.addTest(makeSuite(TestEmptyWin32_ComputerSystem))
+    suite.addTest(makeSuite(TestDomainController))
+    suite.addTest(makeSuite(TestOperatingSystem))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()
