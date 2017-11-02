@@ -177,10 +177,10 @@ Device
 :   \\Memory\\Committed Bytes
 :   \\Memory\\Pages Input/sec
 :   \\Memory\\Pages Output/sec
-:   \\Paging File(_Total)\\% Usage
-:   \\Processor(_Total)\\% Privileged Time
-:   \\Processor(_Total)\\% Processor Time
-:   \\Processor(_Total)\\% User Time
+:   \\Paging File(\_Total)\\% Usage
+:   \\Processor(\_Total)\\% Privileged Time
+:   \\Processor(\_Total)\\% Processor Time
+:   \\Processor(\_Total)\\% User Time
 :   \\System\\System Up Time
 
 File Systems
@@ -243,24 +243,24 @@ Note: The Active Directory monitoring template will only be used when
 the server has the Primary or Backup Domain Controller role.
 
 Exchange 2007 & 2010 
-:   \\MSExchangeIS Mailbox(_Total)\\Folder opens/sec
-:   \\MSExchangeIS Mailbox(_Total)\\Local delivery rate 
-:   \\MSExchangeIS Mailbox(_Total)\\Message Opens/sec 
+:   \\MSExchangeIS Mailbox(\_Total)\\Folder opens/sec
+:   \\MSExchangeIS Mailbox(\_Total)\\Local delivery rate 
+:   \\MSExchangeIS Mailbox(\_Total)\\Message Opens/sec 
 :   \\MSExchangeIS\\RPC Averaged Latency 
 :   \\MSExchangeIS\\RPC Operations/sec
 :   \\MSExchangeIS\\RPC Requests 
-:   \\MSExchangeTransport Queues(_Total)\\Active Mailbox Delivery Queue Length
-:   \\MSExchangeTransport SmtpSend(_Total)\\Messages Sent/sec
+:   \\MSExchangeTransport Queues(\_Total)\\Active Mailbox Delivery Queue Length
+:   \\MSExchangeTransport SmtpSend(\_Total)\\Messages Sent/sec
 
 Exchange 2013 
-:   \\MSExchangeIS Store(_Total)\\Folders opened/sec 
-:   \\MSExchangeIS Store(_Total)\\Messages Delivered/sec 
-:   \\MSExchangeIS Store(_Total)\\Messages opened/sec 
-:   \\MSExchange Store Interface(_Total)\\RPC Latency average (msec) 
-:   \\MSExchange Store Interface(_Total)\\RPC Requests sent/sec 
-:   \\MSExchange Store Interface(_Total)\\RPC Requests sent 
-:   \\MSExchangeTransport Queues(_Total)\\Active Mailbox Delivery Queue Length
-:   \\MSExchange Delivery SmtpSend(_Total)\\Messages Sent/sec
+:   \\MSExchangeIS Store(\_Total)\\Folders opened/sec 
+:   \\MSExchangeIS Store(\_Total)\\Messages Delivered/sec 
+:   \\MSExchangeIS Store(\_Total)\\Messages opened/sec 
+:   \\MSExchange Store Interface(\_Total)\\RPC Latency average (msec) 
+:   \\MSExchange Store Interface(\_Total)\\RPC Requests sent/sec 
+:   \\MSExchange Store Interface(\_Total)\\RPC Requests sent 
+:   \\MSExchangeTransport Queues(\_Total)\\Active Mailbox Delivery Queue Length
+:   \\MSExchange Delivery SmtpSend(\_Total)\\Messages Sent/sec
 
 Note: If monitoring Exchange with a non-administrator user, the user
 must be a member of the Active Directory group "Exchange View-Only
@@ -268,7 +268,7 @@ Administrators" for pre-2010 Exchange installations or "View Only
 Organization Management" for 2010 and later installations.
 
 Note: When Microsoft.Exchange ZenPack is installed,
-\MSExchangeTransport Queues(_Total)\Active Mailbox Delivery Queue Length
+\MSExchangeTransport Queues(\_Total)\Active Mailbox Delivery Queue Length
 and \MSExchangeIS\RPC Averaged Latency will be disabled since the same
 metrics are collected by Exchange ZenPack.
 
@@ -278,29 +278,29 @@ through the Add Roles and Features tool on the Windows Server under Web
 Server -> Management Tools -> IIS Management Scripts and Tools.
 
 IIS
-:   \\Web Service(_Total)\\Bytes Received/sec
-:   \\Web Service(_Total)\\Bytes Sent/sec
-:   \\Web Service(_Total)\\CGI Requests/sec
-:   \\Web Service(_Total)\\Connection Attempts/sec
-:   \\Web Service(_Total)\\Copy Requests/sec
-:   \\Web Service(_Total)\\Delete Requests/sec
-:   \\Web Service(_Total)\\Files Received/sec
-:   \\Web Service(_Total)\\Files Sent/sec
-:   \\Web Service(_Total)\\Get Requests/sec
-:   \\Web Service(_Total)\\Head Requests/sec
-:   \\Web Service(_Total)\\ISAPI Extension Requests/sec
-:   \\Web Service(_Total)\\Lock Requests/sec
-:   \\Web Service(_Total)\\Mkcol Requests/sec
-:   \\Web Service(_Total)\\Move Requests/sec
-:   \\Web Service(_Total)\\Options Requests/sec
-:   \\Web Service(_Total)\\Other Request Methods/sec
-:   \\Web Service(_Total)\\Post Requests/sec
-:   \\Web Service(_Total)\\Propfind Requests/sec
-:   \\Web Service(_Total)\\Proppatch Requests/sec
-:   \\Web Service(_Total)\\Put Requests/sec
-:   \\Web Service(_Total)\\Search Requests/sec
-:   \\Web Service(_Total)\\Trace Requests/sec
-:   \\Web Service(_Total)\\Unlock Requests/sec
+:   \\Web Service(\_Total)\\Bytes Received/sec
+:   \\Web Service(\_Total)\\Bytes Sent/sec
+:   \\Web Service(\_Total)\\CGI Requests/sec
+:   \\Web Service(\_Total)\\Connection Attempts/sec
+:   \\Web Service(\_Total)\\Copy Requests/sec
+:   \\Web Service(\_Total)\\Delete Requests/sec
+:   \\Web Service(\_Total)\\Files Received/sec
+:   \\Web Service(\_Total)\\Files Sent/sec
+:   \\Web Service(\_Total)\\Get Requests/sec
+:   \\Web Service(\_Total)\\Head Requests/sec
+:   \\Web Service(\_Total)\\ISAPI Extension Requests/sec
+:   \\Web Service(\_Total)\\Lock Requests/sec
+:   \\Web Service(\_Total)\\Mkcol Requests/sec
+:   \\Web Service(\_Total)\\Move Requests/sec
+:   \\Web Service(\_Total)\\Options Requests/sec
+:   \\Web Service(\_Total)\\Other Request Methods/sec
+:   \\Web Service(\_Total)\\Post Requests/sec
+:   \\Web Service(\_Total)\\Propfind Requests/sec
+:   \\Web Service(\_Total)\\Proppatch Requests/sec
+:   \\Web Service(\_Total)\\Put Requests/sec
+:   \\Web Service(\_Total)\\Search Requests/sec
+:   \\Web Service(\_Total)\\Trace Requests/sec
+:   \\Web Service(\_Total)\\Unlock Requests/sec
 
 IIS Sites 
 :   \\Web Service(${here/sitename})\\Bytes Received/sec
@@ -355,7 +355,7 @@ SQL Server Instance - WinDBInstance template
 :   \\SQLServer:Buffer Manager\\Checkpoint Pages/Sec
 :   \\SQLServer:Locks(\_Total)\\Number of Deadlocks/sec
 
-Note: For a named instance, the counter instance will be `\\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
+Note: For a named instance, the counter instance will be `\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
 
 We show the following graphs for an instance:
 
@@ -504,8 +504,7 @@ Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate
 higher severity. The LogAlways event level evaluates to 0, which is less
 than a Warning. These events are typically Informational and will
 display if using the sample powershell query above. To work around this,
-you could add ` -and $$_.Level -gt
-[System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways`
+you could add ` -and $$\_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways`
 into your query or use the xml option.
 
 [![][CustomViewXML.png]][CustomViewXML.png] The full list of
@@ -588,7 +587,7 @@ Windows ZenPack to create custom data points, graphs and thresholds.
     *   Nagios have the form <key>=<value>.
     *   JSON - script must put data into JSON format.
     *   Auto will save a returned value into a data point.
-    *   Create custom parser in $ZENOSS_HOME/Products/ZenRRD/parsers/.
+    *   Create custom parser in `$ZENOSS_HOME/Products/ZenRRD/parsers/`.
 -   Viewing script output
     *   Create datapoint(s) to collect the data for graphing.
     *   Create custom parser to send event or transform data.
@@ -743,9 +742,9 @@ monitoring for the service regardless of device class.
 6.  Choose *View and Edit Details* from the Data Sources gear menu. 
 7.  Optionally select the *Update services immediately* option. This will start a background job that could take several minutes to complete for a large number of Windows devices. 
 8.  Tick the *Auto* checkbox under *Service Options*. 
-9.  Enter *+MSSQLSERVER.** into the "Inclusions(+)/Exclusions(-)" text box and click save.
+9.  Enter *+MSSQLSERVER.\** into the "Inclusions(+)/Exclusions(-)" text box and click save.
 
-The order of precedence for monitoring a service is: 
+##### The order of precedence for monitoring a service
 1.  User manually sets monitoring.
 2.  'DefaultService' datasource from the WinService template associated with the service.
 3.  Datasource other than the DefaultService in the WinService template associated with the service.
@@ -764,7 +763,7 @@ expressions are case insensitive. To exclude services, you must specify
 a '-' at the beginning of the name or regular expression. To include
 services, specify a '+' at the beginning of the name or regular
 expression. Exclusions will take precedence over inclusions, but the
-exclusions must be placed before the wildcard *+.** inclusion.
+exclusions must be placed before the wildcard *+.\** inclusion.
 
 Note: To enable monitoring by default of a service or services, you
 must choose a start mode by ticking the appropriate box. Unticking all
@@ -878,7 +877,7 @@ yum -y install krb5-workstation
 
 A monitoring user account must be either an Administrator or a least privileged user.
 
-The Least Privileged User requires the following privileges and permissions:
+The Least Privileged User account requires the following privileges and permissions:
 
 -   Enable, Method Execute, Read Security, Remote Access to the following WMI namespaces 
     -   "Root"
@@ -891,19 +890,19 @@ The Least Privileged User requires the following privileges and permissions:
     -   "Root/Webadministration" - If IIS is installed
 -   Permission to use the winrm service
 -   ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys 
-    -   "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib"
-    -   "HKLM:\system\currentcontrolset\control\securepipeservers\winreg"
-    -   "HKLM:\SYSTEM\CurrentControlSet\Control\Class{4D36E972-E325-11CE-BFC1-08002bE10318}"
-    -   "HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters"
-    -   "HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server"
-    -   "HKLM:\Software\Microsoft\Microsoft SQL Server"
+    -   "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Perflib"
+    -   "HKLM:\\system\\currentcontrolset\\control\\securepipeservers\\winreg"
+    -   "HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Class{4D36E972-E325-11CE-BFC1-08002bE10318}"
+    -   "HKLM:\\SYSTEM\\CurrentControlSet\\Services\\Blfp\\Parameters\\Adapters"
+    -   "HKLM:\\Software\\Wow6432Node\\Microsoft\\Microsoft SQL Server"
+    -   "HKLM:\\Software\\Microsoft\\Microsoft SQL Server"
 -   Membership in the following local groups or domain level groups for a Domain Controller 
     -   "Performance Monitor Users"
     -   "Performance Log Users" 
     -   "Event Log Readers"
     -   "Distributed COM Users"
     -   "WinRMRemoteWMIUsers__"
--   “Read Folder” access to "C:\Windows\system32\inetsrv\config" if it exists
+-   “Read Folder” access to "C:\\Windows\\system32\\inetsrv\\config" if it exists
 -   Each service needs the following permissions 
     -   SERVICE_QUERY_CONFIG
     -   SERVICE_QUERY_STATUS 
@@ -1444,9 +1443,9 @@ Removing a KDC
     ticket for the user has been obtained and the krb5.conf file is correct.
 
 Specifying an admin_server
--   Optionally, use an asterisk, "*", to denote the admin_server. If none is provided, the first kdc in the list will be used. The admin_server is used for any admin work, such as changing a password through kinit.
+-   Optionally, use an asterisk, "\*", to denote the admin_server. If none is provided, the first kdc in the list will be used. The admin_server is used for any admin work, such as changing a password through kinit.
 
-For example, set zWinKDC to "*10.10.10.10,10.10.10.20,+10.10.10.30,-10.10.10.40" for specifying a
+For example, set zWinKDC to "\*10.10.10.10,10.10.10.20,+10.10.10.30,-10.10.10.40" for specifying a
 comma separated list. 10.10.10.10 will be a kdc and admin_server,
 10.10.10.20 and 10.10.10.30 will be added as kdcs, and 10.10.10.40 is no
 longer a valid kdc address and will be removed.
@@ -1510,17 +1509,13 @@ domain should fix this problem. It is a known error from Microsoft,
 
 ### Troubleshooting Kerberos Error Messages
 
-<blockquote>
-Cannot determine realm for numeric host address
-</blockquote>
+`Cannot determine realm for numeric host address`
 
 -   If you enter an IP address for the device id, make sure that the
     address is resolvable to a name. Common solutions to this is to use
     the zWinRMServerName property.
 
-<blockquote>
-Server not found in Kerberos database
-</blockquote>
+`Server not found in Kerberos database`
 
 -   More often than not, this error indicates a DNS issue in which the
     domain controller is unable to locate the specified server by either
@@ -1534,24 +1529,18 @@ Server not found in Kerberos database
 
 -   You should also ensure that the correct name is returned for lookups.
 
-<blockquote>
-Preauthentication failed while getting initial credentials.
-</blockquote>
+`Preauthentication failed while getting initial credentials.`
 
 -   This typically indicates a bad or expired password.
 
-<blockquote>
-Realm not local to KDC while getting initial credentials
-</blockquote>
+`Realm not local to KDC while getting initial credentials`
 
 -   This indicates that one or more of the defined KDCs for a domain are
     incorrect. Add a *-* to the beginning of the errant KDC address to
     the beginning of the incorrect address in the zWinKDC property to
     remove it from the list of KDCs for a domain.
 
-<blockquote>
-Message stream modified
-</blockquote>
+`Message stream modified`
 
 -   This indicates that Windows was unable to decrypt the kerberos encrypted payload.  This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account.  For example, many IIS servers will do this.  To fix this, set the zWinUseWsmanSPN property.
 
@@ -1560,9 +1549,7 @@ Message stream modified
 There are many reasons for kerberos authentication not to work, and a
 lot of them result in the following unhelpful error message.
 
-<blockquote>
-kerberos authGSSClientStep failed (None)
-</blockquote>
+`kerberos authGSSClientStep failed (None)`
 
 While Zenoss is unable to extract a useful error message when this
 occurs, it turns out that Wireshark can get useful errors by looking at
@@ -1618,16 +1605,12 @@ The following are the most common errors:
 
 ### Troubleshooting Services
 
-If you see an "Index out of range" error, this could indicate a low
-number of available file handles in Linux. The default is 1024. To view
-this information on your system, enter 'ulimit -n'. To increase this
-limit, edit your /etc/sysctl.conf file and set fs.file-max to a
-sufficiently large number. For example: 
-
-```
-vi /etc/sysctl.conf
-fs.file-max=10000
-```
+If monitoring for one or more services is enabled/disabled on a device and it should be disabled/enabled, use the following:
+-   Refresh the page.
+-   Check how the [order of precedence](#the-order-of-precedence-for-monitoring-a-service) of service monitoring applies to your service(s).
+-   If you have created a template, be sure that you've followed the directions in the [Configuring Service Monitoring](#configuring-service-monitoring) section and that the Target Class is set to ZenPacks.zenoss.Microsoft.Windows.WinService.
+-   Tick the *Update services immediately* checkbox on the DefaultService datasource dialog in the /Server/Microsoft/WinService monitoring template and click the Save button so that all services will be reindexed.
+-   Remodel the device to start the reindexing process.
 
 ### Troubleshooting monitoring
 
