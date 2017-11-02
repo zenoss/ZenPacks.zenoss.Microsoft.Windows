@@ -1820,6 +1820,7 @@ Changes
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
 -   Fix Windows - traceback when no data returned for wmi class win32_computersystem (ZPS-2384)
 -   Fix Cluster Disk state always 'Inherited' (ZPS-2416)
+-   Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)
 
 2.8.1
 
