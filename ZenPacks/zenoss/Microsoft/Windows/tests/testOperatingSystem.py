@@ -70,13 +70,17 @@ class TestEmptyWin32_ComputerSystem(BaseTestCase):
     def setUp(self):
         self.plugin = OperatingSystem()
         self.device = StringAttributeObject()
-        self.results = load_pickle_file(self, 'OperatingSystem_process_170952')[0]
+        self.results = load_pickle_file(self, 'OperatingSystem_process_103136')[0]
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
-        self.assertEquals(data[0].snmpDescr, 'Microsoft Windows Server 2008 R2 Datacenter')
-        self.assertEquals(data[0].snmpSysName, '847198-W2008R2')
-        self.assertFalse(data[0].domain_controller)
+        self.assertFalse(hasattr(self.results['Win32_ComputerSystem'][0], 'Name'))
+        self.assertFalse(hasattr(self.results['Win32_ComputerSystem'][0], 'PrimaryOwnerName'))
+        self.assertFalse(hasattr(self.results['Win32_ComputerSystem'][0], 'Caption'))
+        self.assertFalse(hasattr(self.results['Win32_ComputerSystem'][0], 'DomainRole'))
+        self.assertEquals(data[0].snmpDescr, 'Microsoft Windows Server 2016 Standard')
+        self.assertEquals(data[0].snmpSysName, 'WIN2016-KDC-01')
+        self.assertTrue(data[0].domain_controller)
 
 
 class TestEmptyWMIClasses(BaseTestCase):
