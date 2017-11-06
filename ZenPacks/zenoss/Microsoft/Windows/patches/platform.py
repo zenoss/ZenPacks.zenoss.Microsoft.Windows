@@ -12,6 +12,7 @@ import twisted.web.http
 
 from Products.ZenModel.OSProcess import OSProcess
 from Products.ZenUtils.Utils import monkeypatch
+from Products.ZenModel.Device import Device
 
 
 if not hasattr(OSProcess, 'getMinProcessCount'):
@@ -114,3 +115,32 @@ def _editDetails(self, info, data):
         info.post_update()
 
     return result
+
+
+@monkeypatch('Products.Zuul.facades.devicefacade.DeviceFacade')
+def getTemplates(self, id):
+    object = self._getObject(id)
+    rrdTemplates = object.getRRDTemplates()
+
+    # used to sort the templates
+    def byTitleOrId(left, right):
+        return cmp(left.titleOrId().lower(), right.titleOrId().lower())
+
+    for rrdTemplate in sorted(rrdTemplates, byTitleOrId):
+        uid = '/'.join(rrdTemplate.getPrimaryPath())
+        # only show Bound Templates
+        zDeviceTemplates = object.zDeviceTemplates
+        if '/Server/Microsoft/' in object.getPrimaryUrlPath():
+            zDeviceTemplates.append('MSExchange2013IS')
+        if rrdTemplate.id in zDeviceTemplates:
+            path = rrdTemplate.getUIPath()
+
+            # if defined directly on the device do not show the path
+            if isinstance(object, Device) and object.titleOrId() in path:
+                path = _t('Locally Defined')
+            yield {'id': uid,
+                   'uid': uid,
+                   'path': path,
+                   'text': '%s (%s)' % (rrdTemplate.titleOrId(), path),
+                   'leaf': True
+                   }
