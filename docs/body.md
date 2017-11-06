@@ -1804,6 +1804,7 @@ Changes
 -   Fix Windows - traceback when no data returned for wmi class win32_computersystem (ZPS-2384)
 -   Fix Cluster Disk state always 'Inherited' (ZPS-2416)
 -   Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)
+-   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
 
 2.8.1
 

@@ -1938,7 +1938,8 @@ device_classes:
             datapoints:
               FreeMegabytes:
                 rrdtype: GAUGE
-                aliases: {usedfilesystemspace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
+                aliases: {usedFilesystemSpace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-',
+                          usedfilesystemspace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
             counter: \Free Megabytes
         graphs:
           Utilization:
@@ -2008,7 +2009,7 @@ device_classes:
             datapoints:
               MemoryAvailableBytes:
                 rrdtype: GAUGE
-                aliases: {memoryavailable__bytes: null}
+                aliases: {memoryAvailable__bytes: null, memoryavailable__bytes: null}
             counter: \Memory\Available bytes
           ProcessorTotalProcessorTime:
             type: Windows Perfmon
@@ -3144,7 +3145,7 @@ device_classes:
             datapoints:
               bytesSentSec:
                 rrdtype: GAUGE
-                aliases: {outputoctets__bytes: null}
+                aliases: {outputOctets__bytes: null, outputoctets__bytes: null}
             counter: \Bytes Sent/sec
           packetsReceivedErrors:
             type: Windows Perfmon
@@ -3169,7 +3170,7 @@ device_classes:
             datapoints:
               bytesReceivedSec:
                 rrdtype: GAUGE
-                aliases: {inputoctets__bytes: null}
+                aliases: {inputOctets__bytes: null, inputoctets__bytes: null}
             counter: \Bytes Received/sec
           packetsSentErrors:
             type: Windows Perfmon
