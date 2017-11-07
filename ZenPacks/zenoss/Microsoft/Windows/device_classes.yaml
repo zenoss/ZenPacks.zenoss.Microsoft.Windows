@@ -8,14 +8,14 @@ device_classes:
     zProperties:
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.Software, zenoss.winrm.HardDisks]
-      zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS]
   /Server/Microsoft/Cluster:
     remove: true
     description: Windows Cluster
     protocol: WinRM
     zProperties:
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.WinCluster]
-      zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS]
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
     templates:
       ClusterNode:
@@ -87,7 +87,7 @@ device_classes:
     zProperties:
       zCollectorPlugins: []
       zCredentialsZProperties: [zWinRMUser, zWinRMPassword, zWinKDC, zWinScheme, zWinRMPort]
-      zDeviceTemplates: [Device, Cluster, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Device, Cluster, Active Directory, IIS, MSExchange2010IS]
       zIcon: /++resource++mswindows/img/server-windows.png
       zSnmpMonitorIgnore: true
     templates:
