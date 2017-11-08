@@ -274,7 +274,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 'Information': ZenEventClasses.Info,
                 'SuccessAudit': ZenEventClasses.Info,
                 'FailureAudit': ZenEventClasses.Info,
-            }.get(str(evt['EntryType']).strip(), ZenEventClasses.Debug)
+            }.get(str(evt['EntryType']).strip(), ZenEventClasses.Info)
 
             evt = dict(
                 device=config.id,
