@@ -37,15 +37,20 @@ class TestDataSourcePlugin(BaseTestCase):
         plugin = EventLogPlugin()
 
         results = load_pickle_file(self, 'EventLogPlugin_onSuccess_092940')[0]
-        res = plugin.onSuccess(results, Mock(
+        config = Mock(
             id="machine",
             datasources=[Mock(params={'eventlog': sentinel.eventlog},
                               datasource='DataSource')],
-        ))
+        )
+        res = plugin.onSuccess(results, config)
 
         self.assertEquals(len(res['events']), 5, msg='Received {}'.format(pprint.pformat(res)))
         self.assertEquals(res['events'][0], EXPECTED)
         self.assertEquals(res['events'][2]['summary'], 'Windows EventLog: No PowerShell errors during event collection')
+        # check for invalid severity to look for new default severity
+        results.stdout[1] = results.stdout[1].replace('"EntryType": "Information"', '"EntryType": "Invalid"')
+        res = plugin.onSuccess(results, config)
+        self.assertEquals(res['events'][0]['severity'], 2)
 
 
 def test_suite():
