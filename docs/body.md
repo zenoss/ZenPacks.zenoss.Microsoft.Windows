@@ -1805,6 +1805,7 @@ Changes
 -   Fix Cluster Disk state always 'Inherited' (ZPS-2416)
 -   Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)
 -   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
+-   Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)
 
 2.8.1
 
