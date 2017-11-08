@@ -219,7 +219,7 @@ class WinRMPlugin(PythonPlugin):
                 eventClass=eventClass,
                 eventClassKey=key,
                 device=id,
-                eventKey=self.__class__.__name__,
+                eventKey='|'.join(('WinRMPlugin', id)),
                 severity=severity,
             ))
             return True
