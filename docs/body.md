@@ -1805,7 +1805,6 @@ Changes
 -   Fix Cluster Disk state always 'Inherited' (ZPS-2416)
 -   Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)
 -   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
--   Fix Not all bound monitoring templates listed on device overview page (ZPS-2187)
 
 2.8.1
 
