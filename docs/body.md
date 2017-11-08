@@ -1806,6 +1806,7 @@ Changes
 -   Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)
 -   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
 -   Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)
+-   Fix Microsoft.Windows eight events with same error summary are triggered during modeling (ZPS-2464)
 
 2.8.1
 
