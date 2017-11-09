@@ -1807,6 +1807,7 @@ Changes
 -   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
 -   Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)
 -   Fix Microsoft.Windows eight events with same error summary are triggered during modeling (ZPS-2464)
+-   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8
 
 2.8.1
 
@@ -1821,6 +1822,7 @@ Changes
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
 -   Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)
 -   Update documentation to remove support for SQL Server 2005 (ZPS-2340)
+-   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8
 
 2.8.0
 
