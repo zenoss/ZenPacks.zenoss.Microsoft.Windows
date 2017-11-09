@@ -50,6 +50,7 @@ def is_empty(struct):
     else:
         return True
 
+
 class TestClusterDataSourcePlugin(BaseTestCase):
 
     def setUp(self):

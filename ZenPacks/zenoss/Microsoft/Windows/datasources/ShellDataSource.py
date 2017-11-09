@@ -20,6 +20,7 @@ import urllib
 from urlparse import urlparse
 from traceback import format_exc
 import re
+from socket import gaierror
 
 from zope.component import adapts
 from zope.component import getGlobalSiteManager
@@ -30,6 +31,7 @@ from zope.interface import Interface
 from twisted.internet import defer
 from twisted.python.failure import Failure
 from Products.DataCollector.plugins.DataMaps import ObjectMap
+from Products.ZenUtils.IpUtil import getHostByName
 from Products.DataCollector.Plugins import getParserLoader, loadParserPlugins
 from Products.Zuul.form import schema
 from Products.Zuul.infos import ProxyProperty
@@ -747,6 +749,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 version = 0
 
+        if context.cluster_node_server:
+            owner_node, _ = context.cluster_node_server.split('//')
+            try:
+                owner_node_ip = getHostByName(owner_node)
+            except gaierror:
+                owner_node_ip = ''
+
         try:
             contextURL = context.getPrimaryUrlPath()
             deviceURL = urlparse(context.getParentDeviceUrl())
@@ -783,7 +792,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     contextcompname=contextcompname,
                     contextmodname=contextmodname,
                     contexttitle=contexttitle,
-                    version=version)
+                    version=version,
+                    owner_node_ip=owner_node_ip)
 
     def getSQLConnection(self, dsconf, conn_info):
         dbinstances = dsconf.zDBInstances
@@ -802,6 +812,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             owner_node, server = dsconf.cluster_node_server.split('//')
             if owner_node:
                 conn_info = conn_info._replace(hostname=owner_node)
+                conn_info = conn_info._replace(ipaddress=dsconf.params['owner_node_ip'])
             instance_name = server
 
         instance = dsconf.params['instancename']

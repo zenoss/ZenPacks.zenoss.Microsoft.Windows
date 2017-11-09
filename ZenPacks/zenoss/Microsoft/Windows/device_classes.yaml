@@ -8,14 +8,14 @@ device_classes:
     zProperties:
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.Software, zenoss.winrm.HardDisks]
-      zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS]
   /Server/Microsoft/Cluster:
     remove: true
     description: Windows Cluster
     protocol: WinRM
     zProperties:
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.WinCluster]
-      zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS]
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
     templates:
       ClusterNode:
@@ -87,7 +87,7 @@ device_classes:
     zProperties:
       zCollectorPlugins: []
       zCredentialsZProperties: [zWinRMUser, zWinRMPassword, zWinKDC, zWinScheme, zWinRMPort]
-      zDeviceTemplates: [Device, Cluster, Active Directory, IIS, MSExchange2010IS, MSExchange2013IS]
+      zDeviceTemplates: [Device, Cluster, Active Directory, IIS, MSExchange2010IS]
       zIcon: /++resource++mswindows/img/server-windows.png
       zSnmpMonitorIgnore: true
     templates:
@@ -1938,7 +1938,8 @@ device_classes:
             datapoints:
               FreeMegabytes:
                 rrdtype: GAUGE
-                aliases: {usedfilesystemspace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
+                aliases: {usedFilesystemSpace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-',
+                          usedfilesystemspace__bytes: '1024,*,1024,*,${here/totalBytes},EXC,-'}
             counter: \Free Megabytes
         graphs:
           Utilization:
@@ -2008,7 +2009,7 @@ device_classes:
             datapoints:
               MemoryAvailableBytes:
                 rrdtype: GAUGE
-                aliases: {memoryavailable__bytes: null}
+                aliases: {memoryAvailable__bytes: null, memoryavailable__bytes: null}
             counter: \Memory\Available bytes
           ProcessorTotalProcessorTime:
             type: Windows Perfmon
@@ -3144,7 +3145,7 @@ device_classes:
             datapoints:
               bytesSentSec:
                 rrdtype: GAUGE
-                aliases: {outputoctets__bytes: null}
+                aliases: {outputOctets__bytes: null, outputoctets__bytes: null}
             counter: \Bytes Sent/sec
           packetsReceivedErrors:
             type: Windows Perfmon
@@ -3169,7 +3170,7 @@ device_classes:
             datapoints:
               bytesReceivedSec:
                 rrdtype: GAUGE
-                aliases: {inputoctets__bytes: null}
+                aliases: {inputOctets__bytes: null, inputoctets__bytes: null}
             counter: \Bytes Received/sec
           packetsSentErrors:
             type: Windows Perfmon

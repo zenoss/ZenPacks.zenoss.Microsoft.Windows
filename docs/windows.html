@@ -7,7 +7,7 @@
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.8.1- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.8.1/ZenPacks.zenoss.Microsoft.Windows-2.8.1.egg" rel="nofollow">Download</a> :Released on 2017/09/19 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Core 5.3.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x, Zenoss Resource Manager 5.3.x</p>
+<p>Version 2.8.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.8.2/ZenPacks.zenoss.Microsoft.Windows-2.8.2.egg" rel="nofollow">Download</a> :Released on 2017/11/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Core 5.3.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x, Zenoss Resource Manager 5.3.x</p>
 <p>Version 2.7.8- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.8/ZenPacks.zenoss.Microsoft.Windows-2.7.8.egg" rel="nofollow">Download</a> :Released on 2017/06/29 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
@@ -474,7 +474,7 @@ pp {
 <dd>\SQLServer:Locks(_Total)\Number of Deadlocks/sec
 </dd>
 </dl>
-<p>Note: For a named instance, the counter instance will be <code>\\MSSQL$INSTANCE_NAME</code>. To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as <code>\\${here/perfmon_instance}\counter name</code>. During modeling, the plugin will assign the correct counter name.</p>
+<p>Note: For a named instance, the counter instance will be <code>\MSSQL$INSTANCE_NAME</code>. To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as <code>\${here/perfmon_instance}\counter name</code>. During modeling, the plugin will assign the correct counter name.</p>
 <p>We show the following graphs for an instance:</p>
 <p>Buffer Cache Hit Ratio Page Life Expectancy Batch Requests Compilations Connections Lock Waits Page Splits Processes Blocked Checkpoint Pages Deadlocks</p>
 <dl>
@@ -596,7 +596,7 @@ pp {
 <p>Or to look for a specific event id:</p>
 <p><code>{ $$_.Id -eq 4001}</code></p>
 <p><code>$$_</code> is the event object of EventLogRecord class. <code>Level</code> is the severity of the event. <code>Id</code> is the property to compare for specific event ids. You can find the full listing of properties at https://technet.microsoft.com/en-us/library/Hh849682.aspx.</p>
-<p>Note: This query is structured to look for &quot;less than or equal&quot; although we are looking for events &quot;greater than or equal&quot; in severity. This is because the Level is an enumeration where the integer values map to 1 = Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate higher severity. The LogAlways event level evaluates to 0, which is less than a Warning. These events are typically Informational and will display if using the sample powershell query above. To work around this, you could add <code>-and $$_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways</code> into your query or use the xml option.</p>
+<p>Note: This query is structured to look for &quot;less than or equal&quot; although we are looking for events &quot;greater than or equal&quot; in severity. This is because the Level is an enumeration where the integer values map to 1 = Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate higher severity. The LogAlways event level evaluates to 0, which is less than a Warning. These events are typically Informational and will display if using the sample powershell query above. To work around this, you could add <code>-and $$\_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways</code> into your query or use the xml option.</p>
 <p><a href="/sites/default/files/zenpack/Microsoft%20Windows/CustomViewXML.png" class="thumbnail" title="Custom View XML"><img src="/sites/default/files/zenpack/Microsoft%20Windows/CustomViewXML.png" title="Custom View XML" class="thumbnail" /></a> The full list of event levels can be found in the description of the <a href="http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx">Standard Event Level</a>.</p>
 <p>Read more about the <a href="http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader%28v=vs.110%29.aspx">System.Diagnostics.Eventing.Reader</a> class.</p>
 <p>And to know more about writing PowerShell conditions, you could read this <a href="http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/">tutorial</a></p>
@@ -647,7 +647,7 @@ pp {
 <li>Nagios have the form <key>=<value>.</li>
 <li>JSON - script must put data into JSON format.</li>
 <li>Auto will save a returned value into a data point.</li>
-<li>Create custom parser in $ZENOSS_HOME/Products/ZenRRD/parsers/.</li>
+<li>Create custom parser in <code>$ZENOSS_HOME/Products/ZenRRD/parsers/</code>.</li>
 </ul></li>
 <li>Viewing script output
 <ul>
@@ -791,9 +791,15 @@ test1(CommandParser):
 <li>Choose <em>View and Edit Details</em> from the Data Sources gear menu.</li>
 <li>Optionally select the <em>Update services immediately</em> option. This will start a background job that could take several minutes to complete for a large number of Windows devices.</li>
 <li>Tick the <em>Auto</em> checkbox under <em>Service Options</em>.</li>
-<li>Enter *+MSSQLSERVER.** into the &quot;Inclusions(+)/Exclusions(-)&quot; text box and click save.</li>
+<li>Enter <em>+MSSQLSERVER.*</em> into the &quot;Inclusions(+)/Exclusions(-)&quot; text box and click save.</li>
 </ol>
-<p>The order of precedence for monitoring a service is: 1. User manually sets monitoring. 2. 'DefaultService' datasource from the WinService template associated with the service. 3. Datasource other than the DefaultService in the WinService template associated with the service. 4. Monitoring is enabled via the Infrastructure -&gt; Windows Services page.</p>
+<h5 id="the-order-of-precedence-for-monitoring-a-service">The order of precedence for monitoring a service</h5>
+<ol style="list-style-type: decimal">
+<li>User manually sets monitoring.</li>
+<li>'DefaultService' datasource from the WinService template associated with the service.</li>
+<li>Datasource other than the DefaultService in the WinService template associated with the service.</li>
+<li>Monitoring is enabled via the Infrastructure -&gt; Windows Services page.</li>
+</ol>
 <table border="2" cellpadding="1" cellspacing="1" style="width:600px;">
 <caption>
 <strong>Windows Service Startmodes (Template vs Windows Services)</strong>
@@ -837,7 +843,7 @@ test1(CommandParser):
 </tbody>
 </table>
 <p>Note: The Windows Service Template (default WinService) must have at least one datasource enabled for monitoring to function.</p>
-<p>You can optionally include or exclude certain services to be monitored when selecting the <em>Auto</em>, <em>Manual</em>, and/or <em>Disabled</em> start mode(s) by entering a comma separated list of services. These can be the service names or a valid regular expression. Entered names and expressions are case insensitive. To exclude services, you must specify a '-' at the beginning of the name or regular expression. To include services, specify a '+' at the beginning of the name or regular expression. Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard *+.** inclusion.</p>
+<p>You can optionally include or exclude certain services to be monitored when selecting the <em>Auto</em>, <em>Manual</em>, and/or <em>Disabled</em> start mode(s) by entering a comma separated list of services. These can be the service names or a valid regular expression. Entered names and expressions are case insensitive. To exclude services, you must specify a '-' at the beginning of the name or regular expression. To include services, specify a '+' at the beginning of the name or regular expression. Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard <em>+.*</em> inclusion.</p>
 <p>Note: To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box. Unticking all three boxes disables monitoring by default.</p>
 <p>Note: When saving changes to a service template and you choose to update services immediately, this will create a job to index all services on all devices. These changes may take several minutes to propagate to all of your devices depending upon the size of your organization. Updating is not recommended if you are making several changes in a short period of time. Updates are automatically applied at the time of the next model.</p>
 <p>Note: The Windows Service datasource no longer depends on the 'DefaultService' data source name. User defined datasources are now honored.</p>
@@ -885,7 +891,7 @@ commit()</code></pre></div>
 <h2 id="usage">Usage</h2>
 <h5 id="monitoring-user-account">Monitoring User Account</h5>
 <p>A monitoring user account must be either an Administrator or a least privileged user.</p>
-<p>The Least Privileged User requires the following privileges and permissions:</p>
+<p>The Least Privileged User account requires the following privileges and permissions:</p>
 <ul>
 <li>Enable, Method Execute, Read Security, Remote Access to the following WMI namespaces
 <ul>
@@ -901,12 +907,12 @@ commit()</code></pre></div>
 <li>Permission to use the winrm service</li>
 <li>ReadPermissions, ReadKey, EnumerateSubKeys, QueryValues rights to the following registry keys
 <ul>
-<li>&quot;HKLM:NT&quot;</li>
-<li>&quot;HKLM:&quot;</li>
-<li>&quot;HKLM:&quot;</li>
-<li>&quot;HKLM:&quot;</li>
-<li>&quot;HKLM:6432NodeSQL Server&quot;</li>
-<li>&quot;HKLM:SQL Server&quot;</li>
+<li>&quot;HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Perflib&quot;</li>
+<li>&quot;HKLM:\system\currentcontrolset\control\securepipeservers\winreg&quot;</li>
+<li>&quot;HKLM:\SYSTEM\CurrentControlSet\Control\Class{4D36E972-E325-11CE-BFC1-08002bE10318}&quot;</li>
+<li>&quot;HKLM:\SYSTEM\CurrentControlSet\Services\Blfp\Parameters\Adapters&quot;</li>
+<li>&quot;HKLM:\Software\Wow6432Node\Microsoft\Microsoft SQL Server&quot;</li>
+<li>&quot;HKLM:\Software\Microsoft\Microsoft SQL Server&quot;</li>
 </ul></li>
 <li>Membership in the following local groups or domain level groups for a Domain Controller
 <ul>
@@ -916,7 +922,7 @@ commit()</code></pre></div>
 <li>&quot;Distributed COM Users&quot;</li>
 <li>&quot;WinRMRemoteWMIUsers__&quot;</li>
 </ul></li>
-<li>“Read Folder” access to &quot;C:32&quot; if it exists</li>
+<li>“Read Folder” access to &quot;C:\Windows\system32\inetsrv\config&quot; if it exists</li>
 <li>Each service needs the following permissions
 <ul>
 <li>SERVICE_QUERY_CONFIG</li>
@@ -1247,43 +1253,31 @@ In [3]: commit()</code></pre>
 <h3 id="troubleshooting-windows">Troubleshooting Windows</h3>
 <p>If you see 100% CPU usage on a domain controller and your forest functional level is Windows 2003 or Windows 2008, you could be missing the WinRMRemoteWMIUsers__ security group. Adding this group to your domain should fix this problem. It is a known error from Microsoft, <a href="https://support.microsoft.com/en-us/kb/3118385">kb 3118385</a>.</p>
 <h3 id="troubleshooting-kerberos-error-messages">Troubleshooting Kerberos Error Messages</h3>
-<blockquote>
-Cannot determine realm for numeric host address
-</blockquote>
+<p><code>Cannot determine realm for numeric host address</code></p>
 <ul>
 <li>If you enter an IP address for the device id, make sure that the address is resolvable to a name. Common solutions to this is to use the zWinRMServerName property.</li>
 </ul>
-<blockquote>
-Server not found in Kerberos database
-</blockquote>
+<p><code>Server not found in Kerberos database</code></p>
 <ul>
 <li><p>More often than not, this error indicates a DNS issue in which the domain controller is unable to locate the specified server by either IP address or name. The best solution varies over different domains and it is left to the user to decide which is best for their environment.</p></li>
 <li><p>One solution is to disable reverse DNS lookups for kerberos. This can be achieved by setting the zWinRMDisableRDNS property to True. If you use this option, you <em>MUST</em> only set it in at the /Server/Microsoft device class level.</p></li>
 <li><p>You should also ensure that the correct name is returned for lookups.</p></li>
 </ul>
-<blockquote>
-Preauthentication failed while getting initial credentials.
-</blockquote>
+<p><code>Preauthentication failed while getting initial credentials.</code></p>
 <ul>
 <li>This typically indicates a bad or expired password.</li>
 </ul>
-<blockquote>
-Realm not local to KDC while getting initial credentials
-</blockquote>
+<p><code>Realm not local to KDC while getting initial credentials</code></p>
 <ul>
 <li>This indicates that one or more of the defined KDCs for a domain are incorrect. Add a <em>-</em> to the beginning of the errant KDC address to the beginning of the incorrect address in the zWinKDC property to remove it from the list of KDCs for a domain.</li>
 </ul>
-<blockquote>
-Message stream modified
-</blockquote>
+<p><code>Message stream modified</code></p>
 <ul>
 <li>This indicates that Windows was unable to decrypt the kerberos encrypted payload. This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account. For example, many IIS servers will do this. To fix this, set the zWinUseWsmanSPN property.</li>
 </ul>
 <h3 id="troubleshooting-kerberos-authentication-with-wireshark">Troubleshooting Kerberos Authentication with Wireshark</h3>
 <p>There are many reasons for kerberos authentication not to work, and a lot of them result in the following unhelpful error message.</p>
-<blockquote>
-kerberos authGSSClientStep failed (None)
-</blockquote>
+<p><code>kerberos authGSSClientStep failed (None)</code></p>
 <p>While Zenoss is unable to extract a useful error message when this occurs, it turns out that Wireshark can get useful errors by looking at the kerberos packets sent between Zenoss, your domain controller (<em>zWinKDC</em>) and the monitored Windows server. Let's walk through an example of using <a href="http://www.wireshark.org/">Wireshark</a> to resolve an <em>authGSSClientStep failed</em> error.</p>
 <p>First install Wireshark on your system. It's GUI is easier to use than the command line equivalent.</p>
 <p>Next you will need to create a packet capture file on your Zenoss server. Assuming the Windows server you're trying to monitor is <em>192.0.2.101</em> and the domain controller (<em>zWinKDC</em>) is <em>203.0.113.10</em>, you would run the following command as the root user on your Zenoss server.</p>
@@ -1306,9 +1300,7 @@ kerberos authGSSClientStep failed (None)
 </ul>
 <p>The following are the most common errors: - <em>KRB5KRB_AP_ERR_SKEW</em>: - As shown in the above example. A clock synchronization issue. - <em>KRB5KDC_ERR_S_PRINCIPAL_UNKNOWN</em> - This can happen if <em>zWinRMServerName</em> resolves to the server's IP address, but is not the name the server is known by in Active Directory. This will also be the error if you don't enter a <em>zWinRMServerName</em> and the reverse resolution of the device's manage IP address resolves to a name that doesn't match the server's name in Active Directory. Typical solutions to this are to add the name to the /etc/hosts file or to directly use the IP address of the server.</p>
 <h3 id="troubleshooting-services">Troubleshooting Services</h3>
-<p>If you see an &quot;Index out of range&quot; error, this could indicate a low number of available file handles in Linux. The default is 1024. To view this information on your system, enter 'ulimit -n'. To increase this limit, edit your /etc/sysctl.conf file and set fs.file-max to a sufficiently large number. For example:</p>
-<pre><code>vi /etc/sysctl.conf
-fs.file-max=10000</code></pre>
+<p>If monitoring for one or more services is enabled/disabled on a device and it should be disabled/enabled, use the following: - Refresh the page. - Check how the <a href="#the-order-of-precedence-for-monitoring-a-service">order of precedence</a> of service monitoring applies to your service(s). - If you have created a template, be sure that you've followed the directions in the <a href="#configuring-service-monitoring">Configuring Service Monitoring</a> section and that the Target Class is set to ZenPacks.zenoss.Microsoft.Windows.WinService. - Tick the <em>Update services immediately</em> checkbox on the DefaultService datasource dialog in the /Server/Microsoft/WinService monitoring template and click the Save button so that all services will be reindexed. - Remodel the device to start the reindexing process.</p>
 <h3 id="troubleshooting-monitoring">Troubleshooting monitoring</h3>
 <p>The first step in troubleshooting any monitoring issues is to scan the zenpython log for errors.</p>
 <p>If you see OperationTimeout errors in the zenpython log, this is normal.<br />
@@ -1511,6 +1503,17 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.8.2</p>
+<ul>
+<li>Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)</li>
+<li>Fix Windows - traceback when no data returned for wmi class win32_computersystem (ZPS-2384)</li>
+<li>Fix Cluster Disk state always 'Inherited' (ZPS-2416)</li>
+<li>Fix Unable to monitor MS-SQL Cluser node - see 'Message stream modified' errors (ZPS-2433)</li>
+<li>Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)</li>
+<li>Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)</li>
+<li>Fix Microsoft.Windows eight events with same error summary are triggered during modeling (ZPS-2464)</li>
+<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8</li>
+</ul>
 <p>2.8.1</p>
 <ul>
 <li>Fix &quot;Error in zenoss.winrm.WinMSSQL: too many values to unpack&quot; (ZPS-2206)</li>
@@ -1524,6 +1527,7 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 <li>Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)</li>
 <li>Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)</li>
 <li>Update documentation to remove support for SQL Server 2005 (ZPS-2340)</li>
+<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8</li>
 </ul>
 <p>2.8.0</p>
 <ul>

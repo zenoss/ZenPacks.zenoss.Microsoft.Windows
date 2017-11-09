@@ -76,7 +76,7 @@ class WinCluster(WinRMPlugin):
         )
         resourceCommand.append('write-host "====";')
         resourceCommand.append(
-            'get-clusterresource | foreach {%s};' % pipejoin(
+            "get-clusterresource | where { $_.ResourceType.name -ne 'Physical Disk'} | foreach {%s};" % pipejoin(
                 '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description'
             )
         )
@@ -87,16 +87,19 @@ class WinCluster(WinRMPlugin):
                 '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State')
         )
 
+        disk_properties = pipejoin(
+            '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+
         clusterDiskCommand = []
         clusterDiskCommand.append(
-            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{"
-            "Name='Volume';Expression={Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}};"
+            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
+            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
             "$clusterSharedVolume = Get-ClusterSharedVolume;"
-            "foreach ($volume in $clusterSharedVolume) {"
+            "foreach ($volume in $clusterSharedVolume) {{"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where { $_.Volume -eq $csvVolume}).Disknumber;"
-            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{"
+            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
+            "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
             "Name = $volume.Name;"
             "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;"
@@ -106,32 +109,31 @@ class WinCluster(WinRMPlugin):
             "Size = $volume.SharedVolumeInfo.Partition.Size;"
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
             "State = $volume.State;"
-            "OwnerGroup = 'Cluster Shared Volume';};"
-            "$csvtophysicaldisk | foreach { %s };}" % pipejoin(
-                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber '
-                '$_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup')
+            "OwnerGroup = 'Cluster Shared Volume';}};"
+            "$csvtophysicaldisk | foreach {{{}}};}}".format(disk_properties)
         )
 
         clusterDiskCommand.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
-            "foreach ($rsc in $resources) {{"
-            "$disks = $rsc.GetRelated(\\\"MSCluster_Disk\\\");"
+            "foreach ($resource in $resources) {{"
+            "$rsc = get-clusterresource -name $resource.Name;"
+            "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
             "foreach ($dsk in $disks) {{"
             "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;"
-            "OwnerNode = $rsc.OwnerNode;"
-            "OwnerGroup = $rsc.OwnerGroup;"
-            "Name = $rsc.Name;"
-            "VolumePath = $prt.Path;"
-            "DiskNumber = $dsk.Number;"
-            "PartitionNumber = $prt.PartitionNumber;"
-            "Size = $prt.TotalSize * 1mb;"
-            "FreeSpace = $prt.FreeSpace * 1mb;"
-            "State = $rsc.State;"
-            "}}; $physicaldisk | foreach {{{}}} }}}}}};".format(pipejoin(
-                '$_.Id $_.Name $_.VolumePath $_.OwnerNode $_.DiskNumber $_.PartitionNumber $_.Size $_.FreeSpace $_.State $_.OwnerGroup'))
+            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;OwnerGroup = $rsc.OwnerGroup;"
+            "Name = $rsc.Name;VolumePath = $prt.Path;DiskNumber = $dsk.Number;"
+            "PartitionNumber = $prt.PartitionNumber;Size = $prt.TotalSize * 1mb;"
+            "FreeSpace = $prt.FreeSpace * 1mb;State = $rsc.State;}}; "
+            "$physicaldisk | foreach {{{}}};}}}}else {{"
+            "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
+            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;"
+            "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
+            "State = $rsc.State;Size = $dsk.Size;VolumePath = 'No Volume';"
+            "PartitionNumber = 'No Partitions';FreeSpace = 'N/A'}};"
+            "$physicaldisk | foreach {{{}}};}}}}}};".format(disk_properties, disk_properties)
         )
 
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
