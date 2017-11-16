@@ -1798,6 +1798,9 @@ Monitoring Templates
 Changes
 -------
 
+2.8.3
+-   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
+
 2.8.2
 
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
