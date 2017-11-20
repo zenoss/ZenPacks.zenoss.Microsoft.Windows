@@ -143,7 +143,12 @@ class ZenPack(schema.ZenPack):
                                                       'label': 'Disable kerberos reverse DNS'},
                             'zWinRMKRBErrorThreshold': {'type': 'int',
                                                         'description': 'When network connections are poor, send fewer error events.',
-                                                        'label': 'Connection error event threshold'}
+                                                        'label': 'Connection error event threshold'},
+                            'zWindowsRemodelEventClassKeys': {'type': 'lines',
+                                                              'description': 'Use in conjunction with schedule_remodel '
+                                                                             'in ZenPacks.zenoss.Microsoft.Windows.actions to '
+                                                                             'initiate a remodel of a Windows or Cluster Device.',
+                                                              'label': 'Windows remodel event class keys'}
                             }
 
     def install(self, app):

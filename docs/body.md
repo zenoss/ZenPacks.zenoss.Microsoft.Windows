@@ -1103,6 +1103,9 @@ important.
 -   zWinRMKRBErrorThreshold
     :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
 
+-   zWindowsRemodelEventClassKeys
+    :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1797,6 +1800,11 @@ Monitoring Templates
 
 Changes
 -------
+
+2.8.3
+
+-   Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)
+-   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
 
 2.8.2
 
