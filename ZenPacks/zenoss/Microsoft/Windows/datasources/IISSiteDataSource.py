@@ -214,7 +214,12 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 if match:
                     app_pool = match.group(1)
             else:
-                app_pool_statuses[app_pool] = int(line)
+                try:
+                    app_pool_statuses[app_pool] = int(line)
+                except ValueError:
+                    # make sure we have an int as the status
+                    # we're catching exception below to default to Unknown
+                    pass
                 app_pool = None
 
         for ds in config.datasources:

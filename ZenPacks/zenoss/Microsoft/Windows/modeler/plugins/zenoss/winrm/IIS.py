@@ -119,10 +119,11 @@ class IIS(WinRMPlugin):
             self.name(), device.id)
 
         device_om = ObjectMap()
-        device_om.is_iis = True
+        device_om.is_iis = False
         maps = [device_om]
         rm = self.relMap()
         if results.get('IIsWebServerSetting'):
+            device_om.is_iis = True
             for iisSite in results.get('IIsWebServerSetting', ()):
                 om = self.objectMap()
                 om.id = self.prepId(iisSite.Name)
@@ -136,7 +137,8 @@ class IIS(WinRMPlugin):
                         om.apppool = iisVirt.AppPoolId
 
                 rm.append(om)
-        else:
+        elif results.get('IIs7Site', False):
+            device_om.is_iis = True
             for iisSite in results.get('IIs7Site', ()):
                 try:
                     om = self.objectMap()
