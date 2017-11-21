@@ -38,7 +38,7 @@ class TestProcesses(BaseTestCase):
         self.results['resources'] = [
             "title0|coregroup0|node0|state0|description0|id0|priority0",
             "====",
-            "title0|title0|state0|description0|"
+            "title0|title0|node0|state0|description0|cluster1"
         ]
 
     def test_process(self):
@@ -49,6 +49,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[1].maps[0].domain, 'domain0')
         self.assertEquals(data[1].maps[0].ownernode, 'node0')
         self.assertEquals(data[1].maps[0].title, 'title0')
+        self.assertEquals(data[2].maps[0].cluster, 'cluster1')
         self.assertEquals(len(data[4].maps), 0)
 
         self.assertEquals(data[5].maps[0].id, '2beb')
