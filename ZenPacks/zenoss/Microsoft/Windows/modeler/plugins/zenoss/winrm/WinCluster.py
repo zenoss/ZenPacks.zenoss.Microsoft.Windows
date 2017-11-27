@@ -77,7 +77,7 @@ class WinCluster(WinRMPlugin):
         resourceCommand.append('write-host "====";')
         resourceCommand.append(
             "get-clusterresource | where { $_.ResourceType.name -ne 'Physical Disk'} | foreach {%s};" % pipejoin(
-                '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description'
+                '$_.Name $_.OwnerGroup $_.OwnerNode $_.State $_.Description $_.Cluster'
             )
         )
         resource = yield cmd.run_command("".join(resourceCommand))
@@ -234,6 +234,7 @@ class WinCluster(WinRMPlugin):
                 app_om.ownernode = appline[2]
                 app_om.description = appline[4]
                 app_om.ownergroup = app_ownergroup
+                app_om.cluster = appline[5]
                 app_om.domain = results['domain']
 
                 groupid = ownergroups[app_om.ownergroup]
