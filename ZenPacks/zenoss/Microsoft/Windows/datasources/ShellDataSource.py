@@ -749,12 +749,13 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 version = 0
 
-        if context.cluster_node_server:
+        owner_node_ip = ''
+        if hasattr(context, 'cluster_node_server'):
             owner_node, _ = context.cluster_node_server.split('//')
             try:
                 owner_node_ip = getHostByName(owner_node)
             except gaierror:
-                owner_node_ip = ''
+                pass
 
         try:
             contextURL = context.getPrimaryUrlPath()

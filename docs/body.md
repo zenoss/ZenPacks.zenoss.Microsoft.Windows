@@ -1804,6 +1804,7 @@ Changes
 2.8.3
 -   Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)
 -   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
+-   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
 
 2.8.2
 
