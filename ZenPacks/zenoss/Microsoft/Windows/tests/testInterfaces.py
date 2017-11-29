@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2014, all rights reserved.
@@ -83,6 +84,11 @@ class TestInterfacesCounters(BaseTestCase):
 
         self.assertFalse(hasattr(data.maps[7], 'perfmonInstance'))
         self.assertEquals(data.maps[12].perfmonInstance, "\\Network Interface(RedHat PV NIC Driver _2)")
+        results = load_pickle_file(self, 'Interfaces_process_163512')[0]
+        for i in results['Win32_NetworkAdapter']:
+            i.PhysicalAdapter = 'false'
+        data = self.plugin.process(self.device, results, Mock())
+        self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(AWS PV Network Device _0)")
 
 
 class TestTeamInterfaces(BaseTestCase):
