@@ -1806,6 +1806,7 @@ Changes
 -   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
 -   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
 -   Fix Missing interface counters on non physical adapters (ZPS-2567)
+-   Fix WinRS: Failed collection ipaddress missing (ZPS-2645)
 
 2.8.2
 
