@@ -1807,6 +1807,7 @@ Changes
 -   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
 -   Fix Missing interface counters on non physical adapters (ZPS-2567)
 -   Fix WinRS: Failed collection ipaddress missing (ZPS-2645)
+-   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
 
 2.8.2
 
