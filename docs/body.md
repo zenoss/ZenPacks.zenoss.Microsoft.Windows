@@ -1808,6 +1808,7 @@ Changes
 -   Fix Missing interface counters on non physical adapters (ZPS-2567)
 -   Fix WinRS: Failed collection ipaddress missing (ZPS-2645)
 -   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
+-   Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)
 
 2.8.2
 

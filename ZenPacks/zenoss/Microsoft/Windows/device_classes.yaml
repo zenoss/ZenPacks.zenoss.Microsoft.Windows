@@ -2867,7 +2867,7 @@ device_classes:
             datapoints:
               iisOtherRequestMethods:
                 rrdtype: GAUGE
-                aliases: {iissiteotherrequestmethods__sec: null}
+                aliases: {iissiteotherreqmethods__sec: null}
             counter: \Web Service(${here/sitename})\Other Request Methods/sec
           iisUnlockRequests:
             type: Windows Perfmon
