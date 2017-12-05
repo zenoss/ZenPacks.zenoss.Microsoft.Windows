@@ -59,6 +59,8 @@ from . import send_to_debug
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
+from txwinrm.shell import create_long_running_command, CommandResponse
+
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -519,6 +521,9 @@ class PowershellMSSQLStrategy(object):
                 self.valuemap[databasename]['status'] = value.strip()
 
         for dsconf in dsconfs:
+            if dsconf.params['resource'] == 'status':
+                # no need to get status as it's handled differently
+                continue
             timestamp = int(time.mktime(time.localtime()))
             databasename = dsconf.params['contexttitle']
             try:
@@ -877,9 +882,21 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line, script = strategy.build_command_line(counters)
 
-        command = SingleCommandClient(conn_info)
+        if dsconf0.params['strategy'] == 'powershell MSSQL':
+            command = create_long_running_command(conn_info)
+            yield command.start(command_line, ps_script=script)
+            stdout = []
+            stderr = []
+            while command._exit_code is None:
+                stdout_r, stderr_r = yield command.receive()
+                stdout += stdout_r
+                stderr += stderr_r
 
-        results = yield command.run_command(command_line, script)
+            results = CommandResponse(stdout, stderr, command._exit_code)
+            yield command.stop()
+        else:
+            command = SingleCommandClient(conn_info)
+            results = yield command.run_command(command_line, script)
 
         defer.returnValue((strategy, config.datasources, results))
 
