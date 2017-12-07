@@ -617,10 +617,10 @@ Logon to the zenoss server and create a python file called test1.py in /opt/zeno
 The content of test1.py
 
 ```python
-from Products.ZenRRD.CommandParser import CommandParser class
-test1(CommandParser):
+from Products.ZenRRD.CommandParser import CommandParser
+class test1(CommandParser):
     def processResults(self, cmd, result):
-        result.events.append({ 'summary':'test1 parser event', 'severity': 5, 'test1.detail': cmd.deviceConfig.name, })
+        result.events.append({'summary': 'test1 parser event', 'severity': 5, 'test1.detail': cmd.deviceConfig.name})
 ```
 
 
