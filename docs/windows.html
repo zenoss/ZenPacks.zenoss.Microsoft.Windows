@@ -7,7 +7,7 @@
 <p>This ZenPack provides support for monitoring Microsoft Windows. Monitoring is performed using the Windows Remote Management (WinRM) and Windows Remote Shell (WinRS) to collect Windows Management Instrumentation (WMI) and Perfmon data.</p>
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
-<p>Version 2.8.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.8.2/ZenPacks.zenoss.Microsoft.Windows-2.8.2.egg" rel="nofollow">Download</a> :Released on 2017/11/09 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Core 5.3.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x, Zenoss Resource Manager 5.3.x</p>
+<p>Version 2.8.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.8.3/ZenPacks.zenoss.Microsoft.Windows-2.8.3.egg" rel="nofollow">Download</a> :Released on 2017/12/13 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Core 5.3.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x, Zenoss Resource Manager 5.3.x</p>
 <p>Version 2.7.8- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.7.8/ZenPacks.zenoss.Microsoft.Windows-2.7.8.egg" rel="nofollow">Download</a> :Released on 2017/06/29 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a> :Released on 2017/01/31 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
 <p>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a> :Released on 2016/05/10 :Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a> :Compatible with Zenoss Core 4.2.x, Zenoss Core 5.0.x, Zenoss Core 5.1.x, Zenoss Core 5.2.x, Zenoss Resource Manager 4.2.x, Zenoss Resource Manager 5.0.x, Zenoss Resource Manager 5.1.x, Zenoss Resource Manager 5.2.x</p>
@@ -571,7 +571,7 @@ pp {
 </dl>
 <p>Status can be multiple items from above. For example, taking a database offline will set the status to 'Offline, AutoClosed'. Transforms can be applied in the WinDatabaseStatus event mapping under /Status. You can raise/lower the severity of the status, or drop it altogether.</p>
 <p>For example, to raise the severity of the Offline status:</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">if</span> <span class="st">&#39;Offline&#39;</span> <span class="kw">in</span> evt.summary:
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">if</span> <span class="st">&#39;Offline&#39;</span> <span class="op">in</span> evt.summary:
     evt.severity <span class="op">=</span> <span class="dv">4</span></code></pre></div>
 <p>The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.</p>
 <p>The WinSQLJob monitoring template will monitor the status of a job on a SQL Server instance to inform the user if it has succeeded, failed, unknown, or other state.</p>
@@ -673,10 +673,10 @@ pp {
 <h5 id="using-a-custom-parser">Using a custom parser</h5>
 <p>Logon to the zenoss server and create a python file called test1.py in /opt/zenoss/Products/ZenRRD/parsers and restart zenoss</p>
 <p>The content of test1.py</p>
-<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> Products.ZenRRD.CommandParser <span class="im">import</span> CommandParser <span class="kw">class</span>
-test1(CommandParser):
+<div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="im">from</span> Products.ZenRRD.CommandParser <span class="im">import</span> CommandParser
+<span class="kw">class</span> test1(CommandParser):
     <span class="kw">def</span> processResults(<span class="va">self</span>, cmd, result):
-        result.events.append({ <span class="st">&#39;summary&#39;</span>:<span class="st">&#39;test1 parser event&#39;</span>, <span class="st">&#39;severity&#39;</span>: <span class="dv">5</span>, <span class="st">&#39;test1.detail&#39;</span>: cmd.deviceConfig.name, })</code></pre></div>
+        result.events.append({<span class="st">&#39;summary&#39;</span>: <span class="st">&#39;test1 parser event&#39;</span>, <span class="st">&#39;severity&#39;</span>: <span class="dv">5</span>, <span class="st">&#39;test1.detail&#39;</span>: cmd.deviceConfig.name})</code></pre></div>
 <ol style="list-style-type: decimal">
 <li>Select a windows target device.</li>
 <li>Navigate to the Device (/Server/Microsoft) Monitoring Template.</li>
@@ -1062,6 +1062,11 @@ Win2012-1d.example.com zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quo
 <li><dl>
 <dt>zWinRMKRBErrorThreshold</dt>
 <dd>Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms. The default value is 1, which will always send an event on the first occurrence of an error. You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
+</dd>
+</dl></li>
+<li><dl>
+<dt>zWindowsRemodelEventClassKeys</dt>
+<dd>Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device. See the ClusterOwnerChange mapping in the /Status event class for example usage.
 </dd>
 </dl></li>
 </ul>
@@ -1503,6 +1508,7 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.8.3 - Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134) - Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555) - Fix Winrs failures (powershell datasources) with &quot;Unknown strategy&quot; message (ZPS-2613) - Fix Missing interface counters on non physical adapters (ZPS-2567) - Fix WinRS: Failed collection ipaddress missing (ZPS-2645) - Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644) - Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611) - Fix Windows: Tasks building up with a bad config (ZPS-2717) - Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2</p>
 <p>2.8.2</p>
 <ul>
 <li>Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)</li>
@@ -1512,7 +1518,7 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 <li>Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)</li>
 <li>Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)</li>
 <li>Fix Microsoft.Windows eight events with same error summary are triggered during modeling (ZPS-2464)</li>
-<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8</li>
+<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2</li>
 </ul>
 <p>2.8.1</p>
 <ul>
@@ -1527,7 +1533,7 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 <li>Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)</li>
 <li>Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)</li>
 <li>Update documentation to remove support for SQL Server 2005 (ZPS-2340)</li>
-<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8</li>
+<li>Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2</li>
 </ul>
 <p>2.8.0</p>
 <ul>
