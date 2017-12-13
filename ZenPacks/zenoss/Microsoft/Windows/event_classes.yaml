@@ -9,6 +9,14 @@ event_classes:
         sequence: 10
         remove: true
         example: Database master status is Normal
+      ClusterOwnerChange:
+        eventClassKey: clusterOwnerChange
+        sequence: 10
+        remove: true
+        example: OwnerNode of cluster windows_cluster changed to node_02
+        transform: "if device:\n\
+          \    from ZenPacks.zenoss.Microsoft.Windows.actions import schedule_remodel\n\
+          \    schedule_remodel(device, evt)"
   /Status/IIS:
     remove: true
   /Status/Kerberos:

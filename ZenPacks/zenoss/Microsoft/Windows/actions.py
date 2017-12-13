@@ -8,7 +8,7 @@
 ##############################################################################
 
 import logging
-
+import re
 from zope.interface import implements
 
 from Products.ZenModel.actions import (
@@ -19,7 +19,9 @@ from Products.Zuul.interfaces import IInfo
 from Products.Zuul.infos import InfoBase
 from Products.Zuul.infos.actions import ActionFieldProperty
 from Products.Zuul.form import schema
+from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.utils import ZuulMessageFactory as _t
+from ZODB.transact import transact
 
 from .utils import addLocalLibPath
 addLocalLibPath()
@@ -191,3 +193,72 @@ class WinCommandAction(IActionBase):
             log.error(error.value)
         else:
             log.error(error)  # Not twisted failure.
+
+
+@transact
+def schedule_remodel(device, evt=None):
+    """Schedule the remodeling of device if not already scheduled."""
+    if getattr(evt, 'source_uuid', None) and getattr(evt, 'source_event_uuid', None):
+        log.debug("Skip scheduling model: Forwarded event")
+        return
+
+    if not device:
+        log.debug("Skip scheduling model: No device found")
+        return
+
+    # Avoid circular import.
+    from ZenPacks.zenoss.Microsoft.Windows.Device import Device
+    from ZenPacks.zenoss.Microsoft.Windows.ClusterDevice import ClusterDevice
+
+    if not isinstance(device, Device):
+        log.debug("Skip scheduling model of %s: Not a Windows device", device.id)
+        return
+
+    dmd = device.getDmd()
+
+    if evt:
+        eventClassKey = getattr(evt, 'eventClassKey', None)
+        if not eventClassKey:
+            log.debug(
+                "Skip scheduling model of %s: Event with no eventClassKey",
+                device.id)
+
+            return
+
+        if eventClassKey not in device.zWindowsRemodelEventClassKeys:
+            log.debug(
+                "Skip scheduling model of %s: %s not in zWindowsRemodelEventClassKeys",
+                device.id, eventClassKey)
+
+            return
+
+        log.info(
+            "Scheduling model of %s: %s in zWindowsRemodelEventClassKeys",
+            device.id, eventClassKey)
+
+        dmd.ZenEventManager.sendEvent({
+            'summary': 'scheduled model caused by event ({})'.format(eventClassKey),
+            'cause_evid': evt.evid,
+            'device': device.id,
+            'component': getattr(evt, 'component', ''),
+            'eventClass': ZenEventClasses.Change,
+            'severity': ZenEventClasses.Info,
+            'monitor': getattr(evt, 'monitor', ''),
+            'agent': getattr(evt, 'agent', ''),
+        })
+
+    pattern = re.compile(r'zenmodeler .+? %s( |$)' % device.id)
+    for job in dmd.JobManager.getUnfinishedJobs():
+        if pattern.search(job.job_description):
+            log.info('Model of %s already scheduled', device.id)
+            return
+
+    log.info('Scheduling model of %s', device.id)
+    device.collectDevice(setlog=False, background=True)
+
+    if isinstance(device, ClusterDevice):
+        deviceRoot = dmd.getDmdRoot("Devices")
+        for host, ip in device.clusterhostdevicesdict.iteritems():
+            clusterhost = deviceRoot.findDeviceByIdOrIp(ip)
+            if clusterhost:
+                clusterhost.collectDevice(setlog=False, background=True)

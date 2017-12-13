@@ -617,10 +617,10 @@ Logon to the zenoss server and create a python file called test1.py in /opt/zeno
 The content of test1.py
 
 ```python
-from Products.ZenRRD.CommandParser import CommandParser class
-test1(CommandParser):
+from Products.ZenRRD.CommandParser import CommandParser
+class test1(CommandParser):
     def processResults(self, cmd, result):
-        result.events.append({ 'summary':'test1 parser event', 'severity': 5, 'test1.detail': cmd.deviceConfig.name, })
+        result.events.append({'summary': 'test1 parser event', 'severity': 5, 'test1.detail': cmd.deviceConfig.name})
 ```
 
 
@@ -1102,6 +1102,9 @@ important.
 
 -   zWinRMKRBErrorThreshold
     :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
+
+-   zWindowsRemodelEventClassKeys
+    :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
 
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
@@ -1798,6 +1801,17 @@ Monitoring Templates
 Changes
 -------
 
+2.8.3
+-   Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)
+-   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
+-   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
+-   Fix Missing interface counters on non physical adapters (ZPS-2567)
+-   Fix WinRS: Failed collection ipaddress missing (ZPS-2645)
+-   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
+-   Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)
+-   Fix Windows: Tasks building up with a bad config (ZPS-2717)
+-   Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
+
 2.8.2
 
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
@@ -1807,7 +1821,7 @@ Changes
 -   Fix Windows ZP - Missing usedFilesystemSpace__bytes alias for Filesystem utilization report (ZPS-2434)
 -   Fix MicrosoftWindows - Windows Event Log events that have no detectable severity currently come in as DEBUG, should come in as INFO (ZPS-2453)
 -   Fix Microsoft.Windows eight events with same error summary are triggered during modeling (ZPS-2464)
--   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8
+-   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
 
 2.8.1
 
@@ -1822,7 +1836,7 @@ Changes
 -   Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)
 -   Fix WinCluster plugin generates duplicate Cluster Disks (ZPS-1932)
 -   Update documentation to remove support for SQL Server 2005 (ZPS-2340)
--   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.1.8
+-   Tested with Zenoss Resource Manager 5.3.2, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
 
 2.8.0
 

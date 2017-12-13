@@ -126,6 +126,11 @@ class Interfaces(WinRMPlugin):
                     if($_ -eq (replace_unallowed $na.InterfaceDescription) -or $_ -like 'isatap.' + "$($na.DeviceID)") {
                         $na.DeviceID, ':', $_, '|'
             }}}}'''.split())
+        ),
+        'counters': (
+            "$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);"
+            "get-counter -ea silentlycontinue -counter @(('\\network interface(*)\\bytes received/sec')"
+            ", ('\\network adapter(*)\\bytes received/sec')) | fl readings"
         )
     }
 
@@ -138,6 +143,7 @@ class Interfaces(WinRMPlugin):
         netInt = results.get('Win32_NetworkAdapter', ())
         netConf = results.get('Win32_NetworkAdapterConfiguration', ())
         win32_pnpentities = results.get('win32_pnpentity', None)
+        counter_instances = results.get('counters', ())
 
         # Actual instance names should be pulled in from the Win32_PnPEntity class
         if win32_pnpentities and isinstance(win32_pnpentities, dict):
@@ -314,7 +320,9 @@ class Interfaces(WinRMPlugin):
             if inter.Index in perfmonInstanceMap:
                 # only physical adapters will have perfmon data
                 # 2003 does not have the PhysicalAdapter property
-                if getattr(inter, 'PhysicalAdapter', 'true').lower() == 'true':
+                if getattr(inter, 'PhysicalAdapter', 'true').lower() == 'true' or\
+                        (hasattr(counter_instances, 'stdout') and
+                            [x for x in counter_instances.stdout if perfmonInstanceMap[inter.Index].lower() in x]):
                     if pnpentities and isinstance(pnpentities, dict):
                         entry = pnpentities.get(inter.Index, [])
                         if entry:

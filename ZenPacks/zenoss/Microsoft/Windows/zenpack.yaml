@@ -49,6 +49,8 @@ zProperties:
   zWinRMKRBErrorThreshold:
     type: int
     default: 1
+  zWindowsRemodelEventClassKeys:
+    type: lines
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
@@ -219,6 +221,9 @@ classes:
         type: boolean
         grid_display: false
         default: False
+      cluster:
+        label: Cluster
+        grid_display: false
     monitoring_templates: [ClusterResource]
     impacts: []
     impacted_by: [device, clusterservice]

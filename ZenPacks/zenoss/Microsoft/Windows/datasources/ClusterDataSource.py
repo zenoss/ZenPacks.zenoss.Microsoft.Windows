@@ -116,7 +116,11 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
     @classmethod
     def params(cls, datasource, context):
-        return dict(contexttitle=context.title)
+        cluster = getattr(context, 'cluster', '')
+        ownernode = getattr(context, 'ownernode', '')
+        return dict(contexttitle=context.title,
+                    ownernode=ownernode,
+                    cluster=cluster)
 
     def build_command_line(self):
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -128,13 +132,14 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         cluster_id_items = pipejoin('$_.Id $_.State')
         cluster_name_items = pipejoin('$_.Name $_.State')
+        cluster_group_items = pipejoin('$_.Id $_.State $_.Name $_.OwnerNode')
 
         psClusterCommands.append(
             "get-clusterresource | where {{ $_.ResourceType.name -ne 'Physical Disk'}} | foreach {{'res-'+{}}};".format(cluster_name_items)
         )
 
         psClusterCommands.append(
-            "get-clustergroup | foreach {{{}}};".format(cluster_id_items))
+            "get-clustergroup | foreach {{{}}};".format(cluster_group_items))
 
         psClusterCommands.append(
             "get-clusternode | foreach {{'node-'+{}}};".format(cluster_id_items))
@@ -185,8 +190,6 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         command = SingleCommandClient(conn_info)
         pscommand, script = self.build_command_line()
         results = yield command.run_command(pscommand, script)
-        for item in results.stdout:
-            log.debug('\t*****  %s', item)
         defer.returnValue(results)
 
     @save
@@ -199,6 +202,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 continue
             try:
                 comp, state = result.split('|')
+                ownernode = None
+                name = ''
+            except ValueError:
+                comp, state, name, ownernode = result.split('|')
             except Exception:
                 log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
                 continue
@@ -232,6 +239,16 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 device=config.id,
                 component=prepId(dsconf.component)
             ))
+
+            if ownernode and name.strip() == 'Cluster Group' and dsconf.params['ownernode'] != ownernode.strip():
+                data['events'].append(dict(
+                    eventClassKey='clusterOwnerChange',
+                    eventKey='clusterCollection',
+                    severity=ZenEventClasses.Info,
+                    summary='OwnerNode of cluster {} changed to {}'.format(dsconf.params['cluster'], ownernode),
+                    device=config.id,
+                    component=prepId(dsconf.component)
+                ))
 
         # look for any components not returned
         for dsconf in config.datasources:

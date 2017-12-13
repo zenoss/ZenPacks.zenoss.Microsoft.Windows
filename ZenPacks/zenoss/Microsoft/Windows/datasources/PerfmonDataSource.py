@@ -412,6 +412,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def get_data(self):
         """Wait for data to arrive if necessary, then return it."""
         data = PERSISTER.pop(self.config.id)
+        if self.state == PluginStates.STOPPED:
+            defer.returnValue(data)
         if data and data['values']:
             defer.returnValue(data)
         if data and data['events']:
