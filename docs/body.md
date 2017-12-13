@@ -1810,6 +1810,7 @@ Changes
 -   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
 -   Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)
 -   Fix Windows: Tasks building up with a bad config (ZPS-2717)
+-   Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
 
 2.8.2
 
