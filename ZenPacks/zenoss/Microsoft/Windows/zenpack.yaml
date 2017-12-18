@@ -656,8 +656,9 @@ classes:
       statusname:
         label: Status Name
       iis_version:
-        label: Version
-        type: int
+        label: IIS Version
+        type: string
+        grid_display: true
     monitoring_templates: [IISSites]
     impacts: []
     impacted_by: [device]
