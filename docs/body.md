@@ -1804,6 +1804,7 @@ Changes
 2.8.4
 
 -   Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)
+-   Fix Windows - Error: local variable 'kerberos' referenced before assignment (ZPS-2738)
 
 2.8.3
 
