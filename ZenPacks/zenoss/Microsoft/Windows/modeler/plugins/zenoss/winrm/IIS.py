@@ -16,6 +16,7 @@ namespace:
     IIsWebVirtualDirSetting
     IIsWebServerSetting
 '''
+import re
 
 from Products.ZenEvents import ZenEventClasses
 from Products.DataCollector.plugins.DataMaps import ObjectMap
@@ -52,7 +53,8 @@ class IIS(WinRMPlugin):
     }
 
     iis_version = None
-    powershell_commands = {"version": "(Get-Command $env:SystemRoot\system32\inetsrv\InetMgr.exe).Version.Major"}
+    powershell_commands = {"version": "$iisversion = get-itemproperty HKLM:\SOFTWARE\Microsoft\InetStp\ | select versionstring;"
+                           "Write-Host $iisversion.versionstring;"}
 
     @defer.inlineCallbacks
     def run_query(self, conn_info, wql, log):
@@ -87,12 +89,24 @@ class IIS(WinRMPlugin):
 
         version_results = output.get('version')
         if version_results and version_results.stdout:
+            # version should be in 'Version x.x' format
+            # 7 and above use the same namespace/query
             try:
-                self.iis_version = int(version_results.stdout[0])
-            except ValueError, IndexError:
-                log.debug('Incorrect IIS data received: {}'.format(version_results.stdout))
+                self.iis_version = re.match('Version (\d\.*\d*).*', version_results.stdout[0]).group(1)
+            except (IndexError, AttributeError):
+                if version_results.stdout:
+                    log.debug("Malformed version information on {}: {}".format(device.id, version_results.stdout[0]))
+                if version_results.stderr:
+                    log.debug("Error retrieving IIS version on {}: {}".format(device.id, version_results.stderr))
 
-        for iisSite in output.get('IIs7Site', ()):
+        IIs7Sites = output.get('IIs7Site', ())
+        if not self.iis_version:
+            if IIs7Sites:
+                self.iis_version = '7'
+            else:
+                self.iis_version = '6'
+
+        for iisSite in IIs7Sites:
             name = iisSite.Name
             query = 'ASSOCIATORS OF {Site.Name="%s"} WHERE ResultClass=Application' % name
             result = yield self.run_query(conn_info, query, log)
@@ -127,9 +141,12 @@ class IIS(WinRMPlugin):
             for iisSite in results.get('IIsWebServerSetting', ()):
                 om = self.objectMap()
                 om.id = self.prepId(iisSite.Name)
-                om.statusname = iisSite.Name
+                if float(self.iis_version) == 6:
+                    om.statusname = iisSite.Name
+                else:
+                    om.statusname = iisSite.ServerComment
                 om.title = iisSite.ServerComment
-                om.iis_version = self.iis_version or 6
+                om.iis_version = self.iis_version
                 om.sitename = iisSite.ServerComment  # Default Web Site
 
                 for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
@@ -144,7 +161,7 @@ class IIS(WinRMPlugin):
                     om = self.objectMap()
                     om.id = self.prepId(iisSite.Id)
                     om.title = om.statusname = om.sitename = iisSite.Name
-                    om.iis_version = self.iis_version or 7
+                    om.iis_version = self.iis_version
                     om.apppool = iisSite.ApplicationPool
                     rm.append(om)
                 except AttributeError:

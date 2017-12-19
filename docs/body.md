@@ -1801,7 +1801,12 @@ Monitoring Templates
 Changes
 -------
 
+2.8.4
+
+-   Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)
+
 2.8.3
+
 -   Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)
 -   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
 -   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
@@ -1810,7 +1815,7 @@ Changes
 -   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
 -   Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)
 -   Fix Windows: Tasks building up with a bad config (ZPS-2717)
--   Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
+-   Tested with Zenoss Resource Manager 5.3.3 and 6.0.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
 
 2.8.2
 
