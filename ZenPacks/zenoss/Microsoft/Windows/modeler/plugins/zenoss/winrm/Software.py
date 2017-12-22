@@ -67,7 +67,7 @@ class Software(WinRMPlugin):
                     key, value = keyvalues.split('=')
                 except ValueError:
                     continue
-                value = str(value)
+                value = str(value.strip())
                 try:
                     if key == "Vendor":
                         checkValidId(None, value, allow_dup=False)
