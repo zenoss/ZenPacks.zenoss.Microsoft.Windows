@@ -164,7 +164,8 @@ class ZenPack(schema.ZenPack):
         except AttributeError:
             exchange_version = None
 
-        # ZPS-2197: Remove duplicate datasources when Exchange ZP is installed
+        # ZPS-2197, ZPS-2755: Remove duplicate datasources when Exchange ZP is
+        # installed
         if exchange_version:
             org = self.dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
 
@@ -173,10 +174,13 @@ class ZenPack(schema.ZenPack):
                     continue
 
                 template.manage_deleteRRDDataSources(
-                    ['smtpServerLocalQueueLength', 'mseisRPCAveragedLatency'])
+                    ['smtpServerLocalQueueLength',
+                     'mseisRPCAveragedLatency',
+                     'smtpServerMessagesDeliveredPerSec'])
 
                 template.manage_deleteGraphDefinitions(
                     ['SMTP Server - Active Delivery Queue Length',
+                     'Exchange - RPC Latency',
                      'SMTP Server - Message Delivery Rate'])
 
         # copy kerberos.so file to python path
