@@ -270,7 +270,7 @@ Organization Management" for 2010 and later installations.
 Note: When Microsoft.Exchange ZenPack is installed,
 \\MSExchangeTransport Queues(\_Total)\\Active Mailbox Delivery Queue Length,
 \\MSExchange Delivery SmtpSend(\_Total)\\Messages Sent/sec
-and \\MSExchangeIS\\RPC Averaged Latency will be disabled since the same
+and \\MSExchangeIS\\RPC Averaged Latency will be removed since the same
 metrics are collected by Exchange ZenPack.
 
 Note: IIS Management Scripts and Tools needs to be installed on the
