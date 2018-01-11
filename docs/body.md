@@ -1101,6 +1101,9 @@ important.
 -   zWindowsRemodelEventClassKeys
     :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
 
+-   zWinRMConnectTimeout
+    :   Used to define the time out for establishing a winrm connection.  If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1802,6 +1805,7 @@ Changes
 -   Fix Windows - Error: local variable 'kerberos' referenced before assignment (ZPS-2738)
 -   Fix Quote issue for polling custom event logs (ZPS-2741)
 -   Fix Modelling a Windows device fails with trace re: Software Plugin (ZPS-2745)
+-   Fix Windows: Tasks building up with bad network connections (ZPS-2829)
 
 2.8.3
 

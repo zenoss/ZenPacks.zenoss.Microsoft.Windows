@@ -260,7 +260,6 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
     @coroutine
     def collect(self, config):
-        print '# of datasources: {}'.format(len(config.datasources))
         conn_info = createConnectionInfo(config.datasources[0])
         client = EnumerateClient(conn_info)
 

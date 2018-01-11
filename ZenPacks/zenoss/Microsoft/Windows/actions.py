@@ -161,7 +161,8 @@ class WinCommandAction(IActionBase):
             locale=locale,
             code_page=code_page,
             include_dir=include_dir,
-            disable_rdns=disable_rdns)
+            disable_rdns=disable_rdns,
+            connect_timeout=device.zWinRMConnectTimeout)
 
     def _execute_command(self, device, command):
         """

@@ -45,6 +45,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txcoroutine import coroutine
 
+from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -868,6 +869,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = 'MSSQLSERVER'
                 else:
                     cmd_line_input = dsconf0.params['instanceid']
+            if dsconf.params['strategy'] == 'powershell MSSQL':
+                conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
             command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] == 'Custom Command':
             check_datasource(dsconf0)
@@ -882,21 +885,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line, script = strategy.build_command_line(counters)
 
-        if dsconf0.params['strategy'] == 'powershell MSSQL':
-            command = create_long_running_command(conn_info)
-            yield command.start(command_line, ps_script=script)
-            stdout = []
-            stderr = []
-            while command._exit_code is None:
-                stdout_r, stderr_r = yield command.receive()
-                stdout += stdout_r
-                stderr += stderr_r
-
-            results = CommandResponse(stdout, stderr, command._exit_code)
-            yield command.stop()
-        else:
-            command = SingleCommandClient(conn_info)
-            results = yield command.run_command(command_line, script)
+        command = SingleCommandClient(conn_info)
+        results = yield command.run_command(command_line, script)
 
         defer.returnValue((strategy, config.datasources, results))
 
@@ -912,6 +902,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             return data
 
         strategy, dsconfs, result = results
+        log.debug('results: {}'.format(result))
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
             data['events'] = cmdResult.events
@@ -1090,6 +1081,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         msg, event_class = check_for_network_error(
             result, config, default_class='/Status/Winrm')
         eventKey = 'winrsCollection'
+        msg = 'ShellDataSourcePlugin: ' + msg
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
                 eventKey = 'datasourceWarning_{0}'.format(

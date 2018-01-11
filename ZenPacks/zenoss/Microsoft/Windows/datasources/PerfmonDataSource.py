@@ -225,19 +225,23 @@ class ComplexLongRunningCommand(object):
 
         return commands
 
-    @coroutine
     def start(self, command_lines):
         """Start a separate command for each command line.
         If the number of commands has changed since the last start,
         create an appropriate set of commands.
         """
+        deferreds = []
         if self.num_commands != len(command_lines):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
             LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
             if command is not None:
-                yield command.start(self.ps_command, ps_script=command_line)
+                deferreds.append(add_timeout(command.start(self.ps_command,
+                                                           ps_script=command_line),
+                                             self.dsconf.zWinRMConnectTimeout))
+
+        return defer.DeferredList(deferreds, consumeErrors=True)
 
     @coroutine
     def stop(self):
@@ -371,9 +375,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.state = PluginStates.STARTING
 
         try:
-            yield add_timeout(
-                self.complex_command.start(self.commandlines),
-                self.cycletime)
+            # complex_command.start returns a DeferredList with baked-in timeouts
+            results = yield self.complex_command.start(self.commandlines)
         except Exception as e:
             errorMessage = "Windows Perfmon Error on {}: {}".format(
                 self.config.id,
@@ -393,7 +396,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.state = PluginStates.STOPPED
             defer.returnValue(None)
 
-        self.state = PluginStates.STARTED
+        # check to see if commands started
+        for success, data in results:
+            if success:
+                self.state = PluginStates.STARTED
+            else:
+                LOG.debug("%s: Perfmon command(s) did not start: %s", self.config.id, data)
+
+        if self.state != PluginStates.STARTED:
+            self.state = PluginStates.STOPPED
         self.collected_samples = 0
         self.collected_counters = set()
 
@@ -402,7 +413,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # When running in the foreground without the --cycle option we
         # must wait for the receive deferred to fire to have any chance
         # at collecting data.
-        if not self.cycling:
+        if not self.cycling and self.receive_deferreds:
             yield self.receive_deferreds
 
         PERSISTER.start()
@@ -424,7 +435,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
             self.data_deferred = defer.Deferred()
             try:
-                yield add_timeout(self.data_deferred, self.sample_interval)
+                yield add_timeout(self.data_deferred, self.config.datasources[0].zWinRMConnectTimeout)
             except Exception:
                 pass
         else:
@@ -457,7 +468,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield add_timeout(
                     self.complex_command.stop(),
-                    self.cycletime)
+                    self.config.datasources[0].zWinRMConnectTimeout)
             except (RequestError, Exception) as ex:
                 if 'the request contained invalid selectors for the resource' in ex.message:
                     # shell was lost due to reboot, service restart, or other circumstance
@@ -498,15 +509,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         for cmd in self.complex_command.commands:
             if cmd is not None:
                 try:
-                    deferreds.append(cmd.receive())
+                    if cmd._command_id is not None:
+                        deferreds.append(add_timeout(cmd.receive(), OPERATION_TIMEOUT + 5))
                 except Exception as err:
                     LOG.error('{}: Windows Perfmon receive error {0}'.format(
                         self.config.id, err))
 
         if deferreds:
-            self.receive_deferreds = add_timeout(
-                defer.DeferredList(deferreds, consumeErrors=True),
-                OPERATION_TIMEOUT + 5)
+            self.receive_deferreds = defer.DeferredList(deferreds, consumeErrors=True)
 
             self.receive_deferreds.addCallbacks(
                 self.onReceive, self.onReceiveFail)
@@ -542,6 +552,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
+        LOG.debug("Get-Counter results: {}".format(result))
         collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
@@ -593,7 +604,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.data_deferred.callback(None)
 
         # Report missing counters every sample interval.
-        if self.collected_counters and self.collected_samples >= self.max_samples:
+        if self.collected_counters and self.collected_samples >= 0:
             self.reportMissingCounters(
                 self.counter_map, self.collected_counters)
             # Reinitialize collected counters for reporting.
@@ -613,7 +624,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield add_timeout(
                     self.remove_corrupt_counters(),
-                    self.cycletime)
+                    self.config.datasources[0].zWinRMConnectTimeout)
             except Exception:
                 pass
             if self.ps_counter_map.keys():
@@ -705,14 +716,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if num_counters == 0:
             pass
         elif num_counters == 1:
-            result = yield winrs.run_command(ps_command, ps_script(counter_list))
+            result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_list)),
+                                       OPERATION_TIMEOUT + 5)
             if result.stderr:
                 corrupt_list.extend(counter_list)
         else:
             mid_index = num_counters / 2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
-                result = yield winrs.run_command(ps_command, ps_script(counter_slice))
+                result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_slice)),
+                                           OPERATION_TIMEOUT + 5)
                 if result.stderr:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)

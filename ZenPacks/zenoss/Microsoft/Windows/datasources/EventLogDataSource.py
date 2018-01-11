@@ -235,7 +235,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @coroutine
     def collect(self, config):
-        log.info('{} Start Collection of Events'.format(config.id))
+        log.debug('{} Start Collection of Events'.format(config.id))
 
         ds0 = config.datasources[0]
 

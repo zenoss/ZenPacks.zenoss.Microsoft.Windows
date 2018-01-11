@@ -317,7 +317,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         log.debug('{}: Windows services query results: {}'.format(config.id, results))
         try:
             serviceinfo = results[results.keys()[0]]
-        except:
+        except Exception:
             data['events'].append({
                 'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,
@@ -389,7 +389,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         if isinstance(result, Failure):
             result = result.value
             if isinstance(result, error.TimeoutError):
-                result.message = 'Timeout while connecting to host'
+                result.message = 'Timeout while connecting to host {}'.format(config.id)
                 prefix = ''
         msg = 'WindowsServiceLog: {0}{1} {2}'.format(prefix, result, config)
         logg = log.error

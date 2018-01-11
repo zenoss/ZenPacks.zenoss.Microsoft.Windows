@@ -365,19 +365,19 @@ def check_for_network_error(result, config, default_class='/Status/Winrm'):
     '''
     str_result = str(result)
     if 'No route to host' in str_result:
-        return 'No route to host', '/Status'
+        return 'No route to host {}'.format(config.id), '/Status'
 
     if 'timeout' in str_result:
-        return 'Timeout while connecting to host', '/Status'
+        return 'Timeout while connecting to host {}'.format(config.id), '/Status'
 
     if 'refused' in str_result:
-        return 'Connection was refused by other side', '/Status'
+        return 'Connection was refused by other side {}'.format(config.id), '/Status'
 
     if 'Unauthorized' in str_result:
-        return 'Unauthorized, check username and password', '/Status'
+        return 'Unauthorized, check username and password {}'.format(config.id), '/Status'
 
     msg = 'Failed collection {0} on {1}'.format(
-        result.value.message, config
+        result.value.message, config.id
     )
 
     return msg, default_class
