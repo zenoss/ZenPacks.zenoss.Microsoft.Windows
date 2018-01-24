@@ -176,16 +176,21 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
 
     @save
     def onSuccess(self, results, config):
+        log.debug('IIS Site DataSource results: {}'.format(results))
         data = self.new_data()
         site_results = {}
-        if float(config.datasources[0].params['iis_version']) == 6:
-            iis_results = results[0]['iis6']
-        else:
-            iis_results = results[0]['iis7']
+        try:
+            if float(config.datasources[0].params['iis_version']) == 6 or 'iis7' not in results[0]:
+                iis_results = results[0]['iis6']
+            else:
+                iis_results = results[0]['iis7']
+        except KeyError:
+            log.debug('No results from IIS status query')
         try:
             for result in iis_results:
                 site_results[result.Name] = result.ServerAutoStart
-        except Exception:
+        except Exception as e:
+            log.debug('Error processing IIS site status results: %s', e)
             pass
         app_pool = None
         app_pool_statuses = {}

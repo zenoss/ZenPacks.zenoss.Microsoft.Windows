@@ -51,6 +51,9 @@ zProperties:
     default: 1
   zWindowsRemodelEventClassKeys:
     type: lines
+  zWinRMConnectTimeout:
+    type: int
+    default: 60
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService

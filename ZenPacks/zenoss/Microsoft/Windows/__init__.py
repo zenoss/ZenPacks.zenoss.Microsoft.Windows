@@ -148,7 +148,9 @@ class ZenPack(schema.ZenPack):
                                                               'description': 'Use in conjunction with schedule_remodel '
                                                                              'in ZenPacks.zenoss.Microsoft.Windows.actions to '
                                                                              'initiate a remodel of a Windows or Cluster Device.',
-                                                              'label': 'Windows remodel event class keys'}
+                                                              'label': 'Windows remodel event class keys'},
+                            'zWinRMConnectTimeout': {'type': 'int',
+                                                     'description': 'Used to define the time out for establishing a winrm connection.'}
                             }
 
     def install(self, app):
