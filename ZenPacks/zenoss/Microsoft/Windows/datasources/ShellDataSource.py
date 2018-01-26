@@ -1081,7 +1081,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         msg, event_class = check_for_network_error(
             result, config, default_class='/Status/Winrm')
         eventKey = 'winrsCollection'
-        msg = 'ShellDataSourcePlugin: ' + msg
         if isinstance(result, Failure):
             if isinstance(result.value, WindowsShellException):
                 eventKey = 'datasourceWarning_{0}'.format(
@@ -1096,6 +1095,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             elif send_to_debug(result):
                 logg = log.debug
 
+        msg = 'ShellDataSourcePlugin: ' + msg
         logg(msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
