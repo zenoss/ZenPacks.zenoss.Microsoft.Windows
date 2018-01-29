@@ -1807,6 +1807,7 @@ Changes
 -   Fix Quote issue for polling custom event logs (ZPS-2741)
 -   Fix Modelling a Windows device fails with trace re: Software Plugin (ZPS-2745)
 -   Fix Windows: Tasks building up with bad network connections (ZPS-2829)
+-   Fix MicrosoftExchange - N/A for some graphs of Exchange Server component and on Graphs tab (ZPS-2197)
 
 2.8.3
 
