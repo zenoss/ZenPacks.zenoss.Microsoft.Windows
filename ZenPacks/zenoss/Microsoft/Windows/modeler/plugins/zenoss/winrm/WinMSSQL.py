@@ -27,7 +27,6 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
 from ZenPacks.zenoss.Microsoft.Windows.utils import save
 
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.shell import create_long_running_command, CommandResponse
 
 addLocalLibPath()
 
@@ -39,7 +38,6 @@ class SQLCommander(object):
 
     def __init__(self, conn_info):
         self.winrs = SingleCommandClient(conn_info)
-        self.long_winrs = create_long_running_command(conn_info)
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
@@ -106,26 +104,13 @@ class SQLCommander(object):
         )
 
     @defer.inlineCallbacks
-    def run_command(self, pscommand, long_command=False):
+    def run_command(self, pscommand):
         """Run PowerShell command."""
         buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
                        'Management.Automation.Host.Size (4096, 512);')
         script = "\"{0} & {{{1}}}\"".format(
             buffer_size, pscommand.replace('\n', ' '))
-        if long_command is False:
-            results = yield self.winrs.run_command(self.PS_COMMAND, ps_script=script)
-        else:
-            self.long_winrs._exit_code = None
-            yield self.long_winrs.start(self.PS_COMMAND, ps_script=script)
-            stdout = []
-            stderr = []
-            while self.long_winrs._exit_code is None:
-                stdout_r, stderr_r = yield self.long_winrs.receive()
-                stdout += stdout_r
-                stderr += stderr_r
-
-            results = CommandResponse(stdout, stderr, self.long_winrs._exit_code)
-            yield self.long_winrs.stop()
+        results = yield self.winrs.run_command(self.PS_COMMAND, ps_script=script)
         defer.returnValue(results)
 
 
@@ -173,6 +158,7 @@ class WinMSSQL(WinRMPlugin):
             defer.returnValue(results)
 
         conn_info = self.conn_info(device)
+        conn_info = conn_info._replace(timeout=device.zCollectorClientTimeout - 5)
         winrs = SQLCommander(conn_info)
 
         dbinstances = winrs.get_instances_names(isCluster)
@@ -355,7 +341,7 @@ class WinMSSQL(WinRMPlugin):
             instance_info = yield winrs.run_command(
                 ''.join(buffer_size + getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
                         sqlConnection + db_sqlConnection +
-                        backup_sqlConnection + job_sqlConnection), long_command=True
+                        backup_sqlConnection + job_sqlConnection)
             )
 
             self.log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))

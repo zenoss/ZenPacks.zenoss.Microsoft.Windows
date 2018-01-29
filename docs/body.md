@@ -1127,6 +1127,7 @@ Note: In order to properly monitor SQL Server, the Client Tools SDK must be inst
 *   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank. 
 *   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance. 
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
+*   For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 
