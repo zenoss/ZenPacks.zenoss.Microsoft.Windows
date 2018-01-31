@@ -188,7 +188,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             log.debug('No results from IIS status query')
         try:
             for result in iis_results:
-                site_results[result.Name] = result.ServerAutoStart
+                site_results[prepId(result.Name)] = result.ServerAutoStart
         except Exception as e:
             log.debug('Error processing IIS site status results: %s', e)
             pass
@@ -213,10 +213,14 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 app_pool = None
 
         for ds in config.datasources:
+            sitestatusinfo = None
             try:
                 sitestatusinfo = site_results[ds.params['statusname']]
-            except Exception:
-                sitestatusinfo = None
+            except KeyError:
+                try:
+                    sitestatusinfo = site_results[prepId(ds.component)]
+                except KeyError:
+                    pass
             sitestatus = 'Unknown'
 
             if sitestatusinfo:
@@ -236,15 +240,29 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 severity = ds.severity
 
-            data['events'].append({
-                'eventClassKey': 'IISSiteStatus',
-                'eventKey': 'IISSite',
-                'severity': severity,
-                'eventClass': ds.eventClass,
-                'summary': evtmessage.decode('UTF-8'),
-                'component': prepId(ds.component),
-                'device': config.id,
-            })
+            if sitestatus == 'Unknown':
+                message = 'Ensure that IIS Management Scripts and Tools'
+
+                data['events'].append({
+                    'eventClassKey': 'IISSiteStatus',
+                    'eventKey': 'IISSite',
+                    'severity': severity,
+                    'eventClass': ds.eventClass,
+                    'summary': evtmessage.decode('UTF-8'),
+                    'component': prepId(ds.component),
+                    'device': config.id,
+                    'message': message,
+                })
+            else:
+                data['events'].append({
+                    'eventClassKey': 'IISSiteStatus',
+                    'eventKey': 'IISSite',
+                    'severity': severity,
+                    'eventClass': ds.eventClass,
+                    'summary': evtmessage.decode('UTF-8'),
+                    'component': prepId(ds.component),
+                    'device': config.id,
+                })
             try:
                 pool_status = app_pool_statuses[ds.params['apppool']]
             except Exception:
