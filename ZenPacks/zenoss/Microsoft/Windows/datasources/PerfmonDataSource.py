@@ -232,7 +232,6 @@ class ComplexLongRunningCommand(object):
         """
         deferreds = []
         if self.num_commands != len(self.commands):
-            self.num_commands = len(self.commands)
             self.commands = self._create_commands(self.num_commands)
 
         for command, command_line in zip(self.commands, command_lines):
