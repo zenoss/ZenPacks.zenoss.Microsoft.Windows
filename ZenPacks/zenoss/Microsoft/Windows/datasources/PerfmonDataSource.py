@@ -237,6 +237,7 @@ class ComplexLongRunningCommand(object):
         for command, command_line in zip(self.commands, command_lines):
             LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
             if command is not None:
+                command.update_conn_info(createConnectionInfo(self.dsconf))
                 deferreds.append(add_timeout(command.start(self.ps_command,
                                                            ps_script=command_line),
                                              self.dsconf.zWinRMConnectTimeout))

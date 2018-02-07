@@ -1808,6 +1808,9 @@ Changes
 -   Fix Modelling a Windows device fails with trace re: Software Plugin (ZPS-2745)
 -   Fix Windows: Tasks building up with bad network connections (ZPS-2829)
 -   Fix MicrosoftExchange - N/A for some graphs of Exchange Server component and on Graphs tab (ZPS-2197)
+-   Fix Microsoft Windows: zenpython memory increases until restart required (ZPS-2176)
+-   Fix CPU use builds over time - PythonCollector MicrosoftWindows (ZPS-2480)
+-   Fix Modelling using Kerberos generates two tickets (ZPS-2394)
 
 2.8.3
 
