@@ -231,8 +231,8 @@ class ComplexLongRunningCommand(object):
         create an appropriate set of commands.
         """
         deferreds = []
-        if self.num_commands != len(self.commands):
-            self.commands = self._create_commands(self.num_commands)
+        if self.num_commands != len(command_lines):
+            self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
             LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
