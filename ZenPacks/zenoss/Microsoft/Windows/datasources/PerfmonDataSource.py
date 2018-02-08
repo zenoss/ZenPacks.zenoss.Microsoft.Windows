@@ -298,8 +298,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
             counter = dsconf.params['counter'].decode('utf-8').lower()
-            self.counter_map[counter] = (dsconf.component, dsconf.datasource, dsconf.eventClass)
-            self.ps_counter_map[counter] = (dsconf.component, dsconf.datasource)
+            if counter not in self.counter_map:
+                self.counter_map[counter] = []
+                self.ps_counter_map[counter] = []
+            self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
+            self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
 
         self._build_commandlines()
 
@@ -585,19 +588,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if ',' in value:
                     value = value.replace(',', '.', 1)
 
-                component, datasource, event_class = self.counter_map.get(counter, (None, None, None))
-                if datasource:
-                    self.collected_counters.add(counter)
+                comp_ds_ec_l = self.counter_map.get(counter, [])
+                for component, datasource, event_class in comp_ds_ec_l:
+                    if datasource:
+                        self.collected_counters.add(counter)
 
-                    # We special-case the sysUpTime datapoint to convert
-                    # from seconds to centi-seconds. Due to its origin in
-                    # SNMP monitor Zenoss expects uptime in centi-seconds
-                    # in many places.
-                    if datasource == 'sysUpTime' and value is not None:
-                        value = float(value) * 100
+                        # We special-case the sysUpTime datapoint to convert
+                        # from seconds to centi-seconds. Due to its origin in
+                        # SNMP monitor Zenoss expects uptime in centi-seconds
+                        # in many places.
+                        if datasource == 'sysUpTime' and value is not None:
+                            value = float(value) * 100
 
-                    PERSISTER.add_value(
-                        self.config.id, component, datasource, value, collect_time)
+                        PERSISTER.add_value(
+                            self.config.id, component, datasource, value, collect_time)
             except Exception, err:
                 LOG.debug('{}: Windows Perfmon could not process a sample. Error: {}'.format(self.config.id, err))
 
@@ -767,15 +771,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         events = {}
         for req_counter in requested:
             if req_counter in CORRUPT_COUNTERS[dsconf0.device]:
-                component, datasource, event_class = requested.get(req_counter, (None, None, None))
-                if event_class and event_class != default_eventClass:
-                    if event_class not in events:
-                        events[event_class] = []
-                    events[event_class].append(req_counter)
-                else:
-                    if default_eventClass not in events:
-                        events[default_eventClass] = []
-                    events[default_eventClass].append(req_counter)
+                comp_ds_ec_l = requested.get(req_counter, [])
+                for component, datasource, event_class in comp_ds_ec_l:
+                    if event_class and event_class != default_eventClass:
+                        if event_class not in events:
+                            events[event_class] = []
+                        events[event_class].append(req_counter)
+                    else:
+                        if default_eventClass not in events:
+                            events[default_eventClass] = []
+                        events[default_eventClass].append(req_counter)
 
         if events:
             for event in events:
@@ -789,16 +794,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 })
 
         for req_counter in requested:
-            component, datasource, event_class = requested.get(req_counter, (None, None, None))
-            event_class = event_class or default_eventClass
-            if event_class not in events:
-                PERSISTER.add_event(self.config.id, self.config.datasources, {
-                    'device': self.config.id,
-                    'severity': ZenEventClasses.Clear,
-                    'eventClass': event_class or default_eventClass,
-                    'eventKey': 'Windows Perfmon Corrupt Counters',
-                    'summary': '0 counters corrupt in collection',
-                })
+            comp_ds_ec_l = requested.get(req_counter, [])
+            for component, datasource, event_class in comp_ds_ec_l:
+                event_class = event_class or default_eventClass
+                if event_class not in events:
+                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                        'device': self.config.id,
+                        'severity': ZenEventClasses.Clear,
+                        'eventClass': event_class or default_eventClass,
+                        'eventKey': 'Windows Perfmon Corrupt Counters',
+                        'summary': '0 counters corrupt in collection',
+                    })
 
     def reportMissingCounters(self, requested, returned):
         """Emit logs and events for counters requested but not returned."""
@@ -808,15 +814,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         events = {}
         for req_counter in requested:
             if req_counter in missing_counters:
-                component, datasource, event_class = requested.get(req_counter, (None, None, None))
-                if event_class and event_class != default_eventClass:
-                    if event_class not in events:
-                        events[event_class] = []
-                    events[event_class].append(req_counter)
-                else:
-                    if default_eventClass not in events:
-                        events[default_eventClass] = []
-                    events[default_eventClass].append(req_counter)
+                comp_ds_ec_l = requested.get(req_counter, [])
+                for component, datasource, event_class in comp_ds_ec_l:
+                    if event_class and event_class != default_eventClass:
+                        if event_class not in events:
+                            events[event_class] = []
+                        events[event_class].append(req_counter)
+                    else:
+                        if default_eventClass not in events:
+                            events[default_eventClass] = []
+                        events[default_eventClass].append(req_counter)
 
         if events:
             for event in events:
@@ -830,16 +837,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 })
 
         for req_counter in requested:
-            component, datasource, event_class = requested.get(req_counter, (None, None, None))
-            event_class = event_class or default_eventClass
-            if event_class not in events:
-                PERSISTER.add_event(self.config.id, self.config.datasources, {
-                    'device': self.config.id,
-                    'severity': ZenEventClasses.Clear,
-                    'eventClass': event_class or default_eventClass,
-                    'eventKey': 'Windows Perfmon Missing Counters',
-                    'summary': '0 counters missing in collection',
-                })
+            comp_ds_ec_l = requested.get(req_counter, [])
+            for component, datasource, event_class in comp_ds_ec_l:
+                event_class = event_class or default_eventClass
+                if event_class not in events:
+                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                        'device': self.config.id,
+                        'severity': ZenEventClasses.Clear,
+                        'eventClass': event_class or default_eventClass,
+                        'eventKey': 'Windows Perfmon Missing Counters',
+                        'summary': '0 counters missing in collection',
+                    })
 
     def missing_counters_summary(self, count):
         return (
