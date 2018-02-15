@@ -131,15 +131,17 @@ class DataPersister(object):
     max_data_age = 3600
 
     def __init__(self):
+        self.looping_call = LoopingCall(self.maintenance)
         self.devices = {}
 
     def start(self, result=None):
         if result:
             LOG.debug("Windows Perfmon data maintenance failed: {}".format(result))
 
-        LOG.debug("Windows Perfmon starting data maintenance")
-        d = LoopingCall(self.maintenance).start(self.maintenance_interval)
-        d.addBoth(self.start)
+        if not self.looping_call.running:
+            LOG.debug("Windows Perfmon starting data maintenance")
+            d = self.looping_call.start(self.maintenance_interval)
+            d.addBoth(self.start)
 
     def maintenance(self):
         LOG.debug("Windows Perfmon performing periodic data maintenance")
