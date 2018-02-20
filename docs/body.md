@@ -541,6 +541,8 @@ filter will be used:
 `{time}` will be replaced by the number of milliseconds since the last
 query automatically.
 
+Note: The max age field is only used the first time that the datasource is run.  Subsequent queries will only look at events that have occurred since the last time this datasource was run.   We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource was run.  If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
+
 Note: The script to search for events and return relevant data is
 approximately 3700 characters. Due to the Windows 8192 character limit
 on the shell, any XML or PowerShell queries will need to be less than
@@ -1811,6 +1813,7 @@ Changes
 -   Fix Microsoft Windows: zenpython memory increases until restart required (ZPS-2176)
 -   Fix CPU use builds over time - PythonCollector MicrosoftWindows (ZPS-2480)
 -   Fix Modelling using Kerberos generates two tickets (ZPS-2394)
+-   Fix Windows data sources are improperly setting eventClass (ZPS-3056)
 
 2.8.3
 
