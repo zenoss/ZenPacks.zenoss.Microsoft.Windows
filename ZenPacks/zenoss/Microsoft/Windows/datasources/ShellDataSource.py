@@ -592,9 +592,9 @@ class PowershellMSSQLJobStrategy(object):
         except ValueError:
             msg = 'Malformed data received for MSSQL Job {}'.format(jobname)
             collectedResults.events.append({
-                'eventClass': '/Status',
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'winrsCollection MSSQLJob',
+                'eventKey': dsconfs[0].eventKey if dsconfs[0].eventKey else self.key,
                 'summary': msg,
                 'device': dsconfs[0].device,
                 'query_results': result.stdout
@@ -1090,7 +1090,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             elif isinstance(result.value, RequestError):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
-                event_class = '/Status'
             elif send_to_debug(result):
                 logg = log.debug
 
@@ -1099,7 +1098,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
-                eventClass=event_class,
                 severity=ZenEventClasses.Warning,
                 eventClassKey='winrsCollectionError',
                 eventKey=eventKey,
