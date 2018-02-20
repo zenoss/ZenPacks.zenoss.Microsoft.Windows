@@ -1064,7 +1064,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         # Clear previous error event
         data['events'].append(dict(
-            eventClass='/Status',
             severity=ZenEventClasses.Clear,
             eventClassKey='winrsCollectionError',
             eventKey='winrsCollection',
