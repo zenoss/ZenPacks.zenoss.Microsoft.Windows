@@ -55,7 +55,8 @@ class TestShellDataSourcePlugin(BaseTestCase):
 
         for err in winrm_errors:
             data = self.plugin.onError(Failure(err), self.config)
-            self.assertEquals(data['events'][0]['eventClass'], '/Status/Winrm')
+            self.assertEquals(data['events'][0]['eventClassKey'], 'winrsCollectionError')
+            self.assertTrue('eventClass' not in data['events'][0])
 
         for err in kerberos_errors:
             data = self.plugin.onError(Failure(err), self.config)
