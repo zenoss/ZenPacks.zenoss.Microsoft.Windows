@@ -1,0 +1,104 @@
+(lp0
+((dp1
+S'iis7'
+p2
+(lp3
+ccopy_reg
+_reconstructor
+p4
+(ctxwinrm.enumerate
+Item
+p5
+c__builtin__
+object
+p6
+Ntp7
+Rp8
+(dp9
+S'ServerAutoStart'
+p10
+S'true'
+p11
+sS'Name'
+p12
+S'Default Web Site'
+p13
+sbasS'iis6'
+p14
+(lp15
+g4
+(g5
+g6
+Ntp16
+Rp17
+(dp18
+g10
+S'true'
+p19
+sg12
+S'W3SVC/1'
+p20
+sbasg4
+(ctxwinrm.shell
+CommandResponse
+p21
+g6
+Ntp22
+Rp23
+(dp24
+S'_stderr'
+p25
+(lp26
+sS'_exit_code'
+p27
+I0
+sS'_stdout'
+p28
+(lp29
+VTimestamp                 CounterSamples
+p30
+aV---------                 --------------
+p31
+aV12/15/2017 10:23:44 PM    \u005c\u005cexch2010\u005capp_pool_was(_total)\u005ccurrent application pool state :
+p32
+aV0
+p33
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangepowershellapppool)\u005ccurrent application pool state :
+p34
+aV3
+p35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangeautodiscoverapppool)\u005ccurrent application pool state :
+p36
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangeowacalendarapppool)\u005ccurrent application pool state :
+p37
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangepowershellproxyapppool)\u005ccurrent application pool state :
+p38
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangesyncapppool)\u005ccurrent application pool state :
+p39
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(asp.net v4.0 classic)\u005ccurrent application pool state :
+p40
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangeowaapppool)\u005ccurrent application pool state :
+p41
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(asp.net v4.0)\u005ccurrent application pool state :
+p42
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(classic .net apppool)\u005ccurrent application pool state :
+p43
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(defaultapppool)\u005ccurrent application pool state :
+p44
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangeservicesapppool)\u005ccurrent application pool state :
+p45
+ag35
+aV\u005c\u005cexch2010\u005capp_pool_was(msexchangeecpapppool)\u005ccurrent application pool state :
+p46
+ag35
+asbtp47
+a.

@@ -44,12 +44,9 @@ from . import send_to_debug
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
 
-namespace_iis6 = 'microsoftiisv2'
-namespace_iis7 = 'webadministration'
-resource_uri_iis6 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
-    namespace_iis6)
-resource_uri_iis7 = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'.format(
-    namespace_iis7)
+RESOURCE_URI = 'http://schemas.microsoft.com/wbem/wsman/1/wmi/root/{0}/*'
+RESOURCE_URI_IIS6 = RESOURCE_URI.format('microsoftiisv2')
+RESOURCE_URI_IIS7 = RESOURCE_URI.format('webadministration')
 
 
 def string_to_lines(string):
@@ -165,42 +162,35 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         wql_iis7 = 'select name, ServerAutoStart from Site'.format(
             ds0.params['statusname'])
 
-        iis_version = ds0.params['iis_version']
-
-        id_string = "device ({}) component ({})".format(config.id, ds0.component)
-        winrs = IISCommander(conn_info)
-        if not iis_version:
-            version = yield winrs.get_iis_version()
-            # version should be in 'Version x.x' format
-            # 7 and above use the same namespace/query
-            try:
-                iis_version = re.match('Version (\d).*', version.stdout[0]).group(1)
-            except (IndexError, AttributeError):
-                if version.stdout:
-                    log.error("Malformed version information on {}: {}".format(id_string, version.stdout[0]))
-                if version.stderr:
-                    log.error("Error retrieving IIS version on {}: {}".format(id_string, version.stderr[0]))
-                defer.returnValue(None)
-
-        if iis_version == 6:
-            WinRMQueries = [create_enum_info(wql=wql_iis6, resource_uri=resource_uri_iis6)]
-        else:
-            WinRMQueries = [create_enum_info(wql=wql_iis7, resource_uri=resource_uri_iis7)]
-
         winrm = EnumerateClient(conn_info)
-        winrm_results = yield winrm.do_collect(WinRMQueries)
-        log.debug(WinRMQueries)
+        queries = {create_enum_info(wql=wql_iis6, resource_uri=RESOURCE_URI_IIS6): 'iis6',
+                   create_enum_info(wql=wql_iis7, resource_uri=RESOURCE_URI_IIS7): 'iis7'}
+        query_results = yield winrm.do_collect(queries.iterkeys())
+        winrm_results = {}
+        for info, data in query_results.iteritems():
+            winrm_results[queries[info]] = data
+        log.debug(queries)
+        winrs = IISCommander(conn_info)
         winrs_results = yield winrs.get_app_pool_status()
         defer.returnValue((winrm_results, winrs_results))
 
     @save
     def onSuccess(self, results, config):
+        log.debug('IIS Site DataSource results: {}'.format(results))
         data = self.new_data()
         site_results = {}
         try:
-            for result in results[0][results[0].keys()[0]]:
-                site_results[result.Name] = result.ServerAutoStart
-        except Exception:
+            if float(config.datasources[0].params['iis_version']) == 6 or 'iis7' not in results[0]:
+                iis_results = results[0]['iis6']
+            else:
+                iis_results = results[0]['iis7']
+        except KeyError:
+            log.debug('No results from IIS status query')
+        try:
+            for result in iis_results:
+                site_results[prepId(result.Name)] = result.ServerAutoStart
+        except Exception as e:
+            log.debug('Error processing IIS site status results: %s', e)
             pass
         app_pool = None
         app_pool_statuses = {}
@@ -223,10 +213,14 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 app_pool = None
 
         for ds in config.datasources:
+            sitestatusinfo = None
             try:
                 sitestatusinfo = site_results[ds.params['statusname']]
-            except Exception:
-                sitestatusinfo = None
+            except KeyError:
+                try:
+                    sitestatusinfo = site_results[prepId(ds.component)]
+                except KeyError:
+                    pass
             sitestatus = 'Unknown'
 
             if sitestatusinfo:
@@ -246,15 +240,29 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 severity = ds.severity
 
-            data['events'].append({
-                'eventClassKey': 'IISSiteStatus',
-                'eventKey': 'IISSite',
-                'severity': severity,
-                'eventClass': ds.eventClass,
-                'summary': evtmessage.decode('UTF-8'),
-                'component': prepId(ds.component),
-                'device': config.id,
-            })
+            if sitestatus == 'Unknown':
+                message = 'Ensure that IIS Management Scripts and Tools'
+
+                data['events'].append({
+                    'eventClassKey': 'IISSiteStatus',
+                    'eventKey': 'IISSite',
+                    'severity': severity,
+                    'eventClass': ds.eventClass,
+                    'summary': evtmessage.decode('UTF-8'),
+                    'component': prepId(ds.component),
+                    'device': config.id,
+                    'message': message,
+                })
+            else:
+                data['events'].append({
+                    'eventClassKey': 'IISSiteStatus',
+                    'eventKey': 'IISSite',
+                    'severity': severity,
+                    'eventClass': ds.eventClass,
+                    'summary': evtmessage.decode('UTF-8'),
+                    'component': prepId(ds.component),
+                    'device': config.id,
+                })
             try:
                 pool_status = app_pool_statuses[ds.params['apppool']]
             except Exception:

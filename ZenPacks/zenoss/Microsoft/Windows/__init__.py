@@ -148,7 +148,9 @@ class ZenPack(schema.ZenPack):
                                                               'description': 'Use in conjunction with schedule_remodel '
                                                                              'in ZenPacks.zenoss.Microsoft.Windows.actions to '
                                                                              'initiate a remodel of a Windows or Cluster Device.',
-                                                              'label': 'Windows remodel event class keys'}
+                                                              'label': 'Windows remodel event class keys'},
+                            'zWinRMConnectTimeout': {'type': 'int',
+                                                     'description': 'Used to define the time out for establishing a winrm connection.'}
                             }
 
     def install(self, app):
@@ -163,21 +165,6 @@ class ZenPack(schema.ZenPack):
                 log.warn(EXCH_WARN)
         except AttributeError:
             exchange_version = None
-
-        # ZPS-2197: Remove duplicate datasources when Exchange ZP is installed
-        if exchange_version:
-            org = self.dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
-
-            for template in org.getRRDTemplates():
-                if template.id not in {'MSExchange2010IS', 'MSExchange2013IS'}:
-                    continue
-
-                template.manage_deleteRRDDataSources(
-                    ['smtpServerLocalQueueLength', 'mseisRPCAveragedLatency'])
-
-                template.manage_deleteGraphDefinitions(
-                    ['SMTP Server - Active Delivery Queue Length',
-                     'SMTP Server - Message Delivery Rate'])
 
         # copy kerberos.so file to python path
         osrelease = platform.release()

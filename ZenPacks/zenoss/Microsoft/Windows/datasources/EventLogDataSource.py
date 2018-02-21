@@ -161,7 +161,7 @@ class EventLogInfo(InfoBase):
                 node.childNodes[0].data = filter_text
             xml_query = prettify_xml(in_filter_xml)
             # undo replacement of single quotes with double
-            xml_query = re.sub(r"(\w+)='(\w+)'", r'\1="\2"', xml_query)
+            xml_query = re.sub(r"(\w+)='(\S+)'", r'\1="\2"', xml_query)
             # remove the xml header and replace any "&amp;" with "&"
             header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
             xml_query = xml_query.replace(header, '').replace('&amp;', '&')
@@ -235,7 +235,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @coroutine
     def collect(self, config):
-        log.info('{} Start Collection of Events'.format(config.id))
+        log.debug('{} Start Collection of Events'.format(config.id))
 
         ds0 = config.datasources[0]
 
