@@ -289,7 +289,6 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         # Clear previous error event
         data['events'].append({
             'eventClass': '/Status',
-            'eventClassKey': 'IISSiteStatusError',
             'eventKey': 'IISSite',
             'severity': ZenEventClasses.Clear,
             'summary': 'Monitoring ok',
@@ -311,9 +310,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         if not errorMsgCheck(config, data['events'], result.value.message):
             # only need the one event
             data['events'].append({
-                'eventClass': event_class,
                 'severity': ZenEventClasses.Warning,
-                'eventClassKey': 'IISSiteStatusError',
+                'eventClass': '/Status',
                 'eventKey': 'IISSite',
                 'summary': 'IISSite: ' + msg,
                 'device': config.id})
