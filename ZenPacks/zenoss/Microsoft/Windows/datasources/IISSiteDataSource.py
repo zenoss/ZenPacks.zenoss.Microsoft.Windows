@@ -311,7 +311,6 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         if not errorMsgCheck(config, data['events'], result.value.message):
             # only need the one event
             data['events'].append({
-                'eventClass': event_class,
                 'severity': ZenEventClasses.Warning,
                 'eventClassKey': 'IISSiteStatusError',
                 'eventKey': 'IISSite',

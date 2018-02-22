@@ -394,7 +394,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
                     'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
                     'summary': msg,
                     'message': msg,
-                    'eventClass': ds.eventClass,
                     'device': config.id
                 })
         return data
