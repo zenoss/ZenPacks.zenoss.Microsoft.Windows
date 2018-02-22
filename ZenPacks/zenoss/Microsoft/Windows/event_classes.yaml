@@ -17,6 +17,30 @@ event_classes:
         transform: "if device:\n\
           \    from ZenPacks.zenoss.Microsoft.Windows.actions import schedule_remodel\n\
           \    schedule_remodel(device, evt)"
+      winrsCollectionError:
+        eventClassKey: winrsCollectionError
+        sequence: 10
+        remove: true
+      WindowsEventCollectionError:
+        eventClassKey: WindowsEventCollectionError
+        sequence: 10
+        remove: true
+      clusterCollectionError:
+        eventClassKey: clusterCollectionError
+        sequence: 10
+        remove: true
+      IISSiteStatusError:
+        eventClassKey: IISSiteStatusError
+        sequence: 10
+        remove: true
+      WindowsPortCheckStatus:
+        eventClassKey: WindowsPortCheckStatus
+        sequence: 10
+        remove: true
+      WindowsServiceCollectionStatus:
+        eventClassKey: WindowsServiceCollectionStatus
+        sequence: 10
+        remove: true
   /Status/IIS:
     remove: true
   /Status/Kerberos:

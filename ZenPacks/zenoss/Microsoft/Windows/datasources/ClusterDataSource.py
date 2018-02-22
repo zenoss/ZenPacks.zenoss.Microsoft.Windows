@@ -278,7 +278,6 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             if isinstance(result.value, RequestError):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
-                event_class = '/Status'
             elif send_to_debug(result):
                 logg = log.debug
             else:
@@ -295,7 +294,6 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
-                eventClass=event_class,
                 severity=ZenEventClasses.Warning,
                 eventClassKey='clusterCollectionError',
                 eventKey=eventKey,

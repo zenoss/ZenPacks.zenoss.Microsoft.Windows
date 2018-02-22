@@ -175,11 +175,9 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
         dsconf0 = config.datasources[0]
 
         # send error event
-        eventClass = dsconf0.eventClass if dsconf0.eventClass else "/Status"
         eventkey = 'WindowsPortCheckError'
         msg = 'Error running port check tests.  {}'.format(results)
         data['events'].append({
-            'eventClass': eventClass,
             'severity': ZenEventClasses.Error,
             'eventClassKey': 'WindowsPortCheckStatus',
             'eventKey': eventkey,
