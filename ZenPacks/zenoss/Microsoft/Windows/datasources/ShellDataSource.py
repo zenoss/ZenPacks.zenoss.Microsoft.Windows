@@ -1065,7 +1065,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         # Clear previous error event
         data['events'].append(dict(
             severity=ZenEventClasses.Clear,
-            eventClassKey='winrsCollectionError',
+            eventClass='/Status',
             eventKey='winrsCollection',
             summary='Monitoring ok',
             device=config.id))
@@ -1099,7 +1099,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
                 severity=ZenEventClasses.Warning,
-                eventClassKey='winrsCollectionError',
+                eventClass='/Status',
                 eventKey=eventKey,
                 summary='WinRS: ' + msg,
                 device=config.id))

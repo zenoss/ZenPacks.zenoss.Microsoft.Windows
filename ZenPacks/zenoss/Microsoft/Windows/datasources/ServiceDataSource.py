@@ -319,7 +319,6 @@ class ServicePlugin(PythonDataSourcePlugin):
             serviceinfo = results[results.keys()[0]]
         except Exception:
             data['events'].append({
-                'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'WindowsServiceCollectionStatus',
                 'eventKey': 'WindowsServiceCollection',
@@ -362,7 +361,6 @@ class ServicePlugin(PythonDataSourcePlugin):
                 'service_state': svc_info.State,
                 'service_status': svc_info.Status,
                 'eventClass': "/Status/WinService",
-                'eventClassKey': 'WindowsServiceLog',
                 'eventKey': "WindowsService",
                 'severity': severity,
                 'summary': evtmsg,
@@ -372,12 +370,10 @@ class ServicePlugin(PythonDataSourcePlugin):
 
         # Event to provide notification that check has completed
         data['events'].append({
-            'eventClass': "/Status/WinService",
             'device': config.id,
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
-            'eventClassKey': 'WindowsServiceCollectionStatus',
         })
 
         generateClearAuthEvents(config, data['events'])
@@ -399,9 +395,8 @@ class ServicePlugin(PythonDataSourcePlugin):
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.message):
             data['events'].append({
-                'eventClass': "/Status/WinService",
                 'severity': ZenEventClasses.Error,
-                'eventClassKey': 'WindowsServiceCollectionStatus',
+                'eventClass': '/Status',
                 'eventKey': 'WindowsServiceCollection',
                 'summary': msg,
                 'device': config.id})
