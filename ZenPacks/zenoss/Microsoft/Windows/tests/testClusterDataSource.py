@@ -74,7 +74,7 @@ class TestClusterDataSourcePlugin(BaseTestCase):
                 self.assertEquals(data['values'][comp]['state'], num)
             except Exception:
                 self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value), 'found {}'.format(value))
-        self.assertEquals(len(data['events']), 26)
+        self.assertEquals(len(data['events']), 27)
 
 
 def test_suite():

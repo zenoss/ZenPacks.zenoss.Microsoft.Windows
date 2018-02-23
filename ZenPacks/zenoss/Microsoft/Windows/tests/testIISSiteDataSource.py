@@ -68,7 +68,7 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
 
         for err in winrm_errors:
             data = self.plugin.onError(Failure(err), config)
-            self.assertEquals(data['events'][0]['eventClass'], '/Status/IIS')
+            self.assertEquals(data['events'][0]['eventClass'], '/Status')
 
         for err in kerberos_errors:
             data = self.plugin.onError(Failure(err), config)
