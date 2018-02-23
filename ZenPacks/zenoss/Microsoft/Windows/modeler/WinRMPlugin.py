@@ -311,8 +311,8 @@ class WinRMPlugin(PythonPlugin):
                 commands[psc_key] = '"& {{{}}}"'.format(psc)
 
         if commands:
-            winrs_client = SingleCommandClient(conn_info)
             for command_key, command in commands.iteritems():
+                winrs_client = SingleCommandClient(conn_info)
                 try:
                     if command.startswith('"&'):
                         results[command_key] = yield winrs_client.run_command(POWERSHELL_PREFIX,
