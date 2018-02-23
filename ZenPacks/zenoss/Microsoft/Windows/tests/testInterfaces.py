@@ -111,10 +111,26 @@ class TestTeamInterfaces(BaseTestCase):
         self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")
 
 
+class TestNoWMI(BaseTestCase):
+    """Test case for no WMI data, but there was successful powershell collection"""
+    def setUp(self):
+        self.results = load_pickle_file(self, 'Interfaces_process_194131')[0]
+        self.device = load_pickle_file(self, 'device')
+        self.plugin = Interfaces()
+
+    def test_process(self):
+        m = Mock()
+        data = self.plugin.process(self.device, self.results, m)
+        # We should not return an empty relationship map
+        self.assertEquals(data, None)
+        self.assertTrue('Received incomplete Interface modeling results.' in str(m.mock_calls[1]))
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
+    suite.addTest(makeSuite(TestNoWMI))
     suite.addTest(makeSuite(TestInterfaces))
     suite.addTest(makeSuite(TestHelpers))
     suite.addTest(makeSuite(TestInterfacesCounters))

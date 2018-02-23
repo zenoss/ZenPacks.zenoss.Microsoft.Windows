@@ -1,0 +1,107 @@
+(lp0
+(dp1
+S'counters2012'
+p2
+cDateTime.DateTime
+_dt_reconstructor
+p3
+(ctxwinrm.shell
+CommandResponse
+p4
+c__builtin__
+object
+p5
+Ntp6
+Rp7
+(dp8
+S'_stderr'
+p9
+(lp10
+sS'_exit_code'
+p11
+I0
+sS'_stdout'
+p12
+(lp13
+sbsS'broadcomnic'
+p14
+g3
+(g4
+g5
+Ntp15
+Rp16
+(dp17
+g9
+(lp18
+sg11
+I0
+sg12
+(lp19
+sbsS'registry'
+p20
+g3
+(g4
+g5
+Ntp21
+Rp22
+(dp23
+g9
+(lp24
+sg11
+I0
+sg12
+(lp25
+sbsS'counters'
+p26
+g3
+(g4
+g5
+Ntp27
+Rp28
+(dp29
+g9
+(lp30
+sg11
+I0
+sg12
+(lp31
+VReadings : \u005c\u005cwin2016-kdc-01\u005cnetwork interface(intel[r] 82574l gigabit network connection)\u005cbytes received/sec :
+p32
+aV59516.9368158373
+p33
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork interface(isatap.{79f1322a-1d3b-42a3-ae1e-b9b50d707f8c})\u005cbytes received/sec :
+p34
+aV0
+p35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork interface(isatap.{d2e821ce-f45a-4ff3-a6d1-d060db4eac69})\u005cbytes received/sec :
+p36
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(intel[r] 82574l gigabit network connection)\u005cbytes received/sec :
+p37
+aV59516.9368158373
+p38
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(intel[r] 82574l gigabit network connection _2)\u005cbytes received/sec :
+p39
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(microsoft kernel debug network adapter)\u005cbytes received/sec :
+p40
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(local area connection* 11-wfp native mac layer lightweight filter-0000)\u005cbytes received/sec :
+p41
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(local area connection* 11-qos packet scheduler-0000)\u005cbytes received/sec :
+p42
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(local area connection* 11-wfp 802.3 mac layer lightweight filter-0000)\u005cbytes received/sec :
+p43
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(isatap.{79f1322a-1d3b-42a3-ae1e-b9b50d707f8c})\u005cbytes received/sec :
+p44
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(isatap.{d2e821ce-f45a-4ff3-a6d1-d060db4eac69})\u005cbytes received/sec :
+p45
+ag35
+aV\u005c\u005cwin2016-kdc-01\u005cnetwork adapter(local area connection* 11)\u005cbytes received/sec :
+p46
+ag35
+asbsa.
