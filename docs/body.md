@@ -1820,6 +1820,7 @@ Changes
 -   Fix Modelling using Kerberos generates two tickets (ZPS-2394)
 -   Fix Windows data sources are improperly setting eventClass (ZPS-3056)
 -   Fix Windows Event Log Datasource Does not Map Critical Events (ZPS-3109)
+-   Fix Windows - an error 'process scan error: list index out of range' is generated for OS Processes component (ZPS-3116)
 
 2.8.3
 
