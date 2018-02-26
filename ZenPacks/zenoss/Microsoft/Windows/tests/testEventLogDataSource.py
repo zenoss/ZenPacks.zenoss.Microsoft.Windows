@@ -17,7 +17,7 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource import EventLogPlugin
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle_file
 
-EXPECTED = {
+INFO_EXPECTED = {
     'component': u'Microsoft-Windows-Winlogon',
     'computername': u'SQLSRV02.solutions-dev.local',
     'device': 'machine',
@@ -31,12 +31,27 @@ EXPECTED = {
     'summary': u'The winlogon notification subscriber <AUInstallAgent> was unavailable to handle a notification event',
     'user': u''}
 
+CRITICAL_EXPECTED = {
+    'component': u'Microsoft-Windows-Kernel-Power',
+    'computername': u'SQLSRV02.solutions-dev.local',
+    'device': 'machine',
+    'eventClassKey': 'Microsoft-Windows-Kernel-Power_41',
+    'eventGroup': sentinel.eventlog,
+    'eventidentifier': u'41',
+    'message': u'The last sleep transition was unsuccessful. This error could be caused if the system stopped'
+               ' responding, failed, or lost power during the sleep transition.',
+    'ntevid': u'41',
+    'originaltime': u'07/13/2017 14:20:50',
+    'severity': 5,
+    'summary': u'The last sleep transition was unsuccessful',
+    'user': u''}
+
 
 class TestDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
         plugin = EventLogPlugin()
 
-        results = load_pickle_file(self, 'EventLogPlugin_onSuccess_092940')[0]
+        results = load_pickle_file(self, 'EventLogPlugin')[0]
         config = Mock(
             id="machine",
             datasources=[Mock(params={'eventlog': sentinel.eventlog},
@@ -44,9 +59,11 @@ class TestDataSourcePlugin(BaseTestCase):
         )
         res = plugin.onSuccess(results, config)
 
-        self.assertEquals(len(res['events']), 5, msg='Received {}'.format(pprint.pformat(res)))
-        self.assertEquals(res['events'][0], EXPECTED)
-        self.assertEquals(res['events'][2]['summary'], 'Windows EventLog: No PowerShell errors during event collection')
+        self.maxDiff = None
+        self.assertEquals(len(res['events']), 6, msg='Received {}'.format(pprint.pformat(res)))
+        self.assertEquals(res['events'][0], INFO_EXPECTED)
+        self.assertEquals(res['events'][1], CRITICAL_EXPECTED)
+        self.assertEquals(res['events'][3]['summary'], 'Windows EventLog: No PowerShell errors during event collection')
         # check for invalid severity to look for new default severity
         results.stdout[1] = results.stdout[1].replace('"EntryType": "Information"', '"EntryType": "Invalid"')
         res = plugin.onSuccess(results, config)

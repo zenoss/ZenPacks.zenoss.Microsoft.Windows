@@ -1802,7 +1802,7 @@ Monitoring Templates
 Changes
 -------
 
-2.8.4
+2.9.0
 
 -   Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)
 -   Fix Windows - Error: local variable 'kerberos' referenced before assignment (ZPS-2738)
@@ -1814,6 +1814,7 @@ Changes
 -   Fix CPU use builds over time - PythonCollector MicrosoftWindows (ZPS-2480)
 -   Fix Modelling using Kerberos generates two tickets (ZPS-2394)
 -   Fix Windows data sources are improperly setting eventClass (ZPS-3056)
+-   Fix Windows Event Log Datasource Does not Map Critical Events (ZPS-3109)
 
 2.8.3
 
