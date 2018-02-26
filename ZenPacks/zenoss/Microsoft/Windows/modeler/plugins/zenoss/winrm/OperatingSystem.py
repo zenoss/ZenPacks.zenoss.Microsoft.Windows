@@ -138,9 +138,10 @@ class OperatingSystem(WinRMPlugin):
         operatingSystem.Caption = re.sub(
             r'\s*\S*Microsoft\S*\s*', '', getattr(operatingSystem, 'Caption', 'Unknown'))
 
-        osCaption = '{} - {}'.format(
-            getattr(operatingSystem, 'Caption', 'Unknown'),
-            getattr(operatingSystem, 'CSDVersion', 'Unknown'))
+        osCaption = getattr(operatingSystem, 'Caption', 'Unknown')
+        CSDVersion = getattr(operatingSystem, 'CSDVersion', 'Unknown')
+        if CSDVersion:
+            osCaption += ' - {}'.format(CSDVersion)
 
         os_om.setProductKey = MultiArgs(
             osCaption,
