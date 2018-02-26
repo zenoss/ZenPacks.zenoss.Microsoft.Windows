@@ -774,6 +774,11 @@ organization. Updating is not recommended if you are making several
 changes in a short period of time. Updates are automatically applied at
 the time of the next model.
 
+Note: During the time that the indexing of Windows Services job takes,
+any particular Windows Service could potentially still be monitored
+using a different datasource.  Because of this, it is possible to see
+status event(s) using both the old and new severity.
+
 Note: The Windows Service datasource no longer depends on the
 'DefaultService' data source name. User defined datasources are now
 honored.
