@@ -274,6 +274,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 'Information': ZenEventClasses.Info,
                 'SuccessAudit': ZenEventClasses.Info,
                 'FailureAudit': ZenEventClasses.Info,
+                'Critical': ZenEventClasses.Critical,
             }.get(str(evt['EntryType']).strip(), ZenEventClasses.Info)
 
             evt = dict(
