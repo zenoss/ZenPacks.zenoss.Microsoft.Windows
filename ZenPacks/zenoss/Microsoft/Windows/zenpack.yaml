@@ -101,7 +101,7 @@ classes:
         label: Owner Node
         grid_display: false
       get_host_device:
-        label: Cluster Node
+        label: Device
         grid_display: true
         api_only: true
         api_backendtype: method
@@ -307,13 +307,20 @@ classes:
       partitionnumber:
         label: Partition Number
       size:
+        grid_display: false
+        details_display: false
+        type: int
+      getSize:
         label: Size
         grid_display: true
         order: 5
+        api_only: true
+        api_backendtype: method
       freespace:
         label: Free Space
         grid_display: true
         order: 6
+        datapoint: state_freespace
       assignedto:
         label: Assigned To
         grid_display: true
