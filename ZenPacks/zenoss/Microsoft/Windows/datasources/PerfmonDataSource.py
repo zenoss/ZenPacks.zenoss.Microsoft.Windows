@@ -725,7 +725,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_list)),
                                        OPERATION_TIMEOUT + 5)
             if result.stderr:
-                corrupt_list.extend(counter_list)
+                LOG.debug('Received error checking for corrupt counter: %s', result.stderr)
+                # double check that no counter sample was returned
+                if not counter_returned(result):
+                    corrupt_list.extend(counter_list)
         else:
             mid_index = num_counters / 2
             slices = (counter_list[:mid_index], counter_list[mid_index:])
@@ -889,6 +892,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             'summary': 'Authentication Successful',
             'severity': ZenEventClasses.Clear,
             'ipAddress': self.config.manageIp})
+
+
+def counter_returned(result):
+    if 'CounterSamples' in ''.join(result.stdout):
+        return True
+    return False
 
 
 def format_counters(ps_counters):
