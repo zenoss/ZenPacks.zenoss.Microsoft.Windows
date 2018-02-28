@@ -46,6 +46,8 @@ class TestProcessDataSourcePlugin(BaseTestCase):
                 'Authentication Successful', 'No Kerberos failures'
             )
         )
+        self.assertEquals(data['events'][1]['eventClass'], '/Status')
+        self.assertEquals(data['events'][1]['eventKey'], 'ProcessScanStatus')
         self.success.pop(self.success.keys()[0])
         try:
             self.plugin.onSuccess(self.success, self.config)
