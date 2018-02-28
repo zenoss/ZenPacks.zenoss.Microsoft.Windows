@@ -470,7 +470,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         data['events'].append({
             'device': config.id,
             'severity': Event.Clear,
-            'eventClass': Status_OSProcess,
+            'eventKey': 'ProcessScanStatus',
+            'eventClass': '/Status',
             'summary': 'process scan successful',
         })
 
@@ -490,7 +491,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             data['events'].append({
                 'device': config.id,
                 'severity': Event.Error,
-                'eventClass': Status_OSProcess,
+                'eventKey': 'ProcessScanStatus',
+                'eventClass': '/Status',
                 'summary': 'process scan error: {}'.format(error.value),
             })
 
