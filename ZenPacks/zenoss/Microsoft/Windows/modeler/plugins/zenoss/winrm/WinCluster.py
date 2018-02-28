@@ -300,8 +300,11 @@ class WinCluster(WinRMPlugin):
                 disk_om.ownernode = disk_ownernode
                 disk_om.disknumber = diskline[4]
                 disk_om.partitionnumber = diskline[5]
-                disk_om.size = sizeof_fmt(diskline[6])
-                disk_om.freespace = sizeof_fmt(diskline[7])
+                try:
+                    disk_om.size = int(diskline[6])
+                except Exception:
+                    log.debug('disk size not formatted correctly')
+                    disk_om.size = -1
                 disk_om.assignedto = diskline[9]
                 disk_om.domain = results['domain']
 

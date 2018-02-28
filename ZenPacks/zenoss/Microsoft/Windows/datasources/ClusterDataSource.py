@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2018, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -132,6 +132,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         cluster_id_items = pipejoin('$_.Id $_.State')
         cluster_name_items = pipejoin('$_.Name $_.State')
         cluster_group_items = pipejoin('$_.Id $_.State $_.Name $_.OwnerNode')
+        cluster_disk_items = pipejoin('$_.Id $_.State $_.Freespace')
 
         psClusterCommands.append(
             "get-clusterresource | where {{ $_.ResourceType.name -ne 'Physical Disk'}} | foreach {{'res-'+{}}};".format(cluster_name_items)
@@ -166,18 +167,31 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "Size = $volume.SharedVolumeInfo.Partition.Size;"
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
             "State = $volume.State;"
-            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(cluster_id_items)
+            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(cluster_disk_items)
         )
 
         psClusterCommands.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
             "foreach ($resource in $resources) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
+            "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
+            "foreach ($dsk in $disks) {{"
+            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "if ($partitions -ne $null) {{"
+            "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;"
-            "State = $resource.State;"
-            "}}; $physicaldisk | foreach {{{}}} }};"
-            "".format(cluster_id_items)
+            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;OwnerGroup = $rsc.OwnerGroup;"
+            "Name = $rsc.Name;VolumePath = $prt.Path;DiskNumber = $dsk.Number;"
+            "PartitionNumber = $prt.PartitionNumber;Size = $prt.TotalSize * 1mb;"
+            "FreeSpace = $prt.FreeSpace * 1mb;State = $resource.State;}}; "
+            "$physicaldisk | foreach {{{cluster_disk_items}}};}}}}else {{"
+            "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
+            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;"
+            "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
+            "State = $resource.State;Size = $dsk.Size;VolumePath = 'No Volume';"
+            "PartitionNumber = 'No Partitions';FreeSpace = -1}};}};"
+            "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}"
+            "".format(cluster_disk_items=cluster_disk_items)
         )
 
         script = "\"& {{{}}}\"".format(''.join(psClusterCommands))
@@ -199,13 +213,16 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             # ignore any empty lines
             if len(result) <= 0:
                 continue
-            try:
-                comp, state = result.split('|')
+            cluster_line = result.split('|')
+            if len(cluster_line) == 2:
+                comp, state = cluster_line
                 ownernode = None
                 name = ''
-            except ValueError:
-                comp, state, name, ownernode = result.split('|')
-            except Exception:
+            elif len(cluster_line) == 3:
+                comp, state, freespace = cluster_line
+            elif len(cluster_line) == 4:
+                comp, state, name, ownernode = cluster_line
+            else:
                 log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
                 continue
             comp = prepId(comp)
@@ -213,6 +230,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 # specific for cluster disk component
                 data['values'][comp]['state'] = int(state)
                 state = cluster_disk_state_string(int(state))
+                data['values'][comp]['freespace'] = int(freespace)
             except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
