@@ -1822,6 +1822,8 @@ Changes
 -   Fix Windows Event Log Datasource Does not Map Critical Events (ZPS-3109)
 -   Fix Windows - an error 'process scan error: list index out of range' is generated for OS Processes component (ZPS-3116)
 -   Fix Windows - Do not display None as the Service Pack level (ZPS-2289)
+-   Fix Windows - "Check username and password" event still gets generated every cycle even though credentials is correct (ZPS-2712)
+-   Add ability to monitor freespace on Cluster Disks (ZPS-582)
 
 2.8.3
 
