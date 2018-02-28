@@ -2,8 +2,8 @@
 (dp1
 S'counters2012'
 p2
-cDateTime.DateTime
-_dt_reconstructor
+ccopy_reg
+_reconstructor
 p3
 (ctxwinrm.shell
 CommandResponse

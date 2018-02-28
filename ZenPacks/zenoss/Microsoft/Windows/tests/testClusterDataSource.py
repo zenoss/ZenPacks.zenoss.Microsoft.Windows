@@ -58,8 +58,6 @@ class TestClusterDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_onSuccess(self):
-        if VERSION.startswith('4'):
-            return
         datasources = load_pickle_file(self, 'cluster_datasources')
         results = load_pickle_file(self, 'ClusterDataSourcePlugin_onSuccess_161027')[0]
         config = Mock()
