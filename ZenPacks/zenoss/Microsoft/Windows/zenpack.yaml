@@ -101,7 +101,7 @@ classes:
         label: Owner Node
         grid_display: false
       get_host_device:
-        label: Device
+        label: Windows Device
         grid_display: true
         api_only: true
         api_backendtype: method
