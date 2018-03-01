@@ -230,7 +230,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 # specific for cluster disk component
                 data['values'][comp]['state'] = int(state)
                 state = cluster_disk_state_string(int(state))
-                data['values'][comp]['freespace'] = int(freespace)
+                if freespace != '-1':
+                    # don't write dp if -1.  probably means unallocated disk
+                    # and freespace would have no meaning
+                    data['values'][comp]['freespace'] = int(freespace)
             except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
