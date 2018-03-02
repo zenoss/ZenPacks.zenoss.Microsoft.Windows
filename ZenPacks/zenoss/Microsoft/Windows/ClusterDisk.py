@@ -18,7 +18,7 @@ class ClusterDisk(schema.ClusterDisk):
     def getState(self):
         status = 'None'
         try:
-            state = int(self.cacheRRDValue('state', None))
+            state = int(self.cacheRRDValue('state_state', None))
             status = cluster_disk_state_string(state)
         except Exception:
             status = 'Error Encountered'

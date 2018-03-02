@@ -318,6 +318,7 @@ classes:
         api_backendtype: method
       freespace:
         label: Free Space
+        renderer: Zenoss.render.bytesString
         grid_display: true
         order: 6
         datapoint: state_freespace
