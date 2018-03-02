@@ -406,7 +406,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if success:
                 self.state = PluginStates.STARTED
             else:
-                LOG.debug("%s: Perfmon command(s) did not start: %s", self.config.id, data)
+                LOG.warn("%s: Perfmon command(s) did not start: %s", self.config.id, data.value)
+                if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), data.value.message):
+                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                        'device': self.config.id,
+                        'eventClass': '/Status/Winrm',
+                        'eventKey': 'WindowsPerfmonCollection Error',
+                        'severity': ZenEventClasses.Warning,
+                        'summary': errorMessage,
+                        'ipAddress': self.config.manageIp})
 
         if self.state != PluginStates.STARTED:
             self.state = PluginStates.STOPPED
