@@ -47,6 +47,7 @@ device_classes:
           Free Space:
             units: bytes
             miny: 0
+            base: true
             graphpoints:
               Free Space:
                 dpName: state_freespace
