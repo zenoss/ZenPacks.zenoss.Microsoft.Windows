@@ -1824,6 +1824,7 @@ Changes
 -   Fix Windows - Do not display None as the Service Pack level (ZPS-2289)
 -   Fix Windows - "Check username and password" event still gets generated every cycle even though credentials is correct (ZPS-2712)
 -   Add ability to monitor freespace on Cluster Disks (ZPS-582)
+-   Tested with Zenoss Resource Manager 5.3.3, 6.1.0, and 6.1.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.3
 
 2.8.3
 
