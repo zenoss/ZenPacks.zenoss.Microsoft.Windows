@@ -24,12 +24,13 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
         super(TestIISSiteDataSourcePlugin, self).setUp()
 
     def test_onSuccess(self):
-        results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_151931')[0]
+        results = load_pickle_file(self, 'IISSiteDataSourcePlugin_onSuccess_162344')[0]
         data = self.plugin.onSuccess(results, MagicMock(
             id="windows_test",
             datasources=[MagicMock(datasource='IISSiteDataSource',
                                    params={'eventlog': sentinel.eventlog,
                                            'statusname': 'Default Web Site',
+                                           'iis_version': u'8.5',
                                            'apppool': 'defaultapppool'})],
         ))
         self.assertEquals(len(data['events']), 5, msg='Expected 5 events: {}'.format(pprint.pformat(data['events'])))
@@ -67,7 +68,7 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
 
         for err in winrm_errors:
             data = self.plugin.onError(Failure(err), config)
-            self.assertEquals(data['events'][0]['eventClass'], '/Status/IIS')
+            self.assertEquals(data['events'][0]['eventClass'], '/Status')
 
         for err in kerberos_errors:
             data = self.plugin.onError(Failure(err), config)

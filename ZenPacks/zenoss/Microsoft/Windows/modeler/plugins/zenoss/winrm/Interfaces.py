@@ -159,6 +159,10 @@ class Interfaces(WinRMPlugin):
         if broadcomresults:
             broadcomresults = ''.join(broadcomresults.stdout).split('|')
 
+        if not netInt and (broadcomresults or regresults or counter_instances):
+            log.warn("Received incomplete Interface modeling results.")
+            return
+
         # Performance Counters for Windows 2012
         counters = self.sanitize_counters(results.get('counters2012'))
 

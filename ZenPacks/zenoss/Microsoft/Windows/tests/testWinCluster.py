@@ -2,7 +2,7 @@
 
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2018, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -53,8 +53,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(len(data[4].maps), 0)
 
         self.assertEquals(data[5].maps[0].id, '2beb')
-        self.assertEquals(data[5].maps[0].freespace, '1.85MB')
-        self.assertEquals(data[5].maps[0].size, '2.05MB')
+        self.assertEquals(data[5].maps[0].size, 2147199)
         self.assertEquals(data[5].maps[0].ownernode, 'node0')
         self.assertEquals(data[5].maps[0].partitionnumber, '1')
         self.assertEquals(data[5].maps[0].disknumber, '1')
@@ -62,9 +61,6 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[5].maps[0].title, 'disk1')
         self.assertEquals(data[5].maps[0].volumepath, 'Vol{2beb}')
         self.assertEquals(data[5].maps[0].assignedto, 'service')
-
-        # Test for missing freespace ZEN-21242
-        self.assertEquals(data[5].maps[1].freespace, 'N/A')
 
 
 def test_suite():

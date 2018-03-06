@@ -45,6 +45,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txcoroutine import coroutine
 
+from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -591,9 +592,9 @@ class PowershellMSSQLJobStrategy(object):
         except ValueError:
             msg = 'Malformed data received for MSSQL Job {}'.format(jobname)
             collectedResults.events.append({
-                'eventClass': '/Status',
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'winrsCollection MSSQLJob',
+                'eventKey': dsconfs[0].eventKey if dsconfs[0].eventKey else self.key,
                 'summary': msg,
                 'device': dsconfs[0].device,
                 'query_results': result.stdout
@@ -868,6 +869,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = 'MSSQLSERVER'
                 else:
                     cmd_line_input = dsconf0.params['instanceid']
+            if dsconf.params['strategy'] == 'powershell MSSQL':
+                conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
             command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] == 'Custom Command':
             check_datasource(dsconf0)
@@ -882,21 +885,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         else:
             command_line, script = strategy.build_command_line(counters)
 
-        if dsconf0.params['strategy'] == 'powershell MSSQL':
-            command = create_long_running_command(conn_info)
-            yield command.start(command_line, ps_script=script)
-            stdout = []
-            stderr = []
-            while command._exit_code is None:
-                stdout_r, stderr_r = yield command.receive()
-                stdout += stdout_r
-                stderr += stderr_r
-
-            results = CommandResponse(stdout, stderr, command._exit_code)
-            yield command.stop()
-        else:
-            command = SingleCommandClient(conn_info)
-            results = yield command.run_command(command_line, script)
+        command = SingleCommandClient(conn_info)
+        results = yield command.run_command(command_line, script)
 
         defer.returnValue((strategy, config.datasources, results))
 
@@ -912,6 +902,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             return data
 
         strategy, dsconfs, result = results
+        log.debug('results: {}'.format(result))
         if strategy.key == 'CustomCommand':
             cmdResult = strategy.parse_result(config, result)
             data['events'] = cmdResult.events
@@ -1073,9 +1064,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         # Clear previous error event
         data['events'].append(dict(
-            eventClass='/Status',
             severity=ZenEventClasses.Clear,
-            eventClassKey='winrsCollectionError',
+            eventClass='/Status',
             eventKey='winrsCollection',
             summary='Monitoring ok',
             device=config.id))
@@ -1100,17 +1090,16 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             elif isinstance(result.value, RequestError):
                 args = result.value.args
                 msg = args[0] if args else format_exc(result.value)
-                event_class = '/Status'
             elif send_to_debug(result):
                 logg = log.debug
 
+        msg = 'ShellDataSourcePlugin: ' + msg
         logg(msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
             data['events'].append(dict(
-                eventClass=event_class,
                 severity=ZenEventClasses.Warning,
-                eventClassKey='winrsCollectionError',
+                eventClass='/Status',
                 eventKey=eventKey,
                 summary='WinRS: ' + msg,
                 device=config.id))

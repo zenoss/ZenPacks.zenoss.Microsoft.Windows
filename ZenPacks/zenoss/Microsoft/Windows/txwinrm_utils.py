@@ -39,7 +39,8 @@ ConnectionInfoProperties = (
     'zWinRSCodePage',
     'zWinRMKrb5includedir',
     'zWinRMKRBErrorThreshold',
-    'kerberos_rdns'
+    'kerberos_rdns',
+    'zWinRMConnectTimeout'
 )
 
 
@@ -108,6 +109,8 @@ def createConnectionInfo(device_proxy):
     include_dir = getattr(device_proxy, 'zWinRMKrb5includedir', None)
     disable_rdns = getattr(device_proxy, 'kerberos_rdns', False)
 
+    connect_timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -126,4 +129,5 @@ def createConnectionInfo(device_proxy):
         locale=locale,
         code_page=code_page,
         include_dir=include_dir,
-        disable_rdns=disable_rdns)
+        disable_rdns=disable_rdns,
+        connect_timeout=connect_timeout)

@@ -51,6 +51,9 @@ zProperties:
     default: 1
   zWindowsRemodelEventClassKeys:
     type: lines
+  zWinRMConnectTimeout:
+    type: int
+    default: 60
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
@@ -98,7 +101,7 @@ classes:
         label: Owner Node
         grid_display: false
       get_host_device:
-        label: Cluster Node
+        label: Windows Device
         grid_display: true
         api_only: true
         api_backendtype: method
@@ -304,13 +307,21 @@ classes:
       partitionnumber:
         label: Partition Number
       size:
+        grid_display: false
+        details_display: false
+        type: int
+      getSize:
         label: Size
         grid_display: true
         order: 5
+        api_only: true
+        api_backendtype: method
       freespace:
         label: Free Space
+        renderer: Zenoss.render.bytesString
         grid_display: true
         order: 6
+        datapoint: state_freespace
       assignedto:
         label: Assigned To
         grid_display: true
@@ -656,8 +667,9 @@ classes:
       statusname:
         label: Status Name
       iis_version:
-        label: Version
-        type: int
+        label: IIS Version
+        type: string
+        grid_display: true
     monitoring_templates: [IISSites]
     impacts: []
     impacted_by: [device]

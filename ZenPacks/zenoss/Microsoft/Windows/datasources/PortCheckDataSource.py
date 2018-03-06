@@ -168,21 +168,25 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             # no ports listening
             pass
         # send clear events
+        data['events'].append({
+            'eventClass': '/Status',
+            'severity': ZenEventClasses.Clear,
+            'eventClassKey': 'WindowsPortCheckStatus',
+            'eventKey': 'WindowsPortCheckError',
+            'summary': 'Port Check Successful',
+            'device': config.id})
         return data
 
     def onError(self, results, config):
         data = self.new_data()
-        dsconf0 = config.datasources[0]
 
         # send error event
-        eventClass = dsconf0.eventClass if dsconf0.eventClass else "/Status"
-        eventkey = 'WindowsPortCheckError'
         msg = 'Error running port check tests.  {}'.format(results)
         data['events'].append({
-            'eventClass': eventClass,
+            'eventClass': '/Status',
             'severity': ZenEventClasses.Error,
             'eventClassKey': 'WindowsPortCheckStatus',
-            'eventKey': eventkey,
+            'eventKey': 'WindowsPortCheckError',
             'summary': msg,
             'device': config.id})
         return data

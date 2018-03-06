@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015-2018, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -58,8 +58,6 @@ class TestClusterDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_onSuccess(self):
-        if VERSION.startswith('4'):
-            return
         datasources = load_pickle_file(self, 'cluster_datasources')
         results = load_pickle_file(self, 'ClusterDataSourcePlugin_onSuccess_161027')[0]
         config = Mock()
@@ -74,7 +72,9 @@ class TestClusterDataSourcePlugin(BaseTestCase):
                 self.assertEquals(data['values'][comp]['state'], num)
             except Exception:
                 self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value), 'found {}'.format(value))
-        self.assertEquals(len(data['events']), 26)
+        self.assertEquals(len(data['events']), 27)
+        # 24989663232 is the freespace in the pickle file
+        self.assertEquals(data['values']['860caaf4-595a-44e6-be70-285a9bb3733d']['freespace'], 24989663232)
 
 
 def test_suite():

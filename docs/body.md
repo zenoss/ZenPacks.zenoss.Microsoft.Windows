@@ -267,11 +267,6 @@ must be a member of the Active Directory group "Exchange View-Only
 Administrators" for pre-2010 Exchange installations or "View Only
 Organization Management" for 2010 and later installations.
 
-Note: When Microsoft.Exchange ZenPack is installed,
-\MSExchangeTransport Queues(\_Total)\Active Mailbox Delivery Queue Length
-and \MSExchangeIS\RPC Averaged Latency will be disabled since the same
-metrics are collected by Exchange ZenPack.
-
 Note: IIS Management Scripts and Tools needs to be installed on the
 server side in order to model and monitor IIS sites. This is done
 through the Add Roles and Features tool on the Windows Server under Web
@@ -546,6 +541,8 @@ filter will be used:
 `{time}` will be replaced by the number of milliseconds since the last
 query automatically.
 
+Note: The max age field is only used the first time that the datasource is run.  Subsequent queries will only look at events that have occurred since the last time this datasource was run.   We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource was run.  If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
+
 Note: The script to search for events and return relevant data is
 approximately 3700 characters. Due to the Windows 8192 character limit
 on the shell, any XML or PowerShell queries will need to be less than
@@ -776,6 +773,11 @@ propagate to all of your devices depending upon the size of your
 organization. Updating is not recommended if you are making several
 changes in a short period of time. Updates are automatically applied at
 the time of the next model.
+
+Note: During the time that the indexing of Windows Services job takes,
+any particular Windows Service could potentially still be monitored
+using a different datasource.  Because of this, it is possible to see
+status event(s) using both the old and new severity.
 
 Note: The Windows Service datasource no longer depends on the
 'DefaultService' data source name. User defined datasources are now
@@ -1106,6 +1108,9 @@ important.
 -   zWindowsRemodelEventClassKeys
     :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
 
+-   zWinRMConnectTimeout
+    :   Used to define the time out for establishing a winrm connection.  If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1129,6 +1134,7 @@ Note: In order to properly monitor SQL Server, the Client Tools SDK must be inst
 *   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank. 
 *   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance. 
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
+*   For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.
 
 Use the following steps to configure SQL Server Authentication on your SQL Server:
 
@@ -1801,7 +1807,27 @@ Monitoring Templates
 Changes
 -------
 
+2.9.0
+
+-   Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)
+-   Fix Windows - Error: local variable 'kerberos' referenced before assignment (ZPS-2738)
+-   Fix Quote issue for polling custom event logs (ZPS-2741)
+-   Fix Modelling a Windows device fails with trace re: Software Plugin (ZPS-2745)
+-   Fix Windows: Tasks building up with bad network connections (ZPS-2829)
+-   Fix MicrosoftExchange - N/A for some graphs of Exchange Server component and on Graphs tab (ZPS-2197)
+-   Fix Microsoft Windows: zenpython memory increases until restart required (ZPS-2176)
+-   Fix CPU use builds over time - PythonCollector MicrosoftWindows (ZPS-2480)
+-   Fix Modelling using Kerberos generates two tickets (ZPS-2394)
+-   Fix Windows data sources are improperly setting eventClass (ZPS-3056)
+-   Fix Windows Event Log Datasource Does not Map Critical Events (ZPS-3109)
+-   Fix Windows - an error 'process scan error: list index out of range' is generated for OS Processes component (ZPS-3116)
+-   Fix Windows - Do not display None as the Service Pack level (ZPS-2289)
+-   Fix Windows - "Check username and password" event still gets generated every cycle even though credentials is correct (ZPS-2712)
+-   Add ability to monitor freespace on Cluster Disks (ZPS-582)
+-   Tested with Zenoss Resource Manager 5.3.3, 6.1.0, and 6.1.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.3
+
 2.8.3
+
 -   Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)
 -   Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)
 -   Fix Winrs failures (powershell datasources) with "Unknown strategy" message (ZPS-2613)
@@ -1810,7 +1836,7 @@ Changes
 -   Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)
 -   Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)
 -   Fix Windows: Tasks building up with a bad config (ZPS-2717)
--   Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
+-   Tested with Zenoss Resource Manager 5.3.3 and 6.0.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2
 
 2.8.2
 

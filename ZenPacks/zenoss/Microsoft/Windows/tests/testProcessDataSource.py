@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 ##############################################################################
 #
 # Copyright (C) Zenoss, Inc. 2015, all rights reserved.
@@ -7,6 +8,7 @@
 #
 ##############################################################################
 
+import Globals
 from twisted.python.failure import Failure
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
@@ -44,3 +46,23 @@ class TestProcessDataSourcePlugin(BaseTestCase):
                 'Authentication Successful', 'No Kerberos failures'
             )
         )
+        self.assertEquals(data['events'][1]['eventClass'], '/Status')
+        self.assertEquals(data['events'][1]['eventKey'], 'ProcessScanStatus')
+        self.success.pop(self.success.keys()[0])
+        try:
+            self.plugin.onSuccess(self.success, self.config)
+        except Exception as e:
+            self.assertEquals(e.message, 'Received no results for Win32_Process WMI query.')
+
+
+def test_suite():
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestProcessDataSourcePlugin))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()

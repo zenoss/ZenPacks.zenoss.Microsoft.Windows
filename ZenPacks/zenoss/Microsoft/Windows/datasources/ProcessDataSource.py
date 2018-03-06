@@ -316,7 +316,12 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             key=lambda x: x.params.get('sequence', 0))
 
         # Win32_Process: Counts and correlation to performance table.
-        process_key = [x for x in results if 'Win32_Process' in x.wql][0]
+        LOG.debug('ProcessDataSource results: {}'.format(results))
+        try:
+            process_key = [x for x in results if 'Win32_Process' in x.wql][0]
+        except IndexError:
+            # incomplete results
+            raise Exception('Received no results for Win32_Process WMI query.')
         for item in results[process_key]:
             processText = get_processText(item)
 
@@ -418,7 +423,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
                 'eventGroup': 'Process',
                 'summary': summary,
                 'severity': severity,
-                })
+            })
 
         # Prepare for next cycle's restart check by merging current
         # process PIDs with previous. This is to catch restarts that
@@ -465,7 +470,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         data['events'].append({
             'device': config.id,
             'severity': Event.Clear,
-            'eventClass': Status_OSProcess,
+            'eventKey': 'ProcessScanStatus',
+            'eventClass': '/Status',
             'summary': 'process scan successful',
         })
 
@@ -485,7 +491,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
             data['events'].append({
                 'device': config.id,
                 'severity': Event.Error,
-                'eventClass': Status_OSProcess,
+                'eventKey': 'ProcessScanStatus',
+                'eventClass': '/Status',
                 'summary': 'process scan error: {}'.format(error.value),
             })
 

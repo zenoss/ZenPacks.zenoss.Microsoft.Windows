@@ -20,7 +20,15 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource import (
     format_stdout,
     format_counters,
     DataPersister,
+    counter_returned,
 )
+from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
+
+STDOUT = '''  Timestamp                 CounterSamples
+  ---------                 --------------
+  2/28/2018 10:28:06 PM     \\sqlsrv02\memory\available bytes :
+  2736390144
+'''
 
 
 class DataSource(namedtuple('DataSource', ['plugin_classname', 'datasource'])):
@@ -95,6 +103,14 @@ class TestFormat_stdout(BaseTestCase):
         self.assertEquals(format_stdout(["Readings : "]), ([""], True))
 
 
+class TestCounterReturned(BaseTestCase):
+    def test_counter_returned(self):
+        result = CommandResponse(STDOUT.split('\n'), [], 0)
+        self.assertTrue(counter_returned(result))
+        result = CommandResponse([], ['some sort of error'], 1)
+        self.assertFalse(counter_returned(result))
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
@@ -102,6 +118,7 @@ def test_suite():
     suite.addTest(makeSuite(TestFormat_stdout))
     suite.addTest(makeSuite(TestFormat_counters))
     suite.addTest(makeSuite(TestDataPersister))
+    suite.addTest(makeSuite(TestCounterReturned))
     return suite
 
 

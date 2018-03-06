@@ -39,7 +39,20 @@ device_classes:
               state:
                 rrdtype: GAUGE
                 description: Used to monitor the state of the Cluster Disks.
+              freespace:
+                rrdtype: GAUGE
+                description: Used to monitor the freespace of a Cluster Disk.
             cycletime: '300'
+        graphs:
+          Free Space:
+            units: bytes
+            miny: 0
+            base: true
+            graphpoints:
+              Free Space:
+                dpName: state_freespace
+                lineType: AREA
+                format: '%7.2lf%s'
       ClusterNetwork:
         description: Used to monitor the state of the Cluster Network.
         targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterNetwork

@@ -335,7 +335,6 @@ pp {
 </dd>
 </dl>
 <p>Note: If monitoring Exchange with a non-administrator user, the user must be a member of the Active Directory group &quot;Exchange View-Only Administrators&quot; for pre-2010 Exchange installations or &quot;View Only Organization Management&quot; for 2010 and later installations.</p>
-<p>Note: When Microsoft.Exchange ZenPack is installed, Queues(_Total)Mailbox Delivery Queue Length and Averaged Latency will be disabled since the same metrics are collected by Exchange ZenPack.</p>
 <p>Note: IIS Management Scripts and Tools needs to be installed on the server side in order to model and monitor IIS sites. This is done through the Add Roles and Features tool on the Windows Server under Web Server -&gt; Management Tools -&gt; IIS Management Scripts and Tools.</p>
 <dl>
 <dt>IIS</dt>
@@ -614,6 +613,7 @@ pp {
   &lt;/Query&gt;
 &lt;/QueryList&gt;</code></pre>
 <p><code>{time}</code> will be replaced by the number of milliseconds since the last query automatically.</p>
+<p>Note: The max age field is only used the first time that the datasource is run. Subsequent queries will only look at events that have occurred since the last time this datasource was run. We write a timestamp to the registry location HKCU:\SOFTWARE\zenoss\logs\<datasource name> to know when the last time the datasource was run. If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \SOFTWARE\zenoss\logs\, for your user under HKEY_USERS.</p>
 <p>Note: The script to search for events and return relevant data is approximately 3700 characters. Due to the Windows 8192 character limit on the shell, any XML or PowerShell queries will need to be less than 4400 characters.</p>
 <p>Note: The query for servers with .NET 3.5 and later uses the Get-WinEvent PowerShell cmdlet. If your server does not have one of these later versions, we will revert to using the Get-EventLog cmdlet. It is recommended, but not required, to install .NET version 3.5 SP1 or higher. If you have a mix of these servers using the same Event Log Data Source, you can mix and match the differing powershell queries. e.g. <code>{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }</code></p>
 <p>To change event severity follow the steps:</p>
@@ -846,6 +846,7 @@ pp {
 <p>You can optionally include or exclude certain services to be monitored when selecting the <em>Auto</em>, <em>Manual</em>, and/or <em>Disabled</em> start mode(s) by entering a comma separated list of services. These can be the service names or a valid regular expression. Entered names and expressions are case insensitive. To exclude services, you must specify a '-' at the beginning of the name or regular expression. To include services, specify a '+' at the beginning of the name or regular expression. Exclusions will take precedence over inclusions, but the exclusions must be placed before the wildcard <em>+.*</em> inclusion.</p>
 <p>Note: To enable monitoring by default of a service or services, you must choose a start mode by ticking the appropriate box. Unticking all three boxes disables monitoring by default.</p>
 <p>Note: When saving changes to a service template and you choose to update services immediately, this will create a job to index all services on all devices. These changes may take several minutes to propagate to all of your devices depending upon the size of your organization. Updating is not recommended if you are making several changes in a short period of time. Updates are automatically applied at the time of the next model.</p>
+<p>Note: During the time that the indexing of Windows Services job takes, any particular Windows Service could potentially still be monitored using a different datasource. Because of this, it is possible to see status event(s) using both the old and new severity.</p>
 <p>Note: The Windows Service datasource no longer depends on the 'DefaultService' data source name. User defined datasources are now honored.</p>
 <h3 id="dcdiag">DCDiag</h3>
 <p>Beginning with version 2.4.0, you can now monitor the output of DCDiag. By default all dcdiag tests are enabled in the Active Directory monitoring template. If a test fails an error event is issued. You can also add other tests, such as DNS, and supply specific test parameters.</p>
@@ -1069,6 +1070,11 @@ Win2012-1d.example.com zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quo
 <dd>Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device. See the ClusterOwnerChange mapping in the /Status event class for example usage.
 </dd>
 </dl></li>
+<li><dl>
+<dt>zWinRMConnectTimeout</dt>
+<dd>Used to define the time out for establishing a winrm connection. If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
+</dd>
+</dl></li>
 </ul>
 <p>Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as well as tools for sending/receiving data. Therefore if either HyperV or Windows device has a correct zWinKDC setting, it will be used for another device as well.</p>
 <p><br class="clear"></p>
@@ -1092,6 +1098,7 @@ Win2012-1d.example.com zWinRMUser=&quot;Administrator&quot;, zWinRMPassword=&quo
 <li>Windows Authentication: In <em>zDBInstances</em> property specify only SQL instances names, leave user and password fields blank.</li>
 <li>SQL Server Authentication: In <em>zDBInstances</em> property provide user name and password for each SQL instance.</li>
 <li>Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.</li>
+<li>For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.</li>
 </ul>
 <p>Use the following steps to configure SQL Server Authentication on your SQL Server:</p>
 <ol style="list-style-type: decimal">
@@ -1508,7 +1515,37 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
-<p>2.8.3 - Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134) - Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555) - Fix Winrs failures (powershell datasources) with &quot;Unknown strategy&quot; message (ZPS-2613) - Fix Missing interface counters on non physical adapters (ZPS-2567) - Fix WinRS: Failed collection ipaddress missing (ZPS-2645) - Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644) - Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611) - Fix Windows: Tasks building up with a bad config (ZPS-2717) - Tested with Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2</p>
+<p>2.9.0</p>
+<ul>
+<li>Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)</li>
+<li>Fix Windows - Error: local variable 'kerberos' referenced before assignment (ZPS-2738)</li>
+<li>Fix Quote issue for polling custom event logs (ZPS-2741)</li>
+<li>Fix Modelling a Windows device fails with trace re: Software Plugin (ZPS-2745)</li>
+<li>Fix Windows: Tasks building up with bad network connections (ZPS-2829)</li>
+<li>Fix MicrosoftExchange - N/A for some graphs of Exchange Server component and on Graphs tab (ZPS-2197)</li>
+<li>Fix Microsoft Windows: zenpython memory increases until restart required (ZPS-2176)</li>
+<li>Fix CPU use builds over time - PythonCollector MicrosoftWindows (ZPS-2480)</li>
+<li>Fix Modelling using Kerberos generates two tickets (ZPS-2394)</li>
+<li>Fix Windows data sources are improperly setting eventClass (ZPS-3056)</li>
+<li>Fix Windows Event Log Datasource Does not Map Critical Events (ZPS-3109)</li>
+<li>Fix Windows - an error 'process scan error: list index out of range' is generated for OS Processes component (ZPS-3116)</li>
+<li>Fix Windows - Do not display None as the Service Pack level (ZPS-2289)</li>
+<li>Fix Windows - &quot;Check username and password&quot; event still gets generated every cycle even though credentials is correct (ZPS-2712)</li>
+<li>Add ability to monitor freespace on Cluster Disks (ZPS-582)</li>
+<li>Tested with Zenoss Resource Manager 5.3.3, 6.1.0, and 6.1.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.3</li>
+</ul>
+<p>2.8.3</p>
+<ul>
+<li>Fix Components moving between hosts on a cluster get events as they disappear. (ZPS-2134)</li>
+<li>Fix Microsoft.Windows: IIS template shows in Device Templates for non-IIS Server (ZPS-2555)</li>
+<li>Fix Winrs failures (powershell datasources) with &quot;Unknown strategy&quot; message (ZPS-2613)</li>
+<li>Fix Missing interface counters on non physical adapters (ZPS-2567)</li>
+<li>Fix WinRS: Failed collection ipaddress missing (ZPS-2645)</li>
+<li>Fix Windows ZenPack: WinMSSQL may not finish modeling when hundreds of databases exist. (ZPS-2644)</li>
+<li>Fix Resmgr 5.3.3 upgrade indicates Windows alias is too long (ZPS-2611)</li>
+<li>Fix Windows: Tasks building up with a bad config (ZPS-2717)</li>
+<li>Tested with Zenoss Resource Manager 5.3.3 and 6.0.1, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.2.2</li>
+</ul>
 <p>2.8.2</p>
 <ul>
 <li>Fix Microsoft Windows fails to model 2008 Server Cluster Disks (ZPS-2015)</li>
