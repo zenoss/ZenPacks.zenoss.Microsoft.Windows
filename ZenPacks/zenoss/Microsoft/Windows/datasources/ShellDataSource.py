@@ -970,49 +970,54 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                        (dsconf.datasource == 'status' and strategy.key != "PowershellMSSQL"):
                         data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
-                    # get db status
-                    for db in getattr(strategy, 'valuemap', []):
-                        dsconf = get_dsconf(dsconfs, db, param='contexttitle')
-                        if dsconf:
-                            component = prepId(dsconf.component)
-                            eventClass = dsconf.eventClass or "/Status"
-                        else:
-                            component = prepId(db)
-                            eventClass = "/Status"
-                        try:
-                            dbstatuses = strategy.valuemap[db]['status']
-                        except Exception:
-                            dbstatuses = 'Unknown'
-                        db_summary = ''
-                        status = 0
-                        severity = ZenEventClasses.Info
-                        warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
-                        for dbstatus in dbstatuses.split(','):
-                            # create bitmask for status display
-                            status += lookup_database_status(dbstatus)
-                            # determine severity
-                            if dbstatus in warnings:
-                                severity = ZenEventClasses.Warning
-                            elif dbstatus == 'Normal':
-                                severity = ZenEventClasses.Clear
-                            if db_summary:
-                                db_summary += ' '
-                            db_summary += lookup_databasesummary(dbstatus)
-                        summary = 'Database {0} status is {1}.'.format(db,
-                                                                       dbstatuses)
-                        if component in components:
-                            data['events'].append(dict(
-                                eventClass=eventClass,
-                                eventClassKey='WinDatabaseStatus',
-                                eventKey=strategy.key,
-                                severity=severity,
-                                device=config.id,
-                                summary=summary,
-                                message=db_summary,
-                                dbstatus=dbstatuses,
-                                component=component
-                            ))
-                            data['values'][dsconf.component]['status'] = status, 'N'
+                    # get db status only if status datasource is being one of our dsconfs
+                    dsnames = set([dsconf.datasource for dsconf in dsconfs])
+                    if 'status' in dsnames:
+                        for db in getattr(strategy, 'valuemap', []):
+                            # only set if status is our only datasource
+                            if not set('status').symmetric_difference(dsnames):
+                                checked_result = True
+                            dsconf = get_dsconf(dsconfs, db, param='contexttitle')
+                            if dsconf:
+                                component = prepId(dsconf.component)
+                                eventClass = dsconf.eventClass or "/Status"
+                            else:
+                                component = prepId(db)
+                                eventClass = "/Status"
+                            try:
+                                dbstatuses = strategy.valuemap[db]['status']
+                            except Exception:
+                                dbstatuses = 'Unknown'
+                            db_summary = ''
+                            status = 0
+                            severity = ZenEventClasses.Info
+                            warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
+                            for dbstatus in dbstatuses.split(','):
+                                # create bitmask for status display
+                                status += lookup_database_status(dbstatus)
+                                # determine severity
+                                if dbstatus in warnings:
+                                    severity = ZenEventClasses.Warning
+                                elif dbstatus == 'Normal':
+                                    severity = ZenEventClasses.Clear
+                                if db_summary:
+                                    db_summary += ' '
+                                db_summary += lookup_databasesummary(dbstatus)
+                            summary = 'Database {0} status is {1}.'.format(db,
+                                                                           dbstatuses)
+                            if component in components:
+                                data['events'].append(dict(
+                                    eventClass=eventClass,
+                                    eventClassKey='WinDatabaseStatus',
+                                    eventKey=strategy.key,
+                                    severity=severity,
+                                    device=config.id,
+                                    summary=summary,
+                                    message=db_summary,
+                                    dbstatus=dbstatuses,
+                                    component=component
+                                ))
+                                data['values'][dsconf.component]['status'] = status, 'N'
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
