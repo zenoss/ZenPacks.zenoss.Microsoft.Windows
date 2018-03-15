@@ -1814,7 +1814,8 @@ Changes
 
 2.9.1
 
--   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources  (ZPS-3194)
+-   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
+-   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
 
 2.9.0
 

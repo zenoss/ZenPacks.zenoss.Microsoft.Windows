@@ -83,21 +83,21 @@ class TestEmptyWin32_ComputerSystem(BaseTestCase):
         self.assertTrue(data[0].domain_controller)
 
 
-class TestEmptyWMIClasses(BaseTestCase):
+class TestOddWMIClasses(BaseTestCase):
     '''
     Test if a device is a domain controller
     '''
     def setUp(self):
         self.plugin = OperatingSystem()
         self.device = StringAttributeObject()
+
+    def test_empty_wmi_process(self):
         acc = ItemsAccumulator()
         acc.new_item()
         self.results = {'Win32_SystemEnclosure': acc.items,
                         'Win32_ComputerSystem': acc.items,
                         'Win32_OperatingSystem': acc.items,
                         'exchange_version': Mock(stdout=['15'])}
-
-    def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data[0].snmpDescr, 'Unknown')
         self.assertEquals(data[0].snmpContact, 'Unknown')
@@ -105,12 +105,46 @@ class TestEmptyWMIClasses(BaseTestCase):
 
         self.assertEquals(data[1].tag, 'Unknown')
 
+    def test_contact_none_process(self):
+        # ZPS-3227 test for situation where PrimaryOwnerName
+        # of Win32_ComputerSystem is None
+        acc = ItemsAccumulator()
+        acc.new_item()
+        cs_acc = ItemsAccumulator()
+        cs_acc.new_item()
+        cs_acc.add_property('Name', None)
+        cs_acc.add_property('PrimaryOwnerName', None)
+        cs_acc.add_property('Caption', None)
+        cs_acc.add_property('Domain', 'domain')
+        cs_acc.add_property('Model', 'model')
+        cs_acc.add_property('Manufacturer', 'Microsoft')
+        cs_acc.add_property('DomainRole', '0')
+        os_acc = ItemsAccumulator()
+        os_acc.new_item()
+        os_acc.add_property('CSName', None)
+        os_acc.add_property('RegisteredUser', None)
+        os_acc.add_property('Caption', None)
+        os_acc.add_property('ProductType', '0')
+        os_acc.add_property('SerialNumber', 'model')
+        os_acc.add_property('Manufacturer', 'Microsoft')
+        os_acc.add_property('TotalVisibleMemorySize', '1')
+        os_acc.add_property('TotalVirtualMemorySize', '1')
+        os_acc.add_property('CSDVersion', '1')
+        self.results = {'Win32_SystemEnclosure': acc.items,
+                        'Win32_ComputerSystem': cs_acc.items,
+                        'Win32_OperatingSystem': os_acc.items,
+                        'exchange_version': Mock(stdout=['15'])}
+        data = self.plugin.process(self.device, self.results, Mock())
+        self.assertEquals(data[0].snmpDescr, 'Unknown')
+        self.assertEquals(data[0].snmpContact, 'Unknown')
+        self.assertEquals(data[0].snmpSysName, 'Unknown')
+
 
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
-    suite.addTest(makeSuite(TestEmptyWMIClasses))
+    suite.addTest(makeSuite(TestOddWMIClasses))
     suite.addTest(makeSuite(TestEmptyWin32_ComputerSystem))
     suite.addTest(makeSuite(TestDomainController))
     suite.addTest(makeSuite(TestOperatingSystem))
