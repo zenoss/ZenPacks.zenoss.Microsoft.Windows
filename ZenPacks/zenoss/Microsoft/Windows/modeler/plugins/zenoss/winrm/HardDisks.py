@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2017, 2018, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -37,6 +37,12 @@ class HardDisks(WinRMPlugin):
         }
     }
 
+    powershell_commands = {
+        'signature_uniqueid': (
+          "Get-Disk | ForEach-Object {$_.Signature, '=', $_.UniqueId, '|'};"
+        )
+    }
+
     @save
     def process(self, device, results, log):
         log.info(
@@ -52,6 +58,18 @@ class HardDisks(WinRMPlugin):
             return rm
         partitions = results.get('diskdrives').get('Win32_DiskDriveToDiskPartition')
         volumes = results.get('diskdrives').get('Win32_LogicalDiskToPartition')
+
+        uniqueids_dict = {}
+        signature_uniqueid = results.get('signature_uniqueid')
+        if signature_uniqueid:
+            signature_uniqueid = ''.join(signature_uniqueid.stdout).split('|')
+            for ids in signature_uniqueid:
+                try:
+                    key, value = ids.split('=')
+                    uniqueids_dict[key] = value
+                except (KeyError, ValueError):
+                    pass
+
         for drive in diskdrives:
             utilization = 0
             fs_ids = []
@@ -86,6 +104,9 @@ class HardDisks(WinRMPlugin):
                 if drive.SerialNumber is None:
                     drive.SerialNumber = ''
                 serialNumber = drive.SerialNumber.strip()
+            if hasattr(drive, 'Signature'):
+                drive.uniqueId = uniqueids_dict.get(drive.Signature)
+
             product_key = MultiArgs(drive.Model, drive.Manufacturer)
             capabilities = ''
             if hasattr(drive, 'CapabilityDescriptions') and drive.CapabilityDescriptions:
@@ -131,6 +152,11 @@ def make_disk_ids(disk_drive):
     """From a Win32_DiskDrive object, create the disk_ids list."""
     disk_ids = []
     disk_ids.append(disk_drive.DeviceID)
+
+    # Append UniqueId of hard disk
+    unique_id = getattr(disk_drive, 'uniqueId', None)
+    if unique_id:
+        disk_ids.append(unique_id)
 
     # If no PNPDeviceID, its not a physical disk, so return None
     pnpDevice = disk_drive.PNPDeviceID.strip()
