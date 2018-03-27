@@ -294,6 +294,10 @@ class WinMSSQL(WinRMPlugin):
 
             db_sqlConnection = []
             # Get database information
+            # smo optimization for faster loading
+            db_sqlConnection.append("$ob = New-Object Microsoft.SqlServer.Management.Smo.Database;"
+                                    "$def = $server.GetDefaultInitFields($ob.GetType());"
+                                    "$server.SetDefaultInitFields($ob.GetType(), $def);")
             db_sqlConnection.append('write-host "====Databases";')
             db_sqlConnection.append('$server.Databases | foreach {'
                                     'write-host \"Name---\" $_,'
@@ -313,6 +317,10 @@ class WinMSSQL(WinRMPlugin):
 
             # Get SQL Backup Jobs information
             backup_sqlConnection = []
+            # smo optimization for faster loading
+            backup_sqlConnection.append("$ob = New-Object Microsoft.SqlServer.Management.Smo.BackupDevice;"
+                                        "$def = $server.GetDefaultInitFields($ob.GetType());"
+                                        "$server.SetDefaultInitFields($ob.GetType(), $def);")
             backup_sqlConnection.append('write-host "====Backups";')
             # Get database information
             backup_sqlConnection.append('try{$server.BackupDevices | foreach {'
@@ -324,6 +332,10 @@ class WinMSSQL(WinRMPlugin):
 
             # Get SQL Jobs information
             job_sqlConnection = []
+            # smo optimization for faster loading
+            job_sqlConnection.append("$ob = New-Object Microsoft.SqlServer.Management.Smo.Agent.Job;"
+                                     "$def = $server.GetDefaultInitFields($ob.GetType());"
+                                     "$server.SetDefaultInitFields($ob.GetType(), $def);")
             job_sqlConnection.append('write-host "====Jobs";')
             job_sqlConnection.append("try {")
             job_sqlConnection.append("$server.JobServer.Jobs | foreach {")

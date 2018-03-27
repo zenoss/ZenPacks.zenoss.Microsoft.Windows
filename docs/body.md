@@ -1816,6 +1816,7 @@ Changes
 
 -   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
 -   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
+-   Fix ShellDataSource slow to gather data when hundreds of databases exist.
 
 2.9.0
 
