@@ -466,6 +466,13 @@ class PowershellMSSQLStrategy(object):
         # a lot of databases.  Run script per instance
 
         counters_sqlConnection = []
+        # smo optimization for faster loading
+        counters_sqlConnection.append("$ob = New-Object Microsoft.SqlServer.Management.Smo.Database;"
+                                      "$def = $server.GetDefaultInitFields($ob.GetType());"
+                                      "$server.SetDefaultInitFields($ob.GetType(), $def);")
+        counters_sqlConnection.append("$ob = New-Object Microsoft.SqlServer.Management.Smo.Table;"
+                                      "$def = $server.GetDefaultInitFields($ob.GetType());"
+                                      "$server.SetDefaultInitFields($ob.GetType(), $def);")
         counters_sqlConnection.append("if ($server.Databases -ne $null) {")
         counters_sqlConnection.append("$dbMaster = $server.Databases['master'];")
         counters_sqlConnection.append("foreach ($db in $server.Databases){")
@@ -475,15 +482,15 @@ class PowershellMSSQLStrategy(object):
                                       "foreach($i in $sp){ "
                                       "if($i -ne $sp[-1]){ $db_name += $i + [char]39 + [char]39;}"
                                       "else { $db_name += $i;}"
-                                      "}} else { $db_name = $db.Name;}")
-        counters_sqlConnection.append("$query = 'select instance_name as databasename, "
-                                      "counter_name as ckey, cntr_value as cvalue from "
-                                      "sys.dm_os_performance_counters where instance_name = '"
-                                      " +[char]39+$db_name+[char]39;")
+                                      "}} else { $db_name = $db.Name;}"
+                                      "Write-Host '{{db_name}} :counter: databasestatus :value: {{status}}'.replace"
+                                      "('{{db_name}}', $db_name).replace('{{status}}', $db.Status);}")
+        counters_sqlConnection.append("$query = 'select RTRIM(instance_name), "
+                                      "RTRIM(counter_name), RTRIM(cntr_value) from "
+                                      "sys.dm_os_performance_counters';")
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
-        counters_sqlConnection.append('if($ds.Tables[0].rows.count -gt 0) {$ds.Tables| Format-List;}'
-                                      'Write-Host "databasename:"$db_name;'
-                                      '$status = $db.Status;write-host "databasestatus:"$status;}}')
+        counters_sqlConnection.append("if($ds.Tables[0].rows.count -gt 0) {$ds.Tables[0].rows"
+                                      "| % {write-host $_.Column1':counter:'$_.Column2':value:'$_.Column3;} } }")
         script = "\"& {{{}}}\"".format(
             ''.join([BUFFER_SIZE] +
                     getSQLAssembly(sqlConnection.version) +
@@ -508,18 +515,22 @@ class PowershellMSSQLStrategy(object):
 
         # Parse values
         self.valuemap = {}
+        db_regex = re.compile('(.*):counter:(.*):value:(.*)')
         for counterline in filter_sql_stdout(result.stdout):
-            key, value = counterline.split(':', 1)
-            if key.strip() == 'databasename':
-                databasename = value.strip()
-                if databasename not in self.valuemap:
-                    self.valuemap[databasename] = {}
-            elif key.strip() == 'ckey':
-                _counter = value.strip().lower()
-            elif key.strip() == 'cvalue':
-                self.valuemap[databasename][_counter] = value.strip()
-            elif key.strip() == 'databasestatus':
-                self.valuemap[databasename]['status'] = value.strip()
+            try:
+                databasename, _counter, value = db_regex.match(counterline).groups()
+                databasename = databasename.strip()
+                _counter = _counter.strip().lower()
+                value = value.strip()
+            except Exception:
+                log.debug('MSSQL parse_result error in data: %s', counterline)
+                continue
+            if databasename not in self.valuemap:
+                self.valuemap[databasename] = {}
+            if _counter == 'databasestatus':
+                self.valuemap[databasename]['status'] = value
+            else:
+                self.valuemap[databasename][_counter] = value
 
         for dsconf in dsconfs:
             if dsconf.params['resource'] == 'status':
@@ -970,49 +981,54 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                        (dsconf.datasource == 'status' and strategy.key != "PowershellMSSQL"):
                         data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
-                    # get db status
-                    for db in getattr(strategy, 'valuemap', []):
-                        dsconf = get_dsconf(dsconfs, db, param='contexttitle')
-                        if dsconf:
-                            component = prepId(dsconf.component)
-                            eventClass = dsconf.eventClass or "/Status"
-                        else:
-                            component = prepId(db)
-                            eventClass = "/Status"
-                        try:
-                            dbstatuses = strategy.valuemap[db]['status']
-                        except Exception:
-                            dbstatuses = 'Unknown'
-                        db_summary = ''
-                        status = 0
-                        severity = ZenEventClasses.Info
-                        warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
-                        for dbstatus in dbstatuses.split(','):
-                            # create bitmask for status display
-                            status += lookup_database_status(dbstatus)
-                            # determine severity
-                            if dbstatus in warnings:
-                                severity = ZenEventClasses.Warning
-                            elif dbstatus == 'Normal':
-                                severity = ZenEventClasses.Clear
-                            if db_summary:
-                                db_summary += ' '
-                            db_summary += lookup_databasesummary(dbstatus)
-                        summary = 'Database {0} status is {1}.'.format(db,
-                                                                       dbstatuses)
-                        if component in components:
-                            data['events'].append(dict(
-                                eventClass=eventClass,
-                                eventClassKey='WinDatabaseStatus',
-                                eventKey=strategy.key,
-                                severity=severity,
-                                device=config.id,
-                                summary=summary,
-                                message=db_summary,
-                                dbstatus=dbstatuses,
-                                component=component
-                            ))
-                            data['values'][dsconf.component]['status'] = status, 'N'
+                    # get db status only if status datasource is being one of our dsconfs
+                    dsnames = set([dsconf.datasource for dsconf in dsconfs])
+                    if 'status' in dsnames:
+                        for db in getattr(strategy, 'valuemap', []):
+                            # only set if status is our only datasource
+                            if not set('status').symmetric_difference(dsnames):
+                                checked_result = True
+                            dsconf = get_dsconf(dsconfs, db, param='contexttitle')
+                            if dsconf:
+                                component = prepId(dsconf.component)
+                                eventClass = dsconf.eventClass or "/Status"
+                            else:
+                                component = prepId(db)
+                                eventClass = "/Status"
+                            try:
+                                dbstatuses = strategy.valuemap[db]['status']
+                            except Exception:
+                                dbstatuses = 'Unknown'
+                            db_summary = ''
+                            status = 0
+                            severity = ZenEventClasses.Info
+                            warnings = ('EmergencyMode', 'Inaccessible', 'Suspect')
+                            for dbstatus in dbstatuses.split(','):
+                                # create bitmask for status display
+                                status += lookup_database_status(dbstatus)
+                                # determine severity
+                                if dbstatus in warnings:
+                                    severity = ZenEventClasses.Warning
+                                elif dbstatus == 'Normal':
+                                    severity = ZenEventClasses.Clear
+                                if db_summary:
+                                    db_summary += ' '
+                                db_summary += lookup_databasesummary(dbstatus)
+                            summary = 'Database {0} status is {1}.'.format(db,
+                                                                           dbstatuses)
+                            if component in components:
+                                data['events'].append(dict(
+                                    eventClass=eventClass,
+                                    eventClassKey='WinDatabaseStatus',
+                                    eventKey=strategy.key,
+                                    severity=severity,
+                                    device=config.id,
+                                    summary=summary,
+                                    message=db_summary,
+                                    dbstatus=dbstatuses,
+                                    component=component
+                                ))
+                                data['values'][dsconf.component]['status'] = status, 'N'
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(
@@ -1023,6 +1039,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         if strategy.key == "PowershellMSSQL":
             instances = {dsc.component for dsc in dsconfs}
+            if msg == 'winrs: successful collection':
+                severity = ZenEventClasses.Clear
             for i in list(instances):
                 data['events'].append(dict(
                     severity=severity,

@@ -30,8 +30,8 @@ class TestShellDataSourcePlugin(BaseTestCase):
 
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
-        self.assertEquals(len(data['values']), 12)
-        self.assertEquals(len(data['events']), 29)
+        self.assertEquals(len(data['values']), 5)
+        self.assertEquals(len(data['events']), 10)
         self.assertFalse(all(e['severity'] for e in data['events']))
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
@@ -119,17 +119,12 @@ class TestShellDataSourcePlugin(BaseTestCase):
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_sql_no_counters(self):
-        parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_162846')[0]
-        stdout = [u'databasename : db01',
-                  u'databasestatus:Normal',
-                  u'databasename:master',
-                  u'databasestatus:Normal',
-                  u'databasename : msdb',
-                  u'databasestatus:Normal',
-                  u'databasename : tempdb',
-                  u'databasestatus:Normal',
-                  u'databasename : model',
-                  u'databasestatus:Normal']
+        parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_185726')[0]
+        stdout = [u'db01 :counter: databasestatus :value: Normal',
+                  u'master :counter: databasestatus :value: Normal',
+                  u'msdb :counter: databasestatus :value: Normal',
+                  u'tempdb :counter: databasestatus :value: Normal',
+                  u'model :counter: databasestatus :value: Normal']
         sql_config = Mock()
         sql_config.datasources = parms[1]
         sql_config.id = sql_config.datasources[0].device

@@ -591,7 +591,8 @@ pp {
 <p>For example, to raise the severity of the Offline status:</p>
 <div class="sourceCode"><pre class="sourceCode python"><code class="sourceCode python"><span class="cf">if</span> <span class="st">&#39;Offline&#39;</span> <span class="op">in</span> evt.summary:
     evt.severity <span class="op">=</span> <span class="dv">4</span></code></pre></div>
-<p>The WinDBInstance monitoring template will monitor the status of a SQL Server instance to inform the user if it is up or down.</p>
+<p>Note: Database status is discovered in the same PowerShell script as the database counters. While it is possible to use a different cycle time for status, we advise against that as it will add extra load onto the target device and could inadvertently skew memory/cpu usage.</p>
+<p>The WinDBInstance monitoring template will also monitor the status of a SQL Server instance to inform the user if it is up or down.</p>
 <p>The WinSQLJob monitoring template will monitor the status of a job on a SQL Server instance to inform the user if it has succeeded, failed, unknown, or other state.</p>
 <h2 id="thresholds">Thresholds</h2>
 <p>The following thresholds are set by default on the device monitoring template and will trigger an alert if they are reached</p>
@@ -1534,6 +1535,10 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.9.1</p>
+<ul>
+<li>Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)</li>
+</ul>
 <p>2.9.0</p>
 <ul>
 <li>Fix Windows - IIS 7 or higher may show Unknown site status (ZPS-2728)</li>

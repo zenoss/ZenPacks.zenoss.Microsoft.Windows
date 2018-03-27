@@ -78,9 +78,13 @@ class OperatingSystem(WinRMPlugin):
             return maps
         # Device Map
         device_om = ObjectMap()
-        device_om.snmpSysName = getattr(computerSystem, 'Name', getattr(operatingSystem, 'CSName', 'Unknown')).strip()
-        device_om.snmpContact = getattr(computerSystem, 'PrimaryOwnerName', getattr(operatingSystem, 'RegisteredUser', 'Unknown')).strip()
-        device_om.snmpDescr = getattr(computerSystem, 'Caption', getattr(operatingSystem, 'Caption', 'Unknown')).strip()
+        # safely get name, contact, desc
+        sys_name = getattr(computerSystem, 'Name', None) or getattr(operatingSystem, 'CSName', None) or 'Unknown'
+        device_om.snmpSysName = sys_name.strip()
+        contact = getattr(computerSystem, 'PrimaryOwnerName', None) or getattr(operatingSystem, 'RegisteredUser', None) or 'Unknown'
+        device_om.snmpContact = contact.strip()
+        desc = getattr(computerSystem, 'Caption', None) or getattr(operatingSystem, 'Caption', None) or 'Unknown'
+        device_om.snmpDescr = desc.strip()
         device_om.ip_and_hostname = self.get_ip_and_hostname(device.manageIp)
 
         # http://office.microsoft.com/en-001/outlook-help/determine-the-version-of-microsoft-exchange-server-my-account-connects-to-HA010117038.aspx
@@ -135,8 +139,9 @@ class OperatingSystem(WinRMPlugin):
         os_om = ObjectMap(compname='os')
         os_om.totalSwap = int(getattr(operatingSystem, 'TotalVirtualMemorySize', '0')) * 1024
 
+        osCaption = getattr(operatingSystem, 'Caption', None) or 'Unknown'
         operatingSystem.Caption = re.sub(
-            r'\s*\S*Microsoft\S*\s*', '', getattr(operatingSystem, 'Caption', 'Unknown'))
+            r'\s*\S*Microsoft\S*\s*', '', osCaption)
 
         osCaption = getattr(operatingSystem, 'Caption', 'Unknown')
         CSDVersion = getattr(operatingSystem, 'CSDVersion', 'Unknown')

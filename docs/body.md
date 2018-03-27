@@ -426,7 +426,12 @@ if 'Offline' in evt.summary:
     evt.severity = 4
 ```
 
-The WinDBInstance monitoring template will monitor the status of a SQL
+Note: Database status is discovered in the same PowerShell script as the
+database counters.  While it is possible to use a different cycle time for
+status, we advise against that as it will add extra load onto the target
+device and could inadvertently skew memory/cpu usage.
+
+The WinDBInstance monitoring template will also monitor the status of a SQL
 Server instance to inform the user if it is up or down.
 
 The WinSQLJob monitoring template will monitor the status of a job on a
@@ -1806,6 +1811,12 @@ Monitoring Templates
 
 Changes
 -------
+
+2.9.1
+
+-   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
+-   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
+-   Fix ShellDataSource slow to gather data when hundreds of databases exist.
 
 2.9.0
 
