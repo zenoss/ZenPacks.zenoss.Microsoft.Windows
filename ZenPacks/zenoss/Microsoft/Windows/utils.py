@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2018, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -12,6 +12,8 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 """
 
 import json
+from Products.AdvancedQuery import In
+from Products.Zuul.interfaces import ICatalogTool
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -628,3 +630,20 @@ def get_rrd_path(obj):
             return 'Devices/' + '/'.join(obj.getPrimaryPath()[skip:])
         else:
             return super(obj.__class__, obj).rrdPath()
+
+
+def keyword_search(root, keywords):
+    """Generate objects that match one or more of given keywords."""
+    if isinstance(keywords, basestring):
+        keywords = [keywords]
+    elif isinstance(keywords, set):
+        keywords = list(keywords)
+
+    if keywords:
+        catalog = ICatalogTool(root)
+        query = In('searchKeywords', keywords)
+        for result in catalog.search(query=query):
+            try:
+                yield result.getObject()
+            except Exception:
+                pass
