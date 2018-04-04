@@ -142,7 +142,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
 
     def test_sqlConnection(self):
         sq = SqlConnection('instance', 'sqlusername@domain.com', 'sqlpassword', True, 11)
-        self.assertTrue('sqlpassword' not in ' '.join(sq.sqlConnection), sq.sqlConnection)
+        self.assertNotIn('sqlpassword', ' '.join(sq.sqlConnection), sq.sqlConnection)
 
 def test_suite():
     """Return test suite for this module."""
