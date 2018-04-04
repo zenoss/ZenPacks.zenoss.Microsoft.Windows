@@ -46,7 +46,6 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txcoroutine import coroutine
 
-from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -61,7 +60,6 @@ from . import send_to_debug
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.shell import create_long_running_command, CommandResponse
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -441,7 +439,7 @@ class SqlConnection(object):
         self.sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
         self.sqlConnection.append("$con = new-object "
                                   "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                  '"{}", "{}", "$p";'.format(instance, sqlusername, sqlpassword))
+                                  '"{}", "{}", "$p";'.format(instance, sqlusername))
 
         if login_as_user:
             # Login using windows credentials

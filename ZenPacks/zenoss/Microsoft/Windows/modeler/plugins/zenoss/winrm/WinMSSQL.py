@@ -280,7 +280,7 @@ class WinMSSQL(WinRMPlugin):
             sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
             sqlConnection.append("$con = new-object "
                                  "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                 '"{0}", "{1}", "$p";'.format(sqlserver, sqlusername, pwd))
+                                 '"{0}", "{1}", "$p";'.format(sqlserver, sqlusername))
 
             if login_as_user:
                 # Login using windows credentials
