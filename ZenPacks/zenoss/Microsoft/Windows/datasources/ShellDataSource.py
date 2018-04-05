@@ -20,6 +20,7 @@ import urllib
 from urlparse import urlparse
 from traceback import format_exc
 import re
+import base64
 
 from zope.component import adapts
 from zope.component import getGlobalSiteManager
@@ -45,7 +46,6 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource \
 
 from ..txcoroutine import coroutine
 
-from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
@@ -60,7 +60,6 @@ from . import send_to_debug
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
-from txwinrm.shell import create_long_running_command, CommandResponse
 
 
 log = logging.getLogger("zen.MicrosoftWindows")
@@ -435,9 +434,12 @@ class SqlConnection(object):
         self.version = version
 
         # DB Connection Object
+        pwd = base64.b64encode(sqlpassword)
+        self.sqlConnection.append("$x = '{}';".format(pwd))
+        self.sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
         self.sqlConnection.append("$con = new-object "
                                   "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                  "'{}', '{}', '{}';".format(instance, sqlusername, sqlpassword))
+                                  '"{}", "{}", "$p";'.format(instance, sqlusername))
 
         if login_as_user:
             # Login using windows credentials
@@ -445,7 +447,7 @@ class SqlConnection(object):
             self.sqlConnection.append("$con.ConnectAsUser=$true;")
             # Omit domain part of username
             self.sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
-            self.sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+            self.sqlConnection.append("$con.ConnectAsUserPassword=$p;")
         else:
             self.sqlConnection.append("$con.Connect();")
 
@@ -487,7 +489,8 @@ class PowershellMSSQLStrategy(object):
                                       "('{{db_name}}', $db_name).replace('{{status}}', $db.Status);}")
         counters_sqlConnection.append("$query = 'select RTRIM(instance_name), "
                                       "RTRIM(counter_name), RTRIM(cntr_value) from "
-                                      "sys.dm_os_performance_counters';")
+                                      "sys.dm_os_performance_counters where instance_name in "
+                                      "(select name from sys.databases)';")
         counters_sqlConnection.append("$ds = $dbMaster.ExecuteWithResults($query);")
         counters_sqlConnection.append("if($ds.Tables[0].rows.count -gt 0) {$ds.Tables[0].rows"
                                       "| % {write-host $_.Column1':counter:'$_.Column2':value:'$_.Column3;} } }")

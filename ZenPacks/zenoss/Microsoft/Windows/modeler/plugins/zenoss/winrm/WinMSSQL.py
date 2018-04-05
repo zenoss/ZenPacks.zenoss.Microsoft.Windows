@@ -15,6 +15,7 @@ available in WMI.
 
 """
 import json
+import base64
 
 from twisted.internet import defer
 
@@ -274,9 +275,12 @@ class WinMSSQL(WinRMPlugin):
                     login_as_user = True
 
             # DB Connection Object
+            pwd = base64.b64encode(sqlpassword)
+            sqlConnection.append("$x = '{}';".format(pwd))
+            sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
             sqlConnection.append("$con = new-object "
                                  "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                 "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
+                                 '"{0}", "{1}", "$p";'.format(sqlserver, sqlusername))
 
             if login_as_user:
                 # Login using windows credentials
@@ -284,7 +288,7 @@ class WinMSSQL(WinRMPlugin):
                 sqlConnection.append("$con.ConnectAsUser=$true;")
                 # Omit domain part of username
                 sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
-                sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
+                sqlConnection.append('$con.ConnectAsUserPassword="$p";')
             else:
                 sqlConnection.append("$con.Connect();")
 
