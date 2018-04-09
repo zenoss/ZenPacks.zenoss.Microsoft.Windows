@@ -51,7 +51,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import filter_sql_stdout, \
     parseDBUserNamePass, getSQLAssembly
 from ..utils import (
     check_for_network_error, save, errorMsgCheck,
-    generateClearAuthEvents, get_dsconf,
+    generateClearAuthEvents, get_dsconf, SqlConnection,
     lookup_databasesummary, lookup_database_status)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
@@ -423,36 +423,6 @@ class CustomCommandStrategy(object):
 
 
 gsm.registerUtility(CustomCommandStrategy(), IStrategy, 'Custom Command')
-
-
-class SqlConnection(object):
-
-    def __init__(self, instance, sqlusername, sqlpassword, login_as_user, version):
-        # Need to modify query where clause.
-        # Currently all counters are retrieved for each database
-        self.sqlConnection = []
-        self.version = version
-
-        # DB Connection Object
-        pwd = base64.b64encode(sqlpassword)
-        self.sqlConnection.append("$x = '{}';".format(pwd))
-        self.sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
-        self.sqlConnection.append("$con = new-object "
-                                  "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                  '"{}", "{}", "$p";'.format(instance, sqlusername))
-
-        if login_as_user:
-            # Login using windows credentials
-            self.sqlConnection.append("$con.LoginSecure=$true;")
-            self.sqlConnection.append("$con.ConnectAsUser=$true;")
-            # Omit domain part of username
-            self.sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
-            self.sqlConnection.append("$con.ConnectAsUserPassword=$p;")
-        else:
-            self.sqlConnection.append("$con.Connect();")
-
-        # Connect to Database Server
-        self.sqlConnection.append("$server = new-object ('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
 
 class PowershellMSSQLStrategy(object):

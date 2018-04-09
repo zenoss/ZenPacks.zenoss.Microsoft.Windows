@@ -12,6 +12,7 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 """
 
 import json
+import base64
 from Products.AdvancedQuery import In
 from Products.Zuul.interfaces import ICatalogTool
 
@@ -334,6 +335,37 @@ def getSQLAssembly(version=None):
         sqlConnection.append("}")
 
     return sqlConnection
+
+
+class SqlConnection(object):
+
+    def __init__(self, instance, sqlusername, sqlpassword, login_as_user, version):
+        """Build the sql server connection string to establish connection to server
+        If using Windows auth, just set instance name and security
+        Obfuscate the sql auth password
+        """
+        self.sqlConnection = []
+        self.version = version
+
+        # DB Connection Object
+        pwd = base64.b64encode(sqlpassword)
+        if login_as_user:
+            # use windows auth(SSPI)
+            self.sqlConnection.append("$connectionString = 'Data Source={};Integrated Security=SSPI;';".format(instance))
+        else:
+            # use sql auth
+            self.sqlConnection.append("$x = '{}';".format(pwd))
+            self.sqlConnection.append("$p = [System.Text.Encoding]::ASCII.GetString([Convert]::FromBase64String($x));")
+            self.sqlConnection.append("$connectionString = 'Persist Security Info=False;Data Source={};".format(instance))
+            self.sqlConnection.append("User ID={};Password='+$p; ;".format(sqlusername))
+        self.sqlConnection.append('$sqlconn = new-object System.Data.SqlClient'
+                                  '.SqlConnection($connectionString);')
+        self.sqlConnection.append("$con = new-object ('Microsoft.SqlServer"
+                                  ".Management.Common.ServerConnection')$sqlconn;")
+
+        # Connect to Database Server
+        self.sqlConnection.append("$server = new-object "
+                                  "('Microsoft.SqlServer.Management.Smo.Server') $con;")
 
 
 def get_processText(item):
