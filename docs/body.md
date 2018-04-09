@@ -1281,7 +1281,7 @@ authentication process requires a ticket granting server. In the
 Microsoft Active Directory environment the AD Server is also the KDC.
 The zWinKDC value must be set to the IP address of the AD Server and the
 collector must be able to send TCP/IP packets to this server. Once this
-is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and
+is set your zWinRMUserName must be a FQDN such as someone@example.com and
 the zWinRMPassword must be set correctly for this user account.  The 
 domain name MUST be the name of the domain, not an alias for the domain.
 
