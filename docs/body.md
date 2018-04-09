@@ -1819,6 +1819,7 @@ Changes
 -   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
 -   Fix ShellDataSource slow to gather data when hundreds of databases exist.
 -   Fix MSSQL password can be logged in the Windows Event Log as plaintext during query failure (ZPS-3302)
+-   Fix MSSQL Monitoring causes thousands of logon/logoff events in windows event log (ZPS-3392)
 
 2.9.0
 
