@@ -18,7 +18,7 @@ from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle, load_pick
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
-    ShellDataSourcePlugin, DCDiagStrategy
+    ShellDataSourcePlugin, DCDiagStrategy, SqlConnection
 )
 
 
@@ -140,6 +140,9 @@ class TestShellDataSourcePlugin(BaseTestCase):
                 'Error parsing data in powershell MSSQL strategy for "ActiveTransactions" datasource',
                 data['events'][x]['summary'])
 
+    def test_sqlConnection(self):
+        sq = SqlConnection('instance', 'sqlusername@domain.com', 'sqlpassword', True, 11)
+        self.assertNotIn('sqlpassword', ' '.join(sq.sqlConnection), sq.sqlConnection)
 
 def test_suite():
     """Return test suite for this module."""

@@ -15,6 +15,7 @@ available in WMI.
 
 """
 import json
+import base64
 
 from twisted.internet import defer
 
@@ -24,7 +25,7 @@ from Products.DataCollector.plugins.DataMaps \
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
-from ZenPacks.zenoss.Microsoft.Windows.utils import save
+from ZenPacks.zenoss.Microsoft.Windows.utils import save, SqlConnection
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -254,8 +255,6 @@ class WinMSSQL(WinRMPlugin):
                 owner_node.strip(), sqlserver)
             instance_oms.append(om_instance)
 
-            sqlConnection = []
-
             # Look for specific instance creds first
             try:
                 sqlusername = dblogins[instance]['username']
@@ -273,24 +272,9 @@ class WinMSSQL(WinRMPlugin):
                     sqlpassword = password
                     login_as_user = True
 
-            # DB Connection Object
-            sqlConnection.append("$con = new-object "
-                                 "('Microsoft.SqlServer.Management.Common.ServerConnection')"
-                                 "'{0}', '{1}', '{2}';".format(sqlserver, sqlusername, sqlpassword))
-
-            if login_as_user:
-                # Login using windows credentials
-                sqlConnection.append("$con.LoginSecure=$true;")
-                sqlConnection.append("$con.ConnectAsUser=$true;")
-                # Omit domain part of username
-                sqlConnection.append("$con.ConnectAsUserName='{0}';".format(sqlusername.split("\\")[-1]))
-                sqlConnection.append("$con.ConnectAsUserPassword='{0}';".format(sqlpassword))
-            else:
-                sqlConnection.append("$con.Connect();")
-
-            # Connect to Database Server
-            sqlConnection.append("$server = new-object "
-                                 "('Microsoft.SqlServer.Management.Smo.Server') $con;")
+            sql_version = int(om_instance.sql_server_version.split('.')[0])
+            sqlConnection = SqlConnection(sqlserver, sqlusername, sqlpassword, login_as_user, sql_version).sqlConnection
+            self.log.info(''.join(sqlConnection))
 
             db_sqlConnection = []
             # Get database information

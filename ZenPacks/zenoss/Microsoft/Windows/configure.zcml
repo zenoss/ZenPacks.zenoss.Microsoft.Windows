@@ -81,6 +81,11 @@
         factory=".global_catalog.InterfaceWrapper"
         />
 
+    <adapter
+        provides="Products.Zuul.catalog.interfaces.IIndexableWrapper"
+        for=".HardDisk.HardDisk"
+        factory=".HardDisk.HardDiskIndexableWrapper"
+        />
 
     <!-- Custom Actions	-->
     <utility

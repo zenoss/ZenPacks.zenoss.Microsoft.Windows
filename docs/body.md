@@ -1068,7 +1068,8 @@ important.
         Fill in the user and password to use SQL authentication. Leave the user
         and password blank to use Windows authentication. The default
         *MSSQLSERVER* credentials will be used for all instances not
-        specified.
+        specified.  Microsoft recommends using Windows authentication to
+        connect to SQL Server.
 
 -   zWinRMEnvelopeSize
     :   This property is used when the winrm configuration
@@ -1136,8 +1137,8 @@ Supported SQL Server versions
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
 ##### Support for SQL Server and Windows Authentication: 
-*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank. 
-*   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance. 
+*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank.  Microsoft prefers this authentication method.
+*   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance.
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
 *   For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.
 
@@ -1817,6 +1818,7 @@ Changes
 -   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
 -   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
 -   Fix ShellDataSource slow to gather data when hundreds of databases exist.
+-   Fix MSSQL password can be logged in the Windows Event Log as plaintext during query failure (ZPS-3302)
 
 2.9.0
 
