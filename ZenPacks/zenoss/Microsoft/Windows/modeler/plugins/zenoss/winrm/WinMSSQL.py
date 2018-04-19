@@ -15,7 +15,6 @@ available in WMI.
 
 """
 import json
-import base64
 
 from twisted.internet import defer
 
@@ -274,7 +273,6 @@ class WinMSSQL(WinRMPlugin):
 
             sql_version = int(om_instance.sql_server_version.split('.')[0])
             sqlConnection = SqlConnection(sqlserver, sqlusername, sqlpassword, login_as_user, sql_version).sqlConnection
-            self.log.info(''.join(sqlConnection))
 
             db_sqlConnection = []
             # Get database information
