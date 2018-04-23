@@ -9,6 +9,7 @@
 ##############################################################################
 
 import Globals
+import time
 
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
 from twisted.python.failure import Failure
@@ -28,6 +29,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.config = load_pickle(self, 'config')
         self.plugin = ShellDataSourcePlugin()
 
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
         self.assertEquals(len(data['values']), 5)
@@ -90,6 +92,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(out, inp3)
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_nagios_parser(self):
         # OK status from Nagios and 4 datapoints
         # OK - no errors or warnings|default_lines=10 default_warnings=0 default_criticals=0 default_unknowns=0
@@ -118,6 +121,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(data['events'][0]['eventClass'], '/Status/Nagios/Test')
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_sql_no_counters(self):
         parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_185726')[0]
         stdout = [u'db01 :counter: databasestatus :value: Normal',
@@ -143,6 +147,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
     def test_sqlConnection(self):
         sq = SqlConnection('instance', 'sqlusername@domain.com', 'sqlpassword', True, 11)
         self.assertNotIn('sqlpassword', ' '.join(sq.sqlConnection), sq.sqlConnection)
+
 
 def test_suite():
     """Return test suite for this module."""
