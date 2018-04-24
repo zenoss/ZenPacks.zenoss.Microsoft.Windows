@@ -11,7 +11,7 @@
 import Globals  # noqa
 
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock
-from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle_file
 
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
@@ -417,6 +417,16 @@ class TestProcesses(BaseTestCase):
                                                    job_line)
         expected = "description \n" + '\n'.join(STDOUT_LINES[6:8])
         self.assertEquals(multiline_desc_om.description, expected)
+
+    def test_cluster_onSuccess(self):
+        results = load_pickle_file(self, 'WinMSSQL_process_cluster')[0]
+        data = self.plugin.process(self.device, results, Mock())
+        self.assertEquals(data[1].maps[0].sql_server_version, u'13.0.4206.0')
+        self.assertEquals(data[1].maps[0].cluster_node_server, 'win2016-node-02.sol-win.lab//SQLNETWORK\\CINSTANCE01')
+        # should have 6 databases
+        self.assertEquals(len(data[4].maps), 6)
+        # should have 5 jobs
+        self.assertEquals(len(data[3].maps), 5)
 
 
 def test_suite():
