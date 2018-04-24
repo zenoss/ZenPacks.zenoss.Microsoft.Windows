@@ -20,7 +20,6 @@ import urllib
 from urlparse import urlparse
 from traceback import format_exc
 import re
-import base64
 
 from zope.component import adapts
 from zope.component import getGlobalSiteManager
@@ -681,6 +680,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         'sqlhostname',
         'cluster_node_server'
     )
+    start = None
 
     @classmethod
     def config_key(cls, datasource, context):
@@ -870,12 +870,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line, script = strategy.build_command_line(counters)
 
         command = SingleCommandClient(conn_info)
+        self.start = time.mktime(time.localtime())
         results = yield command.run_command(command_line, script)
 
         defer.returnValue((strategy, config.datasources, results))
 
     @save
     def onSuccess(self, results, config):
+        elapsed = time.mktime(time.localtime()) - self.start
+        log.debug('%s Shell query took %d seconds', config.id, elapsed)
         data = self.new_data()
         dsconf0 = config.datasources[0]
         severity = ZenEventClasses.Clear

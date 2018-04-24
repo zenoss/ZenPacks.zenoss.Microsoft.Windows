@@ -15,7 +15,6 @@ available in WMI.
 
 """
 import json
-import base64
 
 from twisted.internet import defer
 
@@ -37,8 +36,9 @@ class SQLCommander(object):
     Custom WinRS client to construct and run PowerShell commands.
     '''
 
-    def __init__(self, conn_info):
+    def __init__(self, conn_info, log):
         self.winrs = SingleCommandClient(conn_info)
+        self.log = log
 
     PS_COMMAND = "powershell -NoLogo -NonInteractive -NoProfile " \
         "-OutputFormat TEXT -Command "
@@ -85,8 +85,9 @@ class SQLCommander(object):
             | Get-ClusterParameter -Name VirtualServerName,InstanceName
             | Group ClusterObject | Select
             @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
-            @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}}};
-        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).SQLInstance};
+            @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}},
+            @{Name='IPv4';Expression={(Test-Connection $ownernode -count 1 -erroraction ignore).IPV4Address.ipaddresstostring}}};
+        $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).IPv4\($_).SQLInstance};
     '''
 
     HOSTNAME_PS_SCRIPT = '''
@@ -109,8 +110,9 @@ class SQLCommander(object):
         """Run PowerShell command."""
         buffer_size = ('$Host.UI.RawUI.BufferSize = New-Object '
                        'Management.Automation.Host.Size (4096, 512);')
-        script = "\"{0} & {{{1}}}\"".format(
+        script = "\"& {{{0} {1}}}\"".format(
             buffer_size, pscommand.replace('\n', ' '))
+        self.log.debug(script)
         results = yield self.winrs.run_command(self.PS_COMMAND, ps_script=script)
         defer.returnValue(results)
 
@@ -160,20 +162,20 @@ class WinMSSQL(WinRMPlugin):
 
         conn_info = self.conn_info(device)
         conn_info = conn_info._replace(timeout=device.zCollectorClientTimeout - 5)
-        winrs = SQLCommander(conn_info)
+        winrs = SQLCommander(conn_info, log)
 
         dbinstances = winrs.get_instances_names(isCluster)
         instances = yield dbinstances
 
         maps = {}
         if not instances:
-            self.log.info('{}:  No output while getting instance names.'
-                          '  zWinRMEnvelopeSize may not be large enough.'
-                          '  Increase the size and try again.'.format(self.name()))
+            log.info('{}:  No output while getting instance names.'
+                     '  zWinRMEnvelopeSize may not be large enough.'
+                     '  Increase the size and try again.'.format(self.name()))
             defer.returnValue(maps)
 
         maps['errors'] = {}
-        self.log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
+        log.debug('WinMSSQL modeler get_instances_names results: {}'.format(instances))
         instance_oms = []
         database_oms = []
         backup_oms = []
@@ -216,18 +218,21 @@ class WinMSSQL(WinRMPlugin):
             # which owns network instances.
             if isCluster:
                 try:
-                    owner_node, sql_server, instance = instance.split('\\')
-                    device.windows_servername = owner_node.strip()
-                    conn_info = self.conn_info(device)
-                    winrs = SQLCommander(conn_info)
+                    owner_node, ip_address, sql_server, instance = instance.split('\\')
+                    owner_node = owner_node.strip()
+                    sql_server = sql_server.strip()
+                    instance = instance.strip()
+                    conn_info = conn_info._replace(hostname=owner_node)
+                    conn_info = conn_info._replace(ipaddress=ip_address.strip())
+                    winrs = SQLCommander(conn_info, log)
                 except ValueError:
-                    self.log.error('Owner node for DB Instance {0} was not found'.format(
+                    log.error('Malformed data returned for instance {}'.format(
                         instance))
                     continue
 
             if instance not in dblogins:
-                self.log.info("DB Instance {0} found but was not set in zDBInstances.  "
-                              "Using default credentials.".format(instance))
+                log.debug("DB Instance {0} found but was not set in zDBInstances.  "
+                          "Using default credentials.".format(instance))
 
             instance_title = instance
             if instance == 'MSSQLSERVER':
@@ -237,9 +242,9 @@ class WinMSSQL(WinRMPlugin):
 
             if isCluster:
                 if instance == 'MSSQLSERVER':
-                    instance_title = sqlserver = sql_server.strip()
+                    instance_title = sqlserver = sql_server
                 else:
-                    sqlserver = '{0}\{1}'.format(sql_server.strip(), instance)
+                    sqlserver = '{0}\{1}'.format(sql_server, instance)
 
             om_instance = ObjectMap()
             om_instance.id = self.prepId(instance_title)
@@ -252,7 +257,7 @@ class WinMSSQL(WinRMPlugin):
             om_instance.instancename = instance
             om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
-                owner_node.strip(), sqlserver)
+                owner_node, sqlserver)
             instance_oms.append(om_instance)
 
             # Look for specific instance creds first
@@ -274,7 +279,6 @@ class WinMSSQL(WinRMPlugin):
 
             sql_version = int(om_instance.sql_server_version.split('.')[0])
             sqlConnection = SqlConnection(sqlserver, sqlusername, sqlpassword, login_as_user, sql_version).sqlConnection
-            self.log.info(''.join(sqlConnection))
 
             db_sqlConnection = []
             # Get database information
@@ -331,16 +335,21 @@ class WinMSSQL(WinRMPlugin):
             job_sqlConnection.append('\"job_username---\" $_.OwnerLoginName')
             job_sqlConnection.append("}}catch { continue; }")
 
-            buffer_size = ['$Host.UI.RawUI.BufferSize = New-Object '
-                           'Management.Automation.Host.Size (4096, 512);']
+            version_sqlConnection = []
+            if isCluster:
+                version_sqlConnection.append("write-host \"====Version\";")
+                version_sqlConnection.append("$dbmaster = $server.Databases['master'];")
+                version_sqlConnection.append('$query = \\"SELECT SERVERPROPERTY(\'productversion\') as version\\";')
+                version_sqlConnection.append("$res = $dbmaster.ExecuteWithResults($query);")
+                version_sqlConnection.append("write-host $res.tables[0].rows[0].version;")
 
             instance_info = yield winrs.run_command(
-                ''.join(buffer_size + getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
+                ''.join(getSQLAssembly(int(om_instance.sql_server_version.split('.')[0])) +
                         sqlConnection + db_sqlConnection +
-                        backup_sqlConnection + job_sqlConnection)
+                        backup_sqlConnection + job_sqlConnection + version_sqlConnection)
             )
 
-            self.log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
+            log.debug('Modeling databases, backups, jobs results:  {}'.format(instance_info))
             check_username(instance_info, instance, log)
             maps['errors'][om_instance.id] = instance_info.stderr
             stdout = filter_sql_stdout(instance_info.stdout)
@@ -356,6 +365,10 @@ class WinMSSQL(WinRMPlugin):
                 job_index = stdout.index('====Jobs')
             except ValueError:
                 job_index = None
+            try:
+                version_index = stdout.index('====Version')
+            except ValueError:
+                version_index = None
             if db_index is not None and backup_index is not None:
                 for stdout_line in stdout[db_index + 1:backup_index]:
                     if stdout_line == 'assembly load error':
@@ -393,6 +406,11 @@ class WinMSSQL(WinRMPlugin):
                     if om_job:
                         jobs_oms.append(om_job)
                     job_line = ''
+            if isCluster and version_index is not None:
+                try:
+                    om_instance.sql_server_version = stdout[version_index + 1].strip()
+                except Exception:
+                    log.debug('Version not found for om_instance %s', om_instance.id)
 
         maps['clear'] = eventmessage
         maps['databases'] = database_oms
@@ -442,7 +460,7 @@ class WinMSSQL(WinRMPlugin):
             om_database.defaultfilegroup = dbdict['defaultfilegroup']
             om_database.primaryfilepath = dbdict['primaryfilepath']
             om_database.cluster_node_server = '{0}//{1}'.format(
-                owner_node.strip(), sqlserver)
+                owner_node, sqlserver)
             om_database.systemobject = dbdict['systemobject']
             om_database.recoverymodel = dbdict['recoverymodel']
         return om_database
@@ -491,7 +509,7 @@ class WinMSSQL(WinRMPlugin):
         om_job.instancename = om_instance.id
         om_job.title = jobdict['job_jobname']
         om_job.cluster_node_server = '{0}//{1}'.format(
-            owner_node.strip(), sqlserver)
+            owner_node, sqlserver)
         om_job.jobid = jobdict['job_jobid']
         om_job.id = self.prepId(om_job.jobid)
         om_job.enabled = 'Yes' if jobdict['job_enabled'] == 'True' else 'No'
