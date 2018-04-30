@@ -222,8 +222,12 @@ class WinMSSQL(WinRMPlugin):
                     owner_node = owner_node.strip()
                     sql_server = sql_server.strip()
                     instance = instance.strip()
+                    ip_address = ip_address.strip()
                     conn_info = conn_info._replace(hostname=owner_node)
-                    conn_info = conn_info._replace(ipaddress=ip_address.strip())
+                    if ip_address:
+                        conn_info = conn_info._replace(ipaddress=ip_address)
+                    else:
+                        conn_info = conn_info._replace(ipaddress=owner_node)
                     winrs = SQLCommander(conn_info, log)
                 except ValueError:
                     log.error('Malformed data returned for instance {}'.format(

@@ -374,6 +374,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
+            'eventClass': '/Status'
         })
 
         generateClearAuthEvents(config, data['events'])
