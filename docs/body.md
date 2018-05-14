@@ -1820,6 +1820,8 @@ Changes
 -   Fix ShellDataSource slow to gather data when hundreds of databases exist.
 -   Fix MSSQL password can be logged in the Windows Event Log as plaintext during query failure (ZPS-3302)
 -   Fix MSSQL Monitoring causes thousands of logon/logoff events in windows event log (ZPS-3392)
+-   Fix Potential ticket expiry during collection causes collection issue (ZPS-3216)
+-   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
 
 2.9.0
 
