@@ -1822,6 +1822,7 @@ Changes
 -   Fix MSSQL Monitoring causes thousands of logon/logoff events in windows event log (ZPS-3392)
 -   Fix Potential ticket expiry during collection causes collection issue (ZPS-3216)
 -   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
+-   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
 
 2.9.0
 

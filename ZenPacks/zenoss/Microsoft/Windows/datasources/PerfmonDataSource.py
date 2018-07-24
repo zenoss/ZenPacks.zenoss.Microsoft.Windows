@@ -393,7 +393,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 PERSISTER.add_event(self.config.id, self.config.datasources, {
                     'device': self.config.id,
                     'eventClass': '/Status/Winrm',
-                    'eventKey': 'Windows Perfmon Collection Error',
+                    'eventKey': 'WindowsPerfmonCollection',
                     'severity': ZenEventClasses.Warning,
                     'summary': errorMessage,
                     'ipAddress': self.config.manageIp})
@@ -406,18 +406,27 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if success:
                 self.state = PluginStates.STARTED
             else:
-                LOG.warn("%s: Perfmon command(s) did not start: %s", self.config.id, data.value)
+                errorMessage = 'Perfmon command(s) did not start'
+                LOG.warn("%s: %s: %s", self.config.id, errorMessage, data.value)
                 if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), data.value.message):
                     PERSISTER.add_event(self.config.id, self.config.datasources, {
                         'device': self.config.id,
                         'eventClass': '/Status/Winrm',
-                        'eventKey': 'WindowsPerfmonCollection Error',
+                        'eventKey': 'WindowsPerfmonCollection',
                         'severity': ZenEventClasses.Warning,
-                        'summary': errorMessage,
+                        'summary': errorMessage + ': ' + data.value.message,
                         'ipAddress': self.config.manageIp})
 
         if self.state != PluginStates.STARTED:
             self.state = PluginStates.STOPPED
+        else:
+            PERSISTER.add_event(self.config.id, self.config.datasources, {
+                'device': self.config.id,
+                'eventClass': '/Status/Winrm',
+                'eventKey': 'WindowsPerfmonCollection',
+                'severity': ZenEventClasses.Clear,
+                'summary': 'successfully started Get-Counter command(s)',
+                'ipAddress': self.config.manageIp})
         self.collected_samples = 0
         self.collected_counters = set()
 
@@ -657,7 +666,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
             'eventClass': '/Status/Winrm',
-            'eventKey': 'Windows Perfmon Collection Error',
+            'eventKey': 'WindowsPerfmonCollection',
             'severity': ZenEventClasses.Clear,
             'summary': 'Successful Perfmon Collection',
             'ipAddress': self.config.manageIp})
