@@ -204,7 +204,7 @@ Interfaces
 :   \\Network Interface(${here/instance\_name})\\Packets Outbound Errors
 :   \\Network Interface(${here/instance\_name})\\Packets Sent/sec
 
-Interfaces on Windows 2012
+Interfaces on Windows 2012 and later
 :   \\Network Adapter(${here/instance\_name})\\Bytes Received/sec
 :   \\Network Adapter(${here/instance\_name})\\Bytes Sent/sec
 :   \\Network Adapter(${here/instance\_name})\\Packets Received Errors
@@ -1823,6 +1823,7 @@ Changes
 -   Fix Potential ticket expiry during collection causes collection issue (ZPS-3216)
 -   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
 -   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
+-   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
 
 2.9.0
 
