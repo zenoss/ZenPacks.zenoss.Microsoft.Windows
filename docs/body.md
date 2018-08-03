@@ -1824,6 +1824,7 @@ Changes
 -   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
 -   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
 -   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
+-   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
 
 2.9.0
 

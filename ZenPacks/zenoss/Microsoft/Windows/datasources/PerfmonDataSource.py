@@ -308,6 +308,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self._build_commandlines()
 
         self.reset()
+        self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
 
     def reset(self):
         self.state = PluginStates.STOPPED
@@ -389,8 +390,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.warn("{}: {}".format(self.config.id, errorMessage))
 
             # prevent duplicate of auth failure messages
-            if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), e.message):
-                PERSISTER.add_event(self.config.id, self.config.datasources, {
+            if not errorMsgCheck(self.config, PERSISTER.get_events(self.unique_id), e.message):
+                PERSISTER.add_event(self.unique_id, self.config.datasources, {
                     'device': self.config.id,
                     'eventClass': '/Status/Winrm',
                     'eventKey': 'WindowsPerfmonCollection',
@@ -408,8 +409,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 errorMessage = 'Perfmon command(s) did not start'
                 LOG.warn("%s: %s: %s", self.config.id, errorMessage, data.value)
-                if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), data.value.message):
-                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                if not errorMsgCheck(self.config, PERSISTER.get_events(self.unique_id), data.value.message):
+                    PERSISTER.add_event(self.unique_id, self.config.datasources, {
                         'device': self.config.id,
                         'eventClass': '/Status/Winrm',
                         'eventKey': 'WindowsPerfmonCollection',
@@ -420,7 +421,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.state != PluginStates.STARTED:
             self.state = PluginStates.STOPPED
         else:
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
+            PERSISTER.add_event(self.unique_id, self.config.datasources, {
                 'device': self.config.id,
                 'eventClass': '/Status/Winrm',
                 'eventKey': 'WindowsPerfmonCollection',
@@ -444,14 +445,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     @coroutine
     def get_data(self):
         """Wait for data to arrive if necessary, then return it."""
-        data = PERSISTER.pop(self.config.id)
+        data = PERSISTER.pop(self.unique_id)
         if self.state == PluginStates.STOPPED:
             defer.returnValue(data)
         if data and data['values']:
             defer.returnValue(data)
         if data and data['events']:
             for evt in data['events']:
-                PERSISTER.add_event(self.config.id, self.config.datasources, evt)
+                PERSISTER.add_event(self.unique_id, self.config.datasources, evt)
 
         if hasattr(self, '_wait_for_data'):
             LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
@@ -463,7 +464,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             self._wait_for_data = True
 
-        defer.returnValue(PERSISTER.pop(self.config.id))
+        defer.returnValue(PERSISTER.pop(self.unique_id))
 
     @coroutine
     def stop(self):
@@ -619,7 +620,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                             value = float(value) * 100
 
                         PERSISTER.add_value(
-                            self.config.id, component, datasource, value, collect_time)
+                            self.unique_id, component, datasource, value, collect_time)
             except Exception, err:
                 LOG.debug('{}: Windows Perfmon could not process a sample. Error: {}'.format(self.config.id, err))
 
@@ -661,9 +662,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
 
-        generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+        generateClearAuthEvents(self.config, PERSISTER.get_events(self.unique_id))
 
-        PERSISTER.add_event(self.config.id, self.config.datasources, {
+        PERSISTER.add_event(self.unique_id, self.config.datasources, {
             'device': self.config.id,
             'eventClass': '/Status/Winrm',
             'eventKey': 'WindowsPerfmonCollection',
@@ -685,8 +686,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             errorMsg = ' '.join([str(i) for i in e.message])
         else:
             errorMsg = e.message
-        if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
-            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+        if not errorMsgCheck(self.config, PERSISTER.get_events(self.unique_id), errorMsg):
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.unique_id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -805,7 +806,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, self.config.datasources, {
+                PERSISTER.add_event(self.unique_id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Error,
                     'eventClass': event,
@@ -819,7 +820,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             for component, datasource, event_class in comp_ds_ec_l:
                 event_class = event_class or default_eventClass
                 if event_class not in events:
-                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                    PERSISTER.add_event(self.unique_id, self.config.datasources, {
                         'device': self.config.id,
                         'severity': ZenEventClasses.Clear,
                         'eventClass': event_class or default_eventClass,
@@ -848,7 +849,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if events:
             for event in events:
-                PERSISTER.add_event(self.config.id, self.config.datasources, {
+                PERSISTER.add_event(self.unique_id, self.config.datasources, {
                     'device': self.config.id,
                     'severity': ZenEventClasses.Info,
                     'eventClass': event,
@@ -862,7 +863,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             for component, datasource, event_class in comp_ds_ec_l:
                 event_class = event_class or default_eventClass
                 if event_class not in events:
-                    PERSISTER.add_event(self.config.id, self.config.datasources, {
+                    PERSISTER.add_event(self.unique_id, self.config.datasources, {
                         'device': self.config.id,
                         'severity': ZenEventClasses.Clear,
                         'eventClass': event_class or default_eventClass,
@@ -893,7 +894,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Check error message and generate appropriate event."""
         wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
         if any(x in errorMessage for x in wrongCredsMessages):
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
+            PERSISTER.add_event(self.unique_id, self.config.datasources, {
                 'device': self.config.id,
                 'eventClassKey': 'AuthenticationFailure',
                 'summary': errorMessage,
@@ -903,7 +904,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def _generateClearAuthEvents(self):
         """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, self.config.datasources, {
+        PERSISTER.add_event(self.unique_id, self.config.datasources, {
             'device': self.config.id,
             'eventClassKey': 'AuthenticationSuccess',
             'summary': 'Authentication Successful',
