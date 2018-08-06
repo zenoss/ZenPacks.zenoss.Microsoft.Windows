@@ -1206,6 +1206,8 @@ Use the following steps to set up a notification:
     triggering event clears. 
 6.  Submit changes.
 
+Note: For Zenoss 5.x and up, all wincommands will run in the zenactiond container, which is located on the master host.  The master may or may not have the same dns lookup capabilities as the collector(s).  If using the `winrs` command with kerberos authentication, be sure to set the remote hostname to the FQDN of the device and use the `--ipaddress` option of winrs to specify the IP address of the device.
+
 For more information please refer to
 [Working with Triggers and Notifications](http://community.zenoss.org/docs/DOC-10690)
 
