@@ -1881,6 +1881,8 @@ Changes
 -   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
 -   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
 -   Fix GetWinEvent error message formatting (ZPS-3484)
+-   Fix IIS Application Pool states (ZPS-3629)
+
 
 2.9.0
 
