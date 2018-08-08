@@ -376,7 +376,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
     @save
     def onError(self, result, config):
         logg = log.error
-        msg = 'WindowsEventLog: failed collection {0} {1}'.format(result.value.message, config)
+        rvmm = re.search(".*(?=[ATat]{2} [LINEline]{4}:\d* [CHARchar]{4}:\d*)", result.value.message);
+        group_has_value = rvmm.group(0) is not None and len(rvmm.group(0)) > 0
+        rvm = rvmm.group(0) if group_has_value else result.value.message
+        msg = 'WindowsEventLog: failed collection {0} {1}'.format(rvm, config)
         if isinstance(result.value, EventLogException):
             msg = "WindowsEventLog: failed collection. " + result.value.message
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):

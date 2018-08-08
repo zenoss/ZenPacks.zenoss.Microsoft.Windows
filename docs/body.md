@@ -1880,6 +1880,7 @@ Changes
 -   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
 -   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
 -   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
+-   Fix GetWinEvent error message formatting (ZPS-3484)
 
 2.9.0
 
