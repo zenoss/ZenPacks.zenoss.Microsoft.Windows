@@ -267,6 +267,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     collected_samples = None
     counter_map = None
 
+    ps_mod_path_msg = "Received \"The term 'New-Object' is not recognized as the name of a cmdlet,"\
+                      " function, script file, or operable program.\"  Validate the default"\
+                      " system PSModulePath environment variable."
+
     command_line = (
         '"& {{'
         '[System.Console]::OutputEncoding = New-Object System.Text.UTF8Encoding($False); '
@@ -558,7 +562,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 stdout, stderr = data
                 # Log error message if present.
                 if stderr:
-                    LOG.debug(' '.join(stderr))
+                    ps_error = ' '.join(stderr)
+                    LOG.debug(ps_error)
+                    if 'not recognized as the name of a cmdlet' in ps_error:
+                        # could be ZPS-3517 and 'double-hop issue'
+                        PERSISTER.add_event(self.unique_id, self.config.datasources, {
+                            'device': self.config.id,
+                            'eventClass': '/Status/Winrm',
+                            'eventKey': 'WindowsPerfmonCollection',
+                            'severity': ZenEventClasses.Error,
+                            'summary': self.ps_mod_path_msg,
+                            'ipAddress': self.config.manageIp})
                 # Leave sample start marker in first command result
                 # to properly report missing counters.
                 if index == 0:
@@ -743,6 +757,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_list)),
                                        OPERATION_TIMEOUT + 5)
             if result.stderr:
+                if 'not recognized as the name of a cmdlet' in result.stderr:
+                    PERSISTER.add_event(self.unique_id, self.config.datasources, {
+                        'device': self.config.id,
+                        'severity': ZenEventClasses.Error,
+                        'eventClass': '/Status/Winrm',
+                        'eventKey': 'WindowsPerfmonCollection',
+                        'summary': self.ps_mod_path_msg,
+                    })
+                    defer.returnValue(corrupt_list)
+
                 LOG.debug('Received error checking for corrupt counter: %s', result.stderr)
                 # double check that no counter sample was returned
                 if not counter_returned(result):
