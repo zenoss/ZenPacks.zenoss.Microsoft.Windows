@@ -1745,6 +1745,23 @@ example:
 winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 ```
 
+### Troubleshooting Perfmon Collection
+
+If you see errors containing text similar to "The term 'New-Object' is not
+recognized as the name of a cmdlet, function, script file, or operable program",
+this could indicate a problem with the loading of Powershell modules. Zenoss
+uses common best practice to execute powershell scripts with the
+[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficency.
+Powershell will fall back on the default system PSModulePath in this case.
+You must ensure that the default PSModulePath environment variable is valid.
+
+One common problem seen is a UNC (Universal Naming Convention) path in the default
+system PSModulePath.  If there is a UNC path in the default system path, no
+modules will load due to [double-hopping](https://blogs.msdn.microsoft.com/knowledgecast/2007/01/31/the-double-hop-problem/).
+Because no modules were loaded, even the most basic powershell cmdlets will not run.
+To fix this, simply remove the UNC path from the default system PSModulePath
+environment variable.
+
 ## Zenoss Analytics
 
 This ZenPack provides additional support for Zenoss Analytics. Perform
@@ -1882,7 +1899,7 @@ Changes
 -   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
 -   Fix GetWinEvent error message formatting (ZPS-3484)
 -   Fix IIS Application Pool states (ZPS-3629)
-
+-   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
 
 2.9.0
 
