@@ -11,6 +11,7 @@ import re
 import string
 from AccessControl import ClassSecurityInfo
 from Products.ZenEvents import ZenEventClasses
+from Products.ZenModel.RRDTemplate import RRDTemplate
 from . import schema
 
 UNMONITORED = 0
@@ -27,7 +28,8 @@ class WinService(schema.WinService):
 
     def getRRDTemplateName(self):
         try:
-            if self.getRRDTemplateByName(self.serviceName):
+            template = self.getRRDTemplateByName(self.serviceName)
+            if template and isinstance(template, RRDTemplate):
                 return self.serviceName
         except TypeError:
             pass
