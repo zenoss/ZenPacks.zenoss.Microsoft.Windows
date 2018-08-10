@@ -718,11 +718,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             generateClearAuthEvents(self.config, PERSISTER.get_events(self.unique_id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
-            retry, level, msg = (
-                True,
-                logging.DEBUG,
-                "OperationTimeout on {}.  This timeout is expected when zWinPerfmonInterval is >= 60s."
-                .format(self.config.id))
+            # do not log operation timeout message.  it implies there's some sort of problem.
+            # we expect to see this timeout during default zWinPerfmonInterval time (300)
+            # it only adds confusion to troubleshooters.  we'll just retry and return
+            self.receive()
+            defer.returnValue(None)
 
         elif isinstance(e, ConnectError):
             retry, level, msg = (
@@ -737,6 +737,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             level = logging.WARN
             if send_to_debug(failure):
                 level = logging.DEBUG
+            elif isinstance(e, AttributeError) and \
+                "'NoneType' object has no attribute 'persistent'" in e.message:
+                level = logging.DEBUG
+                e = 'Attempted to receive from closed connection.  Possibly due'\
+                    'to device reboot.'
+            elif 'invalid selectors for the resource' in e.message:
+                level = logging.DEBUG
+                e = 'Attempted to use a non-existent remote shell.  Possibly due'\
+                    'to device reboot.'
             retry, msg = (
                 False,
                 "receive failure on {}: {}"
@@ -749,10 +758,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.network_failures >= MAX_NETWORK_FAILURES:
             yield self.stop()
             self.reset()
+            retry = False
         if retry:
             self.receive()
-        else:
-            yield self.restart()
 
         defer.returnValue(None)
 
