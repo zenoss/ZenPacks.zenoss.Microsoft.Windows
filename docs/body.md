@@ -1186,6 +1186,7 @@ Supported SQL Server versions
 :   SQL Server 2012
 :   SQL Server 2014
 :   SQL Server 2016
+:   SQL Server 2017
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
@@ -1762,6 +1763,13 @@ Because no modules were loaded, even the most basic powershell cmdlets will not 
 To fix this, simply remove the UNC path from the default system PSModulePath
 environment variable.
 
+### Troubleshooting MSSQL Modeling/Monitoring
+
+If you are seeing modeling timeout or datasources not running and have a large
+number of databases in your SQL Server Instance, check to see if the databases
+have Auto Close set to True.  If so, then consider turning off Auto Close so that
+our queries to model and monitor the databases can execute in a timely manner.
+
 ## Zenoss Analytics
 
 This ZenPack provides additional support for Zenoss Analytics. Perform
@@ -1900,6 +1908,7 @@ Changes
 -   Fix GetWinEvent error message formatting (ZPS-3484)
 -   Fix IIS Application Pool states (ZPS-3629)
 -   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
+-   Add support for SQL Server 2017
 
 2.9.0
 
