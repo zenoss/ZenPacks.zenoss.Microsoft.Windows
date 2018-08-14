@@ -1985,7 +1985,7 @@ device_classes:
               Write:
                 dpName: DiskWriteBytesSec_DiskWriteBytesSec
                 format: '%7.2lf%s'
-          Time:
+          Average Disk Queue Length Percentage:
             units: percent
             miny: 0
             graphpoints:
@@ -3337,7 +3337,7 @@ device_classes:
               Write:
                 dpName: DiskWriteBytesSec_DiskWriteBytesSec
                 format: '%7.2lf%s'
-          Time:
+          Average Disk Queue Length Percentage:
             units: percent
             miny: 0
             graphpoints:
