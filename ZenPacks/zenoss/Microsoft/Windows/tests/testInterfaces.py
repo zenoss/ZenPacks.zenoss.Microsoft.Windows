@@ -126,6 +126,17 @@ class TestNoWMI(BaseTestCase):
         self.assertTrue('Received incomplete Interface modeling results.' in str(m.mock_calls[1]))
 
 
+class TestZPS3902(BaseTestCase):
+    """Test case for output from 2016 server.  counters2012 should have output"""
+    def setUp(self):
+        # pickled results from a 2016 server
+        self.results = load_pickle_file(self, 'Interfaces_process_215200')[0]
+
+    def test_counters2012(self):
+        has_counters = True if self.results['counters2012'].stdout else False
+        self.assertTrue(has_counters)
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
@@ -135,6 +146,7 @@ def test_suite():
     suite.addTest(makeSuite(TestHelpers))
     suite.addTest(makeSuite(TestInterfacesCounters))
     suite.addTest(makeSuite(TestTeamInterfaces))
+    suite.addTest(makeSuite(TestZPS3902))
     return suite
 
 
