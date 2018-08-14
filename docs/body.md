@@ -1908,6 +1908,7 @@ Changes
 -   Fix GetWinEvent error message formatting (ZPS-3484)
 -   Fix IIS Application Pool states (ZPS-3629)
 -   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
+-   Fix Windows - error regarding missing ipaddress is generated in zenpython log for cluster device (ZPS-4184)
 -   Add support for SQL Server 2017
 
 2.9.0
