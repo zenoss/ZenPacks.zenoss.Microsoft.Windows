@@ -214,6 +214,7 @@ class WinMSSQL(WinRMPlugin):
         device_om.sqlhostname = sqlhostname
         for instance, version in server_config['instances'].items():
             owner_node = ''  # Leave empty for local databases.
+            ip_address = None # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
             if isCluster:
@@ -262,6 +263,8 @@ class WinMSSQL(WinRMPlugin):
             om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
                 owner_node, sqlserver)
+            om_instance.owner_node_ip = ip_address
+
             instance_oms.append(om_instance)
 
             # Look for specific instance creds first
