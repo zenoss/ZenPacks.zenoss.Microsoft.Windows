@@ -376,15 +376,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
     @save
     def onError(self, result, config):
         logg = log.error
-        # Trim any stack traces away
-        rvmm = re.search(".*?(?=[ATat]{2} [LINEline]{4}:\d* [CHARchar]{4}:\d*)", result.value.message)
+        # Trim any stack traces
+        rvmm = re.search(".*?(?=[\n\r]*[ATat]{2}\s+[LINEline]{4}:\d+\s+[CHARchar]{4}:\d+)", result.value.message, re.MULTILINE)
         group_has_value = rvmm is not None and len(rvmm.group(0)) > 0
         rvm = rvmm.group(0) if group_has_value else result.value.message
         msg = 'WindowsEventLog: failed collection {0} {1}'.format(rvm, config)
         if isinstance(result.value, EventLogException):
-            msg = "WindowsEventLog: failed collection. " + result.value.message
+            msg = "WindowsEventLog: failed collection. " + rvm
         if isinstance(result.value, (MissedEventLogException, InvalidEventQueryValue)):
-            msg = "WindowsEventLog: " + result.value.message
+            msg = "WindowsEventLog: " + rvm
         severity = ZenEventClasses.Warning
         if 'This cmdlet requires Microsoft .NET Framework version 3.5 or greater' in msg:
             severity = ZenEventClasses.Critical
