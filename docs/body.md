@@ -1909,6 +1909,7 @@ Changes
 -   Fix IIS Application Pool states (ZPS-3629)
 -   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
 -   Fix Windows - error regarding missing ipaddress is generated in zenpython log for cluster device (ZPS-4184)
+-   Fix WinCluster plugin does not honor zCollectorClientTimeout , always times out requests after 60 seconds (ZPS-4272)
 -   Add support for SQL Server 2017
 
 2.9.0
