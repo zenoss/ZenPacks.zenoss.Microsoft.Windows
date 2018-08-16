@@ -124,7 +124,7 @@ class DataPersister(object):
     devices = None
 
     # For performing periodic cleanup of stale data.
-    maintenance_interval = 300
+    maintenance_interval = 600
 
     # Data older than this (in seconds) will be dropped on maintenance.
     max_data_age = 3600
@@ -289,7 +289,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
             self.sample_interval = self.cycletime
-            self.max_samples = max(600 / self.sample_interval, 1)
+            self.max_samples = max(300 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
             self.max_samples = 1
@@ -624,8 +624,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             # Reinitialize collected counters for reporting.
             self.collected_counters = set()
 
+        # In case of valid results
+        if results and not failures:
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+
         # Log error message and wait for the data.
-        if failures and not results:
+        elif failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
             self.onReceiveFail(failures[0])
 
@@ -652,8 +656,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
        
-        self._generateClearAuthEvents()
-       #generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+        #self._generateClearAuthEvents()
+     #   generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
@@ -678,8 +682,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             errorMsg = e.message
         if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
-            self._generateClearAuthEvents()    
-           # generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+           # self._generateClearAuthEvents()    
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
