@@ -293,15 +293,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             eventKey='datasourceWarning_{0}'.format(config.datasources[0].datasource),
             summary='cluster: successful collection',
             device=config.id))
-        data['events'].append(dict(
-            device=config.id,
-            eventClass='/Status/Kerberos',
-            eventClassKey='KerberosSuccess',
-            eventKey='|'.join(('Kerberos', config.id)),
-            summary='No Kerberos failures',
-            severity=ZenEventClasses.Clear,
-        ))
-        #generateClearAuthEvents(config, data['events'])
+
+        generateClearAuthEvents(config, data['events'])
         return data
 
     @save

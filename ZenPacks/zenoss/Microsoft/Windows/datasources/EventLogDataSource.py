@@ -379,7 +379,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 'eventClassKey': 'WindowsEventLogSuccess',
             })
  
-       #generateClearAuthEvents(config, data['events'])
+        generateClearAuthEvents(config, data['events'])
 
         return data
 
