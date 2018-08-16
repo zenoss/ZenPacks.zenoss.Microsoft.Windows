@@ -26,6 +26,7 @@
 #define AUTH_GSS_ERROR      -1
 #define AUTH_GSS_COMPLETE    1
 #define AUTH_GSS_CONTINUE    0
+#define AUTH_GSS_EXPIRED     2
 
 #define GSS_AUTH_P_NONE         1
 #define GSS_AUTH_P_INTEGRITY    2
@@ -67,3 +68,5 @@ int authenticate_gss_client_wrap(gss_client_state* state, const char* challenge,
 int authenticate_gss_server_init(const char* service, gss_server_state* state);
 int authenticate_gss_server_clean(gss_server_state *state);
 int authenticate_gss_server_step(gss_server_state *state, const char *challenge);
+
+int gss_get_client_context_time(gss_client_state *state, OM_uint32 *lifetime_rec);
