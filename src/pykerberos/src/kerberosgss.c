@@ -215,6 +215,32 @@ int authenticate_gss_client_clean(gss_client_state *state)
     return ret;
 }
 
+int gss_get_client_context_time(gss_client_state *state, OM_uint32 *lifetime_rec)
+{
+    OM_uint32 maj_stat;
+    OM_uint32 min_stat;
+    int ret = AUTH_GSS_COMPLETE;
+
+    if (state->context != GSS_C_NO_CONTEXT)
+    {
+        maj_stat = gss_context_time(&min_stat, state->context, lifetime_rec);
+
+        if (maj_stat != GSS_S_COMPLETE)
+        {
+            set_gss_error(maj_stat, min_stat);
+            if (maj_stat == GSS_S_CONTEXT_EXPIRED)
+                ret = AUTH_GSS_EXPIRED;
+            else
+                ret = AUTH_GSS_ERROR;
+        }
+    }
+    else
+    {
+        ret = AUTH_GSS_ERROR;
+    }
+    return ret;
+}
+
 int authenticate_gss_client_step(gss_client_state* state, const char* challenge)
 {
     OM_uint32 maj_stat;

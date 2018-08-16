@@ -242,6 +242,45 @@ static PyObject *authGSSClientResponse(PyObject *self, PyObject *args)
     return Py_BuildValue("s", state->response);
 }
 
+static PyObject *getGSSClientContextLifetime(PyObject *self, PyObject *args)
+{
+    gss_client_state *state;
+    PyObject *pystate;
+    int result = 0;
+    OM_uint32 lifetime_rec = 0;
+
+    if (!PyArg_ParseTuple(args, "O", &pystate))
+        return NULL;
+
+#if PY_MAJOR_VERSION >= 3
+    if (!PyCapsule_CheckExact(pystate)) {
+#else
+    if (!PyCObject_Check(pystate)) {
+#endif
+        PyErr_SetString(PyExc_TypeError, "Expected a context object");
+        return NULL;
+    }
+
+#if PY_MAJOR_VERSION >= 3
+    state = PyCapsule_GetPointer(pystate, NULL);
+#else
+    state = (gss_client_state *)PyCObject_AsVoidPtr(pystate);
+#endif
+    if (state == NULL)
+        return NULL;
+
+    result = gss_get_client_context_time(state, &lifetime_rec);
+    if (result == AUTH_GSS_EXPIRED)
+    {
+        PyErr_SetString(PyExc_Exception, "Context has expired");
+        return NULL;
+    }
+    else if (result == AUTH_GSS_ERROR)
+        return NULL;
+
+    return Py_BuildValue("i", lifetime_rec);
+}
+
 static PyObject *authGSSClientUserName(PyObject *self, PyObject *args)
 {
     gss_client_state *state;
@@ -613,6 +652,8 @@ static PyMethodDef KerberosMethods[] = {
      "return 1 if confidentiality was set in the last unwrapped buffer, 0 otherwise."},
     {"authGSSClientUserName",  authGSSClientUserName, METH_VARARGS,
      "Get the user name from the last client-side GSSAPI step."},
+    {"getGSSClientContextLifetime",  getGSSClientContextLifetime, METH_VARARGS,
+     "Get the remaining lifetime of a given context."},
     {"authGSSServerInit",  authGSSServerInit, METH_VARARGS,
      "Initialize server-side GSSAPI operations."},
     {"authGSSClientWrap",  authGSSClientWrap, METH_VARARGS,
