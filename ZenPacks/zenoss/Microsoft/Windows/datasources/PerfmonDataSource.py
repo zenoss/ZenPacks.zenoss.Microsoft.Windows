@@ -124,7 +124,7 @@ class DataPersister(object):
     devices = None
 
     # For performing periodic cleanup of stale data.
-    maintenance_interval = 600
+    maintenance_interval = 300
 
     # Data older than this (in seconds) will be dropped on maintenance.
     max_data_age = 3600
@@ -624,12 +624,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             # Reinitialize collected counters for reporting.
             self.collected_counters = set()
 
-        # In case of valid results
-        if results and not failures:
-            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
-
         # Log error message and wait for the data.
-        elif failures and not results:
+        if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
             self.onReceiveFail(failures[0])
 
@@ -652,12 +648,16 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if CORRUPT_COUNTERS[dsconf0.device]:
                 self.reportCorruptCounters(self.counter_map)
         else:
-            if self.cycling:
-                LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
-                yield self.restart()
-       
+            #if self.cycling:
+            #    LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
+            #    yield self.restart()
+            # In case of valid results
+          # if results and not failures:
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+            defer.returnValue(None)
+
         #self._generateClearAuthEvents()
-     #   generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+        generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
