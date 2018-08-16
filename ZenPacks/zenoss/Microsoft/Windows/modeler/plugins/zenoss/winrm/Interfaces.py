@@ -329,6 +329,8 @@ class Interfaces(WinRMPlugin):
                 # Workaround for 2003 / XP
                 if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                     int_om.adminStatus = 1
+            
+            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:
                 int_om.ifindex = inter.InterfaceIndex
