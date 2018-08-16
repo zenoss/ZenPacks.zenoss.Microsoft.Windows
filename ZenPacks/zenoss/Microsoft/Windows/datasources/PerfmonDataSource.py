@@ -651,8 +651,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if self.cycling:
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
-
-        generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+       
+        self._generateClearAuthEvents()
+       #generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
@@ -677,7 +678,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             errorMsg = e.message
         if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
-            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+            self._generateClearAuthEvents()    
+           # generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
             retry, level, msg = (
@@ -896,9 +898,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Add clear authentication events to PERSISTER singleton."""
         PERSISTER.add_event(self.config.id, self.config.datasources, {
             'device': self.config.id,
-            'eventClassKey': 'AuthenticationSuccess',
-            'summary': 'Authentication Successful',
-            'severity': ZenEventClasses.Clear,
+            'eventClass': '/Status/Kerberos',
+            'eventClassKey': 'KerberosSuccess',
+            'eventKey': '|'.join(('Kerberos', self.config.id)),
+            'summary': 'No Kerberos failures',
+            'severity': ZenEventClasses.Clear,           
             'ipAddress': self.config.manageIp})
 
 
