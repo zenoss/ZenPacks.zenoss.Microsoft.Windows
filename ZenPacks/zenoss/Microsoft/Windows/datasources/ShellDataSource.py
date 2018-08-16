@@ -505,10 +505,11 @@ class PowershellMSSQLStrategy(object):
                 self.valuemap[databasename][_counter] = value
 
         for dsconf in dsconfs:
+            timestamp = int(time.mktime(time.localtime()))
             if dsconf.params['resource'] == 'status':
                 # no need to get status as it's handled differently
+                yield dsconf, '', timestamp
                 continue
-            timestamp = int(time.mktime(time.localtime()))
             databasename = dsconf.params['contexttitle']
             try:
                 key = dsconf.params['resource'].lower()
