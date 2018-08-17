@@ -264,9 +264,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
         ds0 = config.datasources[0]
 
         eventlog = ds0.params['eventlog']
-
-        def _makeEvent(self, evt, config):
-            ds = config.datasources[0].params
+         
+        def _makeEvent(evt):
+             ds = ds0.params
             assert isinstance(evt, dict)
             severity = {
                 'Error': ZenEventClasses.Error,
