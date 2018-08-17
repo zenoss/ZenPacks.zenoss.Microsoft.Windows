@@ -289,7 +289,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Define SampleInterval and MaxSamples arguments for ps commands.
         if self.cycling:
             self.sample_interval = self.cycletime
-            self.max_samples = max(300 / self.sample_interval, 1)
+            self.max_samples = max(600 / self.sample_interval, 1)
         else:
             self.sample_interval = 1
             self.max_samples = 1
@@ -624,6 +624,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             # Reinitialize collected counters for reporting.
             self.collected_counters = set()
 
+        # Kerberous check
+        if not failures:
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+
         # Log error message and wait for the data.
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
@@ -632,7 +636,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
             self.receive()
-
+        
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
             try:
@@ -648,15 +652,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if CORRUPT_COUNTERS[dsconf0.device]:
                 self.reportCorruptCounters(self.counter_map)
         else:
-            #if self.cycling:
-            #    LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
-            #    yield self.restart()
-            # In case of valid results
-          # if results and not failures:
-            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
-            defer.returnValue(None)
+            if self.cycling:
+                LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
+                yield self.restart()
 
-        #self._generateClearAuthEvents()
         generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
 
         PERSISTER.add_event(self.config.id, self.config.datasources, {
@@ -682,7 +681,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             errorMsg = e.message
         if not errorMsgCheck(self.config, PERSISTER.get_events(self.config.id), errorMsg):
-           # self._generateClearAuthEvents()    
             generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
         # Handle errors on which we should retry the receive.
         if 'OperationTimeout' in e.message:
@@ -885,30 +883,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         deleted or modified.
         """
         return reactor.callLater(self.sample_interval, self.stop)
-
-    def _errorMsgCheck(self, errorMessage):
-        """Check error message and generate appropriate event."""
-        wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
-        if any(x in errorMessage for x in wrongCredsMessages):
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'device': self.config.id,
-                'eventClassKey': 'AuthenticationFailure',
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
-            return True
-        return False
-
-    def _generateClearAuthEvents(self):
-        """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, self.config.datasources, {
-            'device': self.config.id,
-            'eventClass': '/Status/Kerberos',
-            'eventClassKey': 'KerberosSuccess',
-            'eventKey': '|'.join(('Kerberos', self.config.id)),
-            'summary': 'No Kerberos failures',
-            'severity': ZenEventClasses.Clear,           
-            'ipAddress': self.config.manageIp})
-
 
 def counter_returned(result):
     if 'CounterSamples' in ''.join(result.stdout):
