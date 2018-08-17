@@ -308,6 +308,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         logg("IISSiteDataSource error on %s: %s", config.id, msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
+            generateClearAuthEvents(config, data['events'])
             # only need the one event
             data['events'].append({
                 'severity': ZenEventClasses.Warning,

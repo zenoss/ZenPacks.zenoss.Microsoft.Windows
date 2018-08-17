@@ -352,15 +352,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
         data['events'].append({
             'device': config.id,
-            'eventClass': '/Status/Kerberos',
-            'eventClassKey': 'KerberosSuccess',
-            'eventKey': '|'.join(('Kerberos', config.id)),
-            'summary': 'No Kerberos failures',
-            'severity': ZenEventClasses.Clear,
-        }) 
-
-        data['events'].append({
-            'device': config.id,
             'eventClass': '/Status',
             'summary': 'Windows EventLog: successful event collection',
             'severity': ZenEventClasses.Clear,
@@ -399,6 +390,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         logg("{}: {}".format(config.id, msg))
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
+            generateClearAuthEvents(config, data['events'])
             for ds in config.datasources:
                 data['events'].append({
                     'severity': severity,

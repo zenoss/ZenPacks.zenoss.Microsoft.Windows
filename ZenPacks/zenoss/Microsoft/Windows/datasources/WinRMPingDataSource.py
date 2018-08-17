@@ -162,6 +162,7 @@ class WinRMPingDataSourcePlugin(PythonDataSourcePlugin):
         logg('WinRMPing collection: {} on {}'.format(results.value.message, config.id))
 
         if not errorMsgCheck(config, data['events'], results.value.message):
+            generateClearAuthEvents(config, data['events'])
             data['events'].append({
                 'eventClass': '/Status/Winrm/Ping',
                 'severity': ZenEventClasses.Critical,

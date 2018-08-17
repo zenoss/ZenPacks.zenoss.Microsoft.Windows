@@ -394,6 +394,7 @@ class ServicePlugin(PythonDataSourcePlugin):
         logg(msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.message):
+            generateClearAuthEvents(config, data['events'])
             data['events'].append({
                 'severity': ZenEventClasses.Error,
                 'eventClass': '/Status',

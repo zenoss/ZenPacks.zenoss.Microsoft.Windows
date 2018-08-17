@@ -168,6 +168,7 @@ class PortCheckDataSourcePlugin(PythonDataSourcePlugin):
             # no ports listening
             pass
         # send clear events
+
         data['events'].append({
             'eventClass': '/Status',
             'severity': ZenEventClasses.Clear,

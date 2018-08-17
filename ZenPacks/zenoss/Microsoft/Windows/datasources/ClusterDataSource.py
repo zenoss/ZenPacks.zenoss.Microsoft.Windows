@@ -321,6 +321,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         logg(msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
+            generateClearAuthEvents(config, data['events'])
             data['events'].append(dict(
                 eventClass='/Status',
                 severity=ZenEventClasses.Warning,

@@ -560,8 +560,10 @@ def errorMsgCheck(config, events, error):
 def generateClearAuthEvents(config, events):
     """Generate clear authentication events."""
     # reset event counter
-    global krb_error_events
-    krb_error_events[config.id] = 0
+    try:
+        krb_error_events[config.id] = 0
+    except:
+        pass
     append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Winrm/Auth',
         'eventClassKey': 'AuthenticationSuccess',
