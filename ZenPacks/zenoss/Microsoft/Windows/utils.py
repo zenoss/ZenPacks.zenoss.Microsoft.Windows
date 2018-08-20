@@ -12,7 +12,6 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 """
 
 import json
-from Products.ZenEvents import ZenEventClasses
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -539,7 +538,7 @@ def errorMsgCheck(config, events, error):
                 'eventKey': '|'.join(('Kerberos', config.id)),
                 'summary': error,
                 'ipAddress': config.manageIp,
-                'severity': ZenEventClasses.Error,
+                'severity': 4,
                 'device': config.id})
             krb_error_events[config.id] = 0
         return True
@@ -551,7 +550,7 @@ def errorMsgCheck(config, events, error):
             'eventKey': '|'.join(('Authentication', config.id)),
             'summary': error,
             'ipAddress': config.manageIp,
-            'severity': ZenEventClasses.Error,
+            'severity': 4,
             'device': config.id})
         return True
     return False
@@ -566,14 +565,14 @@ def generateClearAuthEvents(config, events):
         'eventClassKey': 'AuthenticationSuccess',
         'eventKey': '|'.join(('Authentication', config.id)),
         'summary': 'Authentication Successful',
-        'severity': ZenEventClasses.Clear,
+        'severity': 0,
         'device': config.id})
     append_event_datasource_plugin(config.datasources, events, {
         'eventClass': '/Status/Kerberos',
         'eventClassKey': 'KerberosSuccess',
         'eventKey': '|'.join(('Kerberos', config.id)),
         'summary': 'No Kerberos failures',
-        'severity': ZenEventClasses.Clear,
+        'severity': 0,
         'device': config.id})
 
 
