@@ -310,6 +310,7 @@ class Interfaces(WinRMPlugin):
                 int_om.speed = int(inter.Speed)
             else:
                 int_om.speed = 0
+                int_om.monitor = False
 
             int_om.duplex = 0
             int_om.type = inter.AdapterType
@@ -329,7 +330,7 @@ class Interfaces(WinRMPlugin):
                 # Workaround for 2003 / XP
                 if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                     int_om.adminStatus = 1
-            
+
             int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:

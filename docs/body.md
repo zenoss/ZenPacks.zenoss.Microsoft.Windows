@@ -1414,6 +1414,8 @@ The current release is known to have the following limitations.
     them from your Cluster device:  Interfaces/WindowsInterfaces, 
     FileSystems, Processors, Services/Windows Services, Processes.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
+-   Individual NICs in a team are not monitored and will have a speed of 0.
+    Monitoring them could cause threshold error events.
 -   The custom widget for MSSQL Server credentials is not compatible
     with Zenoss 4.1.x, therefore the *zDBInstances* property in this
     version should be set as a valid JSON list (e.g. *[{"instance":
@@ -1910,6 +1912,7 @@ Changes
 -   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
 -   Fix Windows - error regarding missing ipaddress is generated in zenpython log for cluster device (ZPS-4184)
 -   Fix WinCluster plugin does not honor zCollectorClientTimeout , always times out requests after 60 seconds (ZPS-4272)
+-   Fix Teamed NIC speed not modeled on individual adapters (ZPS-4149)
 -   Add support for SQL Server 2017
 
 2.9.0
