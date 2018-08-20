@@ -635,8 +635,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
-            self.receive()
-        
+            self.receive()  
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
             try:

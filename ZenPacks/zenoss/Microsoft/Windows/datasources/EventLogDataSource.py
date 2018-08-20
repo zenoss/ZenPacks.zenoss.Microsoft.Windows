@@ -263,8 +263,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         log.debug('EventLog Results: {}'.format(results))
         ds0 = config.datasources[0]
 
-        eventlog = ds0.params['eventlog']
-         
+        eventlog = ds0.params['eventlog']        
         def _makeEvent(evt):
             ds = ds0.params
             assert isinstance(evt, dict)
