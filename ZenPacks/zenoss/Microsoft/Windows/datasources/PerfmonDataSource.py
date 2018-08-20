@@ -624,6 +624,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             # Reinitialize collected counters for reporting.
             self.collected_counters = set()
 
+        # Kerberous check
+        if not failures:
+            generateClearAuthEvents(self.config, PERSISTER.get_events(self.config.id))
+
         # Log error message and wait for the data.
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
@@ -631,8 +635,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
-            self.receive()
-
+            self.receive()  
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
             try:
@@ -879,28 +882,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         deleted or modified.
         """
         return reactor.callLater(self.sample_interval, self.stop)
-
-    def _errorMsgCheck(self, errorMessage):
-        """Check error message and generate appropriate event."""
-        wrongCredsMessages = ('Check username and password', 'Username invalid', 'Password expired')
-        if any(x in errorMessage for x in wrongCredsMessages):
-            PERSISTER.add_event(self.config.id, self.config.datasources, {
-                'device': self.config.id,
-                'eventClassKey': 'AuthenticationFailure',
-                'summary': errorMessage,
-                'ipAddress': self.config.manageIp})
-            return True
-        return False
-
-    def _generateClearAuthEvents(self):
-        """Add clear authentication events to PERSISTER singleton."""
-        PERSISTER.add_event(self.config.id, self.config.datasources, {
-            'device': self.config.id,
-            'eventClassKey': 'AuthenticationSuccess',
-            'summary': 'Authentication Successful',
-            'severity': ZenEventClasses.Clear,
-            'ipAddress': self.config.manageIp})
-
 
 def counter_returned(result):
     if 'CounterSamples' in ''.join(result.stdout):

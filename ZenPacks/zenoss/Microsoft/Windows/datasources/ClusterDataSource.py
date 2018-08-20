@@ -293,6 +293,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             eventKey='datasourceWarning_{0}'.format(config.datasources[0].datasource),
             summary='cluster: successful collection',
             device=config.id))
+
         generateClearAuthEvents(config, data['events'])
         return data
 
@@ -320,6 +321,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         logg(msg)
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
+            generateClearAuthEvents(config, data['events'])
             data['events'].append(dict(
                 eventClass='/Status',
                 severity=ZenEventClasses.Warning,

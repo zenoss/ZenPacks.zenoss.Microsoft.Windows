@@ -488,6 +488,7 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
 
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], error.value.message):
+            generateClearAuthEvents(config, data['events'])
             data['events'].append({
                 'device': config.id,
                 'severity': Event.Error,

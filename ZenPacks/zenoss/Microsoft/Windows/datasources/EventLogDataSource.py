@@ -263,8 +263,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         log.debug('EventLog Results: {}'.format(results))
         ds0 = config.datasources[0]
 
-        eventlog = ds0.params['eventlog']
-
+        eventlog = ds0.params['eventlog']        
         def _makeEvent(evt):
             ds = ds0.params
             assert isinstance(evt, dict)
@@ -356,7 +355,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'summary': 'Windows EventLog: successful event collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsEventCollection: {}'.format(ds0.params.get('eventid', '')),
-            'eventClassKey': 'WindowsEventLogSuccess',
+            'eventClassKey': 'WindowsEventLogSuccess',            
         })
 
         if 'ps_err_msg' not in locals():
@@ -367,8 +366,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
                 'eventClass': '/Status/Winrm',
                 'eventClassKey': 'WindowsEventLogSuccess',
-            })
-
+            }) 
         generateClearAuthEvents(config, data['events'])
 
         return data
@@ -389,6 +387,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         logg("{}: {}".format(config.id, msg))
         data = self.new_data()
         if not errorMsgCheck(config, data['events'], result.value.message):
+            generateClearAuthEvents(config, data['events'])
             for ds in config.datasources:
                 data['events'].append({
                     'severity': severity,
