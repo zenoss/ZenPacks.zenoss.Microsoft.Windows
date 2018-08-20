@@ -1913,6 +1913,7 @@ Changes
 -   Fix Windows - error regarding missing ipaddress is generated in zenpython log for cluster device (ZPS-4184)
 -   Fix WinCluster plugin does not honor zCollectorClientTimeout , always times out requests after 60 seconds (ZPS-4272)
 -   Fix Teamed NIC speed not modeled on individual adapters (ZPS-4149)
+-   Fix Modeling errors caused by multiple 'zenoss.winrm.WinCluster' in zCollectorPlugins (ZPS-4300)
 -   Add support for SQL Server 2017
 
 2.9.0
