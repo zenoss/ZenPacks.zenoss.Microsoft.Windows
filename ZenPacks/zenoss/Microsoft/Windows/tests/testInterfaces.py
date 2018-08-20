@@ -100,9 +100,18 @@ class TestTeamInterfaces(BaseTestCase):
         self.results = load_pickle_file(self, 'Interfaces_process_184038')[0]
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
+        self.assertFalse(data.maps[7].monitor)
+        self.assertEquals(data.maps[7].speed, 0)
         self.assertEquals(data.maps[8].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2)")
+        self.assertFalse(data.maps[8].monitor)
+        self.assertEquals(data.maps[8].speed, 0)
+        self.assertEquals(data.maps[12].speed, 1000000000)
         self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter#1)")
+        self.assertFalse(data.maps[13].monitor)
+        self.assertEquals(data.maps[13].speed, 0)
         self.assertEquals(data.maps[14].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")
+        self.assertFalse(data.maps[14].monitor)
+        self.assertEquals(data.maps[14].speed, 0)
         self.results = load_pickle_file(self, 'Interfaces_process_184151')[0]
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
