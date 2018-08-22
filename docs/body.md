@@ -1602,6 +1602,12 @@ domain should fix this problem. It is a known error from Microsoft,
 
 -   You should also ensure that the correct name is returned for lookups.
 
+-   If you see "Attempted to get ticket for HTTP@X.X.X.X" where X.X.X.X is an ip
+    address, then try using the [zWinRMServerName](#configuration-options).
+    To know the exact name by which Active Directory knows this device, you can use
+    `setspn -L <hostname>`.  This will produce a list of service principals with the
+    FQDN of the device.
+
 `Preauthentication failed while getting initial credentials.`
 
 -   This typically indicates a bad or expired password.
@@ -1914,6 +1920,7 @@ Changes
 -   Fix WinCluster plugin does not honor zCollectorClientTimeout , always times out requests after 60 seconds (ZPS-4272)
 -   Fix Teamed NIC speed not modeled on individual adapters (ZPS-4149)
 -   Fix Modeling errors caused by multiple 'zenoss.winrm.WinCluster' in zCollectorPlugins (ZPS-4300)
+-   Fix Windows services with certain characters are always in 'unknown' state. (ZPS-3424)
 -   Add support for SQL Server 2017
 
 2.9.0
