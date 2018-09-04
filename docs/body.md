@@ -17,6 +17,27 @@ dd {
 pp {
     font-size: 14px;
 }
+table {
+  margin-bottom: 2em;
+  border-bottom: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table th {
+  padding: .2em 1em;
+  background-color: #eee;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+}
+
+table td {
+  padding: .2em 1em;
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  vertical-align: top;
+}
 </style>
 
 Video
@@ -204,7 +225,7 @@ Interfaces
 :   \\Network Interface(${here/instance\_name})\\Packets Outbound Errors
 :   \\Network Interface(${here/instance\_name})\\Packets Sent/sec
 
-Interfaces on Windows 2012
+Interfaces on Windows 2012 and later
 :   \\Network Adapter(${here/instance\_name})\\Bytes Received/sec
 :   \\Network Adapter(${here/instance\_name})\\Bytes Sent/sec
 :   \\Network Adapter(${here/instance\_name})\\Packets Received Errors
@@ -426,7 +447,12 @@ if 'Offline' in evt.summary:
     evt.severity = 4
 ```
 
-The WinDBInstance monitoring template will monitor the status of a SQL
+Note: Database status is discovered in the same PowerShell script as the
+database counters.  While it is possible to use a different cycle time for
+status, we advise against that as it will add extra load onto the target
+device and could inadvertently skew memory/cpu usage.
+
+The WinDBInstance monitoring template will also monitor the status of a SQL
 Server instance to inform the user if it is up or down.
 
 The WinSQLJob monitoring template will monitor the status of a job on a
@@ -445,76 +471,47 @@ template and will trigger an alert if they are reached
 
 ## Event Management
 
-Events could be collected from the Windows
-event log using a WinRM subscription. Events collected through this
-mechanism will be timestamped based on the time they occurred within the
+Events are collected from a Windows event log using a powershell script which calls Get-WinEvent.
+Events collected through this mechanism will be timestamped based on the time they occurred within the
 Windows event log. Not by the time at which they were collected.
 
-To monitor EventLog events you should add to monitoring template with
+| Windows | Zenoss |
+| ------- | ------ |
+| LogAlways | Info |
+| Critical | Critical |
+| Error | Error |
+| Warning | Warning |
+| Informational | Info |
+| Verbose | Info |
+
+Table: <strong>Log Level Equivalents</strong>
+
+##### Usage
+
+To monitor events, create a monitoring template with a
 "Windows EventLog" datasource. For the Event Log field put the name of
 event log (e.g. "System") that you are interested in, and in the
-EventQuery you could put the filter for events. The filter can be either
-a PowerShell Where-Object block or XPath XML taken from a Windows Event
-Viewer Custom View.
+EventQuery enter the filter for events. The filter can be either
+XPath XML taken from a Windows Event Viewer Custom View or a PowerShell Where-Object block.
+The max age field is only used the first time the datasource successfully runs. Subsequent runs will only pull events from the last successful polling cycle.
 
-The default Get-WinEvent xml filter returns all events from the last
+The default Get-WinEvent XML filter returns all events from the last
 polling cycle. This list can be searched for specific Ids, severity, or
 specific words in the message using PowerShell.
 
-#### To target all events with a Warning or higher severity:
+#### Custom Event Views
 
 [![][CustomViewOptions.png]][CustomViewOptions.png]
-For servers with pre-3.5 .NET installed: 
-
-```{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}```
-
-`$$_` is the event object of EventLogEntry class.
-`EntryType` is the attribute which determines severity, and
-could contain one of the following values: `Error, Warning, Information, SuccessAudit,` or `FailureAudit`.
-Also it has such attributes as `Message, MachineName, TimeGenerated, Source`. Full list you could find in the description of the [EventLogEntry](http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry).
-
-Note: This query is structured to look for "less than" although we are
-looking for events "greater than" in severity. This is because the
-EntryType is an enumeration where the integer values map to 1= Error, 2
-= Warning, etc. This means lower numbers indicate higher severity.
-
-For servers with .NET 3.5 & Later:
-
-```{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}```
-
-Or to look for a specific event id:
-
-`{ $$_.Id -eq 4001}`
-
-`$$_` is the event object of EventLogRecord class.
-`Level` is the severity of the event. `Id` is the
-property to compare for specific event ids. You can find the full
-listing of properties at
-https://technet.microsoft.com/en-us/library/Hh849682.aspx.
-
-Note: This query is structured to look for "less than or equal" although
-we are looking for events "greater than or equal" in severity. This is
-because the Level is an enumeration where the integer values map to 1 =
-Critical, 2 = Error, 3 = Warning, etc. This means lower numbers indicate
-higher severity. The LogAlways event level evaluates to 0, which is less
-than a Warning. These events are typically Informational and will
-display if using the sample powershell query above. To work around this,
-you could add ` -and $$\_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways`
-into your query or use the xml option.
-
-[![][CustomViewXML.png]][CustomViewXML.png] The full list of
-event levels can be found in the description of the [Standard Event Level](http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx).
-
-
-Read more about the [System.Diagnostics.Eventing.Reader](http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader%28v=vs.110%29.aspx) class.
-
-And to know more about writing PowerShell conditions, you could read this [tutorial](http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/)
 
 To use the xml query from a custom view in Windows Event Viewer,
 simply copy the xml and paste into the Event Query field of the
 event data source. Because we use a polling cycle to query the event
 log, any TimeCreated filter will be replaced by us to avoid
 duplicate events.
+
+Zenoss highly recommends using XML when monitoring the Security log.
+It is more efficient and will put less of a burden on the device's resources.
+The Windows Security log can and most likely will contain many audit events. See the [LogAlways](#logalways-warning) below.
 
 For example, a custom view that searches for events in the last hour,
 with severity of Warning or Critical, and Ids of 104, 110-115, 155 will
@@ -538,10 +535,9 @@ filter will be used:
       </Query>
     </QueryList>
 
-`{time}` will be replaced by the number of milliseconds since the last
-query automatically.
+`{time}` will automatically be replaced by the number of milliseconds since the last query.
 
-Note: The max age field is only used the first time that the datasource is run.  Subsequent queries will only look at events that have occurred since the last time this datasource was run.   We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource was run.  If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
+Note: The max age field is only used the first time that the datasource is run.  Subsequent queries will only look at events that have occurred since the last time this datasource was run.   We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource executed.  If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
 
 Note: The script to search for events and return relevant data is
 approximately 3700 characters. Due to the Windows 8192 character limit
@@ -555,6 +551,68 @@ It is recommended, but not required, to install .NET version 3.5 SP1 or
 higher. If you have a mix of these servers using the same Event Log Data
 Source, you can mix and match the differing powershell queries. e.g.
 `{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }`
+
+#### Powershell Examples
+
+To Target all events with a Warning or higher severity:
+
+```{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}```
+
+This query will return all events with a Level of LogAlways, Critical, Error, and Warning.
+
+[![][CustomViewXML.png]][CustomViewXML.png] The full list of
+event levels can be found in the description of the [Standard Event Level](http://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.standardeventlevel%28v=vs.110%29.aspx).
+
+To target all events by a specific id or range:
+
+```{ $$_.Id -eq 4001 }```
+
+This query will return all events with an id of 4001 from a specific log.
+
+Read more about the [EventLogRecord](https://msdn.microsoft.com/en-us/library/system.diagnostics.eventing.reader.eventlogrecord(v=vs.110).aspx) class.
+
+And to know more about writing PowerShell conditions, you could read this [tutorial](http://www.powershellpro.com/powershell-tutorial-introduction/powershell-tutorial-conditional-logic/)
+
+#### LogAlways Warning
+
+The Windows Security log could contain hundreds or thousands of security audit
+logs, which use the level of LogAlways. The query above is structured to look
+for "less than or equal" events, even though we are looking for events
+"greater than or equal" in severity. This is due to the fact that the Level is
+an enumeration where the integer values map to 1 = Critical, 2 = Error, 3 =
+Warning, etc. This means lower numbers indicate higher severity. **However, the
+LogAlways event level evaluates to 0, which is obviously less than a 3(Warning).**
+These events are typically Informational and will display if using the sample
+powershell query above. To work around this, you could add
+` -and $$_.Level -gt [System.Diagnostics.Eventing.Reader.StandardEventLevel]::LogAlways`
+into your powershell query or use the [XML](#custom-event-views) option described above.
+
+##### For servers with pre-3.5 .NET installed
+
+On some older Windows 2008 Server versions, you may not have .NET 3.5 or higher.
+These systems will use the Get-EventLog cmdlet instead, which returns a different class
+that does not contain the same named properties. See
+[EventLogEntry](http://msdn.microsoft.com/en-us/library/vstudio/system.diagnostics.eventlogentry)
+for the full list.
+
+For example,
+
+```{ $$_.EntryType -le [System.Diagnostics.EventLogEntryType]::Warning}```
+
+`$$_` is the event object of EventLogEntry class.
+`EntryType` is the attribute which determines severity, and
+could contain one of the following values: `Error, Warning, Information, SuccessAudit,` or `FailureAudit`.
+
+Note: This query is structured to look for "less than" although we are
+looking for events "greater than" in severity. This is because the
+EntryType is an enumeration where the integer values map to 1= Error, 2
+= Warning, etc. This means lower numbers indicate higher severity.
+
+Or to look for a specific event id:
+
+`{ $$_.Id -eq 4001}`
+
+##### Changing Event Severity
 
 To change event severity follow the steps: 
 
@@ -747,7 +805,7 @@ monitoring for the service regardless of device class.
 3.  Datasource other than the DefaultService in the WinService template associated with the service.
 4.  Monitoring is enabled via the Infrastructure -> Windows Services page.
 
-<table border="2" cellpadding="1" cellspacing="1" style="width:600px;"><caption><strong>Windows Service Startmodes (Template vs Windows Services)</strong></caption><thead><tr><th scope="col" style="text-align: center;"><pp>Startmodes</pp></th><th scope="col" style="text-align: center;"><pp>Template includes Service startmode</pp></th><th scope="col" style="text-align: center;"><pp>Template excludes Service startmode</pp></th></tr></thead><tbody><tr><td><pp>Windows Service Class includes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>monitored</pp></td></tr><tr><td><pp>Windows Service Class excludes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>NOT monitored</pp></td></tr></tbody></table>
+<table style="width:600px;"><caption><strong>Windows Service Startmodes (Template vs Windows Services)</strong></caption><thead><tr><th scope="col" style="text-align: center;"><pp>Startmodes</pp></th><th scope="col" style="text-align: center;"><pp>Template includes Service startmode</pp></th><th scope="col" style="text-align: center;"><pp>Template excludes Service startmode</pp></th></tr></thead><tbody><tr><td><pp>Windows Service Class includes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>monitored</pp></td></tr><tr><td><pp>Windows Service Class excludes Service startmode</pp></td><td><pp>monitored</pp></td><td><pp>NOT monitored</pp></td></tr></tbody></table>
 
 Note: The Windows Service Template (default WinService) must have at
 least one datasource enabled for monitoring to function.
@@ -1063,7 +1121,8 @@ important.
         Fill in the user and password to use SQL authentication. Leave the user
         and password blank to use Windows authentication. The default
         *MSSQLSERVER* credentials will be used for all instances not
-        specified.
+        specified.  Microsoft recommends using Windows authentication to
+        connect to SQL Server.
 
 -   zWinRMEnvelopeSize
     :   This property is used when the winrm configuration
@@ -1127,12 +1186,13 @@ Supported SQL Server versions
 :   SQL Server 2012
 :   SQL Server 2014
 :   SQL Server 2016
+:   SQL Server 2017
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
 ##### Support for SQL Server and Windows Authentication: 
-*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank. 
-*   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance. 
+*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank.  Microsoft prefers this authentication method.
+*   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance.
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
 *   For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.
 
@@ -1199,6 +1259,8 @@ Use the following steps to set up a notification:
     optionally specify *Clear Windows CMD Command* to run when the
     triggering event clears. 
 6.  Submit changes.
+
+Note: For Zenoss 5.x and up, all wincommands will run in the zenactiond container, which is located on the master host.  The master may or may not have the same dns lookup capabilities as the collector(s).  If using the `winrs` command with kerberos authentication, be sure to set the remote hostname to the FQDN of the device and use the `--ipaddress` option of winrs to specify the IP address of the device.
 
 For more information please refer to
 [Working with Triggers and Notifications](http://community.zenoss.org/docs/DOC-10690)
@@ -1275,7 +1337,7 @@ authentication process requires a ticket granting server. In the
 Microsoft Active Directory environment the AD Server is also the KDC.
 The zWinKDC value must be set to the IP address of the AD Server and the
 collector must be able to send TCP/IP packets to this server. Once this
-is set your zWinRMUserName must be a FQDN such as jsmith@Zenoss.com and
+is set your zWinRMUserName must be a FQDN such as someone@example.com and
 the zWinRMPassword must be set correctly for this user account.  The 
 domain name MUST be the name of the domain, not an alias for the domain.
 
@@ -1352,6 +1414,8 @@ The current release is known to have the following limitations.
     them from your Cluster device:  Interfaces/WindowsInterfaces, 
     FileSystems, Processors, Services/Windows Services, Processes.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
+-   Individual NICs in a team are not monitored and will have a speed of 0.
+    Monitoring them could cause threshold error events.
 -   The custom widget for MSSQL Server credentials is not compatible
     with Zenoss 4.1.x, therefore the *zDBInstances* property in this
     version should be set as a valid JSON list (e.g. *[{"instance":
@@ -1538,6 +1602,12 @@ domain should fix this problem. It is a known error from Microsoft,
 
 -   You should also ensure that the correct name is returned for lookups.
 
+-   If you see "Attempted to get ticket for HTTP@X.X.X.X" where X.X.X.X is an ip
+    address, then try using the [zWinRMServerName](#configuration-options).
+    To know the exact name by which Active Directory knows this device, you can use
+    `setspn -L <hostname>`.  This will produce a list of service principals with the
+    FQDN of the device.
+
 `Preauthentication failed while getting initial credentials.`
 
 -   This typically indicates a bad or expired password.
@@ -1684,6 +1754,30 @@ example:
 winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 ```
 
+### Troubleshooting Perfmon Collection
+
+If you see errors containing text similar to "The term 'New-Object' is not
+recognized as the name of a cmdlet, function, script file, or operable program",
+this could indicate a problem with the loading of Powershell modules. Zenoss
+uses common best practice to execute powershell scripts with the
+[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficency.
+Powershell will fall back on the default system PSModulePath in this case.
+You must ensure that the default PSModulePath environment variable is valid.
+
+One common problem seen is a UNC (Universal Naming Convention) path in the default
+system PSModulePath.  If there is a UNC path in the default system path, no
+modules will load due to [double-hopping](https://blogs.msdn.microsoft.com/knowledgecast/2007/01/31/the-double-hop-problem/).
+Because no modules were loaded, even the most basic powershell cmdlets will not run.
+To fix this, simply remove the UNC path from the default system PSModulePath
+environment variable.
+
+### Troubleshooting MSSQL Modeling/Monitoring
+
+If you are seeing modeling timeout or datasources not running and have a large
+number of databases in your SQL Server Instance, check to see if the databases
+have Auto Close set to True.  If so, then consider turning off Auto Close so that
+our queries to model and monitor the databases can execute in a timely manner.
+
 ## Zenoss Analytics
 
 This ZenPack provides additional support for Zenoss Analytics. Perform
@@ -1806,6 +1900,32 @@ Monitoring Templates
 
 Changes
 -------
+
+2.9.1
+
+-   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
+-   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
+-   Fix ShellDataSource slow to gather data when hundreds of databases exist. (ZPS-3287)
+-   Fix MSSQL password can be logged in the Windows Event Log as plaintext during query failure (ZPS-3302)
+-   Fix MSSQL Monitoring causes thousands of logon/logoff events in windows event log (ZPS-3392)
+-   Fix WinMSSQL plugin shows 'message stream modified' errors during modeling.(ZPS-3461)
+-   Fix WindowsServiceLog Events never clear.(ZPS-3771)
+-   Fix Potential ticket expiry during collection causes collection issue (ZPS-3216)
+-   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
+-   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
+-   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
+-   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container.(ZPS-3422)
+-   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
+-   Fix GetWinEvent error message formatting (ZPS-3484)
+-   Fix IIS Application Pool states (ZPS-3629)
+-   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
+-   Fix Windows - error regarding missing ipaddress is generated in zenpython log for cluster device (ZPS-4184)
+-   Fix WinCluster plugin does not honor zCollectorClientTimeout , always times out requests after 60 seconds (ZPS-4272)
+-   Fix Teamed NIC speed not modeled on individual adapters (ZPS-4149)
+-   Fix Modeling errors caused by multiple 'zenoss.winrm.WinCluster' in zCollectorPlugins (ZPS-4300)
+-   Fix Windows services with certain characters are always in 'unknown' state. (ZPS-3424)
+-   Add support for SQL Server 2017
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.2.0, Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.3.1
 
 2.9.0
 

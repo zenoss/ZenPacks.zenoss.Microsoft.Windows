@@ -9,6 +9,7 @@
 ##############################################################################
 
 import Globals
+import time
 
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
 from twisted.python.failure import Failure
@@ -18,7 +19,7 @@ from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle, load_pick
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
-    ShellDataSourcePlugin, DCDiagStrategy
+    ShellDataSourcePlugin, DCDiagStrategy, SqlConnection
 )
 
 
@@ -28,10 +29,11 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.config = load_pickle(self, 'config')
         self.plugin = ShellDataSourcePlugin()
 
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
-        self.assertEquals(len(data['values']), 12)
-        self.assertEquals(len(data['events']), 29)
+        self.assertEquals(len(data['values']), 5)
+        self.assertEquals(len(data['events']), 10)
         self.assertFalse(all(e['severity'] for e in data['events']))
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
@@ -90,6 +92,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(out, inp3)
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_nagios_parser(self):
         # OK status from Nagios and 4 datapoints
         # OK - no errors or warnings|default_lines=10 default_warnings=0 default_criticals=0 default_unknowns=0
@@ -118,18 +121,14 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(data['events'][0]['eventClass'], '/Status/Nagios/Test')
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_sql_no_counters(self):
-        parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_162846')[0]
-        stdout = [u'databasename : db01',
-                  u'databasestatus:Normal',
-                  u'databasename:master',
-                  u'databasestatus:Normal',
-                  u'databasename : msdb',
-                  u'databasestatus:Normal',
-                  u'databasename : tempdb',
-                  u'databasestatus:Normal',
-                  u'databasename : model',
-                  u'databasestatus:Normal']
+        parms = load_pickle_file(self, 'ShellDataSourcePlugin_onSuccess_185726')[0]
+        stdout = [u'db01 :counter: databasestatus :value: Normal',
+                  u'master :counter: databasestatus :value: Normal',
+                  u'msdb :counter: databasestatus :value: Normal',
+                  u'tempdb :counter: databasestatus :value: Normal',
+                  u'model :counter: databasestatus :value: Normal']
         sql_config = Mock()
         sql_config.datasources = parms[1]
         sql_config.id = sql_config.datasources[0].device
@@ -142,8 +141,11 @@ class TestShellDataSourcePlugin(BaseTestCase):
             self.assertEquals('The database is available.', data['events'][x]['message'])
         for x in xrange(5, 10):
             self.assertEquals(
-                'Error parsing data in powershell MSSQL strategy for "ActiveTransactions" datasource',
-                data['events'][x]['summary'])
+                'winrs: successful collection', data['events'][x]['summary'])
+
+    def test_sqlConnection(self):
+        sq = SqlConnection('instance', 'sqlusername@domain.com', 'sqlpassword', True, 11)
+        self.assertNotIn('sqlpassword', ' '.join(sq.sqlConnection), sq.sqlConnection)
 
 
 def test_suite():

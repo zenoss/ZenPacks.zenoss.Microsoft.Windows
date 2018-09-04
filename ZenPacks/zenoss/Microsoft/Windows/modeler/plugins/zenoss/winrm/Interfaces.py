@@ -77,6 +77,7 @@ class Interfaces(WinRMPlugin):
     queries = {
         'Win32_NetworkAdapter': "SELECT * FROM Win32_NetworkAdapter",
         'Win32_NetworkAdapterConfiguration': "SELECT * FROM Win32_NetworkAdapterConfiguration",
+        'win32_OperatingSystem': "SELECT * from win32_OperatingSystem"
         }
 
     associators = {
@@ -116,7 +117,8 @@ class Interfaces(WinRMPlugin):
             "$_.teamname, '|'};"
         ),
         'counters2012': (
-            ' '.join('''$ver2012 = (Get-WmiObject win32_OperatingSystem).Name -like '*2012*';
+            ' '.join('''$v = (Get-WmiObject win32_OperatingSystem).Version.split('.');
+            $ver2012 = [int]$v[0] -gt 6 -or [int]$v[1] -gt 1;
             function replace_unallowed($s)
             {$s.replace('(', '[').replace(')', ']').replace('#', '_').replace('\\', '_').replace('/', '_').toLower()}
             if($ver2012){
@@ -144,6 +146,13 @@ class Interfaces(WinRMPlugin):
         netConf = results.get('Win32_NetworkAdapterConfiguration', ())
         win32_pnpentities = results.get('win32_pnpentity', None)
         counter_instances = results.get('counters', ())
+        operating_system = results.get('win32_OperatingSystem', (None,))[0]
+        if operating_system:
+            # Version is in x.x.xxxx format, e.g. 6.1.7601 for 2008
+            os_version = [int(x) for x in operating_system.Version.split('.')]
+        else:
+            # default to lowest version supported (2008)
+            os_version = [6, 1]
 
         # Actual instance names should be pulled in from the Win32_PnPEntity class
         if win32_pnpentities and isinstance(win32_pnpentities, dict):
@@ -197,7 +206,12 @@ class Interfaces(WinRMPlugin):
                     bdcDict[memberDict['id']] = memberDict['teamname']
                 except (KeyError, ValueError):
                     pass
-        perfmonInstanceMap = self.buildPerfmonInstances(netConf, log, counters, pnpentities, netInt)
+        perfmonInstanceMap = self.buildPerfmonInstances(netConf,
+                                                        log,
+                                                        counters,
+                                                        pnpentities,
+                                                        netInt,
+                                                        os_version)
 
         for inter in netInt:
             # Get the Network Configuration data for this interface
@@ -296,6 +310,7 @@ class Interfaces(WinRMPlugin):
                 int_om.speed = int(inter.Speed)
             else:
                 int_om.speed = 0
+                int_om.monitor = False
 
             int_om.duplex = 0
             int_om.type = inter.AdapterType
@@ -315,6 +330,8 @@ class Interfaces(WinRMPlugin):
                 # Workaround for 2003 / XP
                 if inter.NetConnectionStatus in ENABLED_NC_STATUSES:
                     int_om.adminStatus = 1
+
+            int_om.operStatus = AVAILABILITY.get(inter.Availability, 0)
 
             try:
                 int_om.ifindex = inter.InterfaceIndex
@@ -433,7 +450,7 @@ class Interfaces(WinRMPlugin):
     # TOOD: this method can be made generic for all perfmon data that has
     # multiple instances and should be moved into WMIPlugin or some other
     # helper class.
-    def buildPerfmonInstances(self, adapters, log, counters=None, pnpentities=None, netInt=None):
+    def buildPerfmonInstances(self, adapters, log, counters=None, pnpentities=None, netInt=None, os_version=None):
         # don't bother with adapters without a description or interface index
         adapters = [a for a in adapters
                     if getattr(a, 'Description', None) is not None
@@ -446,6 +463,9 @@ class Interfaces(WinRMPlugin):
             return n
         adapters.sort(compareAdapters)
 
+        # os version is 6.1 for 2008 servers.  6.2 and up for 2012, 10.x for 2016
+        # we should always use the Network Adapter instance going forward
+        use_adapter_counter = os_version[0] > 6 or os_version[1] > 1
         # use the sorted interfaces to determine the perfmon unique instance
         # path
         instanceMap = {}
@@ -488,6 +508,8 @@ class Interfaces(WinRMPlugin):
                                                                       prevDesc[desc])
                 else:
                     perfmonInstance = '\\Network Interface(%s)' % desc
+                if use_adapter_counter:
+                    perfmonInstance = perfmonInstance.replace('Network Interface', 'Network Adapter')
                 instanceMap[adapter.Index] = perfmonInstance
             log.debug("%s=%s", adapter.Index, instanceMap[adapter.Index])
         return instanceMap

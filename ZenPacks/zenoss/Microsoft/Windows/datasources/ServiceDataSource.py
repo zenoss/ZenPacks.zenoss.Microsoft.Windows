@@ -330,11 +330,12 @@ class ServicePlugin(PythonDataSourcePlugin):
         services = self.buildServicesDict(config.datasources)
         timestamp = int(time.mktime(time.localtime()))
         for index, svc_info in enumerate(serviceinfo):
-            if svc_info.Name not in services.keys():
+            svc_info_name = prepId(svc_info.Name)
+            if svc_info_name not in services.keys():
                 continue
 
             severity = ZenEventClasses.Clear
-            service = services[svc_info.Name]
+            service = services[svc_info_name]
 
             if svc_info.State not in [alertifnot.strip() for alertifnot in service['alertifnot'].split(',')]:
                 evtmsg = 'Service Alert: {0} has changed to {1} state'.format(
@@ -349,22 +350,22 @@ class ServicePlugin(PythonDataSourcePlugin):
                 )
 
             if svc_info.State.lower() == STATE_RUNNING.lower():
-                data['values'][svc_info.Name]['state'] = (0, timestamp)
+                data['values'][svc_info_name]['state'] = (0, timestamp)
             elif svc_info.State.lower() == STATE_STOPPED.lower():
-                data['values'][svc_info.Name]['state'] = (1, timestamp)
+                data['values'][svc_info_name]['state'] = (1, timestamp)
             elif svc_info.State.lower() == STATE_PAUSED.lower():
-                data['values'][svc_info.Name]['state'] = (2, timestamp)
+                data['values'][svc_info_name]['state'] = (2, timestamp)
 
             # event for the service
             data['events'].append({
-                'service_name': svc_info.Name,
+                'service_name': svc_info_name,
                 'service_state': svc_info.State,
                 'service_status': svc_info.Status,
                 'eventClass': "/Status/WinService",
                 'eventKey': "WindowsService",
                 'severity': severity,
                 'summary': evtmsg,
-                'component': prepId(svc_info.Name),
+                'component': svc_info_name,
                 'device': config.id,
             })
 
@@ -374,6 +375,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             'summary': 'Windows Service Check: successful service collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsServiceCollection',
+            'eventClass': '/Status'
         })
 
         generateClearAuthEvents(config, data['events'])

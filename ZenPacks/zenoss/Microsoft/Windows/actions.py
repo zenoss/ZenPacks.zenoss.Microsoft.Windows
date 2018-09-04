@@ -27,7 +27,7 @@ from .utils import addLocalLibPath
 addLocalLibPath()
 # Requires addLocalLibPath to be called above.
 from txwinrm.collect import ConnectionInfo
-from txwinrm.shell import create_single_shot_command
+from txwinrm.WinRMClient import SingleCommandClient
 
 
 log = logging.getLogger("zen.actions.WinCommand")
@@ -169,7 +169,7 @@ class WinCommandAction(IActionBase):
         """
         Create WinRS client and run the command remotely.
         """
-        winrs = create_single_shot_command(self._conn_info(device))
+        winrs = SingleCommandClient(self._conn_info(device))
         result = winrs.run_command(str(command))
 
         result.addCallback(lambda res: self._on_success(device, res, command))

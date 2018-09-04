@@ -206,11 +206,14 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
             else:
                 try:
                     app_pool_statuses[app_pool] = int(line)
+                    app_pool = None
                 except ValueError:
                     # make sure we have an int as the status
                     # we're catching exception below to default to Unknown
+                    #
+                    # Results in which the first object, "...app_pool_was...", spans multiple lines
+                    # the remaining text lines will be swallowed here until the size read
                     pass
-                app_pool = None
 
         for ds in config.datasources:
             sitestatusinfo = None
