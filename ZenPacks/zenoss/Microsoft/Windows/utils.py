@@ -220,6 +220,7 @@ def getSQLAssembly(version=None):
     ASSEMBLY_2012 = 'Version=11.0.0.0'
     ASSEMBLY_2014 = 'Version=12.0.0.0'
     ASSEMBLY_2016 = 'Version=13.0.0.0'
+    ASSEMBLY_2017 = 'Version=14.0.0.0'
 
     MSSQL2005_CONNECTION_INFO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Connection,
@@ -246,11 +247,17 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2016,
         ASSEMBLY)
 
+    MSSQL2017_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2017,
+        ASSEMBLY)
+
     MSSQL_CONNECTION_INFO = {9: MSSQL2005_CONNECTION_INFO,
                              10: MSSQL2008_CONNECTION_INFO,
                              11: MSSQL2012_CONNECTION_INFO,
                              12: MSSQL2014_CONNECTION_INFO,
-                             13: MSSQL2016_CONNECTION_INFO}
+                             13: MSSQL2016_CONNECTION_INFO,
+                             14: MSSQL2017_CONNECTION_INFO}
 
     MSSQL2005_SMO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Smo,
@@ -277,16 +284,25 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2016,
         ASSEMBLY)
 
+    MSSQL2017_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2017,
+        ASSEMBLY)
+
     MSSQL_SMO = {9: MSSQL2005_SMO,
                  10: MSSQL2008_SMO,
                  11: MSSQL2012_SMO,
                  12: MSSQL2014_SMO,
-                 13: MSSQL2016_SMO}
+                 13: MSSQL2016_SMO,
+                 14: MSSQL2017_SMO}
 
     ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
 
     sqlConnection = []
-    if version not in [9, 10, 11, 12, 13]:
+    if version not in [9, 10, 11, 12, 13, 14]:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2017_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2016_CONNECTION_INFO)
         sqlConnection.append("}catch{")
@@ -303,8 +319,11 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_CONNECTION_INFO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}}}")
+        sqlConnection.append("}}}}}}")
 
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2017_SMO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2016_SMO)
         sqlConnection.append("}catch{")
@@ -321,7 +340,7 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_SMO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}}}")
+        sqlConnection.append('}}}}}}')
     else:
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL_CONNECTION_INFO.get(version))

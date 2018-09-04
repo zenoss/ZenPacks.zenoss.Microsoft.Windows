@@ -20,7 +20,7 @@ from Products.DataCollector.plugins.DataMaps import ObjectMap, RelationshipMap
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath
 from Products.ZenUtils.IpUtil import asyncIpLookup
-from ZenPacks.zenoss.Microsoft.Windows.utils import sizeof_fmt, pipejoin, save
+from ZenPacks.zenoss.Microsoft.Windows.utils import pipejoin, save
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -62,6 +62,7 @@ class WinCluster(WinRMPlugin):
         maps = {}
 
         conn_info = self.conn_info(device)
+        conn_info = conn_info._replace(timeout=device.zCollectorClientTimeout - 5)
         cmd = ClusterCommander(conn_info)
 
         domain = yield cmd.run_command("(gwmi WIN32_ComputerSystem).Domain;")

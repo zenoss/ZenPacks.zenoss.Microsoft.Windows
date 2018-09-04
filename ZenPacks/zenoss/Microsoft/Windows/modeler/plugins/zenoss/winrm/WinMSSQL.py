@@ -214,6 +214,7 @@ class WinMSSQL(WinRMPlugin):
         device_om.sqlhostname = sqlhostname
         for instance, version in server_config['instances'].items():
             owner_node = ''  # Leave empty for local databases.
+            ip_address = None # Leave empty for local databases.
             # For cluster device, create a new a connection to each node,
             # which owns network instances.
             if isCluster:
@@ -222,8 +223,12 @@ class WinMSSQL(WinRMPlugin):
                     owner_node = owner_node.strip()
                     sql_server = sql_server.strip()
                     instance = instance.strip()
+                    ip_address = ip_address.strip()
                     conn_info = conn_info._replace(hostname=owner_node)
-                    conn_info = conn_info._replace(ipaddress=ip_address.strip())
+                    if ip_address:
+                        conn_info = conn_info._replace(ipaddress=ip_address)
+                    else:
+                        conn_info = conn_info._replace(ipaddress=owner_node)
                     winrs = SQLCommander(conn_info, log)
                 except ValueError:
                     log.error('Malformed data returned for instance {}'.format(
@@ -258,6 +263,8 @@ class WinMSSQL(WinRMPlugin):
             om_instance.sql_server_version = version
             om_instance.cluster_node_server = '{0}//{1}'.format(
                 owner_node, sqlserver)
+            om_instance.owner_node_ip = ip_address
+
             instance_oms.append(om_instance)
 
             # Look for specific instance creds first

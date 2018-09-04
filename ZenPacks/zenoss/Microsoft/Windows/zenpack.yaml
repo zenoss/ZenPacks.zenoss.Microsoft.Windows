@@ -782,6 +782,8 @@ classes:
         label: Cluster Node Server
       perfmon_instance:
         label: Perfmon Counter Instance Name
+      owner_node_ip:
+        display: false
     monitoring_templates: [WinDBInstance]
     impacts: [backups, databases, jobs]
     impacted_by: [device]

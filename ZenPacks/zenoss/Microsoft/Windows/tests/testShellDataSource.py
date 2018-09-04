@@ -141,8 +141,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
             self.assertEquals('The database is available.', data['events'][x]['message'])
         for x in xrange(5, 10):
             self.assertEquals(
-                'Error parsing data in powershell MSSQL strategy for "ActiveTransactions" datasource',
-                data['events'][x]['summary'])
+                'winrs: successful collection', data['events'][x]['summary'])
 
     def test_sqlConnection(self):
         sq = SqlConnection('instance', 'sqlusername@domain.com', 'sqlpassword', True, 11)

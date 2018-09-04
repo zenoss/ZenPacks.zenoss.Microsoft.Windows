@@ -100,9 +100,18 @@ class TestTeamInterfaces(BaseTestCase):
         self.results = load_pickle_file(self, 'Interfaces_process_184038')[0]
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
+        self.assertFalse(data.maps[7].monitor)
+        self.assertEquals(data.maps[7].speed, 0)
         self.assertEquals(data.maps[8].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2)")
+        self.assertFalse(data.maps[8].monitor)
+        self.assertEquals(data.maps[8].speed, 0)
+        self.assertEquals(data.maps[12].speed, 1000000000)
         self.assertEquals(data.maps[13].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter#1)")
+        self.assertFalse(data.maps[13].monitor)
+        self.assertEquals(data.maps[13].speed, 0)
         self.assertEquals(data.maps[14].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter _2#1)")
+        self.assertFalse(data.maps[14].monitor)
+        self.assertEquals(data.maps[14].speed, 0)
         self.results = load_pickle_file(self, 'Interfaces_process_184151')[0]
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data.maps[7].perfmonInstance, "\\Network Interface(HP NC382i DP Multifunction Gigabit Server Adapter)")
@@ -126,6 +135,17 @@ class TestNoWMI(BaseTestCase):
         self.assertTrue('Received incomplete Interface modeling results.' in str(m.mock_calls[1]))
 
 
+class TestZPS3902(BaseTestCase):
+    """Test case for output from 2016 server.  counters2012 should have output"""
+    def setUp(self):
+        # pickled results from a 2016 server
+        self.results = load_pickle_file(self, 'Interfaces_process_215200')[0]
+
+    def test_counters2012(self):
+        has_counters = True if self.results['counters2012'].stdout else False
+        self.assertTrue(has_counters)
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
@@ -135,6 +155,7 @@ def test_suite():
     suite.addTest(makeSuite(TestHelpers))
     suite.addTest(makeSuite(TestInterfacesCounters))
     suite.addTest(makeSuite(TestTeamInterfaces))
+    suite.addTest(makeSuite(TestZPS3902))
     return suite
 
 

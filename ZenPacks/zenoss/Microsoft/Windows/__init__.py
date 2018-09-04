@@ -77,10 +77,10 @@ def getOSKerberos(osrelease):
 
     if 'el6' in osrelease:
         return 'kerberos_el6'
-    elif 'el5' in osrelease:
-        return 'kerberos_el5'
+    elif 'el7' in osrelease:
+        return 'kerberos_el7'
     else:
-        return 'kerberos_el6'
+        return 'kerberos_el7'
 
 
 class ZenPack(schema.ZenPack):

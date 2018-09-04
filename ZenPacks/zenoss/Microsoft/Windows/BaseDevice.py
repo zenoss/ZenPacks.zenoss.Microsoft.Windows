@@ -13,6 +13,7 @@ Utilities that may cause Zope stuff to be imported.
 from . import schema
 
 from Products.ZenUtils.ZenTales import talesEvalStr
+from Products.Zuul import getFacade
 
 
 class BaseDevice(schema.BaseDevice):
@@ -83,3 +84,27 @@ class BaseDevice(schema.BaseDevice):
 
         disable_rdns = org.getProperty('zWinRMKrb5DisableRDNS') or False
         return disable_rdns
+
+    def getClearEvents(self):
+        self.clear_events()
+        return True
+
+    def setClearEvents(self, value):
+        self.clear_events()
+
+    def clear_events(self):
+        zep = getFacade('zep')
+        zep_filter = zep.createEventFilter(
+            element_identifier=(self.id),
+            severity=[4],
+            status=(0, 1),
+            event_class='/Status/OSProcess'
+        )
+        results = zep.getEventSummariesGenerator(filter=zep_filter)
+
+        component_list = [x.getObject().id for x in self.componentSearch()]
+        for res in results:
+            key = res['occurrence'][0]['actor'].get('element_sub_identifier')
+            if key and key not in component_list:
+                del_filter = zep.createEventFilter(uuid=res['uuid'])
+                zep.closeEventSummaries(eventFilter=del_filter)

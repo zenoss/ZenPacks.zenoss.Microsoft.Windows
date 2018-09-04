@@ -505,10 +505,11 @@ class PowershellMSSQLStrategy(object):
                 self.valuemap[databasename][_counter] = value
 
         for dsconf in dsconfs:
+            timestamp = int(time.mktime(time.localtime()))
             if dsconf.params['resource'] == 'status':
                 # no need to get status as it's handled differently
+                yield dsconf, '', timestamp
                 continue
-            timestamp = int(time.mktime(time.localtime()))
             databasename = dsconf.params['contexttitle']
             try:
                 key = dsconf.params['resource'].lower()
@@ -740,10 +741,12 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         owner_node_ip = None
         if hasattr(context, 'cluster_node_server'):
             owner_node, _ = context.cluster_node_server.split('//')
-            try:
-                owner_node_ip = context.device().clusterhostdevicesdict.get(owner_node, None)
-            except Exception:
-                pass
+            owner_node_ip = getattr(context, 'owner_node_ip', None)
+            if not owner_node_ip:
+                try:
+                    owner_node_ip = context.device().clusterhostdevicesdict.get(owner_node, None)
+                except Exception:
+                    pass
 
         try:
             contextURL = context.getPrimaryUrlPath()
