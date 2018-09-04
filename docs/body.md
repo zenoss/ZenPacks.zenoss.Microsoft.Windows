@@ -1899,13 +1899,16 @@ Changes
 
 -   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)
 -   Fix Undefined PrimaryOwnerName or RegisteredUser causes traceback in OperatingSystem plugin (ZPS-3227)
--   Fix ShellDataSource slow to gather data when hundreds of databases exist.
+-   Fix ShellDataSource slow to gather data when hundreds of databases exist. (ZPS-3287)
 -   Fix MSSQL password can be logged in the Windows Event Log as plaintext during query failure (ZPS-3302)
 -   Fix MSSQL Monitoring causes thousands of logon/logoff events in windows event log (ZPS-3392)
+-   Fix WinMSSQL plugin shows 'message stream modified' errors during modeling.(ZPS-3461)
+-   Fix WindowsServiceLog Events never clear.(ZPS-3771)
 -   Fix Potential ticket expiry during collection causes collection issue (ZPS-3216)
 -   Fix Windows device fails to monitor performance counters, generating several log messages per second. (ZPS-3377)
 -   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-3997)
 -   Fix Microsoft.Windows - wrong counter name for 2016 network interfaces (ZPS-3902)
+-   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container.(ZPS-3422)
 -   Fix WinRM monitoring not properly respecting zWinPerfmonInterval (ZPS-3581)
 -   Fix GetWinEvent error message formatting (ZPS-3484)
 -   Fix IIS Application Pool states (ZPS-3629)
