@@ -1925,6 +1925,7 @@ Changes
 -   Fix Modeling errors caused by multiple 'zenoss.winrm.WinCluster' in zCollectorPlugins (ZPS-4300)
 -   Fix Windows services with certain characters are always in 'unknown' state. (ZPS-3424)
 -   Add support for SQL Server 2017
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.2.0, Zenoss Resource Manager 5.3.3, Zenoss Resource Manager 4.2.5 RPS 743 and Service Impact 5.3.1
 
 2.9.0
 
