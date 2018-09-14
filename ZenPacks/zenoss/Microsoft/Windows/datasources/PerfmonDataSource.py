@@ -27,7 +27,6 @@ from twisted.internet.task import LoopingCall
 from zope.component import adapts, queryUtility
 from zope.interface import implements
 
-from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenCollector.interfaces import ICollectorPreferences
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.form import schema
@@ -375,18 +374,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         data = yield self.get_data()
         defer.returnValue(data)
-
-    def onSuccess(self, result, config):
-        """Called only on success. After onResult, before onComplete."""
-
-        if result and 'maps' in result:
-            # Clear non-existing component events
-            result['maps'].append(ObjectMap({
-                "modname": "Clear events",
-                "setClearEvents": True,
-            }))
-
-        return result
 
     @coroutine
     def start(self):
