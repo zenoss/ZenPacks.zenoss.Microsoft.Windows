@@ -1901,6 +1901,10 @@ Monitoring Templates
 Changes
 -------
 
+2.9.2
+
+-   Fix applyDataMaps call for onSuccess method destabilizing zenhub (ZPS-4422)
+
 2.9.1
 
 -   Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)

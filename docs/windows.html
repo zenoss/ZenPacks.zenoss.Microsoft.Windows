@@ -8,8 +8,8 @@
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
 <dl>
-<dt>Version 2.9.1- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.9.1/ZenPacks.zenoss.Microsoft.Windows-2.9.1.egg" rel="nofollow">Download</a></dt>
-<dd>Released on 2018/09/04
+<dt>Version 2.9.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.9.2/ZenPacks.zenoss.Microsoft.Windows-2.9.2.egg" rel="nofollow">Download</a></dt>
+<dd>Released on 2018/09/19
 </dd>
 <dd>Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a>
 </dd>
@@ -26,20 +26,6 @@
 <dd>Released on 2017/06/29
 </dd>
 <dd>Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a>
-</dd>
-<dd>Compatible with Zenoss 4.2.x - 5.2.x
-</dd>
-<dt>Version 2.6.12- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.6.12/ZenPacks.zenoss.Microsoft.Windows-2.6.12.egg" rel="nofollow">Download</a></dt>
-<dd>Released on 2017/01/31
-</dd>
-<dd>Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>
-</dd>
-<dd>Compatible with Zenoss 4.2.x - 5.2.x
-</dd>
-<dt>Version 2.5.13- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.5.13/ZenPacks.zenoss.Microsoft.Windows-2.5.13.egg" rel="nofollow">Download</a></dt>
-<dd>Released on 2016/05/10
-</dd>
-<dd>Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>
 </dd>
 <dd>Compatible with Zenoss 4.2.x - 5.2.x
 </dd>
@@ -1626,6 +1612,10 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.9.2</p>
+<ul>
+<li>Fix applyDataMaps call for onSuccess method destabilizing zenhub (ZPS-4422)</li>
+</ul>
 <p>2.9.1</p>
 <ul>
 <li>Fix Misleading Error when parsing MSSQL status datasource on different cycle than other database datasources (ZPS-3194)</li>
