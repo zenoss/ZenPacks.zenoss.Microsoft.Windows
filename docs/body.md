@@ -1901,6 +1901,9 @@ Monitoring Templates
 Changes
 -------
 
+2.9.3
+
+-   Windows Perfmon data collection stops for long time after device reboot (ZPS-4473)
 2.9.2
 
 -   Fix applyDataMaps call for onSuccess method destabilizing zenhub (ZPS-4422)

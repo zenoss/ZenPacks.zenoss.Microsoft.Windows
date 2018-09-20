@@ -748,6 +748,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             retry = False
         if retry:
             self.receive()
+        else:
+            yield self.stop()
+            self.reset()
 
         defer.returnValue(None)
 
