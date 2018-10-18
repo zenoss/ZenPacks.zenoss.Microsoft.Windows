@@ -1905,6 +1905,7 @@ Changes
 
 -   Windows Perfmon data collection stops for long time after device reboot (ZPS-4473)
 -   Windows - No freespace on cluster shared volumes (ZPS-4612)
+-   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
 
 2.9.2
 
