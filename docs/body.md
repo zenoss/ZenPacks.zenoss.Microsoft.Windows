@@ -1907,6 +1907,7 @@ Changes
 -   Windows - No freespace on cluster shared volumes (ZPS-4612)
 -   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
 -   Fix 500 Operation Timeout Errors when modeling and/or monitoring SQL Server (ZPS-4638)
+-   Fix Windows Cluster - wrong ip address can be returned for sql server node (ZPS-4703)
 
 2.9.2
 
