@@ -155,7 +155,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable volumeerr -erroraction 'silentlycontinue';"
             "if( -Not $volumeerr){{"
             "foreach ($volume in $clsSharedVolume) {{"
-            "$csvNames + = $volume.Name;"
+            "$csvNames += $volume.Name;"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
             "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
