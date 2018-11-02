@@ -267,12 +267,16 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 component=prepId(dsconf.component)
             ))
 
-            if ownernode and name.strip() == 'Cluster Group' and dsconf.params['ownernode'] != ownernode.strip():
+            # sql server can failover without cluster group changing
+            # we'll make a variable so we can add any future resource groups to check
+            b_name = name.strip() == 'Cluster Group' or 'sql server' in name.lower()
+            if ownernode and b_name and dsconf.params['ownernode'] != ownernode.strip():
                 data['events'].append(dict(
                     eventClassKey='clusterOwnerChange',
                     eventKey='clusterCollection',
                     severity=ZenEventClasses.Info,
-                    summary='OwnerNode of cluster {} changed to {}'.format(dsconf.params['cluster'], ownernode),
+                    summary='OwnerNode of cluster {} for cluster service {} changed to {}'.format(
+                        dsconf.params['cluster'], name.strip(), ownernode),
                     device=config.id,
                     component=prepId(dsconf.component)
                 ))
