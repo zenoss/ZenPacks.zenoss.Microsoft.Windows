@@ -117,14 +117,14 @@ class Interfaces(WinRMPlugin):
             "$_.teamname, '|'};"
         ),
         'counters2012': (
-            ' '.join('''$v = (Get-WmiObject win32_OperatingSystem).Version.split('.');
+            ' '.join('''$v = (Get-CimInstance win32_OperatingSystem).Version.split('.');
             $ver2012 = [int]$v[0] -gt 6 -or [int]$v[1] -gt 1;
             function replace_unallowed($s)
             {$s.replace('(', '[').replace(')', ']').replace('#', '_').replace('\\', '_').replace('/', '_').toLower()}
             if($ver2012){
             (Get-Counter '\Network Adapter(*)\*').CounterSamples |
                 % {$_.InstanceName} | gu | % {
-                foreach($na in (Get-WmiObject MSFT_NetAdapter -Namespace 'root/StandardCimv2')) {
+                foreach($na in (Get-CimInstance MSFT_NetAdapter -Namespace 'root/StandardCimv2')) {
                     if($_ -eq (replace_unallowed $na.InterfaceDescription) -or $_ -like 'isatap.' + "$($na.DeviceID)") {
                         $na.DeviceID, ':', $_, '|'
             }}}}'''.split())

@@ -171,7 +171,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         )
 
         psClusterCommands.append(
-            "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources = Get-CimInstance -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
             "foreach ($resource in $resources) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
             "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
