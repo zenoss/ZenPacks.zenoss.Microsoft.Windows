@@ -21,6 +21,8 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
+from twisted.web.error import Error
+from twisted.python.failure import Failure
 
 from twisted.internet.task import LoopingCall
 
@@ -64,6 +66,10 @@ OPERATION_TIMEOUT = 60
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
 MAX_NETWORK_FAILURES = 3
+
+
+class PowerShellError(Error):
+    pass
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -335,7 +341,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # counters of the device equals to floor division of the current
         # counters_line length by the calculated limit, incremented by 1.
         self.num_commands = len(format_counters(counters)) // counters_limit + 1
-        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(self.config.id,
+        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(
+            self.config.id,
             self.num_commands))
 
         # Chunk a counter list into num_commands equal parts.
@@ -373,6 +380,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         yield self.start()
 
         data = yield self.get_data()
+        evt_summaries = [x.get('summary', '') for x in data['events']]
+        if self.ps_mod_path_msg in evt_summaries:
+            # don't clear powershell event
+            # remove clear event
+            for evt in data['events']:
+                if evt.get('eventKey', '') == 'WindowsPerfmonCollection'\
+                        and evt.get('severity', -1) == 0:
+                    data['events'].remove(evt)
         defer.returnValue(data)
 
     @coroutine
@@ -564,16 +579,18 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 # Log error message if present.
                 if stderr:
                     ps_error = ' '.join(stderr)
-                    LOG.debug(ps_error)
+                    LOG.debug('stderr: {}'.format(ps_error))
                     if 'not recognized as the name of a cmdlet' in ps_error:
+                        failures.append(Failure(PowerShellError(500, message=ps_error)))
                         # could be ZPS-3517 and 'double-hop issue'
                         PERSISTER.add_event(self.unique_id, self.config.datasources, {
                             'device': self.config.id,
                             'eventClass': '/Status/Winrm',
                             'eventKey': 'WindowsPerfmonCollection',
-                            'severity': ZenEventClasses.Error,
+                            'severity': ZenEventClasses.Warning,
                             'summary': self.ps_mod_path_msg,
                             'ipAddress': self.config.manageIp})
+
                 # Leave sample start marker in first command result
                 # to properly report missing counters.
                 if index == 0:
@@ -652,7 +669,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Log error message and wait for the data.
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
-            self.onReceiveFail(failures[0])
+            yield self.onReceiveFail(failures[0])
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
@@ -719,13 +736,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 .format(self.config.id, e.message or 'timeout'))
             if isinstance(e, TimeoutError):
                 self.network_failures += 1
+        elif isinstance(e, PowerShellError):
+            level, msg = (logging.WARN, self.ps_mod_path_msg)
         # Handle errors on which we should start over.
         else:
             level = logging.WARN
             if send_to_debug(failure):
                 level = logging.DEBUG
             elif isinstance(e, AttributeError) and \
-                "'NoneType' object has no attribute 'persistent'" in e.message:
+                    "'NoneType' object has no attribute 'persistent'" in e.message:
                 level = logging.DEBUG
                 e = 'Attempted to receive from closed connection.  Possibly due'\
                     'to device reboot.'
@@ -748,6 +767,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             retry = False
         if retry:
             self.receive()
+        else:
+            yield self.stop()
+            self.reset()
 
         defer.returnValue(None)
 

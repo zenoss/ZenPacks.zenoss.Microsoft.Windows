@@ -1904,6 +1904,13 @@ Changes
 2.9.3
 
 -   Fix deprecated Get-WmiObject cmdlet for PowerShell Core (ZPS-4927)
+-   Windows Perfmon data collection stops for long time after device reboot (ZPS-4473)
+-   Windows - No freespace on cluster shared volumes (ZPS-4612)
+-   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
+-   Fix 500 Operation Timeout Errors when modeling and/or monitoring SQL Server (ZPS-4638)
+-   Fix Windows Cluster - wrong ip address can be returned for sql server node (ZPS-4703)
+-   Fix Windows Cluster - sql server fails over doesn't trigger a remodel if cluster group stays the same (ZPS-4707)
+
 
 2.9.2
 
