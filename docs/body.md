@@ -1901,6 +1901,10 @@ Monitoring Templates
 Changes
 -------
 
+2.9.3
+
+-   Fix deprecated Get-WmiObject cmdlet for PowerShell Core (ZPS-4927)
+
 2.9.2
 
 -   Fix applyDataMaps call for onSuccess method destabilizing zenhub (ZPS-4422)
