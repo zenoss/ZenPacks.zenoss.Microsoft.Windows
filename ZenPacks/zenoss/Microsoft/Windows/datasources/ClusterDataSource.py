@@ -37,7 +37,7 @@ from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import (
     check_for_network_error, pipejoin, cluster_state_value,
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
-    cluster_disk_state_string)
+    cluster_disk_state_string, cluster_csv_state_to_disk_map)
 from . import send_to_debug
 
 # Requires that txwinrm_utils is already imported.
@@ -151,9 +151,11 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         psClusterCommands.append(
             "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
             "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
+            "$csvNames = @();"
             "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable volumeerr -erroraction 'silentlycontinue';"
             "if( -Not $volumeerr){{"
             "foreach ($volume in $clsSharedVolume) {{"
+            "$csvNames += $volume.Name;"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
             "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
@@ -173,6 +175,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         psClusterCommands.append(
             "$resources = Get-WmiObject -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
             "foreach ($resource in $resources) {{"
+            "if (-Not ($csvNames -Contains $resource.Name)) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
             "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
             "foreach ($dsk in $disks) {{"
@@ -190,7 +193,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
             "State = $resource.State;Size = $dsk.Size;VolumePath = 'No Volume';"
             "PartitionNumber = 'No Partitions';FreeSpace = -1}};}};"
-            "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}"
+            "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}}}"
             "".format(cluster_disk_items=cluster_disk_items)
         )
 
@@ -230,6 +233,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 # specific for cluster disk component
                 data['values'][comp]['state'] = int(state)
                 state = cluster_disk_state_string(int(state))
+            except ValueError:
+                # cluster shared volume returns text. e.g. 'Online'
+                data['values'][comp]['state'] = cluster_csv_state_to_disk_map(state)
+            try:
                 if freespace != '-1':
                     # don't write dp if -1.  probably means unallocated disk
                     # and freespace would have no meaning
@@ -260,12 +267,16 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 component=prepId(dsconf.component)
             ))
 
-            if ownernode and name.strip() == 'Cluster Group' and dsconf.params['ownernode'] != ownernode.strip():
+            # sql server can failover without cluster group changing
+            # we'll make a variable so we can add any future resource groups to check
+            b_name = name.strip() == 'Cluster Group' or 'sql server' in name.lower()
+            if ownernode and b_name and dsconf.params['ownernode'] != ownernode.strip():
                 data['events'].append(dict(
                     eventClassKey='clusterOwnerChange',
                     eventKey='clusterCollection',
                     severity=ZenEventClasses.Info,
-                    summary='OwnerNode of cluster {} changed to {}'.format(dsconf.params['cluster'], ownernode),
+                    summary='OwnerNode of cluster {} for cluster service {} changed to {}'.format(
+                        dsconf.params['cluster'], name.strip(), ownernode),
                     device=config.id,
                     component=prepId(dsconf.component)
                 ))

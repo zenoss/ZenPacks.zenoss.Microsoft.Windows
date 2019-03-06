@@ -21,6 +21,8 @@ import time
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
+from twisted.web.error import Error
+from twisted.python.failure import Failure
 
 from twisted.internet.task import LoopingCall
 
@@ -47,8 +49,7 @@ from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClear
 from ..txcoroutine import coroutine
 
 # Requires that txwinrm_utils is already imported.
-from txwinrm.shell import create_long_running_command
-from txwinrm.WinRMClient import SingleCommandClient
+from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
 from txwinrm.util import UnauthorizedError, RequestError
 import codecs
 from . import send_to_debug
@@ -64,6 +65,10 @@ OPERATION_TIMEOUT = 60
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
 MAX_NETWORK_FAILURES = 3
+
+
+class PowerShellError(Error):
+    pass
 
 
 class PerfmonDataSource(PythonDataSource):
@@ -204,6 +209,27 @@ class ComplexLongRunningCommand(object):
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
         self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command '
+        self._shells = {}
+
+    def get_id(self, cmd):
+        try:
+            return self._shells[cmd]
+        except Exception:
+            return None
+
+    def store_ids(self, shells):
+        """Store ids for each command.
+
+        each command will have unique shell_cmd so this will shake out
+        each command's shell and command ids.
+        """
+        for cmd in self.commands:
+            try:
+                shell_cmd = set(cmd._shells).intersection(shells).pop()
+            except KeyError:
+                # shouldn't happen, catch anyway
+                continue
+            self._shells[cmd] = shell_cmd
 
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
@@ -214,12 +240,12 @@ class ComplexLongRunningCommand(object):
             conn_info = createConnectionInfo(self.dsconf)
         except UnauthorizedError as e:
             LOG.error(
-                "{0}: Windows Perfmon connection info is not available for {0}."
-                " Error: {1}".format(self.dsconf.device, e))
+                "{0}: Windows Perfmon connection info is not available for "
+                "{0}. Error: {1}".format(self.dsconf.device, e))
         else:
             for _ in xrange(num_commands):
                 try:
-                    commands.append(create_long_running_command(conn_info))
+                    commands.append(LongCommandClient(conn_info))
                 except Exception as e:
                     LOG.error("{}: Windows Perfmon error: {}".format(
                         self.dsconf.device, e))
@@ -238,7 +264,6 @@ class ComplexLongRunningCommand(object):
         for command, command_line in zip(self.commands, command_lines):
             LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
             if command is not None:
-                command.update_conn_info(createConnectionInfo(self.dsconf))
                 deferreds.append(add_timeout(command.start(self.ps_command,
                                                            ps_script=command_line),
                                              self.dsconf.zWinRMConnectTimeout))
@@ -249,7 +274,9 @@ class ComplexLongRunningCommand(object):
     def stop(self):
         """Stop all started commands."""
         for command in self.commands:
-            yield command.stop()
+            shell_cmd = self.get_id(command)
+            yield command.stop(shell_cmd)
+            self._shells.pop(command)
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
@@ -311,6 +338,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
+        self._shells = []
         self.reset()
         self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
 
@@ -335,7 +363,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # counters of the device equals to floor division of the current
         # counters_line length by the calculated limit, incremented by 1.
         self.num_commands = len(format_counters(counters)) // counters_limit + 1
-        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(self.config.id,
+        LOG.debug('{}: Windows Perfmon Creating {} long running command(s)'.format(
+            self.config.id,
             self.num_commands))
 
         # Chunk a counter list into num_commands equal parts.
@@ -373,6 +402,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         yield self.start()
 
         data = yield self.get_data()
+        evt_summaries = [x.get('summary', '') for x in data['events']]
+        if self.ps_mod_path_msg in evt_summaries:
+            # don't clear powershell event
+            # remove clear event
+            for evt in data['events']:
+                if evt.get('eventKey', '') == 'WindowsPerfmonCollection'\
+                        and evt.get('severity', -1) == 0:
+                    data['events'].remove(evt)
         defer.returnValue(data)
 
     @coroutine
@@ -381,6 +418,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
+        self._shells = []
         LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
 
@@ -410,6 +448,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         for success, data in results:
             if success:
                 self.state = PluginStates.STARTED
+                self._shells.append(data)
             else:
                 errorMessage = 'Perfmon command(s) did not start'
                 reason = str(data.value)
@@ -435,6 +474,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'ipAddress': self.config.manageIp})
         self.collected_samples = 0
         self.collected_counters = set()
+        self.complex_command.store_ids(self._shells)
 
         self.receive()
 
@@ -530,27 +570,30 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         defer.returnValue(None)
 
     def receive(self):
-        """
-        Receive results from continuous command.
-        """
+        """Receive results from continuous command."""
         deferreds = []
         for cmd in self.complex_command.commands:
             if cmd is not None:
                 try:
-                    if cmd._command_id is not None:
-                        deferreds.append(add_timeout(cmd.receive(), OPERATION_TIMEOUT + 5))
+                    shell_cmd = self.complex_command.get_id(cmd)
+                    if shell_cmd:
+                        deferreds.append(add_timeout(cmd.receive(shell_cmd),
+                                                     OPERATION_TIMEOUT + 5))
                 except Exception as err:
-                    LOG.error('{}: Windows Perfmon receive error {0}'.format(
+                    LOG.error('{}: Windows Perfmon receive error {}'.format(
                         self.config.id, err))
 
         if deferreds:
-            self.receive_deferreds = defer.DeferredList(deferreds, consumeErrors=True)
+            self.receive_deferreds = defer.DeferredList(deferreds,
+                                                        consumeErrors=True)
 
             self.receive_deferreds.addCallbacks(
                 self.onReceive, self.onReceiveFail)
 
     def _parse_deferred_result(self, result):
-        """Group all stdout data and failures from each command result
+        """Parse out results from deferred response.
+
+        Group all stdout data and failures from each command result
         and return them as a tuple of two lists: (filures, results)
         """
         failures, results = [], []
@@ -560,20 +603,22 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             # [(True/False, [stdout, stderr]/failure), ]
             success, data = command_result
             if success:
-                stdout, stderr = data
+                stdout, stderr = data.stdout, data.stderr
                 # Log error message if present.
                 if stderr:
                     ps_error = ' '.join(stderr)
-                    LOG.debug(ps_error)
+                    LOG.debug('stderr: {}'.format(ps_error))
                     if 'not recognized as the name of a cmdlet' in ps_error:
+                        failures.append(Failure(PowerShellError(500, message=ps_error)))
                         # could be ZPS-3517 and 'double-hop issue'
                         PERSISTER.add_event(self.unique_id, self.config.datasources, {
                             'device': self.config.id,
                             'eventClass': '/Status/Winrm',
                             'eventKey': 'WindowsPerfmonCollection',
-                            'severity': ZenEventClasses.Error,
+                            'severity': ZenEventClasses.Warning,
                             'summary': self.ps_mod_path_msg,
                             'ipAddress': self.config.manageIp})
+
                 # Leave sample start marker in first command result
                 # to properly report missing counters.
                 if index == 0:
@@ -652,7 +697,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Log error message and wait for the data.
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
-            self.onReceiveFail(failures[0])
+            yield self.onReceiveFail(failures[0])
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
@@ -719,20 +764,22 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 .format(self.config.id, e.message or 'timeout'))
             if isinstance(e, TimeoutError):
                 self.network_failures += 1
+        elif isinstance(e, PowerShellError):
+            level, msg = (logging.WARN, self.ps_mod_path_msg)
         # Handle errors on which we should start over.
         else:
             level = logging.WARN
             if send_to_debug(failure):
                 level = logging.DEBUG
             elif isinstance(e, AttributeError) and \
-                "'NoneType' object has no attribute 'persistent'" in e.message:
+                    "'NoneType' object has no attribute 'persistent'" in e.message:
                 level = logging.DEBUG
-                e = 'Attempted to receive from closed connection.  Possibly due'\
-                    'to device reboot.'
+                e = 'Attempted to receive from closed connection.  Possibly '\
+                    'due to device reboot.'
             elif 'invalid selectors for the resource' in e.message:
                 level = logging.DEBUG
-                e = 'Attempted to use a non-existent remote shell.  Possibly due'\
-                    'to device reboot.'
+                e = 'Attempted to use a non-existent remote shell.  Possibly '\
+                    'due to device reboot.'
             retry, msg = (
                 False,
                 "receive failure on {}: {}"
@@ -748,6 +795,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             retry = False
         if retry:
             self.receive()
+        else:
+            yield self.stop()
+            self.reset()
 
         defer.returnValue(None)
 
