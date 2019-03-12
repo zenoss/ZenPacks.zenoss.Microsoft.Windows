@@ -496,8 +496,8 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            $dotnets = Get-ChildItem 'HKLM:\\software\\microsoft\\net framework setup\\ndp'| % {{$_.name.split('\\')[5]}} | ? {{ $_ -match 'v3.5|v[45].*'}};
-            if ($win2003 -eq $false -and $dotnets -ne $null) {{
+            $dotnets = ($PSVersionTable.CLRVersion.Major + ($PSVersionTable.CLRVersion.Minor/10)) -ge 3.5;
+            if ($win2003 -eq $false -and $dotnets -eq $true) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds);
             }} else {{
