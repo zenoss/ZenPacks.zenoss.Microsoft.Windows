@@ -586,6 +586,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if deferreds:
             self.receive_deferreds = defer.DeferredList(deferreds,
                                                         consumeErrors=True)
+
             self.receive_deferreds.addCallbacks(
                 self.onReceive, self.onReceiveFail)
 
@@ -607,15 +608,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if stderr:
                     ps_error = ' '.join(stderr)
                     LOG.debug('stderr: {}'.format(ps_error))
-                    if "Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed." in ps_error:
-                        failures.append(Failure(PowerShellError(500, message=ps_error)))
-                        PERSISTER.add_event(self.unique_id, self.config.datasources, {
-                            'device': self.config.id,
-                            'eventClass': '/Status/Winrm',
-                            'eventKey': 'WindowsPerfmonCollection',
-                            'severity': ZenEventClasses.Warning,
-                            'summary': self.ps_mod_path_msg,
-                            'ipAddress': self.config.manageIp})
                     if 'not recognized as the name of a cmdlet' in ps_error:
                         failures.append(Failure(PowerShellError(500, message=ps_error)))
                         # could be ZPS-3517 and 'double-hop issue'
@@ -764,12 +756,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.receive()
             defer.returnValue(None)
 
-        elif "Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed." in e.message:
-            retry, level, msg = (
-                True,
-                logging.WARN,
-                "receive failure on {}: {}"
-                .format(self.config.id, e))
         elif isinstance(e, ConnectError):
             retry, level, msg = (
                 isinstance(e, TimeoutError),
