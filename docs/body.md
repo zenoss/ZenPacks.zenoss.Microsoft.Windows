@@ -1912,6 +1912,7 @@ Changes
 -   Fix Windows Cluster - sql server fails over doesn't trigger a remodel if cluster group stays the same (ZPS-4707)
 -   Fix Windows Perfmon data collection stops for long time after collection interruption (ZPS-4473)
 -   Fix Windows may connect to device with wrong zWinRMUser (ZPS-3564)
+-   Fix Microsoft.Windows - Detect .NET version better for EventLogDataSource (ZPS-5399)
 
 2.9.2
 
