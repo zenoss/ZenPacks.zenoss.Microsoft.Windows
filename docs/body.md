@@ -1914,6 +1914,7 @@ Changes
 -   Fix Windows Perfmon data collection stops for long time after collection interruption (ZPS-4473)
 -   Fix Windows may connect to device with wrong zWinRMUser (ZPS-3564)
 -   Fix Microsoft.Windows - Detect .NET version better for EventLogDataSource (ZPS-5399)
+-   Fix Windows Disconnected Network Drives that Cause PowerShell Error (ZPS-4866)
 -   Fix After upgrade to 2.9.x, some/most modeler plugins fail with "'NoneType' object has no attribute 'getConnection'" (ZPS-5087)
 -   Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)
 

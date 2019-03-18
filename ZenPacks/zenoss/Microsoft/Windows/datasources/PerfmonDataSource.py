@@ -639,6 +639,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 if stderr:
                     ps_error = ' '.join(stderr)
                     LOG.debug('stderr: {}'.format(ps_error))
+                    if "Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed." in ps_error:
+                        failures.append(Failure(PowerShellError(500, message=ps_error)))
                     if 'not recognized as the name of a cmdlet' in ps_error:
                         failures.append(Failure(PowerShellError(500, message=ps_error)))
                         # could be ZPS-3517 and 'double-hop issue'
@@ -787,6 +789,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.receive()
             defer.returnValue(None)
 
+        elif "Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed." in e.message:
+            retry, level, msg = (
+                True,
+                logging.debug,
+                "Ignoring powershell error on {} as it does not affect collection: {}"
+                .format(self.config.id, e))
         elif isinstance(e, ConnectError):
             retry, level, msg = (
                 isinstance(e, TimeoutError),
