@@ -243,6 +243,22 @@ class ComplexLongRunningCommand(object):
                 "{0}: Windows Perfmon connection info is not available for "
                 "{0}. Error: {1}".format(self.dsconf.device, e))
         else:
+            # allow for collection from sql clusters where active sql instance
+            # could be running on different node from current host server
+            # ex. sol-win03.solutions-wincluster.loc//SQL1 for MSSQLSERVER
+            # sol-win03.solutions-wincluster.loc//SQL3\TESTINSTANCE1
+            #       for TESTINSTANCE1
+            # standalone ex.
+            #       //SQLHOSTNAME for MSSQLSERVER
+            #       //SQLTEST\TESTINSTANCE1 for TESTINSTANCE1
+            if getattr(self.dsconf, 'cluster_node_server', None) and\
+                    self.dsconf.params['owner_node_ip']:
+                owner_node, server =\
+                    self.dsconf.cluster_node_server.split('//')
+                if owner_node:
+                    conn_info = conn_info._replace(hostname=owner_node)
+                    conn_info = conn_info._replace(
+                        ipaddress=self.dsconf.params['owner_node_ip'])
             for _ in xrange(num_commands):
                 try:
                     commands.append(LongCommandClient(conn_info))
@@ -280,7 +296,9 @@ class ComplexLongRunningCommand(object):
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
-    proxy_attributes = ConnectionInfoProperties
+    proxy_attributes = ConnectionInfoProperties + (
+        'cluster_node_server',
+    )
 
     config = None
     cycling = None
@@ -391,7 +409,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             if not re.match("\\\\.*\\\\.*", counter):
                 counter = ''.join((context.perfmonInstance, counter))
 
-        return {'counter': counter}
+        owner_node_ip = None
+        if hasattr(context, 'cluster_node_server'):
+            owner_node, _ = context.cluster_node_server.split('//')
+            owner_node_ip = getattr(context, 'owner_node_ip', None)
+            if not owner_node_ip:
+                try:
+                    owner_node_ip = context.device().clusterhostdevicesdict.get(owner_node, None)
+                except Exception:
+                    pass
+
+        return {
+            'counter': counter,
+            'owner_node_ip': owner_node_ip
+        }
 
     @coroutine
     def collect(self, config):

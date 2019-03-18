@@ -1725,6 +1725,7 @@ If you see an event stating that a plugin was disabled due to blocking, see the 
 
 If you see 'SNMP agent down - no response received' or 'Unable to read processes' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
 
+
 ### Troubleshooting modeling/monitoring
 
 Version 2.6.0 introduces a command line option to save
@@ -1914,6 +1915,8 @@ Changes
 -   Fix Windows may connect to device with wrong zWinRMUser (ZPS-3564)
 -   Fix Microsoft.Windows - Detect .NET version better for EventLogDataSource (ZPS-5399)
 -   Fix Windows Disconnected Network Drives that Cause PowerShell Error (ZPS-4866)
+-   Fix After upgrade to 2.9.x, some/most modeler plugins fail with "'NoneType' object has no attribute 'getConnection'" (ZPS-5087)
+-   Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)
 
 2.9.2
 
