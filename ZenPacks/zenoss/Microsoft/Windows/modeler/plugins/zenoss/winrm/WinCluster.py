@@ -111,16 +111,20 @@ class WinCluster(WinRMPlugin):
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
             "State = $volume.State;"
             "OwnerGroup = 'Cluster Shared Volume';}};"
-            "$csvtophysicaldisk | foreach {{{}}};}}".format(disk_properties)
+            "$csvtophysicaldisk | foreach {{{}}};}};".format(disk_properties)
         )
 
         clusterDiskCommand.append(
-            "$resources = Get-CimInstance -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources = Get-CimInstance -namespace"
+            " 'root\MSCluster' -class 'MSCluster_Resource' "
+            " | ? {{$_.Type -eq 'Physical Disk'}};"
             "foreach ($resource in $resources) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
-            "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
+            "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
+            '"MSCluster_Disk";'
             "foreach ($dsk in $disks) {{"
-            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "$partitions = Get-CimAssociatedInstance $dsk -ResultClassName "
+            '"MSCluster_DiskPartition";'
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
@@ -138,8 +142,6 @@ class WinCluster(WinRMPlugin):
         )
 
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
-        for item in clusterdisk.stdout:
-            log.debug('\t*****  %s', item)
 
         clusterNetworkCommand = []
         clusterNetworkCommand.append(
