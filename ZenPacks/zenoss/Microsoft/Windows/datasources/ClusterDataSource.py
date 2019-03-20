@@ -173,13 +173,17 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         )
 
         psClusterCommands.append(
-            "$resources = Get-Get-CimInstance -class MSCluster_Resource -namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";"
+            "$resources = Get-CimInstance -namespace"
+            " 'root\MSCluster' -class 'MSCluster_Resource' "
+            " | ? {{$_.Type -eq 'Physical Disk'}};"
             "foreach ($resource in $resources) {{"
             "if (-Not ($csvNames -Contains $resource.Name)) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
-            "$disks = $resource.GetRelated(\\\"MSCluster_Disk\\\");"
+            "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
+            '"MSCluster_Disk";'
             "foreach ($dsk in $disks) {{"
-            "$partitions = $dsk.GetRelated(\\\"MSCluster_DiskPartition\\\");"
+            "$partitions = Get-CimAssociatedInstance $dsk -ResultClassName "
+            '"MSCluster_DiskPartition";'
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
