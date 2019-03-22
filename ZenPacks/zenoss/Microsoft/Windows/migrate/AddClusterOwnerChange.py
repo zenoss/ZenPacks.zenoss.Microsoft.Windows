@@ -24,7 +24,8 @@ class AddClusterOwnerChange(ZenPackMigration):
 
     def get_objects(self, dmd):
         """Get objects to migrate."""
-        for ob in dmd.Devices.Server.Microsoft.Cluster.getSubOrganizers() +\
+        for ob in dmd.Devices.Server.Microsoft.Cluster +\
+                dmd.Devices.Server.Microsoft.Cluster.getSubOrganizers() +\
                 dmd.Devices.Server.Microsoft.Cluster.getSubDevices():
             yield ob
 
@@ -40,7 +41,9 @@ class AddClusterOwnerChange(ZenPackMigration):
         if not hasattr(thing, 'zWindowsRemodelEventClassKeys'):
             return
 
-        if not thing.isLocal('zWindowsRemodelEventClassKeys'):
+        if not thing.isLocal('zWindowsRemodelEventClassKeys') and not\
+                thing.getPrimaryUrlPath() ==\
+                '/zport/dmd/Devices/Server/Microsoft/Cluster':
             return
 
         zWindowsRemodelEventClassKeys = thing.zWindowsRemodelEventClassKeys
