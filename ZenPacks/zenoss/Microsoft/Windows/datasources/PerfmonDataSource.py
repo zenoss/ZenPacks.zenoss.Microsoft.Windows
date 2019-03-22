@@ -792,7 +792,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         elif "Attempting to perform the InitializeDefaultDrives operation on the 'FileSystem' provider failed." in e.message:
             retry, level, msg = (
                 True,
-                logging.debug,
+                logging.DEBUG,
                 "Ignoring powershell error on {} as it does not affect collection: {}"
                 .format(self.config.id, e))
         elif isinstance(e, ConnectError):
