@@ -1918,6 +1918,7 @@ Changes
 -   Fix After upgrade to 2.9.x, some/most modeler plugins fail with "'NoneType' object has no attribute 'getConnection'" (ZPS-5087)
 -   Fix Windows Cluster - clusterOwnerChange may not be in zWindowsRemodelEventClassKeys after install/upgrade (ZPS-4887)
 -   Fix Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)
+-   Fix WindowsServiceLog "The referenced context has expired" error (ZPS-3216)
 
 2.9.2
 

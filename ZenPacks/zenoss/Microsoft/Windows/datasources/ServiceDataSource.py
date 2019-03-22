@@ -290,7 +290,13 @@ class ServicePlugin(PythonDataSourcePlugin):
         conn_info = createConnectionInfo(config.datasources[0])
 
         winrm = EnumerateClient(conn_info)
-        results = yield winrm.do_collect(WinRMQueries)
+        try:
+            results = yield winrm.do_collect(WinRMQueries)
+        except Exception as e:
+            if 'referenced context has expired' in e.message:
+                results = yield winrm.do_collect(WinRMQueries)
+            else:
+                raise
 
         defer.returnValue(results)
 
