@@ -51,7 +51,7 @@ IIsWebVirtualDirSetting = [{
     'AppAllowDebugging': 'false',
     'AppFriendlyName': '',
     'AppOopRecoverLimit': '-1',
-    'AppPoolId': None,
+    'AppPoolId': None,  # testing if Application Pool is picked up correctly
     'AppWamClsid': '',
     'AspAllowOutOfProcComponents': 'true',
     'AspAllowSessionState': 'true',
@@ -3593,7 +3593,7 @@ class TestIIS(BaseTestCase):
         self.assertNotEqual(data[1].maps[0].statusname, 'W3SVC/1')
         self.assertEqual(data[1].maps[0].statusname, 'Default Web Site')
         self.assertEquals(data[1].maps[0].id, 'W3SVC_1')
-        self.assertEquals(data[1].maps[0].apppool, 'DefaultAppPool')
+        self.assertEquals(data[1].maps[0].apppool, 'DefaultAppPool')  # testing if Application Pool is picked up correctly
 
 
 def test_suite():
