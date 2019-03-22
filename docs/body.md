@@ -1919,6 +1919,7 @@ Changes
 -   Fix Windows Cluster - clusterOwnerChange may not be in zWindowsRemodelEventClassKeys after install/upgrade (ZPS-4887)
 -   Fix Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)
 -   Fix WindowsServiceLog "The referenced context has expired" error (ZPS-3216)
+-   Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)
 
 2.9.2
 

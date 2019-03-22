@@ -56,7 +56,12 @@ class OperatingSystem(WinRMPlugin):
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
-        sysEnclosure = results.get('Win32_SystemEnclosure', (None,))[0]
+        try:
+            # assume valid results returned
+            sysEnclosure = results.get('Win32_SystemEnclosure', None)[0]
+        except IndexError:
+            # results contains Win32_SystemEnclosure as a key, but it's empty
+            sysEnclosure = None
         computerSystem = results.get('Win32_ComputerSystem', (None,))[0]
         operatingSystem = results.get('Win32_OperatingSystem', (None,))[0]
         clusterInformation = results.get('MSCluster', ())
