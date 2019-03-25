@@ -24,7 +24,7 @@ class AddClusterOwnerChange(ZenPackMigration):
 
     def get_objects(self, dmd):
         """Get objects to migrate."""
-        for ob in dmd.Devices.Server.Microsoft.Cluster +\
+        for ob in [dmd.Devices.Server.Microsoft.Cluster] +\
                 dmd.Devices.Server.Microsoft.Cluster.getSubOrganizers() +\
                 dmd.Devices.Server.Microsoft.Cluster.getSubDevices():
             yield ob
