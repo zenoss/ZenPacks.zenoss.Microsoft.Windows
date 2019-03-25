@@ -17,6 +17,7 @@ device_classes:
       zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.WinCluster]
       zDeviceTemplates: [Cluster, Active Directory, IIS, MSExchange2010IS]
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.ClusterDevice
+      zWindowsRemodelEventClassKeys: [clusterOwnerChange]
     templates:
       ClusterNode:
         description: Used to monitor the state of the Cluster Node.
@@ -103,7 +104,6 @@ device_classes:
       zDeviceTemplates: [Device, Cluster, Active Directory, IIS, MSExchange2010IS]
       zIcon: /++resource++mswindows/img/server-windows.png
       zSnmpMonitorIgnore: true
-      zWindowsRemodelEventClassKeys: [clusterOwnerChange]
     templates:
       WinSQLJob:
         description: Microsoft SQL Server per-job monitoring.
