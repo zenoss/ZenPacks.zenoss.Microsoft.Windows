@@ -272,7 +272,7 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
                 pool_status = -1
             data['values'][ds.component]['appPoolState'] = pool_status, 'N'
             evtmessage = 'Application Pool {} is in {} state'.format(
-                ds.params['apppool'], APP_POOL_STATUSES.get(pool_status, 'Unkown'))
+                ds.params['apppool'], APP_POOL_STATUSES.get(pool_status, 'Unknown'))
 
             if pool_status == 3:
                 severity = ZenEventClasses.Clear
