@@ -148,10 +148,15 @@ class IIS(WinRMPlugin):
                 om.title = iisSite.ServerComment
                 om.iis_version = self.iis_version
                 om.sitename = iisSite.ServerComment  # Default Web Site
+                if hasattr(iisSite, 'AppPoolId'):  # ZPS-5407 Can't get DefaultAppPool name
+                    om.apppool = iisSite.AppPoolId
+                elif hasattr(iisSite, 'ApplicationPool'): # ZPS-5407 Can't get DefaultAppPool name
+                    om.apppool = iisSite.ApplicationPool
 
                 for iisVirt in results.get('IIsWebVirtualDirSetting', ()):
                     if (iisVirt.Name == iisSite.Name + "/ROOT") or (iisVirt.Name == iisSite.Name + "/root"):
-                        om.apppool = iisVirt.AppPoolId
+                        if iisVirt.AppPoolId is not None and iisVirt.AppPoolId != 'None': # ZPS-5407 Can't get DefaultAppPool name
+                            om.apppool = iisVirt.AppPoolId
 
                 rm.append(om)
         elif results.get('IIs7Site', False):
