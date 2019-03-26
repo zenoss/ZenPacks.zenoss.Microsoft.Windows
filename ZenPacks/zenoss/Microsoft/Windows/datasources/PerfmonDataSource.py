@@ -236,6 +236,8 @@ class ComplexLongRunningCommand(object):
         self.num_commands = num_commands
 
         commands = []
+        if num_commands == 0:
+            return commands
         try:
             conn_info = createConnectionInfo(self.dsconf)
         except UnauthorizedError as e:
@@ -292,7 +294,8 @@ class ComplexLongRunningCommand(object):
         for command in self.commands:
             shell_cmd = self.get_id(command)
             yield command.stop(shell_cmd)
-            self._shells.pop(command)
+            if shell_cmd:
+                self._shells.pop(command)
 
 
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
@@ -376,6 +379,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         counters_limit = 7700
 
         counters = sorted(self.ps_counter_map.keys())
+        if not counters:
+            self.num_commands = 0
+            return
 
         # The number of long running commands needed to get data for all
         # counters of the device equals to floor division of the current
@@ -430,6 +436,21 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         """
+        if self.num_commands == 0:
+            # nothing to do, return
+            data = self.new_data()
+            msg = '{} has no Get-Counter commands to start due to corrupt '\
+                  'or missing counters.'.format(config.id)
+            data['events'].append({
+                'device': self.config.id,
+                'eventClass': '/Status/Winrm',
+                'eventKey': 'WindowsPerfmonCollection',
+                'severity': ZenEventClasses.Warning,
+                'summary': msg,
+                'ipAddress': self.config.manageIp})
+            self.state = PluginStates.STOPPED
+            defer.returnValue(data)
+
         yield self.start()
 
         data = yield self.get_data()
@@ -450,6 +471,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             defer.returnValue(None)
 
         self._shells = []
+
         LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
 
