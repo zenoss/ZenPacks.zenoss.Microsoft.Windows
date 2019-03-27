@@ -42,7 +42,6 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
 )
 
-from ..twisted_utils import add_timeout
 from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
 from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClearAuthEvents
 
@@ -51,6 +50,7 @@ from ..txcoroutine import coroutine
 # Requires that txwinrm_utils is already imported.
 from txwinrm.WinRMClient import SingleCommandClient, LongCommandClient
 from txwinrm.util import UnauthorizedError, RequestError
+from txwinrm.twisted_utils import add_timeout
 import codecs
 from . import send_to_debug
 
@@ -204,8 +204,9 @@ class ComplexLongRunningCommand(object):
     according to the number of commands supplied.
     """
 
-    def __init__(self, dsconf, num_commands):
+    def __init__(self, dsconf, num_commands, unique_id):
         self.dsconf = dsconf
+        self.unique_id = unique_id
         self.num_commands = num_commands
         self.commands = self._create_commands(num_commands)
         self.ps_command = 'powershell -NoLogo -NonInteractive -NoProfile -Command '
@@ -241,9 +242,16 @@ class ComplexLongRunningCommand(object):
         try:
             conn_info = createConnectionInfo(self.dsconf)
         except UnauthorizedError as e:
-            LOG.error(
-                "{0}: Windows Perfmon connection info is not available for "
-                "{0}. Error: {1}".format(self.dsconf.device, e))
+            error = "{0}: Windows Perfmon connection info is not available"\
+                    " for {0}. Error: {1}".format(self.dsconf.device, e)
+            LOG.error(error)
+            PERSISTER.add_event(self.unique_id, [self.dsconf], {
+                'device': self.dsconf.device,
+                'eventClass': '/Status/Winrm',
+                'eventKey': 'WindowsPerfmonCollection',
+                'severity': ZenEventClasses.Warning,
+                'summary': 'Windows Perfmon connection info is not available',
+                'message': error})
         else:
             # allow for collection from sql clusters where active sql instance
             # could be running on different node from current host server
@@ -359,9 +367,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
+        self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
         self._shells = []
         self.reset()
-        self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
 
     def reset(self):
         self.state = PluginStates.STOPPED
@@ -369,7 +377,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self.complex_command = ComplexLongRunningCommand(
             self.config.datasources[0],
-            self.num_commands)
+            self.num_commands,
+            self.unique_id)
 
     def _build_commandlines(self):
         """Return a list of command lines needed to get data for all counters."""
@@ -454,7 +463,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         yield self.start()
 
         data = yield self.get_data()
-        evt_summaries = [x.get('summary', '') for x in data['events']]
+        try:
+            evt_summaries = [x.get('summary', '') for x in data['events']]
+        except Exception:
+            evt_summaries = []
         if self.ps_mod_path_msg in evt_summaries:
             # don't clear powershell event
             # remove clear event
