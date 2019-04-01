@@ -654,7 +654,7 @@ classes:
       caption:
         label: Caption
       iisStatus:
-        label: Status
+        label: Site Status
         grid_display: true
         order: 4
         enum:
