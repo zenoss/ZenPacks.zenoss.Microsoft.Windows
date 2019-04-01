@@ -1160,4 +1160,4 @@ def get_valid_dsconf(dsconfs):
     for dsconf in dsconfs:
         if dsconf.eventClass != '':
             return dsconf.eventClass
-    return None
+    return '/Status'
