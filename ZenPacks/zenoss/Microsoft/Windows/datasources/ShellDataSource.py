@@ -963,6 +963,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     # get db status only if status datasource is being one of our dsconfs
                     dsnames = set([dsconf.datasource for dsconf in dsconfs])
                     if 'status' in dsnames:
+                        get_eventClass = get_valid_dsconf(dsconfs)
                         for db in getattr(strategy, 'valuemap', []):
                             # only set if status is our only datasource
                             if not set('status').symmetric_difference(dsnames):
@@ -970,10 +971,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             dsconf = get_dsconf(dsconfs, db, param='contexttitle')
                             if dsconf:
                                 component = prepId(dsconf.component)
-                                eventClass = dsconf.eventClass or "/Status"
+                                eventClass = dsconf.eventClass or get_eventClass
                             else:
                                 component = prepId(db)
-                                eventClass = "/Status"
+                                eventClass = get_eventClass
                             try:
                                 dbstatuses = strategy.valuemap[db]['status']
                             except Exception:
@@ -1152,3 +1153,11 @@ def get_script(datasource, context):
         log.error('Invalid tales expression in custom command script: %s' %
                   str(datasource.script))
     return script
+
+
+def get_valid_dsconf(dsconfs):
+    '''return a valid eventClass'''
+    for dsconf in dsconfs:
+        if dsconf.eventClass != '':
+            return dsconf.eventClass
+    return '/Status'
