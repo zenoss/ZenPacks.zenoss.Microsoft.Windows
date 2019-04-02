@@ -856,9 +856,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = 'MSSQLSERVER'
                 else:
                     cmd_line_input = dsconf0.params['instanceid']
-            if dsconf.params['strategy'] == 'powershell MSSQL':
-                conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
-            if dsconf.params['strategy'] == 'powershell MSSQL Job':
+            if dsconf.params['strategy'] == 'powershell MSSQL' or\
+                    dsconf.params['strategy'] == 'powershell MSSQL Job':
                 conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
             command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] == 'Custom Command':
