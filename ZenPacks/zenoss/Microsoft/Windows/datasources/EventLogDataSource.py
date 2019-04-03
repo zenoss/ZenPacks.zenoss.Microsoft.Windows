@@ -294,7 +294,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             # Fixes ZEN-23024
             # only assign event class if other than '/Unknown', otherwise
             # the user should use event class mappings
-      #      get_eventClass = get_valid_dsconf(ds0)
             eventClass = ds.get('eventClass') or '/Status'
             if eventClass and eventClass != '':
                 evt['eventClass'] = eventClass
