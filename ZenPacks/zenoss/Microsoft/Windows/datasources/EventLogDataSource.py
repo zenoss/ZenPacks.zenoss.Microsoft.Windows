@@ -59,7 +59,7 @@ class EventLogDataSource(PythonDataSource):
     eventlog = ''
     query = '*'
     max_age = '24'
-    eventClass = '/Unknown'
+    eventClass = ''
 
     plugin_classname = ZENPACKID + \
         '.datasources.EventLogDataSource.EventLogPlugin'
@@ -253,7 +253,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
         max_age = ds0.params['max_age']
         eventid = ds0.params['eventid']
         isxml = ds0.params['use_xml']
-
+ 
         results = yield query.run(eventlog, select, max_age, eventid, isxml)
         returnValue(results)
 
@@ -294,8 +294,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
             # Fixes ZEN-23024
             # only assign event class if other than '/Unknown', otherwise
             # the user should use event class mappings
-            eventClass = ds.get('eventClass')
-            if eventClass and eventClass != '/Unknown':
+      #      get_eventClass = get_valid_dsconf(ds0)
+            eventClass = ds.get('eventClass') or '/Status'
+            if eventClass and eventClass != '':
                 evt['eventClass'] = eventClass
             return evt
 
@@ -349,10 +350,10 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
         for evt in event_results:
             data['events'].append(_makeEvent(evt))
-
+        eventClass = data['events'][0]['eventClass']
         data['events'].append({
             'device': config.id,
-            'eventClass': '/Status',
+            'eventClass': eventClass,
             'summary': 'Windows EventLog: successful event collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsEventCollection: {}'.format(ds0.params.get('eventid', '')),
@@ -375,6 +376,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
+        ds0 = config.datasources[0]
         logg = log.error
         # Trim any stack traces
         rvmm = re.search(".*?(?=[\n\r]*[ATat]{2}\s+[LINEline]{4}:\d+\s+[CHARchar]{4}:\d+)", result.value.message, re.MULTILINE)
@@ -395,8 +397,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
         if not errorMsgCheck(config, data['events'], result.value.message):
             for ds in config.datasources:
                 data['events'].append({
-                    'severity': severity,
-                    'eventClass': '/Status',
+                    'severity': ds0.severity or severity,
+                    'eventClass': ds0.eventClass or '/Status',
                     'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
                     'summary': msg,
                     'message': msg,
