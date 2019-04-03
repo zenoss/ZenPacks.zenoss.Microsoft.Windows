@@ -24,6 +24,7 @@ INFO_EXPECTED = {
     'eventClassKey': u'Microsoft-Windows-Winlogon_6000',
     'eventGroup': sentinel.eventlog,
     'eventidentifier': u'6000',
+    'eventClass': '/Status',
     'message': u'The winlogon notification subscriber <AUInstallAgent> was unavailable to handle a notification event.',
     'ntevid': u'6000',
     'originaltime': u'07/13/2017 14:19:50',
@@ -38,6 +39,7 @@ CRITICAL_EXPECTED = {
     'eventClassKey': 'Microsoft-Windows-Kernel-Power_41',
     'eventGroup': sentinel.eventlog,
     'eventidentifier': u'41',
+    'eventClass': '/Status',
     'message': u'The last sleep transition was unsuccessful. This error could be caused if the system stopped'
                ' responding, failed, or lost power during the sleep transition.',
     'ntevid': u'41',
@@ -58,7 +60,6 @@ class TestDataSourcePlugin(BaseTestCase):
                               datasource='DataSource')],
         )
         res = plugin.onSuccess(results, config)
-
         self.maxDiff = None
         self.assertEquals(len(res['events']), 6, msg='Received {}'.format(pprint.pformat(res)))
         self.assertEquals(res['events'][0], INFO_EXPECTED)
