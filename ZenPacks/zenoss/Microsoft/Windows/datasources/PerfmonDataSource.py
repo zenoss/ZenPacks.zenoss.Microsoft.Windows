@@ -829,6 +829,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.DEBUG,
                 "Ignoring powershell error on {} as it does not affect collection: {}"
                 .format(self.config.id, e))
+        elif '500' in e.message and 'decrypt' in e.message:
+            retry, level, msg = (
+                True,
+                logging.DEBUG,
+                'got debug integrity check during receive.  assuming '
+                'OperationTimeout and attempting to receive again'
+            )
         elif isinstance(e, ConnectError):
             retry, level, msg = (
                 isinstance(e, TimeoutError),
