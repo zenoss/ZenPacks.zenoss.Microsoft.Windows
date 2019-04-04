@@ -494,6 +494,7 @@ event log (e.g. "System") that you are interested in, and in the
 EventQuery enter the filter for events. The filter can be either
 XPath XML taken from a Windows Event Viewer Custom View or a PowerShell Where-Object block.
 The max age field is only used the first time the datasource successfully runs. Subsequent runs will only pull events from the last successful polling cycle.
+Also users can apply their own transform to the events.
 
 The default Get-WinEvent XML filter returns all events from the last
 polling cycle. This list can be searched for specific Ids, severity, or
@@ -1921,6 +1922,7 @@ Changes
 -   Fix WindowsServiceLog "The referenced context has expired" error (ZPS-3216)
 -   Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)
 -   Fix Windows devices monitored over https regularly fail collection (ZPS-5323)
+-   Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)
 
 2.9.2
 
