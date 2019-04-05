@@ -59,7 +59,7 @@ class TestDataSourcePlugin(BaseTestCase):
         )
         res = plugin.onSuccess(results, config)
         self.maxDiff = None
-        self.assertEquals(len(res['events']), 5, msg='Received {}'.format(pprint.pformat(res)))
+        self.assertEquals(len(res['events']), 6, msg='Received {}'.format(pprint.pformat(res)))
         self.assertEquals(res['events'][0], INFO_EXPECTED)
         self.assertEquals(res['events'][1], CRITICAL_EXPECTED)
         self.assertEquals(res['events'][2]['summary'], 'Windows EventLog: successful event collection')

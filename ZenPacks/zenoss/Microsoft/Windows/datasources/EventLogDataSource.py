@@ -324,7 +324,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                         'message': ps_err_msg,
                         'severity': ds0.severity or ZenEventClasses.Warning,
                         'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
-                        'eventClassKey': 'WindowsEventLogWarning',
+                        'eventClassKey': 'WindowsEventLogCollection',
                     })
                 else:
                     raise EventLogException(str_err)
@@ -333,7 +333,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             output = '[]'
             pass
         try:
-            log.debug(output)
             event_results = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
             if isinstance(event_results, dict):  # ConvertTo-Json for list of one element returns just that element
                 event_results = [event_results]
@@ -355,6 +354,15 @@ class EventLogPlugin(PythonDataSourcePlugin):
             'eventKey': 'WindowsEventCollection: {}'.format(ds0.params.get('eventid', '')),
             'eventClassKey': 'WindowsEventLogCollection',
         })
+
+        if 'ps_err_msg' not in locals():
+            data['events'].append({
+	        'device': config.id,
+	        'summary': 'Windows EventLog: No PowerShell errors during event collection',
+	        'severity': ZenEventClasses.Clear,
+	        'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
+	        'eventClassKey': 'WindowsEventLogCollection',
+	})
 
         generateClearAuthEvents(config, data['events'])
 

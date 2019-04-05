@@ -494,7 +494,6 @@ event log (e.g. "System") that you are interested in, and in the
 EventQuery enter the filter for events. The filter can be either
 XPath XML taken from a Windows Event Viewer Custom View or a PowerShell Where-Object block.
 The max age field is only used the first time the datasource successfully runs. Subsequent runs will only pull events from the last successful polling cycle.
-Also users can apply their own transform to the events.
 
 The default Get-WinEvent XML filter returns all events from the last
 polling cycle. This list can be searched for specific Ids, severity, or
@@ -552,6 +551,10 @@ It is recommended, but not required, to install .NET version 3.5 SP1 or
 higher. If you have a mix of these servers using the same Event Log Data
 Source, you can mix and match the differing powershell queries. e.g.
 `{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }`
+
+Note: Collection errors are sent with the WindowsEventLogCollection event class key.
+Use an event class mapping with a transform to forward the event to a specific
+event class. These include connection and other Powershell issues.
 
 #### Powershell Examples
 
