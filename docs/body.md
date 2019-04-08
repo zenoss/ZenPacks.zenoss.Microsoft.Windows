@@ -552,6 +552,10 @@ higher. If you have a mix of these servers using the same Event Log Data
 Source, you can mix and match the differing powershell queries. e.g.
 `{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }`
 
+Note: Collection errors are sent with the WindowsEventLogCollection event class key.
+Use an event class mapping with a transform to forward the event to a specific
+event class. These include connection and other Powershell issues.
+
 #### Powershell Examples
 
 To Target all events with a Warning or higher severity:
@@ -1921,6 +1925,7 @@ Changes
 -   Fix WindowsServiceLog "The referenced context has expired" error (ZPS-3216)
 -   Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)
 -   Fix Windows devices monitored over https regularly fail collection (ZPS-5323)
+-   Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)
 
 2.9.2
 

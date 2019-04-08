@@ -58,12 +58,11 @@ class TestDataSourcePlugin(BaseTestCase):
                               datasource='DataSource')],
         )
         res = plugin.onSuccess(results, config)
-
         self.maxDiff = None
         self.assertEquals(len(res['events']), 6, msg='Received {}'.format(pprint.pformat(res)))
         self.assertEquals(res['events'][0], INFO_EXPECTED)
         self.assertEquals(res['events'][1], CRITICAL_EXPECTED)
-        self.assertEquals(res['events'][3]['summary'], 'Windows EventLog: No PowerShell errors during event collection')
+        self.assertEquals(res['events'][2]['summary'], 'Windows EventLog: successful event collection')
         # check for invalid severity to look for new default severity
         results.stdout[1] = results.stdout[1].replace('"EntryType": "Information"', '"EntryType": "Invalid"')
         res = plugin.onSuccess(results, config)
