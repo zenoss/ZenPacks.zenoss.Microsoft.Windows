@@ -604,12 +604,18 @@ class PowershellMSSQLJobStrategy(object):
                     'summary': msg,
                     'device': dsconf.device,
                     'component': dsconf.component})
+                collectedResults.events.append({
+                    'severity': ZenEventClasses.Clear,
+                    'eventClassKey': 'winrsCollectionMSSQLJob',
+                    'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
+                    'summary': 'Successful MSSQL Job collection',
+                    'device': dsconf.device,
+                    'component': dsconf.component})
             except Exception:
                 msg = 'Missing or no data returned when querying job "{}"'.format(component)
                 collectedResults.events.append({
-                    'eventClass': eventClass,
                     'severity': dsconf.severity,
-                    'eventClassKey': 'winrsCollection MSSQLJob',
+                    'eventClassKey': 'winrsCollectionMSSQLJob',
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
