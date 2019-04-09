@@ -11,30 +11,61 @@
 import Globals
 import time
 
-from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
+from twisted.internet.defer import inlineCallbacks
+from txwinrm.WinRMClient import SingleCommandClient
 from twisted.python.failure import Failure
+from ..txwinrm_utils import createConnectionInfo
+from ..utils import SqlConnection
+from zope.component import queryUtility
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
-
-from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle, load_pickle_file
-from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
     ShellDataSourcePlugin, DCDiagStrategy, SqlConnection
 )
 
+from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
+from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle, load_pickle_file
+from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock, MagicMock
+
+
+CROCHET_AVAILABLE = False
+try:
+    import crochet
+    crochet.setup()
+    CROCHET_AVAILABLE = True
+except ImportError, e:
+    pass
+
 
 class TestShellDataSourcePlugin(BaseTestCase):
+
     def setUp(self):
         self.success = load_pickle(self, 'results')
         self.config = load_pickle(self, 'config')
         self.plugin = ShellDataSourcePlugin()
-
+    
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.ShellDataSourcePlugin.start', time.mktime(time.localtime()))
     def test_onSuccess(self):
         data = self.plugin.onSuccess(self.success, self.config)
         self.assertEquals(len(data['values']), 5)
         self.assertEquals(len(data['events']), 10)
         self.assertFalse(all(e['severity'] for e in data['events']))
+   
+    if CROCHET_AVAILABLE:
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.createConnectionInfo')
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.SingleCommandClient')
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.queryUtility')
+        @crochet.wait_for(timeout=5.0)
+        @inlineCallbacks
+        def test_collect(self, queryUtility, SingleCommandClient, createConnectionInfo):
+            self.config.datasources[0].params['version'] = '2.9.3'
+            self.config.datasources[0].params['strategy'] = 'powershell MSSQL Job'
+            self.config.datasources[0].cycletime = 500
+            createConnectionInfo.return_value._replace.return_value = 15
+            queryUtility.return_value.build_command_line.return_value = ('mocked command_line', 'mocked script')
+            SingleCommandClient.return_value.run_command.return_value = 'mocked data'
+            yield self.plugin.collect(self.config)
+            self.assertEquals('call()._replace(timeout=495)', str(createConnectionInfo.mock_calls[1]))
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource.log', Mock())
     def test_onError(self):
