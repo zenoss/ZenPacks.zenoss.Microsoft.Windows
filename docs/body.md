@@ -459,6 +459,10 @@ The WinSQLJob monitoring template will monitor the status of a job on a
 SQL Server instance to inform the user if it has succeeded, failed,
 unknown, or other state.
 
+Note: Collection errors are sent with the winrsCollectionMSSQLJob event class key.
+Use an event class mapping with or without a transform to forward the event to a specific
+event class. These include connection and other Powershell issues.
+
 Thresholds
 ----------
 
@@ -1926,6 +1930,7 @@ Changes
 -   Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)
 -   Fix Windows devices monitored over https regularly fail collection (ZPS-5323)
 -   Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)
+-   Fix Windows Cluster - Missing or no data returned when querying job events do not clear after failover remodel (ZPS-4874)
 
 2.9.2
 
