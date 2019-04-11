@@ -499,6 +499,14 @@ def cluster_disk_state_string(state):
             130: 'Offline Pending'}.get(state, 'Undefined')
 
 
+def cluster_csv_state_to_disk_map(state):
+    return {'Online': 2,
+            'Up': 2,
+            'Offline': 3,
+            'PartialOnline': 129,
+            'Failed': 4}.get(state, 5)
+
+
 def save(f):
     '''
     This is a decorator that will save arguments sent to a function.

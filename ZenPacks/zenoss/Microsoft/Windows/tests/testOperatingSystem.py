@@ -91,6 +91,18 @@ class TestOddWMIClasses(BaseTestCase):
         self.plugin = OperatingSystem()
         self.device = StringAttributeObject()
 
+    def test_empty_sysenclosure_process(self):
+        acc = ItemsAccumulator()
+        acc.new_item()
+        self.results = {'Win32_SystemEnclosure': [],
+                        'Win32_ComputerSystem': acc.items,
+                        'Win32_OperatingSystem': acc.items,
+                        'exchange_version': Mock(stdout=['15'])}
+        try:
+            self.plugin.process(self.device, self.results, Mock())
+        except IndexError:
+            self.fail('Failed to detect empty Win32_SystemEnclosure results.')
+
     def test_empty_wmi_process(self):
         acc = ItemsAccumulator()
         acc.new_item()

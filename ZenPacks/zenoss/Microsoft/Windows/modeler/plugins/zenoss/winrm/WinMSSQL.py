@@ -86,7 +86,8 @@ class SQLCommander(object):
             | Group ClusterObject | Select
             @{Name='SQLInstance';Expression={($_.Group | select -expandproperty Value) -join '\\'}},
             @{Name='OwnerNode';Expression={($ownernode, $domain) -join '.'}},
-            @{Name='IPv4';Expression={(Test-Connection $ownernode -count 1 -erroraction ignore).IPV4Address.ipaddresstostring}}};
+            @{Name='IPv4';Expression={[regex]::match((ping -4 -a -n 1 $ownernode|
+            select-string 'Pinging').ToString(), '(\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b)').value}}};
         $cluster_instances | % {write-host \"instances:\"($_).OwnerNode\($_).IPv4\($_).SQLInstance};
     '''
 

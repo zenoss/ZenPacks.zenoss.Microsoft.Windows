@@ -1,0 +1,471 @@
+(lp0
+cDateTime.DateTime
+_dt_reconstructor
+p1
+(ctxwinrm.shell
+CommandResponse
+p2
+c__builtin__
+object
+p3
+Ntp4
+Rp5
+(dp6
+S'_stderr'
+p7
+(lp8
+sS'_exit_code'
+p9
+I0
+sS'_stdout'
+p10
+(lp11
+Vres-CAUIS-HVz7wResource|Offline
+p12
+aVres-Cluster IP Address|Online
+p13
+aVres-Cluster Name|Online
+p14
+aVres-Hyper-V Replica Broker IS-HVDRCL03REP|Online
+p15
+aVres-IP Address 10.99.99.179|Online
+p16
+aVres-IS-HVDRCL03-CUA|Offline
+p17
+aVres-IS-HVDRCL03REP|Online
+p18
+aVres-Task Scheduler|Online
+p19
+aVres-Virtual Machine Configuration DCRM01|Online
+p20
+aVres-Virtual Machine Configuration DCRM02|Online
+p21
+aVres-Virtual Machine Configuration EXACT-APP01|Online
+p22
+aVres-Virtual Machine Configuration EXACT-TS01|Online
+p23
+aVres-Virtual Machine Configuration exact-ts02|Online
+p24
+aVres-Virtual Machine Configuration HO-VDI-1|Online
+p25
+aVres-Virtual Machine Configuration HO-VDI-4|Online
+p26
+aVres-Virtual Machine Configuration IS-INTWEB001|Online
+p27
+aVres-Virtual Machine Configuration IS-INTWEB01|Online
+p28
+aVres-Virtual Machine Configuration IS-INTWEB02|Online
+p29
+aVres-Virtual Machine Configuration IS-INTWEBDEV|Online
+p30
+aVres-Virtual Machine Configuration IS-LON-FS-01|Online
+p31
+aVres-Virtual Machine Configuration IS-LON-HDS-MGMT|Online
+p32
+aVres-Virtual Machine Configuration IS-LON-INFTS-01|Online
+p33
+aVres-Virtual Machine Configuration IS-LON-PRS-01|Online
+p34
+aVres-Virtual Machine Configuration IS-LON-SEPM-01|Online
+p35
+aVres-Virtual Machine Configuration IS-SPAPP01|Online
+p36
+aVres-Virtual Machine Configuration IS-SPAPP02|Online
+p37
+aVres-Virtual Machine Configuration IS-SPWEB01|Online
+p38
+aVres-Virtual Machine Configuration IS-SPWEB02|Online
+p39
+aVres-Virtual Machine Configuration IS-SQL01|Online
+p40
+aVres-Virtual Machine Configuration IS-WSUS001|Online
+p41
+aVres-Virtual Machine Configuration LBAL|Online
+p42
+aVres-Virtual Machine Configuration LDB01|Online
+p43
+aVres-Virtual Machine Configuration LON-CAS01|Online
+p44
+aVres-Virtual Machine Configuration LON-CAS02|Online
+p45
+aVres-Virtual Machine Configuration LON-DC04|Online
+p46
+aVres-Virtual Machine Configuration LON-DC05|Online
+p47
+aVres-Virtual Machine Configuration LON-DC06|Online
+p48
+aVres-Virtual Machine Configuration LON-EXCH01|Online
+p49
+aVres-Virtual Machine Configuration LON-EXCH02|Online
+p50
+aVres-Virtual Machine Configuration LON-LES01|Online
+p51
+aVres-Virtual Machine Configuration LON-MON-DMZ-01|Online
+p52
+aVres-Virtual Machine Configuration LON-NETCONDE01|Online
+p53
+aVres-Virtual Machine Configuration LON-NETCONNL01|Online
+p54
+aVres-Virtual Machine Configuration LON-NETCONUK01|Online
+p55
+aVres-Virtual Machine Configuration lon-nexpose|Online
+p56
+aVres-Virtual Machine Configuration LON-QPSDE01|Online
+p57
+aVres-Virtual Machine Configuration LON-QPSUK01|Online
+p58
+aVres-Virtual Machine Configuration LON-QPULSE|Online
+p59
+aVres-Virtual Machine Configuration LON-SQL01|Online
+p60
+aVres-Virtual Machine Configuration LON-SQLREP01|Online
+p61
+aVres-Virtual Machine Configuration LON-VEEAM01|Online
+p62
+aVres-Virtual Machine Configuration LON-VISPAS01|Online
+p63
+aVres-Virtual Machine Configuration LYNCFE01|Online
+p64
+aVres-Virtual Machine Configuration LYNCFE02|Online
+p65
+aVres-Virtual Machine Configuration LYNCPCHAT|Online
+p66
+aVres-Virtual Machine Configuration MAN-PDC|Online
+p67
+aVres-Virtual Machine Configuration MDT01|Online
+p68
+aVres-Virtual Machine Configuration RECORDSW|Online
+p69
+aVres-Virtual Machine Configuration REM7SQL|Online
+p70
+aVres-Virtual Machine Configuration REMEDY-ARS01|Online
+p71
+aVres-Virtual Machine Configuration REMEDY-ARS02|Online
+p72
+aVres-Virtual Machine Configuration REMEDY-ARS03|Online
+p73
+aVres-Virtual Machine Configuration REMEDY-MID01|Online
+p74
+aVres-Virtual Machine Configuration REMEDY-MID02|Online
+p75
+aVres-Virtual Machine Configuration REMEDY-MID03|Online
+p76
+aVres-Virtual Machine Configuration TS01|Online
+p77
+aVres-Virtual Machine Configuration TS02|Online
+p78
+aVres-Virtual Machine Configuration TS03|Online
+p79
+aVres-Virtual Machine Configuration TS04|Online
+p80
+aVres-Virtual Machine Configuration TS05|Online
+p81
+aVres-Virtual Machine DCRM01|Online
+p82
+aVres-Virtual Machine DCRM02|Online
+p83
+aVres-Virtual Machine EXACT-APP01|Online
+p84
+aVres-Virtual Machine EXACT-TS01|Online
+p85
+aVres-Virtual Machine exact-ts02|Online
+p86
+aVres-Virtual Machine HO-VDI-1|Online
+p87
+aVres-Virtual Machine HO-VDI-4|Online
+p88
+aVres-Virtual Machine IS-INTWEB001|Online
+p89
+aVres-Virtual Machine IS-INTWEB01|Online
+p90
+aVres-Virtual Machine IS-INTWEB02|Online
+p91
+aVres-Virtual Machine IS-INTWEBDEV|Online
+p92
+aVres-Virtual Machine IS-LON-FS-01|Online
+p93
+aVres-Virtual Machine IS-LON-HDS-MGMT|Online
+p94
+aVres-Virtual Machine IS-LON-INFTS-01|Online
+p95
+aVres-Virtual Machine IS-LON-PRS-01|Online
+p96
+aVres-Virtual Machine IS-LON-SEPM-01|Online
+p97
+aVres-Virtual Machine IS-SPAPP01|Online
+p98
+aVres-Virtual Machine IS-SPAPP02|Online
+p99
+aVres-Virtual Machine IS-SPWEB01|Online
+p100
+aVres-Virtual Machine IS-SPWEB02|Online
+p101
+aVres-Virtual Machine IS-SQL01|Online
+p102
+aVres-Virtual Machine IS-WSUS001|Online
+p103
+aVres-Virtual Machine LBAL|Online
+p104
+aVres-Virtual Machine LDB01|Online
+p105
+aVres-Virtual Machine LON-CAS01|Online
+p106
+aVres-Virtual Machine LON-CAS02|Online
+p107
+aVres-Virtual Machine LON-DC04|Online
+p108
+aVres-Virtual Machine LON-DC05|Online
+p109
+aVres-Virtual Machine LON-DC06|Online
+p110
+aVres-Virtual Machine LON-EXCH01|Online
+p111
+aVres-Virtual Machine LON-EXCH02|Online
+p112
+aVres-Virtual Machine LON-LES01|Online
+p113
+aVres-Virtual Machine LON-MON-DMZ-01|Online
+p114
+aVres-Virtual Machine LON-NETCONDE01|Online
+p115
+aVres-Virtual Machine LON-NETCONNL01|Online
+p116
+aVres-Virtual Machine LON-NETCONUK01|Online
+p117
+aVres-Virtual Machine lon-nexpose|Online
+p118
+aVres-Virtual Machine LON-QPSDE01|Online
+p119
+aVres-Virtual Machine LON-QPSUK01|Online
+p120
+aVres-Virtual Machine LON-QPULSE|Online
+p121
+aVres-Virtual Machine LON-SQL01|Online
+p122
+aVres-Virtual Machine LON-SQLREP01|Online
+p123
+aVres-Virtual Machine LON-VEEAM01|Online
+p124
+aVres-Virtual Machine LON-VISPAS01|Online
+p125
+aVres-Virtual Machine LYNCFE01|Online
+p126
+aVres-Virtual Machine LYNCFE02|Online
+p127
+aVres-Virtual Machine LYNCPCHAT|Online
+p128
+aVres-Virtual Machine MAN-PDC|Online
+p129
+aVres-Virtual Machine MDT01|Online
+p130
+aVres-Virtual Machine RECORDSW|Online
+p131
+aVres-Virtual Machine REM7SQL|Online
+p132
+aVres-Virtual Machine REMEDY-ARS01|Online
+p133
+aVres-Virtual Machine REMEDY-ARS02|Online
+p134
+aVres-Virtual Machine REMEDY-ARS03|Online
+p135
+aVres-Virtual Machine REMEDY-MID01|Online
+p136
+aVres-Virtual Machine REMEDY-MID02|Online
+p137
+aVres-Virtual Machine REMEDY-MID03|Online
+p138
+aVres-Virtual Machine TS01|Online
+p139
+aVres-Virtual Machine TS02|Online
+p140
+aVres-Virtual Machine TS03|Online
+p141
+aVres-Virtual Machine TS04|Online
+p142
+aVres-Virtual Machine TS05|Online
+p143
+aVf42f3f07-4580-47dd-963d-caccbac63781|Offline|Available Storage|IS-HVDRCL03-H04
+p144
+aVb396dd66-2ea1-478c-9d65-58e4aabf1019|Online|Cluster Group|IS-HVDRCL03-H04
+p145
+aVb0c75492-1f55-4aeb-8e5e-d651972508b8|Online|DCRM01|IS-HVDRCL03-H01
+p146
+aVc34d3cc1-915f-41aa-99e9-0a182c3954ec|Online|DCRM02|IS-HVDRCL03-H01
+p147
+aVe01e6150-0cf1-413f-942e-fad021970923|Online|EXACT-APP01|IS-HVDRCL03-H02
+p148
+aVbe60d334-e950-40a0-b103-63a518e92f4c|Online|EXACT-TS01|IS-HVDRCL03-H02
+p149
+aVc71816ff-0c99-4da9-a0b4-095aa9edc51d|Online|exact-ts02|IS-HVDRCL03-H02
+p150
+aV34f787e5-f094-4352-94fe-c1fd2aee4f97|Online|HO-VDI-1|IS-HVDRCL03-H04
+p151
+aV55d6a8eb-df00-4ff6-8926-e1e7c0994e50|Online|HO-VDI-4|IS-HVDRCL03-H04
+p152
+aVc25aa582-9079-41d2-b9cf-262843dbbcc3|Online|IS-HVDRCL03REP|IS-HVDRCL03-H04
+p153
+aVa5f4ef36-911e-48b1-840b-680477fda2b0|Online|IS-INTWEB001|IS-HVDRCL03-H04
+p154
+aVa920d641-53e3-48a6-9a29-f2d27c2699d5|Online|IS-INTWEB01|IS-HVDRCL03-H02
+p155
+aV09586c95-4e93-4ed3-a29b-a8aa7541f30d|Online|IS-INTWEB02|IS-HVDRCL03-H04
+p156
+aV49e43037-0107-4122-bf15-93e99705fd39|Online|IS-INTWEBDEV|IS-HVDRCL03-H01
+p157
+aVad3b98e3-cfad-4a6a-8a98-042bf9a77fd1|Online|IS-LON-FS-01|IS-HVDRCL03-H04
+p158
+aV375f96fd-9415-47bf-8bcc-349d3f7a61da|Online|IS-LON-HDS-MGMT|IS-HVDRCL03-H01
+p159
+aV09abcf6d-ffa2-4ab3-abf4-534474c643b8|Online|IS-LON-INFTS-01|IS-HVDRCL03-H02
+p160
+aV23125229-8e43-40e0-a546-ba30103af17e|Online|IS-LON-PRS-01|IS-HVDRCL03-H04
+p161
+aVbc0d4bb6-029c-48f8-bddf-c08ef289fd58|Online|IS-LON-SEPM-01|IS-HVDRCL03-H04
+p162
+aVe258b8ce-1d48-4a58-8c77-f6398016de8f|Online|IS-SPAPP01|IS-HVDRCL03-H02
+p163
+aVc4d0382a-559d-4332-8f1c-1b9683ba7f4f|Online|IS-SPAPP02|IS-HVDRCL03-H01
+p164
+aVae6585d6-51ee-4f99-b6de-49a44364b12f|Online|IS-SPWEB01|IS-HVDRCL03-H01
+p165
+aV365c8e1c-7d8e-41f2-b451-e71595875f8f|Online|IS-SPWEB02|IS-HVDRCL03-H02
+p166
+aV83bfe807-44f1-4eb9-84a9-d1f0274b24f1|Online|IS-SQL01|IS-HVDRCL03-H04
+p167
+aV163f43fd-ea50-434d-a9ce-bc868a2334c1|Online|IS-WSUS001|IS-HVDRCL03-H01
+p168
+aV44f05ce6-f15b-4df7-aeb2-a51951430e21|Online|LBAL|IS-HVDRCL03-H02
+p169
+aV945d80c2-929f-42eb-8c9e-0c88ecffa84c|Online|LDB01|IS-HVDRCL03-H02
+p170
+aV71810282-952d-4cb5-9c07-e3e65add7cc1|Online|LON-CAS01|IS-HVDRCL03-H01
+p171
+aVa038aafe-92c6-4b78-8822-f0b2ad39f6d4|Online|LON-CAS02|IS-HVDRCL03-H02
+p172
+aV334ddd1d-6f2f-4603-816b-e8ded0625768|Online|LON-DC04|IS-HVDRCL03-H04
+p173
+aVbf45261a-ecd0-49c9-86a4-6392fbf85af0|Online|lon-dc05|IS-HVDRCL03-H02
+p174
+aV83132796-928e-4a1a-be8c-060ddbe97c6e|Online|LON-DC06|IS-HVDRCL03-H01
+p175
+aV25e7b13c-cd36-4d50-a7d9-f910ec6a09e1|Online|LON-EXCH01|IS-HVDRCL03-H01
+p176
+aV01c30c4c-01c5-4ba8-9c6b-a0a61db863ee|Online|LON-EXCH02|IS-HVDRCL03-H02
+p177
+aV14c46c25-b28b-42a4-8191-ce18f0e74e49|Online|LON-LES01|IS-HVDRCL03-H01
+p178
+aV0f877933-6411-4587-a7e2-bbecf113f369|Online|LON-MON-DMZ-01|IS-HVDRCL03-H02
+p179
+aV76520fd3-fc4a-4f32-a2a8-9f56f62a9c47|Online|LON-NETCONDE01|IS-HVDRCL03-H01
+p180
+aVa2dda74a-0daa-4773-95f2-f1662791d1d1|Online|LON-NETCONNL01|IS-HVDRCL03-H02
+p181
+aV264522ca-b29d-4b8c-8410-67731e361466|Online|LON-NETCONUK01|IS-HVDRCL03-H01
+p182
+aV78c2a025-b77f-4d10-b61c-b5d136a0d7c3|Online|lon-nexpose|IS-HVDRCL03-H02
+p183
+aVfb844b73-b679-4383-8047-573e6699bd3e|Online|LON-QPSDE01|IS-HVDRCL03-H01
+p184
+aV015072f0-7ef2-4c8f-b5d7-7b6f13b49239|Online|LON-QPSUK01|IS-HVDRCL03-H02
+p185
+aVc2707cfb-b1e5-42f8-8814-f8229916071a|Online|LON-QPULSE|IS-HVDRCL03-H04
+p186
+aVb4598188-eac0-4dac-9e43-c5c5924e1fab|Online|LON-SQL01|IS-HVDRCL03-H04
+p187
+aV078366c2-a98b-4dd1-8a63-c9f44609870b|Online|LON-SQLREP01|IS-HVDRCL03-H04
+p188
+aV29d27e5b-036d-4a33-a797-fc3bc3a842e3|Online|LON-VEEAM01|IS-HVDRCL03-H01
+p189
+aVaed16df2-e9ed-498f-ae00-55c4739ed9b5|Online|LON-VISPASS01|IS-HVDRCL03-H01
+p190
+aVf912840e-54a4-47f0-a124-2b1442c17cc5|Online|LYNCFE01|IS-HVDRCL03-H04
+p191
+aVa31c6c66-9b6a-461b-9958-093160d60d2e|Online|LYNCFE02|IS-HVDRCL03-H04
+p192
+aV4c36659a-06ee-4e47-8f4a-29be71cd584e|Online|LYNCPCHAT|IS-HVDRCL03-H04
+p193
+aVe0c74b67-4c13-473d-a088-4c42e6cfbbee|Online|MAN-PDC|IS-HVDRCL03-H01
+p194
+aVb899db8f-6c11-430b-939a-c5c3f762e10a|Online|MDT01|IS-HVDRCL03-H02
+p195
+aVa4997071-e8fe-41cf-9892-d4f441bacbbf|Online|RECORDSW|IS-HVDRCL03-H02
+p196
+aV64afd622-9e11-4001-b568-c105c0056170|Online|REM7SQL|IS-HVDRCL03-H01
+p197
+aV21c3bab3-e16c-4f19-aa28-687bf4e0559b|Online|REMEDY-ARS01|IS-HVDRCL03-H02
+p198
+aV39bb6dc1-85de-428b-80ce-5db021c1e4ce|Online|REMEDY-ARS02|IS-HVDRCL03-H04
+p199
+aVa7554be9-db93-42c5-b365-f9591a40c62c|Online|REMEDY-ARS03|IS-HVDRCL03-H02
+p200
+aVb11caf5f-c8a0-43b2-ab29-ceb31cd608ff|Online|REMEDY-MID01|IS-HVDRCL03-H01
+p201
+aVf82773c1-2fb9-42db-9696-126fd3b48ecb|Online|REMEDY-MID02|IS-HVDRCL03-H01
+p202
+aV5b2c7555-9ea4-4e15-9ea7-f9fb9539d93c|Online|REMEDY-MID03|IS-HVDRCL03-H02
+p203
+aV9e8cd0cb-2b07-4860-b0a2-936545b606ab|Online|TS01|IS-HVDRCL03-H01
+p204
+aVcdeac8d5-fe6b-424c-94f4-382fbf2c391f|Online|TS02|IS-HVDRCL03-H02
+p205
+aVa7ee4762-50b5-45ee-8a0e-73baeb3d69b9|Online|TS03|IS-HVDRCL03-H01
+p206
+aV1ac5c71b-af5e-4c9d-9363-4be33d5b68bd|Online|TS04|IS-HVDRCL03-H02
+p207
+aV6008cd0b-b868-49b2-90a3-b55ecf82b5a5|Online|TS05|IS-HVDRCL03-H01
+p208
+aVnode-2|Up
+p209
+aVnode-4|Up
+p210
+aVnode-1|Up
+p211
+aVnode-3|Up
+p212
+aVf1a47a60-b22f-496e-9937-173abc775ac2|Up
+p213
+aV8b15e281-f009-463b-a319-1271e9b0afd1|Up
+p214
+aVb7a1e198-b1d5-46f5-8495-06b054ae27a0|Up
+p215
+aV644dc9d7-d92d-4d5c-8b68-1699e0d2861f|Up
+p216
+aV79b2ec52-033d-4ce4-9bdc-6595895ecc71|Up
+p217
+aVbea6b06b-1776-4b65-8969-bf3a6944db03|Up
+p218
+aV0a06f34a-e103-423d-9467-0705f0898042|Up
+p219
+aV54fe0e4d-0757-4f38-bc03-b95365a7251f|Up
+p220
+aV404f01b3-fd73-409c-a249-aabe53d87dd7|Up
+p221
+aVab3c3cba-092c-4233-819a-aff64fa51752|Up
+p222
+aV37e303ac-0869-4e13-bcc6-2e6a8e8bd78a|Up
+p223
+aV4d8f6cad-656f-4ac3-94f9-584376b20907|Up
+p224
+aVbc837cd4-ed6d-4278-abe7-78d3796e137f|Up
+p225
+aV778f7e18-1f09-486c-bb58-d851731c0c7e|Up
+p226
+aV5dd88555-0917-4de1-9af3-ff111d697b7a|Up
+p227
+aV373a3ded-599a-482b-87af-73038d081674|Online|85282414592
+p228
+aVaef475c6-b4cb-4a26-aa26-66d8f7a51e5b|Online|342218424320
+p229
+aVad19e6af-8064-416c-afd4-24b01488c057|Online|357075300352
+p230
+aVb966e176-d24e-4eb9-9461-ecfd558745f8|Online|242234834944
+p231
+aVfad45582-21da-4323-9f7d-6c3caa7813a3|Online|412222660608
+p232
+aV27f37b59-5444-4587-ba79-b6a8d7411339|Online|1137677946880
+p233
+aV18926f28-1cca-4dea-9a24-bd0b9a64a3b8|2|980418560
+p234
+aV18926f28-1cca-4dea-9a24-bd0b9a64a3b8|2|980418560
+p235
+asba.

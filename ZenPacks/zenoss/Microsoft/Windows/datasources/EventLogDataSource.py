@@ -322,10 +322,9 @@ class EventLogPlugin(PythonDataSourcePlugin):
                         'device': config.id,
                         'summary': 'Windows EventLog: Received PowerShell error during event collection',
                         'message': ps_err_msg,
-                        'severity': ZenEventClasses.Warning,
+                        'severity': ds0.severity or ZenEventClasses.Warning,
                         'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
-                        'eventClass': '/Status/Winrm',
-                        'eventClassKey': 'WindowsEventLogWarning',
+                        'eventClassKey': 'WindowsEventLogCollection',
                     })
                 else:
                     raise EventLogException(str_err)
@@ -334,7 +333,6 @@ class EventLogPlugin(PythonDataSourcePlugin):
             output = '[]'
             pass
         try:
-            log.debug(output)
             event_results = json.loads(output or '[]')  # ConvertTo-Json for empty list returns nothing
             if isinstance(event_results, dict):  # ConvertTo-Json for list of one element returns just that element
                 event_results = [event_results]
@@ -349,25 +347,22 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
         for evt in event_results:
             data['events'].append(_makeEvent(evt))
-
         data['events'].append({
             'device': config.id,
-            'eventClass': '/Status',
             'summary': 'Windows EventLog: successful event collection',
             'severity': ZenEventClasses.Clear,
             'eventKey': 'WindowsEventCollection: {}'.format(ds0.params.get('eventid', '')),
-            'eventClassKey': 'WindowsEventLogSuccess',
+            'eventClassKey': 'WindowsEventLogCollection',
         })
 
         if 'ps_err_msg' not in locals():
             data['events'].append({
-                'device': config.id,
-                'summary': 'Windows EventLog: No PowerShell errors during event collection',
-                'severity': ZenEventClasses.Clear,
-                'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
-                'eventClass': '/Status/Winrm',
-                'eventClassKey': 'WindowsEventLogSuccess',
-            })
+	        'device': config.id,
+	        'summary': 'Windows EventLog: No PowerShell errors during event collection',
+	        'severity': ZenEventClasses.Clear,
+	        'eventKey': 'EventLogPowerShell: {}'.format(ds0.params.get('eventid', '')),
+	        'eventClassKey': 'WindowsEventLogCollection',
+	})
 
         generateClearAuthEvents(config, data['events'])
 
@@ -396,8 +391,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
             for ds in config.datasources:
                 data['events'].append({
                     'severity': severity,
-                    'eventClass': '/Status',
                     'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
+                    'eventClassKey': 'WindowsEventLogCollection',
                     'summary': msg,
                     'message': msg,
                     'device': config.id
@@ -496,8 +491,8 @@ class EventLogQuery(object):
                 }};
             }};
             $win2003 = [environment]::OSVersion.Version.Major -lt 6;
-            $dotnets = Get-ChildItem 'HKLM:\\software\\microsoft\\net framework setup\\ndp'| % {{$_.name.split('\\')[5]}} | ? {{ $_ -match 'v3.5|v[45].*'}};
-            if ($win2003 -eq $false -and $dotnets -ne $null) {{
+            $dotnets = ($PSVersionTable.CLRVersion.Major + ($PSVersionTable.CLRVersion.Minor/10)) -ge 3.5;
+            if ($win2003 -eq $false -and $dotnets -eq $true) {{
                 $query = '{filter_xml}';
                 [Array]$events = Get-WinEvent -FilterXml $query.replace("{{logname}}",$logname).replace("{{time}}", ((Get-Date) - $after).TotalMilliseconds);
             }} else {{

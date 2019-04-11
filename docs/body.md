@@ -459,6 +459,10 @@ The WinSQLJob monitoring template will monitor the status of a job on a
 SQL Server instance to inform the user if it has succeeded, failed,
 unknown, or other state.
 
+Note: Collection errors are sent with the winrsCollectionMSSQLJob event class key.
+Use an event class mapping with or without a transform to forward the event to a specific
+event class. These include connection and other Powershell issues.
+
 Thresholds
 ----------
 
@@ -551,6 +555,10 @@ It is recommended, but not required, to install .NET version 3.5 SP1 or
 higher. If you have a mix of these servers using the same Event Log Data
 Source, you can mix and match the differing powershell queries. e.g.
 `{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }`
+
+Note: Collection errors are sent with the WindowsEventLogCollection event class key.
+Use an event class mapping with a transform to forward the event to a specific
+event class. These include connection and other Powershell issues.
 
 #### Powershell Examples
 
@@ -1725,6 +1733,7 @@ If you see an event stating that a plugin was disabled due to blocking, see the 
 
 If you see 'SNMP agent down - no response received' or 'Unable to read processes' events and would like not to see them, set zSnmpMonitorIgnore to true on the /Server/Microsoft or lower device class, depending on your configuration.
 
+
 ### Troubleshooting modeling/monitoring
 
 Version 2.6.0 introduces a command line option to save
@@ -1900,6 +1909,29 @@ Monitoring Templates
 
 Changes
 -------
+
+2.9.3
+
+-   Fix deprecated Get-WmiObject cmdlet for PowerShell Core (ZPS-4927)
+-   Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-4473)
+-   Fix Windows - No freespace on cluster shared volumes (ZPS-4612)
+-   Fix Better handling in Perfmon datasource of "is not recognized as the name of a cmdlet" errors (ZPS-3517)
+-   Fix 500 Operation Timeout Errors when modeling and/or monitoring SQL Server (ZPS-4638)
+-   Fix Windows Cluster - wrong ip address can be returned for sql server node (ZPS-4703)
+-   Fix Windows Cluster - sql server fails over doesn't trigger a remodel if cluster group stays the same (ZPS-4707)
+-   Fix Windows Perfmon data collection stops for long time after collection interruption (ZPS-4473)
+-   Fix Windows may connect to device with wrong zWinRMUser (ZPS-3564)
+-   Fix Microsoft.Windows - Detect .NET version better for EventLogDataSource (ZPS-5399)
+-   Fix Windows Disconnected Network Drives that Cause PowerShell Error (ZPS-4866)
+-   Fix After upgrade to 2.9.x, some/most modeler plugins fail with "'NoneType' object has no attribute 'getConnection'" (ZPS-5087)
+-   Fix Windows Cluster - clusterOwnerChange may not be in zWindowsRemodelEventClassKeys after install/upgrade (ZPS-4887)
+-   Fix Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)
+-   Fix WindowsServiceLog "The referenced context has expired" error (ZPS-3216)
+-   Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)
+-   Fix Windows devices monitored over https regularly fail collection (ZPS-5323)
+-   Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)
+-   Fix Windows Cluster - Missing or no data returned when querying job events do not clear after failover remodel (ZPS-4874)
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.3.4.
 
 2.9.2
 
