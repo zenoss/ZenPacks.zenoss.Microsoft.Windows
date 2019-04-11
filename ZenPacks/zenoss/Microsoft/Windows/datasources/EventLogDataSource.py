@@ -392,7 +392,7 @@ class EventLogPlugin(PythonDataSourcePlugin):
                 data['events'].append({
                     'severity': severity,
                     'eventKey': 'WindowsEventCollection: {}'.format(ds.params.get('eventid', '')),
-                    'eventClassKey': 'WindowsEventCollection',
+                    'eventClassKey': 'WindowsEventLogCollection',
                     'summary': msg,
                     'message': msg,
                     'device': config.id
