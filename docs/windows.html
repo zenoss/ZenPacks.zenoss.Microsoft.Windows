@@ -8,8 +8,8 @@
 <p>This ZenPack supersedes the earlier ZenPack named <code>ZenPacks.zenoss.WindowsMonitor</code>. If you have <code>ZenPacks.zenoss.WindowsMonitor</code> installed on your system, please read the <a href="#transitioning-from-windowsmonitor">Transitioning from WindowsMonitor</a> section below.</p>
 <h2 id="releases">Releases</h2>
 <dl>
-<dt>Version 2.9.2- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.9.2/ZenPacks.zenoss.Microsoft.Windows-2.9.2.egg" rel="nofollow">Download</a></dt>
-<dd>Released on 2018/09/19
+<dt>Version 2.9.3- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.9.3/ZenPacks.zenoss.Microsoft.Windows-2.9.3.egg" rel="nofollow">Download</a></dt>
+<dd>Released on 2019/04/11
 </dd>
 <dd>Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a>
 </dd>
@@ -615,6 +615,7 @@ table td {
 <p>Note: Database status is discovered in the same PowerShell script as the database counters. While it is possible to use a different cycle time for status, we advise against that as it will add extra load onto the target device and could inadvertently skew memory/cpu usage.</p>
 <p>The WinDBInstance monitoring template will also monitor the status of a SQL Server instance to inform the user if it is up or down.</p>
 <p>The WinSQLJob monitoring template will monitor the status of a job on a SQL Server instance to inform the user if it has succeeded, failed, unknown, or other state.</p>
+<p>Note: Collection errors are sent with the winrsCollectionMSSQLJob event class key. Use an event class mapping with or without a transform to forward the event to a specific event class. These include connection and other Powershell issues.</p>
 <h2 id="thresholds">Thresholds</h2>
 <p>The following thresholds are set by default on the device monitoring template and will trigger an alert if they are reached</p>
 <ul>
@@ -682,6 +683,7 @@ table td {
 <p>Note: The max age field is only used the first time that the datasource is run. Subsequent queries will only look at events that have occurred since the last time this datasource was run. We write a timestamp to the registry location HKCU:\SOFTWARE\zenoss\logs\<datasource name> to know when the last time the datasource executed. If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \SOFTWARE\zenoss\logs\, for your user under HKEY_USERS.</p>
 <p>Note: The script to search for events and return relevant data is approximately 3700 characters. Due to the Windows 8192 character limit on the shell, any XML or PowerShell queries will need to be less than 4400 characters.</p>
 <p>Note: The query for servers with .NET 3.5 and later uses the Get-WinEvent PowerShell cmdlet. If your server does not have one of these later versions, we will revert to using the Get-EventLog cmdlet. It is recommended, but not required, to install .NET version 3.5 SP1 or higher. If you have a mix of these servers using the same Event Log Data Source, you can mix and match the differing powershell queries. e.g. <code>{ $$_.Id -eq 4001 -or $$_.EventId -eq 4001 }</code></p>
+<p>Note: Collection errors are sent with the WindowsEventLogCollection event class key. Use an event class mapping with a transform to forward the event to a specific event class. These include connection and other Powershell issues.</p>
 <h4 id="powershell-examples">Powershell Examples</h4>
 <p>To Target all events with a Warning or higher severity:</p>
 <p><code>{ $$_.Level -le [System.Diagnostics.Eventing.Reader.StandardEventLevel]::Warning}</code></p>
@@ -1612,6 +1614,29 @@ There is a 60 second timeout when attempting to receive data. If the receive req
 </dd>
 </dl>
 <h2 id="changes">Changes</h2>
+<p>2.9.3</p>
+<ul>
+<li>Fix deprecated Get-WmiObject cmdlet for PowerShell Core (ZPS-4927)</li>
+<li>Fix Windows Perfmon data collection stops for long time after device reboot (ZPS-4473)</li>
+<li>Fix Windows - No freespace on cluster shared volumes (ZPS-4612)</li>
+<li>Fix Better handling in Perfmon datasource of &quot;is not recognized as the name of a cmdlet&quot; errors (ZPS-3517)</li>
+<li>Fix 500 Operation Timeout Errors when modeling and/or monitoring SQL Server (ZPS-4638)</li>
+<li>Fix Windows Cluster - wrong ip address can be returned for sql server node (ZPS-4703)</li>
+<li>Fix Windows Cluster - sql server fails over doesn't trigger a remodel if cluster group stays the same (ZPS-4707)</li>
+<li>Fix Windows Perfmon data collection stops for long time after collection interruption (ZPS-4473)</li>
+<li>Fix Windows may connect to device with wrong zWinRMUser (ZPS-3564)</li>
+<li>Fix Microsoft.Windows - Detect .NET version better for EventLogDataSource (ZPS-5399)</li>
+<li>Fix Windows Disconnected Network Drives that Cause PowerShell Error (ZPS-4866)</li>
+<li>Fix After upgrade to 2.9.x, some/most modeler plugins fail with &quot;'NoneType' object has no attribute 'getConnection'&quot; (ZPS-5087)</li>
+<li>Fix Windows Cluster - clusterOwnerChange may not be in zWindowsRemodelEventClassKeys after install/upgrade (ZPS-4887)</li>
+<li>Fix Windows Cluster - SQL Server instance metrics may not be found (ZPS-4888)</li>
+<li>Fix WindowsServiceLog &quot;The referenced context has expired&quot; error (ZPS-3216)</li>
+<li>Fix Add ERROR handling for empty win32_SystemEnclsoure data (ZPS-5253)</li>
+<li>Fix Windows devices monitored over https regularly fail collection (ZPS-5323)</li>
+<li>Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)</li>
+<li>Fix Windows Cluster - Missing or no data returned when querying job events do not clear after failover remodel (ZPS-4874)</li>
+<li>Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.3.4.</li>
+</ul>
 <p>2.9.2</p>
 <ul>
 <li>Fix applyDataMaps call for onSuccess method destabilizing zenhub (ZPS-4422)</li>

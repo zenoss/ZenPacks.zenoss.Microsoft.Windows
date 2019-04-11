@@ -1931,6 +1931,7 @@ Changes
 -   Fix Windows devices monitored over https regularly fail collection (ZPS-5323)
 -   Fix Increase Flexibility in Microsoft ZenPack for Data Source using Microsoft's Event Log (ZPS-5585)
 -   Fix Windows Cluster - Missing or no data returned when querying job events do not clear after failover remodel (ZPS-4874)
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.3.4.
 
 2.9.2
 
