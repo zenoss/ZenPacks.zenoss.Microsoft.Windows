@@ -59,7 +59,7 @@ class OperatingSystem(WinRMPlugin):
         try:
             # assume valid results returned
             sysEnclosure = results.get('Win32_SystemEnclosure', None)[0]
-        except IndexError:
+        except Exception:
             # results contains Win32_SystemEnclosure as a key, but it's empty
             sysEnclosure = None
         computerSystem = results.get('Win32_ComputerSystem', (None,))[0]
