@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2018, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2019, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -391,18 +391,20 @@ def get_processText(item):
     '''
     Return the OSProcess.processText given a Win32_Process item.
     '''
-    if item.CommandLine:
+    if getattr(item, 'CommandLine', None):
         item.CommandLine = item.CommandLine.strip('"')
 
-    return item.CommandLine or item.ExecutablePath or item.Name
+    return getattr(item, 'CommandLine', None) or\
+        getattr(item, 'ExecutablePath', None) or\
+        getattr(item, 'Name', '')
 
 
 def get_processNameAndArgs(item):
     '''
     Return (name, args) tuple given a Win32_Process item.
     '''
-    name = item.ExecutablePath or item.Name
-    if item.CommandLine:
+    name = getattr(item, 'ExecutablePath', None) or getattr(item, 'Name', '')
+    if getattr(item, 'CommandLine', None):
         item.CommandLine = item.CommandLine.strip('"')
         args = item.CommandLine.replace(
             name, '', 1).strip()

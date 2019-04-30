@@ -1910,6 +1910,10 @@ Monitoring Templates
 Changes
 -------
 
+2.9.4
+
+-   Fix Traceback seen for zenoss.winrm.Processes modeler plugin (ZPS-5676)
+
 2.9.3
 
 -   Fix deprecated Get-WmiObject cmdlet for PowerShell Core (ZPS-4927)
