@@ -153,6 +153,8 @@ Cluster Disks
     Partition Number, Capacity, Free Space, State
 :   **Relationships:** Cluster Nodes
 
+Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid.  We will therefore show free space as N/A.
+
 Cluster Interfaces
 :   **Attributes:** Name, Owner Node, Network, IP
     Addresses, Adapter, State
