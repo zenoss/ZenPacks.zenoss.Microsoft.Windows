@@ -77,7 +77,13 @@ class SQLCommander(object):
     '''
 
     CLUSTER_INSTANCES_PS_SCRIPT = '''
-        $domain = (gwmi WIN32_ComputerSystem).Domain;
+        $use_cim = $PSVersionTable.PSVersion.Major -gt 2;
+        if ($use_cim) {
+            $domain = (get-ciminstance WIN32_ComputerSystem).Domain;
+        }
+        else {
+            $domain = (gwmi WIN32_ComputerSystem).Domain;
+        }
         Import-Module FailoverClusters;
         $cluster_instances = Get-ClusterResource
             | ? {$_.ResourceType -like 'SQL Server'}
