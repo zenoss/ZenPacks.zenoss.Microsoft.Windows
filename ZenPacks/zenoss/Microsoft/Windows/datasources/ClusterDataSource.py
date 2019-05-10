@@ -173,17 +173,24 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         )
 
         psClusterCommands.append(
+            "$use_cim = $PSVersionTable.PSVersion.Major -gt 2;"
+            "if ($use_cim) {{"
             "$resources = Get-CimInstance -namespace"
             " 'root\MSCluster' -class 'MSCluster_Resource' "
             " | ? {{$_.Type -eq 'Physical Disk'}};"
+            "}} else {{$resources = Get-WmiObject -class MSCluster_Resource "
+            "-namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";}}"
             "foreach ($resource in $resources) {{"
-            "if (-Not ($csvNames -Contains $resource.Name)) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
+            "if ($use_cim) {{"
             "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
-            '"MSCluster_Disk";'
+            "'MSCluster_Disk'; }} else {{ "
+            "$disks = $resource.GetRelated('MSCluster_Disk');}}"
             "foreach ($dsk in $disks) {{"
+            "if ($use_cim) {{"
             "$partitions = Get-CimAssociatedInstance $dsk -ResultClassName "
-            '"MSCluster_DiskPartition";'
+            '"MSCluster_DiskPartition";}} else {{'
+            "$partitions = $dsk.GetRelated('MSCluster_DiskPartition');}}"
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
@@ -196,7 +203,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;"
             "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
             "State = $resource.State;Size = $dsk.Size;VolumePath = 'No Volume';"
-            "PartitionNumber = 'No Partitions';FreeSpace = -1}};}};"
+            "PartitionNumber = 'No Partitions';FreeSpace = -1}};"
             "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}}}"
             "".format(cluster_disk_items=cluster_disk_items)
         )

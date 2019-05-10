@@ -1916,6 +1916,7 @@ Changes
 
 -   Fix Traceback seen for zenoss.winrm.Processes modeler plugin (ZPS-5676)
 -   Fix Windows ZP: After upgrade to 2.9.3, seeing "caught returnValue being used in a non-generator" errors (ZPS-5727)
+-   Fix Windows - cluster disks may not be modeled or monitored on 2008 cluster when using Powershell v2.0 (ZPS-5755)
 
 2.9.3
 
