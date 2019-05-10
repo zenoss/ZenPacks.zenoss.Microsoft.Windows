@@ -1249,7 +1249,7 @@ view the server state. For example, "GRANT VIEW SERVER STATE TO
 Studio. A Windows user must also be interactive, i.e. the account must not be
 denied local logon rights.
 
-### Working with WinCommand Notification Action
+### Working with WinCommand Notification Action - Deprecated
 
 This ZenPack adds a new event notification action that can be used by
 the zenactiond daemon to allow an arbitrary command to be executed on
@@ -1468,6 +1468,7 @@ In [3]: commit()
 -   If you are upgrading from a version previous to 2.5.0, you may see the IIS modeler plugin as a default modeler plugin on the /Server/Microsoft/Windows device class. Current versions do not set IIS as a default plugin. Also, by default, only the OperatingSystem and WinCluster plugins should be enabled by default on the /Server/Microsoft/Cluster class. The CPUs, FileSystems, IIS, Interfaces, Services, Processes, and Software plugins do not apply to Cluster devices and should be removed.
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
+-   The WinCommand notification action is in the process of being deprecated.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1917,7 +1918,8 @@ Changes
 -   Fix Traceback seen for zenoss.winrm.Processes modeler plugin (ZPS-5676)
 -   Fix Windows ZP: After upgrade to 2.9.3, seeing "caught returnValue being used in a non-generator" errors (ZPS-5727)
 -   Fix Windows - cluster disks may not be modeled or monitored on 2008 cluster when using Powershell v2.0 (ZPS-5755)
--   Fix Unexpected Response --Encrypted Boundary during windows collection (ZPS=5767)
+-   Fix Unexpected Response --Encrypted Boundary during windows collection (ZPS-5767)
+-   Document wincommand notification can be deprecated (ZPS-5501)
 
 2.9.3
 
