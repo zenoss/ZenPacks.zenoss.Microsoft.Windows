@@ -836,6 +836,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'got debug integrity check during receive.  assuming '
                 'OperationTimeout and attempting to receive again'
             )
+        elif 'unexpected response' in e.message.lower():
+            retry, level, msg = (
+                True,
+                logging.DEBUG,
+                'got "Unexpected Response" during receive, '
+                'attempting to receive again'
+            )
         elif isinstance(e, ConnectError):
             retry, level, msg = (
                 isinstance(e, TimeoutError),
