@@ -1920,6 +1920,7 @@ Changes
 -   Fix Windows - cluster disks may not be modeled or monitored on 2008 cluster when using Powershell v2.0 (ZPS-5755)
 -   Fix Unexpected Response --Encrypted Boundary during windows collection (ZPS-5767)
 -   Document wincommand notification can be deprecated (ZPS-5501)
+-   Fix Receiving 'NoneType' object has no attribute '__getitem__' when modeling Windows device (ZPS-5770)
 
 2.9.3
 
