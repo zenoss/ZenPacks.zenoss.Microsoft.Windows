@@ -31,6 +31,12 @@ DATAMAPS = [
         compname="os",
         relname="interfaces",
         objmaps=[ObjectMap({"id": "nic1"})]),
+
+    RelationshipMap(
+        modname="ZenPacks.zenoss.Microsoft.Windows.WinService",
+        compname="os",
+        relname="winservices",
+        objmaps=[ObjectMap({"id": "service1"})]),
 ]
 
 
