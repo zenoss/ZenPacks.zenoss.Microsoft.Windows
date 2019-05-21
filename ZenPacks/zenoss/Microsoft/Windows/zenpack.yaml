@@ -135,8 +135,6 @@ classes:
     dynamicview_relations:
       impacts:
         - all_filesystems
-        - all_processes
-        - all_ipservices
         - all_cpus
         - all_clusterservices
         - all_clusternodes
@@ -163,8 +161,6 @@ classes:
     dynamicview_relations:
       impacts:
         - all_filesystems
-        - all_processes
-        - all_ipservices
         - all_cpus
         - all_clusterservices
         - all_clusternodes
@@ -499,10 +495,6 @@ classes:
         label: Supports Private Working Set
         type: boolean
         default: False
-    dynamicview_views: [service_view]
-    dynamicview_relations:
-      impacts: []
-      impacted_by: [device]
 
   TeamInterface:
     label: Team Interface
