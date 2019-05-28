@@ -370,6 +370,8 @@ class EventLogPlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
+        log.debug('EventLogDataSource error on {}: {}'.format(
+            config.id, result))
         logg = log.error
         # Trim any stack traces
         rvmm = re.search(".*?(?=[\n\r]*[ATat]{2}\s+[LINEline]{4}:\d+\s+[CHARchar]{4}:\d+)", result.value.message, re.MULTILINE)

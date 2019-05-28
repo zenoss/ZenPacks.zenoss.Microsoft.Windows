@@ -280,6 +280,7 @@ class ComplexLongRunningCommand(object):
 
     def start(self, command_lines):
         """Start a separate command for each command line.
+
         If the number of commands has changed since the last start,
         create an appropriate set of commands.
         """
@@ -288,7 +289,8 @@ class ComplexLongRunningCommand(object):
             self.commands = self._create_commands(len(command_lines))
 
         for command, command_line in zip(self.commands, command_lines):
-            LOG.debug('{}: Starting Perfmon collection script: {}'.format(self.dsconf.device, command_line))
+            LOG.debug('{}: Starting Perfmon collection script: {}'.format(
+                self.dsconf.device, command_line))
             if command is not None:
                 deferreds.append(add_timeout(command.start(self.ps_command,
                                                            ps_script=command_line),
@@ -568,7 +570,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             LOG.debug("Windows Perfmon waiting for %s Get-Counter data", self.config.id)
             self.data_deferred = defer.Deferred()
             try:
-                yield add_timeout(self.data_deferred, self.config.datasources[0].zWinRMConnectTimeout)
+                yield add_timeout(
+                    self.data_deferred,
+                    self.config.datasources[0].zWinRMConnectTimeout)
             except Exception:
                 pass
         else:
@@ -599,18 +603,19 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         if self.complex_command:
             try:
-                yield add_timeout(
-                    self.complex_command.stop(),
-                    self.config.datasources[0].zWinRMConnectTimeout)
+                yield self.complex_command.stop()
             except (RequestError, Exception) as ex:
                 if 'the request contained invalid selectors for the resource' in ex.message:
                     # shell was lost due to reboot, service restart, or other circumstance
                     LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
                               ' will attempt to restart on the next cycle.')
                 else:
-                    if 'canceled by the user' in ex.message:
+                    if 'canceled by the user' in ex.message or\
+                            'OperationTimeout' in ex.message:
                         # This means the command finished naturally before
                         # we got a chance to stop it. Totally normal.
+                        # Or there was an OperationTimeout, also not
+                        # Warning worthy
                         log_level = logging.DEBUG
                     else:
                         # Otherwise this could result in leaking active
@@ -642,8 +647,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 try:
                     shell_cmd = self.complex_command.get_id(cmd)
                     if shell_cmd:
-                        deferreds.append(add_timeout(cmd.receive(shell_cmd),
-                                                     OPERATION_TIMEOUT + 5))
+                        deferreds.append(cmd.receive(shell_cmd))
                 except Exception as err:
                     LOG.error('{}: Windows Perfmon receive error {}'.format(
                         self.config.id, err))

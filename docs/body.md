@@ -1469,6 +1469,7 @@ In [3]: commit()
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 -   The WinCommand notification action is in the process of being deprecated.
+-   The ZenPack may no longer be compatible with v4.2.5 of Zenoss.  The ZenPack requires kerberos v1.10 or greater, which was introduced in CentOS 6.4.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1537,6 +1538,12 @@ longer a valid kdc address and will be removed.
 Note: Removing one or more errant KDCs from the system can be a time
 consuming process, so we recommend double-checking that the addresses
 are valid when entering them into the zWinKDC property.
+
+#### Viewing Kerberos Tickets
+
+The ZenPack uses a credential cache collection in order to support multiple users across multiple domains.  This collection is located in the \$ZENHOME/var/krb5c/ directory.  The caches for individual users are located in separate files.  Use `klist -l` to view which file contains the tickets for an individual user.  Use `klist -c <filename>` to view the tickets in the file.
+
+Note: Be sure the environment variable KRB5CCNAME is set to DIR:\$ZENHOME/var/krb5cc/.  E.g. KRBCCNAME=DIR:/opt/zenoss/var/krb5cc/
 
 ## Service Impact
 
@@ -1921,6 +1928,8 @@ Changes
 -   Fix Unexpected Response --Encrypted Boundary during windows collection (ZPS-5767)
 -   Document wincommand notification can be deprecated (ZPS-5501)
 -   Fix Receiving 'NoneType' object has no attribute '__getitem__' when modeling Windows device (ZPS-5770)
+-   Fix Perfmon command(s) did not start: 'NoneType' object has no attribute 'getConnection' (ZPS-5822)
+-   Fix "The referenced context has expired" errors (ZPS-5797)
 
 2.9.3
 

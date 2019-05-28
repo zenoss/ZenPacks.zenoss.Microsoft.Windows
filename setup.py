@@ -9,7 +9,7 @@ LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft']
 PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft', 'ZenPacks.zenoss.Microsoft.Windows']
 INSTALL_REQUIRES = ['ZenPacks.zenoss.ZenPackLib>=2.0.5', 'ZenPacks.zenoss.PythonCollector>=1.4']
-COMPAT_ZENOSS_VERS = ">=4.2"
+COMPAT_ZENOSS_VERS = ">=5.0"
 PREV_ZENPACK_NAME = ""
 # STOP_REPLACEMENTS
 ################################
