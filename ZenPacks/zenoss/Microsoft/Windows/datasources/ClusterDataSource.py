@@ -228,16 +228,17 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             if len(result) <= 0:
                 continue
             cluster_line = result.split('|')
+            ownernode = None
             if len(cluster_line) == 2:
                 comp, state = cluster_line
-                ownernode = None
                 name = ''
             elif len(cluster_line) == 3:
                 comp, state, freespace = cluster_line
             elif len(cluster_line) == 4:
                 comp, state, name, ownernode = cluster_line
             else:
-                log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
+                log.debug('Unable to parse cluster result {} on {}'.format(
+                    result, config.id))
                 continue
             comp = prepId(comp)
             try:
@@ -246,7 +247,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 state = cluster_disk_state_string(int(state))
             except ValueError:
                 # cluster shared volume returns text. e.g. 'Online'
-                data['values'][comp]['state'] = cluster_csv_state_to_disk_map(state)
+                data['values'][comp]['state'] = cluster_csv_state_to_disk_map(
+                    state)
             try:
                 if freespace != '-1':
                     # don't write dp if -1.  probably means unallocated disk
@@ -255,7 +257,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
-            dsconf = get_dsconf(config.datasources, str(comp), param='contexttitle')
+            dsconf = get_dsconf(
+                config.datasources, str(comp), param='contexttitle')
             if dsconf is None:
                 # component probably not modeled, see ZEN-23142
                 continue
@@ -273,21 +276,24 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 eventClassKey='clusterComponentStatus',
                 eventKey=dsconf.eventKey,
                 severity=severity,
-                summary='Last state of component {} was {}'.format(dsconf.params['contexttitle'], state),
+                summary='Last state of component {} was {}'.format(
+                    dsconf.params['contexttitle'], state),
                 device=config.id,
                 component=prepId(dsconf.component)
             ))
 
-            # sql server can failover without cluster group changing
-            # we'll make a variable so we can add any future resource groups to check
-            b_name = name.strip() == 'Cluster Group' or 'sql server' in name.lower()
-            if ownernode and b_name and dsconf.params['ownernode'] != ownernode.strip():
+            # if the ownernode has changed for any cluster service,
+            # we need to remodel
+            if ownernode and dsconf.params['ownernode'] != ownernode.strip():
                 data['events'].append(dict(
                     eventClassKey='clusterOwnerChange',
                     eventKey='clusterCollection',
                     severity=ZenEventClasses.Info,
-                    summary='OwnerNode of cluster {} for cluster service {} changed to {}'.format(
-                        dsconf.params['cluster'], name.strip(), ownernode),
+                    summary='OwnerNode of cluster {} for cluster service {}'
+                            ' changed to {}'.format(
+                                dsconf.params['cluster'],
+                                name.strip(),
+                                ownernode),
                     device=config.id,
                     component=prepId(dsconf.component)
                 ))
