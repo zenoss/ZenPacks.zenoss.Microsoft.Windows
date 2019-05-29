@@ -480,6 +480,8 @@ class ProcessDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, error, config):
+        LOG.debug('ProcessDataSource error on {}: {}'.format(
+            config.id, result))
         logg = LOG.error
         if send_to_debug(error):
             logg = LOG.debug

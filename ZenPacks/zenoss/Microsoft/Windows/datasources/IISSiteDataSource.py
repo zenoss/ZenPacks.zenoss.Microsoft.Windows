@@ -303,6 +303,8 @@ class IISSiteDataSourcePlugin(PythonDataSourcePlugin):
         return data
 
     def onError(self, result, config):
+        log.debug('IISSiteDataSource error on {}: {}'.format(
+            config.id, result))
         msg, event_class = check_for_network_error(
             result, config, default_class='/Status/IIS')
         logg = log.error

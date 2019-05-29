@@ -182,6 +182,13 @@ class ZenPack(schema.ZenPack):
                 os.environ['ZENHOME']))
             environmentfile.close()
 
+        if 'KRB5CCNAME' not in open(userenvironconfig).read():
+            environmentfile = open(userenvironconfig, "a")
+            environmentfile.write('# Following value required for Windows ZenPack\n')
+            environmentfile.write('export KRB5CCNAME="DIR:{0}/var/krb5cc/"\n'.format(
+                os.environ['ZENHOME']))
+            environmentfile.close()
+
         # add symlinks for command line utilities
         for utilname in self.binUtilities:
             self.installBinFile(utilname)

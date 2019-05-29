@@ -1081,6 +1081,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
+        log.debug('ShellDataSource error on {}: {}'.format(config.id, result))
         logg = log.error
         msg, event_class = check_for_network_error(
             result, config, default_class='/Status/Winrm')
