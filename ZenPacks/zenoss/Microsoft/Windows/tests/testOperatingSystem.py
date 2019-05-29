@@ -116,6 +116,7 @@ class TestOddWMIClasses(BaseTestCase):
         self.assertEquals(data[0].snmpSysName, 'Unknown')
 
         self.assertEquals(data[1].tag, 'Unknown')
+        self.assertEquals(data[2].setProductKey.args[0], 'Unknown - Unknown')
 
     def test_contact_none_process(self):
         # ZPS-3227 test for situation where PrimaryOwnerName

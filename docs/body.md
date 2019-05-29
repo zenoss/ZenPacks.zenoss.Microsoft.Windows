@@ -1930,6 +1930,8 @@ Changes
 -   Fix Receiving 'NoneType' object has no attribute '__getitem__' when modeling Windows device (ZPS-5770)
 -   Fix Perfmon command(s) did not start: 'NoneType' object has no attribute 'getConnection' (ZPS-5822)
 -   Fix "The referenced context has expired" errors (ZPS-5797)
+-   Fix WinRM device modeler fails to model system OS info if Win32_ComputerSystem doesn't return data (ZPS-5820)
+-   Fix Windows collection attempts to use a dead connection causing a timeout (ZPS-5819)
 
 2.9.3
 
