@@ -96,13 +96,20 @@ class WinCluster(WinRMPlugin):
 
         clusterDiskCommand = []
         clusterDiskCommand.append(
+            "$skip = -not ([System.Environment]::OSVersion.Version.Major -le 6"
+            " -and [System.Environment]::OSVersion.Version.Minor -eq 1);"
+            "if ($skip) {{"
             "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
-            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
+            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select"
+            " -ExpandProperty ObjectId;}}}}}};"
             "$clusterSharedVolume = Get-ClusterSharedVolume;"
             "foreach ($volume in $clusterSharedVolume) {{"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
+            "if ($skip) {{"
+            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq "
+            "$csvVolume}}).Disknumber;}}"
+            "else {{$csvdisknumber = -1}}"
             "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
             "Name = $volume.Name;"

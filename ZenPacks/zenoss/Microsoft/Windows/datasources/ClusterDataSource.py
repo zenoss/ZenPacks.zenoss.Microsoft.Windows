@@ -149,27 +149,20 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         psClusterCommands.append("get-clusternetworkinterface | foreach {{{}}};".format(cluster_id_items))
 
         psClusterCommands.append(
-            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
-            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
             "$csvNames = @();"
-            "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable volumeerr -erroraction 'silentlycontinue';"
+            "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable "
+            "volumeerr -erroraction 'silentlycontinue';"
             "if( -Not $volumeerr){{"
             "foreach ($volume in $clsSharedVolume) {{"
-            "$csvNames += $volume.Name;"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
+            "$csvNames += $volume.Name;"
             "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
-            "Name = $volume.Name;"
-            "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;"
-            "OwnerNode = $volumeowner;"
-            "DiskNumber = $csvdisknumber;"
-            "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;"
-            "Size = $volume.SharedVolumeInfo.Partition.Size;"
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
             "State = $volume.State;"
-            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(cluster_disk_items)
+            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(
+                cluster_disk_items)
         )
 
         psClusterCommands.append(
@@ -181,6 +174,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "}} else {{$resources = Get-WmiObject -class MSCluster_Resource "
             "-namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";}}"
             "foreach ($resource in $resources) {{"
+            "if ($csvNames.Contains($resource.Name)) {{ continue; }}"
             "$rsc = get-clusterresource -name $resource.Name;"
             "if ($use_cim) {{"
             "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
@@ -194,16 +188,11 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;OwnerGroup = $rsc.OwnerGroup;"
-            "Name = $rsc.Name;VolumePath = $prt.Path;DiskNumber = $dsk.Number;"
-            "PartitionNumber = $prt.PartitionNumber;Size = $prt.TotalSize * 1mb;"
-            "FreeSpace = $prt.FreeSpace * 1mb;State = $resource.State;}}; "
+            "Id = $rsc.Id;FreeSpace = $prt.FreeSpace * 1mb;"
+            "State = $resource.State;}}; "
             "$physicaldisk | foreach {{{cluster_disk_items}}};}}}}else {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;"
-            "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
-            "State = $resource.State;Size = $dsk.Size;VolumePath = 'No Volume';"
-            "PartitionNumber = 'No Partitions';FreeSpace = -1}};"
+            "Id = $rsc.Id;State = $resource.State;FreeSpace = -1}};"
             "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}}}"
             "".format(cluster_disk_items=cluster_disk_items)
         )

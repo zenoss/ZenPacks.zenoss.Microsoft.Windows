@@ -153,7 +153,7 @@ Cluster Disks
     Partition Number, Capacity, Free Space, State
 :   **Relationships:** Cluster Nodes
 
-Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid.  We will therefore show free space as N/A.
+Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid.  We will therefore show free space as N/A.  Disk number will not be discovered on Windows 2008 servers because the Powershell Storage Module is not available.
 
 Cluster Interfaces
 :   **Attributes:** Name, Owner Node, Network, IP
@@ -1933,6 +1933,7 @@ Changes
 -   Fix WinRM device modeler fails to model system OS info if Win32_ComputerSystem doesn't return data (ZPS-5820)
 -   Fix Windows collection attempts to use a dead connection causing a timeout (ZPS-5819)
 -   Fix Cluster Monitoring Doesn't Account for Different Service Names (ZPS-5835)
+-   Fix 'Get-Disk' is not recognized on Windows 2008 Clusters (ZPS-5822)
 
 2.9.3
 
