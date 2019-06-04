@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2019, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -71,16 +71,6 @@ productNames = (
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
     '  You must update to the latest version of the Exchange Server ZenPack.'
-
-
-def getOSKerberos(osrelease):
-
-    if 'el6' in osrelease:
-        return 'kerberos_el6'
-    elif 'el7' in osrelease:
-        return 'kerberos_el7'
-    else:
-        return 'kerberos_el7'
 
 
 class ZenPack(schema.ZenPack):
@@ -167,8 +157,8 @@ class ZenPack(schema.ZenPack):
             exchange_version = None
 
         # copy kerberos.so file to python path
-        osrelease = platform.release()
-        kerbsrc = os.path.join(os.path.dirname(__file__), 'lib', getOSKerberos(osrelease), 'kerberos.so')
+        kerbsrc = os.path.join(
+            os.path.dirname(__file__), 'lib', 'kerberos', 'kerberos.so')
 
         kerbdst = zenPath('lib', 'python')
         shutil.copy(kerbsrc, kerbdst)

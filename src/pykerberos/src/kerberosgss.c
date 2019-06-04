@@ -268,13 +268,13 @@ int authenticate_gss_client_step(gss_client_state* state, const char* challenge)
     // Do GSSAPI step
     Py_BEGIN_ALLOW_THREADS
     maj_stat = gss_init_sec_context(&min_stat,
-                                    NULL, //state->client_creds,
+                                    state->client_creds,
                                     &state->context,
                                     state->server_name,
                                     GSS_C_NO_OID,
                                     (OM_uint32)state->gss_flags,
                                     0,
-                                    NULL, //GSS_C_NO_CHANNEL_BINDINGS,
+                                    GSS_C_NO_CHANNEL_BINDINGS,
                                     &input_token,
                                     NULL,
                                     &output_token,
