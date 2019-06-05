@@ -945,7 +945,7 @@ yum -y install krb5-workstation
 
 ##### Monitoring User Account
 
-A monitoring user account must be either an Administrator or a least privileged user.
+A monitoring user account must be either an Administrator or a least privileged user (LPU).
 
 The Least Privileged User account requires the following privileges and permissions:
 
@@ -971,7 +971,8 @@ The Least Privileged User account requires the following privileges and permissi
     -   "Performance Log Users" 
     -   "Event Log Readers"
     -   "Distributed COM Users"
-    -   "WinRMRemoteWMIUsers__"
+    -   "WinRMRemoteWMIUsers__" for Windows 2008, 2012
+    -   "Remote Management Users" for Windows 2016 and beyond
 -   “Read Folder” access to "C:\\Windows\\system32\\inetsrv\\config" if it exists
 -   Each service needs the following permissions 
     -   SERVICE_QUERY_CONFIG
@@ -981,6 +982,8 @@ The Least Privileged User account requires the following privileges and permissi
     -   SERVICE_START
 
 Note: An Administrator level user can be denied local logon and remote desktop access through a group policy object.
+
+If using an LPU account, it is the responsibility of the Windows and network administrators of your organization to ensure that the above permissions are understood, in place, and maintained.
 
 ### Port Requirements
 
