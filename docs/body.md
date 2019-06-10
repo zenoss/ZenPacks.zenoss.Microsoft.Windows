@@ -1544,11 +1544,9 @@ are valid when entering them into the zWinKDC property.
 
 #### Viewing Kerberos Tickets
 
-The ZenPack uses a credential cache collection in order to support multiple users across multiple domains.  This collection is located in the \$ZENHOME/var/krb5c/ directory.  The caches for individual users are located in separate files.  Use `klist -l` to view which file contains the tickets for an individual user.  Use `klist -c <filename>` to view the tickets in the file.
+The ZenPack uses individual credential cache files in order to support multiple users across multiple domains.  The caches are located in the \$ZENHOME/var/krb5c/ directory.  The caches for individual users are located in separate files based on the user name.  Use `klist -c <filename>` to view the tickets in the file.
 
 While monitoring, we will renew the main kerberos ticket granting ticket 5 minutes before it is set to expire.  This will ensure that you receive no "The referenced context has expired" events or errors and will have no collection interruptions due to this error.
-
-Note: Be sure the environment variable KRB5CCNAME is set to DIR:\$ZENHOME/var/krb5cc/.  E.g. KRBCCNAME=DIR:/opt/zenoss/var/krb5cc/
 
 ## Service Impact
 
