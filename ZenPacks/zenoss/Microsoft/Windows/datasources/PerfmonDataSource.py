@@ -356,6 +356,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.sample_interval = 1
             self.max_samples = 1
 
+        self._start_counter = 0
         # Get counters from all components in the device.
         self.counter_map = {}
         self.ps_counter_map = {}
@@ -447,6 +448,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         """
+        self._start_counter += 1
         if self.num_commands == 0:
             # nothing to do, return
             data = self.new_data()
@@ -462,6 +464,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.state = PluginStates.STOPPED
             defer.returnValue(data)
 
+        # double check to make sure we aren't continuing to try
+        # and receive from a finished collection
+        if self._start_counter > self.max_samples:
+            yield self.stop()
         yield self.start()
 
         data = yield self.get_data()
@@ -484,7 +490,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.state != PluginStates.STOPPED:
             defer.returnValue(None)
 
-        self._shells = []
+        self._start_counter = 0
+        shells = []
 
         LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
         self.state = PluginStates.STARTING
@@ -515,7 +522,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         for success, data in results:
             if success:
                 self.state = PluginStates.STARTED
-                self._shells.append(data)
+                shells.append(data)
             else:
                 errorMessage = 'Perfmon command(s) did not start'
                 reason = str(data.value)
@@ -541,7 +548,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 'ipAddress': self.config.manageIp})
         self.collected_samples = 0
         self.collected_counters = set()
-        self.complex_command.store_ids(self._shells)
+        self.complex_command.store_ids(shells)
 
         self.receive()
 
@@ -706,7 +713,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
-        LOG.debug("Get-Counter results: {}".format(result))
+        LOG.debug("Get-Counter results: {} {}".format(self.config.id, result))
         collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
@@ -833,13 +840,21 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.DEBUG,
                 "Ignoring powershell error on {} as it does not affect collection: {}"
                 .format(self.config.id, e))
-        elif '500' in e.message and 'decrypt' in e.message:
-            retry, level, msg = (
-                True,
-                logging.DEBUG,
-                'got debug integrity check during receive.  assuming '
-                'OperationTimeout and attempting to receive again'
-            )
+        elif '500' in e.message:
+            if 'decrypt' in e.message:
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    'got debug integrity check during receive.  '
+                    'attempting to receive again'
+                )
+            elif 'internal error' in e.message:
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    'got internal error during receive.  '
+                    'attempting to receive again'
+                )
         elif 'unexpected response' in e.message.lower():
             retry, level, msg = (
                 True,
