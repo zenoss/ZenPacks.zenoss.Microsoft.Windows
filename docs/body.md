@@ -1660,7 +1660,7 @@ example of using [Wireshark](http://www.wireshark.org/) to resolve an
 
 First install Wireshark on your system. It's GUI is easier to use than the command line equivalent.
 
-Next you will need to create a packet capture file on your Zenoss server. Assuming the Windows server you're trying to monitor is *192.0.2.101* and the domain controller (*zWinKDC*) is *203.0.113.10*, you would run the following command as the root user on your Zenoss server.
+Next you will need to create a packet capture file on your Zenoss collector. Assuming the Windows server you're trying to monitor is *192.0.2.101* and the domain controller (*zWinKDC*) is *203.0.113.10*, you would run the following command as the root user on your Zenoss collector that is being used to model and monitor the Windows device.
 
 ```
 tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10
