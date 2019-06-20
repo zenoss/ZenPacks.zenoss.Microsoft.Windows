@@ -855,13 +855,19 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'got internal error during receive.  '
                     'attempting to receive again'
                 )
-        elif 'unexpected response' in e.message.lower():
-            retry, level, msg = (
-                True,
-                logging.DEBUG,
-                'got "Unexpected Response" during receive, '
-                'attempting to receive again'
-            )
+            elif 'unexpected response' in e.message.lower():
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    'got "Unexpected Response" during receive, '
+                    'attempting to receive again'
+                )
+            else:
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    errorMsg
+                )
         elif isinstance(e, ConnectError):
             retry, level, msg = (
                 isinstance(e, TimeoutError),
