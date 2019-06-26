@@ -71,16 +71,15 @@ Server (Device)
 :   **Attributes:** Name, Contact, Description, Serial
     Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory,
     Operating System, Cluster
-:   **Relationships:** File Systems, Hard Disks, Processes, IP Services,
+:   **Relationships:** File Systems, Hard Disks, Processes, IP Routes,
     CPUs, Interfaces, Windows Services, HyperV, SQL Server Instances,
     IIS Sites
 
 Cluster (Device)
 :   **Attributes:** Name, Contact, Description, Physical
     Memory, Total Virtual Memory, Operating System, Member Servers
-:   **Relationships:** File Systems, Hard Disks, Processes, IP Services,
-    CPUs, Interfaces, Windows Services, HyperV, SQL Server Instances,
-    IIS Sites, Cluster Services, Cluster Resources, Cluster Networks,
+:   **Relationships:** SQL Server Instances,
+    Cluster Services, Cluster Resources, Cluster Networks,
     Cluster Disks, Cluster Interfaces, Cluster Nodes
 
 Processors
@@ -1194,14 +1193,16 @@ another device as well.
 ### Configuring MSSQL Server Modeling/Monitoring
 
 Supported SQL Server versions
-:   SQL Server 2008
-:   SQL Server 2008 R2
+:   SQL Server 2008 *
+:   SQL Server 2008 R2 *
 :   SQL Server 2012
 :   SQL Server 2014
 :   SQL Server 2016
 :   SQL Server 2017
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
+
+* - Microsoft will be ending extended [support](https://www.microsoft.com/en-us/sql-server/sql-server-2008) for SQL Server 2008 and 2008 R2 on 7/9/2019.  Please take appropriate action to monitor a supported version.
 
 ##### Support for SQL Server and Windows Authentication: 
 *   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank.  Microsoft prefers this authentication method.
@@ -1429,20 +1430,6 @@ The current release is known to have the following limitations.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
 -   Individual NICs in a team are not monitored and will have a speed of 0.
     Monitoring them could cause threshold error events.
--   The custom widget for MSSQL Server credentials is not compatible
-    with Zenoss 4.1.x, therefore the *zDBInstances* property in this
-    version should be set as a valid JSON list (e.g. *[{"instance":
-    "MSSQLSERVER", "user": "", "passwd": ""}]* ).
--   When upgrading to version 2.2.0, you may see a segmentation fault
-    during the install. This occurs when upgrading from versions 2.1.3
-    and previous. To ensure a successful installation, run the install
-    once more and restart Zenoss.
--   Payload encryption is not supported on EL5 systems. This is due to
-    the fact that the default kerberos library on EL5 systems does not
-    contain the necessary functionality.
--   Current functionality for monitoring Server 2003 has not been
-    removed from the ZenPack, but no future development will be done for
-    Server 2003.
 -   Starting with version 2.6.0 of the ZenPack, existing Windows Service
     components are no longer compatible. These will be removed upon
     installation. Once the device is modeled with the Services plugin
@@ -1466,13 +1453,10 @@ In [3]: commit()
 
 -   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
--   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
--   If you are upgrading from a version previous to 2.5.0, you may see the IIS modeler plugin as a default modeler plugin on the /Server/Microsoft/Windows device class. Current versions do not set IIS as a default plugin. Also, by default, only the OperatingSystem and WinCluster plugins should be enabled by default on the /Server/Microsoft/Cluster class. The CPUs, FileSystems, IIS, Interfaces, Services, Processes, and Software plugins do not apply to Cluster devices and should be removed.
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 -   The WinCommand notification action is in the process of being deprecated.
--   The ZenPack may no longer be compatible with v4.2.5 of Zenoss.  The ZenPack requires kerberos v1.10 or greater, which was introduced in CentOS 6.4.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1561,7 +1545,7 @@ one or more of the explicitly mentioned entities.
 The Windows server impacts the following:
 -   File Systems 
 -   Processes 
--   IP Services 
+-   IP Routes
 -   Processors 
 -   Interfaces
 -   Cluster Services 
@@ -1937,6 +1921,7 @@ Changes
 -   Fix Windows collection attempts to use a dead connection causing a timeout (ZPS-5819)
 -   Fix Cluster Monitoring Doesn't Account for Different Service Names (ZPS-5835)
 -   Fix 'Get-Disk' is not recognized on Windows 2008 Clusters (ZPS-5822)
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.3.4.
 
 2.9.3
 
