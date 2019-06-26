@@ -1921,7 +1921,7 @@ Changes
 -   Fix Windows collection attempts to use a dead connection causing a timeout (ZPS-5819)
 -   Fix Cluster Monitoring Doesn't Account for Different Service Names (ZPS-5835)
 -   Fix 'Get-Disk' is not recognized on Windows 2008 Clusters (ZPS-5822)
--   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.3.4.
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.5.0.
 
 2.9.3
 
