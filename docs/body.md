@@ -71,7 +71,7 @@ Server (Device)
 :   **Attributes:** Name, Contact, Description, Serial
     Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory,
     Operating System, Cluster
-:   **Relationships:** File Systems, Hard Disks, Processes, IP Routes,
+:   **Relationships:** File Systems, Hard Disks, Processes, Network Routes,
     CPUs, Interfaces, Windows Services, HyperV, SQL Server Instances,
     IIS Sites
 
@@ -1545,7 +1545,7 @@ one or more of the explicitly mentioned entities.
 The Windows server impacts the following:
 -   File Systems 
 -   Processes 
--   IP Routes
+-   Network Routes
 -   Processors 
 -   Interfaces
 -   Cluster Services 
