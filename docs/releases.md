@@ -3,7 +3,7 @@ Releases
 --------
 
 Version 2.9.4- <a class="external" href="http://wiki.zenoss.org/download/zenpacks/ZenPacks.zenoss.Microsoft.Windows/2.9.4/ZenPacks.zenoss.Microsoft.Windows-2.9.4.egg" rel="nofollow">Download</a>
-:   Released on 2019/xx/xx
+:   Released on 2019/06/27
 :   Requires <a href="/product/zenpacks/pythoncollector" title="ZenPack:PythonCollector">PythonCollector ZenPack</a>, <a href="/product/zenpacks/zenpacklib" title="ZenPack:ZenPackLib">ZenPackLib ZenPack</a>
 :   Compatible with Zenoss 6.x and Zenoss Cloud
 
