@@ -76,11 +76,6 @@ class OperatingSystem(WinRMPlugin):
             )
         maps = []
 
-        if not computerSystem:
-            # if no results for computerSystem, then there is a WMI permission error
-            log.warn('No results returned for OperatingSystem plugin.'
-                     '  Check WMI namespace and DCOM permissions.')
-            return maps
         # Device Map
         device_om = ObjectMap()
         # safely get name, contact, desc
@@ -123,10 +118,12 @@ class OperatingSystem(WinRMPlugin):
 
         # Hardware Map
         hw_om = ObjectMap(compname='hw')
-        hw_om.serialNumber = getattr(operatingSystem, 'SerialNumber', '') if operatingSystem else ''
+        hw_om.serialNumber = getattr(operatingSystem, 'SerialNumber', '')
         hw_om.tag = getattr(sysEnclosure, 'Tag', 'Unknown')
         model = getattr(computerSystem, 'Model', 'Unknown')
-        manufacturer = getattr(computerSystem, 'Manufacturer', getattr(operatingSystem, 'Manufacturer', 'Microsoft Corporation'))
+        manufacturer = getattr(
+            computerSystem, 'Manufacturer', getattr(
+                operatingSystem, 'Manufacturer', 'Microsoft Corporation'))
         hw_om.setProductKey = MultiArgs(
             model,
             manufacturer)
@@ -135,8 +132,7 @@ class OperatingSystem(WinRMPlugin):
         except AttributeError:
             log.warn(
                 "Win32_OperatingSystem query did not respond with "
-                "TotalVisibleMemorySize: {0}"
-                .format(pformat(sorted(vars(operatingSystem).keys()))))
+                "TotalVisibleMemorySize")
 
         maps.append(hw_om)
 
@@ -145,10 +141,11 @@ class OperatingSystem(WinRMPlugin):
         os_om.totalSwap = int(getattr(operatingSystem, 'TotalVirtualMemorySize', '0')) * 1024
 
         osCaption = getattr(operatingSystem, 'Caption', None) or 'Unknown'
-        operatingSystem.Caption = re.sub(
-            r'\s*\S*Microsoft\S*\s*', '', osCaption)
+        if osCaption and osCaption != 'Unknown':
+            operatingSystem.Caption = re.sub(
+                r'\s*\S*Microsoft\S*\s*', '', osCaption)
 
-        osCaption = getattr(operatingSystem, 'Caption', 'Unknown')
+            osCaption = getattr(operatingSystem, 'Caption', 'Unknown')
         CSDVersion = getattr(operatingSystem, 'CSDVersion', 'Unknown')
         if CSDVersion:
             osCaption += ' - {}'.format(CSDVersion)
