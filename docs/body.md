@@ -71,16 +71,15 @@ Server (Device)
 :   **Attributes:** Name, Contact, Description, Serial
     Number, Tag, Hardware Model, Physical Memory, Total Virtual Memory,
     Operating System, Cluster
-:   **Relationships:** File Systems, Hard Disks, Processes, IP Services,
+:   **Relationships:** File Systems, Hard Disks, Processes, Network Routes,
     CPUs, Interfaces, Windows Services, HyperV, SQL Server Instances,
     IIS Sites
 
 Cluster (Device)
 :   **Attributes:** Name, Contact, Description, Physical
     Memory, Total Virtual Memory, Operating System, Member Servers
-:   **Relationships:** File Systems, Hard Disks, Processes, IP Services,
-    CPUs, Interfaces, Windows Services, HyperV, SQL Server Instances,
-    IIS Sites, Cluster Services, Cluster Resources, Cluster Networks,
+:   **Relationships:** SQL Server Instances,
+    Cluster Services, Cluster Resources, Cluster Networks,
     Cluster Disks, Cluster Interfaces, Cluster Nodes
 
 Processors
@@ -152,6 +151,8 @@ Cluster Disks
 :   **Attributes:** Name, Owner Node, Volume Path, Disk Number,
     Partition Number, Capacity, Free Space, State
 :   **Relationships:** Cluster Nodes
+
+Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid.  We will therefore show free space as N/A.  Disk number will not be discovered on Windows 2008 servers because the Powershell Storage Module is not available.
 
 Cluster Interfaces
 :   **Attributes:** Name, Owner Node, Network, IP
@@ -943,7 +944,7 @@ yum -y install krb5-workstation
 
 ##### Monitoring User Account
 
-A monitoring user account must be either an Administrator or a least privileged user.
+A monitoring user account must be either an Administrator or a least privileged user (LPU).
 
 The Least Privileged User account requires the following privileges and permissions:
 
@@ -969,7 +970,8 @@ The Least Privileged User account requires the following privileges and permissi
     -   "Performance Log Users" 
     -   "Event Log Readers"
     -   "Distributed COM Users"
-    -   "WinRMRemoteWMIUsers__"
+    -   "WinRMRemoteWMIUsers__" for Windows 2008, 2012
+    -   "Remote Management Users" for Windows 2016 and beyond
 -   “Read Folder” access to "C:\\Windows\\system32\\inetsrv\\config" if it exists
 -   Each service needs the following permissions 
     -   SERVICE_QUERY_CONFIG
@@ -979,6 +981,8 @@ The Least Privileged User account requires the following privileges and permissi
     -   SERVICE_START
 
 Note: An Administrator level user can be denied local logon and remote desktop access through a group policy object.
+
+If using an LPU account, it is the responsibility of the Windows and network administrators of your organization to ensure that the above permissions are understood, in place, and maintained.
 
 ### Port Requirements
 
@@ -1189,14 +1193,16 @@ another device as well.
 ### Configuring MSSQL Server Modeling/Monitoring
 
 Supported SQL Server versions
-:   SQL Server 2008
-:   SQL Server 2008 R2
+:   SQL Server 2008 *
+:   SQL Server 2008 R2 *
 :   SQL Server 2012
 :   SQL Server 2014
 :   SQL Server 2016
 :   SQL Server 2017
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
+
+* - Microsoft will be ending extended [support](https://www.microsoft.com/en-us/sql-server/sql-server-2008) for SQL Server 2008 and 2008 R2 on 7/9/2019.  Please take appropriate action to monitor a supported version.
 
 ##### Support for SQL Server and Windows Authentication: 
 *   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank.  Microsoft prefers this authentication method.
@@ -1247,7 +1253,7 @@ view the server state. For example, "GRANT VIEW SERVER STATE TO
 Studio. A Windows user must also be interactive, i.e. the account must not be
 denied local logon rights.
 
-### Working with WinCommand Notification Action
+### Working with WinCommand Notification Action - Deprecated
 
 This ZenPack adds a new event notification action that can be used by
 the zenactiond daemon to allow an arbitrary command to be executed on
@@ -1424,20 +1430,6 @@ The current release is known to have the following limitations.
 -   Support for team NICs is limited to Intel and Broadcom interfaces.
 -   Individual NICs in a team are not monitored and will have a speed of 0.
     Monitoring them could cause threshold error events.
--   The custom widget for MSSQL Server credentials is not compatible
-    with Zenoss 4.1.x, therefore the *zDBInstances* property in this
-    version should be set as a valid JSON list (e.g. *[{"instance":
-    "MSSQLSERVER", "user": "", "passwd": ""}]* ).
--   When upgrading to version 2.2.0, you may see a segmentation fault
-    during the install. This occurs when upgrading from versions 2.1.3
-    and previous. To ensure a successful installation, run the install
-    once more and restart Zenoss.
--   Payload encryption is not supported on EL5 systems. This is due to
-    the fact that the default kerberos library on EL5 systems does not
-    contain the necessary functionality.
--   Current functionality for monitoring Server 2003 has not been
-    removed from the ZenPack, but no future development will be done for
-    Server 2003.
 -   Starting with version 2.6.0 of the ZenPack, existing Windows Service
     components are no longer compatible. These will be removed upon
     installation. Once the device is modeled with the Services plugin
@@ -1461,11 +1453,10 @@ In [3]: commit()
 
 -   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
--   The "powershell Cluster" strategies in the Windows Shell datasource are deprecated.  Cluster component status is now collected via the "Windows Cluster" datasource.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
--   If you are upgrading from a version previous to 2.5.0, you may see the IIS modeler plugin as a default modeler plugin on the /Server/Microsoft/Windows device class. Current versions do not set IIS as a default plugin. Also, by default, only the OperatingSystem and WinCluster plugins should be enabled by default on the /Server/Microsoft/Cluster class. The CPUs, FileSystems, IIS, Interfaces, Services, Processes, and Software plugins do not apply to Cluster devices and should be removed.
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
+-   The WinCommand notification action is in the process of being deprecated.
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1535,6 +1526,12 @@ Note: Removing one or more errant KDCs from the system can be a time
 consuming process, so we recommend double-checking that the addresses
 are valid when entering them into the zWinKDC property.
 
+#### Viewing Kerberos Tickets
+
+The ZenPack uses individual credential cache files in order to support multiple users across multiple domains.  The caches are located in the \$ZENHOME/var/krb5c/ directory.  The caches for individual users are located in separate files based on the user name.  Use `klist -c <filename>` to view the tickets in the file.
+
+While monitoring, we will renew the main kerberos ticket granting ticket 5 minutes before it is set to expire.  This will ensure that you receive no "The referenced context has expired" events or errors and will have no collection interruptions due to this error.
+
 ## Service Impact
 
 When combined with the Zenoss Service Dynamics product, this ZenPack
@@ -1548,7 +1545,7 @@ one or more of the explicitly mentioned entities.
 The Windows server impacts the following:
 -   File Systems 
 -   Processes 
--   IP Services 
+-   Network Routes
 -   Processors 
 -   Interfaces
 -   Cluster Services 
@@ -1647,7 +1644,7 @@ example of using [Wireshark](http://www.wireshark.org/) to resolve an
 
 First install Wireshark on your system. It's GUI is easier to use than the command line equivalent.
 
-Next you will need to create a packet capture file on your Zenoss server. Assuming the Windows server you're trying to monitor is *192.0.2.101* and the domain controller (*zWinKDC*) is *203.0.113.10*, you would run the following command as the root user on your Zenoss server.
+Next you will need to create a packet capture file on your Zenoss collector. Assuming the Windows server you're trying to monitor is *192.0.2.101* and the domain controller (*zWinKDC*) is *203.0.113.10*, you would run the following command as the root user on your Zenoss collector that is being used to model and monitor the Windows device.
 
 ```
 tcpdump -s0 -iany -w kerberdebug.pcap host 192.0.2.101 or host 203.0.113.10
@@ -1909,6 +1906,22 @@ Monitoring Templates
 
 Changes
 -------
+
+2.9.4
+
+-   Fix Traceback seen for zenoss.winrm.Processes modeler plugin (ZPS-5676)
+-   Fix Windows ZP: After upgrade to 2.9.3, seeing "caught returnValue being used in a non-generator" errors (ZPS-5727)
+-   Fix Windows - cluster disks may not be modeled or monitored on 2008 cluster when using Powershell v2.0 (ZPS-5755)
+-   Fix Unexpected Response --Encrypted Boundary during windows collection (ZPS-5767)
+-   Document wincommand notification can be deprecated (ZPS-5501)
+-   Fix Receiving 'NoneType' object has no attribute '__getitem__' when modeling Windows device (ZPS-5770)
+-   Fix Perfmon command(s) did not start: 'NoneType' object has no attribute 'getConnection' (ZPS-5822)
+-   Fix "The referenced context has expired" errors (ZPS-5797)
+-   Fix WinRM device modeler fails to model system OS info if Win32_ComputerSystem doesn't return data (ZPS-5820)
+-   Fix Windows collection attempts to use a dead connection causing a timeout (ZPS-5819)
+-   Fix Cluster Monitoring Doesn't Account for Different Service Names (ZPS-5835)
+-   Fix 'Get-Disk' is not recognized on Windows 2008 Clusters (ZPS-5822)
+-   Tested with Zenoss Cloud, Zenoss Resource Manager 6.3.2 and Service Impact 5.5.0.
 
 2.9.3
 

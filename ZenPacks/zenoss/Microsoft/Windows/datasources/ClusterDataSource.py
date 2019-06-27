@@ -149,54 +149,50 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         psClusterCommands.append("get-clusternetworkinterface | foreach {{{}}};".format(cluster_id_items))
 
         psClusterCommands.append(
-            "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
-            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
             "$csvNames = @();"
-            "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable volumeerr -erroraction 'silentlycontinue';"
+            "$clsSharedVolume = Get-ClusterSharedVolume -errorvariable "
+            "volumeerr -erroraction 'silentlycontinue';"
             "if( -Not $volumeerr){{"
             "foreach ($volume in $clsSharedVolume) {{"
-            "$csvNames += $volume.Name;"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
+            "$csvNames += $volume.Name;"
             "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
-            "Name = $volume.Name;"
-            "VolumePath = $volume.SharedVolumeInfo.FriendlyVolumeName;"
-            "OwnerNode = $volumeowner;"
-            "DiskNumber = $csvdisknumber;"
-            "PartitionNumber = $volume.SharedVolumeInfo.PartitionNumber;"
-            "Size = $volume.SharedVolumeInfo.Partition.Size;"
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
             "State = $volume.State;"
-            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(cluster_disk_items)
+            "}}; $csvtophysicaldisk | foreach {{{}}} }};}};".format(
+                cluster_disk_items)
         )
 
         psClusterCommands.append(
+            "$use_cim = $PSVersionTable.PSVersion.Major -gt 2;"
+            "if ($use_cim) {{"
             "$resources = Get-CimInstance -namespace"
             " 'root\MSCluster' -class 'MSCluster_Resource' "
             " | ? {{$_.Type -eq 'Physical Disk'}};"
+            "}} else {{$resources = Get-WmiObject -class MSCluster_Resource "
+            "-namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";}}"
             "foreach ($resource in $resources) {{"
-            "if (-Not ($csvNames -Contains $resource.Name)) {{"
+            "if ($csvNames.Contains($resource.Name)) {{ continue; }}"
             "$rsc = get-clusterresource -name $resource.Name;"
+            "if ($use_cim) {{"
             "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
-            '"MSCluster_Disk";'
+            "'MSCluster_Disk'; }} else {{ "
+            "$disks = $resource.GetRelated('MSCluster_Disk');}}"
             "foreach ($dsk in $disks) {{"
+            "if ($use_cim) {{"
             "$partitions = Get-CimAssociatedInstance $dsk -ResultClassName "
-            '"MSCluster_DiskPartition";'
+            '"MSCluster_DiskPartition";}} else {{'
+            "$partitions = $dsk.GetRelated('MSCluster_DiskPartition');}}"
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;OwnerGroup = $rsc.OwnerGroup;"
-            "Name = $rsc.Name;VolumePath = $prt.Path;DiskNumber = $dsk.Number;"
-            "PartitionNumber = $prt.PartitionNumber;Size = $prt.TotalSize * 1mb;"
-            "FreeSpace = $prt.FreeSpace * 1mb;State = $resource.State;}}; "
+            "Id = $rsc.Id;FreeSpace = $prt.FreeSpace * 1mb;"
+            "State = $resource.State;}}; "
             "$physicaldisk | foreach {{{cluster_disk_items}}};}}}}else {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
-            "Id = $rsc.Id;OwnerNode = $rsc.OwnerNode;"
-            "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
-            "State = $resource.State;Size = $dsk.Size;VolumePath = 'No Volume';"
-            "PartitionNumber = 'No Partitions';FreeSpace = -1}};}};"
+            "Id = $rsc.Id;State = $resource.State;FreeSpace = -1}};"
             "$physicaldisk | foreach {{{cluster_disk_items}}} }};}}}}"
             "".format(cluster_disk_items=cluster_disk_items)
         )
@@ -221,16 +217,17 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             if len(result) <= 0:
                 continue
             cluster_line = result.split('|')
+            ownernode = None
             if len(cluster_line) == 2:
                 comp, state = cluster_line
-                ownernode = None
                 name = ''
             elif len(cluster_line) == 3:
                 comp, state, freespace = cluster_line
             elif len(cluster_line) == 4:
                 comp, state, name, ownernode = cluster_line
             else:
-                log.debug('Unable to parse cluster result {} on {}'.format(result, config.id))
+                log.debug('Unable to parse cluster result {} on {}'.format(
+                    result, config.id))
                 continue
             comp = prepId(comp)
             try:
@@ -239,7 +236,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 state = cluster_disk_state_string(int(state))
             except ValueError:
                 # cluster shared volume returns text. e.g. 'Online'
-                data['values'][comp]['state'] = cluster_csv_state_to_disk_map(state)
+                data['values'][comp]['state'] = cluster_csv_state_to_disk_map(
+                    state)
             try:
                 if freespace != '-1':
                     # don't write dp if -1.  probably means unallocated disk
@@ -248,7 +246,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
-            dsconf = get_dsconf(config.datasources, str(comp), param='contexttitle')
+            dsconf = get_dsconf(
+                config.datasources, str(comp), param='contexttitle')
             if dsconf is None:
                 # component probably not modeled, see ZEN-23142
                 continue
@@ -266,21 +265,24 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 eventClassKey='clusterComponentStatus',
                 eventKey=dsconf.eventKey,
                 severity=severity,
-                summary='Last state of component {} was {}'.format(dsconf.params['contexttitle'], state),
+                summary='Last state of component {} was {}'.format(
+                    dsconf.params['contexttitle'], state),
                 device=config.id,
                 component=prepId(dsconf.component)
             ))
 
-            # sql server can failover without cluster group changing
-            # we'll make a variable so we can add any future resource groups to check
-            b_name = name.strip() == 'Cluster Group' or 'sql server' in name.lower()
-            if ownernode and b_name and dsconf.params['ownernode'] != ownernode.strip():
+            # if the ownernode has changed for any cluster service,
+            # we need to remodel
+            if ownernode and dsconf.params['ownernode'] != ownernode.strip():
                 data['events'].append(dict(
                     eventClassKey='clusterOwnerChange',
                     eventKey='clusterCollection',
                     severity=ZenEventClasses.Info,
-                    summary='OwnerNode of cluster {} for cluster service {} changed to {}'.format(
-                        dsconf.params['cluster'], name.strip(), ownernode),
+                    summary='OwnerNode of cluster {} for cluster service {}'
+                            ' changed to {}'.format(
+                                dsconf.params['cluster'],
+                                name.strip(),
+                                ownernode),
                     device=config.id,
                     component=prepId(dsconf.component)
                 ))
@@ -313,6 +315,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
     @save
     def onError(self, result, config):
+        log.debug('ClusterDataSource error on {}: {}'.format(
+            config.id, result))
         logg = log.error
         msg, event_class = check_for_network_error(result, config)
         eventKey = 'clusterCollection'

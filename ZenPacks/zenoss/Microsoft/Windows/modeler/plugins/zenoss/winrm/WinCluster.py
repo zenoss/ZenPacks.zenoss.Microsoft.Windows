@@ -65,7 +65,10 @@ class WinCluster(WinRMPlugin):
         conn_info = conn_info._replace(timeout=device.zCollectorClientTimeout - 5)
         cmd = ClusterCommander(conn_info)
 
-        domain = yield cmd.run_command("(gwmi WIN32_ComputerSystem).Domain;")
+        domain = yield cmd.run_command(
+            "$use_cim = $PSVersionTable.PSVersion.Major -gt 2;"
+            "if ($use_cim) { (Get-CimInstance WIN32_ComputerSystem).Domain; }"
+            " else { (gwmi WIN32_ComputerSystem).Domain;}")
         domain = domain.stdout[0] if domain.stdout else ''
 
         resourceCommand = []
@@ -93,13 +96,20 @@ class WinCluster(WinRMPlugin):
 
         clusterDiskCommand = []
         clusterDiskCommand.append(
+            "$skip = -not ([System.Environment]::OSVersion.Version.Major -le 6"
+            " -and [System.Environment]::OSVersion.Version.Minor -eq 1);"
+            "if ($skip) {{"
             "$volumeInfo = Get-Disk | Get-Partition | Select DiskNumber, @{{"
-            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select -ExpandProperty ObjectId;}}}};"
+            "Name='Volume';Expression={{Get-Volume -Partition $_ | Select"
+            " -ExpandProperty ObjectId;}}}}}};"
             "$clusterSharedVolume = Get-ClusterSharedVolume;"
             "foreach ($volume in $clusterSharedVolume) {{"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq $csvVolume}}).Disknumber;"
+            "if ($skip) {{"
+            "$csvdisknumber = ($volumeinfo | where {{ $_.Volume -eq "
+            "$csvVolume}}).Disknumber;}}"
+            "else {{$csvdisknumber = -1}}"
             "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
             "Name = $volume.Name;"
@@ -115,16 +125,24 @@ class WinCluster(WinRMPlugin):
         )
 
         clusterDiskCommand.append(
+            "$use_cim = $PSVersionTable.PSVersion.Major -gt 2;"
+            "if ($use_cim) {{"
             "$resources = Get-CimInstance -namespace"
             " 'root\MSCluster' -class 'MSCluster_Resource' "
             " | ? {{$_.Type -eq 'Physical Disk'}};"
+            "}} else {{$resources = Get-WmiObject -class MSCluster_Resource "
+            "-namespace root\MSCluster -filter \\\"Type='Physical Disk'\\\";}}"
             "foreach ($resource in $resources) {{"
             "$rsc = get-clusterresource -name $resource.Name;"
+            "if ($use_cim) {{"
             "$disks = Get-CimAssociatedInstance $resource -ResultClassName "
-            '"MSCluster_Disk";'
+            "'MSCluster_Disk'; }} else {{ "
+            "$disks = $resource.GetRelated('MSCluster_Disk');}}"
             "foreach ($dsk in $disks) {{"
+            "if ($use_cim) {{"
             "$partitions = Get-CimAssociatedInstance $dsk -ResultClassName "
-            '"MSCluster_DiskPartition";'
+            '"MSCluster_DiskPartition";}} else {{'
+            "$partitions = $dsk.GetRelated('MSCluster_DiskPartition');}}"
             "if ($partitions -ne $null) {{"
             "foreach ($prt in $partitions) {{"
             "$physicaldisk = New-Object -TypeName PSObject -Property @{{"
@@ -138,7 +156,8 @@ class WinCluster(WinRMPlugin):
             "OwnerGroup = $rsc.OwnerGroup;Name = $rsc.Name;DiskNumber = $dsk.Number;"
             "State = $rsc.State;Size = $dsk.Size;VolumePath = 'No Volume';"
             "PartitionNumber = 'No Partitions';FreeSpace = 'N/A'}};"
-            "$physicaldisk | foreach {{{}}};}}}}}};".format(disk_properties, disk_properties)
+            "$physicaldisk | foreach {{{}}};}}}}}};".format(disk_properties,
+                                                            disk_properties)
         )
 
         clusterdisk = yield cmd.run_command("".join(clusterDiskCommand))
