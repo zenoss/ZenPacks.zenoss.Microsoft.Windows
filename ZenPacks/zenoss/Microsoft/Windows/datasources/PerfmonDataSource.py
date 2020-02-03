@@ -862,6 +862,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'got "Unexpected Response" during receive, '
                     'attempting to receive again'
                 )
+            elif 'invalid selectors for the resource' in e.message:
+                retry, level, msg = (
+                    False,
+                    logging.DEBUG,
+                    'Attempted to use a non-existent remote shell.  Possibly '
+                    'due to device reboot.'
+                )
             else:
                 retry, level, msg = (
                     True,
@@ -887,10 +894,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     "'NoneType' object has no attribute 'persistent'" in e.message:
                 level = logging.DEBUG
                 e = 'Attempted to receive from closed connection.  Possibly '\
-                    'due to device reboot.'
-            elif 'invalid selectors for the resource' in e.message:
-                level = logging.DEBUG
-                e = 'Attempted to use a non-existent remote shell.  Possibly '\
                     'due to device reboot.'
             retry, msg = (
                 False,
