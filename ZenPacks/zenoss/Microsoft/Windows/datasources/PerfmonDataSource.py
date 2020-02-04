@@ -65,6 +65,7 @@ OPERATION_TIMEOUT = 60
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
 MAX_NETWORK_FAILURES = 3
+MAX_RETRIES = 3
 
 
 class PowerShellError(Error):
@@ -377,6 +378,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def reset(self):
         self.state = PluginStates.STOPPED
         self.network_failures = 0
+        self.retry_count = 0
 
         self.complex_command = ComplexLongRunningCommand(
             self.config.datasources[0],
@@ -776,6 +778,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
             yield self.onReceiveFail(failures[0])
+        else:
+            self.retry_count = 0
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
@@ -909,7 +913,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.reset()
             retry = False
         if retry:
-            self.receive()
+            self.retry_count += 1
+            if self.retry_count >= MAX_RETRIES
+                yield self.stop()
+                self.reset()
+                retry = False
+            else:
+                self.receive()
         else:
             yield self.stop()
             self.reset()
