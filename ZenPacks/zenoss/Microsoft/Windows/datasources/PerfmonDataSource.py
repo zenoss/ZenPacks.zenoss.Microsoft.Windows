@@ -616,8 +616,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             except (RequestError, Exception) as ex:
                 if 'the request contained invalid selectors for the resource' in ex.message:
                     # shell was lost due to reboot, service restart, or other circumstance
-                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
-                              ' will attempt to restart on the next cycle.')
+                    LOG.log(
+                        logging.DEBUG,
+                        "Perfmon shell on %s was destroyed.  Get-Counter will attempt to restart on the next cycle.",
+                        self.config.id)
                 else:
                     if 'canceled by the user' in ex.message or\
                             'OperationTimeout' in ex.message:
@@ -778,12 +780,11 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if failures and not results:
             # No need to call onReceiveFail for each command in DeferredList.
             yield self.onReceiveFail(failures[0])
-        else:
-            self.retry_count = 0
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
             self.receive()
+            self.retry_count = 0
 
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
@@ -799,7 +800,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             dsconf0 = self.config.datasources[0]
             if CORRUPT_COUNTERS[dsconf0.device]:
                 self.reportCorruptCounters(self.counter_map)
+            self.retry_count = 0
         else:
+            self.retry_count = 0
             if self.cycling:
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
@@ -914,7 +917,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             retry = False
         if retry:
             self.retry_count += 1
-            if self.retry_count >= MAX_RETRIES
+            LOG.debug("Retry connection on {}, retry_count = {}".format(self.confg.id, self.retry_count))
+            if self.retry_count >= MAX_RETRIES:
+                LOG.debug("Stopping retry on {} due to retry_count >= MAX_RETRIES".format(self.confg.id))
                 yield self.stop()
                 self.reset()
                 retry = False
