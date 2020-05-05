@@ -65,6 +65,7 @@ OPERATION_TIMEOUT = 60
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
 MAX_NETWORK_FAILURES = 3
+MAX_RETRIES = 3
 
 
 class PowerShellError(Error):
@@ -377,6 +378,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     def reset(self):
         self.state = PluginStates.STOPPED
         self.network_failures = 0
+        self.retry_count = 0
 
         self.complex_command = ComplexLongRunningCommand(
             self.config.datasources[0],
@@ -614,8 +616,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             except (RequestError, Exception) as ex:
                 if 'the request contained invalid selectors for the resource' in ex.message:
                     # shell was lost due to reboot, service restart, or other circumstance
-                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
-                              ' will attempt to restart on the next cycle.')
+                    LOG.log(
+                        logging.DEBUG,
+                        "Perfmon shell on %s was destroyed.  Get-Counter will attempt to restart on the next cycle.",
+                        self.config.id)
                 else:
                     if 'canceled by the user' in ex.message or\
                             'OperationTimeout' in ex.message:
@@ -780,6 +784,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
             self.receive()
+            self.retry_count = 0
 
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
@@ -795,7 +800,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             dsconf0 = self.config.datasources[0]
             if CORRUPT_COUNTERS[dsconf0.device]:
                 self.reportCorruptCounters(self.counter_map)
+            self.retry_count = 0
         else:
+            self.retry_count = 0
             if self.cycling:
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
@@ -862,6 +869,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'got "Unexpected Response" during receive, '
                     'attempting to receive again'
                 )
+            elif 'invalid selectors for the resource' in e.message:
+                retry, level, msg = (
+                    False,
+                    logging.DEBUG,
+                    'Attempted to use a non-existent remote shell.  Possibly '
+                    'due to device reboot.'
+                )
             else:
                 retry, level, msg = (
                     True,
@@ -888,10 +902,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 level = logging.DEBUG
                 e = 'Attempted to receive from closed connection.  Possibly '\
                     'due to device reboot.'
-            elif 'invalid selectors for the resource' in e.message:
-                level = logging.DEBUG
-                e = 'Attempted to use a non-existent remote shell.  Possibly '\
-                    'due to device reboot.'
             retry, msg = (
                 False,
                 "receive failure on {}: {}"
@@ -906,7 +916,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.reset()
             retry = False
         if retry:
-            self.receive()
+            self.retry_count += 1
+            LOG.debug("Retry connection on {}, retry_count = {}".format(self.confg.id, self.retry_count))
+            if self.retry_count >= MAX_RETRIES:
+                LOG.debug("Stopping retry on {} due to retry_count >= MAX_RETRIES".format(self.confg.id))
+                yield self.stop()
+                self.reset()
+                retry = False
+            else:
+                self.receive()
         else:
             yield self.stop()
             self.reset()
