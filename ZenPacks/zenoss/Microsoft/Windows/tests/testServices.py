@@ -22,6 +22,8 @@ class TestServices(BaseTestCase):
         self.results = Mock()
         self.results.get.return_value = [StringAttributeObject()]
         self.device = StringAttributeObject()
+        self.device.zWinServicesNotModeled = []
+        self.device.zWinServicesModeled = []
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())

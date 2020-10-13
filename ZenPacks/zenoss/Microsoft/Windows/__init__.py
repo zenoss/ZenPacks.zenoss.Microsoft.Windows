@@ -140,7 +140,13 @@ class ZenPack(schema.ZenPack):
                                                                              'initiate a remodel of a Windows or Cluster Device.',
                                                               'label': 'Windows remodel event class keys'},
                             'zWinRMConnectTimeout': {'type': 'int',
-                                                     'description': 'Used to define the time out for establishing a winrm connection.'}
+                                                     'description': 'Used to define the time out for establishing a winrm connection.'},
+                            'zWinServicesModeled': {'type': 'lines',
+                                                    'description': 'List of regular expressions for services to model',
+                                                    'label': 'Regex expressions to model services'},
+                            'zWinServicesNotModeled': {'type': 'lines',
+                                                       'description': 'List of regular expressions for services not to model',
+                                                       'label': 'Regex expressions to ignore services from modeling'},
                             }
 
     def install(self, app):

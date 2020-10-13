@@ -1182,6 +1182,13 @@ important.
 -   zWinRMConnectTimeout
     :   Used to define the time out for establishing a winrm connection.  If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
 
+-   zWinServicesModeled
+    :   List of regular expressions for services to model.
+        If zWinServicesNotModeled is set, we will skip services from it first.
+
+-   zWinServicesNotModeled
+    :   List of regular expressions for services to ignore during modeling process.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1852,6 +1859,9 @@ Configuration Properties
 :   zWinRMLocale 
 :   zWinRSCodePage 
 :   zWinRMKrb5includedir
+:   zWinServicesModeled
+:   zWinServicesNotModeled
+
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -1906,6 +1916,10 @@ Monitoring Templates
 
 Changes
 -------
+
+2.9.5
+
+-   Add zWinServicesModeled and zWinServicesNotModeled properties to control Services component (ZPS-7220)
 
 2.9.4
 
