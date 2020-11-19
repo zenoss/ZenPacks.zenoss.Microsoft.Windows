@@ -42,7 +42,8 @@ ConnectionInfoProperties = (
     'kerberos_rdns',
     'zWinRMConnectTimeout',
     'zWinServicesModeled',
-    'zWinServicesNotModeled'
+    'zWinServicesNotModeled',
+    'snmpSysName',
 )
 
 
