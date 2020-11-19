@@ -48,11 +48,57 @@ class TestOperatingSystem(BaseTestCase):
         self.assertEquals(data[1].totalMemory, 1024)
         self.assertEquals(data[2].totalSwap, 1024)
 
+    def test_process_sys_name_from_device(self):
+        device = Mock()
+        device.id = 'win_device'
+        device.snmpSysName = 'device_sys_name'
+        device.manageIp = '8.8.8.8'
+        data = self.plugin.process(device, {}, Mock())
+        self.assertEquals(data[0].snmpSysName, 'device_sys_name')
+
+    def test_process_sys_name_from_comp_system(self):
+        device = Mock()
+        device.id = 'win_device'
+        device.snmpSysName = 'device_sys_name'
+        device.manageIp = '8.8.8.8'
+        computer_system = Mock()
+        computer_system.Name = 'computer_sys_name'
+        results = {
+            'Win32_ComputerSystem': [computer_system]
+        }
+        data = self.plugin.process(device, results, Mock())
+        self.assertEquals(data[0].snmpSysName, 'computer_sys_name')
+
+    def test_process_sys_name_from_os_system(self):
+        device = Mock()
+        device.id = 'win_device'
+        device.snmpSysName = 'device_sys_name'
+        device.manageIp = '8.8.8.8'
+        os_system = Mock()
+        os_system.CSName = 'os_sys_name'
+        os_system.TotalVisibleMemorySize = 1024
+        os_system.TotalVirtualMemorySize = 1024
+        os_system.Caption = 'Caption'
+        results = {
+            'Win32_OperatingSystem': [os_system]
+        }
+        data = self.plugin.process(device, results, Mock())
+        self.assertEquals(data[0].snmpSysName, 'os_sys_name')
+
+    def test_process_sys_name_unknown(self):
+        device = Mock()
+        device.id = 'win_device'
+        device.snmpSysName = ''
+        device.manageIp = '8.8.8.8'
+        data = self.plugin.process(device, {}, Mock())
+        self.assertEquals(data[0].snmpSysName, 'Unknown')
+
 
 class TestDomainController(BaseTestCase):
     '''
     Test if a device is a domain controller
     '''
+
     def setUp(self):
         self.plugin = OperatingSystem()
         self.device = load_pickle(self, 'device')
@@ -113,7 +159,7 @@ class TestOddWMIClasses(BaseTestCase):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data[0].snmpDescr, 'Unknown')
         self.assertEquals(data[0].snmpContact, 'Unknown')
-        self.assertEquals(data[0].snmpSysName, 'Unknown')
+        self.assertEquals(data[0].snmpSysName, 'snmpSysName')
 
         self.assertEquals(data[1].tag, 'Unknown')
         self.assertEquals(data[2].setProductKey.args[0], 'Unknown - Unknown')
@@ -150,7 +196,7 @@ class TestOddWMIClasses(BaseTestCase):
         data = self.plugin.process(self.device, self.results, Mock())
         self.assertEquals(data[0].snmpDescr, 'Unknown')
         self.assertEquals(data[0].snmpContact, 'Unknown')
-        self.assertEquals(data[0].snmpSysName, 'Unknown')
+        self.assertEquals(data[0].snmpSysName, 'snmpSysName')
 
 
 def test_suite():
