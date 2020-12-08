@@ -67,6 +67,7 @@ productNames = (
     'WinSQLDatabase',
     'WinSQLInstance',
     'WinSQLJob',
+    'WinSQLAvailabilityGroup',
 )
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\
@@ -140,7 +141,11 @@ class ZenPack(schema.ZenPack):
                                                                              'initiate a remodel of a Windows or Cluster Device.',
                                                               'label': 'Windows remodel event class keys'},
                             'zWinRMConnectTimeout': {'type': 'int',
-                                                     'description': 'Used to define the time out for establishing a winrm connection.'}
+                                                     'description': 'Used to define the time out for establishing a winrm connection.'},
+                            'zSQLAlwaysOnEnabled': {'type': 'boolean',
+                                                    'default': False,
+                                                    'description': 'Set to true to enable modeling and monitoring of MS SQL Always On components.',
+                                                    'label': 'SQL Always On enabled'}
                             }
 
     def install(self, app):
