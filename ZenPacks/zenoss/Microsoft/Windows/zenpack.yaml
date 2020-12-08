@@ -54,6 +54,11 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zSQLAlwaysOnEnabled:
+    label: 'SQL Always On enabled'
+    default: false
+    type: boolean
+    description: 'Set to true to enable modeling and monitoring of MS SQL Always On components.'
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService

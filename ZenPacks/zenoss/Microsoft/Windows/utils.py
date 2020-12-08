@@ -708,3 +708,100 @@ def keyword_search(root, keywords):
                 yield result.getObject()
             except Exception:
                 pass
+
+
+def get_console_output_from_parts(parts):
+    if isinstance(parts, (list, tuple)):
+        output = '\n'.join(parts)
+    else:
+        output = parts
+    return output
+
+
+def parse_winrs_response(winrs_response, parsing_format='json'):
+    """
+    Parses response from Windows remote shell
+
+    @param winrs_response: logger.
+    @type winrs_response: Union[list, tuple, string]
+    @param parsing_format: String with parsing format name.
+    @type parsing_format: str
+
+    @return: tuple with parsed result and error message (if present)
+    @rtype: tuple
+    """
+
+    result = None
+    error = None
+
+    if not isinstance(parsing_format, basestring):
+        error = 'parsing format should be string'
+        return result, error
+
+    supprted_formats = ('json',)
+
+    if parsing_format.lower() in supprted_formats:
+        try:
+            winrs_response_joined = get_console_output_from_parts(winrs_response)
+            result = json.loads(
+                winrs_response_joined
+            )
+        except (ValueError, TypeError, IndexError, KeyError) as e:
+            error = e.message
+    else:
+        error = 'Unsupported parsing format. Currently supported formats: {}'.format(','.join(supprted_formats))
+
+    return result, error
+
+
+def get_sql_instance_naming_info(instance_name, is_cluster_instance=False, hostname='', cluster_instance_name=''):
+    """
+    Return proper SQL Instance title and full SQL Instance name depends on provided parameters.
+
+    @param instance_name: SQL Instance name.
+    @type instance_name: str
+
+    @param is_cluster_instance: Whether it is Cluster SQL Instance. Default is False
+    @type is_cluster_instance: bool
+
+    @param hostname: Non-cluster SQL Instance hostname. Default is empty string.
+    @type hostname: str
+
+    @param cluster_instance_name: Name of Cluster SQL Instance. Default is empty string.
+    @type cluster_instance_name: str
+
+    @return: Tuple (instance_title, full_sql_instance_name)
+    @rtype: tuple
+    """
+    instance_title = instance_name
+
+    if is_cluster_instance:
+        if instance_name == 'MSSQLSERVER':
+            instance_title = full_sql_instance_name = cluster_instance_name
+        else:
+            full_sql_instance_name = '{0}\{1}'.format(cluster_instance_name, instance_name)
+    else:
+        if instance_name == 'MSSQLSERVER':
+            instance_title = full_sql_instance_name = hostname
+        else:
+            full_sql_instance_name = '{0}\{1}'.format(hostname, instance_name)
+
+    return instance_title, full_sql_instance_name
+
+
+def use_sql_always_on(device):
+    """
+    Determines whether to use SQL Always On functionality based on information taken from provided Device proxy.
+    Currently Always On is used for Microsoft/Cluster devices with enabled zSQLAlwaysOnEnabled zProperty.
+
+    @param device: Device proxy.
+    @type device: Products.DataCollector.DeviceProxy.DeviceProxy
+
+    @return: Boolean, whether to use SQL Always On
+    @rtype: bool
+    """
+
+    sql_always_on_enabled = getattr(device, 'zSQLAlwaysOnEnabled', False)
+    device_class_name = getattr(device, 'getDeviceClassName', '')
+
+    return sql_always_on_enabled and 'Microsoft/Cluster' in device_class_name
