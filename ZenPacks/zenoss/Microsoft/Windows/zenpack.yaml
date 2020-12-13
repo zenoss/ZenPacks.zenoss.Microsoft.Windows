@@ -68,12 +68,14 @@ class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusterservices) 1:MC (os)ClusterService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusternetworks) 1:MC (os)ClusterNetwork
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusternodes) 1:MC (os)ClusterNode
+  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winsqlavailabilitygroups) 1:MC (os)WinSQLAvailabilityGroup
   - ClusterService(clusterresources) 1:MC (clusterservice)ClusterResource
   - ClusterNode(clusterdisks) 1:MC (clusternode)ClusterDisk
   - ClusterNode(clusterinterfaces) 1:MC (clusternode)ClusterInterface
   - WinSQLInstance(backups) 1:MC (winsqlinstance)WinSQLBackup
   - WinSQLInstance(databases) 1:MC (winsqlinstance)WinSQLDatabase
   - WinSQLInstance(jobs) 1:MC (winsqlinstance)WinSQLJob
+  - WinSQLInstance(winsqlavailabilitygroups) 1:M (winsqlinstance)WinSQLAvailabilityGroup
   - TeamInterface(teaminterfaces) 1:M (teaminterface)Interface
 
 
@@ -757,3 +759,44 @@ classes:
     dynamicview_relations:
       impacts: []
       impacted_by: [winsqlinstance]
+
+  WinSQLAvailabilityGroup:
+    label: Availability Group
+    base: [zenpacklib.OSComponent]
+    order: 14
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      unigue_id:
+        label: Unique ID
+      primary_replica_server_name:
+        short_label: SQL Instance
+        label: Primary replica SQL Instance
+        grid_display: true
+      failover_type:
+        label: Failover Type
+        grid_display: true
+      cluster_state:
+        label: Cluster State
+        grid_display: true
+      synchronization_health:
+        label: Synchronization Health
+        grid_display: true
+      primary_recovery_health:
+        label: Primary Recovery Health
+        grid_display: true
+      health_check_timeout:
+        type: int
+        label: Health Check Timeout
+        grid_display: true
+      automated_backup_preference:
+        label: Automated Backup Preference
+        grid_display: true
+      failure_condition_level:
+        label: Failure condition level
+        grid_display: true
+      is_distributed:
+        type: boolean
+        label: Is distributed
+        grid_display: true

@@ -760,13 +760,10 @@ def get_sql_instance_naming_info(instance_name, is_cluster_instance=False, hostn
 
     @param instance_name: SQL Instance name.
     @type instance_name: str
-
     @param is_cluster_instance: Whether it is Cluster SQL Instance. Default is False
     @type is_cluster_instance: bool
-
     @param hostname: Non-cluster SQL Instance hostname. Default is empty string.
     @type hostname: str
-
     @param cluster_instance_name: Name of Cluster SQL Instance. Default is empty string.
     @type cluster_instance_name: str
 

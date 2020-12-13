@@ -16,6 +16,8 @@ available in WMI.
 """
 import json
 
+from collections import defaultdict
+
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
@@ -410,7 +412,7 @@ class WinMSSQL(WinRMPlugin):
 
         ag_info_response = yield winrs.get_availability_group_info(sql_connection, sql_version)
 
-        log.debug('Availability Groups info response: {}'.format(ag_info_response))
+        log.debug('Availability Groups info response for SQL Instance {} : {}'.format(instance, ag_info_response))
 
         check_username(ag_info_response, instance, log)
         ag_info_stdout = filter_sql_stdout(ag_info_response.stdout)
@@ -614,7 +616,9 @@ class WinMSSQL(WinRMPlugin):
                 results['errors']['err'] = ag_info_response.getErrorMessage()
                 continue
 
-            results['instances_info'].append(ag_info_response.get('instances_info', []))
+            instances_info = ag_info_response.get('instances_info')
+            if instances_info:
+                results['instances_info'].append(instances_info)
             results['instances_representation_info'].update(ag_info_response.get('instances_representation_info', {}))
             results['errors'].update(ag_info_response.get('errors', {}))
 
@@ -633,8 +637,11 @@ class WinMSSQL(WinRMPlugin):
         password = device.windows_password
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'
+        ao_info = {}  # Parsed response about Always On (AO) resources
+        ao_instances_info = []  # Contains  result about Always On (AO) resources
         ao_instances_representation_info = {}  # Dict with brief information about SQL Instances on which Always On
         # resources are present: {<SQL-Instance>: <SQL-Instance-Version>}. Need for SQL Instance part of collection.
+        ao_errors = {}  # errors during Always On resource request and response parsing (per SQL Instance).
 
         try:
             dblogins = self.parse_zDBInstances(dbinstance, username, password)
@@ -655,7 +662,9 @@ class WinMSSQL(WinRMPlugin):
         if use_ao:
             ao_info = yield self.collect_ao_info(winrs, conn_info, dblogins, username, password, log)
             log.debug('Always On resources: {}'.format(ao_info))
+            ao_instances_info = ao_info.get('instances_info', [])
             ao_instances_representation_info = ao_info.get('instances_representation_info', {})
+            ao_errors = ao_info.get('errors', [])
 
         maps = {}
         if not instances and not ao_instances_representation_info:
@@ -905,6 +914,8 @@ class WinMSSQL(WinRMPlugin):
         maps['backups'] = backup_oms
         maps['jobs'] = jobs_oms
         maps['device'] = device_om
+        maps['ao_instances_info'] = ao_instances_info
+        maps['ao_errors'] = ao_errors
 
         defer.returnValue(maps)
 
@@ -1010,6 +1021,62 @@ class WinMSSQL(WinRMPlugin):
             om_job.jobid = self.prepId('sqljob_{}_{}'.format(om_job.instancename, om_job.title))
         return om_job
 
+    def get_ao_oms(self, device, results, log):
+
+        ag_relname = 'winsqlavailabilitygroups'
+        ag_compname = 'os'
+        ag_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup'
+
+        result = {
+            'oms': defaultdict(list),
+            'relmaps': [],  # list with relationship maps to add to relmap list in process method
+        }
+
+        # TODO: Temporary here. Relocate to another place in future
+        # TODO: Implement this
+        def convert_keys(key):
+            key_adapters_mapping = {
+                'id': {
+                    'id': lambda obj, val: obj.prepId(val)
+                },
+                'name': {
+                    'title': lambda val: val,
+                },
+                'primary_replica_server_name': {
+                    'primary_replica_server_name': lambda val: val,
+                }
+            }
+
+        ao_nodes = results.get('ao_instances_info', [])
+
+        for ao_node in ao_nodes:
+            for ao_sql_instance in ao_node:
+                sql_instance_name = ao_sql_instance.get('instance_name')
+                sql_hostname = ao_sql_instance.get('sqlhostname')
+                sql_server_version = ao_sql_instance.get('sqlhostname')
+                log.debug('ao_sql_instance: {}'.format(ao_sql_instance))
+                instance_ags = ao_sql_instance.get('instance_ags', [])
+                sql_instance_id = self.prepId(sql_instance_name)
+
+                # 1. Availability Groups
+                for ag in instance_ags:
+                    ag_om = ObjectMap()
+                    for key, value in ag.iteritems():
+                        if key == 'id':
+                            value = self.prepId(value)
+                        if key == 'name':
+                            setattr(ag_om, 'title', value)
+                        if key == 'primary_replica_server_name':
+                            # TODO: add 1:1 relation to SQL Instance
+                            pass
+                        setattr(ag_om, key, value)
+                    # set winsqlinstance
+                    setattr(ag_om, 'set_winsqlinstance', sql_instance_id)
+
+                    result['oms'][(ag_relname, ag_compname, ag_modname)].append(ag_om)
+
+        return result
+
     @save
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
@@ -1091,6 +1158,23 @@ class WinMSSQL(WinRMPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
+
+        # Always On components
+        ao_oms = self.get_ao_oms(device, results, log)
+        # oms
+        ao_oms = ao_oms.get('oms')
+        log.debug('ao_oms: {}'.format(ao_oms))
+        for key, oms in ao_oms.iteritems():
+            relname, compname, modname = key
+            maps.append(RelationshipMap(
+                relname=relname,
+                compname=compname,
+                modname=modname,
+                objmaps=oms))
+        # also add ao-related relmaps if present
+        ao_relmaps = ao_oms.get('relmaps', [])
+        for ao_relmap in ao_relmaps:
+            maps.append(ao_relmap)
 
         try:
             for instance, errors in results['errors'].items():
