@@ -417,6 +417,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         return (
             context.device().id,
             datasource.getCycleTime(context),
+            getattr(context, 'cluster_node_server', ''),
             SOURCETYPE,
         )
 
