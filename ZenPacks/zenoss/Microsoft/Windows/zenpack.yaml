@@ -761,25 +761,26 @@ classes:
       impacted_by: [winsqlinstance]
 
   WinSQLAvailabilityGroup:
-    label: Availability Group
+    label: SQL Availability Group
     base: [zenpacklib.OSComponent]
     order: 14
     properties:
       DEFAULTS:
         grid_display: false
         default: None
+      getState:
+        label: State
+        api_only: true
+        api_backendtype: method
+        grid_display: true
       unigue_id:
         label: Unique ID
-      primary_replica_server_name:
-        short_label: SQL Instance
-        label: Primary replica SQL Instance
-        grid_display: true
       failover_type:
         label: Failover Type
-        grid_display: true
       cluster_state:
         label: Cluster State
-        grid_display: true
+      cluster_type:
+        label: Cluster Type
       synchronization_health:
         label: Synchronization Health
         grid_display: true
@@ -795,8 +796,30 @@ classes:
         grid_display: true
       failure_condition_level:
         label: Failure condition level
+      quorum_state:
+        label: Quorum State
+        grid_display: true
+      db_level_health_detection:
+        type: boolean
+        label: Database Level Health Detection
         grid_display: true
       is_distributed:
         type: boolean
         label: Is distributed
         grid_display: true
+      cluster_node_server:
+        label: Cluster Node Server
+        api_backendtype: method
+        api_only: true
+      perfmon_instance:
+        label: Perfmon Counter Instance Name
+        api_backendtype: method
+        api_only: true
+      instancename:
+        label: Instance Name
+        api_backendtype: method
+        api_only: true
+      owner_node_ip:
+        api_backendtype: method
+        api_only: true
+    monitoring_templates: [WinAvailabilityGroup]

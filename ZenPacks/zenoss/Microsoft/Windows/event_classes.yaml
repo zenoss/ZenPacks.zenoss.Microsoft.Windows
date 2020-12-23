@@ -17,6 +17,11 @@ event_classes:
         transform: "if device:\n\
           \    from ZenPacks.zenoss.Microsoft.Windows.actions import schedule_remodel\n\
           \    schedule_remodel(device, evt)"
+      AlwaysOnPrimaryReplicaInstanceChange:
+        eventClassKey: alwaysOnPrimaryReplicaInstanceChange
+        sequence: 10
+        remove: true
+        example: Primary replica SQL Instance for Availability Group AG1 changed to sql_instance_2
   /Status/IIS:
     remove: true
   /Status/Kerberos:

@@ -786,6 +786,24 @@ def get_sql_instance_naming_info(instance_name, is_cluster_instance=False, hostn
     return instance_title, full_sql_instance_name
 
 
+def get_proper_sql_instance_full_name(instance_full_name, is_cluster_instance, hostname='', cluster_instance_name=''):
+    """
+    Get proper instance full name by filter out default SQL Instance name ('MSSQLSERVER')
+    :param instnace_name:
+    :return:
+    """
+    proper_sql_instance_full_name = instance_full_name
+
+    if is_cluster_instance:
+        if instance_full_name == 'MSSQLSERVER':
+            proper_sql_instance_full_name = cluster_instance_name
+    else:
+        if instance_full_name == 'MSSQLSERVER':
+            proper_sql_instance_full_name = hostname
+
+    return proper_sql_instance_full_name
+
+
 def use_sql_always_on(device):
     """
     Determines whether to use SQL Always On functionality based on information taken from provided Device proxy.
@@ -802,3 +820,134 @@ def use_sql_always_on(device):
     device_class_name = getattr(device, 'getDeviceClassName', '')
 
     return sql_always_on_enabled and 'Microsoft/Cluster' in device_class_name
+
+
+def get_ao_sql_instance_id(prep_id_method, instance_name='', is_cluster_sql_instnace=False, instance_hostnmane='',
+                           sql_server_instance_full_name=''):
+    """
+    Returns SQL Instance ID to be use in Zenoss component pass. If valid sql_server_instance_full_name is provided - it
+    will used straightaway (with prep_id_method processing)
+    """
+
+    # If sql_server_instance_full_name is provided - use it straightaway
+    if isinstance(sql_server_instance_full_name, basestring) and sql_server_instance_full_name:
+        return prep_id_method(sql_server_instance_full_name)
+
+    if not isinstance(is_cluster_sql_instnace, bool) or \
+            not prep_id_method or \
+            not instance_name:
+        return None
+
+    if not is_cluster_sql_instnace and not instance_hostnmane:
+        return None
+
+    if is_cluster_sql_instnace:
+        name_for_id = instance_name
+    else:
+        name_for_id = '{}_{}'.format(instance_hostnmane, instance_name)
+
+    return prep_id_method(name_for_id)
+
+
+def lookup_ag_state(value):
+    return {
+        0: 'Offline',
+        1: 'Online',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_synchronization_health(value):
+    return {
+        0: 'Not healthy',
+        1: 'Partially healthy',
+        2: 'Healthy',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_automated_backup_preference(value):
+    return {
+        0: 'Primary',
+        1: 'Secondary only',
+        2: 'Prefer Secondary',
+        3: 'Any Replica',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_primary_recovery_health(value):
+    return {
+        0: 'In progress',
+        1: 'Online',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_failure_condition_level(value):
+    return {
+        1: 'OnServerDown',
+        2: 'OnServerUnresponsive',
+        3: 'OnCriticalServerErrors',
+        4: 'OnModerateServerErrors',
+        5: 'OnAnyQualifiedFailureCondition',
+        6: 'Unknown',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_cluster_type(value):
+    return {
+        0: 'WSFC',
+        1: 'None',
+        2: 'External',
+    }.get(value, 'unknown')
+
+
+def lookup_ag_quorum_state(value):
+    return {
+        0: 'Unknown quorum state',
+        1: 'Normal quorum',
+        2: 'Forced quorum',
+    }.get(value, 'unknown')
+
+
+def fill_ag_om(ag_om, ag_data, prep_id_method, sql_instance_data):
+    """
+    Fill ObjectMaps for Always On Availability Group.
+    """
+    for key, value in ag_data.iteritems():
+        if key == 'id':
+            setattr(ag_om, 'unigue_id', value)
+            value = prep_id_method(value)
+        if key == 'name':
+            setattr(ag_om, 'title', value)
+        if key == 'synchronization_health':
+            value = lookup_ag_synchronization_health(value)
+        if key == 'automated_backup_preference':
+            value = lookup_ag_automated_backup_preference(value)
+        if key == 'primary_recovery_health':
+            value = lookup_ag_primary_recovery_health(value)
+        if key == 'failure_condition_level':
+            value = lookup_ag_failure_condition_level(value)
+        if key == 'cluster_type':
+            value = lookup_ag_cluster_type(value)
+        if key == 'primary_replica_server_name':
+            continue  # relation to SQL Instance is set below.
+        setattr(ag_om, key, value)
+
+    sql_server_instance_full_name = sql_instance_data.get('sql_server_fullname') \
+                                    or ag_data.get('primary_replica_server_name')
+    sql_instance_name = sql_instance_data.get('sql_instance_name') or ag_data.get('sql_instance_name')
+    is_clustered_instance = sql_instance_data.get('is_clustered_instance') or ag_data.get('is_clustered_instance') \
+                            or False
+    sql_hostname = sql_instance_data.get('sql_hostname') or ag_data.get('sql_hostname')
+
+    sql_instance_id = get_ao_sql_instance_id(prep_id_method,
+                                             sql_instance_name,
+                                             is_clustered_instance,
+                                             sql_hostname,
+                                             sql_server_instance_full_name)
+    if sql_instance_id:
+        setattr(ag_om, 'set_winsqlinstance', sql_instance_id)
+
+    quorum_state = sql_instance_data.get('quorum_state')
+    if quorum_state:
+        setattr(ag_om, 'quorum_state', quorum_state)
+
+    return ag_om

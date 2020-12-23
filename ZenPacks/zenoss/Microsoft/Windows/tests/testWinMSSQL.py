@@ -307,7 +307,7 @@ class TestProcesses(BaseTestCase):
 
     def test_process(self):
         data = self.plugin.process(self.device, RESULTS, Mock())
-        self.assertEquals(len(data), 5)
+        self.assertEquals(len(data), 6)  # Hostname, SQLInstance, SQLBackup, SQLJob, SQLDatabase, SQLAvailabilityGroup
         self.assertEquals(data[0].sqlhostname, 'dbhost0')
 
         self.assertEquals(data[1].maps[0].title, 'RTC')
@@ -344,6 +344,9 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].systemobject, 'False')
         self.assertEquals(data[4].maps[0].title, 'db0')
         self.assertEquals(data[4].maps[0].version, '706')
+
+        # Always On components are disabled by default, so there must be empty object map
+        self.assertEquals(data[5].maps, [])
 
         # if empty jobs, backups, or databases we need to send empty list of object maps
         RESULTS['jobs'] = []

@@ -2143,7 +2143,67 @@ device_classes:
             component: ${here/id}
             datapoints:
               state: GAUGE
-
+      WinAvailabilityGroup:
+        description: Microsoft SQL Server per-availability group monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup
+        datasources:
+          AvailabilityGroupState:
+            type: Windows Shell
+            strategy: powershell MSSQL AO AG
+            component: ${here/id}
+            resource: AvailabilityGroupState
+            cycletime: ${here/zWinPerfmonInterval}
+            datapoints:
+              IsOnline:
+                rrdtype: GAUGE
+                rrdmin: 0
+                rrdmax: 1
+                description: Used to monitor the availability of the Availability Group.
+              NumberOfDisconnectedReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_disc_rpl__count: null}
+              NumberOfNotSynchronizedReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_n_synced_rpl__count: null}
+              NumberOfNotSynchronizingReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_n_syncing_rpl__count: null}
+              NumberOfReplicasWithUnhealthyRole:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_unh_role_rpl__count: null}
+              NumberOfSynchronizedSecondaryReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_sync_secd_rpl__count: null}
+        graphs:
+          State Indicators:
+            units: replicas
+            miny: 0
+            graphpoints:
+              Disconnected:
+                dpName: AvailabilityGroupState_NumberOfDisconnectedReplicas
+                format: '%7.0lf'
+                color: 'CC0000' # Red
+              Not Synchronized:
+                dpName: AvailabilityGroupState_NumberOfNotSynchronizedReplicas
+                format: '%7.0lf'
+                color: '990033' # Dark red
+              Not Synchronizing:
+                dpName: AvailabilityGroupState_NumberOfNotSynchronizingReplicas
+                format: '%7.0lf'
+                color: 'FFCC66' # Light orange
+              With Unhealthy Role:
+                dpName: AvailabilityGroupState_NumberOfReplicasWithUnhealthyRole
+                format: '%7.0lf'
+                color: 'FF9933' # Orange
+              Synchronized Secondary:
+                dpName: AvailabilityGroupState_NumberOfSynchronizedSecondaryReplicas
+                format: '%7.0lf'
+                color: '006633' # Green
 
       Active Directory:
         description: Microsoft Active Directory
