@@ -16,6 +16,8 @@ available in WMI.
 """
 import json
 
+from collections import defaultdict
+
 from twisted.internet import defer
 
 from Products.DataCollector.plugins.DataMaps \
@@ -23,9 +25,10 @@ from Products.DataCollector.plugins.DataMaps \
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.WinRMPlugin import WinRMPlugin
 from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
-    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances
+    getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, get_ao_sql_instance_id
 from ZenPacks.zenoss.Microsoft.Windows.utils import save, SqlConnection, use_sql_always_on, \
-    parse_winrs_response, get_sql_instance_naming_info, get_console_output_from_parts
+    parse_winrs_response, get_sql_instance_naming_info, recursive_mapping_update, \
+    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -113,23 +116,30 @@ class SQLCommander(object):
         }
 
         Import-Module FailoverClusters;
-        $ownernodes = New-Object System.Collections.Arraylist;
-        $processed_ownernodes = New-Object System.Collections.Arraylist;
+        $results = New-Object System.Collections.Arraylist;
+        $processed_ownernodes = New-Object 'system.collections.generic.dictionary[string,object]';
 
-        $cluster_resources = Get-ClusterResource | Where-Object {$_.ResourceType -like 'SQL Server Availability Group'};
+        $cluster_resources = Get-ClusterResource | Where-Object { $_.ResourceType -like 'SQL Server Availability Group' };
         foreach ($resource in $cluster_resources) {
-            $ownernode_info = New-Object 'system.collections.generic.dictionary[string,string]';
-            $ownernode = $resource.OwnerNode.Name;
-            if ($processed_ownernodes.IndexOf($ownernode) -gt -1) {
-                continue;
+            $ag_info = New-Object 'system.collections.generic.dictionary[string,object]';
+            $ag_info['ag_name'] = $resource.Name;
+            $ag_info['ag_resource_id'] = $resource.Id;
+            $ag_info['ag_resource_state'] = $resource.State;
+            $owner_node_name = $resource.OwnerNode.Name;
+            $owner_node_info = $null;
+            if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
+                $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';
+                $owner_node_info['OwnerNode'] = $owner_node_name;
+                $owner_node_info['OwnerNodeFQDN'] = ($owner_node_name, $domain) -join '.';
+                $owner_node_info['OwnerNodeDomain'] = $domain;
+                $owner_node_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($owner_node_name) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object IPAddressToString)[0].IPAddressToString;
+                $processed_ownernodes[$owner_node_name] = $owner_node_info;
             }
-            $ownernode_info['OwnerNode'] = ($ownernode, $domain) -join '.';
-            $ownernode_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($ownernode) | Where-Object {$_.AddressFamily -eq 'InterNetwork'} | Select-Object IPAddressToString)[0].IPAddressToString;
-            $ownernodes.Add($ownernode_info) > $null;
-            $processed_ownernodes.Add($ownernode) > $null;
+            $ag_info['owner_node_info'] = $owner_node_info;
+            $results.Add($ag_info) > $null;
         };
-        $ownernodes_json = ConvertTo-Json $ownernodes;
-        write-host $ownernodes_json
+        $results_json = ConvertTo-Json $results;
+        write-host $results_json;
     '''
 
     ALL_SQL_INSTANCES_PS_SCRIPT = '''
@@ -170,58 +180,124 @@ class SQLCommander(object):
     '''
 
     AVAILABILITY_GROUPS_INFO_PS_SCRIPT = '''
-        $sql_server = $server;
-        $result = New-Object 'system.collections.generic.dictionary[string, object]';
-        $result['ao_enabled'] = $True;
-        $availability_groups = New-Object System.Collections.ArrayList;
+        $def_fields = $server.GetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup]);
+        $server.SetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], $def_fields);
 
-        if ($sql_server.IsHadrEnabled) {
-            $dbmaster = $sql_server.Databases['master'];
-            <# SMO Optimiztion. #>
-            $def_fields = $sql_server.GetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup]);
-            $sql_server.SetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], $def_fields);
+        $res = New-Object 'system.collections.generic.dictionary[string, object]';
+        $res['ao_enabled'] = $server.IsHadrEnabled;
+        $ags = New-Object System.Collections.ArrayList;
+        $ars = New-Object System.Collections.ArrayList;
 
-            foreach ($availability_group in $sql_server.AvailabilityGroups) {
-                $primary_replica_server_name = $availability_group.PrimaryReplicaServerName;
-                if ($primary_replica_server_name -ne $sql_server.Name) {
-                    <# need info only from primary SQL Server instance #>
+        if ($server.IsHadrEnabled -and $server.AvailabilityGroups.Length -gt 0) {
+
+            $ag_res_ids_map = New-Object 'system.collections.generic.dictionary[string, object]';
+            $inst_to_node_map = New-Object 'system.collections.generic.dictionary[string, object]';
+            $server.Refresh();
+            $res['sql_server_fullname'] = $server.DomainInstanceName;
+            $res['is_clustered'] = $server.IsClustered;
+            $res['is_on_wsfc'] = $server.IsMemberOfWsfcCluster;
+
+            $dbmaster = $server.Databases['master'];
+
+            $cluster_query = \\"SELECT ag_id, ag_resource_id FROM sys.dm_hadr_name_id_map;
+                SELECT instance_name, node_name FROM sys.dm_hadr_instance_node_map;
+                SELECT member_name, member_type, member_state, number_of_quorum_votes FROM sys.dm_hadr_cluster_members;\\";
+            $cl_qry_res = $dbmaster.ExecuteWithResults($cluster_query);
+            try {
+                foreach ($row in $cl_qry_res.tables[0].rows) {
+                    $ag_res_ids_map[$row.ag_id] = $row.ag_resource_id;
+                }
+                foreach ($row in $cl_qry_res.tables[1].rows) {
+                    $inst_to_node_map[$row.instance_name] = $row.node_name;
+                }
+            } catch {}
+            try {
+                $cl_members = New-Object System.Collections.ArrayList;
+                foreach ($row in $cl_qry_res.tables[2].rows) {
+                    $cl_member = New-Object 'system.collections.generic.dictionary[string, object]';
+                    $cl_member['member_name'] = $row.member_name;
+                    $cl_member['member_type'] = $row.member_type;
+                    $cl_member['member_state'] = $row.member_state;
+                    $cl_member['number_of_quorum_votes'] = $row.number_of_quorum_votes;
+                    $cl_members.Add($cl_member) > $null;
+                }
+                $res['wsfc_cluster_members'] = $cl_members;
+            }
+            catch {}
+            foreach ($ag in $server.AvailabilityGroups) {
+                $ag_info = New-Object 'system.collections.generic.dictionary[string, object]';
+                $ag_uid = $ag.UniqueId;
+                $ag_res_uid = $ag_res_ids_map[$ag_uid];
+                $pr_rep_servr_name = $ag.PrimaryReplicaServerName;
+                $ag_info['name'] = $ag.Name;
+                $ag_info['id'] = $ag_uid;
+                $ag_info['ag_res_id'] = $ag_res_uid;
+                $ag_info['primary_replica_server_name'] = $pr_rep_servr_name;
+                if ($pr_rep_servr_name -ne $server.Name) {
+                    $ags.Add($ag_info) > $null;
                     continue;
                 }
-                $availability_group_info = New-Object 'system.collections.generic.dictionary[string, object]';
-                $availability_group_info['name'] = $availability_group.Name;
-                $availability_group_info['id'] = $availability_group.UniqueId;
-                $availability_group_info['primary_replica_server_name'] = $primary_replica_server_name;
-                $availability_group_info['is_distributed'] = $availability_group.IsDistributedAvailabilityGroup;
-                $availability_group_info['health_check_timeout'] = $availability_group.HealthCheckTimeout;
-                $availability_group_info['automated_backup_preference'] = $availability_group.AutomatedBackupPreference;
-                $availability_group_info['failure_condition_level'] = $availability_group.FailureConditionLevel;
-                <# T-SQL part #>
-                $ag_uid = $availability_group.UniqueId;
-                $ag_states_query = \\"SELECT ag_states.synchronization_health AS synchronization_health,
-                ag_states.synchronization_health_desc AS synchronization_health_desc,
-                ag_states.primary_recovery_health AS primary_recovery_health
+                $ag_info['is_distributed'] = $ag.IsDistributedAvailabilityGroup;
+                $ag_info['health_check_timeout'] = $ag.HealthCheckTimeout;
+                $ag_info['automated_backup_preference'] = $ag.AutomatedBackupPreference;
+                $ag_info['failure_condition_level'] = $ag.FailureConditionLevel;
+                $ag_info['cluster_type'] = $ag.ClusterTypeWithDefault;
+                $ag_info['db_level_health_detection'] = $ag.DatabaseHealthTrigger;
+                $ag_uid = $ag.UniqueId;
+                $ag_states_query = \\"SELECT ag_states.synchronization_health AS sync_hlth,
+                ag_states.primary_recovery_health AS pr_rec_hlth
                 FROM sys.dm_hadr_availability_group_states AS ag_states
                 WHERE ag_states.group_id = '$ag_uid';\\";
-                $ag_states_res = $dbmaster.ExecuteWithResults($ag_states_query);
                 try {
-                    $availability_group_info['synchronization_health'] = $ag_states_res.tables[0].rows[0].synchronization_health;
-                    $availability_group_info['synchronization_health_desc'] = $ag_states_res.tables[0].rows[0].synchronization_health_desc;
-                    $availability_group_info['primary_recovery_health'] = $ag_states_res.tables[0].rows[0].primary_recovery_health;
+                    $ag_states_res = $dbmaster.ExecuteWithResults($ag_states_query);
+                    $ag_info['synchronization_health'] = $ag_states_res.tables[0].rows[0].sync_hlth;
+                    $ag_info['primary_recovery_health'] = $ag_states_res.tables[0].rows[0].pr_rec_hlth;
                 }
                 catch {
-                    $availability_group_info['synchronization_health'] = '';
-                    $availability_group_info['synchronization_health_desc'] = '';
-                    $availability_group_info['primary_recovery_health'] = '';
+                    $ag_info['synchronization_health'] = '';
+                    $ag_info['primary_recovery_health'] = '';
                 }
-                $availability_groups.Add($availability_group_info) > $null;
+                $ags.Add($ag_info) > $null;
+
+                foreach ($ar in $ag.AvailabilityReplicas) {
+                    $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';
+                    $ar_uid = $ar.UniqueId;
+                    $ar_inf['ag_id'] = $ag_uid;
+                    $ar_inf['ag_res_id'] = $ag_res_uid;
+                    $ar_inf['id'] = $ar_uid;
+                    $ar_inf['name'] = $ar.Name;
+                    $ar_inf['state'] = $ar.MemberState;
+                    $ar_inf['role'] = $ar.Role;
+                    $ar_inf['operational_state'] = $ar.OperationalState;
+                    $ar_inf['availability_mode'] = $ar.AvailabilityMode;
+                    $ar_inf['connection_state'] = $ar.ConnectionState;
+                    $ar_inf['synchronization_state'] = $ar.RollupSynchronizationState;
+                    $ar_inf['failover_mode'] = $ar.FailoverMode;
+                    $ar_inf['endpoint_url'] = $ar.EndpointUrl;
+                    $ar_info_query = \\"SELECT availability_replicas.replica_server_name AS rep_srv_name,
+                    ISNULL(av_repl_st.synchronization_health, 100) AS sync_hth
+                    FROM sys.availability_replicas AS availability_replicas
+                    LEFT JOIN sys.dm_hadr_availability_replica_states AS av_repl_st
+                    ON availability_replicas.replica_id = av_repl_st.replica_id
+                    WHERE availability_replicas.replica_id = '$ar_uid';\\";
+                    $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);
+                    try {
+                        $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;
+                        $ar_inf['synchronization_health'] = $ar_info_res.tables[0].rows[0].sync_hth;
+                    }
+                    catch {
+                        $ar_inf['replica_server_name'] = '';
+                        $ar_inf['synchronization_health'] = '';
+                    }
+                    $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];
+                    $ars.Add($ar_inf) > $null;
+                }
             }
         }
-        else {
-            $result['ao_enabled'] = $False;
-        }
-        $result['availability_groups'] = $availability_groups;
-        $result_json = ConvertTo-Json $result;
-        Write-Host $result_json
+        $res['availability_groups'] = $ags;
+        $res['availability_replicas'] = $ars;
+        $res_json = ConvertTo-Json $res;
+        Write-Host $res_json
     '''
     # **********
 
@@ -251,7 +327,7 @@ class SQLCommander(object):
             instance_ps_script
         )
 
-    def get_availability_group_owner_nodes(self):
+    def get_availability_group_cluster_resources(self):
         """
         Run script to get information about Windows nodes
         on which SQL Instance with Always On (AO) resources are placed.
@@ -353,8 +429,8 @@ class WinMSSQL(WinRMPlugin):
         return sql_username, sql_password, login_as_user
 
     @defer.inlineCallbacks
-    def collect_ao_info_on_instance(self, connection_info, instance_hostname, host_username,
-                                    host_password, instance_info, sql_logins, log):
+    def collect_ao_info_on_sql_instance(self, connection_info, instance_hostname, host_username,
+                                        host_password, instance_info, sql_logins, additional_data, log):
         """
         Collects information about Always On (AO) resources on provided SQL Instance.
 
@@ -370,25 +446,25 @@ class WinMSSQL(WinRMPlugin):
         @type instance_info: dict
         @param sql_logins: Dictionary with SQL Instances and theirs credentials.
         @type sql_logins: dict
+        @param additional_data: Additional data provided to the method.
+        @type additional_data: dict
         @param log: logger.
         @type log: logger
 
         @return: Always On reslources on given Windows machine in format:
             {
-                'instance_name': '',
-                'sql_server_name': '',
-                'sql_server_version': '',
-                'ao_info': {},
-                'errors': []
+                'errors': defaultdict(list),
+                'sql_instances': defaultdict(dict),
+                'availability_groups': defaultdict(dict),
+                'availability_replicas': defaultdict(dict)
             }
         @rtype: dict
         """
-        result = {
-            'instance_name': '',
-            'sql_server_name': '',
-            'sql_server_version': '',
-            'ao_info': {},
-            'errors': []
+        results = {
+            'errors': defaultdict(list),
+            'sql_instances': defaultdict(dict),
+            'availability_groups': defaultdict(dict),
+            'availability_replicas': defaultdict(dict)
         }
 
         winrs = SQLCommander(connection_info, log)
@@ -410,24 +486,107 @@ class WinMSSQL(WinRMPlugin):
 
         ag_info_response = yield winrs.get_availability_group_info(sql_connection, sql_version)
 
-        log.debug('Availability Groups info response: {}'.format(ag_info_response))
+        log.debug('Availability Groups info response for SQL Instance {} : {}'.format(instance, ag_info_response))
 
         check_username(ag_info_response, instance, log)
         ag_info_stdout = filter_sql_stdout(ag_info_response.stdout)
         availability_groups_info, passing_error = parse_winrs_response(ag_info_stdout, 'json')
 
         if not availability_groups_info and passing_error:
-            result['errors'].append('Error during parsing Availability Groups info response: {}'.format(passing_error))
+            results['errors'][sqlserver].append('Error during parsing Availability Groups info response: {}'.format(passing_error))
         else:
-            result['ao_info'] = availability_groups_info
+            ao_enabled = availability_groups_info.get('ao_enabled', False)
+            ao_ag_count = availability_groups_info.get('ao_enabled', 0)
+            # Take only those SQL instances which have Availability Groups on them.
+            # Just enabled Always On not enough.
+            if ao_enabled is True and ao_ag_count > 0:
 
-        result['instance_name'] = instance_title
-        result['sql_server_name'] = sqlserver
-        result['sql_server_version'] = sql_server_version
+                # 1. SQL Instances
+                sql_server_instance_full_name = availability_groups_info.get('sql_server_fullname') or sqlserver
+
+                recursive_mapping_update(
+                    results['sql_instances'][sql_server_instance_full_name],
+                    {
+                        'sql_server_instance_full_name': sql_server_instance_full_name,
+                        'instance_original_name': instance,  # Like 'MSSQLSERVER' for default instances. Keep this name.
+                        'instance_name': instance_title,
+                        'sql_server_name': sqlserver,
+                        'sql_server_version': sql_server_version,
+                        'is_clustered_instance': availability_groups_info.get('is_clustered', False),
+                        'is_on_wsfc': availability_groups_info.get('is_on_wsfc', False),
+                        'wsfc_cluster_members': availability_groups_info.get('wsfc_cluster_members', []),
+                        'sqlhostname': instance_hostname,
+                        # update SQL Instance Info with Windows node-level info
+                        'sql_hostname_fqdn': additional_data.get('sql_hostname_fqdn', ''),
+                        'sql_host_ip': additional_data.get('sql_host_ip', ''),
+                    }
+                )
+
+                # 2. Availability Groups. Information about Always On Availability Groups on SQL Instance.
+                instance_ags = availability_groups_info.get('availability_groups', [])
+                for ag_info in instance_ags:
+                    ag_res_id = ag_info.get('ag_res_id')
+                    if not ag_res_id:
+                        continue
+                    recursive_mapping_update(
+                        results['availability_groups'][ag_res_id],
+                        ag_info
+                    )
+
+                # 3. Availability Replicas.
+                ag_owner_node_domain = additional_data.get('ag_owner_node_domain', '')
+                availability_replicas = availability_groups_info.get('availability_replicas', [])
+                for ar_info in availability_replicas:
+                    ar_id = ar_info.get('id')
+                    if not ar_id:
+                        continue
+                    recursive_mapping_update(
+                        results['availability_replicas'][ar_id],
+                        ar_info
+                    )
+
+                    # Also update SQL Instance info with Availability Replicas SQL Instance (primary for secondary
+                    # replicas instances, which we hasn't collected yet)
+                    replica_server_name = ar_info.get('replica_server_name', '')
+                    if replica_server_name:
+
+                        replica_server_name_parts = replica_server_name.split('\\')
+                        replica_instance_original_name = replica_server_name_parts[-1] if len(replica_server_name_parts) > 0 \
+                            else replica_server_name
+
+                        replica_server_hostname = ar_info.get('replica_server_hostname', '')
+                        replica_hostname_fqdn = ''
+                        if replica_server_hostname and ag_owner_node_domain:
+                            replica_hostname_fqdn = '{}.{}'.format(replica_server_hostname, ag_owner_node_domain)
+
+                        instance_title, sqlserver = get_sql_instance_naming_info(instance_name=replica_instance_original_name,
+                                                                                 hostname=replica_server_hostname)
+
+                        log.debug("Before update results['sql_instances'][replica_server_name]: {}".format(
+                            results['sql_instances'][replica_server_name]
+                        ))
+
+                        recursive_mapping_update(
+                            results['sql_instances'][replica_server_name],
+                            {
+                                'sql_server_instance_full_name': replica_server_name,
+                                'sql_server_name': replica_server_name,
+                                'instance_name': instance_title,
+                                'sqlhostname': replica_server_hostname,
+                                'instance_original_name': replica_instance_original_name,
+                                'sql_hostname_fqdn': replica_hostname_fqdn
+                            }
+                        )
+
+                        log.debug("After update results['sql_instances'][replica_server_name]: {}".format(
+                            results['sql_instances'][replica_server_name]
+                        ))
+
+        # stderr
         if ag_info_response.stderr:
-            result['errors'].append(get_console_output_from_parts(ag_info_response.stderr))
+            results['errors'][sqlserver].append(get_console_output_from_parts(ag_info_response.stderr))
 
-        defer.returnValue(result)
+        defer.returnValue(results)
 
     @defer.inlineCallbacks
     def collect_ao_info_on_node(self, ag_owner_node, connection_info, host_username, host_password, sql_logins, log):
@@ -436,7 +595,8 @@ class WinMSSQL(WinRMPlugin):
         (AG) owner node.
 
         @param ag_owner_node: Information about Availability Group (AG) owner node.
-        @type ag_owner_node: dict
+            Tuple: ('OwnerNode', 'OwnerNodeFQDN', 'OwnerNodeDomain', 'IPv4')
+        @type ag_owner_node: tuple
         @param connection_info: Information needed to instantiate SQLCommander object.
         @type connection_info: txwinrm.collect.ConnectionInfo
         @param sql_logins: Dictionary with SQL Instances and theirs credentials.
@@ -450,36 +610,40 @@ class WinMSSQL(WinRMPlugin):
 
         @return: Always On reslources on given Windows machine in format:
             {
-                'errors': {},
-                'instances_info': [],
-                'instances_representation_info': {}
+                'errors': defaultdict(list),
+                'sql_instances': defaultdict(dict),
+                'availability_groups': defaultdict(dict),
+                'availability_replicas': defaultdict(dict)
             }
         @rtype: dict
         """
-
         results = {
-            'errors': {},
-            'instances_info': [],
-            'instances_representation_info': {}
+            'errors': defaultdict(list),
+            'sql_instances': defaultdict(dict),
+            'availability_groups': defaultdict(dict),
+            'availability_replicas': defaultdict(dict)
         }
 
-        ag_owner_node_name = ag_owner_node.get('OwnerNode', '').strip()
-        ag_owner_node_ip_address = ag_owner_node.get('IPv4', '').strip()
+        ag_owner_node_name, ag_owner_node_fqdn, ag_owner_node_domain, ag_owner_node_ip_address = ag_owner_node
+        ag_owner_node_name = ag_owner_node_name.strip()
+        ag_owner_node_fqdn = ag_owner_node_fqdn.strip()
+        ag_owner_node_domain = ag_owner_node_domain.strip()
+        ag_owner_node_ip_address = ag_owner_node_ip_address.strip()
 
-        if not ag_owner_node_name:
-            log.error("Empty connection info for node {}".format(ag_owner_node_name))
+        if not ag_owner_node_fqdn:
+            log.error("Empty connection info for node {}".format(ag_owner_node_fqdn))
             defer.returnValue(results)
         # create separate remote shell for Windows node
         winrs = None
         try:
-            connection_info = connection_info._replace(hostname=ag_owner_node_name)
+            connection_info = connection_info._replace(hostname=ag_owner_node_fqdn)
             if ag_owner_node_ip_address:
                 connection_info = connection_info._replace(ipaddress=ag_owner_node_ip_address)
             else:
-                connection_info = connection_info._replace(ipaddress=ag_owner_node_name)
+                connection_info = connection_info._replace(ipaddress=ag_owner_node_fqdn)
             winrs = SQLCommander(connection_info, log)
         except Exception as e:  # NOQA: catch broad Exception because WinRMClients' connection info verification raises it.
-            log.error('Malformed data returned for node {}. {}'.format(ag_owner_node_name, e.message))
+            log.error('Malformed data returned for node {}. {}'.format(ag_owner_node_fqdn, e.message))
             defer.returnValue(results)
 
         instances_info_response = yield winrs.get_all_sql_instances_names()
@@ -498,16 +662,21 @@ class WinMSSQL(WinRMPlugin):
         instances = instances_info.get('instances', [])
 
         if not instances:
-            log.warn('No MSSQL Instances were found on node {}'.format(ag_owner_node_name))
+            log.warn('No MSSQL Instances were found on node {}'.format(ag_owner_node_fqdn))
             defer.returnValue(results)
 
         # Get info about primary replica SQL Instance for each availability group, because only on this instance we
         # can utilize SMO/T-SQL for getting info about Always On stuff.
         # Use DeferredList to perform asynchronous collection per each SQL Instance.
+        additional_data = {
+            'sql_hostname_fqdn': ag_owner_node_fqdn,
+            'sql_host_ip': ag_owner_node_ip_address,
+            'ag_owner_node_domain': ag_owner_node_domain
+        }
         ao_info_deffereds = []
         for instance_info in instances:
-            ag_info_deffered = self.collect_ao_info_on_instance(connection_info, hostname, host_username, host_password,
-                                                                instance_info, sql_logins, log)
+            ag_info_deffered = self.collect_ao_info_on_sql_instance(connection_info, hostname, host_username, host_password,
+                                                                    instance_info, sql_logins, additional_data, log)
             ao_info_deffereds.append(ag_info_deffered)
 
         collection_results = yield defer.DeferredList(ao_info_deffereds, consumeErrors=True)
@@ -515,31 +684,25 @@ class WinMSSQL(WinRMPlugin):
         for success, ag_info_response in collection_results:
 
             if not success:
-                results['errors'][ag_owner_node_name] = ag_info_response.getErrorMessage()
+                results['errors'][ag_owner_node_fqdn].append(ag_info_response.getErrorMessage())
                 continue
 
-            instance_name = ag_info_response.get('instance_name')
-            sql_server_version = ag_info_response.get('sql_server_version')
-            ao_info = ag_info_response.get('ao_info')  # information about Always On components on SQL Instance
-            errors = ag_info_response.get('errors')
+            recursive_mapping_update(
+                results['sql_instances'],
+                ag_info_response.get('sql_instances', {})
+            )
+            recursive_mapping_update(
+                results['availability_groups'],
+                ag_info_response.get('availability_groups', {})
+            )
+            recursive_mapping_update(
+                results['availability_replicas'],
+                ag_info_response.get('availability_replicas', {})
+            )
 
-            if ao_info:
-                ao_enabled = ao_info.get('ao_enabled', False)
-                instance_ags = ao_info.get('availability_groups')
-                # Take only those SQL instances which have Availability Groups on them.
-                # Just enabled Always On not enough.
-                if ao_enabled is True and isinstance(instance_ags, list) and len(instance_ags) > 0:
-                    instance_representatuion = '\\'.join((ag_owner_node_name, ag_owner_node_ip_address,
-                                                          hostname,
-                                                          instance_name))
-                    results['instances_representation_info'][instance_representatuion] = sql_server_version
-                    results['instances_info'].append(dict(
-                        instance_name=instance_name,
-                        sql_server_version=sql_server_version,
-                        sqlhostname=hostname,
-                        instance_ags=instance_ags)
-                    )
-            results['errors'][instance_name] = errors
+            ag_errors = ag_info_response.get('errors')
+            if ag_errors:
+                results['errors'][ag_owner_node_fqdn].append(ag_errors)
 
         defer.returnValue(results)
 
@@ -563,44 +726,65 @@ class WinMSSQL(WinRMPlugin):
 
         @return: Always On reslources on given Windows machine in format:
             {
-                'errors': {},
-                'instances_info': [],
-                'instances_representation_info': {}
+                'errors': defaultdict(list),
+                'sql_instances': defaultdict(dict),
+                'availability_groups': defaultdict(dict),
+                'availability_replicas': defaultdict(dict)
             }
         @rtype: dict
         """
         results = {
-            'errors': {},
-            'instances_info': [],
-            # data structure for compatibility with existing collect() code
-            'instances_representation_info': {}
+            'errors': defaultdict(list),
+            'sql_instances': defaultdict(dict),
+            'availability_groups': defaultdict(dict),
+            'availability_replicas': defaultdict(dict)
         }
-        # Get information about Availability Groups owner nodes: Name and IP address
-        ag_owner_nodes_response = yield winrs.get_availability_group_owner_nodes()
 
-        if not ag_owner_nodes_response:
-            log.info('{}: No output while getting Availability Groups owner nodes info.'
+        # Get information about Availability Groups and theirs owner nodes.
+        ag_cluster_resources_response = yield winrs.get_availability_group_cluster_resources()
+
+        if not ag_cluster_resources_response:
+            log.info('{}: No output while getting Availability Groups cluster resources.'
                      '  zWinRMEnvelopeSize may not be large enough.'
                      '  Increase the size and try again.'.format(self.name()))
             defer.returnValue(results)
 
-        log.debug('{} modeler Availability Groups owner nodes results: {}'.format(self.name(), ag_owner_nodes_response))
+        log.debug('{} modeler Availability Groups cluster resources results: {}'.format(self.name(),
+                                                                                        ag_cluster_resources_response))
 
-        availability_groups_owner_nodes, passing_error = parse_winrs_response(ag_owner_nodes_response.stdout, 'json')
+        ag_cluster_resources, passing_error = parse_winrs_response(ag_cluster_resources_response.stdout, 'json')
 
-        if not availability_groups_owner_nodes and passing_error:
+        if not ag_cluster_resources and passing_error:
             results['errors']['error'] = 'Error during parsing available group list info: {}'.format(
-                ag_owner_nodes_response.stderr)
+                ag_cluster_resources_response.stderr)
             defer.returnValue(results)
 
-        if isinstance(availability_groups_owner_nodes, list) and len(availability_groups_owner_nodes) == 0:
+        if isinstance(ag_cluster_resources, list) and len(ag_cluster_resources) == 0:
             results['errors']['error'] = 'No MSSQL Availability groups are present'
             defer.returnValue(results)
+
+        # Fill results with available information
+        ag_owner_nodes_info = set()  # use set to avoid owner nodes duplication (several AGs may be placed on same node)
+        for ag_info in ag_cluster_resources:
+            ag_resource_id = ag_info.get('ag_resource_id')
+            if not ag_resource_id:
+                continue
+            results['availability_groups'][ag_resource_id]['ag_res_id'] = ag_resource_id
+            results['availability_groups'][ag_resource_id]['name'] = ag_info.get('ag_name')
+            results['availability_groups'][ag_resource_id]['cluster_resource_state'] = ag_info.get('ag_resource_state')
+            # Owner node info
+            owner_node_info = ag_info.get('owner_node_info')
+            if not owner_node_info:
+                continue
+            ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
+                                     owner_node_info.get('OwnerNodeFQDN', ''),
+                                     owner_node_info.get('OwnerNodeDomain', ''),
+                                     owner_node_info.get('IPv4', '')))
 
         # Collect SQL Instances info on each Availability Groups' primary replica Owner Node.
         # Use DeferredList to perform asynchronous collection per each Windows node.
         ao_info_deferreds = []
-        for ag_owner_node in availability_groups_owner_nodes:
+        for ag_owner_node in ag_owner_nodes_info:
             ao_info_deffer = self.collect_ao_info_on_node(ag_owner_node, connection_info, host_username,
                                                           host_password, sql_logins, log)
             ao_info_deferreds.append(ao_info_deffer)
@@ -611,12 +795,25 @@ class WinMSSQL(WinRMPlugin):
         for success, ag_info_response in collection_results:
 
             if not success:
-                results['errors']['err'] = ag_info_response.getErrorMessage()
+                results['errors']['err'].append(ag_info_response.getErrorMessage())
                 continue
 
-            results['instances_info'].append(ag_info_response.get('instances_info', []))
-            results['instances_representation_info'].update(ag_info_response.get('instances_representation_info', {}))
-            results['errors'].update(ag_info_response.get('errors', {}))
+            recursive_mapping_update(
+                results['sql_instances'],
+                ag_info_response.get('sql_instances', {})
+            )
+            recursive_mapping_update(
+                results['availability_groups'],
+                ag_info_response.get('availability_groups', {})
+            )
+            recursive_mapping_update(
+                results['availability_replicas'],
+                ag_info_response.get('availability_replicas', {})
+            )
+
+            ag_errors = ag_info_response.get('errors')
+            if ag_errors:
+                results['errors']['err'].append(ag_errors)
 
         defer.returnValue(results)
 
@@ -633,8 +830,8 @@ class WinMSSQL(WinRMPlugin):
         password = device.windows_password
         dblogins = {}
         eventmessage = 'Error parsing zDBInstances'
-        ao_instances_representation_info = {}  # Dict with brief information about SQL Instances on which Always On
-        # resources are present: {<SQL-Instance>: <SQL-Instance-Version>}. Need for SQL Instance part of collection.
+        ao_info = {}  # Parsed response about Always On (AO) resources
+        ao_instances_info = {}  # Contains  result about Always On (AO) resources
 
         try:
             dblogins = self.parse_zDBInstances(dbinstance, username, password)
@@ -655,10 +852,10 @@ class WinMSSQL(WinRMPlugin):
         if use_ao:
             ao_info = yield self.collect_ao_info(winrs, conn_info, dblogins, username, password, log)
             log.debug('Always On resources: {}'.format(ao_info))
-            ao_instances_representation_info = ao_info.get('instances_representation_info', {})
+            ao_instances_info = ao_info.get('sql_instances', [])
 
         maps = {}
-        if not instances and not ao_instances_representation_info:
+        if not instances and not ao_instances_info:
             log.info('{}:  No output while getting instance names.'
                      '  zWinRMEnvelopeSize may not be large enough.'
                      '  Increase the size and try again.'.format(self.name()))
@@ -694,10 +891,8 @@ class WinMSSQL(WinRMPlugin):
             server_config[key] = serverlist
 
         instances_info = server_config.get('instances', {})
-        # add Always On instances
-        instances_info.update(ao_instances_representation_info)
 
-        if not instances_info:
+        if not instances_info and not ao_instances_info:
             eventmessage = 'No MSSQL Servers are installed but modeler is enabled'
             results = {'error': eventmessage}
             defer.returnValue(results)
@@ -905,6 +1100,7 @@ class WinMSSQL(WinRMPlugin):
         maps['backups'] = backup_oms
         maps['jobs'] = jobs_oms
         maps['device'] = device_om
+        maps['ao_info'] = ao_info
 
         defer.returnValue(maps)
 
@@ -1010,6 +1206,120 @@ class WinMSSQL(WinRMPlugin):
             om_job.jobid = self.prepId('sqljob_{}_{}'.format(om_job.instancename, om_job.title))
         return om_job
 
+    def get_ao_sql_instance_oms(self, results):
+
+        sql_instance_oms = []
+
+        sql_instances = results.get('ao_info', {}).get('sql_instances', {})
+
+        for sql_server_instance_full_name, ao_sql_instance in sql_instances.iteritems():
+
+            instance_om = ObjectMap()
+
+            is_clustered_instance = ao_sql_instance.get('is_clustered_instance', False)
+            sql_instance_name = ao_sql_instance.get('instance_name')
+            sql_instance_original_name = ao_sql_instance.get('instance_original_name')
+            sql_hostname = ao_sql_instance.get('sqlhostname')
+            sql_hostname_fqdn = ao_sql_instance.get('sql_hostname_fqdn')
+            sql_host_ip = ao_sql_instance.get('sql_host_ip')
+            sql_server_name = ao_sql_instance.get('sql_server_name')
+            sql_server_version = ao_sql_instance.get('sql_server_version')
+
+            sql_instance_id = get_ao_sql_instance_id(self.prepId, sql_instance_name,
+                                                     is_clustered_instance, sql_hostname,
+                                                     sql_server_instance_full_name)
+            instance_om.id = sql_instance_id
+
+            if sql_instance_original_name == 'MSSQLSERVER':
+                instance_om.perfmon_instance = 'SQLServer'
+                instance_om.title = '{}(MSSQLSERVER)'.format(sql_instance_name)
+            else:
+                instance_om.perfmon_instance = 'MSSQL${}'.format(sql_instance_original_name)
+                instance_om.title = sql_instance_name
+
+            instance_om.instancename = sql_instance_original_name
+            instance_om.sql_server_version = sql_server_version
+            instance_om.cluster_node_server = '{0}//{1}'.format(
+                sql_hostname_fqdn, sql_server_name)
+            instance_om.owner_node_ip = sql_host_ip
+
+            sql_instance_oms.append(instance_om)
+
+        return sql_instance_oms
+
+    def get_ao_oms(self, results, log):
+
+        ag_relname = 'winsqlavailabilitygroups'
+        ag_compname = 'os'
+        ag_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup'
+
+        ar_relname = 'winsqlavailabilityreplicas'
+        ar_compname = 'os/winsqlavailabilitygroups/{}'
+        ar_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica'
+
+        result = {
+            'oms': [  # Add to list in order to preserve sequence of applying maps.
+                defaultdict(list),  # Availability Groups
+                defaultdict(list)  # Availability Replicas
+            ]
+
+        }
+
+        # Add empty object map list for root ('os') containing relation for Availability Groups. This list will be
+        # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
+        # existing components.
+        result['oms'][0][(ag_relname, ag_compname, ag_modname)] = []
+
+        sql_instances = results.get('ao_info', {}).get('sql_instances', {})
+
+        # 1. Availability Groups
+        availability_groups = results.get('ao_info', {}).get('availability_groups', {})
+        for ag_id, ag_info in availability_groups.iteritems():
+            ag_om = ObjectMap()
+            # Get owner SQL Instance for 1:M relation
+            owner_sql_instance_name = ag_info.get('primary_replica_server_name', '')
+            if not owner_sql_instance_name:
+                log.warn('Empty owner SQL Instance for Availability Group {}'.format(ag_id))
+            owner_sql_instance_info = sql_instances.get(owner_sql_instance_name, {})
+
+            sql_instance_data = {
+                'sql_server_fullname': owner_sql_instance_info.get('sql_server_instance_full_name'),
+                'sql_instance_name': owner_sql_instance_info.get('instance_name'),
+                'is_clustered_instance': owner_sql_instance_info.get('is_clustered_instance'),
+                'sql_hostname': owner_sql_instance_info.get('sqlhostname')
+            }
+            ag_om = fill_ag_om(ag_om, ag_info, self.prepId, sql_instance_data)
+            result['oms'][0][(ag_relname, ag_compname, ag_modname)].append(ag_om)
+
+        # 2. Availability Replicas
+        availability_replicas = results.get('ao_info', {}).get('availability_replicas', {})
+        for ar_id, ar_info in availability_replicas.iteritems():
+            # Get Availability Group for containing relation
+            owner_ag_id = ar_info.get('ag_res_id', '')
+            if not owner_ag_id or owner_ag_id not in availability_groups:
+                log.warn('Empty owner Availability Group for Availability Replica {}. Skipping.'.format(ar_id))
+                continue
+            ar_om = ObjectMap()
+            # Get owner SQL Instance for 1:M relation
+            owner_sql_instance_name = ar_info.get('replica_server_name', '')
+            if not owner_sql_instance_name:
+                log.warn('Empty owner SQL Instance for Availability Replica {}'.format(ar_id))
+            owner_sql_instance_info = sql_instances.get(owner_sql_instance_name, {})
+
+            sql_instance_data = {
+                'sql_server_fullname': owner_sql_instance_info.get('sql_server_instance_full_name'),
+                'sql_instance_name': owner_sql_instance_info.get('instance_name'),
+                'is_clustered_instance': owner_sql_instance_info.get('is_clustered_instance'),
+                'sql_hostname': owner_sql_instance_info.get('sqlhostname'),
+            }
+            ar_om = fill_ar_om(ar_om, ar_info, self.prepId, sql_instance_data)
+            result['oms'][1][(ar_relname,
+                              ar_compname.format(self.prepId(owner_ag_id)),
+                              ar_modname)
+                             ].append(ar_om)
+
+        return result
+
     @save
     def process(self, device, results, log):
         log.info('Modeler %s processing data for device %s',
@@ -1056,11 +1366,16 @@ class WinMSSQL(WinRMPlugin):
             backupom.append(backup)
             map_backups_instance_oms[instance] = backupom
 
+        # Always On SQL Instances oms
+        ao_sql_instances_oms = self.get_ao_sql_instance_oms(results)
+
         maps.append(RelationshipMap(
             relname="winsqlinstances",
             compname="os",
             modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
-            objmaps=results['instances']))
+            objmaps=results['instances'] + ao_sql_instances_oms  # add AO SQL Instances oms (do not extend existed list
+            # as we operate with AO SQL Instances' jobs, databases, jobs separately)
+        ))
 
         # send empty oms if no jobs, dbs, backups for an instance
         for instance in results['instances']:
@@ -1091,6 +1406,19 @@ class WinMSSQL(WinRMPlugin):
                 compname="os/winsqlinstances/" + instance,
                 modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase",
                 objmaps=dbs))
+
+        # Always On components Object maps
+        ao_oms = self.get_ao_oms(results, log)
+        ao_oms = ao_oms.get('oms', [])
+        log.debug('Always On components Object maps: {}'.format(ao_oms))
+        for map_category in ao_oms:
+            for key, oms in map_category.iteritems():
+                relname, compname, modname = key
+                maps.append(RelationshipMap(
+                    relname=relname,
+                    compname=compname,
+                    modname=modname,
+                    objmaps=oms))
 
         try:
             for instance, errors in results['errors'].items():
