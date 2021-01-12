@@ -771,9 +771,9 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
 
         if result.exit_code != 0:
             log.debug(
-                'Non-zero exit code ({0}) for MSSQL AO AG for {1}'
+                'Non-zero exit code ({0}) for MSSQL AO AG on {1}'
                 .format(
-                    result.exit_code, datasources[0].device))
+                    result.exit_code, datasources[0].get('cluster_node_server')))
             return parsed_results
 
         # Parse values
@@ -792,24 +792,18 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
             return parsed_results
 
         for dsconf in datasources:
-            ag_name = dsconf.params.get('contexttitle')
-
-            if not ag_name:
-                log.debug('Empty Availability Group name for {}.'.format(datasources[0].device))
-                continue
-
+            ag_name = dsconf.params.get('contexttitle', '')
             ag_results = availability_groups_info.get(ag_name)
 
             if not isinstance(ag_results, dict):
                 log.debug('Got {} response monitoring for {}. It should be dict.'.format(type(ag_results),
                                                                                          ag_name))
-                return parsed_results
+                continue
 
             # Metrics
             ag_state_metrics = ag_results.get('ag_state')
             if isinstance(ag_state_metrics, dict):
-                datasource = dsconf.datasource
-                if datasource == 'AvailabilityGroupState':
+                if dsconf.datasource == 'AvailabilityGroupState':
                     for datapoint in dsconf.points:
                         dp_id = datapoint.id
                         dp_value = ag_state_metrics.get(dp_id)
