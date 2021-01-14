@@ -31,21 +31,25 @@ class WinSQLInstanceHostedObject(schema.WinSQLInstanceHostedObject):
         hosted_sql_instance = self.get_sql_instance()
         if hosted_sql_instance:
             return getattr(hosted_sql_instance, 'cluster_node_server', '')
+        return ''
 
     @property
     def perfmon_instance(self):
         hosted_sql_instance = self.get_sql_instance()
         if hosted_sql_instance:
             return getattr(hosted_sql_instance, 'perfmon_instance', '')
+        return ''
 
     @property
     def owner_node_ip(self):
         hosted_sql_instance = self.get_sql_instance()
         if hosted_sql_instance:
             return getattr(hosted_sql_instance, 'owner_node_ip', '')
+        return ''
 
     @property
     def instancename(self):
         hosted_sql_instance = self.get_sql_instance()
         if hosted_sql_instance:
             return getattr(hosted_sql_instance, 'instancename', '')
+        return ''

@@ -2204,6 +2204,16 @@ device_classes:
                 dpName: AvailabilityGroupState_NumberOfSynchronizedSecondaryReplicas
                 format: '%7.0lf'
                 color: '006633' # Green
+      WinAvailabilityReplica:
+        description: Microsoft SQL Server per-availability replica monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica
+        datasources:
+          AvailabilityReplicaState:
+            type: Windows Shell
+            strategy: powershell MSSQL AO AR
+            component: ${here/id}
+            resource: AvailabilityReplicaState
+            cycletime: ${here/zWinPerfmonInterval}
 
       Active Directory:
         description: Microsoft Active Directory

@@ -52,7 +52,8 @@ from ..utils import (
     check_for_network_error, save, errorMsgCheck,
     generateClearAuthEvents, get_dsconf, SqlConnection,
     lookup_databasesummary, lookup_database_status,
-    lookup_ag_state, lookup_ag_quorum_state, fill_ag_om)
+    lookup_ag_state, lookup_ag_quorum_state, fill_ag_om, fill_ar_om,
+    get_default_properties_value_for_component, get_prop_value_events)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
 
@@ -71,7 +72,8 @@ AVAILABLE_STRATEGIES = [
     'DCDiag',
     'powershell MSSQL Instance',
     'powershell MSSQL Job',
-    'powershell MSSQL AO AG'
+    'powershell MSSQL AO AG',
+    'powershell MSSQL AO AR'
 ]
 
 BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
@@ -873,6 +875,154 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
 gsm.registerUtility(PowershellMSSQLAlwaysOnAGStrategy(), IStrategy, 'powershell MSSQL AO AG')
 
 
+class PowershellMSSQLAlwaysOnARStrategy(object):
+    implements(IStrategy)
+
+    key = 'MSSQLAlwaysOnAR'
+
+    @staticmethod
+    def build_command_line(sql_connection, ag_names):
+        ps_command = "powershell -NoLogo -NonInteractive " \
+                     "-OutputFormat TEXT -Command "
+
+        ps_ao_ar_script = \
+            ("$res = New-Object 'system.collections.generic.dictionary[string, object]';"
+
+             "$def_fields = $server.GetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup]);"
+             "$server.SetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], $def_fields);"
+             "$def_fields = $server.GetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityReplica]);"
+             "$server.SetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityReplica], $def_fields);"
+             "$dbmaster = $server.Databases['master'];"
+             "$ag_names = @(ag_names_placeholder);"
+
+             "foreach ($ag_name in $ag_names) {"
+             " $ag = New-Object 'Microsoft.SqlServer.Management.Smo.AvailabilityGroup' $server, $ag_name;"
+             " $ag.Refresh();"
+             " foreach ($ar in $ag.AvailabilityReplicas) {"
+             "   $ar_uid = $ar.UniqueId;"
+             '   $ar_info_query = \\"SELECT avail_repl.replica_server_name AS rep_srv_name,'
+             "   ISNULL(av_repl_st.synchronization_health, 100) AS sync_hth"
+             "   FROM sys.availability_replicas AS avail_repl"
+             "   LEFT JOIN sys.dm_hadr_availability_replica_states AS av_repl_st"
+             "   ON avail_repl.replica_id = av_repl_st.replica_id"
+             '   WHERE avail_repl.replica_id = \'$ar_uid\';\\";'
+             "   try {"
+             "     $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);"
+             "     $rep_srv_name = $ar_info_res.tables[0].rows[0].rep_srv_name;"
+             "     $sync_hth = $ar_info_res.tables[0].rows[0].sync_hth;"
+             "   }"
+             "   catch {"
+             "     $rep_srv_name = '';"
+             "     $sync_hth = '';"
+             "   }"
+             # Need only replicas from current node. It is possible to pass Availability group names into script to
+             # avoid extra work on remote, but if there are lot of replicas - script length may exceed
+             # maximum possible length.
+             "   if ($rep_srv_name -ne $server.Name) {continue;}"
+             "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
+             "   $ar_inf['id'] = $ar_uid;"
+             "   $ar_inf['name'] = $ar.Name;"
+             "   $ar_inf['role'] = $ar.Role;"
+             "   $ar_inf['state'] = $ar.MemberState;"
+             "   $ar_inf['operational_state'] = $ar.OperationalState;"
+             "   $ar_inf['availability_mode'] = $ar.AvailabilityMode;"
+             "   $ar_inf['connection_state'] = $ar.ConnectionState;"
+             "   $ar_inf['synchronization_state'] = $ar.RollupSynchronizationState;"
+             "   $ar_inf['failover_mode'] = $ar.FailoverMode;"
+             "   $ar_inf['synchronization_health'] = $sync_hth;"
+             "   $res[$ar_uid] = $ar_inf;"
+             " }"
+             "}"
+             "$res_in_json = ConvertTo-Json $res;"
+             "Write-Host $res_in_json;").replace('ag_names_placeholder',
+                                                 ','.join(("'{}'".format(ag_name) for ag_name in ag_names)))
+        script = "\"& {{{}}}\"".format(
+            ''.join([BUFFER_SIZE] +
+                    getSQLAssembly(sql_connection.version) +
+                    sql_connection.sqlConnection +
+                    [ps_ao_ar_script]))
+
+        log.debug('Powershell MSSQL Always On AR Strategy script: {}'.format(script))
+
+        return ps_command, script
+
+    @staticmethod
+    def parse_result(config, result):
+
+        datasources = config.datasources
+
+        parsed_results = PythonDataSourcePlugin.new_data()
+
+        if result.stderr:
+            log.debug('MSSQL AO AR error: {0}'.format('\n'.join(result.stderr)))
+        log.debug('MSSQL AO AR results: {}'.format('\n'.join(result.stdout)))
+
+        if result.exit_code != 0:
+            log.debug(
+                'Non-zero exit code ({0}) for MSSQL AO AR on {1}'.format(
+                    result.exit_code, datasources[0].get('cluster_node_server')))
+            return parsed_results
+
+        # Parse values
+        ar_info_stdout = filter_sql_stdout(result.stdout)
+        availability_replicas_info, passing_error = parse_winrs_response(ar_info_stdout, 'json')
+
+        if not availability_replicas_info and passing_error:
+            log.debug('Error during parsing Availability Replicas performance data')
+            return parsed_results
+
+        log.debug('Availability Replicas performance response: {}'.format(availability_replicas_info))
+
+        if not isinstance(availability_replicas_info, dict):
+            log.debug('Availability replica monitoring response should be dict, got {}.'.format(
+                type(availability_replicas_info)))
+            return parsed_results
+
+        for dsconf in datasources:
+            ar_id = dsconf.params.get('instanceid')
+
+            ar_name = dsconf.params.get('contexttitle')
+            ar_results = availability_replicas_info.get(ar_id)
+
+            if not isinstance(ar_results, dict):
+                log.debug('Got {} response monitoring for {}. It should be dict.'.format(type(ar_results), ar_name))
+                # We got empty result for particular Availability Replica - seems like it is unreachable.
+                # Need to return set of properties with default values
+                ar_results = get_default_properties_value_for_component('WinSQLAvailabilityReplica')
+
+            # Maps:
+            ar_om = ObjectMap()
+            ar_om.id = dsconf.params['instanceid']
+            ar_om.title = dsconf.params['contexttitle']
+            ar_om.compname = dsconf.params['contextcompname']
+            ar_om.modname = dsconf.params['contextmodname']
+            ar_om.relname = dsconf.params['contextrelname']
+            ar_om = fill_ar_om(ar_om, ar_results, prepId, {})
+            parsed_results['maps'].append(ar_om)
+
+            # Events:
+            ar_events = get_prop_value_events(
+                'WinSQLAvailabilityReplica',
+                ar_om.__dict__,
+                dict(
+                    event_class=dsconf.eventClass or "/Status",
+                    event_key=dsconf.eventKey,
+                    component_title=dsconf.params['contexttitle'],
+                    device=config.id,
+                    component=dsconf.component
+                )
+            )
+            for event in ar_events:
+                parsed_results['events'].append(event)
+
+        log.debug('MSSQL Availability Replica performance results: {}'.format(parsed_results))
+
+        return parsed_results
+
+
+gsm.registerUtility(PowershellMSSQLAlwaysOnARStrategy(), IStrategy, 'powershell MSSQL AO AR')
+
+
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties + (
@@ -899,7 +1049,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     datasource.getCycleTime(context),
                     datasource.strategy,
                     getattr(context, 'instancename', ''))
-        elif datasource.strategy == 'powershell MSSQL AO AG':
+        elif datasource.strategy == 'powershell MSSQL AO AG' or \
+                datasource.strategy == 'powershell MSSQL AO AR':
             # TODO: single out 'powershell MSSQL AO ...' into separate config key, as 'cluster_node_server' value
             #  should be included as well. It is also true for 'powershell MSSQL' and 'powershell MSSQL Job' strategies.
             #  As a result, when 'cluster_node_server' will be included to theirs config key - this particular block
@@ -930,7 +1081,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                         'DCDiag',
                                         'powershell MSSQL Instance',
                                         'powershell MSSQL Job,'
-                                        'powershell MSSQL AO AG'):
+                                        'powershell MSSQL AO AG',
+                                        'powershell MSSQL AO AR'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
@@ -989,6 +1141,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             winsqlinstance_id = get_winsqlinstance()
         else:
             winsqlinstance_id = None
+        # Availability Group name for containing objects.
+        availability_group_name = getattr(context, 'availability_group_name', '')
 
         return dict(resource=resource,
                     strategy=datasource.strategy,
@@ -1004,7 +1158,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     contexttitle=contexttitle,
                     version=version,
                     owner_node_ip=owner_node_ip,
-                    winsqlinstance_id=winsqlinstance_id)
+                    winsqlinstance_id=winsqlinstance_id,
+                    availability_group_name=availability_group_name)
 
     def getSQLConnection(self, dsconf, conn_info):
         dbinstances = dsconf.zDBInstances
@@ -1084,6 +1239,12 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             for dsconf in config.datasources
                             if dsconf.params['contexttitle']]
                 command_line, script = strategy.build_command_line(cmd_line_input, ag_nemes)
+            elif dsconf0.params['strategy'] == 'powershell MSSQL AO AR':
+                # For Always On Availability replicas, we need the replicas' Availability Group names:
+                ag_nemes = [dsconf.params['availability_group_name']
+                            for dsconf in config.datasources
+                            if dsconf.params['availability_group_name']]
+                command_line, script = strategy.build_command_line(cmd_line_input, ag_nemes)
             else:
                 command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] == 'Custom Command':
@@ -1139,7 +1300,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             diagResult = strategy.parse_result(dsconfs, result)
             dsconf = dsconfs[0]
             data['events'] = diagResult.events
-        elif strategy.key == 'MSSQLAlwaysOnAG':
+        elif strategy.key == 'MSSQLAlwaysOnAG' or strategy.key == 'MSSQLAlwaysOnAR':
             ao_result = strategy.parse_result(config, result)
             data['values'] = ao_result.get('values', {})
             data['maps'] = ao_result.get('maps', [])

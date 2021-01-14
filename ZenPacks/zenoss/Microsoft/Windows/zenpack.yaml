@@ -882,5 +882,5 @@ classes:
         grid_display: true
       endpoint_url:
         label: Endpoint Url
-    monitoring_templates: []
+    monitoring_templates: [WinAvailabilityReplica]
 
