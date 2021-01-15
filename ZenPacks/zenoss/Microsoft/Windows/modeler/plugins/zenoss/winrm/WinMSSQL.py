@@ -1222,6 +1222,11 @@ class WinMSSQL(WinRMPlugin):
             sql_hostname = ao_sql_instance.get('sqlhostname')
             sql_hostname_fqdn = ao_sql_instance.get('sql_hostname_fqdn')
             sql_host_ip = ao_sql_instance.get('sql_host_ip')
+            # if there is no ip address for SQL Instance - try to take it from hosts info
+            if not sql_host_ip:
+                ip_and_hostname = self.get_ip_and_hostname(sql_hostname_fqdn)
+                if isinstance(ip_and_hostname, list) and len(ip_and_hostname) == 2:
+                    sql_host_ip = ip_and_hostname[0]
             sql_server_name = ao_sql_instance.get('sql_server_name')
             sql_server_version = ao_sql_instance.get('sql_server_version')
 

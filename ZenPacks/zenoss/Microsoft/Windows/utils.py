@@ -15,6 +15,7 @@ import json
 import base64
 import collections
 from Products.AdvancedQuery import In
+from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
 
 APP_POOL_STATUSES = {
@@ -790,8 +791,6 @@ def get_sql_instance_naming_info(instance_name, is_cluster_instance=False, hostn
 def get_proper_sql_instance_full_name(instance_full_name, is_cluster_instance, hostname='', cluster_instance_name=''):
     """
     Get proper instance full name by filter out default SQL Instance name ('MSSQLSERVER')
-    :param instnace_name:
-    :return:
     """
     proper_sql_instance_full_name = instance_full_name
 
@@ -1028,6 +1027,153 @@ def lookup_ar_synchronization_health(value):
         1: 'Partially healthy',
         2: 'Healthy'
     }.get(value, 'unknown')
+
+
+def get_ar_severities(prop_name, prop_value):
+    """
+    Returns ZenEventClasses severity for given MS SQL Always On Availability Replica property and its value.
+    """
+    ar_severities_map = {
+        'state': {
+            'Online': ZenEventClasses.Clear,
+            'Offline': ZenEventClasses.Critical,
+            'Partially Online': ZenEventClasses.Warning,
+            'Unknown': ZenEventClasses.Warning
+        },
+        'role': {
+            'Primary': ZenEventClasses.Clear,
+            'Secondary': ZenEventClasses.Clear,
+            'Resolving': ZenEventClasses.Clear,
+            'Unknown': ZenEventClasses.Warning
+        },
+        'operational_state': {
+            'Online': ZenEventClasses.Clear,
+            'Offline': ZenEventClasses.Critical,
+            'Pending': ZenEventClasses.Info,
+            'Pending failover': ZenEventClasses.Warning,
+            'Failed': ZenEventClasses.Critical,
+            'Failed no Quorum': ZenEventClasses.Critical,
+            'Unknown': ZenEventClasses.Warning
+        },
+        'connection_state': {
+            'Connected': ZenEventClasses.Clear,
+            'Disconnected': ZenEventClasses.Critical,
+            'Unknown': ZenEventClasses.Warning
+        },
+        'synchronization_state': {
+            'Synchronizing': ZenEventClasses.Clear,
+            'Synchronized': ZenEventClasses.Clear,
+            'Not synchronizing': ZenEventClasses.Critical,
+            'Unknown': ZenEventClasses.Warning
+        },
+        'synchronization_health': {
+            'Healthy': ZenEventClasses.Clear,
+            'Partially healthy': ZenEventClasses.Warning,
+            'Not healthy': ZenEventClasses.Critical
+        }
+    }
+
+    return ar_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
+
+
+def get_prop_value_events(component_class_name, values_source, event_info):
+    """
+    Returns a list with dicts as representation of events. The purpose of the func is to get full information about
+    certain properties event and severities, based on the properties value. Event is created for each property.
+
+    @param component_class_name: Name of component class.
+    @type component_class_name: str
+    @param values_source: Dict or other mapping with properties as keys and their values.
+    @type values_source: dict or other mapping
+    @param event_info: Dict or other mapping with the information about required for event:
+        {
+            'event_class': '',
+            'event_key': '',
+            'device': '',
+            'component': '',
+            'component_title': '',
+        }
+    @type event_info: dict or other mapping
+
+    @return: List with dicts as representation of each event
+    @rtype: list
+    """
+
+    event_list = []
+
+    if not isinstance(component_class_name, basestring):
+        return event_list
+
+    component_info = {
+        'WinSQLAvailabilityReplica': {
+            'properties': (('state', 'State'),
+                           ('role', 'Role'),
+                           ('operational_state', 'Operational State'),
+                           ('connection_state', 'Connection State'),
+                           ('synchronization_state', 'Synchronization State'),
+                           ('synchronization_health', 'Synchronization Health')),
+            'event_class_key': 'AOAvailabilityReplicaPropChange {}',
+            'event_summary': '{} of Availability Replica {} is {}',
+            'get_severities_func': get_ar_severities,
+        }
+    }
+
+    component_properties = component_info.get(component_class_name, {}).get('properties')
+    get_severities_func = component_info.get(component_class_name, {}).get('get_severities_func')
+    if not component_properties or not get_severities_func:
+        return event_list
+
+    event_class_key = component_info.get(component_class_name, {}).get('event_class_key', '')
+    event_summary = component_info.get(component_class_name, {}).get('event_summary', '{} {} {}')
+    event_class = event_info.get('event_class', '/Status')
+    event_key = event_info.get('event_key')
+    device = event_info.get('device')
+    component = event_info.get('component')
+    component_title = event_info.get('component_title')
+
+    for prop_name, prop_title in component_properties:
+        prop_value = values_source.get(prop_name)
+        event_list.append(
+            dict(
+                eventClass=event_class,
+                eventClassKey=event_class_key.format(prop_name),
+                eventKey=event_key or '{} change'.format(prop_name),
+                severity=get_severities_func(prop_name, prop_value),
+                summary=event_summary.format(prop_title, component_title, prop_value),
+                device=device,
+                component=component
+            )
+        )
+
+    return event_list
+
+
+def get_default_properties_value_for_component(component_class_name):
+    """
+    Returns dict with properties which are minimum required for particular component class and their default values.
+    One possible usage of this func is to return some data in case when component is unreachable during collection.
+
+    @param component_class_name: Name of component class.
+    @type component_class_name: str
+
+    @return: Dict, where properties are keys and values - default property value.
+    @rtype: dict
+    """
+    if not isinstance(component_class_name, basestring):
+        return {}
+
+    default_prop_values = {
+        'WinSQLAvailabilityReplica': {
+            'state': '',
+            'role': '',
+            'operational_state': '',
+            'connection_state': '',
+            'synchronization_state': '',
+            'synchronization_health': '',
+        }
+    }
+
+    return default_prop_values.get(component_class_name, {})
 
 
 def fill_ar_om(om, data, prep_id_method, sql_instance_data):
