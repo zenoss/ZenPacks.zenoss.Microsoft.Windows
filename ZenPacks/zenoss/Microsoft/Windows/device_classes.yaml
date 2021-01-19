@@ -2214,6 +2214,131 @@ device_classes:
             component: ${here/id}
             resource: AvailabilityReplicaState
             cycletime: ${here/zWinPerfmonInterval}
+          BytesReceivedFromReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesReceivedFromReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_rec_fr_repl__bytessec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Received from Replica/sec
+          BytesSentToReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesSentToReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_snt_to_repl__bytessec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Replica/sec
+          BytesSentToTransport:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesSentToTransport:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_snt_to_trnsp__bytessec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Transport/sec
+          FlowControlTime:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              FlowControlTime:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {flow_control_time__msecs: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control Time (ms/sec)
+          FlowControl:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              FlowControl:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {flow_control__persec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control/sec
+          ReceivesFromReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              ReceivesFromReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {receive_from_replica__persec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Receives from Replica/sec
+          ResentMessages:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              ResentMessages:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {resent_messages__persec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Resent Messages/sec
+          SendsToReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SendsToReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sends_to_replica__persec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Replica/sec
+          SendsToTransport:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SendsToTransport:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sends_to_transport__persec: null}
+            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Transport/sec
+        graphs:
+          Inter-Replicas Communication (bytes):
+            units: bytes/sec
+            miny: 0
+            graphpoints:
+              Received from Replica:
+                dpName: BytesReceivedFromReplica_BytesReceivedFromReplica
+                format: '%7.2lf'
+              Sent to Replica:
+                dpName: BytesSentToReplica_BytesSentToReplica
+                format: '%7.2lf'
+              Sent to Transport:
+                dpName: BytesSentToTransport_BytesSentToTransport
+                format: '%7.2lf'
+          Inter-Replicas Communication (messages):
+            units: messages/sec
+            miny: 0
+            graphpoints:
+              Receives from Replica:
+                dpName: ReceivesFromReplica_ReceivesFromReplica
+                format: '%7.2lf'
+              Sends to Replica:
+                dpName: SendsToReplica_SendsToReplica
+                format: '%7.2lf'
+              Resent Messages:
+                dpName: ResentMessages_ResentMessages
+                format: '%7.2lf'
+              Sends to Transport:
+                dpName: SendsToTransport_SendsToTransport
+                format: '%7.2lf'
+          Flow Control Time:
+            units: milliseconds
+            miny: 0
+            graphpoints:
+              Flow Control Time:
+                dpName: FlowControlTime_FlowControlTime
+                format: '%7.2lf'
+          Flow Control:
+            units: times
+            miny: 0
+            graphpoints:
+              Flow Control Frequency:
+                dpName: FlowControl_FlowControl
+                format: '%7.0lf'
 
       Active Directory:
         description: Microsoft Active Directory

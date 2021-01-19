@@ -145,7 +145,11 @@ class ZenPack(schema.ZenPack):
                             'zSQLAlwaysOnEnabled': {'type': 'boolean',
                                                     'default': False,
                                                     'description': 'Set to true to enable modeling and monitoring of MS SQL Always On components.',
-                                                    'label': 'SQL Always On enabled'}
+                                                    'label': 'SQL Always On enabled'},
+                            'zSQLAlwaysOnReplicaPerfdataNode': {'type': 'string',
+                                                                'default': 'separate',
+                                                                'description': 'Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"',
+                                                                'label': 'SQL Always On Replica Perfdata node'}
                             }
 
     def install(self, app):
