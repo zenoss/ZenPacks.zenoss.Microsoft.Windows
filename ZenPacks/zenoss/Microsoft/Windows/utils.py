@@ -1222,6 +1222,21 @@ def fill_ar_om(om, data, prep_id_method, sql_instance_data):
     return om
 
 
+def fill_al_om(om, data, prep_id_method):
+    """
+    Fill ObjectMaps for Always On Availability Listener.
+    """
+    for key, value in data.iteritems():
+        if key == 'id':
+            setattr(om, 'unigue_id', value)
+            value = prep_id_method(value)
+        if key == 'name':
+            setattr(om, 'title', value)
+        setattr(om, key, value)
+
+    return om
+
+
 def recursive_mapping_update(update_destination, update_source):
     """
     Similar to update() method of mapping, but perform it recursively.

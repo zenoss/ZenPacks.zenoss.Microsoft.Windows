@@ -28,7 +28,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, get_ao_sql_instance_id
 from ZenPacks.zenoss.Microsoft.Windows.utils import save, SqlConnection, use_sql_always_on, \
     parse_winrs_response, get_sql_instance_naming_info, recursive_mapping_update, \
-    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om
+    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -119,8 +119,23 @@ class SQLCommander(object):
         $results = New-Object System.Collections.Arraylist;
         $processed_ownernodes = New-Object 'system.collections.generic.dictionary[string,object]';
 
-        $cluster_resources = Get-ClusterResource | Where-Object { $_.ResourceType -like 'SQL Server Availability Group' };
-        foreach ($resource in $cluster_resources) {
+        $resources_dict = New-Object 'system.collections.generic.dictionary[string,object]';
+        $resources_dict['ag'] = New-Object System.Collections.Arraylist;
+        $resources_dict['al'] = New-Object 'system.collections.generic.dictionary[string,object]';
+        $resources_dict['ips'] = New-Object 'system.collections.generic.dictionary[string,object]';
+        $cluster_resources = Get-ClusterResource | Where-Object { $_.ResourceType -like 'SQL Server Availability Group' -or $_.ResourceType -like 'Network Name' -or $_.ResourceType -like 'IP Address' };
+        foreach ($res in $cluster_resources) {
+            if ($res.ResourceType -like 'SQL Server Availability Group') {
+                $resources_dict['ag'].Add($res) > $null;
+            }
+            if ($res.ResourceType -like 'Network Name') {
+                $resources_dict['al'][$res.Name] = $res;
+            }
+            if ($res.ResourceType -like 'IP Address') {
+                $resources_dict['ips'][$res.Name] = $res;
+            }
+        }
+        foreach ($resource in $resources_dict['ag']) {
             $ag_info = New-Object 'system.collections.generic.dictionary[string,object]';
             $ag_info['ag_name'] = $resource.Name;
             $ag_info['ag_resource_id'] = $resource.Id;
@@ -136,9 +151,44 @@ class SQLCommander(object):
                 $processed_ownernodes[$owner_node_name] = $owner_node_info;
             }
             $ag_info['owner_node_info'] = $owner_node_info;
+
+            $listeners = New-Object System.Collections.ArrayList;
+            $ag_dependency = Get-ClusterResourceDependency -InputObject $resource;
+            $dep_pattern = '\(?\[([\w.\- ]+)+\]\)?';
+            $search_res = $ag_dependency.DependencyExpression | Select-String -Pattern $dep_pattern -AllMatches;
+
+            foreach ($match in $search_res.Matches) {
+
+                if ($match.Groups.Count -gt 0) {
+
+                    $dep_name = $match.Groups[$match.Groups.Count-1];
+                    $listener = $null;
+                    if ($resources_dict['al'].TryGetValue($dep_name, [ref]$listener)) {
+                        $listener_info = New-Object 'system.collections.generic.dictionary[string,string]';
+                        $dns_name = Get-ClusterParameter -InputObject $listener -name DnsName | Select-Object -Property Value;
+                        $listener_info['id'] = $listener.Id;
+                        $listener_info['ag_id'] = $resource.Id;
+                        $listener_info['name'] = $listener.Name;
+                        $listener_info['dns_name'] = $dns_name.Value;
+                        $listener_info['state'] = $listener.State;
+
+                        $al_dependency = Get-ClusterResourceDependency -InputObject $listener;
+                        if ($al_dependency.DependencyExpression -match $dep_pattern) {
+                            $al_dep_name = $Matches[$Matches.Count-1];
+                            $ip_address_res = $null;
+                            if ($resources_dict['ips'].TryGetValue($al_dep_name, [ref]$ip_address_res)) {
+                                $ip_address = Get-ClusterParameter -InputObject $ip_address_res -name Address | Select-Object -Property Value;
+                                $listener_info['ip_address'] = $ip_address.Value;
+                            }
+                        }
+                        $listeners.Add($listener_info) > $null;
+                    }
+                }
+            }
+            $ag_info['listeners_info'] = $listeners;
             $results.Add($ag_info) > $null;
         };
-        $results_json = ConvertTo-Json $results;
+        $results_json = ConvertTo-Json -Depth 3 $results;
         write-host $results_json;
     '''
 
@@ -729,7 +779,8 @@ class WinMSSQL(WinRMPlugin):
                 'errors': defaultdict(list),
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
-                'availability_replicas': defaultdict(dict)
+                'availability_replicas': defaultdict(dict),
+                'availability_listeners': defaultdict(dict)
             }
         @rtype: dict
         """
@@ -737,10 +788,11 @@ class WinMSSQL(WinRMPlugin):
             'errors': defaultdict(list),
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
-            'availability_replicas': defaultdict(dict)
+            'availability_replicas': defaultdict(dict),
+            'availability_listeners': defaultdict(dict)
         }
 
-        # Get information about Availability Groups and theirs owner nodes.
+        # Get information about Availability Groups, theirs owner nodes and Availability Group listeners.
         ag_cluster_resources_response = yield winrs.get_availability_group_cluster_resources()
 
         if not ag_cluster_resources_response:
@@ -755,12 +807,12 @@ class WinMSSQL(WinRMPlugin):
         ag_cluster_resources, passing_error = parse_winrs_response(ag_cluster_resources_response.stdout, 'json')
 
         if not ag_cluster_resources and passing_error:
-            results['errors']['error'] = 'Error during parsing available group list info: {}'.format(
-                ag_cluster_resources_response.stderr)
+            results['errors']['error'].append('Error during parsing available group list info: {}'.format(
+                ag_cluster_resources_response.stderr))
             defer.returnValue(results)
 
         if isinstance(ag_cluster_resources, list) and len(ag_cluster_resources) == 0:
-            results['errors']['error'] = 'No MSSQL Availability groups are present'
+            results['errors']['error'].append('No MSSQL Availability groups are present')
             defer.returnValue(results)
 
         # Fill results with available information
@@ -774,12 +826,24 @@ class WinMSSQL(WinRMPlugin):
             results['availability_groups'][ag_resource_id]['cluster_resource_state'] = ag_info.get('ag_resource_state')
             # Owner node info
             owner_node_info = ag_info.get('owner_node_info')
-            if not owner_node_info:
-                continue
-            ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
-                                     owner_node_info.get('OwnerNodeFQDN', ''),
-                                     owner_node_info.get('OwnerNodeDomain', ''),
-                                     owner_node_info.get('IPv4', '')))
+            if owner_node_info:
+                ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
+                                         owner_node_info.get('OwnerNodeFQDN', ''),
+                                         owner_node_info.get('OwnerNodeDomain', ''),
+                                         owner_node_info.get('IPv4', '')))
+            # Availability Group listeners info
+            listeners_info = ag_info.get('listeners_info')
+            if isinstance(listeners_info, list):
+                for listener in listeners_info:
+                    listener_id = listener.get('id')
+                    if not listener_id:
+                        continue
+                    results['availability_listeners'][listener_id]['id'] = listener_id
+                    results['availability_listeners'][listener_id]['name'] = listener.get('name')
+                    results['availability_listeners'][listener_id]['dns_name'] = listener.get('dns_name')
+                    results['availability_listeners'][listener_id]['state'] = listener.get('state')
+                    results['availability_listeners'][listener_id]['ag_id'] = listener.get('ag_id')
+                    results['availability_listeners'][listener_id]['ip_address'] = listener.get('ip_address')
 
         # Collect SQL Instances info on each Availability Groups' primary replica Owner Node.
         # Use DeferredList to perform asynchronous collection per each Windows node.
@@ -1262,10 +1326,15 @@ class WinMSSQL(WinRMPlugin):
         ar_compname = 'os/winsqlavailabilitygroups/{}'
         ar_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica'
 
+        al_relname = 'winsqlavailabilitylisteners'
+        al_compname = 'os/winsqlavailabilitygroups/{}'
+        al_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener'
+
         result = {
             'oms': [  # Add to list in order to preserve sequence of applying maps.
                 defaultdict(list),  # Availability Groups
-                defaultdict(list)  # Availability Replicas
+                defaultdict(list),  # Availability Replicas
+                defaultdict(list)  # Availability Listeners
             ]
 
         }
@@ -1322,6 +1391,21 @@ class WinMSSQL(WinRMPlugin):
                               ar_compname.format(self.prepId(owner_ag_id)),
                               ar_modname)
                              ].append(ar_om)
+
+        # 3. Availability Listeners
+        availability_listeners = results.get('ao_info', {}).get('availability_listeners', {})
+        for al_id, al_info in availability_listeners.iteritems():
+            # Get Availability Group for containing relation
+            owner_ag_id = al_info.get('ag_id', '')
+            if not owner_ag_id or owner_ag_id not in availability_groups:
+                log.warn('Empty owner Availability Group for Availability Listener {}. Skipping.'.format(al_id))
+                continue
+            al_om = ObjectMap()
+            al_om = fill_al_om(al_om, al_info, self.prepId)
+            result['oms'][2][(al_relname,
+                              al_compname.format(self.prepId(owner_ag_id)),
+                              al_modname)
+                             ].append(al_om)
 
         return result
 
