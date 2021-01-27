@@ -450,6 +450,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         """
+        self.check_for_update(config)
         self._start_counter += 1
         if self.num_commands == 0:
             # nothing to do, return
@@ -485,6 +486,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                         and evt.get('severity', -1) == 0:
                     data['events'].remove(evt)
         defer.returnValue(data)
+
+    def check_for_update(self, config):
+        new_conn_info = createConnectionInfo(config.datasources[0])
+        old_conn_info = None
+        if self.complex_command and self.complex_command.commands:
+            old_conn_info = self.complex_command.commands[0]._conn_info
+        if old_conn_info and old_conn_info != new_conn_info:
+            self.__init__(config)
 
     @coroutine
     def start(self):
