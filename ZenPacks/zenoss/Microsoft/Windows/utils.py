@@ -858,6 +858,20 @@ def lookup_cluster_member_state(value):
     }.get(value, 'unknown')
 
 
+def lookup_failover_cluster_resource_state(value):
+    return {
+        0: 'Inherited',
+        1: 'Initializing',
+        2: 'Online',
+        3: 'Offline',
+        4: 'Failed',
+        128: 'Pending',
+        129: 'OnlinePending',
+        130: 'OfflinePending',
+        -1: 'Unknown'
+    }.get(value, 'unknown')
+
+
 def lookup_ag_state(value):
     return {
         0: 'Offline',
@@ -1076,6 +1090,27 @@ def get_ar_severities(prop_name, prop_value):
     return ar_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
 
 
+def get_al_severities(prop_name, prop_value):
+    """
+    Returns ZenEventClasses severity for given MS SQL Always On Availability Listener property and its value.
+    """
+    ar_severities_map = {
+        'state': {
+            'Inherited': ZenEventClasses.Info,
+            'Initializing': ZenEventClasses.Info,
+            'Online': ZenEventClasses.Clear,
+            'Offline': ZenEventClasses.Critical,
+            'Failed': ZenEventClasses.Critical,
+            'Pending': ZenEventClasses.Info,
+            'OnlinePending': ZenEventClasses.Info,
+            'OfflinePending': ZenEventClasses.Warning,
+            'Unknown': ZenEventClasses.Warning,
+        }
+    }
+
+    return ar_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
+
+
 def get_prop_value_events(component_class_name, values_source, event_info):
     """
     Returns a list with dicts as representation of events. The purpose of the func is to get full information about
@@ -1115,6 +1150,12 @@ def get_prop_value_events(component_class_name, values_source, event_info):
             'event_class_key': 'AOAvailabilityReplicaPropChange {}',
             'event_summary': '{} of Availability Replica {} is {}',
             'get_severities_func': get_ar_severities,
+        },
+        'WinSQLAvailabilityListener': {
+            'properties': (('state', 'State'),),
+            'event_class_key': 'AOAvailabilityListenerPropChange {}',
+            'event_summary': '{} of Availability Listener {} is {}',
+            'get_severities_func': get_al_severities,
         }
     }
 
@@ -1170,6 +1211,9 @@ def get_default_properties_value_for_component(component_class_name):
             'connection_state': '',
             'synchronization_state': '',
             'synchronization_health': '',
+        },
+        'WinSQLAvailabilityListener': {
+            'state': None
         }
     }
 
@@ -1232,6 +1276,12 @@ def fill_al_om(om, data, prep_id_method):
             value = prep_id_method(value)
         if key == 'name':
             setattr(om, 'title', value)
+        if key == 'state':
+            try:
+                value = int(value)
+            except (TypeError, ValueError):
+                value = None
+            value = lookup_failover_cluster_resource_state(value)
         setattr(om, key, value)
 
     return om

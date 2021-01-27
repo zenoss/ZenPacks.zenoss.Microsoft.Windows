@@ -52,7 +52,7 @@ from ..utils import (
     check_for_network_error, save, errorMsgCheck,
     generateClearAuthEvents, get_dsconf, SqlConnection,
     lookup_databasesummary, lookup_database_status,
-    lookup_ag_state, lookup_ag_quorum_state, fill_ag_om, fill_ar_om,
+    lookup_ag_state, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om,
     get_default_properties_value_for_component, get_prop_value_events)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
@@ -73,7 +73,8 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL Instance',
     'powershell MSSQL Job',
     'powershell MSSQL AO AG',
-    'powershell MSSQL AO AR'
+    'powershell MSSQL AO AR',
+    'powershell MSSQL AO AL'
 ]
 
 BUFFER_SIZE = '$Host.UI.RawUI.BufferSize = New-Object Management.Automation.Host.Size (4096, 512);'
@@ -984,8 +985,8 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
             ar_name = dsconf.params.get('contexttitle')
             ar_results = availability_replicas_info.get(ar_id)
 
-            if not isinstance(ar_results, dict):
-                log.debug('Got {} response monitoring for {}. It should be dict.'.format(type(ar_results), ar_name))
+            if not ar_results:
+                log.debug('Got empty monitoring response for Availability Replica {}.'.format(ar_name))
                 # We got empty result for particular Availability Replica - seems like it is unreachable.
                 # Need to return set of properties with default values
                 ar_results = get_default_properties_value_for_component('WinSQLAvailabilityReplica')
@@ -1021,6 +1022,125 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
 
 
 gsm.registerUtility(PowershellMSSQLAlwaysOnARStrategy(), IStrategy, 'powershell MSSQL AO AR')
+
+
+class PowershellMSSQLAlwaysOnALStrategy(object):
+    implements(IStrategy)
+
+    key = 'MSSQLAlwaysOnAL'
+
+    @staticmethod
+    def build_command_line(listener_id):
+        ps_command = "powershell -NoLogo -NonInteractive " \
+                     "-OutputFormat TEXT -Command "
+
+        ps_ao_al_script = \
+            ("Import-Module FailoverClusters;"
+             "$listener_info = New-Object 'system.collections.generic.dictionary[string,string]';"
+
+             "$ips_dict = New-Object 'system.collections.generic.dictionary[string,object]';"
+             "$al = $null;"
+             "$cluster_resources = Get-ClusterResource | Where-Object {$_.Id -like 'al_id_placeholder' -or $_.ResourceType -like 'IP Address'};"
+             "foreach ($res in $cluster_resources) {"
+             " if ($res.Id -like 'al_id_placeholder') {"
+             "  $al = $res;"
+             "}"
+             " if ($res.ResourceType -like 'IP Address') {"
+             "  $ips_dict[$res.Name] = $res;"
+             " }"
+             "}"
+
+             "if ($al -ne $null) {"
+             " $dns_name = Get-ClusterParameter -InputObject $al -name DnsName | Select-Object -Property Value;"
+             " $listener_info['name'] = $al.Name;"
+             " $listener_info['dns_name'] = $dns_name.Value;"
+             " $listener_info['state'] = $al.State.value__;"
+
+             " $al_dependency = Get-ClusterResourceDependency -InputObject $al;"
+             " if ($al_dependency.DependencyExpression -match '\(?\[([\w.\- ]+)+\]\)?') {"
+             "  $al_dep_name = $Matches[$Matches.Count-1];"
+             "  $ip_address_res = $null;"
+             "  if ($ips_dict.TryGetValue($al_dep_name, [ref]$ip_address_res)) {"
+             "   $ip_address = Get-ClusterParameter -InputObject $ip_address_res -name Address | Select-Object -Property Value;"
+             "   $listener_info['ip_address'] = $ip_address.Value;"
+             "  }"
+             " }"
+             "}"
+             "$listener_info_json = ConvertTo-Json $listener_info;"
+             "write-host $listener_info_json;").replace('al_id_placeholder', listener_id)
+
+        script = "\"& {{{}}}\"".format(ps_ao_al_script)
+
+        log.debug('Powershell MSSQL Always On AL Strategy script: {}'.format(script))
+
+        return ps_command, script
+
+    @staticmethod
+    def parse_result(config, result):
+
+        dsconf0 = config.datasources[0]
+        al_id = dsconf0.params.get('instanceid')
+        al_name = dsconf0.params.get('contexttitle')
+
+        parsed_results = PythonDataSourcePlugin.new_data()
+
+        if result.stderr:
+            log.debug('MSSQL AO AL error: {0}'.format('\n'.join(result.stderr)))
+        log.debug('MSSQL AO AL results: {}'.format('\n'.join(result.stdout)))
+
+        if result.exit_code != 0:
+            log.debug(
+                'Non-zero exit code ({0}) for MSSQL AO AL with ID {1}'.format(
+                    result.exit_code, al_id))
+            return parsed_results
+
+        # Parse values
+        al_info_stdout = filter_sql_stdout(result.stdout)
+        availability_listener_info, passing_error = parse_winrs_response(al_info_stdout, 'json')
+
+        if not availability_listener_info and passing_error:
+            log.debug('Error during parsing Availability Listener performance data')
+            return parsed_results
+
+        log.debug('Availability Listener performance response: {}'.format(availability_listener_info))
+
+        if not availability_listener_info:
+            log.debug('Got empty monitoring response for Availability Listener {}.'.format(al_name))
+            # We got empty result for particular Availability Listener - seems like it is unreachable.
+            # Need to return set of properties with default values
+            availability_listener_info = get_default_properties_value_for_component('WinSQLAvailabilityListener')
+
+        # Maps:
+        al_om = ObjectMap()
+        al_om.id = dsconf0.params['instanceid']
+        al_om.title = dsconf0.params['contexttitle']
+        al_om.compname = dsconf0.params['contextcompname']
+        al_om.modname = dsconf0.params['contextmodname']
+        al_om.relname = dsconf0.params['contextrelname']
+        al_om = fill_al_om(al_om, availability_listener_info, prepId)
+        parsed_results['maps'].append(al_om)
+
+        # Events:
+        ar_events = get_prop_value_events(
+            'WinSQLAvailabilityListener',
+            al_om.__dict__,
+            dict(
+                event_class=dsconf0.eventClass or "/Status",
+                event_key=dsconf0.eventKey,
+                component_title=dsconf0.params['contexttitle'],
+                device=config.id,
+                component=dsconf0.component
+            )
+        )
+        for event in ar_events:
+            parsed_results['events'].append(event)
+
+        log.debug('MSSQL Availability Listener performance results: {}'.format(parsed_results))
+
+        return parsed_results
+
+
+gsm.registerUtility(PowershellMSSQLAlwaysOnALStrategy(), IStrategy, 'powershell MSSQL AO AL')
 
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
@@ -1082,7 +1202,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                         'powershell MSSQL Instance',
                                         'powershell MSSQL Job,'
                                         'powershell MSSQL AO AG',
-                                        'powershell MSSQL AO AR'):
+                                        'powershell MSSQL AO AR',
+                                        'powershell MSSQL AO AL'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
@@ -1233,6 +1354,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             if dsconf.params['strategy'] == 'powershell MSSQL' or\
                     dsconf.params['strategy'] == 'powershell MSSQL Job':
                 conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
+            if dsconf0.params['strategy'] == 'powershell MSSQL AO AL':
+                cmd_line_input = dsconf0.params.get('instanceid', '')  # Take listener ID as input parametr.
             if dsconf0.params['strategy'] == 'powershell MSSQL AO AG':
                 # For Always On Availability groups, Availability Group names are needed:
                 ag_nemes = [dsconf.params['contexttitle']
@@ -1300,7 +1423,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             diagResult = strategy.parse_result(dsconfs, result)
             dsconf = dsconfs[0]
             data['events'] = diagResult.events
-        elif strategy.key == 'MSSQLAlwaysOnAG' or strategy.key == 'MSSQLAlwaysOnAR':
+        elif strategy.key in ('MSSQLAlwaysOnAG', 'MSSQLAlwaysOnAR', 'MSSQLAlwaysOnAL'):
             ao_result = strategy.parse_result(config, result)
             data['values'] = ao_result.get('values', {})
             data['maps'] = ao_result.get('maps', [])

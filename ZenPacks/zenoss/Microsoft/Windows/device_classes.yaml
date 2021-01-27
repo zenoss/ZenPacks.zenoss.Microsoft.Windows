@@ -2339,6 +2339,16 @@ device_classes:
               Flow Control Frequency:
                 dpName: FlowControl_FlowControl
                 format: '%7.0lf'
+      WinAvailabilityListener:
+        description: Microsoft SQL Server Availability Group Listener monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener
+        datasources:
+          AvailabilityListenerState:
+            type: Windows Shell
+            strategy: powershell MSSQL AO AL
+            component: ${here/id}
+            resource: AvailabilityListenerState
+            cycletime: ${here/zWinPerfmonInterval}
 
       Active Directory:
         description: Microsoft Active Directory
