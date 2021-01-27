@@ -59,6 +59,10 @@ zProperties:
     default: false
     type: boolean
     description: 'Set to true to enable modeling and monitoring of MS SQL Always On components.'
+  zSQLAlwaysOnReplicaPerfdataNode:
+    label: 'SQL Always On Replica Perfdata node'
+    default: separate
+    description: 'Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"'
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
