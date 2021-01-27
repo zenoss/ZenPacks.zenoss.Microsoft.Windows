@@ -77,6 +77,7 @@ class_relationships:
   - WinSQLInstance(jobs) 1:MC (winsqlinstance)WinSQLJob
   - WinSQLInstance(winsqlavailabilitygroups) 1:M (winsqlinstance)WinSQLAvailabilityGroup
   - WinSQLAvailabilityGroup(winsqlavailabilityreplicas) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityReplica
+  - WinSQLAvailabilityGroup(winsqlavailabilitylisteners) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityListener
   - WinSQLInstance(winsqlavailabilityreplicas) 1:M (winsqlinstance)WinSQLAvailabilityReplica
   - TeamInterface(teaminterfaces) 1:M (teaminterface)Interface
 
@@ -884,3 +885,23 @@ classes:
         label: Endpoint Url
     monitoring_templates: [WinAvailabilityReplica]
 
+  WinSQLAvailabilityListener:
+    label: SQL Availability Listener
+    base: [WinSQLAvailabilityGroupHostedObject]
+    order: 16
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      dns_name:
+        label: DNS Name
+        grid_display: true
+      state:
+        label: State
+        grid_display: true
+      unigue_id:
+        label: Unique ID
+      ip_address:
+        label: IP Address
+        grid_display: true
+    monitoring_templates: []
