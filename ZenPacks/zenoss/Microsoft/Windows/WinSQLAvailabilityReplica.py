@@ -42,13 +42,14 @@ class WinSQLAvailabilityReplica(object, schema.WinSQLAvailabilityReplica):
                 if not availability_replicas:
                     return perfdata_node
             perfdata_replica = None
-            for ar in availability_replicas:
-                # Node must be separate, as there is no counters about replica itself on hosting node.
-                # Primary replica node has info about the rest of replicas (but not about itself).
-                if ar.id != self.id\
-                        and ar.role != self.role:
-                    perfdata_replica = ar
-                    break
+            if availability_replicas:
+                for ar in availability_replicas:
+                    # Node must be separate, as there is no counters about replica itself on hosting node.
+                    # Primary replica node has info about the rest of replicas (but not about itself).
+                    if ar.id != self.id\
+                            and ar.role != self.role:
+                        perfdata_replica = ar
+                        break
             if not perfdata_replica:
                 return perfdata_node
 
