@@ -908,4 +908,4 @@ classes:
       ip_address:
         label: IP Address
         grid_display: true
-    monitoring_templates: []
+    monitoring_templates: [WinAvailabilityListener]

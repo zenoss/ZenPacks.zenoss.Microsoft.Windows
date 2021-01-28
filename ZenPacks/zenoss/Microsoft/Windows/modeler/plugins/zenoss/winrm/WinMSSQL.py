@@ -139,7 +139,7 @@ class SQLCommander(object):
             $ag_info = New-Object 'system.collections.generic.dictionary[string,object]';
             $ag_info['ag_name'] = $resource.Name;
             $ag_info['ag_resource_id'] = $resource.Id;
-            $ag_info['ag_resource_state'] = $resource.State;
+            $ag_info['ag_resource_state'] = $resource.State.value__;
             $owner_node_name = $resource.OwnerNode.Name;
             $owner_node_info = $null;
             if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
@@ -170,7 +170,7 @@ class SQLCommander(object):
                         $listener_info['ag_id'] = $resource.Id;
                         $listener_info['name'] = $listener.Name;
                         $listener_info['dns_name'] = $dns_name.Value;
-                        $listener_info['state'] = $listener.State;
+                        $listener_info['state'] = $listener.State.value__;
 
                         $al_dependency = Get-ClusterResourceDependency -InputObject $listener;
                         if ($al_dependency.DependencyExpression -match $dep_pattern) {
