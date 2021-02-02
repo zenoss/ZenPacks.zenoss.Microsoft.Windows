@@ -1394,8 +1394,11 @@ class WinMSSQL(WinRMPlugin):
                 defaultdict(list),  # Availability Listeners
                 defaultdict(list)  # Availability Databases
             ]
-
         }
+        ag_result_index = 0
+        ar_result_index = 1
+        al_result_index = 2
+        adb_result_index = 3
 
         # Add empty object map list for root ('os') containing relation for Availability Groups. This list will be
         # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
@@ -1421,7 +1424,7 @@ class WinMSSQL(WinRMPlugin):
                 'sql_hostname': owner_sql_instance_info.get('sqlhostname')
             }
             ag_om = fill_ag_om(ag_om, ag_info, self.prepId, sql_instance_data)
-            result['oms'][0][(ag_relname, ag_compname, ag_modname)].append(ag_om)
+            result['oms'][ag_result_index][(ag_relname, ag_compname, ag_modname)].append(ag_om)
 
         # 2. Availability Replicas
         availability_replicas = results.get('ao_info', {}).get('availability_replicas', {})
@@ -1451,7 +1454,7 @@ class WinMSSQL(WinRMPlugin):
                 'sql_hostname': owner_sql_instance_info.get('sqlhostname'),
             }
             ar_om = fill_ar_om(ar_om, ar_info, self.prepId, sql_instance_data)
-            result['oms'][1][(ar_relname,
+            result['oms'][ar_result_index][(ar_relname,
                               ar_compname.format(self.prepId(owner_ag_id)),
                               ar_modname)
                              ].append(ar_om)
@@ -1466,7 +1469,7 @@ class WinMSSQL(WinRMPlugin):
                 continue
             al_om = ObjectMap()
             al_om = fill_al_om(al_om, al_info, self.prepId)
-            result['oms'][2][(al_relname,
+            result['oms'][al_result_index][(al_relname,
                               al_compname.format(self.prepId(owner_ag_id)),
                               al_modname)
                              ].append(al_om)
@@ -1495,10 +1498,10 @@ class WinMSSQL(WinRMPlugin):
 
             adb_om = ObjectMap()
             adb_om = fill_adb_om(adb_om, adb_info, self.prepId)
-            result['oms'][3][(adb_relname,
-                              adb_compname.format(self.prepId(adb_owner_id)),
-                              adb_modname)
-                             ].append(adb_om)
+            result['oms'][adb_result_index][(adb_relname,
+                                             adb_compname.format(self.prepId(adb_owner_id)),
+                                             adb_modname)
+                                            ].append(adb_om)
 
         return result
 

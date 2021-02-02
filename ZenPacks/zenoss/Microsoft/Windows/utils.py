@@ -1313,24 +1313,36 @@ def fill_adb_om(om, data, prep_id_method):
     if sql_hostname_fqdn and sql_server_name:
         setattr(om, 'cluster_node_server', '{0}//{1}'.format(sql_hostname_fqdn, sql_server_name))
 
+    db_name = data.get('name', '')
+    if db_name:
+        setattr(om, 'title', db_name)
+
     keys_to_skip = ('db_id', 'adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
-    date_keys = ('lastlogbackupdate', 'lastbackupdate', 'createdate')
+
+    keys_values_transform = {
+        'keys': {
+            'adb_id': 'unigue_id',
+            'db_replica_id': 'set_winsqlavailabilityreplica'
+        },
+        'values': {
+            'lastlogbackupdate': get_datetime_string_from_timestamp,
+            'lastbackupdate': get_datetime_string_from_timestamp,
+            'createdate': get_datetime_string_from_timestamp,
+            'sync_state': lookup_adb_sync_state,
+            'db_replica_id': prep_id_method
+        }
+    }
 
     for key, value in data.iteritems():
         if key in keys_to_skip:
             continue  # we already utilized them
-        if key == 'adb_id':
-            setattr(om, 'unigue_id', value)
-            continue
-        if key == 'name':
-            setattr(om, 'title', value)
-        if key in date_keys:
-            value = get_datetime_string_from_timestamp(value)
-        if key == 'sync_state':
-            value = lookup_adb_sync_state(value)
-        if key == 'db_replica_id' and value:
-            setattr(om, 'set_winsqlavailabilityreplica', prep_id_method(value))
-            continue
+
+        value_transform_func = keys_values_transform['values'].get(key)  # values first to preserve original keys names
+        if value_transform_func and callable(value_transform_func):
+            value = value_transform_func(value)
+
+        key = keys_values_transform['keys'].get(key, key)  # if key doesn't have transformation variant - leave it as is
+
         setattr(om, key, value)
 
     return om
