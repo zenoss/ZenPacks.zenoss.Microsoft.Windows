@@ -13,6 +13,7 @@ from Products.ZenModel.ZenPack import ZenPackMigration
 from Products.Zuul.interfaces import ICatalogTool
 from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
 from ZenPacks.zenoss.Microsoft.Windows.OperatingSystem import OperatingSystem
+from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
 
 import logging
 log = logging.getLogger("zen.migrate")
@@ -31,7 +32,7 @@ class UpdateAlwaysOnRelations(ZenPackMigration):
 
         catalog = ICatalogTool(pack.dmd.Devices)
 
-        for brain in catalog.search(types=[OperatingSystem, WinSQLInstance]):
+        for brain in catalog.search(types=[OperatingSystem, WinSQLInstance, WinSQLDatabase]):
             try:
                 brain.getObject().buildRelations()
             except Exception:

@@ -83,6 +83,7 @@ class_relationships:
   - WinSQLAvailabilityGroup(winsqlavailabilityreplicas) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityReplica
   - WinSQLAvailabilityGroup(winsqlavailabilitylisteners) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityListener
   - WinSQLInstance(winsqlavailabilityreplicas) 1:M (winsqlinstance)WinSQLAvailabilityReplica
+  - WinSQLAvailabilityReplica(databases) 1:M (winsqlavailabilityreplica)WinSQLDatabase
   - TeamInterface(teaminterfaces) 1:M (teaminterface)Interface
 
 
@@ -696,6 +697,17 @@ classes:
         order: 3
       cluster_node_server:
         label: Cluster Node Server
+      unigue_id:
+        label: Always On Unique ID
+      suspended:
+        grid_display: true
+        type: boolean
+        default: false
+        label: Suspended
+      sync_state:
+        grid_display: true
+        default: n/a
+        label: Synchronization State
     monitoring_templates: [WinDatabase]
     dynamicview_views: [service_view]
     dynamicview_relations:

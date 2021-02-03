@@ -13,6 +13,7 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 import base64
+from datetime import datetime
 import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
@@ -1043,6 +1044,16 @@ def lookup_ar_synchronization_health(value):
     }.get(value, 'unknown')
 
 
+def lookup_adb_sync_state(value):
+    return {
+        0: 'Not Synchronizing',
+        1: 'Synchronizing',
+        2: 'Synchronized',
+        3: 'Reverting',
+        4: 'Initializing',
+    }.get(value, 'unknown')
+
+
 def get_ar_severities(prop_name, prop_value):
     """
     Returns ZenEventClasses severity for given MS SQL Always On Availability Replica property and its value.
@@ -1287,6 +1298,56 @@ def fill_al_om(om, data, prep_id_method):
     return om
 
 
+def fill_adb_om(om, data, prep_id_method):
+    """
+    Fill ObjectMaps for Always On Availability Database.
+    """
+    adb_owner_id = data.get('adb_owner_id')
+    db_id = data.get('db_id')
+    if adb_owner_id and db_id:
+        if isinstance(adb_owner_id, basestring):
+            setattr(om, 'id', prep_id_method('{}{}'.format(adb_owner_id, db_id)))
+
+    sql_hostname_fqdn = data.get('sql_hostname_fqdn')
+    sql_server_name = data.get('sql_server_name')
+    if sql_hostname_fqdn and sql_server_name:
+        setattr(om, 'cluster_node_server', '{0}//{1}'.format(sql_hostname_fqdn, sql_server_name))
+
+    db_name = data.get('name', '')
+    if db_name:
+        setattr(om, 'title', db_name)
+
+    keys_to_skip = ('db_id', 'adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
+
+    keys_values_transform = {
+        'keys': {
+            'adb_id': 'unigue_id',
+            'db_replica_id': 'set_winsqlavailabilityreplica'
+        },
+        'values': {
+            'lastlogbackupdate': get_datetime_string_from_timestamp,
+            'lastbackupdate': get_datetime_string_from_timestamp,
+            'createdate': get_datetime_string_from_timestamp,
+            'sync_state': lookup_adb_sync_state,
+            'db_replica_id': prep_id_method
+        }
+    }
+
+    for key, value in data.iteritems():
+        if key in keys_to_skip:
+            continue  # we already utilized them
+
+        value_transform_func = keys_values_transform['values'].get(key)  # values first to preserve original keys names
+        if value_transform_func and callable(value_transform_func):
+            value = value_transform_func(value)
+
+        key = keys_values_transform['keys'].get(key, key)  # if key doesn't have transformation variant - leave it as is
+
+        setattr(om, key, value)
+
+    return om
+
+
 def recursive_mapping_update(update_destination, update_source):
     """
     Similar to update() method of mapping, but perform it recursively.
@@ -1305,3 +1366,14 @@ def recursive_mapping_update(update_destination, update_source):
         return _update_destination
 
     _recursive_mapping_update(update_destination, update_source)
+
+
+def get_datetime_string_from_timestamp(timestamp, fmt='%Y/%m/%d %H:%M:%S'):
+    result = ''
+    try:
+        tmstmp = float(timestamp)
+    except (TypeError, ValueError):
+        tmstmp = 0
+    if tmstmp > 0:
+        result = datetime.fromtimestamp(tmstmp).strftime(fmt)
+    return result

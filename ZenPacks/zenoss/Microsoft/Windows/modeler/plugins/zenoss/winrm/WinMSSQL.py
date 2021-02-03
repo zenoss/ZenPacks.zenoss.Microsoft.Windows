@@ -28,7 +28,7 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, get_ao_sql_instance_id
 from ZenPacks.zenoss.Microsoft.Windows.utils import save, SqlConnection, use_sql_always_on, \
     parse_winrs_response, get_sql_instance_naming_info, recursive_mapping_update, \
-    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om
+    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om, fill_adb_om
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -140,17 +140,22 @@ class SQLCommander(object):
             $ag_info['ag_name'] = $resource.Name;
             $ag_info['ag_resource_id'] = $resource.Id;
             $ag_info['ag_resource_state'] = $resource.State.value__;
-            $owner_node_name = $resource.OwnerNode.Name;
-            $owner_node_info = $null;
-            if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
-                $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';
-                $owner_node_info['OwnerNode'] = $owner_node_name;
-                $owner_node_info['OwnerNodeFQDN'] = ($owner_node_name, $domain) -join '.';
-                $owner_node_info['OwnerNodeDomain'] = $domain;
-                $owner_node_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($owner_node_name) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object IPAddressToString)[0].IPAddressToString;
-                $processed_ownernodes[$owner_node_name] = $owner_node_info;
+            $ag_nodes = New-Object System.Collections.ArrayList;
+            $resource_nodes = Get-ClusterOwnerNode -InputObject $resource | Select-Object -Property OwnerNodes;
+            foreach ($node in $resource_nodes.OwnerNodes) {
+                $owner_node_name = $node.Name;
+                $owner_node_info = $null;
+                if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
+                    $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';
+                    $owner_node_info['OwnerNode'] = $owner_node_name;
+                    $owner_node_info['OwnerNodeFQDN'] = ($owner_node_name, $domain) -join '.';
+                    $owner_node_info['OwnerNodeDomain'] = $domain;
+                    $owner_node_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($owner_node_name) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object IPAddressToString)[0].IPAddressToString;
+                    $processed_ownernodes[$owner_node_name] = $owner_node_info;
+                }
+                $ag_nodes.Add($owner_node_info) > $null;
             }
-            $ag_info['owner_node_info'] = $owner_node_info;
+            $ag_info['owner_nodes_info'] = $ag_nodes;
 
             $listeners = New-Object System.Collections.ArrayList;
             $ag_dependency = Get-ClusterResourceDependency -InputObject $resource;
@@ -229,126 +234,154 @@ class SQLCommander(object):
         write-host $result_in_json
     '''
 
-    AVAILABILITY_GROUPS_INFO_PS_SCRIPT = '''
-        $def_fields = $server.GetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup]);
-        $server.SetDefaultInitFields([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], $def_fields);
+    AVAILABILITY_GROUPS_INFO_PS_SCRIPT = (
+        "$optimization_types = @([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], [Microsoft.SqlServer.Management.Smo.Database]);"
+        "foreach ($ot in $optimization_types) {"
+        " $def_fields = $server.GetDefaultInitFields($ot);"
+        " $server.SetDefaultInitFields($ot, $def_fields);"
+        "}"
 
-        $res = New-Object 'system.collections.generic.dictionary[string, object]';
-        $res['ao_enabled'] = $server.IsHadrEnabled;
-        $ags = New-Object System.Collections.ArrayList;
-        $ars = New-Object System.Collections.ArrayList;
+        "$res = New-Object 'system.collections.generic.dictionary[string, object]';"
+        "$res['ao_enabled'] = $server.IsHadrEnabled;"
+        "$ags = New-Object System.Collections.ArrayList;"
+        "$ars = New-Object System.Collections.ArrayList;"
+        "$adbs = New-Object System.Collections.ArrayList;"
 
-        if ($server.IsHadrEnabled -and $server.AvailabilityGroups.Length -gt 0) {
+        "if ($server.IsHadrEnabled -and $server.AvailabilityGroups.Length -gt 0) {"
+        " $epoch = [timezone]::CurrentTimeZone.ToLocalTime([datetime]'1/1/1970').ToUniversalTime();"
+        " $dbs = $server.Databases;"
+        " $ag_res_ids_map = New-Object 'system.collections.generic.dictionary[string, object]';"
+        " $inst_to_node_map = New-Object 'system.collections.generic.dictionary[string, object]';"
+        " $server.Refresh();"
+        " $res['sql_server_fullname'] = $server.DomainInstanceName;"
+        " $res['is_clustered'] = $server.IsClustered;"
+        " $res['is_on_wsfc'] = $server.IsMemberOfWsfcCluster;"
 
-            $ag_res_ids_map = New-Object 'system.collections.generic.dictionary[string, object]';
-            $inst_to_node_map = New-Object 'system.collections.generic.dictionary[string, object]';
-            $server.Refresh();
-            $res['sql_server_fullname'] = $server.DomainInstanceName;
-            $res['is_clustered'] = $server.IsClustered;
-            $res['is_on_wsfc'] = $server.IsMemberOfWsfcCluster;
+        " $dbmaster = $server.Databases['master'];"
 
-            $dbmaster = $server.Databases['master'];
+        " $cluster_query = \\\"SELECT ag_id, ag_resource_id FROM sys.dm_hadr_name_id_map;"
+        " SELECT instance_name, node_name FROM sys.dm_hadr_instance_node_map;"
+        " SELECT member_name, member_type, member_state, number_of_quorum_votes FROM sys.dm_hadr_cluster_members;\\\";"
+        " $cl_qry_res = $dbmaster.ExecuteWithResults($cluster_query);"
+        " try {"
+        "  foreach ($row in $cl_qry_res.tables[0].rows) {"
+        "   $ag_res_ids_map[$row.ag_id] = $row.ag_resource_id;"
+        "  }"
+        "  foreach ($row in $cl_qry_res.tables[1].rows) {"
+        "   $inst_to_node_map[$row.instance_name] = $row.node_name;"
+        "  }"
+        " } catch {}"
+        " try {"
+        "  $cl_members = New-Object System.Collections.ArrayList;"
+        "  foreach ($row in $cl_qry_res.tables[2].rows) {"
+        "   $cl_member = New-Object 'system.collections.generic.dictionary[string, object]';"
+        "   $cl_member['member_name'] = $row.member_name;"
+        "   $cl_member['member_type'] = $row.member_type;"
+        "   $cl_member['member_state'] = $row.member_state;"
+        "   $cl_member['number_of_quorum_votes'] = $row.number_of_quorum_votes;"
+        "   $cl_members.Add($cl_member) > $null;"
+        "  }"
+        "  $res['wsfc_cluster_members'] = $cl_members;"
+        " }"
+        " catch {}"
+        " foreach ($ag in $server.AvailabilityGroups) {"
+        "  $ag_info = New-Object 'system.collections.generic.dictionary[string, object]';"
+        "  $ag_uid = $ag.UniqueId;"
+        "  $ag_res_uid = $ag_res_ids_map[$ag_uid];"
+        "  $pr_rep_servr_name = $ag.PrimaryReplicaServerName;"
+        "  $ag_info['name'] = $ag.Name;"
+        "  $ag_info['id'] = $ag_uid;"
+        "  $ag_info['ag_res_id'] = $ag_res_uid;"
+        "  $ag_info['primary_replica_server_name'] = $pr_rep_servr_name;"
+        # Put databases on top beacause we get them regardless of Replica role (either on Primary or Secondary Replicas)
+        "  foreach ($adb in $ag.AvailabilityDatabases) {"
+        "   $adb_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
+        "   $adb_inf['adb_id'] = $adb.UniqueId;"
+        "   $adb_inf['ag_res_id'] = $ag_res_uid;"
+        "   $adb_inf['name'] = $adb.Name;"
+        "   $adb_inf['sync_state'] = $adb.SynchronizationState;"
+        "   $adb_inf['suspended'] = $adb.IsSuspended;"
+        "   $db = $dbs | Where-Object {$_.AvailabilityGroupName -EQ $ag.Name -and $_.Name -EQ $adb.Name};"
+        "   $adb_inf['version'] = $db.Version;"
+        "   $adb_inf['isaccessible'] = $db.IsAccessible;"
+        "   $adb_inf['db_id'] = $db.ID;"
+        "   $adb_inf['owner'] = $db.Owner;"
+        "   $adb_inf['lastbackupdate'] = (New-TimeSpan -Start $epoch -End $db.LastBackupDate).TotalSeconds;"
+        "   $adb_inf['collation'] = $db.Collation;"
+        "   $adb_inf['createdate'] = (New-TimeSpan -Start $epoch -End $db.CreateDate).TotalSeconds;"
+        "   $adb_inf['defaultfilegroup'] = $db.DefaultFileGroup;"
+        "   $adb_inf['primaryfilepath'] = $db.PrimaryFilePath;"
+        "   $adb_inf['lastlogbackupdate'] = (New-TimeSpan -Start $epoch -End $db.LastLogBackupDate).TotalSeconds;"
+        "   $adb_inf['systemobject'] = $db.IsSystemObject;"
+        "   $adb_inf['recoverymodel'] = $db.DatabaseOptions.RecoveryModel;"
+        "   $adbs.Add($adb_inf) > $null;"
+        "  }"
+        "  if ($pr_rep_servr_name -ne $server.Name) {"
+        "   $ags.Add($ag_info) > $null;"
+        "   continue;"
+        "  }"
+        "  $ag_info['is_distributed'] = $ag.IsDistributedAvailabilityGroup;"
+        "  $ag_info['health_check_timeout'] = $ag.HealthCheckTimeout;"
+        "  $ag_info['automated_backup_preference'] = $ag.AutomatedBackupPreference;"
+        "  $ag_info['failure_condition_level'] = $ag.FailureConditionLevel;"
+        "  $ag_info['cluster_type'] = $ag.ClusterTypeWithDefault;"
+        "  $ag_info['db_level_health_detection'] = $ag.DatabaseHealthTrigger;"
+        "  $ag_uid = $ag.UniqueId;"
+        "  $ag_states_query = \\\"SELECT ag_states.synchronization_health AS sync_hlth,"
+        "  ag_states.primary_recovery_health AS pr_rec_hlth"
+        "  FROM sys.dm_hadr_availability_group_states AS ag_states"
+        "  WHERE ag_states.group_id = '$ag_uid';\\\";"
+        "  try {"
+        "   $ag_states_res = $dbmaster.ExecuteWithResults($ag_states_query);"
+        "   $ag_info['synchronization_health'] = $ag_states_res.tables[0].rows[0].sync_hlth;"
+        "   $ag_info['primary_recovery_health'] = $ag_states_res.tables[0].rows[0].pr_rec_hlth;"
+        "  }"
+        "  catch {"
+        "   $ag_info['synchronization_health'] = '';"
+        "   $ag_info['primary_recovery_health'] = '';"
+        "  }"
+        "  $ags.Add($ag_info) > $null;"
 
-            $cluster_query = \\"SELECT ag_id, ag_resource_id FROM sys.dm_hadr_name_id_map;
-                SELECT instance_name, node_name FROM sys.dm_hadr_instance_node_map;
-                SELECT member_name, member_type, member_state, number_of_quorum_votes FROM sys.dm_hadr_cluster_members;\\";
-            $cl_qry_res = $dbmaster.ExecuteWithResults($cluster_query);
-            try {
-                foreach ($row in $cl_qry_res.tables[0].rows) {
-                    $ag_res_ids_map[$row.ag_id] = $row.ag_resource_id;
-                }
-                foreach ($row in $cl_qry_res.tables[1].rows) {
-                    $inst_to_node_map[$row.instance_name] = $row.node_name;
-                }
-            } catch {}
-            try {
-                $cl_members = New-Object System.Collections.ArrayList;
-                foreach ($row in $cl_qry_res.tables[2].rows) {
-                    $cl_member = New-Object 'system.collections.generic.dictionary[string, object]';
-                    $cl_member['member_name'] = $row.member_name;
-                    $cl_member['member_type'] = $row.member_type;
-                    $cl_member['member_state'] = $row.member_state;
-                    $cl_member['number_of_quorum_votes'] = $row.number_of_quorum_votes;
-                    $cl_members.Add($cl_member) > $null;
-                }
-                $res['wsfc_cluster_members'] = $cl_members;
-            }
-            catch {}
-            foreach ($ag in $server.AvailabilityGroups) {
-                $ag_info = New-Object 'system.collections.generic.dictionary[string, object]';
-                $ag_uid = $ag.UniqueId;
-                $ag_res_uid = $ag_res_ids_map[$ag_uid];
-                $pr_rep_servr_name = $ag.PrimaryReplicaServerName;
-                $ag_info['name'] = $ag.Name;
-                $ag_info['id'] = $ag_uid;
-                $ag_info['ag_res_id'] = $ag_res_uid;
-                $ag_info['primary_replica_server_name'] = $pr_rep_servr_name;
-                if ($pr_rep_servr_name -ne $server.Name) {
-                    $ags.Add($ag_info) > $null;
-                    continue;
-                }
-                $ag_info['is_distributed'] = $ag.IsDistributedAvailabilityGroup;
-                $ag_info['health_check_timeout'] = $ag.HealthCheckTimeout;
-                $ag_info['automated_backup_preference'] = $ag.AutomatedBackupPreference;
-                $ag_info['failure_condition_level'] = $ag.FailureConditionLevel;
-                $ag_info['cluster_type'] = $ag.ClusterTypeWithDefault;
-                $ag_info['db_level_health_detection'] = $ag.DatabaseHealthTrigger;
-                $ag_uid = $ag.UniqueId;
-                $ag_states_query = \\"SELECT ag_states.synchronization_health AS sync_hlth,
-                ag_states.primary_recovery_health AS pr_rec_hlth
-                FROM sys.dm_hadr_availability_group_states AS ag_states
-                WHERE ag_states.group_id = '$ag_uid';\\";
-                try {
-                    $ag_states_res = $dbmaster.ExecuteWithResults($ag_states_query);
-                    $ag_info['synchronization_health'] = $ag_states_res.tables[0].rows[0].sync_hlth;
-                    $ag_info['primary_recovery_health'] = $ag_states_res.tables[0].rows[0].pr_rec_hlth;
-                }
-                catch {
-                    $ag_info['synchronization_health'] = '';
-                    $ag_info['primary_recovery_health'] = '';
-                }
-                $ags.Add($ag_info) > $null;
-
-                foreach ($ar in $ag.AvailabilityReplicas) {
-                    $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';
-                    $ar_uid = $ar.UniqueId;
-                    $ar_inf['ag_id'] = $ag_uid;
-                    $ar_inf['ag_res_id'] = $ag_res_uid;
-                    $ar_inf['id'] = $ar_uid;
-                    $ar_inf['name'] = $ar.Name;
-                    $ar_inf['state'] = $ar.MemberState;
-                    $ar_inf['role'] = $ar.Role;
-                    $ar_inf['operational_state'] = $ar.OperationalState;
-                    $ar_inf['availability_mode'] = $ar.AvailabilityMode;
-                    $ar_inf['connection_state'] = $ar.ConnectionState;
-                    $ar_inf['synchronization_state'] = $ar.RollupSynchronizationState;
-                    $ar_inf['failover_mode'] = $ar.FailoverMode;
-                    $ar_inf['endpoint_url'] = $ar.EndpointUrl;
-                    $ar_info_query = \\"SELECT availability_replicas.replica_server_name AS rep_srv_name,
-                    ISNULL(av_repl_st.synchronization_health, 100) AS sync_hth
-                    FROM sys.availability_replicas AS availability_replicas
-                    LEFT JOIN sys.dm_hadr_availability_replica_states AS av_repl_st
-                    ON availability_replicas.replica_id = av_repl_st.replica_id
-                    WHERE availability_replicas.replica_id = '$ar_uid';\\";
-                    $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);
-                    try {
-                        $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;
-                        $ar_inf['synchronization_health'] = $ar_info_res.tables[0].rows[0].sync_hth;
-                    }
-                    catch {
-                        $ar_inf['replica_server_name'] = '';
-                        $ar_inf['synchronization_health'] = '';
-                    }
-                    $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];
-                    $ars.Add($ar_inf) > $null;
-                }
-            }
-        }
-        $res['availability_groups'] = $ags;
-        $res['availability_replicas'] = $ars;
-        $res_json = ConvertTo-Json $res;
-        Write-Host $res_json
-    '''
+        "  foreach ($ar in $ag.AvailabilityReplicas) {"
+        "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
+        "   $ar_uid = $ar.UniqueId;"
+        "   $ar_inf['ag_id'] = $ag_uid;"
+        "   $ar_inf['ag_res_id'] = $ag_res_uid;"
+        "   $ar_inf['id'] = $ar_uid;"
+        "   $ar_inf['name'] = $ar.Name;"
+        "   $ar_inf['state'] = $ar.MemberState;"
+        "   $ar_inf['role'] = $ar.Role;"
+        "   $ar_inf['operational_state'] = $ar.OperationalState;"
+        "   $ar_inf['availability_mode'] = $ar.AvailabilityMode;"
+        "   $ar_inf['connection_state'] = $ar.ConnectionState;"
+        "   $ar_inf['synchronization_state'] = $ar.RollupSynchronizationState;"
+        "   $ar_inf['failover_mode'] = $ar.FailoverMode;"
+        "   $ar_inf['endpoint_url'] = $ar.EndpointUrl;"
+        "   $ar_info_query = \\\"SELECT availability_replicas.replica_server_name AS rep_srv_name,"
+        "   ISNULL(av_repl_st.synchronization_health, 100) AS sync_hth"
+        "   FROM sys.availability_replicas AS availability_replicas"
+        "   LEFT JOIN sys.dm_hadr_availability_replica_states AS av_repl_st"
+        "   ON availability_replicas.replica_id = av_repl_st.replica_id"
+        "   WHERE availability_replicas.replica_id = '$ar_uid';\\\";"
+        "   $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);"
+        "   try {"
+        "    $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;"
+        "    $ar_inf['synchronization_health'] = $ar_info_res.tables[0].rows[0].sync_hth;"
+        "   }"
+        "   catch {"
+        "    $ar_inf['replica_server_name'] = '';"
+        "    $ar_inf['synchronization_health'] = '';"
+        "   }"
+        "   $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];"
+        "   $ars.Add($ar_inf) > $null;"
+        "  }"
+        " }"
+        "}"
+        "$res['availability_groups'] = $ags;"
+        "$res['availability_replicas'] = $ars;"
+        "$res['availability_databases'] = $adbs;"
+        "$res_json = ConvertTo-Json $res;"
+        "Write-Host $res_json")
     # **********
 
     def get_instances_names(self, is_cluster):
@@ -506,7 +539,8 @@ class WinMSSQL(WinRMPlugin):
                 'errors': defaultdict(list),
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
-                'availability_replicas': defaultdict(dict)
+                'availability_replicas': defaultdict(dict),
+                'availability_databases': defaultdict(dict)
             }
         @rtype: dict
         """
@@ -514,7 +548,8 @@ class WinMSSQL(WinRMPlugin):
             'errors': defaultdict(list),
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
-            'availability_replicas': defaultdict(dict)
+            'availability_replicas': defaultdict(dict),
+            'availability_databases': defaultdict(dict)
         }
 
         winrs = SQLCommander(connection_info, log)
@@ -595,8 +630,8 @@ class WinMSSQL(WinRMPlugin):
                         ar_info
                     )
 
-                    # Also update SQL Instance info with Availability Replicas SQL Instance (primary for secondary
-                    # replicas instances, which we hasn't collected yet)
+                    # Also update SQL Instance info with Availability Replicas SQL Instance (SQL Instances from another
+                    # replica nodes, which we haven't collected yet)
                     replica_server_name = ar_info.get('replica_server_name', '')
                     if replica_server_name:
 
@@ -612,10 +647,6 @@ class WinMSSQL(WinRMPlugin):
                         instance_title, sqlserver = get_sql_instance_naming_info(instance_name=replica_instance_original_name,
                                                                                  hostname=replica_server_hostname)
 
-                        log.debug("Before update results['sql_instances'][replica_server_name]: {}".format(
-                            results['sql_instances'][replica_server_name]
-                        ))
-
                         recursive_mapping_update(
                             results['sql_instances'][replica_server_name],
                             {
@@ -628,9 +659,17 @@ class WinMSSQL(WinRMPlugin):
                             }
                         )
 
-                        log.debug("After update results['sql_instances'][replica_server_name]: {}".format(
-                            results['sql_instances'][replica_server_name]
-                        ))
+                # 4. Availability Databases.
+                availability_databases = availability_groups_info.get('availability_databases', [])
+                for database_info in availability_databases:
+                    db_id = database_info.get('db_id')  # database index (e.g. 1, 2)
+                    if not db_id:
+                        continue
+                    recursive_mapping_update(
+                        # Because DB IDs are not unique across different SQL Instances, DB key is tuple
+                        results['availability_databases'][(sql_server_instance_full_name, db_id)],
+                        database_info
+                    )
 
         # stderr
         if ag_info_response.stderr:
@@ -663,7 +702,8 @@ class WinMSSQL(WinRMPlugin):
                 'errors': defaultdict(list),
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
-                'availability_replicas': defaultdict(dict)
+                'availability_replicas': defaultdict(dict),
+                'availability_databases': defaultdict(dict)
             }
         @rtype: dict
         """
@@ -671,7 +711,8 @@ class WinMSSQL(WinRMPlugin):
             'errors': defaultdict(list),
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
-            'availability_replicas': defaultdict(dict)
+            'availability_replicas': defaultdict(dict),
+            'availability_databases': defaultdict(dict)
         }
 
         ag_owner_node_name, ag_owner_node_fqdn, ag_owner_node_domain, ag_owner_node_ip_address = ag_owner_node
@@ -698,8 +739,9 @@ class WinMSSQL(WinRMPlugin):
 
         instances_info_response = yield winrs.get_all_sql_instances_names()
 
-        log.debug("Always On Instances info response: {}".format(instances_info_response.stdout +
-                                                                 instances_info_response.stderr))
+        log.debug("Always On Instances info response on node {}: {}".format(ag_owner_node_fqdn,
+                                                                            instances_info_response.stdout +
+                                                                            instances_info_response.stderr))
 
         instances_info, passing_error = parse_winrs_response(instances_info_response.stdout, 'json')
 
@@ -749,6 +791,10 @@ class WinMSSQL(WinRMPlugin):
                 results['availability_replicas'],
                 ag_info_response.get('availability_replicas', {})
             )
+            recursive_mapping_update(
+                results['availability_databases'],
+                ag_info_response.get('availability_databases', {})
+            )
 
             ag_errors = ag_info_response.get('errors')
             if ag_errors:
@@ -780,7 +826,8 @@ class WinMSSQL(WinRMPlugin):
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
                 'availability_replicas': defaultdict(dict),
-                'availability_listeners': defaultdict(dict)
+                'availability_listeners': defaultdict(dict),
+                'availability_databases': defaultdict(dict)
             }
         @rtype: dict
         """
@@ -789,7 +836,8 @@ class WinMSSQL(WinRMPlugin):
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
             'availability_replicas': defaultdict(dict),
-            'availability_listeners': defaultdict(dict)
+            'availability_listeners': defaultdict(dict),
+            'availability_databases': defaultdict(dict)
         }
 
         # Get information about Availability Groups, theirs owner nodes and Availability Group listeners.
@@ -824,13 +872,14 @@ class WinMSSQL(WinRMPlugin):
             results['availability_groups'][ag_resource_id]['ag_res_id'] = ag_resource_id
             results['availability_groups'][ag_resource_id]['name'] = ag_info.get('ag_name')
             results['availability_groups'][ag_resource_id]['cluster_resource_state'] = ag_info.get('ag_resource_state')
-            # Owner node info
-            owner_node_info = ag_info.get('owner_node_info')
-            if owner_node_info:
-                ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
-                                         owner_node_info.get('OwnerNodeFQDN', ''),
-                                         owner_node_info.get('OwnerNodeDomain', ''),
-                                         owner_node_info.get('IPv4', '')))
+            # Owner nodes info
+            owner_nodes_info = ag_info.get('owner_nodes_info')
+            if isinstance(owner_nodes_info, list):
+                for owner_node_info in owner_nodes_info:
+                    ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
+                                             owner_node_info.get('OwnerNodeFQDN', ''),
+                                             owner_node_info.get('OwnerNodeDomain', ''),
+                                             owner_node_info.get('IPv4', '')))
             # Availability Group listeners info
             listeners_info = ag_info.get('listeners_info')
             if isinstance(listeners_info, list):
@@ -845,7 +894,7 @@ class WinMSSQL(WinRMPlugin):
                     results['availability_listeners'][listener_id]['ag_id'] = listener.get('ag_id')
                     results['availability_listeners'][listener_id]['ip_address'] = listener.get('ip_address')
 
-        # Collect SQL Instances info on each Availability Groups' primary replica Owner Node.
+        # Collect SQL Instances info on each Availability Groups' possible Owner Node.
         # Use DeferredList to perform asynchronous collection per each Windows node.
         ao_info_deferreds = []
         for ag_owner_node in ag_owner_nodes_info:
@@ -873,6 +922,10 @@ class WinMSSQL(WinRMPlugin):
             recursive_mapping_update(
                 results['availability_replicas'],
                 ag_info_response.get('availability_replicas', {})
+            )
+            recursive_mapping_update(
+                results['availability_databases'],
+                ag_info_response.get('availability_databases', {})
             )
 
             ag_errors = ag_info_response.get('errors')
@@ -1330,14 +1383,22 @@ class WinMSSQL(WinRMPlugin):
         al_compname = 'os/winsqlavailabilitygroups/{}'
         al_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener'
 
+        adb_relname = 'databases'
+        adb_compname = 'os/winsqlinstances/{}'
+        adb_modname = 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'
+
         result = {
             'oms': [  # Add to list in order to preserve sequence of applying maps.
                 defaultdict(list),  # Availability Groups
                 defaultdict(list),  # Availability Replicas
-                defaultdict(list)  # Availability Listeners
+                defaultdict(list),  # Availability Listeners
+                defaultdict(list)  # Availability Databases
             ]
-
         }
+        ag_result_index = 0
+        ar_result_index = 1
+        al_result_index = 2
+        adb_result_index = 3
 
         # Add empty object map list for root ('os') containing relation for Availability Groups. This list will be
         # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
@@ -1363,10 +1424,13 @@ class WinMSSQL(WinRMPlugin):
                 'sql_hostname': owner_sql_instance_info.get('sqlhostname')
             }
             ag_om = fill_ag_om(ag_om, ag_info, self.prepId, sql_instance_data)
-            result['oms'][0][(ag_relname, ag_compname, ag_modname)].append(ag_om)
+            result['oms'][ag_result_index][(ag_relname, ag_compname, ag_modname)].append(ag_om)
 
         # 2. Availability Replicas
         availability_replicas = results.get('ao_info', {}).get('availability_replicas', {})
+        # Also create SQL Instance & Availability Group to Replica mapping, to use it when determining Replica
+        # for Databases
+        ag_and_instance_to_replica_mapping = {}
         for ar_id, ar_info in availability_replicas.iteritems():
             # Get Availability Group for containing relation
             owner_ag_id = ar_info.get('ag_res_id', '')
@@ -1380,6 +1444,9 @@ class WinMSSQL(WinRMPlugin):
                 log.warn('Empty owner SQL Instance for Availability Replica {}'.format(ar_id))
             owner_sql_instance_info = sql_instances.get(owner_sql_instance_name, {})
 
+            ag_and_instance_to_replica_mapping[(owner_ag_id,
+                                                owner_sql_instance_info.get('sql_server_instance_full_name'))] = ar_id
+
             sql_instance_data = {
                 'sql_server_fullname': owner_sql_instance_info.get('sql_server_instance_full_name'),
                 'sql_instance_name': owner_sql_instance_info.get('instance_name'),
@@ -1387,7 +1454,7 @@ class WinMSSQL(WinRMPlugin):
                 'sql_hostname': owner_sql_instance_info.get('sqlhostname'),
             }
             ar_om = fill_ar_om(ar_om, ar_info, self.prepId, sql_instance_data)
-            result['oms'][1][(ar_relname,
+            result['oms'][ar_result_index][(ar_relname,
                               ar_compname.format(self.prepId(owner_ag_id)),
                               ar_modname)
                              ].append(ar_om)
@@ -1402,10 +1469,39 @@ class WinMSSQL(WinRMPlugin):
                 continue
             al_om = ObjectMap()
             al_om = fill_al_om(al_om, al_info, self.prepId)
-            result['oms'][2][(al_relname,
+            result['oms'][al_result_index][(al_relname,
                               al_compname.format(self.prepId(owner_ag_id)),
                               al_modname)
                              ].append(al_om)
+
+        # 4. Availability Databases
+        availability_databases = results.get('ao_info', {}).get('availability_databases', {})
+        for adb_id_tuple, adb_info in availability_databases.iteritems():
+            # Get SQL Instance for containing relation
+            adb_owner_id, adb_index = adb_id_tuple
+            if not adb_owner_id or adb_owner_id not in sql_instances:
+                log.warn('Empty owner SQL instance for Availability Database {}. Skipping.'.format(adb_info.get('name'),
+                                                                                                   adb_index))
+                continue
+
+            # add owner SQL Instance related data to databases info dict
+            adb_info['adb_owner_id'] = adb_owner_id
+            adb_info['sql_hostname_fqdn'] = sql_instances[adb_owner_id].get('sql_hostname_fqdn')
+            adb_info['sql_server_name'] = sql_instances[adb_owner_id].get('sql_server_name')
+            adb_info['instancename'] = sql_instances[adb_owner_id].get('instance_original_name')
+
+            # Determine Availability Replica to which database belongs
+            db_replica_id = ag_and_instance_to_replica_mapping.get(
+                (adb_info.get('ag_res_id'), adb_owner_id)
+            )
+            adb_info['db_replica_id'] = db_replica_id
+
+            adb_om = ObjectMap()
+            adb_om = fill_adb_om(adb_om, adb_info, self.prepId)
+            result['oms'][adb_result_index][(adb_relname,
+                                             adb_compname.format(self.prepId(adb_owner_id)),
+                                             adb_modname)
+                                            ].append(adb_om)
 
         return result
 
