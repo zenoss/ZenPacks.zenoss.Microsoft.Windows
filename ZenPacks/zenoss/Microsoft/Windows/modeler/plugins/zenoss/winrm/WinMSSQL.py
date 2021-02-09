@@ -235,7 +235,7 @@ class SQLCommander(object):
     '''
 
     AVAILABILITY_GROUPS_INFO_PS_SCRIPT = (
-        "$optimization_types = @([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], [Microsoft.SqlServer.Management.Smo.Database]);"
+        "$optimization_types = @([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], [Microsoft.SqlServer.Management.Smo.Database], [Microsoft.SqlServer.Management.Smo.Table]);"
         "foreach ($ot in $optimization_types) {"
         " $def_fields = $server.GetDefaultInitFields($ot);"
         " $server.SetDefaultInitFields($ot, $def_fields);"

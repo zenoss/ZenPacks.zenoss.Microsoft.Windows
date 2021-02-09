@@ -1105,7 +1105,7 @@ def get_al_severities(prop_name, prop_value):
     """
     Returns ZenEventClasses severity for given MS SQL Always On Availability Listener property and its value.
     """
-    ar_severities_map = {
+    al_severities_map = {
         'state': {
             'Inherited': ZenEventClasses.Info,
             'Initializing': ZenEventClasses.Info,
@@ -1119,7 +1119,51 @@ def get_al_severities(prop_name, prop_value):
         }
     }
 
-    return ar_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
+    return al_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
+
+
+def get_adb_severities(prop_name, prop_value):
+    """
+    Returns ZenEventClasses severity for given MS SQL Always On protected Databases properties and its values.
+    """
+
+    if isinstance(prop_value, bool):
+        try:
+            prop_value = str(prop_value)  # Cast to string to avoid different variants of value type
+        except (TypeError, ValueError):
+            pass
+
+    if isinstance(prop_value, int):
+        prop_value = DB_STATUSES.get(prop_value)
+
+    adb_severities_map = {
+        'status': {
+            'AutoClosed': ZenEventClasses.Info,
+            'EmergencyMode': ZenEventClasses.Warning,
+            'Inaccessible': ZenEventClasses.Warning,
+            'Normal': ZenEventClasses.Clear,
+            'Offline': ZenEventClasses.Critical,
+            'Recovering': ZenEventClasses.Info,
+            'RecoveryPending': ZenEventClasses.Info,
+            'Restoring': ZenEventClasses.Info,
+            'Shutdown': ZenEventClasses.Info,
+            'Standby': ZenEventClasses.Info,
+            'Suspect': ZenEventClasses.Warning
+        },
+        'suspended': {
+            'True': ZenEventClasses.Warning,
+            'False': ZenEventClasses.Clear
+        },
+        'sync_state': {
+            'Not Synchronizing': ZenEventClasses.Critical,
+            'Synchronizing': ZenEventClasses.Clear,
+            'Synchronized': ZenEventClasses.Clear,
+            'Reverting': ZenEventClasses.Info,
+            'Initializing': ZenEventClasses.Info,
+        }
+    }
+
+    return adb_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
 
 
 def get_prop_value_events(component_class_name, values_source, event_info):
@@ -1167,6 +1211,14 @@ def get_prop_value_events(component_class_name, values_source, event_info):
             'event_class_key': 'AOAvailabilityListenerPropChange {}',
             'event_summary': '{} of Availability Listener {} is {}',
             'get_severities_func': get_al_severities,
+        },
+        'WinSQLDatabase': {
+            'properties': (('status', 'Database Status'),
+                           ('suspended', 'Suspended'),
+                           ('sync_state', 'Synchronization State')),
+            'event_class_key': 'AOWinSQLDatabasePropChange {}',
+            'event_summary': '{} of SQL Database {} is {}',
+            'get_severities_func': get_adb_severities,
         }
     }
 
@@ -1225,6 +1277,10 @@ def get_default_properties_value_for_component(component_class_name):
         },
         'WinSQLAvailabilityListener': {
             'state': None
+        },
+        'WinSQLDatabase': {
+            'sync_state': '',
+            'status': ''
         }
     }
 
@@ -1317,7 +1373,7 @@ def fill_adb_om(om, data, prep_id_method):
     if db_name:
         setattr(om, 'title', db_name)
 
-    keys_to_skip = ('db_id', 'adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
+    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
 
     keys_values_transform = {
         'keys': {

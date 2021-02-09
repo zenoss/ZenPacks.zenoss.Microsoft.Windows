@@ -42,3 +42,30 @@ class WinSQLDatabase(schema.WinSQLDatabase):
         if instance and not instance().monitored():
             return False
         return self.monitor
+
+    @property
+    def is_availability_database(self):
+        """
+        Define whether Database is Always On protected or not.
+        For this purpose check Always On Unique ID.
+        :return: Boolean
+        """
+        # Check Always On Unique ID.
+        if self.unigue_id and \
+                self.unigue_id not in ('n/a', 'None'):
+            return True
+        return False
+
+    def getRRDTemplates(self):
+        if self.is_availability_database:
+            template_name = 'WinAODatabase'
+        else:
+            template_name = 'WinDatabase'
+
+        rrd_templates = super(WinSQLDatabase, self).getRRDTemplates()
+        if rrd_templates:
+            for tempalte in rrd_templates:
+                if tempalte.id == template_name:
+                    return [tempalte]
+
+        return []

@@ -697,7 +697,11 @@ classes:
         order: 3
       cluster_node_server:
         label: Cluster Node Server
+      db_id:
+        display: false
+        label: Database ID
       unigue_id:
+        default: n/a
         label: Always On Unique ID
       suspended:
         grid_display: true
@@ -708,7 +712,7 @@ classes:
         grid_display: true
         default: n/a
         label: Synchronization State
-    monitoring_templates: [WinDatabase]
+    monitoring_templates: [WinDatabase, WinAODatabase]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
