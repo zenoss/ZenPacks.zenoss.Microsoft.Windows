@@ -697,6 +697,11 @@ classes:
         order: 3
       cluster_node_server:
         label: Cluster Node Server
+      is_availability_database:
+        display: false
+        label: Is Availability Database
+        api_backendtype: method
+        api_only: true
       db_id:
         display: false
         label: Database ID
