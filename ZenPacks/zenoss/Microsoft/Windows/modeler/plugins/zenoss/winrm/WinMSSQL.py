@@ -1403,7 +1403,7 @@ class WinMSSQL(WinRMPlugin):
         # Add empty object map list for root ('os') containing relation for Availability Groups. This list will be
         # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
         # existing components.
-        result['oms'][0][(ag_relname, ag_compname, ag_modname)] = []
+        result['oms'][ag_result_index][(ag_relname, ag_compname, ag_modname)] = []
 
         sql_instances = results.get('ao_info', {}).get('sql_instances', {})
 
@@ -1425,6 +1425,18 @@ class WinMSSQL(WinRMPlugin):
             }
             ag_om = fill_ag_om(ag_om, ag_info, self.prepId, sql_instance_data)
             result['oms'][ag_result_index][(ag_relname, ag_compname, ag_modname)].append(ag_om)
+
+            # Add empty object maps list for Availability Group containing relations. Theses lists will be
+            # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
+            # existing Availability Group containing components (Availability Replicas, Availability Listeners).
+            result['oms'][ar_result_index][(ar_relname,
+                                            ar_compname.format(self.prepId(ag_id)),
+                                            ar_modname)
+                                           ] = []
+            result['oms'][al_result_index][(al_relname,
+                                           al_compname.format(self.prepId(ag_id)),
+                                           al_modname)
+                                           ] = []
 
         # 2. Availability Replicas
         availability_replicas = results.get('ao_info', {}).get('availability_replicas', {})
@@ -1455,9 +1467,9 @@ class WinMSSQL(WinRMPlugin):
             }
             ar_om = fill_ar_om(ar_om, ar_info, self.prepId, sql_instance_data)
             result['oms'][ar_result_index][(ar_relname,
-                              ar_compname.format(self.prepId(owner_ag_id)),
-                              ar_modname)
-                             ].append(ar_om)
+                                           ar_compname.format(self.prepId(owner_ag_id)),
+                                           ar_modname)
+                                           ].append(ar_om)
 
         # 3. Availability Listeners
         availability_listeners = results.get('ao_info', {}).get('availability_listeners', {})
@@ -1470,9 +1482,9 @@ class WinMSSQL(WinRMPlugin):
             al_om = ObjectMap()
             al_om = fill_al_om(al_om, al_info, self.prepId)
             result['oms'][al_result_index][(al_relname,
-                              al_compname.format(self.prepId(owner_ag_id)),
-                              al_modname)
-                             ].append(al_om)
+                                           al_compname.format(self.prepId(owner_ag_id)),
+                                           al_modname)
+                                           ].append(al_om)
 
         # 4. Availability Databases
         availability_databases = results.get('ao_info', {}).get('availability_databases', {})
@@ -1559,7 +1571,7 @@ class WinMSSQL(WinRMPlugin):
             compname="os",
             modname="ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance",
             objmaps=results['instances'] + ao_sql_instances_oms  # add AO SQL Instances oms (do not extend existed list
-            # as we operate with AO SQL Instances' jobs, databases, jobs separately)
+            # as we operate with AO SQL Instance's databases separately)
         ))
 
         # send empty oms if no jobs, dbs, backups for an instance
