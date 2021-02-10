@@ -1486,6 +1486,15 @@ class WinMSSQL(WinRMPlugin):
                                            al_modname)
                                            ].append(al_om)
 
+        # Add empty object maps list for Always On SQL Instance contained relations. This lists will be
+        # populated with actual maps below, but in case of result absence - we need to send empty maps to clean up
+        # existing Always On SQL Instance contained components (Availability Databases).
+        for sql_server_instance_full_name in sql_instances.iterkeys():
+            result['oms'][adb_result_index][(adb_relname,
+                                             adb_compname.format(self.prepId(sql_server_instance_full_name)),
+                                             adb_modname)
+                                            ] = []
+
         # 4. Availability Databases
         availability_databases = results.get('ao_info', {}).get('availability_databases', {})
         for adb_id_tuple, adb_info in availability_databases.iteritems():
