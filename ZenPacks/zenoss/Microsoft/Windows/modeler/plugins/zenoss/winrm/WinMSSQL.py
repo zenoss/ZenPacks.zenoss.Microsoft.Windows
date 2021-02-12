@@ -284,6 +284,7 @@ class SQLCommander(object):
         "  $res['wsfc_cluster_members'] = $cl_members;"
         " }"
         " catch {}"
+        # Availability Groups
         " foreach ($ag in $server.AvailabilityGroups) {"
         "  $ag_info = New-Object 'system.collections.generic.dictionary[string, object]';"
         "  $ag_uid = $ag.UniqueId;"
@@ -293,7 +294,34 @@ class SQLCommander(object):
         "  $ag_info['id'] = $ag_uid;"
         "  $ag_info['ag_res_id'] = $ag_res_uid;"
         "  $ag_info['primary_replica_server_name'] = $pr_rep_servr_name;"
-        # Put databases on top beacause we get them regardless of Replica role (either on Primary or Secondary Replicas)
+        "  $ag_info['is_distributed'] = $ag.IsDistributedAvailabilityGroup;"
+        "  $ag_info['health_check_timeout'] = $ag.HealthCheckTimeout;"
+        "  $ag_info['automated_backup_preference'] = $ag.AutomatedBackupPreference;"
+        "  $ag_info['failure_condition_level'] = $ag.FailureConditionLevel;"
+        "  $ag_info['cluster_type'] = $ag.ClusterTypeWithDefault;"
+        "  $ag_info['db_level_health_detection'] = $ag.DatabaseHealthTrigger;"
+        "  $ags.Add($ag_info) > $null;"
+        # Availability Replicas
+        "  foreach ($ar in $ag.AvailabilityReplicas) {"
+        "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
+        "   $ar_uid = $ar.UniqueId;"
+        "   $ar_inf['ag_id'] = $ag_uid;"
+        "   $ar_inf['ag_res_id'] = $ag_res_uid;"
+        "   $ar_inf['id'] = $ar_uid;"
+        "   $ar_inf['name'] = $ar.Name;"
+        "   $ar_inf['endpoint_url'] = $ar.EndpointUrl;"
+        "   $ar_info_query = \\\"SELECT availability_replicas.replica_server_name AS rep_srv_name"
+        "   FROM sys.availability_replicas AS availability_replicas"
+        "   WHERE availability_replicas.replica_id = '$ar_uid';\\\";"
+        "   $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);"
+        "   try {"
+        "    $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;"
+        "   }"
+        "   catch {}"
+        "   $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];"
+        "   $ars.Add($ar_inf) > $null;"
+        "  }"
+        # Availability Databases
         "  foreach ($adb in $ag.AvailabilityDatabases) {"
         "   $adb_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
         "   $adb_inf['adb_id'] = $adb.UniqueId;"
@@ -315,65 +343,6 @@ class SQLCommander(object):
         "   $adb_inf['systemobject'] = $db.IsSystemObject;"
         "   $adb_inf['recoverymodel'] = $db.DatabaseOptions.RecoveryModel;"
         "   $adbs.Add($adb_inf) > $null;"
-        "  }"
-        "  if ($pr_rep_servr_name -ne $server.Name) {"
-        "   $ags.Add($ag_info) > $null;"
-        "   continue;"
-        "  }"
-        "  $ag_info['is_distributed'] = $ag.IsDistributedAvailabilityGroup;"
-        "  $ag_info['health_check_timeout'] = $ag.HealthCheckTimeout;"
-        "  $ag_info['automated_backup_preference'] = $ag.AutomatedBackupPreference;"
-        "  $ag_info['failure_condition_level'] = $ag.FailureConditionLevel;"
-        "  $ag_info['cluster_type'] = $ag.ClusterTypeWithDefault;"
-        "  $ag_info['db_level_health_detection'] = $ag.DatabaseHealthTrigger;"
-        "  $ag_uid = $ag.UniqueId;"
-        "  $ag_states_query = \\\"SELECT ag_states.synchronization_health AS sync_hlth,"
-        "  ag_states.primary_recovery_health AS pr_rec_hlth"
-        "  FROM sys.dm_hadr_availability_group_states AS ag_states"
-        "  WHERE ag_states.group_id = '$ag_uid';\\\";"
-        "  try {"
-        "   $ag_states_res = $dbmaster.ExecuteWithResults($ag_states_query);"
-        "   $ag_info['synchronization_health'] = $ag_states_res.tables[0].rows[0].sync_hlth;"
-        "   $ag_info['primary_recovery_health'] = $ag_states_res.tables[0].rows[0].pr_rec_hlth;"
-        "  }"
-        "  catch {"
-        "   $ag_info['synchronization_health'] = '';"
-        "   $ag_info['primary_recovery_health'] = '';"
-        "  }"
-        "  $ags.Add($ag_info) > $null;"
-
-        "  foreach ($ar in $ag.AvailabilityReplicas) {"
-        "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
-        "   $ar_uid = $ar.UniqueId;"
-        "   $ar_inf['ag_id'] = $ag_uid;"
-        "   $ar_inf['ag_res_id'] = $ag_res_uid;"
-        "   $ar_inf['id'] = $ar_uid;"
-        "   $ar_inf['name'] = $ar.Name;"
-        "   $ar_inf['state'] = $ar.MemberState;"
-        "   $ar_inf['role'] = $ar.Role;"
-        "   $ar_inf['operational_state'] = $ar.OperationalState;"
-        "   $ar_inf['availability_mode'] = $ar.AvailabilityMode;"
-        "   $ar_inf['connection_state'] = $ar.ConnectionState;"
-        "   $ar_inf['synchronization_state'] = $ar.RollupSynchronizationState;"
-        "   $ar_inf['failover_mode'] = $ar.FailoverMode;"
-        "   $ar_inf['endpoint_url'] = $ar.EndpointUrl;"
-        "   $ar_info_query = \\\"SELECT availability_replicas.replica_server_name AS rep_srv_name,"
-        "   ISNULL(av_repl_st.synchronization_health, 100) AS sync_hth"
-        "   FROM sys.availability_replicas AS availability_replicas"
-        "   LEFT JOIN sys.dm_hadr_availability_replica_states AS av_repl_st"
-        "   ON availability_replicas.replica_id = av_repl_st.replica_id"
-        "   WHERE availability_replicas.replica_id = '$ar_uid';\\\";"
-        "   $ar_info_res = $dbmaster.ExecuteWithResults($ar_info_query);"
-        "   try {"
-        "    $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;"
-        "    $ar_inf['synchronization_health'] = $ar_info_res.tables[0].rows[0].sync_hth;"
-        "   }"
-        "   catch {"
-        "    $ar_inf['replica_server_name'] = '';"
-        "    $ar_inf['synchronization_health'] = '';"
-        "   }"
-        "   $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];"
-        "   $ars.Add($ar_inf) > $null;"
         "  }"
         " }"
         "}"
@@ -1414,7 +1383,7 @@ class WinMSSQL(WinRMPlugin):
             # Get owner SQL Instance for 1:M relation
             owner_sql_instance_name = ag_info.get('primary_replica_server_name', '')
             if not owner_sql_instance_name:
-                log.warn('Empty owner SQL Instance for Availability Group {}'.format(ag_id))
+                log.warn('Empty primary replica SQL Instance for Availability Group {}'.format(ag_id))
             owner_sql_instance_info = sql_instances.get(owner_sql_instance_name, {})
 
             sql_instance_data = {
@@ -1515,7 +1484,8 @@ class WinMSSQL(WinRMPlugin):
             db_replica_id = ag_and_instance_to_replica_mapping.get(
                 (adb_info.get('ag_res_id'), adb_owner_id)
             )
-            adb_info['db_replica_id'] = db_replica_id
+            if db_replica_id:
+                adb_info['db_replica_id'] = db_replica_id
 
             adb_om = ObjectMap()
             adb_om = fill_adb_om(adb_om, adb_info, self.prepId)
