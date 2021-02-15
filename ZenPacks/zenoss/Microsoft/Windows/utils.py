@@ -1267,6 +1267,11 @@ def get_default_properties_value_for_component(component_class_name):
         return {}
 
     default_prop_values = {
+        'WinSQLAvailabilityGroup': {
+            'synchronization_health': '',
+            'primary_recovery_health': '',
+            'quorum_state': ''
+        },
         'WinSQLAvailabilityReplica': {
             'state': '',
             'role': '',
@@ -1274,6 +1279,8 @@ def get_default_properties_value_for_component(component_class_name):
             'connection_state': '',
             'synchronization_state': '',
             'synchronization_health': '',
+            'failover_mode': '',
+            'availability_mode': ''
         },
         'WinSQLAvailabilityListener': {
             'state': None

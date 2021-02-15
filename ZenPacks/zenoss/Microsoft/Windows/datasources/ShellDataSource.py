@@ -74,7 +74,7 @@ AVAILABLE_STRATEGIES = [
     'powershell MSSQL Job',
     'powershell MSSQL AO AG',
     'powershell MSSQL AO AR',
-    'powershell MSSQL AO AL',
+    'powershell AO AL',
     'powershell MSSQL AO ADB'
 ]
 
@@ -777,7 +777,7 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
             log.debug(
                 'Non-zero exit code ({0}) for MSSQL AO AG on {1}'
                 .format(
-                    result.exit_code, datasources[0].get('cluster_node_server')))
+                    result.exit_code, datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -790,19 +790,13 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
 
         log.debug('Availability Groups monitoring response: {}'.format(availability_groups_info))
 
-        if not isinstance(availability_groups_info, dict):
-            log.debug('Availability group monitoring response should be dict, got {}.'.format(
-                type(availability_groups_info)))
-            return parsed_results
+        if not availability_groups_info:
+            log.debug('Got empty Availability group response for {}'.format(datasources[0].cluster_node_server))
+            availability_groups_info = {}  # need for further setting of default values.
 
         for dsconf in datasources:
             ag_name = dsconf.params.get('contexttitle', '')
-            ag_results = availability_groups_info.get(ag_name)
-
-            if not isinstance(ag_results, dict):
-                log.debug('Got {} response monitoring for {}. It should be dict.'.format(type(ag_results),
-                                                                                         ag_name))
-                continue
+            ag_results = availability_groups_info.get(ag_name, {})
 
             # Metrics
             ag_state_metrics = ag_results.get('ag_state')
@@ -814,39 +808,43 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
                         if dp_value is not None:
                             parsed_results['values'][dsconf.component][dp_id] = dp_value, 'N'
             # Maps:
-            ag_om = None
             ag_info_maps = ag_results.get('ag_info')
-            if isinstance(ag_info_maps, dict):
-                ag_om = ObjectMap()
-                ag_om.id = dsconf.params['instanceid']
-                ag_om.title = dsconf.params['contexttitle']
-                ag_om.compname = dsconf.params['contextcompname']
-                ag_om.modname = dsconf.params['contextmodname']
-                ag_om.relname = dsconf.params['contextrelname']
-                sql_instance_data = {
-                    'quorum_state': lookup_ag_quorum_state(
-                        ag_results.get('cl_quorum_state'))
-                }
-                ag_om = fill_ag_om(ag_om, ag_info_maps, prepId, sql_instance_data)
-                parsed_results['maps'].append(ag_om)
+            if not ag_info_maps:
+                log.debug('Got empty maps response for Availability Group {}.'.format(ag_name))
+                # We got empty result for particular Availability Group - seems like it is unreachable.
+                # Need to return set of properties with default values
+                ag_info_maps = get_default_properties_value_for_component('WinSQLAvailabilityGroup')
+
+            ag_om = ObjectMap()
+            ag_om.id = dsconf.params['instanceid']
+            ag_om.title = dsconf.params['contexttitle']
+            ag_om.compname = dsconf.params['contextcompname']
+            ag_om.modname = dsconf.params['contextmodname']
+            ag_om.relname = dsconf.params['contextrelname']
+            sql_instance_data = {
+                'quorum_state': lookup_ag_quorum_state(
+                    ag_results.get('cl_quorum_state'))
+            }
+            ag_om = fill_ag_om(ag_om, ag_info_maps, prepId, sql_instance_data)
+            parsed_results['maps'].append(ag_om)
+
             # Events:
             # 1. check whether Primary replica SQL Instance has changed. If yes - create an event.
-            if ag_om:
-                primary_repliaca_sql_instance_id = getattr(ag_om, 'set_winsqlinstance', None)
-                if primary_repliaca_sql_instance_id and \
-                        dsconf.params['winsqlinstance_id'] and \
-                        primary_repliaca_sql_instance_id != dsconf.params['winsqlinstance_id']:
+            primary_repliaca_sql_instance_id = getattr(ag_om, 'set_winsqlinstance', None)
+            if primary_repliaca_sql_instance_id and \
+                    dsconf.params['winsqlinstance_id'] and \
+                    primary_repliaca_sql_instance_id != dsconf.params['winsqlinstance_id']:
 
-                    parsed_results['events'].append(dict(
-                        eventClassKey='alwaysOnPrimaryReplicaInstanceChange',
-                        eventKey='winrsCollection',
-                        severity=ZenEventClasses.Info,
-                        summary='Primary replica SQL Instance for Availability Group {} changed to {}'.format(
-                                    dsconf.params['contexttitle'],
-                                    ag_info_maps.get('primary_replica_server_name'), ''),
-                        device=config.id,
-                        component=dsconf.component
-                    ))
+                parsed_results['events'].append(dict(
+                    eventClassKey='alwaysOnPrimaryReplicaInstanceChange',
+                    eventKey='winrsCollection',
+                    severity=ZenEventClasses.Info,
+                    summary='Primary replica SQL Instance for Availability Group {} changed to {}'.format(
+                                dsconf.params['contexttitle'],
+                                ag_info_maps.get('primary_replica_server_name'), ''),
+                    device=config.id,
+                    component=dsconf.component
+                ))
             # 2. IsOnline event
             is_online = None
             if isinstance(ag_state_metrics, dict):
@@ -962,7 +960,7 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
         if result.exit_code != 0:
             log.debug(
                 'Non-zero exit code ({0}) for MSSQL AO AR on {1}'.format(
-                    result.exit_code, datasources[0].get('cluster_node_server')))
+                    result.exit_code, datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -975,10 +973,9 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
 
         log.debug('Availability Replicas performance response: {}'.format(availability_replicas_info))
 
-        if not isinstance(availability_replicas_info, dict):
-            log.debug('Availability replica monitoring response should be dict, got {}.'.format(
-                type(availability_replicas_info)))
-            return parsed_results
+        if not availability_replicas_info:
+            log.debug('Got empty Availability replica response for {}'.format(datasources[0].cluster_node_server))
+            availability_replicas_info = {}  # need for further setting of default values.
 
         for dsconf in datasources:
             ar_id = dsconf.params.get('instanceid')
@@ -1028,7 +1025,7 @@ gsm.registerUtility(PowershellMSSQLAlwaysOnARStrategy(), IStrategy, 'powershell 
 class PowershellMSSQLAlwaysOnALStrategy(object):
     implements(IStrategy)
 
-    key = 'MSSQLAlwaysOnAL'
+    key = 'AlwaysOnAL'
 
     @staticmethod
     def build_command_line(listener_id):
@@ -1141,7 +1138,7 @@ class PowershellMSSQLAlwaysOnALStrategy(object):
         return parsed_results
 
 
-gsm.registerUtility(PowershellMSSQLAlwaysOnALStrategy(), IStrategy, 'powershell MSSQL AO AL')
+gsm.registerUtility(PowershellMSSQLAlwaysOnALStrategy(), IStrategy, 'powershell AO AL')
 
 
 class PowershellMSSQLAlwaysOnADBStrategy(object):
@@ -1252,7 +1249,7 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
         if result.exit_code != 0:
             log.debug(
                 'Non-zero exit code ({0}) for MSSQL AO ADB on {1}'.format(
-                    result.exit_code, datasources[0].get('cluster_node_server')))
+                    result.exit_code, datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -1398,7 +1395,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                         'powershell MSSQL Job,'
                                         'powershell MSSQL AO AG',
                                         'powershell MSSQL AO AR',
-                                        'powershell MSSQL AO AL',
+                                        'powershell AO AL',
                                         'powershell MSSQL AO ADB'):
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
@@ -1553,8 +1550,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             if dsconf.params['strategy'] == 'powershell MSSQL' or\
                     dsconf.params['strategy'] == 'powershell MSSQL Job':
                 conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
-            if dsconf0.params['strategy'] == 'powershell MSSQL AO AL':
-                cmd_line_input = dsconf0.params.get('instanceid', '')  # Take listener ID as input parametr.
 
             if dsconf0.params['strategy'] == 'powershell MSSQL AO AG':
                 # For Always On Availability groups, Availability Group names are needed:
@@ -1577,6 +1572,9 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 command_line, script = strategy.build_command_line(cmd_line_input, db_indices, counters)
             else:
                 command_line, script = strategy.build_command_line(cmd_line_input)
+        elif dsconf0.params['strategy'] == 'powershell AO AL':
+            cmd_line_input = dsconf0.params.get('instanceid', '')  # Take listener ID as input parameter.
+            command_line, script = strategy.build_command_line(cmd_line_input)
         elif dsconf0.params['strategy'] == 'Custom Command':
             check_datasource(dsconf0)
             script = dsconf0.params['script']
@@ -1630,7 +1628,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             diagResult = strategy.parse_result(dsconfs, result)
             dsconf = dsconfs[0]
             data['events'] = diagResult.events
-        elif strategy.key in ('MSSQLAlwaysOnAG', 'MSSQLAlwaysOnAR', 'MSSQLAlwaysOnAL', 'MSSQLAlwaysOnADB'):
+        elif strategy.key in ('MSSQLAlwaysOnAG', 'MSSQLAlwaysOnAR', 'AlwaysOnAL', 'MSSQLAlwaysOnADB'):
             ao_result = strategy.parse_result(config, result)
             data['values'] = ao_result.get('values', {})
             data['maps'] = ao_result.get('maps', [])

@@ -2345,7 +2345,7 @@ device_classes:
         datasources:
           AvailabilityListenerState:
             type: Windows Shell
-            strategy: powershell MSSQL AO AL
+            strategy: powershell AO AL
             component: ${here/id}
             resource: AvailabilityListenerState
             cycletime: ${here/zWinPerfmonInterval}
