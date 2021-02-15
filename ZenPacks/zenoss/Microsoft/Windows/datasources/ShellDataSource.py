@@ -1416,13 +1416,15 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
 
         owner_node_ip = None
         if hasattr(context, 'cluster_node_server'):
-            owner_node, _ = context.cluster_node_server.split('//')
-            owner_node_ip = getattr(context, 'owner_node_ip', None)
-            if not owner_node_ip:
-                try:
-                    owner_node_ip = context.device().clusterhostdevicesdict.get(owner_node, None)
-                except Exception:
-                    pass
+            cluster_node_server = context.cluster_node_server
+            if isinstance(cluster_node_server, str) and '//' in cluster_node_server:
+                owner_node, _ = cluster_node_server.split('//')
+                owner_node_ip = getattr(context, 'owner_node_ip', None)
+                if not owner_node_ip:
+                    try:
+                        owner_node_ip = context.device().clusterhostdevicesdict.get(owner_node, None)
+                    except Exception:
+                        pass
 
         try:
             contextURL = context.getPrimaryUrlPath()
