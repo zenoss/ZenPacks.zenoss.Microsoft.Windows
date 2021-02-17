@@ -156,7 +156,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             "foreach ($volume in $clsSharedVolume) {{"
             "$volumeowner = $volume.OwnerNode.Name;"
             "$csvVolume = $volume.SharedVolumeInfo.Partition.Name;"
-            "$csvNames += $volume.Name;"
+            "$csvNames = ($csvNames + $volume.Name);"
             "$csvtophysicaldisk = New-Object -TypeName PSObject -Property @{{"
             "Id = $csvVolume.substring(11, $csvVolume.length-13);"
             "FreeSpace = $volume.SharedVolumeInfo.Partition.Freespace;"
