@@ -1054,6 +1054,26 @@ def lookup_adb_sync_state(value):
     }.get(value, 'unknown')
 
 
+def get_ag_severities(prop_name, prop_value):
+    """
+    Returns ZenEventClasses severity for given MS SQL Always On Availability Group property and its value.
+    """
+    ag_severities_map = {
+        'synchronization_health': {
+            'Not healthy': ZenEventClasses.Critical,
+            'Partially healthy': ZenEventClasses.Warning,
+            'Healthy': ZenEventClasses.Clear,
+        },
+        'quorum_state': {
+            'Unknown quorum state': ZenEventClasses.Warning,
+            'Normal quorum': ZenEventClasses.Clear,
+            'Forced quorum': ZenEventClasses.Warning,
+        }
+    }
+
+    return ag_severities_map.get(prop_name, {}).get(prop_value, ZenEventClasses.Warning)
+
+
 def get_ar_severities(prop_name, prop_value):
     """
     Returns ZenEventClasses severity for given MS SQL Always On Availability Replica property and its value.
@@ -1195,6 +1215,13 @@ def get_prop_value_events(component_class_name, values_source, event_info):
         return event_list
 
     component_info = {
+        'WinSQLAvailabilityGroup': {
+            'properties': (('synchronization_health', 'Synchronization Health'),
+                           ('quorum_state', 'Quorum State')),
+            'event_class_key': 'AOAvailabilityGroupPropChange {}',
+            'event_summary': '{} of Availability Group {} is {}',
+            'get_severities_func': get_ag_severities,
+        },
         'WinSQLAvailabilityReplica': {
             'properties': (('state', 'State'),
                            ('role', 'Role'),
