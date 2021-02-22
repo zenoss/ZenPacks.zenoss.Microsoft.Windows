@@ -866,6 +866,19 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
                 device=config.id,
                 component=dsconf.component
             ))
+            # 3. Events based on Availability Group properties values
+            ag_prop_value_events = get_prop_value_events(
+                'WinSQLAvailabilityGroup',
+                ag_om.__dict__,
+                dict(
+                    event_class=dsconf.eventClass or "/Status",
+                    event_key=dsconf.eventKey,
+                    component_title=dsconf.params['contexttitle'],
+                    device=config.id,
+                    component=dsconf.component
+                )
+            )
+            parsed_results['events'].extend(ag_prop_value_events)
 
         log.debug('MSSQL Availability Group monitoring parsed results: {}'.format(parsed_results))
 
