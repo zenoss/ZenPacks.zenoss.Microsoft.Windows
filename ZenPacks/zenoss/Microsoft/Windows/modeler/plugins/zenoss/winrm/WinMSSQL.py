@@ -197,42 +197,76 @@ class SQLCommander(object):
         write-host $results_json;
     '''
 
-    ALL_SQL_INSTANCES_PS_SCRIPT = '''
-        <# Get registry key for instances (with 2003 or 32/64 Bit 2008 base key) #>
-        $reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);
-        $baseKeys = 'SOFTWARE\Microsoft\Microsoft SQL Server', 'SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server';
-        foreach ($regPath in $baseKeys) {
-            $regKey= $reg.OpenSubKey($regPath);
-            If ($regKey -eq $null) {Continue};
+    ALWAYS_ON_RESOURCES_ON_NODE_PS_SCRIPT = (
+        "$result = New-Object 'system.collections.generic.dictionary[string, object]';"
+        "$result['hostname'] = hostname;"
+        "$dictType = 'system.collections.generic.dictionary[string, object]';"
+        "$result['replicas'] = New-Object $dictType;"
+        "$result['ao_instances'] = New-Object $dictType;"
+        # Get registry key for instances (with 2003 or 32/64 Bit 2008 base key)
+        "$reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);"
+        "$baseKeys = 'SOFTWARE\Microsoft\Microsoft SQL Server', 'SOFTWARE\Wow6432Node\Microsoft\Microsoft SQL Server';"
+        "foreach ($regPath in $baseKeys) {"
+        " $regKey = $reg.OpenSubKey($regPath);"
+        " If ($regKey -eq $null) { Continue; };"
+        # Get installed instances' names (both cluster and local)
+        " If ($regKey.GetSubKeyNames() -contains 'Instance Names') {"
+        "  $regKey = $reg.OpenSubKey($regpath + '\Instance Names\SQL');"
+        "  $instncs = @($regkey.GetValueNames());"
+        " }"
+        " ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {"
+        "  $instncs = $regKey.GetValue('InstalledInstances');"
+        " }"
+        " Else { Continue; };"
 
-            <# Get installed instances' names (both cluster and local) #>
-            If ($regKey.GetSubKeyNames() -contains 'Instance Names') {
-                $regKey = $reg.OpenSubKey($regpath+'\Instance Names\SQL');
-                $instances = @($regkey.GetValueNames());
-            } ElseIf ($regKey.GetValueNames() -contains 'InstalledInstances') {
-                $instances = $regKey.GetValue('InstalledInstances');
-            } Else {Continue};
-
-            $instances_list = New-Object System.Collections.Arraylist;
-            $instances | % {
-                $instanceValue = $regKey.GetValue($_);
-                $instanceReg = $reg.OpenSubKey($regpath+'\\'+$instanceValue);
-                $version = $instanceReg.OpenSubKey('MSSQLServer\CurrentVersion').GetValue('CurrentVersion');
-                $instance_ver = $_;$instance_ver+=':';$instance_ver+=$version;
-                <#Insert info about each SQL Instance into dictionary#>
-                $instance_info = New-Object 'system.collections.generic.dictionary[string,string]';
-                $instance_info['name'] = $_;
-                $instance_info['version'] = $version;
-                $instances_list.Add($instance_info) > $null;
-            };
-            break;
-        };
-        $result = New-Object 'system.collections.generic.dictionary[string, object]';
-        $result['hostname'] = hostname;
-        $result['instances'] = $instances_list;
-        $result_in_json = ConvertTo-Json $result;
-        write-host $result_in_json
-    '''
+        " $inst_list = New-Object System.Collections.Arraylist;"
+        " $instncs | % {"
+        "  $instValue = $regKey.GetValue($_);"
+        "  $instReg = $reg.OpenSubKey($regpath + '\\' + $instValue);"
+        "  $version = $instReg.OpenSubKey('MSSQLServer\CurrentVersion').GetValue('CurrentVersion');"
+        "  $instance_ver = $_; $instance_ver += ':'; $instance_ver += $version;"
+        #  Insert info about each SQL Instance into dictionary
+        "  $inst_inf = New-Object 'system.collections.generic.dictionary[string,string]';"
+        "  $inst_inf['name'] = $_;"
+        "  $inst_inf['version'] = $version;"
+        "  $inst_list.Add($inst_inf) > $null;"
+        " };"
+        " break;"
+        "};"
+        "$result['instances'] = $inst_list;"
+        # Obtain info about Replicas and SQL Instances without touching SQL Instance
+        "$agIDs = @(ag_res_ids_placeholder);"
+        "foreach ($agID in $agIDs) {"
+        " $agPath = \\\"Cluster\Resources\$agID\\\";"
+        " $agPathKey = $reg.OpenSubKey($agPath);"
+        " if ($agPathKey -eq $null) {Continue;};"
+        # Replicas
+        " if ($agPathKey.GetSubKeyNames() -contains 'ReplicaStatus') {"
+        "  $replStatusKey = $reg.OpenSubKey($agPath + '\\' + 'ReplicaStatus');"
+        "  if ($replStatusKey.SubKeyCount -gt 0) {"
+        "   $replStatusKey = $replStatusKey.OpenSubKey($replStatusKey.GetSubKeyNames()[0]);"
+        "   $arIDs = $replStatusKey.GetValueNames();"
+        "   foreach ($rID in $arIDs) {"
+        "    $arInfo = New-Object $dictType;"
+        "    $arInfo['ag_res_id'] = $agID;"
+        "    $arInfo['id'] = $rID.ToLower(); "
+        "    $result['replicas'][$rID.ToLower()] = $arInfo;"
+        "   }"
+        "  }"
+        " }"
+        # SQL Instances
+        " if ($agPathKey.GetSubKeyNames() -contains 'SqlInstToNodeMap') {"
+        "  $sqlInstnsKey = $reg.OpenSubKey($agPath + '\\' + 'SqlInstToNodeMap');"
+        "  $sqlInstnsNames = $sqlInstnsKey.GetValueNames();"
+        "  foreach ($insName in $sqlInstnsNames) {"
+        "   $aoInstInfo = New-Object $dictType;"
+        "   $aoInstInfo['sql_server_fullname'] = $insName;"
+        "   $result['ao_instances'][$insName] = $aoInstInfo;"
+        "  }"
+        " }"
+        "}"
+        "$result_in_json = ConvertTo-Json $result;"
+        "write-host $result_in_json")
 
     AVAILABILITY_GROUPS_INFO_PS_SCRIPT = (
         "$optimization_types = @([Microsoft.SqlServer.Management.Smo.AvailabilityGroup], [Microsoft.SqlServer.Management.Smo.Database], [Microsoft.SqlServer.Management.Smo.Table]);"
@@ -364,17 +398,20 @@ class SQLCommander(object):
             psinstance_script + self.HOSTNAME_PS_SCRIPT
         )
 
-    def get_all_sql_instances_names(self):
+    def get_always_on_resources_on_node(self, ag_resource_ids):
         """
-        Run script to get information about all SQL Instances on Windows nodes
-
+        Run script to get information about SQL Server Always On resources on Windows nodes
+        @param ag_resource_ids: Iterable with Awailability Group cluster resource IDs.
+        @type ag_resource_ids: iterable
         @return: CommandResponse:
             .stdout = [<non-empty, stripped line>, ...]
             .stderr = [<non-empty, stripped line>, ...]
             .exit_code = <int>
         @rtype: txwinrm.shell.CommandResponse
         """
-        instance_ps_script = self.ALL_SQL_INSTANCES_PS_SCRIPT
+        instance_ps_script = self.ALWAYS_ON_RESOURCES_ON_NODE_PS_SCRIPT
+        instance_ps_script = instance_ps_script.replace('ag_res_ids_placeholder',
+                                                        ','.join(("'{}'".format(ag_id) for ag_id in ag_resource_ids)))
         return self.run_command(
             instance_ps_script
         )
@@ -647,7 +684,8 @@ class WinMSSQL(WinRMPlugin):
         defer.returnValue(results)
 
     @defer.inlineCallbacks
-    def collect_ao_info_on_node(self, ag_owner_node, connection_info, host_username, host_password, sql_logins, log):
+    def collect_ao_info_on_node(self, ag_owner_node, connection_info, host_username,
+                                host_password, sql_logins, additional_data, log):
         """
         Collects information about Always On (AO) resources on provided Windows node which is Availability Group
         (AG) owner node.
@@ -663,6 +701,8 @@ class WinMSSQL(WinRMPlugin):
         @type host_username: str
         @param host_password: Windows host password.
         @type host_password: str
+        @param additional_data: Additional data provided to the method.
+        @type additional_data: dict
         @param log: logger.
         @type log: logger
 
@@ -706,7 +746,10 @@ class WinMSSQL(WinRMPlugin):
             log.error('Malformed data returned for node {}. {}'.format(ag_owner_node_fqdn, e.message))
             defer.returnValue(results)
 
-        instances_info_response = yield winrs.get_all_sql_instances_names()
+        # provide AG ids to script
+        ag_res_ids = additional_data.get('ag_res_ids', [])
+
+        instances_info_response = yield winrs.get_always_on_resources_on_node(ag_res_ids)
 
         log.debug("Always On Instances info response on node {}: {}".format(ag_owner_node_fqdn,
                                                                             instances_info_response.stdout +
@@ -721,10 +764,22 @@ class WinMSSQL(WinRMPlugin):
 
         hostname = instances_info.get('hostname')
         instances = instances_info.get('instances', [])
+        ao_replicas = instances_info.get('replicas', {})
+        ao_instances = instances_info.get('ao_instances', {})
 
         if not instances:
             log.warn('No MSSQL Instances were found on node {}'.format(ag_owner_node_fqdn))
             defer.returnValue(results)
+
+        # Update Replicas and Instances information
+        recursive_mapping_update(
+            results['sql_instances'],
+            ao_instances
+        )
+        recursive_mapping_update(
+            results['availability_replicas'],
+            ao_replicas
+        )
 
         # Get info about primary replica SQL Instance for each availability group, because only on this instance we
         # can utilize SMO/T-SQL for getting info about Always On stuff.
@@ -834,6 +889,7 @@ class WinMSSQL(WinRMPlugin):
 
         # Fill results with available information
         ag_owner_nodes_info = set()  # use set to avoid owner nodes duplication (several AGs may be placed on same node)
+        ag_res_ids = set()  # Availability Group cluster resource IDs to use in further collection
         for ag_info in ag_cluster_resources:
             ag_resource_id = ag_info.get('ag_resource_id')
             if not ag_resource_id:
@@ -841,12 +897,14 @@ class WinMSSQL(WinRMPlugin):
             results['availability_groups'][ag_resource_id]['ag_res_id'] = ag_resource_id
             results['availability_groups'][ag_resource_id]['name'] = ag_info.get('ag_name')
             results['availability_groups'][ag_resource_id]['cluster_resource_state'] = ag_info.get('ag_resource_state')
+            ag_res_ids.add(ag_resource_id)
             # Owner nodes info
             owner_nodes_info = ag_info.get('owner_nodes_info')
             if isinstance(owner_nodes_info, list):
                 for owner_node_info in owner_nodes_info:
+                    owner_node_fqdn = owner_node_info.get('OwnerNodeFQDN', '')
                     ag_owner_nodes_info.add((owner_node_info.get('OwnerNode', ''),
-                                             owner_node_info.get('OwnerNodeFQDN', ''),
+                                             owner_node_fqdn,
                                              owner_node_info.get('OwnerNodeDomain', ''),
                                              owner_node_info.get('IPv4', '')))
             # Availability Group listeners info
@@ -863,12 +921,17 @@ class WinMSSQL(WinRMPlugin):
                     results['availability_listeners'][listener_id]['ag_id'] = listener.get('ag_id')
                     results['availability_listeners'][listener_id]['ip_address'] = listener.get('ip_address')
 
+        # Provide additional data to each collect coroutine
+        additional_data = {
+            'ag_res_ids': ag_res_ids
+        }
+
         # Collect SQL Instances info on each Availability Groups' possible Owner Node.
         # Use DeferredList to perform asynchronous collection per each Windows node.
         ao_info_deferreds = []
         for ag_owner_node in ag_owner_nodes_info:
             ao_info_deffer = self.collect_ao_info_on_node(ag_owner_node, connection_info, host_username,
-                                                          host_password, sql_logins, log)
+                                                          host_password, sql_logins, additional_data, log)
             ao_info_deferreds.append(ao_info_deffer)
 
         collection_results = yield defer.DeferredList(ao_info_deferreds, consumeErrors=True)
@@ -1309,7 +1372,7 @@ class WinMSSQL(WinRMPlugin):
             sql_hostname_fqdn = ao_sql_instance.get('sql_hostname_fqdn')
             sql_host_ip = ao_sql_instance.get('sql_host_ip')
             # if there is no ip address for SQL Instance - try to take it from hosts info
-            if not sql_host_ip:
+            if not sql_host_ip and sql_hostname_fqdn:
                 ip_and_hostname = self.get_ip_and_hostname(sql_hostname_fqdn)
                 if isinstance(ip_and_hostname, list) and len(ip_and_hostname) == 2:
                     sql_host_ip = ip_and_hostname[0]
@@ -1320,19 +1383,27 @@ class WinMSSQL(WinRMPlugin):
                                                      is_clustered_instance, sql_hostname,
                                                      sql_server_instance_full_name)
             instance_om.id = sql_instance_id
+            # Need to add non required properties only in case if they have value. Otherwise there is a
+            # possibility of wiping existing values in case if SQL is unreachable.
+            sql_instance_attrs = {}
 
-            if sql_instance_original_name == 'MSSQLSERVER':
-                instance_om.perfmon_instance = 'SQLServer'
-                instance_om.title = '{}(MSSQLSERVER)'.format(sql_instance_name)
-            else:
-                instance_om.perfmon_instance = 'MSSQL${}'.format(sql_instance_original_name)
-                instance_om.title = sql_instance_name
+            if sql_instance_original_name and sql_instance_name:
+                if sql_instance_original_name == 'MSSQLSERVER':
+                    sql_instance_attrs['perfmon_instance'] = 'SQLServer'
+                    sql_instance_attrs['title'] = '{}(MSSQLSERVER)'.format(sql_instance_name)
+                else:
+                    sql_instance_attrs['perfmon_instance'] = 'MSSQL${}'.format(sql_instance_original_name)
+                    sql_instance_attrs['title'] = sql_instance_name
 
-            instance_om.instancename = sql_instance_original_name
-            instance_om.sql_server_version = sql_server_version
-            instance_om.cluster_node_server = '{0}//{1}'.format(
-                sql_hostname_fqdn, sql_server_name)
-            instance_om.owner_node_ip = sql_host_ip
+            sql_instance_attrs['instancename'] = sql_instance_original_name
+            sql_instance_attrs['sql_server_version'] = sql_server_version
+            if sql_hostname_fqdn and sql_server_name:
+                sql_instance_attrs['cluster_node_server'] = '{0}//{1}'.format(sql_hostname_fqdn, sql_server_name)
+            sql_instance_attrs['owner_node_ip'] = sql_host_ip
+
+            for attr_name, attr_value in sql_instance_attrs.iteritems():
+                if attr_value:
+                    setattr(instance_om, attr_name, attr_value)
 
             sql_instance_oms.append(instance_om)
 
@@ -1427,7 +1498,6 @@ class WinMSSQL(WinRMPlugin):
 
             ag_and_instance_to_replica_mapping[(owner_ag_id,
                                                 owner_sql_instance_info.get('sql_server_instance_full_name'))] = ar_id
-
             sql_instance_data = {
                 'sql_server_fullname': owner_sql_instance_info.get('sql_server_instance_full_name'),
                 'sql_instance_name': owner_sql_instance_info.get('instance_name'),
