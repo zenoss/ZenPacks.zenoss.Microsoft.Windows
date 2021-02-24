@@ -143,7 +143,7 @@ class SQLCommander(object):
             $ag_nodes = New-Object System.Collections.ArrayList;
             $resource_nodes = Get-ClusterOwnerNode -InputObject $resource | Select-Object -Property OwnerNodes;
             foreach ($node in $resource_nodes.OwnerNodes) {
-                $owner_node_name = $node.Name;
+                $owner_node_name = $node.Name.ToLower();
                 $owner_node_info = $null;
                 if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
                     $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';
@@ -261,6 +261,7 @@ class SQLCommander(object):
         "  foreach ($insName in $sqlInstnsNames) {"
         "   $aoInstInfo = New-Object $dictType;"
         "   $aoInstInfo['sql_server_fullname'] = $insName;"
+        "   $aoInstInfo['sql_server_node'] = $sqlInstnsKey.GetValue($insName);"
         "   $result['ao_instances'][$insName] = $aoInstInfo;"
         "  }"
         " }"
@@ -352,7 +353,7 @@ class SQLCommander(object):
         "    $ar_inf['replica_server_name'] = $ar_info_res.tables[0].rows[0].rep_srv_name;"
         "   }"
         "   catch {}"
-        "   $ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];"
+        "   try {$ar_inf['replica_server_hostname'] = $inst_to_node_map[$ar_inf['replica_server_name']];} catch {}"
         "   $ars.Add($ar_inf) > $null;"
         "  }"
         # Availability Databases
@@ -762,7 +763,7 @@ class WinMSSQL(WinRMPlugin):
                 instances_info_response.stderr)}
             defer.returnValue(results)
 
-        hostname = instances_info.get('hostname')
+        hostname = instances_info.get('hostname', '')
         instances = instances_info.get('instances', [])
         ao_replicas = instances_info.get('replicas', {})
         ao_instances = instances_info.get('ao_instances', {})
@@ -781,14 +782,40 @@ class WinMSSQL(WinRMPlugin):
             ao_replicas
         )
 
+        log.debug('additional_data[nodes_info] on {} is {}'.format(ag_owner_node_fqdn, additional_data['nodes_info']))
+
+        # set IP
+        for sql_instance_name, sql_instance_info in results['sql_instances'].iteritems():
+            if isinstance(sql_instance_info, dict):
+                sql_server_node = sql_instance_info.get('sql_server_node', '')
+                sql_server_node_fqdn = '{}.{}'.format(sql_server_node, ag_owner_node_domain)
+                sql_instance_node_ip = additional_data['nodes_info'].get(sql_server_node_fqdn, {}).get('ip_v4')
+                if sql_instance_node_ip:
+                    results['sql_instances'][sql_instance_name]['sql_host_ip'] = sql_instance_node_ip
+
+        # set SQL Instance version
+        for instance_info in instances:
+            sql_instance_name = instance_info.get('name', '').strip()
+            if sql_instance_name:
+                _, sqlserver_full_name = get_sql_instance_naming_info(instance_name=sql_instance_name,
+                                                                      hostname=hostname.upper())
+                log.debug('!!!sqlserver_full_name {}'.format(sqlserver_full_name))
+                sql_instance_version = instance_info.get('version')
+                if sqlserver_full_name in results['sql_instances'] and sql_instance_version is not None:
+                    log.debug('!!!if sqlserver_full_name in results {}'.format(sqlserver_full_name))
+                    results['sql_instances'][sqlserver_full_name]['sql_server_version'] = sql_instance_version
+
+        log.debug('pre-results on {} is {}'.format(ag_owner_node_fqdn, results))
+        log.debug('results[sql_instances_keys] on {} is {}'.format(list(results['sql_instances'].iterkeys()), results))
+
         # Get info about primary replica SQL Instance for each availability group, because only on this instance we
         # can utilize SMO/T-SQL for getting info about Always On stuff.
         # Use DeferredList to perform asynchronous collection per each SQL Instance.
-        additional_data = {
+        additional_data.update({
             'sql_hostname_fqdn': ag_owner_node_fqdn,
             'sql_host_ip': ag_owner_node_ip_address,
             'ag_owner_node_domain': ag_owner_node_domain
-        }
+        })
         ao_info_deffereds = []
         for instance_info in instances:
             ag_info_deffered = self.collect_ao_info_on_sql_instance(connection_info, hostname, host_username, host_password,
@@ -889,6 +916,7 @@ class WinMSSQL(WinRMPlugin):
 
         # Fill results with available information
         ag_owner_nodes_info = set()  # use set to avoid owner nodes duplication (several AGs may be placed on same node)
+        nodes_info = {}  # additional info per node to provide for each collection coroutine
         ag_res_ids = set()  # Availability Group cluster resource IDs to use in further collection
         for ag_info in ag_cluster_resources:
             ag_resource_id = ag_info.get('ag_resource_id')
@@ -907,6 +935,8 @@ class WinMSSQL(WinRMPlugin):
                                              owner_node_fqdn,
                                              owner_node_info.get('OwnerNodeDomain', ''),
                                              owner_node_info.get('IPv4', '')))
+                    if owner_node_fqdn:
+                        nodes_info[owner_node_fqdn] = {'ip_v4': owner_node_info.get('IPv4', '')}
             # Availability Group listeners info
             listeners_info = ag_info.get('listeners_info')
             if isinstance(listeners_info, list):
@@ -923,7 +953,8 @@ class WinMSSQL(WinRMPlugin):
 
         # Provide additional data to each collect coroutine
         additional_data = {
-            'ag_res_ids': ag_res_ids
+            'ag_res_ids': ag_res_ids,
+            'nodes_info': nodes_info
         }
 
         # Collect SQL Instances info on each Availability Groups' possible Owner Node.
