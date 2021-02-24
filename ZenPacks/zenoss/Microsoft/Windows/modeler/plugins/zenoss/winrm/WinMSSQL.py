@@ -782,8 +782,6 @@ class WinMSSQL(WinRMPlugin):
             ao_replicas
         )
 
-        log.debug('additional_data[nodes_info] on {} is {}'.format(ag_owner_node_fqdn, additional_data['nodes_info']))
-
         # set IP
         for sql_instance_name, sql_instance_info in results['sql_instances'].iteritems():
             if isinstance(sql_instance_info, dict):
@@ -799,14 +797,9 @@ class WinMSSQL(WinRMPlugin):
             if sql_instance_name:
                 _, sqlserver_full_name = get_sql_instance_naming_info(instance_name=sql_instance_name,
                                                                       hostname=hostname.upper())
-                log.debug('!!!sqlserver_full_name {}'.format(sqlserver_full_name))
                 sql_instance_version = instance_info.get('version')
                 if sqlserver_full_name in results['sql_instances'] and sql_instance_version is not None:
-                    log.debug('!!!if sqlserver_full_name in results {}'.format(sqlserver_full_name))
                     results['sql_instances'][sqlserver_full_name]['sql_server_version'] = sql_instance_version
-
-        log.debug('pre-results on {} is {}'.format(ag_owner_node_fqdn, results))
-        log.debug('results[sql_instances_keys] on {} is {}'.format(list(results['sql_instances'].iterkeys()), results))
 
         # Get info about primary replica SQL Instance for each availability group, because only on this instance we
         # can utilize SMO/T-SQL for getting info about Always On stuff.
