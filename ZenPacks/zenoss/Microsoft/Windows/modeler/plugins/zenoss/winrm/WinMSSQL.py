@@ -804,11 +804,12 @@ class WinMSSQL(WinRMPlugin):
         # Get info about primary replica SQL Instance for each availability group, because only on this instance we
         # can utilize SMO/T-SQL for getting info about Always On stuff.
         # Use DeferredList to perform asynchronous collection per each SQL Instance.
-        additional_data.update({
+        additional_data = {
             'sql_hostname_fqdn': ag_owner_node_fqdn,
             'sql_host_ip': ag_owner_node_ip_address,
             'ag_owner_node_domain': ag_owner_node_domain
-        })
+        }
+
         ao_info_deffereds = []
         for instance_info in instances:
             ag_info_deffered = self.collect_ao_info_on_sql_instance(connection_info, hostname, host_username, host_password,
