@@ -1920,6 +1920,12 @@ Changes
 2.9.5
 
 -   Add zWinServicesModeled and zWinServicesNotModeled properties to control Services component (ZPS-7220)
+-   Fix Sysname is discovered as unknown for WinRM devices (ZPS-6244)
+-   Fix The datasource "UserConnections" is collecting metrics only for the default SQL instances (ZPS-6946)
+-   Add better timeouts control for connections (ZPS-7329)
+-   Fix ClusterDataSource collection error (ZPS-7433)
+-   Fix blocking code in the Windows ZP monitoring plugin (ZPS-7444)
+-   Tested with Zenoss Cloud, Zenoss 6.5.0, Zenoss 6.4.1 and Service Impact 5.5.3
 
 2.9.4
 
