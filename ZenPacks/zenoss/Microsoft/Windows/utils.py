@@ -808,6 +808,32 @@ def get_sql_instance_naming_info(instance_name, is_cluster_instance=False, hostn
     return instance_title, full_sql_instance_name
 
 
+def get_sql_instance_original_name(instance_name, instance_hostname):
+    """
+    Return proper SQL Instance original name. Is useful when dealing with Default MS SQL Instances ('MSSQLSERVER').
+    In scope of local resources - Default instances retains 'MSSQLSERVER'. But when information is cross-nodes - these
+    instances are named after their hosted nodes (e.g node1, node2). This function returns 'MSSQLSERVER' when Instance
+    name is equal to its hostname.
+
+    @param instance_name: SQL Instance name.
+    @type instance_name: str
+    @param instance_hostname: SQL Instance hostname.
+    @type instance_hostname: str
+
+    @return: SQL Instance name as local resource.
+    @rtype: str
+    """
+    instance_original_name = instance_name
+
+    if not isinstance(instance_name, basestring) and not isinstance(instance_hostname, basestring):
+        return instance_original_name
+
+    if instance_name.lower().strip() == instance_hostname.lower().strip():
+        instance_original_name = 'MSSQLSERVER'
+
+    return instance_original_name
+
+
 def get_proper_sql_instance_full_name(instance_full_name, is_cluster_instance, hostname='', cluster_instance_name=''):
     """
     Get proper instance full name by filter out default SQL Instance name ('MSSQLSERVER')

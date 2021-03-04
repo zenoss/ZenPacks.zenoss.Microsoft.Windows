@@ -28,7 +28,8 @@ from ZenPacks.zenoss.Microsoft.Windows.utils import addLocalLibPath, \
     getSQLAssembly, filter_sql_stdout, prepare_zDBInstances, get_ao_sql_instance_id
 from ZenPacks.zenoss.Microsoft.Windows.utils import save, SqlConnection, use_sql_always_on, \
     parse_winrs_response, get_sql_instance_naming_info, recursive_mapping_update, \
-    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om, fill_adb_om
+    get_console_output_from_parts, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om, fill_adb_om, \
+    get_sql_instance_original_name
 
 from txwinrm.WinRMClient import SingleCommandClient
 
@@ -651,8 +652,11 @@ class WinMSSQL(WinRMPlugin):
                         if replica_server_hostname and ag_owner_node_domain:
                             replica_hostname_fqdn = '{}.{}'.format(replica_server_hostname, ag_owner_node_domain)
 
-                        instance_title, sqlserver = get_sql_instance_naming_info(instance_name=replica_instance_original_name,
-                                                                                 hostname=replica_server_hostname)
+                        replica_instance_original_name = get_sql_instance_original_name(replica_instance_original_name,
+                                                                                        replica_server_hostname)
+
+                        instance_title, _ = get_sql_instance_naming_info(instance_name=replica_instance_original_name,
+                                                                         hostname=replica_server_hostname)
 
                         recursive_mapping_update(
                             results['sql_instances'][replica_server_name],
