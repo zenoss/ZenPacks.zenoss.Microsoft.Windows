@@ -223,13 +223,16 @@ class SQLCommander(object):
         " $instncs | % {"
         "  $instValue = $regKey.GetValue($_);"
         "  $instReg = $reg.OpenSubKey($regpath + '\\' + $instValue);"
-        "  $version = $instReg.OpenSubKey('MSSQLServer\CurrentVersion').GetValue('CurrentVersion');"
-        "  $instance_ver = $_; $instance_ver += ':'; $instance_ver += $version;"
-        #  Insert info about each SQL Instance into dictionary
-        "  $inst_inf = New-Object 'system.collections.generic.dictionary[string,string]';"
-        "  $inst_inf['name'] = $_;"
-        "  $inst_inf['version'] = $version;"
-        "  $inst_list.Add($inst_inf) > $null;"
+        # Get only local instances' names
+        "  If ($instReg.GetSubKeyNames() -notcontains 'Cluster') {"
+        "   $version = $instReg.OpenSubKey('MSSQLServer\CurrentVersion').GetValue('CurrentVersion');"
+        "   $instance_ver = $_; $instance_ver += ':'; $instance_ver += $version;"
+        #   Insert info about each SQL Instance into dictionary
+        "   $inst_inf = New-Object 'system.collections.generic.dictionary[string,string]';"
+        "   $inst_inf['name'] = $_;"
+        "   $inst_inf['version'] = $version;"
+        "   $inst_list.Add($inst_inf) > $null;"
+        "  };"
         " };"
         " break;"
         "};"
