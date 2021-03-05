@@ -202,7 +202,6 @@ class SQLCommander(object):
         "$result = New-Object 'system.collections.generic.dictionary[string, object]';"
         "$result['hostname'] = hostname;"
         "$dictType = 'system.collections.generic.dictionary[string, object]';"
-        "$result['replicas'] = New-Object $dictType;"
         "$result['ao_instances'] = New-Object $dictType;"
         # Get registry key for instances (with 2003 or 32/64 Bit 2008 base key)
         "$reg = [Microsoft.Win32.RegistryKey]::OpenRemoteBaseKey('LocalMachine', $hostname);"
@@ -241,20 +240,6 @@ class SQLCommander(object):
         " $agPath = \\\"Cluster\Resources\$agID\\\";"
         " $agPathKey = $reg.OpenSubKey($agPath);"
         " if ($agPathKey -eq $null) {Continue;};"
-        # Replicas
-        " if ($agPathKey.GetSubKeyNames() -contains 'ReplicaStatus') {"
-        "  $replStatusKey = $reg.OpenSubKey($agPath + '\\' + 'ReplicaStatus');"
-        "  if ($replStatusKey.SubKeyCount -gt 0) {"
-        "   $replStatusKey = $replStatusKey.OpenSubKey($replStatusKey.GetSubKeyNames()[0]);"
-        "   $arIDs = $replStatusKey.GetValueNames();"
-        "   foreach ($rID in $arIDs) {"
-        "    $arInfo = New-Object $dictType;"
-        "    $arInfo['ag_res_id'] = $agID;"
-        "    $arInfo['id'] = $rID.ToLower(); "
-        "    $result['replicas'][$rID.ToLower()] = $arInfo;"
-        "   }"
-        "  }"
-        " }"
         # SQL Instances
         " if ($agPathKey.GetSubKeyNames() -contains 'SqlInstToNodeMap') {"
         "  $sqlInstnsKey = $reg.OpenSubKey($agPath + '\\' + 'SqlInstToNodeMap');"
@@ -769,21 +754,16 @@ class WinMSSQL(WinRMPlugin):
 
         hostname = instances_info.get('hostname', '')
         instances = instances_info.get('instances', [])
-        ao_replicas = instances_info.get('replicas', {})
         ao_instances = instances_info.get('ao_instances', {})
 
         if not instances:
             log.warn('No MSSQL Instances were found on node {}'.format(ag_owner_node_fqdn))
             defer.returnValue(results)
 
-        # Update Replicas and Instances information
+        # Update Instances information
         recursive_mapping_update(
             results['sql_instances'],
             ao_instances
-        )
-        recursive_mapping_update(
-            results['availability_replicas'],
-            ao_replicas
         )
 
         # set IP
