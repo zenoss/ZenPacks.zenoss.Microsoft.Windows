@@ -68,6 +68,8 @@ productNames = (
     'WinSQLInstance',
     'WinSQLJob',
     'WinSQLAvailabilityGroup',
+    'WinSQLAvailabilityReplica',
+    'WinSQLAvailabilityListener',
 )
 
 EXCH_WARN = 'Impact definitions have changed in this version of the ZenPack.'\

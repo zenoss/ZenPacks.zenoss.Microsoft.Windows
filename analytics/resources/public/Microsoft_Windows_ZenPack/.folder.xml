@@ -3,8 +3,8 @@
   <parent>/public</parent>
   <name>Microsoft_Windows_ZenPack</name>
   <label>Microsoft Windows ZenPack</label>
-  <resource>Microsoft_Windows_Domain</resource>
+  <resource>Windows_IIS_Peak_Usage</resource>
   <resource>Microsoft_Cluster_Domain</resource>
   <resource>Windows_Interfaces_Peak_Usage</resource>
-  <resource>Windows_IIS_Peak_Usage</resource>
+  <resource>Microsoft_Windows_Domain</resource>
 </folder>
