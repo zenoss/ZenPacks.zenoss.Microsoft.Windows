@@ -79,7 +79,7 @@ class OperatingSystem(WinRMPlugin):
         # Device Map
         device_om = ObjectMap()
         # safely get name, contact, desc
-        sys_name = getattr(computerSystem, 'Name', None) or getattr(operatingSystem, 'CSName', None) or 'Unknown'
+        sys_name = getattr(computerSystem, 'Name', None) or getattr(operatingSystem, 'CSName', None) or device.snmpSysName or 'Unknown'
         device_om.snmpSysName = sys_name.strip()
         contact = getattr(computerSystem, 'PrimaryOwnerName', None) or getattr(operatingSystem, 'RegisteredUser', None) or 'Unknown'
         device_om.snmpContact = contact.strip()

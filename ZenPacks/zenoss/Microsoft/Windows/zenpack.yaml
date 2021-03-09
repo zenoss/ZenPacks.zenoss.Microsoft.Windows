@@ -54,6 +54,10 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zWinServicesModeled:
+    type: lines
+  zWinServicesNotModeled:
+    type: lines
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService

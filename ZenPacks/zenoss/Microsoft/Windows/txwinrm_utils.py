@@ -40,7 +40,10 @@ ConnectionInfoProperties = (
     'zWinRMKrb5includedir',
     'zWinRMKRBErrorThreshold',
     'kerberos_rdns',
-    'zWinRMConnectTimeout'
+    'zWinRMConnectTimeout',
+    'zWinServicesModeled',
+    'zWinServicesNotModeled',
+    'snmpSysName',
 )
 
 
@@ -111,6 +114,8 @@ def createConnectionInfo(device_proxy):
 
     connect_timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
 
+    timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
+
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
@@ -121,6 +126,7 @@ def createConnectionInfo(device_proxy):
         connectiontype='Keep-Alive',
         keytab=device_proxy.zWinKeyTabFilePath,
         dcip=device_proxy.zWinKDC,
+        timeout=timeout,
         trusted_realm=trusted_realm,
         trusted_kdc=trusted_kdc,
         ipaddress=device_proxy.manageIp,
