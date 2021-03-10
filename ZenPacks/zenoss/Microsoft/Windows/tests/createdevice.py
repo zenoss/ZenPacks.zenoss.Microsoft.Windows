@@ -185,6 +185,9 @@ def create_cluster_device(dmd, device_name, ip='10.10.20.10'):
     from ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase import WinSQLDatabase
     from ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance import WinSQLInstance
     from ZenPacks.zenoss.Microsoft.Windows.WinSQLJob import WinSQLJob
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup import WinSQLAvailabilityGroup
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica import WinSQLAvailabilityReplica
+    from ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener import WinSQLAvailabilityListener
 
     node1 = addContained(cluster1.os, 'clusternodes', ClusterNode('node1'))
 
@@ -199,5 +202,9 @@ def create_cluster_device(dmd, device_name, ip='10.10.20.10'):
     addContained(instance1, 'backups', WinSQLBackup('backup1'))
     addContained(instance1, 'databases', WinSQLDatabase('db1'))
     addContained(instance1, 'jobs', WinSQLJob('job1'))
+
+    ao_availability_group1 = addContained(cluster1.os, 'winsqlavailabilitygroups', WinSQLAvailabilityGroup('ao_availability_group1'))
+    addContained(ao_availability_group1, 'winsqlavailabilityreplicas', WinSQLAvailabilityReplica('ao_replica1'))
+    addContained(ao_availability_group1, 'winsqlavailabilitylisteners', WinSQLAvailabilityListener('ao_listener1'))
 
     return cluster1
