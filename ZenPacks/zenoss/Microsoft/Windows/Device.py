@@ -227,6 +227,24 @@ class Device(schema.Device):
             if obj.ip == self.id:
                 yield obj
 
+    def all_clusterdevices(self):
+        """Look up for Windows Cluster devices based on all_clusterhosts method of Cluster device"""
+        try:
+            dc = self.getDmdRoot('Devices').getOrganizer(
+                '/Server/Microsoft/Cluster'
+            )
+        except Exception:
+            return
+
+        results = ICatalogTool(dc).search(types=(
+            'ZenPacks.zenoss.Microsoft.Windows.ClusterDevice.ClusterDevice',
+        ))
+
+        for brain in results:
+            obj = brain.getObject()
+            if self in obj.all_clusterhosts():
+                yield obj
+
 
 class DeviceLinkProvider(object):
     '''
