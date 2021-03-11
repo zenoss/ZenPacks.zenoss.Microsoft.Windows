@@ -162,6 +162,7 @@ classes:
         - all_winsqlinstances
         - all_winrmiis
         - all_harddisks
+        - all_clusterdevices
       impacted_by: []
 
   ClusterDevice:
@@ -261,7 +262,7 @@ classes:
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [clusterdisks, clusterinterfaces]
+      impacted_by: [clusterdisks, clusterinterfaces, device]
     relationships:
       DEFAULTS:
         grid_display: false

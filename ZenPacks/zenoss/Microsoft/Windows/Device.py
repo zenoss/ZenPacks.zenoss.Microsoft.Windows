@@ -227,6 +227,16 @@ class Device(schema.Device):
             if obj.ip == self.id:
                 yield obj
 
+    def all_clusterdevices(self):
+        """Look up for Windows Cluster devices"""
+        cluster_devices = self.getClusterMachinesList()
+
+        if cluster_devices:
+            for cluster_device in cluster_devices:
+                # check for not a string to avoid error response from getClusterMachinesList method
+                if not isinstance(cluster_device, basestring):
+                    yield cluster_device
+
 
 class DeviceLinkProvider(object):
     '''
