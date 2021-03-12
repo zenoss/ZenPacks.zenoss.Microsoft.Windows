@@ -121,3 +121,8 @@ class ClusterDevice(schema.ClusterDevice):
             clusterhost = deviceRoot.findDeviceByIdOrIp(host)
             if clusterhost:
                 yield clusterhost
+
+    def all_winsqlavailabilitygroups(self):
+        """Generate all WinSQLAvailabilityGroup components."""
+        for c in self.os.winsqlavailabilitygroups():
+            yield c
