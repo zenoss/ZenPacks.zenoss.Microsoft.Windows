@@ -187,6 +187,7 @@ classes:
         - all_clusternetworks
         - all_hyperv
         - all_winsqlinstances
+        - all_winsqlavailabilitygroups
         - all_winrmiis
         - all_harddisks
       impacted_by: [all_clusterhosts]
@@ -755,7 +756,7 @@ classes:
     monitoring_templates: [WinDBInstance]
     dynamicview_views: [service_view]
     dynamicview_relations:
-      impacts: [backups, databases, jobs]
+      impacts: [backups, databases, jobs, winsqlavailabilityreplicas]
       impacted_by: [device]
     relationships:
       DEFAULTS:
@@ -864,6 +865,11 @@ classes:
         label: Is distributed
         grid_display: true
     monitoring_templates: [WinAvailabilityGroup]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: []
+      impacted_by: [device, winsqlavailabilityreplicas, winsqlavailabilitylisteners]
+
 
   WinSQLAvailabilityGroupHostedObject:
     base: [zenpacklib.OSComponent]
@@ -914,6 +920,10 @@ classes:
       endpoint_url:
         label: Endpoint Url
     monitoring_templates: [WinAvailabilityReplica]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: [winsqlavailabilitygroup]
+      impacted_by: [winsqlinstance]
 
   WinSQLAvailabilityListener:
     label: SQL Availability Listener
@@ -935,3 +945,7 @@ classes:
         label: IP Address
         grid_display: true
     monitoring_templates: [WinAvailabilityListener]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: [winsqlavailabilitygroup]
+      impacted_by: []
