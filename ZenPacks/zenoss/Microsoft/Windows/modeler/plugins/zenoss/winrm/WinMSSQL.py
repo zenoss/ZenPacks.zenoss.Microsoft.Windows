@@ -284,8 +284,7 @@ class SQLCommander(object):
         " $dbmaster = $server.Databases['master'];"
 
         " $cluster_query = \\\"SELECT ag_id, ag_resource_id FROM sys.dm_hadr_name_id_map;"
-        " SELECT instance_name, node_name FROM sys.dm_hadr_instance_node_map;"
-        " SELECT member_name, member_type, member_state, number_of_quorum_votes FROM sys.dm_hadr_cluster_members;\\\";"
+        " SELECT instance_name, node_name FROM sys.dm_hadr_instance_node_map;\\\";"
         " $cl_qry_res = $dbmaster.ExecuteWithResults($cluster_query);"
         " try {"
         "  foreach ($row in $cl_qry_res.tables[0].rows) {"
@@ -295,19 +294,6 @@ class SQLCommander(object):
         "   $inst_to_node_map[$row.instance_name] = $row.node_name;"
         "  }"
         " } catch {}"
-        " try {"
-        "  $cl_members = New-Object System.Collections.ArrayList;"
-        "  foreach ($row in $cl_qry_res.tables[2].rows) {"
-        "   $cl_member = New-Object 'system.collections.generic.dictionary[string, object]';"
-        "   $cl_member['member_name'] = $row.member_name;"
-        "   $cl_member['member_type'] = $row.member_type;"
-        "   $cl_member['member_state'] = $row.member_state;"
-        "   $cl_member['number_of_quorum_votes'] = $row.number_of_quorum_votes;"
-        "   $cl_members.Add($cl_member) > $null;"
-        "  }"
-        "  $res['wsfc_cluster_members'] = $cl_members;"
-        " }"
-        " catch {}"
         # Availability Groups
         " foreach ($ag in $server.AvailabilityGroups) {"
         "  $ag_info = New-Object 'system.collections.generic.dictionary[string, object]';"
@@ -595,7 +581,6 @@ class WinMSSQL(WinRMPlugin):
                         'sql_server_version': sql_server_version,
                         'is_clustered_instance': availability_groups_info.get('is_clustered', False),
                         'is_on_wsfc': availability_groups_info.get('is_on_wsfc', False),
-                        'wsfc_cluster_members': availability_groups_info.get('wsfc_cluster_members', []),
                         'sqlhostname': instance_hostname,
                         # update SQL Instance Info with Windows node-level info
                         'sql_hostname_fqdn': additional_data.get('sql_hostname_fqdn', ''),
