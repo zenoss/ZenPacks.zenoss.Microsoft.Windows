@@ -832,10 +832,6 @@ classes:
         grid_display: true
       unigue_id:
         label: Unique ID
-      failover_type:
-        label: Failover Type
-      cluster_state:
-        label: Cluster State
       cluster_type:
         label: Cluster Type
       synchronization_health:
