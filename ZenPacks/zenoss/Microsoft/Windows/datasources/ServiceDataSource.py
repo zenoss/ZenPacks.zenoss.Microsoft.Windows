@@ -62,6 +62,23 @@ MODE_MANUAL = 'Manual'
 MODE_ANY = 'Any'
 INVALID_REGEX = 'Ignoring invalid regular expression found in WinService datasource {}: {}'
 
+SERVICE_STATUSES = {
+    "OTHER": -2,
+    "UNDEFINED": -1,
+    "OK": 0,
+    "STARTING": 1,
+    "STOPPING": 2,
+    "ERROR": 3,
+    "DEGRADED": 4,
+    "UNKNOWN": 5,
+    "PRED FAIL": 6,
+    "SERVICE": 7,
+    "STRESSED": 8,
+    "NONRECOVER": 9,
+    "NO CONTACT": 10,
+    "LOST COMM": 11,
+}
+
 
 def string_to_lines(string):
     if isinstance(string, (list, tuple)):
@@ -270,11 +287,15 @@ class ServicePlugin(PythonDataSourcePlugin):
         # Add a "state_state" datapoint to every datasource. This corresponds
         # to the built-in datasource in the WinService monitoring template.
         for datasource in getattr(config, 'datasources', []):
-            dp = DataPointConfig()
-            dp.component = getattr(datasource, 'component', None)
-            dp.rrdPath = datasource.params.get('rrdpath', None)
-            dp.metadata = datasource.params.get('metricmetadata', None)
-            datasource.points.append(get_dummy_dpconfig(dp, 'state'))
+            datasource.points.append(self.create_datapoint(datasource, 'state'))
+            datasource.points.append(self.create_datapoint(datasource, 'WinServiceStatus'))
+
+    def create_datapoint(self, datasource, dp_name):
+        dp = DataPointConfig()
+        dp.component = getattr(datasource, 'component', None)
+        dp.rrdPath = datasource.params.get('rrdpath', None)
+        dp.metadata = datasource.params.get('metricmetadata', None)
+        return get_dummy_dpconfig(dp, dp_name)
 
     @coroutine
     def collect(self, config):
@@ -354,13 +375,17 @@ class ServicePlugin(PythonDataSourcePlugin):
                     svc_info.Name,
                     svc_info.State
                 )
-
             if svc_info.State.lower() == STATE_RUNNING.lower():
                 data['values'][svc_info_name]['state'] = (0, timestamp)
             elif svc_info.State.lower() == STATE_STOPPED.lower():
                 data['values'][svc_info_name]['state'] = (1, timestamp)
             elif svc_info.State.lower() == STATE_PAUSED.lower():
                 data['values'][svc_info_name]['state'] = (2, timestamp)
+
+            service_status = SERVICE_STATUSES.get(
+                svc_info.Status.upper(), SERVICE_STATUSES['OTHER'])
+            data['values'][svc_info_name]['WinServiceStatus'] = (service_status, 'N')
+
 
             # event for the service
             data['events'].append({
