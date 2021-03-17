@@ -2143,6 +2143,11 @@ device_classes:
             component: ${here/id}
             datapoints:
               state: GAUGE
+          WinServiceStatus:
+            type: 'Built-In'
+            component: ${here/id}
+            datapoints:
+              WinServiceStatus: GAUGE
       WinAvailabilityGroup:
         description: Microsoft SQL Server per-availability group monitoring.
         targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup

@@ -567,6 +567,27 @@ classes:
         datapoint: state_state
         datapoint_cached: true
         datapoint_default: -1
+      serviceStatus:
+        label: Service Status
+        grid_display: false
+        enum:
+          -2: other
+          -1: undefined
+          0: ok
+          1: starting
+          2: stopping
+          3: error
+          4: degraded
+          5: unknown
+          6: pred fail
+          7: service
+          8: stressed
+          9: nonrecover
+          10: no contact
+          11: lost comm
+        datapoint: WinServiceStatus_WinServiceStatus
+        datapoint_cached: true
+        datapoint_default: -1
       description:
         label: Description
       usermonitor:
