@@ -143,6 +143,8 @@ class WinCommandAction(IActionBase):
         code_page = getattr(device, 'zWinRSCodePage', 65001)
         include_dir = getattr(device, 'zWinRMKrb5includedir', None)
         disable_rdns = getattr(device, 'kerberos_rdns', False)
+        if callable(disable_rdns):
+            disable_rdns = disable_rdns()
         connect_timeout = getattr(device, 'zWinRMConnectTimeout', 60)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
