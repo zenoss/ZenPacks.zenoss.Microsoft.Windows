@@ -107,96 +107,95 @@ class SQLCommander(object):
     '''
 
     # ********** Always On related scripts **********
-    CLUSTER_AVAILABILITY_GROUP_LIST_PS_SCRIPT = '''
-        $use_cim = $PSVersionTable.PSVersion.Major -gt 2;
-        if ($use_cim) {
-            $domain = (get-ciminstance WIN32_ComputerSystem).Domain;
-        }
-        else {
-            $domain = (gwmi WIN32_ComputerSystem).Domain;
-        }
+    CLUSTER_AVAILABILITY_GROUP_LIST_PS_SCRIPT = (
+        "$use_cim = $PSVersionTable.PSVersion.Major -gt 2;"
+        "if ($use_cim) {"
+        " $domain = (get-ciminstance WIN32_ComputerSystem).Domain;"
+        "}"
+        "else {"
+        " $domain = (gwmi WIN32_ComputerSystem).Domain;"
+        "}"
 
-        Import-Module FailoverClusters;
-        $results = New-Object System.Collections.Arraylist;
-        $processed_ownernodes = New-Object 'system.collections.generic.dictionary[string,object]';
+        "Import-Module FailoverClusters;"
+        "$results = New-Object System.Collections.Arraylist;"
+        "$processed_ownernodes = New-Object 'system.collections.generic.dictionary[string,object]';"
 
-        $resources_dict = New-Object 'system.collections.generic.dictionary[string,object]';
-        $resources_dict['ag'] = New-Object System.Collections.Arraylist;
-        $resources_dict['al'] = New-Object 'system.collections.generic.dictionary[string,object]';
-        $resources_dict['ips'] = New-Object 'system.collections.generic.dictionary[string,object]';
-        $cluster_resources = Get-ClusterResource | Where-Object { $_.ResourceType -like 'SQL Server Availability Group' -or $_.ResourceType -like 'Network Name' -or $_.ResourceType -like 'IP Address' };
-        foreach ($res in $cluster_resources) {
-            if ($res.ResourceType -like 'SQL Server Availability Group') {
-                $resources_dict['ag'].Add($res) > $null;
-            }
-            if ($res.ResourceType -like 'Network Name') {
-                $resources_dict['al'][$res.Name] = $res;
-            }
-            if ($res.ResourceType -like 'IP Address') {
-                $resources_dict['ips'][$res.Name] = $res;
-            }
-        }
-        foreach ($resource in $resources_dict['ag']) {
-            $ag_info = New-Object 'system.collections.generic.dictionary[string,object]';
-            $ag_info['ag_name'] = $resource.Name;
-            $ag_info['ag_resource_id'] = $resource.Id;
-            $ag_info['ag_resource_state'] = $resource.State.value__;
-            $ag_nodes = New-Object System.Collections.ArrayList;
-            $resource_nodes = Get-ClusterOwnerNode -InputObject $resource | Select-Object -Property OwnerNodes;
-            foreach ($node in $resource_nodes.OwnerNodes) {
-                $owner_node_name = $node.Name.ToLower();
-                $owner_node_info = $null;
-                if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {
-                    $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';
-                    $owner_node_info['OwnerNode'] = $owner_node_name;
-                    $owner_node_info['OwnerNodeFQDN'] = ($owner_node_name, $domain) -join '.';
-                    $owner_node_info['OwnerNodeDomain'] = $domain;
-                    $owner_node_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($owner_node_name) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object IPAddressToString)[0].IPAddressToString;
-                    $processed_ownernodes[$owner_node_name] = $owner_node_info;
-                }
-                $ag_nodes.Add($owner_node_info) > $null;
-            }
-            $ag_info['owner_nodes_info'] = $ag_nodes;
+        "$resources_dict = New-Object 'system.collections.generic.dictionary[string,object]';"
+        "$resources_dict['ag'] = New-Object System.Collections.Arraylist;"
+        "$resources_dict['al'] = New-Object 'system.collections.generic.dictionary[string,object]';"
+        "$resources_dict['ips'] = New-Object 'system.collections.generic.dictionary[string,object]';"
+        "$cluster_resources = Get-ClusterResource | Where-Object { $_.ResourceType -like 'SQL Server Availability Group' -or $_.ResourceType -like 'Network Name' -or $_.ResourceType -like 'IP Address' };"
+        "foreach ($res in $cluster_resources) {"
+        " if ($res.ResourceType -like 'SQL Server Availability Group') {"
+        "  $resources_dict['ag'].Add($res) > $null;"
+        " }"
+        " if ($res.ResourceType -like 'Network Name') {"
+        "  $resources_dict['al'][$res.Name] = $res;"
+        " }"
+        " if ($res.ResourceType -like 'IP Address') {"
+        "  $resources_dict['ips'][$res.Name] = $res;"
+        " }"
+        "}"
+        "foreach ($resource in $resources_dict['ag']) {"
+        " $ag_info = New-Object 'system.collections.generic.dictionary[string,object]';"
+        " $ag_info['ag_name'] = $resource.Name;"
+        " $ag_info['ag_resource_id'] = $resource.Id;"
+        " $ag_info['ag_resource_state'] = $resource.State.value__;"
+        " $ag_nodes = New-Object System.Collections.ArrayList;"
+        " $resource_nodes = Get-ClusterOwnerNode -InputObject $resource | Select-Object -Property OwnerNodes;"
+        " foreach ($node in $resource_nodes.OwnerNodes) {"
+        "  $owner_node_name = $node.Name.ToLower();"
+        "  $owner_node_info = $null;"
+        "  if (-not $processed_ownernodes.TryGetValue($owner_node_name, [ref]$owner_node_info)) {"
+        "   $owner_node_info = New-Object 'system.collections.generic.dictionary[string,string]';"
+        "   $owner_node_info['OwnerNode'] = $owner_node_name;"
+        "   $owner_node_info['OwnerNodeFQDN'] = ($owner_node_name, $domain) -join '.';"
+        "   $owner_node_info['OwnerNodeDomain'] = $domain;"
+        "   $owner_node_info['IPv4'] = ([System.Net.DNS]::GetHostAddresses($owner_node_name) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object IPAddressToString)[0].IPAddressToString;"
+        "   $processed_ownernodes[$owner_node_name] = $owner_node_info;"
+        "  }"
+        "  $ag_nodes.Add($owner_node_info) > $null;"
+        " }"
+        " $ag_info['owner_nodes_info'] = $ag_nodes;"
 
-            $listeners = New-Object System.Collections.ArrayList;
-            $ag_dependency = Get-ClusterResourceDependency -InputObject $resource;
-            $dep_pattern = '\(?\[([\w.\- ]+)+\]\)?';
-            $search_res = $ag_dependency.DependencyExpression | Select-String -Pattern $dep_pattern -AllMatches;
+        " $listeners = New-Object System.Collections.ArrayList;"
+        " $ag_dependency = Get-ClusterResourceDependency -InputObject $resource;"
+        " $dep_pattern = '\(?\[([\w.\- ]+)+\]\)?';"
+        " $search_res = $ag_dependency.DependencyExpression | Select-String -Pattern $dep_pattern -AllMatches;"
 
-            foreach ($match in $search_res.Matches) {
+        " foreach ($match in $search_res.Matches) {"
+        "  if ($match.Groups.Count -gt 0) {"
+        "   $dep_name = $match.Groups[$match.Groups.Count-1];"
+        "   $listener = $null;"
+        "   if ($resources_dict['al'].TryGetValue($dep_name, [ref]$listener)) {"
+        "    $listener_info = New-Object 'system.collections.generic.dictionary[string,object]';"
+        "    $dns_name = Get-ClusterParameter -InputObject $listener -name DnsName | Select-Object -Property Value;"
+        "    $listener_info['id'] = $listener.Id;"
+        "    $listener_info['ag_id'] = $resource.Id;"
+        "    $listener_info['name'] = $listener.Name;"
+        "    $listener_info['dns_name'] = $dns_name.Value;"
+        "    $listener_info['state'] = $listener.State.value__;"
 
-                if ($match.Groups.Count -gt 0) {
-
-                    $dep_name = $match.Groups[$match.Groups.Count-1];
-                    $listener = $null;
-                    if ($resources_dict['al'].TryGetValue($dep_name, [ref]$listener)) {
-                        $listener_info = New-Object 'system.collections.generic.dictionary[string,string]';
-                        $dns_name = Get-ClusterParameter -InputObject $listener -name DnsName | Select-Object -Property Value;
-                        $listener_info['id'] = $listener.Id;
-                        $listener_info['ag_id'] = $resource.Id;
-                        $listener_info['name'] = $listener.Name;
-                        $listener_info['dns_name'] = $dns_name.Value;
-                        $listener_info['state'] = $listener.State.value__;
-
-                        $al_dependency = Get-ClusterResourceDependency -InputObject $listener;
-                        if ($al_dependency.DependencyExpression -match $dep_pattern) {
-                            $al_dep_name = $Matches[$Matches.Count-1];
-                            $ip_address_res = $null;
-                            if ($resources_dict['ips'].TryGetValue($al_dep_name, [ref]$ip_address_res)) {
-                                $ip_address = Get-ClusterParameter -InputObject $ip_address_res -name Address | Select-Object -Property Value;
-                                $listener_info['ip_address'] = $ip_address.Value;
-                            }
-                        }
-                        $listeners.Add($listener_info) > $null;
-                    }
-                }
-            }
-            $ag_info['listeners_info'] = $listeners;
-            $results.Add($ag_info) > $null;
-        };
-        $results_json = ConvertTo-Json -Depth 3 $results;
-        write-host $results_json;
-    '''
+        "    $al_dependency = Get-ClusterResourceDependency -InputObject $listener;"
+        "    if ($al_dependency.DependencyExpression -match $dep_pattern) {"
+        "     $al_dep_name = $Matches[$Matches.Count-1];"
+        "     $ip_address_res = $null;"
+        "     if ($resources_dict['ips'].TryGetValue($al_dep_name, [ref]$ip_address_res)) {"
+        "      $ip_address = Get-ClusterParameter -InputObject $ip_address_res -name Address | Select-Object -Property Value;"
+        "      $enable_Dhcp = Get-ClusterParameter -InputObject $ip_address_res -name EnableDhcp | Select-Object -Property Value;"
+        "      $listener_info['ip_address'] = $ip_address.Value;"
+        "      $listener_info['network_mode'] = $enable_Dhcp.Value;"
+        "     }"
+        "    }"
+        "    $listeners.Add($listener_info) > $null;"
+        "   }"
+        "  }"
+        " }"
+        " $ag_info['listeners_info'] = $listeners;"
+        " $results.Add($ag_info) > $null;"
+        "};"
+        "$results_json = ConvertTo-Json -Depth 3 $results;"
+        "write-host $results_json;")
 
     ALWAYS_ON_RESOURCES_ON_NODE_PS_SCRIPT = (
         "$result = New-Object 'system.collections.generic.dictionary[string, object]';"
@@ -270,6 +269,7 @@ class SQLCommander(object):
         "$ags = New-Object System.Collections.ArrayList;"
         "$ars = New-Object System.Collections.ArrayList;"
         "$adbs = New-Object System.Collections.ArrayList;"
+        "$als = New-Object System.Collections.ArrayList;"
 
         "if ($server.IsHadrEnabled -and $server.AvailabilityGroups.Length -gt 0) {"
         " $epoch = [timezone]::CurrentTimeZone.ToLocalTime([datetime]'1/1/1970').ToUniversalTime();"
@@ -354,11 +354,19 @@ class SQLCommander(object):
         "   $adb_inf['recoverymodel'] = $db.DatabaseOptions.RecoveryModel;"
         "   $adbs.Add($adb_inf) > $null;"
         "  }"
+        # Availability Group Listeners
+        "  foreach ($al in $ag.AvailabilityGroupListeners) {"
+        "   $al_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
+        "   $al_inf['id'] = $al.UniqueId;"
+        "   $al_inf['tcp_port'] = $al.PortNumber;"
+        "   $als.Add($al_inf) > $null;"
+        "  }"
         " }"
         "}"
         "$res['availability_groups'] = $ags;"
         "$res['availability_replicas'] = $ars;"
         "$res['availability_databases'] = $adbs;"
+        "$res['availability_listeners'] = $als;"
         "$res_json = ConvertTo-Json $res;"
         "Write-Host $res_json")
     # **********
@@ -522,6 +530,7 @@ class WinMSSQL(WinRMPlugin):
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
                 'availability_replicas': defaultdict(dict),
+                'availability_listeners': defaultdict(dict),
                 'availability_databases': defaultdict(dict)
             }
         @rtype: dict
@@ -531,6 +540,7 @@ class WinMSSQL(WinRMPlugin):
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
             'availability_replicas': defaultdict(dict),
+            'availability_listeners': defaultdict(dict),
             'availability_databases': defaultdict(dict)
         }
 
@@ -655,6 +665,17 @@ class WinMSSQL(WinRMPlugin):
                         database_info
                     )
 
+                # 5. Availability Group Listeners
+                availability_listeners = availability_groups_info.get('availability_listeners', [])
+                for listener_info in availability_listeners:
+                    al_id = listener_info.get('id')
+                    if not al_id:
+                        continue
+                    recursive_mapping_update(
+                        results['availability_listeners'][al_id],
+                        listener_info
+                    )
+
         # stderr
         if ag_info_response.stderr:
             results['errors'][sqlserver].append(get_console_output_from_parts(ag_info_response.stderr))
@@ -690,6 +711,7 @@ class WinMSSQL(WinRMPlugin):
                 'sql_instances': defaultdict(dict),
                 'availability_groups': defaultdict(dict),
                 'availability_replicas': defaultdict(dict),
+                'availability_listeners': defaultdict(dict),
                 'availability_databases': defaultdict(dict)
             }
         @rtype: dict
@@ -699,6 +721,7 @@ class WinMSSQL(WinRMPlugin):
             'sql_instances': defaultdict(dict),
             'availability_groups': defaultdict(dict),
             'availability_replicas': defaultdict(dict),
+            'availability_listeners': defaultdict(dict),
             'availability_databases': defaultdict(dict)
         }
 
@@ -809,6 +832,10 @@ class WinMSSQL(WinRMPlugin):
                 ag_info_response.get('availability_replicas', {})
             )
             recursive_mapping_update(
+                results['availability_listeners'],
+                ag_info_response.get('availability_listeners', {})
+            )
+            recursive_mapping_update(
                 results['availability_databases'],
                 ag_info_response.get('availability_databases', {})
             )
@@ -916,6 +943,7 @@ class WinMSSQL(WinRMPlugin):
                     results['availability_listeners'][listener_id]['state'] = listener.get('state')
                     results['availability_listeners'][listener_id]['ag_id'] = listener.get('ag_id')
                     results['availability_listeners'][listener_id]['ip_address'] = listener.get('ip_address')
+                    results['availability_listeners'][listener_id]['network_mode'] = listener.get('network_mode')
 
         # Provide additional data to each collect coroutine
         additional_data = {
@@ -951,6 +979,10 @@ class WinMSSQL(WinRMPlugin):
             recursive_mapping_update(
                 results['availability_replicas'],
                 ag_info_response.get('availability_replicas', {})
+            )
+            recursive_mapping_update(
+                results['availability_listeners'],
+                ag_info_response.get('availability_listeners', {})
             )
             recursive_mapping_update(
                 results['availability_databases'],
