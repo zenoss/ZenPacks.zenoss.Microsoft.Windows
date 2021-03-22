@@ -961,6 +961,14 @@ classes:
       ip_address:
         label: IP Address
         grid_display: true
+      tcp_port:
+        label: Port Number
+        grid_display: true
+      network_mode:
+        label: Network Mode
+        enum:
+          0: Static IP
+          1: DHCP
     monitoring_templates: [WinAvailabilityListener]
     dynamicview_views: [service_view]
     dynamicview_relations:
