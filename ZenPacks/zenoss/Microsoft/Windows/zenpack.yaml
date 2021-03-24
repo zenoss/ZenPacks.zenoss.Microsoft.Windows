@@ -886,6 +886,11 @@ classes:
     dynamicview_relations:
       impacts: []
       impacted_by: [device, winsqlavailabilityreplicas, winsqlavailabilitylisteners]
+    relationships:
+      DEFAULTS:
+        grid_display: false
+        details_display: false
+      os: {}
 
 
   WinSQLAvailabilityGroupHostedObject:
