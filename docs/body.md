@@ -163,27 +163,45 @@ IIS Sites
 :   **Attributes:** Name, Status, App Pool
 :   **Relationships:** Device
 
-SQL Server Instances
-:   **Attributes:** Name : Relationships: SQL Server databases
-:   **Relationships:** Device
+SQL Instances
+:   **Attributes:** Name, Instance Name, SQL Server Version, Backup Devices, Roles, Cluster Node Server, Perfmon Counter Instance Name
+:   **Relationships:** Device, SQL Backups, SQL Databases, SQL Jobs, SQL Availability Groups, SQL Availability Replicas
 
 [![][Windows_database.png]][Windows_database.png]
 
-SQL Server Databases
-:   **Attributes:** Name, Version, Owner, Last Backup,
-    Last Log Backup, Accessible, Collation, Creation Date, Default File
-    Group, Primary File Path, Recovery Model, Is System Object
-:   **Relationships:** SQL Server Instance, Device
+SQL Databases
+:   **Attributes:** Name, Owner, Database Status, Synchronization State, Suspended,
+    Cluster Node Server, Last Backup, System Object, Recovery Model, Created On, Always On Unique ID,
+    File Group, Version, Collation, File Path, Last Log Backup, Accessible
+:   **Relationships:** SQL Instance, SQL Availability Group Replica
 
-SQL Server Backups
-:   **Attributes:** Name, Device Type, Physical
+SQL Backups
+:   **Attributes:** Name, Device Type, Instance Name, Physical Location, Status
     Allocation, Status
-:   **Relationships:** SQL Server Instance
+:   **Relationships:** SQL Instance
 
-SQL Server Jobs
-:   **Attributes:** Name, Job ID, Description, Enabled, Date
-    Created, Username
-:   **Relationships:** SQL Server Instance
+SQL Jobs
+:   **Attributes:** Name, Enabled, Cluster Node Server, Description, Date Created,
+    User, Job ID, Instance Name
+:   **Relationships:** SQL Instance
+
+SQL Availability Group
+:   **Attributes:** Name, State, Synchronization Health, Primary Recovery Health, Health Check Timeout,
+    Automated Backup Preference, Quorum State, Database Level Health Detection, Is distributed,
+    SQL Instances, Cluster Node Server, Perfmon Counter Instance Name, Unique ID, Cluster Type, 
+    Instance Name, Owner Node IP, Failure condition level
+:   **Relationships:** SQL Instance, SQL Availability Group Replicas, SQL Availability Group Listeners
+
+SQL Availability Group Replica
+:   **Attributes:** Name, State, Role, Failover Mode, Operational State, Availability Mode, 
+    Synchronization Health, Synchronization State, Connection State, Cluster Node Server,
+    Perfmon Counter Instance Name, Unique ID, Instance Name, Owner Node IP, Endpoint Url
+:   **Relationships:** SQL Availability Group, SQL Instance, SQL Databases
+
+SQL Availability Group Listener
+:   **Attributes:** Name, DNS Name, State, IP Address, Port Number, Unique ID, Network Mode
+:   **Relationships:** SQL Availability Group
+
 
 <br class="clear">
 
@@ -463,6 +481,30 @@ unknown, or other state.
 Note: Collection errors are sent with the winrsCollectionMSSQLJob event class key.
 Use an event class mapping with or without a transform to forward the event to a specific
 event class. These include connection and other Powershell issues.
+
+
+SQL Availability Group - WinAvailabilityGroup template
+:   \\IsOnline
+:   \\NumberOfDisconnectedReplicas
+:   \\NumberOfNotSynchronizedReplicas
+:   \\NumberOfNotSynchronizingReplicas
+:   \\NumberOfReplicasWithUnhealthyRole
+:   \\NumberOfSynchronizedSecondaryReplicas
+
+Collected via PowerShell SQL connection to server instance.
+
+SQL Availability Group Replica - WinAvailabilityReplica
+
+:   \\Bytes Received from Replica/sec
+:   \\Bytes Sent to Replica/sec
+:   \\Bytes Sent to Transport/sec
+:   \\Flow Control Time (ms/sec)
+:   \\Flow Control/sec
+:   \\Receives from Replica/sec
+:   \\Resent Messages/sec
+:   \\Sends to Replica/sec
+:   \\Sends to Transport/sec
+
 
 Thresholds
 ----------
@@ -1189,6 +1231,12 @@ important.
 -   zWinServicesNotModeled
     :   List of regular expressions for services to ignore during modeling process.
 
+-   zSQLAlwaysOnEnabled
+    :   Set to true to enable modeling and monitoring of MS SQL Always On components.
+
+-   zSQLAlwaysOnReplicaPerfdataNode
+    :   Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1206,6 +1254,7 @@ Supported SQL Server versions
 :   SQL Server 2014
 :   SQL Server 2016
 :   SQL Server 2017
+:   SQL Server 2019
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
@@ -1861,6 +1910,8 @@ Configuration Properties
 :   zWinRMKrb5includedir
 :   zWinServicesModeled
 :   zWinServicesNotModeled
+:   zSQLAlwaysOnEnabled
+:   zSQLAlwaysOnReplicaPerfdataNode
 
 
 Modeler Plugins 
@@ -1913,9 +1964,27 @@ Monitoring Templates
 :   ClusterNetwork (in /Server/Microsoft/Cluster) 
 :   ClusterDisk (in /Server/Microsoft/Cluster)
 :   ClusterInterface (in /Server/Microsoft/Cluster)
+:   WinAODatabase (in /Server/Microsoft)
+:   WinAvailabilityGroup (in /Server/Microsoft)
+:   WinAvailabilityReplica (in /Server/Microsoft)
 
 Changes
 -------
+
+3.0.0
+
+-   Add new datapoint for Service component to monitor status change (ZPS-5759)
+-   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container (ZPS-5978)
+-   Fix zWinRMDisableRDNS not correctly handled in zenactiond (ZPS-5995)
+-   Fix Windows ZP: zenpython krb5.conf is sometimes missing `rdns = false` despite zWinRMKrb5DisableRDNS = True (ZPS-6326)
+-   Add MS SQL Always On Availability Groups (ZPS-7363)
+-   Add support for Windows 2019 (ZPS-7364)
+-   Add support for MSSQL 2019 (ZPS-7365)
+-   Model SQL Instances components for MS SQL Always On Availability Groups (ZPS-7366)
+-   Add MS SQL Always On Availability Group Replica component (ZPS-7370)
+-   Add MS SQL Always On Availability Group Database component(ZPS-7371)
+-   Add MS SQL Always On Availability Group Listener component(ZPS-7372)
+
 
 2.9.5
 
