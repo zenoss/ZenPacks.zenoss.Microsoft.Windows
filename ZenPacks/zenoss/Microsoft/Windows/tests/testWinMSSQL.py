@@ -7,16 +7,28 @@
 # License.zenoss under the directory where your Zenoss product is installed.
 #
 ##############################################################################
+from select import select
 
 import Globals  # noqa
 
-from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock
+from ZenPacks.zenoss.Microsoft.Windows.tests.mock import Mock, patch
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import StringAttributeObject, load_pickle_file
+from ZenPacks.zenoss.Microsoft.Windows.tests.ms_sql_always_on_test_data import defer, ALWAYS_ON_COLLECT_RESULTS, \
+    DummySQLCommander, create_ao_device_proxy, DB_LOGINS, HOST_USER_NAME, HOST_USER_PASSWORD
 
 from Products.DataCollector.plugins.DataMaps import ObjectMap
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
 from ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.WinMSSQL import WinMSSQL
+
+try:
+    import crochet
+    crochet.setup()
+    CROCHET_AVAILABLE = True
+except ImportError:
+    crochet = None
+    CROCHET_AVAILABLE = False
+
 
 RESULTS = dict(clear='Error parsing zDBInstances',
                device=ObjectMap(data=dict(sqlhostname='dbhost0')),
@@ -432,11 +444,436 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(len(data[3].maps), 5)
 
 
+class TestAlwaysOnCollect(BaseTestCase):
+
+    def setUp(self):
+        self.plugin = WinMSSQL()
+        self.plugin.log = Mock()
+        self.device = create_ao_device_proxy()
+
+    def check_availability_groups(self, data):
+
+        availability_group = data.get('777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertIsInstance(availability_group, dict)
+        self.assertEqual(availability_group['ag_res_id'], u'777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEqual(availability_group['failure_condition_level'], 3)
+        self.assertEqual(availability_group['is_distributed'], False)
+        self.assertEqual(availability_group['primary_replica_server_name'], u'WSC-NODE-02\\SQLAON')
+        self.assertEqual(availability_group['cluster_resource_state'], 2)
+        self.assertEqual(availability_group['id'], u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
+        self.assertEqual(availability_group['automated_backup_preference'], 2)
+        self.assertEqual(availability_group['name'], u'TestAG1')
+        self.assertEqual(availability_group['db_level_health_detection'], False)
+        self.assertEqual(availability_group['cluster_type'], None)
+        self.assertEqual(availability_group['health_check_timeout'], 30000)
+
+    def check_availability_replicas(self, data):
+
+        availability_replica = data.get('b78190e7-2518-4ab8-b5ed-0cf3c4c54f9a')
+        self.assertIsInstance(availability_replica, dict)
+        self.assertEqual(availability_replica['ag_res_id'], u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
+        self.assertEqual(availability_replica['name'], u'WSC-NODE-01\\SQLAON')
+        self.assertEqual(availability_replica['replica_server_name'], u'WSC-NODE-01\\SQLAON')
+        self.assertEqual(availability_replica['endpoint_url'], u'TCP://wsc-node-01.sol-win.lab:5023')
+        self.assertEqual(availability_replica['ag_id'], u'd3313358-3897-492c-9e65-3e4af421e7a3')
+        self.assertEqual(availability_replica['replica_server_hostname'], u'wsc-node-01')
+        self.assertEqual(availability_replica['id'], u'b78190e7-2518-4ab8-b5ed-0cf3c4c54f9a')
+
+    def check_availability_listeners(self, data):
+
+        availability_listener = data.get('5869339c-942f-4ef1-b085-d9718db16cd3')
+        self.assertIsInstance(availability_listener, dict)
+        self.assertEqual(availability_listener['network_mode'], 1)
+        self.assertEqual(availability_listener['ag_id'], u'777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEqual(availability_listener['state'], 2)
+        self.assertEqual(availability_listener['name'], u'TestAG1_TestAG_Listener')
+        self.assertEqual(availability_listener['tcp_port'], 1425)
+        self.assertEqual(availability_listener['dns_name'], u'TestAG_Listener')
+        self.assertEqual(availability_listener['ip_address'], u'10.88.123.201')
+        self.assertEqual(availability_listener['id'], u'5869339c-942f-4ef1-b085-d9718db16cd3')
+
+    def check_sql_instances(self, data):
+
+        sql_instance = data.get('WSC-NODE-01\SQLAON')
+        self.assertIsInstance(sql_instance, dict)
+        self.assertEqual(sql_instance['sql_server_instance_full_name'], u'WSC-NODE-01\\SQLAON')
+        self.assertEqual(sql_instance['sql_server_fullname'], u'WSC-NODE-01\\SQLAON')
+        self.assertEqual(sql_instance['sql_server_version'], u'13.0.1601.5')
+        self.assertEqual(sql_instance['instance_original_name'], u'SQLAON')
+        self.assertEqual(sql_instance['is_on_wsfc'], None)
+        self.assertEqual(sql_instance['sql_hostname_fqdn'], 'wsc-node-01.sol-win.lab')
+        self.assertEqual(sql_instance['is_clustered_instance'], False)
+        self.assertEqual(sql_instance['instance_name'], u'SQLAON')
+        self.assertEqual(sql_instance['sqlhostname'], u'wsc-node-01')
+        self.assertEqual(sql_instance['sql_server_name'], u'WSC-NODE-01\\SQLAON')
+        self.assertEqual(sql_instance['sql_host_ip'], u'10.88.122.131')
+        self.assertEqual(sql_instance['sql_server_node'], u'wsc-node-01')
+
+    def check_availability_databases(self, data):
+
+        availability_database = data.get(('WSC-NODE-01\\SQLAON', 5))
+        self.assertIsInstance(availability_database, dict)
+        self.assertEqual(availability_database['ag_res_id'], u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
+        self.assertEqual(availability_database['sync_state'], 2)
+        self.assertEqual(availability_database['db_id'], 5)
+        self.assertEqual(availability_database['name'], u'test_alwayson_db_1')
+        self.assertEqual(availability_database['lastlogbackupdate'], -62135596800)
+        self.assertEqual(availability_database['createdate'], 1606976235.56)
+        self.assertEqual(availability_database['systemobject'], False)
+        self.assertEqual(availability_database['lastbackupdate'], 1607053473)
+        self.assertEqual(availability_database['collation'], u'SQL_Latin1_General_CP1_CI_AS')
+        self.assertEqual(availability_database['defaultfilegroup'], u'PRIMARY')
+        self.assertEqual(availability_database['version'], 852)
+        self.assertEqual(availability_database['suspended'], False)
+        self.assertEqual(availability_database['adb_id'], u'69945148-b97e-4132-b9fc-e6a6a19bb6ef')
+        self.assertEqual(availability_database['owner'], u'SOL-WIN\\Administrator')
+        self.assertEqual(availability_database['primaryfilepath'], u'C:\\Program Files\\Microsoft SQL Server\\MSSQL13.SQLAON\\MSSQL\\DATA')
+        self.assertEqual(availability_database['recoverymodel'], 1)
+        self.assertEqual(availability_database['isaccessible'], True)
+
+    if CROCHET_AVAILABLE:
+
+        @patch('ZenPacks.zenoss.Microsoft.Windows.modeler.plugins.zenoss.winrm.WinMSSQL.SQLCommander', DummySQLCommander)
+        @crochet.wait_for(timeout=5.0)
+        @defer.inlineCallbacks
+        def test_collect_ao_info(self):
+
+            winrs = DummySQLCommander(None, Mock())
+            conn_info = self.plugin.conn_info(self.device)
+            log = Mock()
+
+            ao_info = yield self.plugin.collect_ao_info(winrs, conn_info, DB_LOGINS, HOST_USER_NAME, HOST_USER_PASSWORD,
+                                                        log)
+            self.assertIsInstance(ao_info, dict)
+
+            # Check whether all expected categories (keys) are present
+            expected_ao_info_keys = {'errors', 'sql_instances', 'availability_groups', 'availability_replicas',
+                                     'availability_listeners', 'availability_databases'}
+            actual_ao_info_keys = set(ao_info.keys())
+            self.assertEqual(expected_ao_info_keys.symmetric_difference(actual_ao_info_keys), set())
+
+            # check exact elements quantity for each category
+            ao_elements_quantity_map = {
+                'errors': 0,
+                'sql_instances': 5,
+                'availability_groups': 3,
+                'availability_replicas': 8,
+                'availability_listeners': 3,
+                'availability_databases': 9
+            }
+            for ao_element_name, ao_element_quantity in ao_elements_quantity_map.iteritems():
+                self.assertEqual(len(ao_info.get(ao_element_name, -1)), ao_element_quantity)
+
+            # check one arbitrary element from each category
+            # 1. Availability Groups:
+            self.check_availability_groups(ao_info.get('availability_groups'))
+
+            # 2. Availability Replicas:
+            self.check_availability_replicas(ao_info.get('availability_replicas'))
+
+            # 3. Availability Listeners:
+            self.check_availability_listeners(ao_info.get('availability_listeners'))
+
+            # 4. SQL Instances:
+            self.check_sql_instances(ao_info.get('sql_instances'))
+
+            # 5. Availability Databases
+            self.check_availability_databases(ao_info.get('availability_databases'))
+
+
+class TestAlwaysOnProcesses(BaseTestCase):
+
+    def setUp(self):
+        self.plugin = WinMSSQL()
+        self.device = StringAttributeObject()
+
+    def check_ao_sql_instance_oms(self, ao_sql_instances_oms):
+        self.assertIsInstance(ao_sql_instances_oms, list)
+        self.assertEquals(len(ao_sql_instances_oms), 5)
+
+        ao_sql_instances0_om = ao_sql_instances_oms[0]
+        self.assertEquals(ao_sql_instances0_om.cluster_node_server, 'wsc-node-03.sol-win.lab//WSC-NODE-03\\SQLAON')
+        self.assertEquals(ao_sql_instances0_om.id, 'WSC-NODE-03_SQLAON')
+        self.assertEquals(ao_sql_instances0_om.instancename, u'SQLAON')
+        self.assertEquals(ao_sql_instances0_om.owner_node_ip, u'10.88.122.133')
+        self.assertEquals(ao_sql_instances0_om.perfmon_instance, 'MSSQL$SQLAON')
+        self.assertEquals(ao_sql_instances0_om.sql_server_version, u'13.0.1601.5')
+        self.assertEquals(ao_sql_instances0_om.title, u'SQLAON')
+
+    def check_ao_oms(self, ag_om_list):
+        self.assertEquals(len(ag_om_list), 3)
+
+        ag0_om = ag_om_list[0]
+        self.assertEquals(ag0_om.ag_res_id, u'777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(ag0_om.automated_backup_preference, 'Prefer Secondary')
+        self.assertEquals(ag0_om.cluster_resource_state, 2)
+        self.assertEquals(ag0_om.cluster_type, 'unknown')
+        self.assertEquals(ag0_om.db_level_health_detection, False)
+        self.assertEquals(ag0_om.failure_condition_level, 'OnCriticalServerErrors')
+        self.assertEquals(ag0_om.health_check_timeout, 30000)
+        self.assertEquals(ag0_om.id, '777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(ag0_om.is_distributed, False)
+        self.assertEquals(ag0_om.name, u'TestAG1')
+        self.assertEquals(ag0_om.set_winsqlinstance, 'WSC-NODE-02_SQLAON')
+        self.assertEquals(ag0_om.title, u'TestAG1')
+        self.assertEquals(ag0_om.unigue_id, u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
+
+    def check_ar_oms(self, ar_om_list):
+
+        self.assertEquals(len(ar_om_list), 2)
+
+        ar0_om = ar_om_list[0]
+        self.assertEquals(ar0_om.ag_id, u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
+        self.assertEquals(ar0_om.ag_res_id, u'777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(ar0_om.endpoint_url, u'TCP://wsc-node-03.sol-win.lab:5023')
+        self.assertEquals(ar0_om.id, 'd97da9be-1c80-439d-bb19-11bc5c5f5083')
+        self.assertEquals(ar0_om.name, u'WSC-NODE-03\\SQLAON')
+        self.assertEquals(ar0_om.replica_server_hostname, u'wsc-node-03')
+        self.assertEquals(ar0_om.replica_server_name, u'WSC-NODE-03\\SQLAON')
+        self.assertEquals(ar0_om.set_winsqlinstance, 'WSC-NODE-03_SQLAON')
+        self.assertEquals(ar0_om.title, u'WSC-NODE-03\\SQLAON')
+        self.assertEquals(ar0_om.unigue_id, u'd97da9be-1c80-439d-bb19-11bc5c5f5083')
+
+    def check_al_oms(self, al_om_list):
+
+        self.assertEquals(len(al_om_list), 1)
+
+        al0_om = al_om_list[0]
+        self.assertEquals(al0_om.ag_id, u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
+        self.assertEquals(al0_om.dns_name, u'TestAG')
+        self.assertEquals(al0_om.id, 'cf2628b9-d180-46e5-9e56-debf65268cd5')
+        self.assertEquals(al0_om.ip_address, u'10.88.123.205')
+        self.assertEquals(al0_om.name, u'TestAG_TestAG')
+        self.assertEquals(al0_om.network_mode, 1)
+        self.assertEquals(al0_om.state, 'Online')
+        self.assertEquals(al0_om.tcp_port, 1433)
+        self.assertEquals(al0_om.title, u'TestAG_TestAG')
+        self.assertEquals(al0_om.unigue_id, u'cf2628b9-d180-46e5-9e56-debf65268cd5')
+
+    def check_adb_oms(self, adb_om_list):
+
+        self.assertEquals(len(adb_om_list), 2)
+
+        adb0_om = adb_om_list[0]
+        self.assertEquals(adb0_om.ag_res_id, u'777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(adb0_om.cluster_node_server, 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON')
+        self.assertEquals(adb0_om.collation, u'SQL_Latin1_General_CP1_CI_AS')
+        self.assertEquals(adb0_om.createdate, '2020/12/04 08:40:52')
+        self.assertEquals(adb0_om.db_id, 7)
+        self.assertEquals(adb0_om.defaultfilegroup, u'PRIMARY')
+        self.assertEquals(adb0_om.id, 'WSC-NODE-02_SQLAON7')
+        self.assertEquals(adb0_om.instancename, u'SQLAON')
+        self.assertEquals(adb0_om.isaccessible, True)
+        self.assertEquals(adb0_om.lastbackupdate, '2020/12/04 08:40:52')
+        self.assertEquals(adb0_om.lastlogbackupdate, '')
+        self.assertEquals(adb0_om.name, u'test_alwayson_db_3')
+        self.assertEquals(adb0_om.owner, u'sa')
+        self.assertEquals(adb0_om.primaryfilepath, u'C:\\Program Files\\Microsoft SQL Server\\MSSQL13.SQLAON\\MSSQL\\DATA')
+        self.assertEquals(adb0_om.recoverymodel, 1)
+        self.assertEquals(adb0_om.set_winsqlavailabilityreplica, '173ce86b-abdc-4ca2-984a-ade7950c55d1')
+        self.assertEquals(adb0_om.suspended, False)
+        self.assertEquals(adb0_om.sync_state, 'Synchronized')
+        self.assertEquals(adb0_om.systemobject, False)
+        self.assertEquals(adb0_om.title, u'test_alwayson_db_3')
+        self.assertEquals(adb0_om.unigue_id, u'85dc383a-bf7b-4ab7-8cea-cc52919bdb36')
+        self.assertEquals(adb0_om.version, 852)
+
+    def test_get_ao_oms(self):
+        """
+        WinMSSQL.get_ao_oms should return result in such format:
+        {
+            'oms': [
+                # 0: Availability Group
+                {
+                    # Tuple of (ag_relname, ag_compname, ag_modname) is used for Availability Groups. Should be one
+                    #  key as Availability Groups are placed under one OS component
+                    ('winsqlavailabilitygroups', 'os', 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup'): [
+                        <ObjectMap {
+                            # <Availability-Group-Properties>
+                        }>
+                    ]
+                },
+                # 1: Availability Replica
+                {
+                    ('winsqlavailabilityreplicas', 'os/winsqlavailabilitygroups/<Availability-Group-ID>',
+                        'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica'): [
+                            <ObjectMap {
+                            # <Availability-Replica-Properties>
+                        }>
+                    ]
+                },
+                # 2: Availability Listener
+                {
+                    ('winsqlavailabilitylisteners', 'os/winsqlavailabilitygroups/<Availability-Group-ID>',
+                        'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener'): [
+                        <ObjectMap {
+                            # <Availability-Listener-Properties>
+                        }>
+                    ]
+                },
+                # 3: Availability Database
+                {
+                    ('databases', 'os/winsqlinstances/<SQL-Instance-ID>',
+                        'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'): [
+                        <ObjectMap {
+                            # <Availability-Database-Properties>
+                        }>
+                    ]
+                }
+            ]
+        }
+        """
+
+        self.plugin.log = Mock()
+        collect_ao_results = ALWAYS_ON_COLLECT_RESULTS
+
+        ao_oms = self.plugin.get_ao_oms(collect_ao_results,
+                                        Mock())
+        self.assertIsInstance(ao_oms, dict)
+
+        oms = ao_oms.get('oms')
+
+        # Be sure that oms key contains List with 4 elements
+        self.assertIsInstance(oms, list)
+        self.assertEquals(len(oms), 4)
+
+        # 1. Availability Groups
+        # First element of the list is dictionary with Availability Groups Object Maps. The dict has only one key.
+        ag_oms = oms[0]
+        ag_tuple_keys = ag_oms.keys()
+        self.assertIsInstance(ag_tuple_keys, list)
+        self.assertEquals(len(ag_tuple_keys), 1)
+
+        ag_tuple_key = ag_tuple_keys[0]
+        self.assertEquals(len(ag_tuple_key), 3)
+        self.assertEquals(ag_tuple_key[0], 'winsqlavailabilitygroups')
+        self.assertEquals(ag_tuple_key[1], 'os')
+        self.assertEquals(ag_tuple_key[2], 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup')
+
+        ag_om_list = ag_oms[ag_tuple_key]
+        self.check_ao_oms(ag_om_list)
+
+        # 2. Availability Replicas
+        ar_oms = oms[1]
+        ar_tuple_keys = ar_oms.keys()
+        self.assertIsInstance(ar_tuple_keys, list)
+        self.assertEquals(len(ar_tuple_keys), 3)
+
+        ar_tuple_key = ar_tuple_keys[0]
+        self.assertEquals(len(ar_tuple_key), 3)
+
+        self.assertEquals(ar_tuple_key[0], 'winsqlavailabilityreplicas')
+        self.assertEquals(ar_tuple_key[1], 'os/winsqlavailabilitygroups/777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(ar_tuple_key[2], 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica')
+
+        ar_om_list = ar_oms[ar_tuple_key]
+        self.check_ar_oms(ar_om_list)
+
+        # 3. Availability Listeners
+        al_oms = oms[2]
+        al_tuple_keys = al_oms.keys()
+        self.assertIsInstance(al_tuple_keys, list)
+        self.assertEquals(len(al_tuple_keys), 3)
+
+        al_tuple_key = al_tuple_keys[1]
+        self.assertEquals(len(al_tuple_key), 3)
+
+        self.assertEquals(al_tuple_key[0], 'winsqlavailabilitylisteners')
+        self.assertEquals(al_tuple_key[1], 'os/winsqlavailabilitygroups/0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
+        self.assertEquals(al_tuple_key[2], 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener')
+
+        al_om_list = al_oms[al_tuple_key]
+        self.check_al_oms(al_om_list)
+
+        # 4. Availability Databases
+        adb_oms = oms[3]
+        adb_tuple_keys = adb_oms.keys()
+        self.assertIsInstance(adb_tuple_keys, list)
+        self.assertEquals(len(adb_tuple_keys), 5)
+
+        adb_tuple_key = adb_tuple_keys[0]
+        self.assertEquals(len(adb_tuple_key), 3)
+
+        self.assertEquals(adb_tuple_key[0], 'databases')
+        self.assertEquals(adb_tuple_key[1], 'os/winsqlinstances/WSC-NODE-02_SQLAON')
+        self.assertEquals(adb_tuple_key[2], 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase')
+
+        adb_om_list = adb_oms[adb_tuple_key]
+        self.check_adb_oms(adb_om_list)
+
+    def test_get_ao_sql_instance_oms(self):
+        """
+        WinMSSQL.test_get_ao_sql_instance_oms should return result in such format:
+        [
+            <ObjectMap {
+                # <SQL-Instance-Properties>
+            }>
+        ]
+        """
+        self.plugin.log = Mock()
+        collect_ao_results = ALWAYS_ON_COLLECT_RESULTS
+
+        ao_sql_instances_oms = self.plugin.get_ao_sql_instance_oms(collect_ao_results)
+        self.check_ao_sql_instance_oms(ao_sql_instances_oms)
+
+    def test_process(self):
+        data = self.plugin.process(self.device, ALWAYS_ON_COLLECT_RESULTS, Mock())
+
+        self.assertEquals(len(data), 14)
+
+        # 1. SQL Instances
+        ao_sql_instances_rm = data[1]
+        self.assertEquals(ao_sql_instances_rm.compname, 'os')
+        self.assertEquals(ao_sql_instances_rm.relname, 'winsqlinstances')
+
+        ao_sql_instances_oms = ao_sql_instances_rm.maps
+        self.check_ao_sql_instance_oms(ao_sql_instances_oms)
+        self.assertEquals(ao_sql_instances_oms[0].modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLInstance')
+
+        # 2. Availability Groups
+        ag_rm = data[2]
+        self.assertEquals(ag_rm.compname, 'os')
+        self.assertEquals(ag_rm.relname, 'winsqlavailabilitygroups')
+
+        ag_oms = ag_rm.maps
+        self.check_ao_oms(ag_oms)
+        self.assertEquals(ag_oms[0].modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup')
+
+        # 3. Availability Replicas
+        ar_rm = data[3]
+        self.assertEquals(ar_rm.compname, 'os/winsqlavailabilitygroups/777c50fd-348e-4686-a622-edd90a4340e1')
+        self.assertEquals(ar_rm.relname, 'winsqlavailabilityreplicas')
+
+        ar_oms = ar_rm.maps
+        self.check_ar_oms(ar_oms)
+        self.assertEquals(ar_oms[0].modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica')
+
+        # 4. Availability Listeners
+        al_rm = data[7]
+        self.assertEquals(al_rm.compname, 'os/winsqlavailabilitygroups/0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
+        self.assertEquals(al_rm.relname, 'winsqlavailabilitylisteners')
+
+        al_oms = al_rm.maps
+        self.check_al_oms(al_oms)
+        self.assertEquals(al_oms[0].modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener')
+
+        # 4. Availability Databases
+        adb_rm = data[9]
+        self.assertEquals(adb_rm.compname, 'os/winsqlinstances/WSC-NODE-02_SQLAON')
+        self.assertEquals(adb_rm.relname, 'databases')
+
+        adb_oms = adb_rm.maps
+        self.check_adb_oms(adb_oms)
+        self.assertEquals(adb_oms[0].modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase')
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
     suite.addTest(makeSuite(TestProcesses))
+    suite.addTest(makeSuite(TestAlwaysOnProcesses))
+    suite.addTest(makeSuite(TestAlwaysOnCollect))
     return suite
 
 
