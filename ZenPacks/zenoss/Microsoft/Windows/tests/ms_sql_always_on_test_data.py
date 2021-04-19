@@ -36,7 +36,8 @@ ALWAYS_ON_COLLECT_RESULTS = {
                                                       'id': u'5869339c-942f-4ef1-b085-d9718db16cd3'},
             u'93ac36cf-1da8-4803-957f-60c38cd55983': {'name': u'TestAG_AvailabilityListener1',
                                                       'dns_name': u'TestAG_AvailabilityListener1', 'network_mode': 0,
-                                                      'ag_id': u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1', 'state': 2,
+                                                      'ag_id': u'',  # Empty to check whether it will be skipped
+                                                      'state': 2,
                                                       u'tcp_port': 1426, 'ip_address': u'10.88.122.206',
                                                       'id': u'93ac36cf-1da8-4803-957f-60c38cd55983'}}, 'errors': {},
         'availability_groups': {
@@ -180,7 +181,8 @@ ALWAYS_ON_COLLECT_RESULTS = {
                                           u'collation': u'SQL_Latin1_General_CP1_CI_AS',
                                           u'primaryfilepath': u'C:\\Program Files\\Microsoft SQL Server\\MSSQL13.SQLAON\\MSSQL\\DATA',
                                           u'recoverymodel': 1},
-            (u'WSC-NODE-02\\SQLAON', 5): {u'ag_res_id': u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1', u'sync_state': 1,
+            (u'', 5):  # Empty to check whether this will be skipped
+                {u'ag_res_id': u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1', u'sync_state': 1,
                                           u'db_id': 5,
                                           u'name': u'test_alwayson_db_1', u'lastlogbackupdate': -62135596800,
                                           u'createdate': 1607053472.6569998, u'suspended': False,
@@ -252,7 +254,7 @@ ALWAYS_ON_COLLECT_RESULTS = {
                                                       u'ag_id': u'cf6f5be1-ab56-4624-a471-5831671f454a',
                                                       u'id': u'd8cca389-7ed9-4531-b723-4cfac6f13f21',
                                                       u'replica_server_hostname': u'wsc-node-02'},
-            u'4dd141b8-e88f-46ed-b160-b71f2f588162': {u'ag_res_id': u'777c50fd-348e-4686-a622-edd90a4340e1',
+            u'4dd141b8-e88f-46ed-b160-b71f2f588162': {u'ag_res_id': u'',  # Empty to check whether this will be skipped
                                                       u'name': u'WSC-NODE-01\\SQLAON',
                                                       u'replica_server_name': u'WSC-NODE-01\\SQLAON',
                                                       u'endpoint_url': u'TCP://wsc-node-01.sol-win.lab:5023',
@@ -267,11 +269,26 @@ DB_LOGINS = {u'MSSQLSERVER': {'username': HOST_USER_NAME, 'login_as_user': True,
                               'password': HOST_USER_PASSWORD}}
 
 
-class DummySQLCommanderResponse(object):
+class DummyClass(object):
+    """
+    Class which will be filled by data from dict. Need where calling code expect object rather than dict.
+    """
     pass
 
 
-class DummySQLCommander(object):
+class ObjectFromDictProducer(object):
+
+    @staticmethod
+    def object_from_dict(data):
+        result_object = DummyClass()
+
+        for key, value in data.iteritems():
+            setattr(result_object, key, value)
+
+        return result_object
+
+
+class DummySQLCommander(ObjectFromDictProducer):
     """
     Custom WinRS client replacement for testing purposes.
     """
@@ -280,19 +297,13 @@ class DummySQLCommander(object):
         self._conn_info = conn_info
         self.log = log
 
-    @staticmethod
-    def create_sql_commander_response(data):
+    def create_sql_commander_response(self, data):
         """
-        Returns DummySQLCommanderResponse object because the calling code expect object, not a dict.
+        Returns DummyClass object because the calling code expect object, not a dict.
         :param data: dict
-        :return: DummySQLCommanderResponse
+        :return: DummyClass
         """
-        response_object = DummySQLCommanderResponse()
-
-        for key, value in data.iteritems():
-            setattr(response_object, key, value)
-
-        return response_object
+        return self.object_from_dict(data)
 
     @defer.inlineCallbacks
     def defer_sql_commander_response(self, response):
@@ -1047,6 +1058,404 @@ class DummySQLCommander(object):
         response_object = self.create_sql_commander_response(result)
 
         return self.defer_sql_commander_response(response_object)
+
+
+class DummyAlwaysOnStrategiesResponse(ObjectFromDictProducer):
+
+    def __init__(self):
+        pass
+
+    def config_from_dict(self, data):
+        """
+        Returns Object because the calling code expect object, not a dict.
+        :param data: dict
+        :return: DummyClass
+        """
+
+        result_object = DummyClass()
+
+        for key, value in data.iteritems():
+            if key == 'datasources' and isinstance(value, list):
+                # For datasources need to create list with objects
+                original_value = value
+                value = []
+                for datasource in original_value:
+                    datasource_object = self.object_from_dict(datasource)
+                    # process datasource 'points' separately as objects
+                    datasource_points = datasource.get('points', [])
+                    points = []
+                    for _, point_id in datasource_points:
+                        points.append(self.object_from_dict({'id': point_id}))
+                    datasource_object.points = points
+                    value.append(datasource_object)
+            setattr(result_object, key, value)
+
+        return result_object
+
+    def get_ao_ag_strategy_response(self):
+
+        preprocessing_data = {
+
+            'config_data': {
+                'datasources': [
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '',
+                     'params': {'winsqlinstance_id': 'WSC-NODE-02_SQLAON',
+                                'contextrelname': 'winsqlavailabilitygroups',
+                                'instanceid': '777c50fd-348e-4686-a622-edd90a4340e1',
+                                'contexttitle': 'TestAG1', 'contextcompname': 'os',
+                                'strategy': 'powershell MSSQL AO AG',
+                                'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup'},
+                     'template': 'WinAvailabilityGroup',
+                     'eventKey': '',
+                     'component': '777c50fd-348e-4686-a622-edd90a4340e1', 'device': '10.88.122.130',
+                     'points': [({}, 'IsOnline'), ({}, 'NumberOfDisconnectedReplicas'),
+                                ({}, 'NumberOfNotSynchronizedReplicas'),
+                                ({}, 'NumberOfNotSynchronizingReplicas'), ({}, 'NumberOfReplicasWithUnhealthyRole'),
+                                ({}, 'NumberOfSynchronizedSecondaryReplicas')], 'zWinRMPort': '5985',
+                     'datasource': 'AvailabilityGroupState'}],
+                'manageIp': '10.88.122.130', 'id': '10.88.122.130'},
+
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [u'{',
+                           u'"TestAG1":  {',
+                           u'"ag_info":  {',
+                           u'"primary_replica_server_name":  "WSC-NODE-02\\\\SQLAON",',
+                           u'"health_check_timeout":  30000,',
+                           u'"automated_backup_preference":  2,',
+                           u'"is_clustered_instance":  false,',
+                           u'"synchronization_health":  2,',
+                           u'"primary_recovery_health":  1',
+                           u'},',
+                           u'"ag_state":  {',
+                           u'"IsOnline":  true,',
+                           u'"IsAutoFailover":  true,',
+                           u'"NumberOfSynchronizedSecondaryReplicas":  1,',
+                           u'"NumberOfNotSynchronizingReplicas":  0,',
+                           u'"NumberOfNotSynchronizedReplicas":  0,',
+                           u'"NumberOfReplicasWithUnhealthyRole":  0,',
+                           u'"NumberOfDisconnectedReplicas":  0',
+                           u'},',
+                           u'"cl_quorum_state":  1',
+                           u'}',
+                           u'}']}
+        }
+
+        config = self.config_from_dict(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
+
+    def get_ao_ar_strategy_response(self):
+
+        preprocessing_data = {
+            'config_data': {'datasources': [
+                {'cluster_node_server': 'wsc-node-03.sol-win.lab//WSC-NODE-03\\SQLAON',
+                 'eventClass': '',
+                 'params': {'resource': 'AvailabilityReplicaState', 'contextrelname': 'winsqlavailabilityreplicas',
+                            'instanceid': '8974cff2-f04e-4399-96b5-1f256f632e6d',
+                            'contexttitle': 'WSC-NODE-03\\SQLAON',
+                            'contextcompname': 'os/winsqlavailabilitygroups/777c50fd-348e-4686-a622-edd90a4340e1',
+                            'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica',
+                            'instancename': 'SQLAON', 'availability_group_name': 'TestAG1'},
+                 'eventKey': '',
+                 'component': '8974cff2-f04e-4399-96b5-1f256f632e6d',
+                 },
+                {'cluster_node_server': 'wsc-node-03.sol-win.lab//WSC-NODE-03\\SQLAON',
+                 'eventClass': '',
+                 'params': {'resource': 'AvailabilityReplicaState', 'contextrelname': 'winsqlavailabilityreplicas',
+                            'instanceid': '106864b6-f741-4b3c-b6be-48daa15ff3d7',
+                            'contexttitle': 'WSC-NODE-03\\SQLAON',
+                            'contextcompname': 'os/winsqlavailabilitygroups/0b38a4e4-8c30-46e8-873e-7cd1b397bfc1',
+                            'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica',
+                            'instancename': 'SQLAON', 'availability_group_name': 'TestAG'},
+                 'eventKey': '',
+                 'component': '106864b6-f741-4b3c-b6be-48daa15ff3d7',
+                 }],
+                'manageIp': '10.88.122.130',
+                'id': '10.88.122.130'},
+
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [u'{',
+                           u'"8974cff2-f04e-4399-96b5-1f256f632e6d":  {',
+                           u'"id":  "8974cff2-f04e-4399-96b5-1f256f632e6d",',
+                           u'"name":  "WSC-NODE-03\\\\SQLAON",',
+                           u'"role":  2,',
+                           u'"state":  1,',
+                           u'"operational_state":  2,',
+                           u'"availability_mode":  0,',
+                           u'"connection_state":  1,',
+                           u'"synchronization_state":  1,',
+                           u'"failover_mode":  1,',
+                           u'"synchronization_health":  2',
+                           u'},',
+                           u'"106864b6-f741-4b3c-b6be-48daa15ff3d7":  {',
+                           u'"id":  "106864b6-f741-4b3c-b6be-48daa15ff3d7",',
+                           u'"name":  "WSC-NODE-03\\\\SQLAON",',
+                           u'"role":  2,',
+                           u'"state":  1,',
+                           u'"operational_state":  2,',
+                           u'"availability_mode":  0,',
+                           u'"connection_state":  1,',
+                           u'"synchronization_state":  1,',
+                           u'"failover_mode":  1,',
+                           u'"synchronization_health":  2',
+                           u'}',
+                           u'}']}
+        }
+
+        config = self.config_from_dict(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
+
+    def get_ao_al_strategy_response(self):
+
+        preprocessing_data = {
+            'config_data': {'datasources': [
+                {'eventClass': '',
+                 'params': {
+                     'contextrelname': 'winsqlavailabilitylisteners',
+                     'instanceid': '5869339c-942f-4ef1-b085-d9718db16cd3',
+                     'contexttitle': 'TestAG1_TestAG_Listener',
+                     'contextcompname': 'os/winsqlavailabilitygroups/777c50fd-348e-4686-a622-edd90a4340e1',
+                     'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener',
+                     'instancename': 'SQLAON', 'availability_group_name': 'TestAG1'},
+                 'eventKey': '',
+                 'component': '5869339c-942f-4ef1-b085-d9718db16cd3'}],
+                'manageIp': '10.88.122.130',
+                'id': '10.88.122.130'},
+
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [u'{',
+                           u'"name":  "TestAG1_TestAG_Listener",',
+                           u'"dns_name":  "TestAG_Listener",',
+                           u'"state":  "2",',
+                           u'"ip_address":  "10.88.123.201"',
+                           u'}']}
+        }
+
+        config = self.config_from_dict(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
+
+    def get_ao_adb_strategy_response(self):
+
+        preprocessing_data = {
+            'config_data': {
+                'datasources': [
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '',
+                     'component': 'WSC-NODE-02_SQLAON6',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {
+                         'database_index': '6', 'resource': 'Active Transactions',
+                         'contextrelname': 'databases',
+                         'instanceid': 'WSC-NODE-02_SQLAON6',
+                         'contexttitle': 'test_alwayson_db_2',
+                         'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                         'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase',
+                     },
+                     'eventKey': '',
+                     'datasource': 'ActiveTransactions'
+                     },
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '/Status',
+                     'component': 'WSC-NODE-02_SQLAON6',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {
+                         'database_index': '6', 'resource': '',
+                         'contextrelname': 'databases',
+                         'instanceid': 'WSC-NODE-02_SQLAON6',
+                         'contexttitle': 'test_alwayson_db_2',
+                         'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                         'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'
+                     },
+                     'eventKey': '',
+                     'datasource': 'status'
+                     },
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '',
+                     'component': 'WSC-NODE-02_SQLAON7',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {
+                         'database_index': '7', 'resource': 'Active Transactions',
+                         'contextrelname': 'databases', 'instanceid': 'WSC-NODE-02_SQLAON7',
+                         'contexttitle': 'test_alwayson_db_3',
+                         'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                         'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'},
+                     'eventKey': '',
+                     'datasource': 'ActiveTransactions'
+                     },
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '/Status',
+                     'component': 'WSC-NODE-02_SQLAON7',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {
+                         'database_index': '7', 'resource': '', 'contextrelname': 'databases',
+                         'instanceid': 'WSC-NODE-02_SQLAON7',
+                         'contexttitle': 'test_alwayson_db_3',
+                         'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                         'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'},
+                     'eventKey': '',
+                     'datasource': 'status'
+                     },
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '',
+                     'component': 'WSC-NODE-02_SQLAON5',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {
+                         'database_index': '5',
+                         'resource': 'Active Transactions',
+                         'contextrelname': 'databases', 'instanceid': 'WSC-NODE-02_SQLAON5',
+                         'contexttitle': 'test_alwayson_db_1',
+                         'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                         'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'
+                     },
+                     'eventKey': '',
+                     'datasource': 'ActiveTransactions'
+                     },
+                    {'cluster_node_server': 'wsc-node-02.sol-win.lab//WSC-NODE-02\\SQLAON',
+                     'eventClass': '/Status',
+                     'component': 'WSC-NODE-02_SQLAON5',
+                     'points': [({}, 'ActiveTransactions')],
+                     'params': {'database_index': '5',
+                                'resource': '',
+                                'contextrelname': 'databases', 'instanceid': 'WSC-NODE-02_SQLAON5',
+                                'contexttitle': 'test_alwayson_db_1',
+                                'contextcompname': 'os/winsqlinstances/WSC-NODE-02_SQLAON',
+                                'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase'
+                                },
+                     'eventKey': '',
+                     'datasource': 'status'
+                     }],
+                'id': '10.88.122.130'
+            },
+
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [u'{',
+                           u'"model_data":  {',
+                           u'"5":  {',
+                           u'"status":  "Normal",',
+                           u'"sync_state":  1,',
+                           u'"suspended":  false',
+                           u'},',
+                           u'"6":  {',
+                           u'"status":  "Normal",',
+                           u'"sync_state":  1,',
+                           u'"suspended":  false',
+                           u'},',
+                           u'"7":  {',
+                           u'"status":  "Normal",',
+                           u'"sync_state":  2,',
+                           u'"suspended":  false',
+                           u'}',
+                           u'},',
+                           u'"perf_data":  {',
+                           u'"7":  {',
+                           u'"Data File(s) Size (KB)":  "8192",',
+                           u'"Log File(s) Size (KB)":  "8184",',
+                           u'"Log File(s) Used Size (KB)":  "792",',
+                           u'"Percent Log Used":  "9",',
+                           u'"Active Transactions":  "0",',
+                           u'"Transactions/sec":  "34636",',
+                           u'"Repl. Pending Xacts":  "0",',
+                           u'"Repl. Trans. Rate":  "0",',
+                           u'"Log Cache Reads/sec":  "0",',
+                           u'"Log Cache Hit Ratio":  "0",',
+                           u'"Log Cache Hit Ratio Base":  "0",',
+                           u'"Bulk Copy Rows/sec":  "0",',
+                           u'"Bulk Copy Throughput/sec":  "0",',
+                           u'"Backup/Restore Throughput/sec":  "0",',
+                           u'"DBCC Logical Scan Bytes/sec":  "0",',
+                           u'"Shrink Data Movement Bytes/sec":  "0",',
+                           u'"Log Flushes/sec":  "0",',
+                           u'"Log Bytes Flushed/sec":  "0",',
+                           u'"Log Flush Waits/sec":  "0",',
+                           u'"Log Flush Wait Time":  "0",',
+                           u'"Log Truncations":  "0",',
+                           u'"Log Growths":  "0",',
+                           u'"Log Shrinks":  "0",',
+                           u'"Cache Hit Ratio":  "477566",',
+                           u'"Cache Hit Ratio Base":  "661720",',
+                           u'"Cache Entries Count":  "114",',
+                           u'"Cache Entries Pinned Count":  "0"',
+                           u'},',
+                           u'"5":  {',
+                           u'"Data File(s) Size (KB)":  "8192",',
+                           u'"Log File(s) Size (KB)":  "8184",',
+                           u'"Log File(s) Used Size (KB)":  "811",',
+                           u'"Percent Log Used":  "9",',
+                           u'"Active Transactions":  "0",',
+                           u'"Transactions/sec":  "10916",',
+                           u'"Repl. Pending Xacts":  "0",',
+                           u'"Repl. Trans. Rate":  "0",',
+                           u'"Log Cache Reads/sec":  "0",',
+                           u'"Log Cache Hit Ratio":  "0",',
+                           u'"Log Cache Hit Ratio Base":  "0",',
+                           u'"Bulk Copy Rows/sec":  "0",',
+                           u'"Bulk Copy Throughput/sec":  "0",',
+                           u'"Backup/Restore Throughput/sec":  "0",',
+                           u'"DBCC Logical Scan Bytes/sec":  "0",',
+                           u'"Shrink Data Movement Bytes/sec":  "0",',
+                           u'"Log Flushes/sec":  "0",',
+                           u'"Log Bytes Flushed/sec":  "0",',
+                           u'"Log Flush Waits/sec":  "0",',
+                           u'"Log Flush Wait Time":  "0",',
+                           u'"Log Truncations":  "0",',
+                           u'"Log Growths":  "0",',
+                           u'"Log Shrinks":  "0",',
+                           u'"Cache Hit Ratio":  "483620",',
+                           u'"Cache Hit Ratio Base":  "666493",',
+                           u'"Cache Entries Count":  "114",',
+                           u'"Cache Entries Pinned Count":  "0"',
+                           u'},',
+                           u'"6":  {',
+                           u'"Data File(s) Size (KB)":  "8192",',
+                           u'"Log File(s) Size (KB)":  "8184",',
+                           u'"Log File(s) Used Size (KB)":  "810",',
+                           u'"Percent Log Used":  "9",',
+                           u'"Active Transactions":  "0",',
+                           u'"Transactions/sec":  "13068",',
+                           u'"Repl. Pending Xacts":  "0",',
+                           u'"Repl. Trans. Rate":  "0",',
+                           u'"Log Cache Reads/sec":  "0",',
+                           u'"Log Cache Hit Ratio":  "0",',
+                           u'"Log Cache Hit Ratio Base":  "0",',
+                           u'"Bulk Copy Rows/sec":  "0",',
+                           u'"Bulk Copy Throughput/sec":  "0",',
+                           u'"Backup/Restore Throughput/sec":  "0",',
+                           u'"DBCC Logical Scan Bytes/sec":  "0",',
+                           u'"Shrink Data Movement Bytes/sec":  "0",',
+                           u'"Log Flushes/sec":  "0",',
+                           u'"Log Bytes Flushed/sec":  "0",',
+                           u'"Log Flush Waits/sec":  "0",',
+                           u'"Log Flush Wait Time":  "0",',
+                           u'"Log Truncations":  "0",',
+                           u'"Log Growths":  "0",',
+                           u'"Log Shrinks":  "0",',
+                           u'"Cache Hit Ratio":  "476887",',
+                           u'"Cache Hit Ratio Base":  "659788",',
+                           u'"Cache Entries Count":  "114",',
+                           u'"Cache Entries Pinned Count":  "0"',
+                           u'}',
+                           u'}',
+                           u'}']}
+        }
+
+        config = self.config_from_dict(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
 
 
 def create_ao_device_proxy():

@@ -454,7 +454,7 @@ class TestAlwaysOnCollect(BaseTestCase):
     def check_availability_groups(self, data):
 
         availability_group = data.get('777c50fd-348e-4686-a622-edd90a4340e1')
-        self.assertIsNotNone(availability_group)
+        self.assertIsInstance(availability_group, dict)
         self.assertEqual(availability_group['ag_res_id'], u'777c50fd-348e-4686-a622-edd90a4340e1')
         self.assertEqual(availability_group['failure_condition_level'], 3)
         self.assertEqual(availability_group['is_distributed'], False)
@@ -470,7 +470,7 @@ class TestAlwaysOnCollect(BaseTestCase):
     def check_availability_replicas(self, data):
 
         availability_replica = data.get('b78190e7-2518-4ab8-b5ed-0cf3c4c54f9a')
-        self.assertIsNotNone(availability_replica)
+        self.assertIsInstance(availability_replica, dict)
         self.assertEqual(availability_replica['ag_res_id'], u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
         self.assertEqual(availability_replica['name'], u'WSC-NODE-01\\SQLAON')
         self.assertEqual(availability_replica['replica_server_name'], u'WSC-NODE-01\\SQLAON')
@@ -482,7 +482,7 @@ class TestAlwaysOnCollect(BaseTestCase):
     def check_availability_listeners(self, data):
 
         availability_listener = data.get('5869339c-942f-4ef1-b085-d9718db16cd3')
-        self.assertIsNotNone(availability_listener)
+        self.assertIsInstance(availability_listener, dict)
         self.assertEqual(availability_listener['network_mode'], 1)
         self.assertEqual(availability_listener['ag_id'], u'777c50fd-348e-4686-a622-edd90a4340e1')
         self.assertEqual(availability_listener['state'], 2)
@@ -495,7 +495,7 @@ class TestAlwaysOnCollect(BaseTestCase):
     def check_sql_instances(self, data):
 
         sql_instance = data.get('WSC-NODE-01\SQLAON')
-        self.assertIsNotNone(sql_instance)
+        self.assertIsInstance(sql_instance, dict)
         self.assertEqual(sql_instance['sql_server_instance_full_name'], u'WSC-NODE-01\\SQLAON')
         self.assertEqual(sql_instance['sql_server_fullname'], u'WSC-NODE-01\\SQLAON')
         self.assertEqual(sql_instance['sql_server_version'], u'13.0.1601.5')
@@ -512,7 +512,7 @@ class TestAlwaysOnCollect(BaseTestCase):
     def check_availability_databases(self, data):
 
         availability_database = data.get(('WSC-NODE-01\\SQLAON', 5))
-        self.assertIsNotNone(availability_database)
+        self.assertIsInstance(availability_database, dict)
         self.assertEqual(availability_database['ag_res_id'], u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
         self.assertEqual(availability_database['sync_state'], 2)
         self.assertEqual(availability_database['db_id'], 5)
@@ -600,8 +600,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(ao_sql_instances0_om.sql_server_version, u'13.0.1601.5')
         self.assertEquals(ao_sql_instances0_om.title, u'SQLAON')
 
-        # TODO: Add checks for other SQL Instances. Maybe negative scenario.
-
     def check_ao_oms(self, ag_om_list):
         self.assertEquals(len(ag_om_list), 3)
 
@@ -620,11 +618,9 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(ag0_om.title, u'TestAG1')
         self.assertEquals(ag0_om.unigue_id, u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
 
-        # TODO: Add checks for other AGs. Maybe negative scenario.
-
     def check_ar_oms(self, ar_om_list):
 
-        self.assertEquals(len(ar_om_list), 3)
+        self.assertEquals(len(ar_om_list), 2)
 
         ar0_om = ar_om_list[0]
         self.assertEquals(ar0_om.ag_id, u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
@@ -640,7 +636,7 @@ class TestAlwaysOnProcesses(BaseTestCase):
 
     def check_al_oms(self, al_om_list):
 
-        self.assertEquals(len(al_om_list), 2)
+        self.assertEquals(len(al_om_list), 1)
 
         al0_om = al_om_list[0]
         self.assertEquals(al0_om.ag_id, u'0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
@@ -654,11 +650,9 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(al0_om.title, u'TestAG_TestAG')
         self.assertEquals(al0_om.unigue_id, u'cf2628b9-d180-46e5-9e56-debf65268cd5')
 
-        # TODO: Add checks for other ALs. Maybe negative scenario.
-
     def check_adb_oms(self, adb_om_list):
 
-        self.assertEquals(len(adb_om_list), 3)
+        self.assertEquals(len(adb_om_list), 2)
 
         adb0_om = adb_om_list[0]
         self.assertEquals(adb0_om.ag_res_id, u'777c50fd-348e-4686-a622-edd90a4340e1')
@@ -683,8 +677,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(adb0_om.title, u'test_alwayson_db_3')
         self.assertEquals(adb0_om.unigue_id, u'85dc383a-bf7b-4ab7-8cea-cc52919bdb36')
         self.assertEquals(adb0_om.version, 852)
-
-        # TODO: Add checks for other ADBs. Maybe negative scenario.
 
     def test_get_ao_oms(self):
         """
@@ -776,8 +768,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
 
         ar_om_list = ar_oms[ar_tuple_key]
         self.check_ar_oms(ar_om_list)
-
-        # TODO: Add checks for other ARs. Consider scenario when AR is skipped due to some reasons.
 
         # 3. Availability Listeners
         al_oms = oms[2]
