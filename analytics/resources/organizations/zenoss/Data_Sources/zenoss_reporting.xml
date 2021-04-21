@@ -5,7 +5,7 @@
   <version>0</version>
   <label>Zenoss Reporting</label>
   <description>The Zenoss Datawarehouse. Choose this as the datasource for all domains, ad-hoc views and reports.</description>
-  <driver>com.mysql.jdbc.Driver</driver>
+  <driver>com.mariadb.jdbc.Driver</driver>
   <connectionUrl>jdbc:mysql://localhost:13306/reporting?useUnicode=true&amp;characterEncoding=UTF-8</connectionUrl>
   <connectionUser>reporting_read</connectionUser>
   <connectionPassword/>
