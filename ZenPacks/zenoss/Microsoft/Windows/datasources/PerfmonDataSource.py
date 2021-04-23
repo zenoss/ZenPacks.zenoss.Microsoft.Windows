@@ -927,9 +927,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             retry = False
         if retry:
             self.retry_count += 1
-            LOG.debug("Retry connection on {}, retry_count = {}".format(self.confg.id, self.retry_count))
+            LOG.debug("Retry connection on {}, retry_count = {}".format(self.config.id, self.retry_count))
             if self.retry_count >= MAX_RETRIES:
-                LOG.debug("Stopping retry on {} due to retry_count >= MAX_RETRIES".format(self.confg.id))
+                LOG.debug("Stopping retry on {} due to retry_count >= MAX_RETRIES".format(self.config.id))
                 yield self.stop()
                 self.reset()
                 retry = False
