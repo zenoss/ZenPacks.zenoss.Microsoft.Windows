@@ -879,6 +879,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'got "Unexpected Response" during receive, '
                     'attempting to receive again'
                 )
+            elif 'Illegal operation attempted on a registry key that has been marked for deletion' in e.message or \
+                    'Class not registered' in e.message:
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    'got "{}" during receive, attempting to receive again'.format(e.message)
+                )
             elif 'invalid selectors for the resource' in e.message:
                 retry, level, msg = (
                     False,
