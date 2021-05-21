@@ -40,6 +40,7 @@ ConnectionInfoProperties = (
     'zWinRMKRBErrorThreshold',
     'kerberos_rdns',
     'zWinRMConnectTimeout',
+    'zWinRMLongRunningCommandOperationTimeout',
     'zSQLAlwaysOnEnabled',
     'zWinServicesModeled',
     'zWinServicesNotModeled',
