@@ -270,6 +270,8 @@ class ComplexLongRunningCommand(object):
                     conn_info = conn_info._replace(hostname=owner_node)
                     conn_info = conn_info._replace(
                         ipaddress=self.dsconf.params['owner_node_ip'])
+            # Use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+            conn_info = conn_info._replace(timeout=self.dsconf.zWinRMLongRunningCommandOperationTimeout)
             for _ in xrange(num_commands):
                 try:
                     commands.append(LongCommandClient(conn_info))
@@ -295,7 +297,7 @@ class ComplexLongRunningCommand(object):
             if command is not None:
                 deferreds.append(add_timeout(command.start(self.ps_command,
                                                            ps_script=command_line),
-                                             self.dsconf.zWinRMConnectTimeout))
+                                             self.dsconf.zWinRMLongRunningCommandOperationTimeout))
 
         return defer.DeferredList(deferreds, consumeErrors=True)
 
@@ -371,7 +373,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
-        self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
+        self.unique_id = '_'.join(
+            (self.config.id,
+             str(self.cycletime),
+             str(getattr(self.config.datasources[0], 'cluster_node_server', ''))
+             )
+        )
         self._shells = []
         self.reset()
 
@@ -591,7 +598,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield add_timeout(
                     self.data_deferred,
-                    self.config.datasources[0].zWinRMConnectTimeout)
+                    self.config.datasources[0].zWinRMLongRunningCommandOperationTimeout)
             except Exception:
                 pass
         else:
@@ -961,7 +968,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             pass
         elif num_counters == 1:
             result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_list)),
-                                       OPERATION_TIMEOUT + 5)
+                                       self.config.datasources[0].zWinRMConnectTimeout + 5)
             if result.stderr:
                 if 'not recognized as the name of a cmdlet' in result.stderr:
                     PERSISTER.add_event(self.unique_id, self.config.datasources, {
@@ -982,7 +989,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
                 result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_slice)),
-                                           OPERATION_TIMEOUT + 5)
+                                           self.config.datasources[0].zWinRMConnectTimeout + 5)
                 if result.stderr:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)

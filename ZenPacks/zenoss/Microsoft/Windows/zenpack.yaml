@@ -54,6 +54,11 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zWinRMLongRunningCommandOperationTimeout:
+    label: 'Long Running Command Operation Timeout'
+    type: int
+    default: 310
+    description: 'Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.'
   zSQLAlwaysOnEnabled:
     label: 'SQL Always On enabled'
     default: false

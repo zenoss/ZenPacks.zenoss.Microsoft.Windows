@@ -2157,7 +2157,7 @@ device_classes:
             strategy: powershell MSSQL AO AG
             component: ${here/id}
             resource: AvailabilityGroupState
-            cycletime: ${here/zWinPerfmonInterval}
+            cycletime: '300'
             datapoints:
               IsOnline:
                 rrdtype: GAUGE
@@ -2218,7 +2218,7 @@ device_classes:
             strategy: powershell MSSQL AO AR
             component: ${here/id}
             resource: AvailabilityReplicaState
-            cycletime: ${here/zWinPerfmonInterval}
+            cycletime: '300'
           BytesReceivedFromReplica:
             type: Windows Perfmon
             component: ${here/id}
@@ -2353,7 +2353,7 @@ device_classes:
             strategy: powershell AO AL
             component: ${here/id}
             resource: AvailabilityListenerState
-            cycletime: ${here/zWinPerfmonInterval}
+            cycletime: '300'
       WinAODatabase:
         description: Microsoft SQL Server per-Always On database monitoring.
         targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase
