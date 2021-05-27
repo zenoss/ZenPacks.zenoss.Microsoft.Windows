@@ -2227,7 +2227,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {bytes_rec_fr_repl__bytessec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Received from Replica/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Received from Replica/sec
           BytesSentToReplica:
             type: Windows Perfmon
             component: ${here/id}
@@ -2236,7 +2236,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {bytes_snt_to_repl__bytessec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Replica/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Replica/sec
           BytesSentToTransport:
             type: Windows Perfmon
             component: ${here/id}
@@ -2245,7 +2245,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {bytes_snt_to_trnsp__bytessec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Transport/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Transport/sec
           FlowControlTime:
             type: Windows Perfmon
             component: ${here/id}
@@ -2254,7 +2254,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {flow_control_time__msecs: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control Time (ms/sec)
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control Time (ms/sec)
           FlowControl:
             type: Windows Perfmon
             component: ${here/id}
@@ -2263,7 +2263,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {flow_control__persec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control/sec
           ReceivesFromReplica:
             type: Windows Perfmon
             component: ${here/id}
@@ -2272,7 +2272,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {receive_from_replica__persec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Receives from Replica/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Receives from Replica/sec
           ResentMessages:
             type: Windows Perfmon
             component: ${here/id}
@@ -2281,7 +2281,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {resent_messages__persec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Resent Messages/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Resent Messages/sec
           SendsToReplica:
             type: Windows Perfmon
             component: ${here/id}
@@ -2290,7 +2290,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {sends_to_replica__persec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Replica/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Replica/sec
           SendsToTransport:
             type: Windows Perfmon
             component: ${here/id}
@@ -2299,7 +2299,7 @@ device_classes:
                 rrdtype: GAUGE
                 rrdmin: 0
                 aliases: {sends_to_transport__persec: null}
-            counter: ${here/replica_perfdata_node}${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Transport/sec
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Transport/sec
         graphs:
           Inter-Replicas Communication (bytes):
             units: bytes/sec

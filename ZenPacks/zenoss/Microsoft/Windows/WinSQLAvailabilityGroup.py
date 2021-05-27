@@ -15,7 +15,7 @@ class WinSQLAvailabilityGroup(schema.WinSQLAvailabilityGroup):
     def getState(self):
         try:
             state = int(self.cacheRRDValue('AvailabilityGroupState_IsOnline', 0))
-        except:
+        except Exception:
             state = None
 
         status_representation = lookup_ag_state(state)

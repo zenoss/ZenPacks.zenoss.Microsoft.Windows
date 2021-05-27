@@ -946,6 +946,11 @@ classes:
         grid_display: true
       endpoint_url:
         label: Endpoint Url
+      replica_perfdata_node:
+        label: Replica Perfdata Node
+        display: false
+        api_backendtype: method
+        api_only: true
     monitoring_templates: [WinAvailabilityReplica]
     dynamicview_views: [service_view]
     dynamicview_relations:

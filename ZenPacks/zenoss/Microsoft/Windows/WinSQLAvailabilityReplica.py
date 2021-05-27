@@ -24,7 +24,7 @@ class WinSQLAvailabilityReplica(object, schema.WinSQLAvailabilityReplica):
         result = ''
 
         def local_node():
-            return '\\'
+            return ''
 
         def separate_node():
             perfdata_node = ''
@@ -59,7 +59,7 @@ class WinSQLAvailabilityReplica(object, schema.WinSQLAvailabilityReplica):
             if len(fullname_parts) == 2:
                 ar_owner_node = fullname_parts[0]
                 if ar_owner_node:
-                    perfdata_node = '\\\\{}\\'.format(ar_owner_node)
+                    perfdata_node = ar_owner_node
 
             return perfdata_node
 
@@ -81,3 +81,15 @@ class WinSQLAvailabilityReplica(object, schema.WinSQLAvailabilityReplica):
             result = node_location_mapping.get('default')()
 
         return result
+
+    def get_replica_perfdata_node_ip(self):
+        node_ip = ''
+
+        node = self.replica_perfdata_node
+        if node:
+            try:
+                node_ip = self.device().clusterhostdevicesdict.get(node)
+            except Exception as e:
+                pass
+
+        return node_ip
