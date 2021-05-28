@@ -254,6 +254,13 @@ class ComplexLongRunningCommand(object):
                 'summary': 'Windows Perfmon connection info is not available',
                 'message': error})
         else:
+            # Availability Replica performance counters are placed on other nodes unlike other counters.
+            # Need to pick up right Windows node for this type of counters.
+            replica_perfdata_node = getattr(self.dsconf, 'replica_perfdata_node', None)
+            replica_perfdata_node_ip = self.dsconf.params['replica_perfdata_node_ip']
+            if replica_perfdata_node and replica_perfdata_node_ip:
+                conn_info = conn_info._replace(hostname=replica_perfdata_node)
+                conn_info = conn_info._replace(ipaddress=replica_perfdata_node_ip)
             # allow for collection from sql clusters where active sql instance
             # could be running on different node from current host server
             # ex. sol-win03.solutions-wincluster.loc//SQL1 for MSSQLSERVER
@@ -262,7 +269,7 @@ class ComplexLongRunningCommand(object):
             # standalone ex.
             #       //SQLHOSTNAME for MSSQLSERVER
             #       //SQLTEST\TESTINSTANCE1 for TESTINSTANCE1
-            if getattr(self.dsconf, 'cluster_node_server', None) and\
+            elif getattr(self.dsconf, 'cluster_node_server', None) and\
                     self.dsconf.params['owner_node_ip']:
                 owner_node, server =\
                     self.dsconf.cluster_node_server.split('//')
@@ -314,6 +321,7 @@ class ComplexLongRunningCommand(object):
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties + (
         'cluster_node_server',
+        'replica_perfdata_node'
     )
 
     config = None
@@ -376,7 +384,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.unique_id = '_'.join(
             (self.config.id,
              str(self.cycletime),
-             str(getattr(self.config.datasources[0], 'cluster_node_server', ''))
+             str(getattr(self.config.datasources[0], 'cluster_node_server', '')),
+             str(getattr(self.config.datasources[0], 'replica_perfdata_node', ''))
              )
         )
         self._shells = []
@@ -427,6 +436,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             context.device().id,
             datasource.getCycleTime(context),
             getattr(context, 'cluster_node_server', ''),
+            getattr(context, 'replica_perfdata_node', ''),
             SOURCETYPE,
         )
 
@@ -447,9 +457,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 except Exception:
                     pass
 
+        replica_perfdata_node_ip = getattr(context, 'get_replica_perfdata_node_ip', '')
+        if callable(replica_perfdata_node_ip):
+            replica_perfdata_node_ip = replica_perfdata_node_ip()
+
         return {
             'counter': counter,
-            'owner_node_ip': owner_node_ip
+            'owner_node_ip': owner_node_ip,
+            'replica_perfdata_node_ip': replica_perfdata_node_ip
         }
 
     @coroutine
