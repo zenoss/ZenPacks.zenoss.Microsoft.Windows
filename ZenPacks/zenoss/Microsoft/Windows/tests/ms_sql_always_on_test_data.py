@@ -1474,6 +1474,7 @@ def create_ao_device_proxy():
         '_snmpStatus': -1,
         'windows_user': HOST_USER_NAME, 'zWinRMEnvelopeSize': 512000,
         'zWinRMConnectTimeout': 60,
+        'zWinRMConnectionCloseTime': 60,
         'zSQLAlwaysOnReplicaPerfdataNode': 310,
         'windows_servername': 'wsc-cluster.sol-win.lab', 'zWinScheme': 'http',
         'temp_device': True,
