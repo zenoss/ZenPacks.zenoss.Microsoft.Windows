@@ -59,6 +59,11 @@ zProperties:
     type: int
     default: 310
     description: 'Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.'
+  zWinRMConnectionCloseTime:
+    label: 'WinRM Connection Close Time'
+    type: int
+    default: 60
+    description: 'Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.'
   zSQLAlwaysOnEnabled:
     label: 'SQL Always On enabled'
     default: false
