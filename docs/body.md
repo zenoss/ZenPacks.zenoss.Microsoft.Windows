@@ -180,7 +180,6 @@ SQL Databases
 
 SQL Backups
 :   **Attributes:** Name, Device Type, Instance Name, Physical Location, Status
-    Allocation, Status
 :   **Relationships:** SQL Instance
 
 SQL Jobs
@@ -514,7 +513,7 @@ SQL Availability Group - WinAvailabilityGroup template
 Collected via PowerShell SQL connection to server instance.
 SQL Availability Group state indicators' info can be found [here][https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.management.smo.availabilitygroupstate].
 
-SQL Availability Group Replica - WinAvailabilityReplica
+SQL Availability Group Replica - WinAvailabilityReplica template
 
 :   \\Bytes Received from Replica/sec
 :   \\Bytes Sent to Replica/sec
@@ -2024,6 +2023,7 @@ Changes
 -   Fix 'Class not registered' and 'Illegal operation attempted on a registry key that has been marked for deletion' errors (ZPS-5967)
 -   Fix intermittent connection flood to monitored device (ZPS-6861)
 -   Fix intermittent "Server not found in Kerberos database" events (ZPS-7585)
+-   Fix 100% CPU utilization on MSSQL servers caused by the ZenPack (ZPS-7586)
 -   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container (ZPS-5978)
 -   Fix Windows ZP: zenpython krb5.conf is sometimes missing `rdns = false` despite zWinRMKrb5DisableRDNS = True (ZPS-6326)
 -   Fix zWinRMDisableRDNS not correctly handled in zenactiond (ZPS-5995)
