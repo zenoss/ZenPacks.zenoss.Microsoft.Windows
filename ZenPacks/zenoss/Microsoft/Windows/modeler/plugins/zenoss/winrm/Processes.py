@@ -38,12 +38,8 @@ except ImportError:
         return []
 
 
-if hasattr(Device, 'osProcessClassMatchData'):
-    # Introduced in Zenoss 4.2 2013-10-15 RPS.
-    PROXY_MATCH_PROPERTY = 'osProcessClassMatchData'
-else:
-    # Older property.
-    PROXY_MATCH_PROPERTY = 'getOSProcessMatchers'
+# Introduced in Zenoss 4.2 2013-10-15 RPS.
+PROXY_MATCH_PROPERTY = 'osProcessClassMatchData'
 
 
 class Processes(WinRMPlugin):
@@ -69,10 +65,7 @@ class Processes(WinRMPlugin):
         rm = self.relMap()
 
         # Get process ObjectMap instances.
-        if hasattr(device, 'osProcessClassMatchData'):
-            oms = self.new_process(device, results, log)
-        else:
-            oms = self.old_process(device, results, log)
+        oms = self.new_process(device, results, log)
 
         # Determine if WorkingSetPrivate is supported.
         try:
@@ -94,81 +87,12 @@ class Processes(WinRMPlugin):
         Handles style introduced by Zenoss 4.2 2013-10-15 RPS.
         '''
         processes = ifilter(bool, imap(get_processText, results.values()[0]))
+        matchers = device.osProcessClassMatchData if hasattr(device, "osProcessClassMatchData") else []
+        #log.info("getting process matchers...", matchers)
         oms = imap(
             self.objectMap,
-            buildObjectMapData(device.osProcessClassMatchData, processes))
+            buildObjectMapData(matchers, processes))
 
         for om in oms:
             yield om
 
-    def old_process(self, device, results, log):
-        '''
-        Model processes according to old style.
-
-        Handles Zenoss 4.1 and Zenoss 4.2 prior to the 2013-10-15 RPS.
-        '''
-        self.compile_regexes(device, log)
-
-        seen = set()
-
-        for item in results.values()[0]:
-            procName, parameters = get_processNameAndArgs(item)
-            processText = get_processText(item)
-
-            for matcher in device.getOSProcessMatchers:
-                if hasattr(OSProcess.OSProcess, 'matchRegex'):
-                    match = OSProcess.OSProcess.matchRegex(
-                        matcher['regex'],
-                        matcher['excludeRegex'],
-                        processText)
-                else:
-                    match = matcher['regex'].search(processText)
-
-                if not match:
-                    continue
-
-                if hasattr(OSProcess.OSProcess, 'generateId'):
-                    process_id = OSProcess.OSProcess.generateId(
-                        matcher['regex'],
-                        matcher['getPrimaryUrlPath'],
-                        processText)
-                else:
-                    process_id = prepId(OSProcess.getProcessIdentifier(
-                        procName,
-                        None if matcher['ignoreParameters'] else parameters))
-
-                if process_id in seen:
-                    continue
-
-                seen.add(process_id)
-
-                data = {
-                    'id': process_id,
-                    'procName': procName,
-                    'parameters': parameters,
-                    'setOSProcessClass': matcher['getPrimaryDmdId'],
-                    }
-
-                if hasattr(OSProcess.OSProcess, 'processText'):
-                    data['processText'] = processText
-
-                yield self.objectMap(data)
-
-    def compile_regexes(self, device, log):
-        for matcher in device.getOSProcessMatchers:
-            try:
-                matcher['regex'] = re.compile(matcher['regex'])
-            except Exception:
-                log.warning(
-                    "Invalid process regex '%s' -- ignoring",
-                    matcher['regex'])
-
-            if 'excludeRegex' in matcher:
-                try:
-                    matcher['excludeRegex'] = re.compile(
-                        matcher['excludeRegex'])
-
-                except Exception:
-                    log.warning(
-                        "Invalid process exclude regex '%s' -- ignoring",
-                        matcher['excludeRegex'])
