@@ -154,4 +154,34 @@
            provides="Products.Zuul.interfaces.IReportableFactory"
            />
 
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLAvailabilityGroup.WinSQLAvailabilityGroup"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLAvailabilityGroup.WinSQLAvailabilityGroup"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLAvailabilityReplica.WinSQLAvailabilityReplica"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLAvailabilityReplica.WinSQLAvailabilityReplica"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
+  <adapter factory=".basereportable.BaseReportable"
+           for=".WinSQLAvailabilityListener.WinSQLAvailabilityListener"
+           provides="Products.Zuul.interfaces.IReportable"
+           />
+
+  <adapter factory=".basereportable.BaseReportableFactory"
+           for=".WinSQLAvailabilityListener.WinSQLAvailabilityListener"
+           provides="Products.Zuul.interfaces.IReportableFactory"
+           />
+
 </configure>

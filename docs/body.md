@@ -163,27 +163,64 @@ IIS Sites
 :   **Attributes:** Name, Status, App Pool
 :   **Relationships:** Device
 
-SQL Server Instances
-:   **Attributes:** Name : Relationships: SQL Server databases
-:   **Relationships:** Device
+[![][Windows_ms_sql_instance.png]][Windows_ms_sql_instance.png]
+
+SQL Instances
+:   **Attributes:** Name, Instance Name, SQL Server Version, Backup Devices, Roles, Cluster Node Server, Perfmon Counter Instance Name
+:   **Relationships:** Device, SQL Backups, SQL Databases, SQL Jobs, SQL Availability Groups, SQL Availability Replicas
 
 [![][Windows_database.png]][Windows_database.png]
+[![][Windows_database2.png]][Windows_database2.png]
 
-SQL Server Databases
-:   **Attributes:** Name, Version, Owner, Last Backup,
-    Last Log Backup, Accessible, Collation, Creation Date, Default File
-    Group, Primary File Path, Recovery Model, Is System Object
-:   **Relationships:** SQL Server Instance, Device
+SQL Databases
+:   **Attributes:** Name, Owner, Database Status, Synchronization State, Suspended,
+    Cluster Node Server, Last Backup, System Object, Recovery Model, Created On, Always On Unique ID,
+    File Group, Version, Collation, File Path, Last Log Backup, Accessible
+:   **Relationships:** SQL Instance, SQL Availability Group Replica
 
-SQL Server Backups
-:   **Attributes:** Name, Device Type, Physical
-    Allocation, Status
-:   **Relationships:** SQL Server Instance
+SQL Backups
+:   **Attributes:** Name, Device Type, Instance Name, Physical Location, Status
+:   **Relationships:** SQL Instance
 
-SQL Server Jobs
-:   **Attributes:** Name, Job ID, Description, Enabled, Date
-    Created, Username
-:   **Relationships:** SQL Server Instance
+SQL Jobs
+:   **Attributes:** Name, Enabled, Cluster Node Server, Description, Date Created,
+    User, Job ID, Instance Name
+:   **Relationships:** SQL Instance
+
+[![][Windows_availability_group.png]][Windows_availability_group.png]
+
+SQL Availability Group
+:   **Attributes:** Name, State, Synchronization Health, Primary Recovery Health, Health Check Timeout,
+    Automated Backup Preference, Quorum State, Database Level Health Detection, Is distributed,
+    SQL Instances, Cluster Node Server, Perfmon Counter Instance Name, Unique ID, Cluster Type, 
+    Instance Name, Owner Node IP, Failure condition level
+:   **Relationships:** SQL Instance, SQL Availability Group Replicas, SQL Availability Group Listeners
+
+[![][Windows_availability_replica.png]][Windows_availability_replica.png]
+
+SQL Availability Group Replica
+:   **Attributes:** Name, State, Role, Failover Mode, Operational State, Availability Mode, 
+    Synchronization Health, Synchronization State, Connection State, Cluster Node Server,
+    Perfmon Counter Instance Name, Unique ID, Instance Name, Owner Node IP, Endpoint Url
+:   **Relationships:** SQL Availability Group, SQL Instance, SQL Databases
+
+[![][Windows_availability_listener.png]][Windows_availability_listener.png]
+
+SQL Availability Group Listener
+:   **Attributes:** Name, DNS Name, State, IP Address, Port Number, Unique ID, Network Mode
+:   **Relationships:** SQL Availability Group
+
+Note: MS SQL Always On components only supported at `/Server/Microsoft/Cluster` level when WinMSSQL modeller plugin is added, and the value of `zSQLAlwaysOnEnabled` property set to `True`.
+
+Note: In order to get most info about Replicas and Availability Databases it needs to set a 'possible nodes' for Availability Group resource.
+In this case collection will be performed per each checked node from possible nodes list. However, even one node is sufficient for the collection.
+In order to do this:
+-   Run `'Failover Cluster Manager'`;
+-   Select the Role which correspond to particular Always On Availability Group;
+-   Select `'SQL Server Availability Group'` resource type for this resource;
+-   Pick `'Advanced Policies'` tab and check `'Possible Owners'`.
+
+[![][AGPossibleNodes.png]][AGPossibleNodes.png]
 
 <br class="clear">
 
@@ -463,6 +500,31 @@ unknown, or other state.
 Note: Collection errors are sent with the winrsCollectionMSSQLJob event class key.
 Use an event class mapping with or without a transform to forward the event to a specific
 event class. These include connection and other Powershell issues.
+
+
+SQL Availability Group - WinAvailabilityGroup template
+:   \\IsOnline
+:   \\NumberOfDisconnectedReplicas
+:   \\NumberOfNotSynchronizedReplicas
+:   \\NumberOfNotSynchronizingReplicas
+:   \\NumberOfReplicasWithUnhealthyRole
+:   \\NumberOfSynchronizedSecondaryReplicas
+
+Collected via PowerShell SQL connection to server instance.
+SQL Availability Group state indicators' info can be found [here][https://docs.microsoft.com/en-us/dotnet/api/microsoft.sqlserver.management.smo.availabilitygroupstate].
+
+SQL Availability Group Replica - WinAvailabilityReplica template
+
+:   \\Bytes Received from Replica/sec
+:   \\Bytes Sent to Replica/sec
+:   \\Bytes Sent to Transport/sec
+:   \\Flow Control Time (ms/sec)
+:   \\Flow Control/sec
+:   \\Receives from Replica/sec
+:   \\Resent Messages/sec
+:   \\Sends to Replica/sec
+:   \\Sends to Transport/sec
+
 
 Thresholds
 ----------
@@ -1189,6 +1251,17 @@ important.
 -   zWinServicesNotModeled
     :   List of regular expressions for services to ignore during modeling process.
 
+-   zSQLAlwaysOnEnabled
+    :   Set to true to enable modeling and monitoring of MS SQL Always On components.
+
+-   zSQLAlwaysOnReplicaPerfdataNode
+    :   Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"
+
+-   zWinRMLongRunningCommandOperationTimeout
+    :   Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.
+
+-   zWinRMConnectionCloseTime
+    :   Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1206,6 +1279,7 @@ Supported SQL Server versions
 :   SQL Server 2014
 :   SQL Server 2016
 :   SQL Server 2017
+:   SQL Server 2019
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
@@ -1464,6 +1538,8 @@ In [3]: commit()
 -   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 -   The WinCommand notification action is in the process of being deprecated.
+-   Availability Replicas for particular Availability Group might disappear if all SQL Instances for this Availability Group will be stopped or unreachable.
+    This will happen only if such outage occurs during modeling cycle (which occurs every 24 hours by default).
 
 A current list of known issues related to this ZenPack can be found with
 [this JIRA query](https://jira.zenoss.com/issues/?jql=%22Affected%20Zenpack%28s%29%22%20%3D%20MicrosoftWindows%20AND%20status%20not%20in%20%28closed%2C%20%22awaiting%20verification%22%29%20ORDER%20BY%20priority%20DESC%2C%20id). You must be logged into JIRA to run this query. If you don't already have a JIRA account, you can [create one here](https://jira.zenoss.com/secure/Signup!default.jspa).
@@ -1767,6 +1843,10 @@ example:
 winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 ```
 
+If you see `'HTTP status: 500. Unexpected Response syntax error: line 1, column 0 (--Encrypted Boundary Content-Type...'` events 
+or `'WARNING zen.MicrosoftWindows: receive failure on <device-id>>: syntax error: line 1, column 0'` messages in zenpython logs
+or there is a gradual downfall of available RAM, the value of zWinRMConnectionCloseTime property can be increased.
+
 ### Troubleshooting Perfmon Collection
 
 If you see errors containing text similar to "The term 'New-Object' is not
@@ -1783,6 +1863,11 @@ modules will load due to [double-hopping](https://blogs.msdn.microsoft.com/knowl
 Because no modules were loaded, even the most basic powershell cmdlets will not run.
 To fix this, simply remove the UNC path from the default system PSModulePath
 environment variable.
+
+Perfmon datasource python plugin invokes long-running Powershell command. When you are observing gaps on graphs, data
+for which is collected by Perfmon datasource plugin and zenpython debug logs shows 
+`'The WS-Management service cannot complete the operation within the time specified in OperationTimeout'` message, 
+`zWinRMLongRunningCommandOperationTimeout` property value can be increased. This property is applicable only for Perfmon datasource.
 
 ### Troubleshooting MSSQL Modeling/Monitoring
 
@@ -1861,6 +1946,10 @@ Configuration Properties
 :   zWinRMKrb5includedir
 :   zWinServicesModeled
 :   zWinServicesNotModeled
+:   zSQLAlwaysOnEnabled
+:   zSQLAlwaysOnReplicaPerfdataNode
+:   zWinRMLongRunningCommandOperationTimeout
+:   zWinRMConnectionCloseTime
 
 
 Modeler Plugins 
@@ -1913,9 +2002,32 @@ Monitoring Templates
 :   ClusterNetwork (in /Server/Microsoft/Cluster) 
 :   ClusterDisk (in /Server/Microsoft/Cluster)
 :   ClusterInterface (in /Server/Microsoft/Cluster)
+:   WinAODatabase (in /Server/Microsoft)
+:   WinAvailabilityGroup (in /Server/Microsoft)
+:   WinAvailabilityReplica (in /Server/Microsoft)
 
 Changes
 -------
+
+3.0.0
+
+-   Add MS SQL Always On Availability Groups (ZPS-7363)
+-   Add MS SQL Always On Availability Group Replica component (ZPS-7370)
+-   Add MS SQL Always On Availability Group Database component(ZPS-7371)
+-   Add MS SQL Always On Availability Group Listener component(ZPS-7372)
+-   Add support of MS SQL Always On to Zenoss Analytics (ZPS-7511)
+-   Add support for Windows 2019 (ZPS-7364)
+-   Add support for MSSQL 2019 (ZPS-7365)
+-   Model SQL Instances components for MS SQL Always On Availability Groups (ZPS-7366)
+-   Add new datapoint for Service component to monitor status change (ZPS-5759)
+-   Fix 'Class not registered' and 'Illegal operation attempted on a registry key that has been marked for deletion' errors (ZPS-5967)
+-   Fix intermittent connection flood to monitored device (ZPS-6861)
+-   Fix intermittent "Server not found in Kerberos database" events (ZPS-7585)
+-   Fix 100% CPU utilization on MSSQL servers caused by the ZenPack (ZPS-7586)
+-   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container (ZPS-5978)
+-   Fix Windows ZP: zenpython krb5.conf is sometimes missing `rdns = false` despite zWinRMKrb5DisableRDNS = True (ZPS-6326)
+-   Fix zWinRMDisableRDNS not correctly handled in zenactiond (ZPS-5995)
+-   Tested with Zenoss Cloud, Zenoss 6.6.0, Zenoss 6.5.0, Analytics and Service Impact 5.5.3
 
 2.9.5
 
@@ -2494,3 +2606,9 @@ Changes
 [CustomViewXML.png]: /sites/default/files/zenpack/Microsoft Windows/CustomViewXML.png "Custom View XML" {.thumbnail}
 [EventDataSourceXML.png]: /sites/default/files/zenpack/Microsoft Windows/EventDataSourceXML.png "Event DataSource XML" {.thumbnail}
 [windows-kerberos-wireshark.png]: /sites/default/files/zenpack/Microsoft Windows/windows-kerberos-wireshark.png "Wireshark" {.thumbnail}
+[windows-kerberos-wireshark.png]: /sites/default/files/zenpack/Microsoft Windows/windows-kerberos-wireshark.png "Wireshark" {.thumbnail}
+[AGPossibleNodes.png]: /sites/default/files/zenpack/Microsoft Windows/AGPossibleNodes.png "Possible nodes for Availability Group" {.thumbnail}
+[Windows_database2.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_database2.png "Databases" {.thumbnail}
+[Windows_availability_group.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_availability_group.png "SQL Availability Group" {.thumbnail}
+[Windows_availability_replica.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_availability_replica.png "SQL Availability Replica" {.thumbnail}
+[Windows_availability_listener.png]: /sites/default/files/zenpack/Microsoft Windows/Windows_availability_listener.png "SQL Availability Listener" {.thumbnail}

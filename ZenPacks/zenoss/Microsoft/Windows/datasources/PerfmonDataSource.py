@@ -65,6 +65,7 @@ OPERATION_TIMEOUT = 60
 # them when configuration for the device changes.
 CORRUPT_COUNTERS = collections.defaultdict(list)
 MAX_NETWORK_FAILURES = 3
+MAX_RETRIES = 3
 
 
 class PowerShellError(Error):
@@ -253,6 +254,13 @@ class ComplexLongRunningCommand(object):
                 'summary': 'Windows Perfmon connection info is not available',
                 'message': error})
         else:
+            # Availability Replica performance counters are placed on other nodes unlike other counters.
+            # Need to pick up right Windows node for this type of counters.
+            replica_perfdata_node = getattr(self.dsconf, 'replica_perfdata_node', None)
+            replica_perfdata_node_ip = self.dsconf.params['replica_perfdata_node_ip']
+            if replica_perfdata_node and replica_perfdata_node_ip:
+                conn_info = conn_info._replace(hostname=replica_perfdata_node)
+                conn_info = conn_info._replace(ipaddress=replica_perfdata_node_ip)
             # allow for collection from sql clusters where active sql instance
             # could be running on different node from current host server
             # ex. sol-win03.solutions-wincluster.loc//SQL1 for MSSQLSERVER
@@ -261,7 +269,7 @@ class ComplexLongRunningCommand(object):
             # standalone ex.
             #       //SQLHOSTNAME for MSSQLSERVER
             #       //SQLTEST\TESTINSTANCE1 for TESTINSTANCE1
-            if getattr(self.dsconf, 'cluster_node_server', None) and\
+            elif getattr(self.dsconf, 'cluster_node_server', None) and\
                     self.dsconf.params['owner_node_ip']:
                 owner_node, server =\
                     self.dsconf.cluster_node_server.split('//')
@@ -269,6 +277,8 @@ class ComplexLongRunningCommand(object):
                     conn_info = conn_info._replace(hostname=owner_node)
                     conn_info = conn_info._replace(
                         ipaddress=self.dsconf.params['owner_node_ip'])
+            # Use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+            conn_info = conn_info._replace(timeout=self.dsconf.zWinRMLongRunningCommandOperationTimeout)
             for _ in xrange(num_commands):
                 try:
                     commands.append(LongCommandClient(conn_info))
@@ -294,7 +304,7 @@ class ComplexLongRunningCommand(object):
             if command is not None:
                 deferreds.append(add_timeout(command.start(self.ps_command,
                                                            ps_script=command_line),
-                                             self.dsconf.zWinRMConnectTimeout))
+                                             self.dsconf.zWinRMLongRunningCommandOperationTimeout))
 
         return defer.DeferredList(deferreds, consumeErrors=True)
 
@@ -311,6 +321,7 @@ class ComplexLongRunningCommand(object):
 class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     proxy_attributes = ConnectionInfoProperties + (
         'cluster_node_server',
+        'replica_perfdata_node'
     )
 
     config = None
@@ -370,13 +381,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         self._build_commandlines()
 
-        self.unique_id = '_'.join((self.config.id, str(self.cycletime)))
+        self.unique_id = '_'.join(
+            (self.config.id,
+             str(self.cycletime),
+             str(getattr(self.config.datasources[0], 'cluster_node_server', '')),
+             str(getattr(self.config.datasources[0], 'replica_perfdata_node', ''))
+             )
+        )
         self._shells = []
         self.reset()
 
     def reset(self):
         self.state = PluginStates.STOPPED
         self.network_failures = 0
+        self.retry_count = 0
 
         self.complex_command = ComplexLongRunningCommand(
             self.config.datasources[0],
@@ -418,6 +436,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             context.device().id,
             datasource.getCycleTime(context),
             getattr(context, 'cluster_node_server', ''),
+            getattr(context, 'replica_perfdata_node', ''),
             SOURCETYPE,
         )
 
@@ -438,9 +457,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 except Exception:
                     pass
 
+        replica_perfdata_node_ip = getattr(context, 'get_replica_perfdata_node_ip', '')
+        if callable(replica_perfdata_node_ip):
+            replica_perfdata_node_ip = replica_perfdata_node_ip()
+
         return {
             'counter': counter,
-            'owner_node_ip': owner_node_ip
+            'owner_node_ip': owner_node_ip,
+            'replica_perfdata_node_ip': replica_perfdata_node_ip
         }
 
     @coroutine
@@ -449,6 +473,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         """
+        self.check_for_update(config)
         self._start_counter += 1
         if self.num_commands == 0:
             # nothing to do, return
@@ -484,6 +509,14 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                         and evt.get('severity', -1) == 0:
                     data['events'].remove(evt)
         defer.returnValue(data)
+
+    def check_for_update(self, config):
+        new_conn_info = createConnectionInfo(config.datasources[0])
+        old_conn_info = None
+        if self.complex_command and self.complex_command.commands:
+            old_conn_info = self.complex_command.commands[0]._conn_info
+        if old_conn_info and old_conn_info != new_conn_info:
+            self.__init__(config)
 
     @coroutine
     def start(self):
@@ -580,7 +613,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             try:
                 yield add_timeout(
                     self.data_deferred,
-                    self.config.datasources[0].zWinRMConnectTimeout)
+                    self.config.datasources[0].zWinRMLongRunningCommandOperationTimeout)
             except Exception:
                 pass
         else:
@@ -615,8 +648,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             except (RequestError, Exception) as ex:
                 if 'the request contained invalid selectors for the resource' in ex.message:
                     # shell was lost due to reboot, service restart, or other circumstance
-                    LOG.debug('Perfmon shell on {} was destroyed.  Get-Counter'
-                              ' will attempt to restart on the next cycle.')
+                    LOG.log(
+                        logging.DEBUG,
+                        "Perfmon shell on %s was destroyed.  Get-Counter will attempt to restart on the next cycle.",
+                        self.config.id)
                 else:
                     if 'canceled by the user' in ex.message or\
                             'OperationTimeout' in ex.message:
@@ -781,6 +816,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
             self.receive()
+            self.retry_count = 0
 
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
@@ -796,7 +832,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             dsconf0 = self.config.datasources[0]
             if CORRUPT_COUNTERS[dsconf0.device]:
                 self.reportCorruptCounters(self.counter_map)
+            self.retry_count = 0
         else:
+            self.retry_count = 0
             if self.cycling:
                 LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
                 yield self.restart()
@@ -863,6 +901,20 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     'got "Unexpected Response" during receive, '
                     'attempting to receive again'
                 )
+            elif 'Illegal operation attempted on a registry key that has been marked for deletion' in e.message or \
+                    'Class not registered' in e.message:
+                retry, level, msg = (
+                    True,
+                    logging.DEBUG,
+                    'got "{}" during receive, attempting to receive again'.format(e.message)
+                )
+            elif 'invalid selectors for the resource' in e.message:
+                retry, level, msg = (
+                    False,
+                    logging.DEBUG,
+                    'Attempted to use a non-existent remote shell.  Possibly '
+                    'due to device reboot.'
+                )
             else:
                 retry, level, msg = (
                     True,
@@ -889,10 +941,6 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 level = logging.DEBUG
                 e = 'Attempted to receive from closed connection.  Possibly '\
                     'due to device reboot.'
-            elif 'invalid selectors for the resource' in e.message:
-                level = logging.DEBUG
-                e = 'Attempted to use a non-existent remote shell.  Possibly '\
-                    'due to device reboot.'
             retry, msg = (
                 False,
                 "receive failure on {}: {}"
@@ -907,7 +955,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             self.reset()
             retry = False
         if retry:
-            self.receive()
+            self.retry_count += 1
+            LOG.debug("Retry connection on {}, retry_count = {}".format(self.config.id, self.retry_count))
+            if self.retry_count >= MAX_RETRIES:
+                LOG.debug("Stopping retry on {} due to retry_count >= MAX_RETRIES".format(self.config.id))
+                yield self.stop()
+                self.reset()
+                retry = False
+            else:
+                self.receive()
         else:
             yield self.stop()
             self.reset()
@@ -927,7 +983,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             pass
         elif num_counters == 1:
             result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_list)),
-                                       OPERATION_TIMEOUT + 5)
+                                       self.config.datasources[0].zWinRMConnectTimeout + 5)
             if result.stderr:
                 if 'not recognized as the name of a cmdlet' in result.stderr:
                     PERSISTER.add_event(self.unique_id, self.config.datasources, {
@@ -948,7 +1004,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             slices = (counter_list[:mid_index], counter_list[mid_index:])
             for counter_slice in slices:
                 result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_slice)),
-                                           OPERATION_TIMEOUT + 5)
+                                           self.config.datasources[0].zWinRMConnectTimeout + 5)
                 if result.stderr:
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)

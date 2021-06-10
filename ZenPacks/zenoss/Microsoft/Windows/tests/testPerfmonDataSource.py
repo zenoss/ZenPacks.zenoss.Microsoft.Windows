@@ -15,12 +15,15 @@ from itertools import repeat
 from collections import namedtuple
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
-from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel
+from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 from ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource import (
     format_stdout,
     format_counters,
     DataPersister,
     counter_returned,
+    PerfmonDataSourcePlugin,
+    Failure,
+    RequestError
 )
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
 
@@ -32,6 +35,10 @@ STDOUT = '''  Timestamp                 CounterSamples
 
 
 class DataSource(namedtuple('DataSource', ['plugin_classname', 'datasource'])):
+    pass
+
+
+class Config(namedtuple('Config', ['id'])):
     pass
 
 
@@ -111,6 +118,52 @@ class TestCounterReturned(BaseTestCase):
         self.assertFalse(counter_returned(result))
 
 
+def dummy_generateClearAuthEvents(config, events):
+    pass
+
+
+class TestPerfmonDataSourcePlugin(BaseTestCase):
+
+    def plugin_simplified_init(datasource, config):
+        datasource.config = config
+        datasource.unique_id = 'test_unigue_id'
+        datasource.network_failures = 0
+        datasource.retry_count = 0
+        datasource.was_receive_count = 0  # a new property to track how many tomes 'receive' method was called
+
+    def plugin_modified_receive(datasource):
+        datasource.was_receive_count += 1
+
+    def plugin_modified_reset(datasource):
+        pass
+
+    def plugin_modified_stop(datasource):
+        pass
+
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.LOG', Mock())
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.__init__', plugin_simplified_init)
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.receive', plugin_modified_receive)
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.reset', plugin_modified_reset)
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.stop', plugin_modified_stop)
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.generateClearAuthEvents', dummy_generateClearAuthEvents)
+    def test_onReceiveFail(self):
+        config = Config('test_config_id')
+        plugin = PerfmonDataSourcePlugin(config)
+
+        error_messages_500_code = ('HTTP status: 500. Class not registered',
+                                   'HTTP status: 500. Illegal operation attempted on a registry key that has been marked for deletion')
+
+        for error_msg in error_messages_500_code:
+            # reset 'retry_count' and 'was_receive_count' before each test step
+            plugin.retry_count = 0
+            plugin.was_receive_count = 0
+
+            failure = Failure(RequestError(error_msg))
+            plugin.onReceiveFail(failure)
+            self.assertEquals(plugin.retry_count, 1)
+            self.assertEquals(plugin.was_receive_count, 1)
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
@@ -119,6 +172,8 @@ def test_suite():
     suite.addTest(makeSuite(TestFormat_counters))
     suite.addTest(makeSuite(TestDataPersister))
     suite.addTest(makeSuite(TestCounterReturned))
+    suite.addTest(makeSuite(TestCounterReturned))
+    suite.addTest(makeSuite(TestPerfmonDataSourcePlugin))
     return suite
 
 

@@ -4,7 +4,6 @@
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
-#    'zWinRMKrb5DisableRDNS'
 #
 ##############################################################################
 
@@ -41,6 +40,9 @@ ConnectionInfoProperties = (
     'zWinRMKRBErrorThreshold',
     'kerberos_rdns',
     'zWinRMConnectTimeout',
+    'zWinRMLongRunningCommandOperationTimeout',
+    'zWinRMConnectionCloseTime',
+    'zSQLAlwaysOnEnabled',
     'zWinServicesModeled',
     'zWinServicesNotModeled',
     'snmpSysName',
@@ -113,6 +115,7 @@ def createConnectionInfo(device_proxy):
     disable_rdns = getattr(device_proxy, 'kerberos_rdns', False)
 
     connect_timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
+    connection_close_time = getattr(device_proxy, 'zWinRMConnectionCloseTime', 60)
 
     timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
 
@@ -136,4 +139,6 @@ def createConnectionInfo(device_proxy):
         code_page=code_page,
         include_dir=include_dir,
         disable_rdns=disable_rdns,
-        connect_timeout=connect_timeout)
+        connect_timeout=connect_timeout,
+        connection_close_time=connection_close_time
+    )

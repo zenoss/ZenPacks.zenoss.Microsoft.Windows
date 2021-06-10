@@ -54,6 +54,25 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zWinRMLongRunningCommandOperationTimeout:
+    label: 'Long Running Command Operation Timeout'
+    type: int
+    default: 310
+    description: 'Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.'
+  zWinRMConnectionCloseTime:
+    label: 'WinRM Connection Close Time'
+    type: int
+    default: 60
+    description: 'Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.'
+  zSQLAlwaysOnEnabled:
+    label: 'SQL Always On enabled'
+    default: false
+    type: boolean
+    description: 'Set to true to enable modeling and monitoring of MS SQL Always On components.'
+  zSQLAlwaysOnReplicaPerfdataNode:
+    label: 'SQL Always On Replica Perfdata node'
+    default: separate
+    description: 'Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"'
   zWinServicesModeled:
     type: lines
   zWinServicesNotModeled:
@@ -67,12 +86,18 @@ class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusterservices) 1:MC (os)ClusterService
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusternetworks) 1:MC (os)ClusterNetwork
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(clusternodes) 1:MC (os)ClusterNode
+  - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winsqlavailabilitygroups) 1:MC (os)WinSQLAvailabilityGroup
   - ClusterService(clusterresources) 1:MC (clusterservice)ClusterResource
   - ClusterNode(clusterdisks) 1:MC (clusternode)ClusterDisk
   - ClusterNode(clusterinterfaces) 1:MC (clusternode)ClusterInterface
   - WinSQLInstance(backups) 1:MC (winsqlinstance)WinSQLBackup
   - WinSQLInstance(databases) 1:MC (winsqlinstance)WinSQLDatabase
   - WinSQLInstance(jobs) 1:MC (winsqlinstance)WinSQLJob
+  - WinSQLInstance(winsqlavailabilitygroups) 1:M (winsqlinstance)WinSQLAvailabilityGroup
+  - WinSQLAvailabilityGroup(winsqlavailabilityreplicas) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityReplica
+  - WinSQLAvailabilityGroup(winsqlavailabilitylisteners) 1:MC (winsqlavailabilitygroup)WinSQLAvailabilityListener
+  - WinSQLInstance(winsqlavailabilityreplicas) 1:M (winsqlinstance)WinSQLAvailabilityReplica
+  - WinSQLAvailabilityReplica(databases) 1:M (winsqlavailabilityreplica)WinSQLDatabase
   - TeamInterface(teaminterfaces) 1:M (teaminterface)Interface
 
 
@@ -147,6 +172,7 @@ classes:
         - all_winsqlinstances
         - all_winrmiis
         - all_harddisks
+        - all_clusterdevices
       impacted_by: []
 
   ClusterDevice:
@@ -171,6 +197,7 @@ classes:
         - all_clusternetworks
         - all_hyperv
         - all_winsqlinstances
+        - all_winsqlavailabilitygroups
         - all_winrmiis
         - all_harddisks
       impacted_by: [all_clusterhosts]
@@ -246,7 +273,7 @@ classes:
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
-      impacted_by: [clusterdisks, clusterinterfaces]
+      impacted_by: [clusterdisks, clusterinterfaces, device]
     relationships:
       DEFAULTS:
         grid_display: false
@@ -550,6 +577,27 @@ classes:
         datapoint: state_state
         datapoint_cached: true
         datapoint_default: -1
+      serviceStatus:
+        label: Service Status
+        grid_display: false
+        enum:
+          -2: other
+          -1: undefined
+          0: ok
+          1: starting
+          2: stopping
+          3: error
+          4: degraded
+          5: unknown
+          6: pred fail
+          7: service
+          8: stressed
+          9: nonrecover
+          10: no contact
+          11: lost comm
+        datapoint: WinServiceStatus_WinServiceStatus
+        datapoint_cached: true
+        datapoint_default: -1
       description:
         label: Description
       usermonitor:
@@ -686,7 +734,27 @@ classes:
         order: 3
       cluster_node_server:
         label: Cluster Node Server
-    monitoring_templates: [WinDatabase]
+      is_availability_database:
+        display: false
+        label: Is Availability Database
+        api_backendtype: method
+        api_only: true
+      db_id:
+        display: false
+        label: Database ID
+      unigue_id:
+        default: n/a
+        label: Always On Unique ID
+      suspended:
+        grid_display: true
+        type: boolean
+        default: false
+        label: Suspended
+      sync_state:
+        grid_display: true
+        default: n/a
+        label: Synchronization State
+    monitoring_templates: [WinDatabase, WinAODatabase]
     dynamicview_views: [service_view]
     dynamicview_relations:
       impacts: []
@@ -719,7 +787,7 @@ classes:
     monitoring_templates: [WinDBInstance]
     dynamicview_views: [service_view]
     dynamicview_relations:
-      impacts: [backups, databases, jobs]
+      impacts: [backups, databases, jobs, winsqlavailabilityreplicas]
       impacted_by: [device]
     relationships:
       DEFAULTS:
@@ -756,3 +824,173 @@ classes:
     dynamicview_relations:
       impacts: []
       impacted_by: [winsqlinstance]
+
+  WinSQLInstanceHostedObject:
+    base: [zenpacklib.OSComponent]
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      cluster_node_server:
+        label: Cluster Node Server
+        api_backendtype: method
+        api_only: true
+      perfmon_instance:
+        label: Perfmon Counter Instance Name
+        api_backendtype: method
+        api_only: true
+      instancename:
+        label: Instance Name
+        api_backendtype: method
+        api_only: true
+      owner_node_ip:
+        label: Owner Node IP
+        api_backendtype: method
+        api_only: true
+
+  WinSQLAvailabilityGroup:
+    label: SQL Availability Group
+    base: [WinSQLInstanceHostedObject]
+    order: 14
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      getState:
+        label: State
+        api_only: true
+        api_backendtype: method
+        grid_display: true
+      unigue_id:
+        label: Unique ID
+      cluster_type:
+        label: Cluster Type
+      synchronization_health:
+        label: Synchronization Health
+        grid_display: true
+      primary_recovery_health:
+        label: Primary Recovery Health
+        grid_display: true
+      health_check_timeout:
+        type: int
+        label: Health Check Timeout
+        grid_display: true
+      automated_backup_preference:
+        label: Automated Backup Preference
+        grid_display: true
+      failure_condition_level:
+        label: Failure condition level
+      quorum_state:
+        label: Quorum State
+        grid_display: true
+      db_level_health_detection:
+        type: boolean
+        label: Database Level Health Detection
+        grid_display: true
+      is_distributed:
+        type: boolean
+        label: Is distributed
+        grid_display: true
+    monitoring_templates: [WinAvailabilityGroup]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: []
+      impacted_by: [device, winsqlavailabilityreplicas, winsqlavailabilitylisteners]
+    relationships:
+      DEFAULTS:
+        grid_display: false
+        details_display: false
+      os: {}
+
+
+  WinSQLAvailabilityGroupHostedObject:
+    base: [zenpacklib.OSComponent]
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      availability_group_name:
+        label: Availability Group Name
+        display: false
+        api_backendtype: method
+        api_only: true
+
+  WinSQLAvailabilityReplica:
+    label: SQL Availability Replica
+    base: [WinSQLInstanceHostedObject, WinSQLAvailabilityGroupHostedObject]
+    order: 15
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      state:
+        label: State
+        grid_display: true
+      unigue_id:
+        label: Unique ID
+      role:
+        label: Role
+        grid_display: true
+      failover_mode:
+        label: Failover Mode
+        grid_display: true
+      operational_state:
+        label: Operational State
+        grid_display: true
+      availability_mode:
+        label: Availability Mode
+        grid_display: true
+      synchronization_health:
+        label: Synchronization Health
+        grid_display: true
+      synchronization_state:
+        label: Synchronization State
+        grid_display: true
+      connection_state:
+        label: Connection State
+        grid_display: true
+      endpoint_url:
+        label: Endpoint Url
+      replica_perfdata_node:
+        label: Replica Perfdata Node
+        display: false
+        api_backendtype: method
+        api_only: true
+    monitoring_templates: [WinAvailabilityReplica]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: [winsqlavailabilitygroup]
+      impacted_by: [winsqlinstance]
+
+  WinSQLAvailabilityListener:
+    label: SQL Availability Listener
+    base: [WinSQLAvailabilityGroupHostedObject]
+    order: 16
+    properties:
+      DEFAULTS:
+        grid_display: false
+        default: None
+      dns_name:
+        label: DNS Name
+        grid_display: true
+      state:
+        label: State
+        grid_display: true
+      unigue_id:
+        label: Unique ID
+      ip_address:
+        label: IP Address
+        grid_display: true
+      tcp_port:
+        label: Port Number
+        grid_display: true
+      network_mode:
+        label: Network Mode
+        enum:
+          0: Static IP
+          1: DHCP
+    monitoring_templates: [WinAvailabilityListener]
+    dynamicview_views: [service_view]
+    dynamicview_relations:
+      impacts: [winsqlavailabilitygroup]
+      impacted_by: []

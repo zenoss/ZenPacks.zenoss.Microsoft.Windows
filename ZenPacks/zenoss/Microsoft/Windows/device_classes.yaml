@@ -2143,7 +2143,673 @@ device_classes:
             component: ${here/id}
             datapoints:
               state: GAUGE
+          WinServiceStatus:
+            type: 'Built-In'
+            component: ${here/id}
+            datapoints:
+              WinServiceStatus: GAUGE
+      WinAvailabilityGroup:
+        description: Microsoft SQL Server per-availability group monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityGroup
+        datasources:
+          AvailabilityGroupState:
+            type: Windows Shell
+            strategy: powershell MSSQL AO AG
+            component: ${here/id}
+            resource: AvailabilityGroupState
+            cycletime: '300'
+            datapoints:
+              IsOnline:
+                rrdtype: GAUGE
+                rrdmin: 0
+                rrdmax: 1
+                description: Used to monitor the availability of the Availability Group.
+              NumberOfDisconnectedReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_disc_rpl__count: null}
+              NumberOfNotSynchronizedReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_n_synced_rpl__count: null}
+              NumberOfNotSynchronizingReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_n_syncing_rpl__count: null}
+              NumberOfReplicasWithUnhealthyRole:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_unh_role_rpl__count: null}
+              NumberOfSynchronizedSecondaryReplicas:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {ag_state_sync_secd_rpl__count: null}
+        graphs:
+          State Indicators:
+            units: replicas
+            miny: 0
+            graphpoints:
+              Disconnected:
+                dpName: AvailabilityGroupState_NumberOfDisconnectedReplicas
+                format: '%7.0lf'
+                color: 'CC0000' # Red
+              Not Synchronized:
+                dpName: AvailabilityGroupState_NumberOfNotSynchronizedReplicas
+                format: '%7.0lf'
+                color: '990033' # Dark red
+              Not Synchronizing:
+                dpName: AvailabilityGroupState_NumberOfNotSynchronizingReplicas
+                format: '%7.0lf'
+                color: 'FFCC66' # Light orange
+              With Unhealthy Role:
+                dpName: AvailabilityGroupState_NumberOfReplicasWithUnhealthyRole
+                format: '%7.0lf'
+                color: 'FF9933' # Orange
+              Synchronized Secondary:
+                dpName: AvailabilityGroupState_NumberOfSynchronizedSecondaryReplicas
+                format: '%7.0lf'
+                color: '006633' # Green
+      WinAvailabilityReplica:
+        description: Microsoft SQL Server per-availability replica monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica
+        datasources:
+          AvailabilityReplicaState:
+            type: Windows Shell
+            strategy: powershell MSSQL AO AR
+            component: ${here/id}
+            resource: AvailabilityReplicaState
+            cycletime: '300'
+          BytesReceivedFromReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesReceivedFromReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_rec_fr_repl__bytessec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Received from Replica/sec
+          BytesSentToReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesSentToReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_snt_to_repl__bytessec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Replica/sec
+          BytesSentToTransport:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              BytesSentToTransport:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {bytes_snt_to_trnsp__bytessec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Bytes Sent to Transport/sec
+          FlowControlTime:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              FlowControlTime:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {flow_control_time__msecs: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control Time (ms/sec)
+          FlowControl:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              FlowControl:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {flow_control__persec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Flow Control/sec
+          ReceivesFromReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              ReceivesFromReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {receive_from_replica__persec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Receives from Replica/sec
+          ResentMessages:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              ResentMessages:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {resent_messages__persec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Resent Messages/sec
+          SendsToReplica:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SendsToReplica:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sends_to_replica__persec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Replica/sec
+          SendsToTransport:
+            type: Windows Perfmon
+            component: ${here/id}
+            datapoints:
+              SendsToTransport:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {sends_to_transport__persec: null}
+            counter: \${here/perfmon_instance}:Availability Replica(${here/availability_group_name}:${here/name})\Sends to Transport/sec
+        graphs:
+          Inter-Replicas Communication (bytes):
+            units: bytes/sec
+            miny: 0
+            graphpoints:
+              Received from Replica:
+                dpName: BytesReceivedFromReplica_BytesReceivedFromReplica
+                format: '%7.2lf'
+              Sent to Replica:
+                dpName: BytesSentToReplica_BytesSentToReplica
+                format: '%7.2lf'
+              Sent to Transport:
+                dpName: BytesSentToTransport_BytesSentToTransport
+                format: '%7.2lf'
+          Inter-Replicas Communication (messages):
+            units: messages/sec
+            miny: 0
+            graphpoints:
+              Receives from Replica:
+                dpName: ReceivesFromReplica_ReceivesFromReplica
+                format: '%7.2lf'
+              Sends to Replica:
+                dpName: SendsToReplica_SendsToReplica
+                format: '%7.2lf'
+              Resent Messages:
+                dpName: ResentMessages_ResentMessages
+                format: '%7.2lf'
+              Sends to Transport:
+                dpName: SendsToTransport_SendsToTransport
+                format: '%7.2lf'
+          Flow Control Time:
+            units: milliseconds
+            miny: 0
+            graphpoints:
+              Flow Control Time:
+                dpName: FlowControlTime_FlowControlTime
+                format: '%7.2lf'
+          Flow Control:
+            units: times
+            miny: 0
+            graphpoints:
+              Flow Control Frequency:
+                dpName: FlowControl_FlowControl
+                format: '%7.0lf'
+      WinAvailabilityListener:
+        description: Microsoft SQL Server Availability Group Listener monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener
+        datasources:
+          AvailabilityListenerState:
+            type: Windows Shell
+            strategy: powershell AO AL
+            component: ${here/id}
+            resource: AvailabilityListenerState
+            cycletime: '300'
+      WinAODatabase:
+        description: Microsoft SQL Server per-Always On database monitoring.
+        targetPythonClass: ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase
+        datasources:
+          LogFileSize:
+            type: Windows Shell
+            datapoints:
+              LogFileSize:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {logsize__kbytes: null}
+            cycletime: '300'
+            resource: Log File(s) Size (KB)
+            strategy: powershell MSSQL AO ADB
+          LogCacheReadsSec:
+            type: Windows Shell
+            datapoints:
+              LogCacheReadsSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+            cycletime: '300'
+            resource: Log Cache Reads/sec
+            strategy: powershell MSSQL AO ADB
+          CacheHitRatio:
+            type: Windows Shell
+            datapoints:
+              CacheHitRatio:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {cachehitratio__pct: null}
+            cycletime: '300'
+            resource: Cache Hit Ratio
+            strategy: powershell MSSQL AO ADB
+          LogCacheHitRatio:
+            type: Windows Shell
+            datapoints:
+              LogCacheHitRatio:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logcachehitratio__pct: null}
+            cycletime: '300'
+            resource: Log Cache Hit Ratio
+            strategy: powershell MSSQL AO ADB
+          CacheEntriesCount:
+            type: Windows Shell
+            datapoints:
+              CacheEntriesCount:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {cacheentries: null}
+            cycletime: '300'
+            resource: Cache Entries Count
+            strategy: powershell MSSQL AO ADB
+          CacheHitRatioBase:
+            type: Windows Shell
+            datapoints:
+              CacheHitRatioBase:
+                rrdtype: DERIVE
+                rrdmin: 0
+            cycletime: '300'
+            resource: Cache Hit Ratio Base
+            strategy: powershell MSSQL AO ADB
+          DBCCLogicalScanBytesSec:
+            type: Windows Shell
+            datapoints:
+              DBCCLogicalScanBytesSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {dbcclogicalscanbytes__sec: null}
+            cycletime: '300'
+            resource: DBCC Logical Scan Bytes/sec
+            strategy: powershell MSSQL AO ADB
+          LogFlushWaitsSec:
+            type: Windows Shell
+            datapoints:
+              LogFlushWaitsSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+            cycletime: '300'
+            resource: Log Flush Waits/sec
+            strategy: powershell MSSQL AO ADB
+          ShrinkDataMovementBytesSec:
+            type: Windows Shell
+            datapoints:
+              ShrinkDataMovementBytesSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {shrinkdatamovementbytes__sec: null}
+            cycletime: '300'
+            resource: Shrink Data Movement Bytes/sec
+            strategy: powershell MSSQL AO ADB
+          PercentLogUsed:
+            type: Windows Shell
+            datapoints:
+              PercentLogUsed:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {logused__pct: null}
+            cycletime: '300'
+            resource: Percent Log Used
+            strategy: powershell MSSQL AO ADB
+          BulkCopyRowsSec:
+            type: Windows Shell
+            datapoints:
+              BulkCopyRowsSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {bulkcopyrows__sec: null}
+            cycletime: '300'
+            resource: Bulk Copy Rows/sec
+            strategy: powershell MSSQL AO ADB
+          LogFileUsedSize:
+            type: Windows Shell
+            datapoints:
+              LogFileUsedSize:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {logsizeused__kbytes: null}
+            cycletime: '300'
+            resource: Log File(s) Used Size (KB)
+            strategy: powershell MSSQL AO ADB
+          LogGrowths:
+            type: Windows Shell
+            datapoints:
+              LogGrowths:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {loggrowths__sec: null}
+            cycletime: '300'
+            resource: Log Growths
+            strategy: powershell MSSQL AO ADB
+          LogTruncations:
+            type: Windows Shell
+            datapoints:
+              LogTruncations:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logtruncations__sec: null}
+            cycletime: '300'
+            resource: Log Truncations
+            strategy: powershell MSSQL AO ADB
+          LogFlushWaitTime:
+            type: Windows Shell
+            datapoints:
+              LogFlushWaitTime:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {logflushwaittime__sec: null}
+            cycletime: '300'
+            resource: Log Flush Wait Time
+            strategy: powershell MSSQL AO ADB
+          LogShrinks:
+            type: Windows Shell
+            datapoints:
+              LogShrinks:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logshrinks__sec: null}
+            cycletime: '300'
+            resource: Log Shrinks
+            strategy: powershell MSSQL AO ADB
+          BulkCopyThroughputSec:
+            type: Windows Shell
+            datapoints:
+              BulkCopyThroughputSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {bulkcopythroughput__sec: null}
+            cycletime: '300'
+            resource: Bulk Copy Throughput/sec
+            strategy: powershell MSSQL AO ADB
+          LogBytesFlushedSec:
+            type: Windows Shell
+            datapoints:
+              LogBytesFlushedSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logbytesflushed__sec: null}
+            cycletime: '300'
+            resource: Log Bytes Flushed/sec
+            strategy: powershell MSSQL AO ADB
+          LogFlushesSec:
+            type: Windows Shell
+            datapoints:
+              LogFlushesSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logflushes__sec: null}
+            cycletime: '300'
+            resource: Log Flushes/sec
+            strategy: powershell MSSQL AO ADB
+          ReplPendingXacts:
+            type: Windows Shell
+            datapoints:
+              ReplPendingXacts:
+                rrdtype: GAUGE
+                rrdmin: 0
+            cycletime: '300'
+            resource: Repl. Pending Xacts
+            strategy: powershell MSSQL AO ADB
+          TransactionsSec:
+            type: Windows Shell
+            datapoints:
+              TransactionsSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {transactions__sec: null}
+            cycletime: '300'
+            resource: Transactions/sec
+            strategy: powershell MSSQL AO ADB
+          CacheEntriesPinnedCount:
+            type: Windows Shell
+            datapoints:
+              CacheEntriesPinnedCount:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {cacheentriespinned: null}
+            cycletime: '300'
+            resource: Cache Entries Pinned Count
+            strategy: powershell MSSQL AO ADB
+          ActiveTransactions:
+            type: Windows Shell
+            datapoints:
+              ActiveTransactions:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {activetransactions: null}
+            cycletime: '300'
+            resource: Active Transactions
+            strategy: powershell MSSQL AO ADB
+          BackupRestoreThroughputSec:
+            type: Windows Shell
+            datapoints:
+              BackupRestoreThroughputSec:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {backuprestorethroughput__sec: null}
+            cycletime: '300'
+            resource: Backup/Restore Throughput/sec
+            strategy: powershell MSSQL AO ADB
+          DataFileSize:
+            type: Windows Shell
+            datapoints:
+              DataFileSize:
+                rrdtype: GAUGE
+                rrdmin: 0
+                aliases: {filesize__kbytes: null}
+            cycletime: '300'
+            resource: Data File(s) Size (KB)
+            strategy: powershell MSSQL AO ADB
+          ReplTransRate:
+            type: Windows Shell
+            datapoints:
+              ReplTransRate:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {repltransactions__sec: null}
+            cycletime: '300'
+            resource: Repl. Trans. Rate
+            strategy: powershell MSSQL AO ADB
+          LogCacheHitRatioBase:
+            type: Windows Shell
+            datapoints:
+              LogCacheHitRatioBase:
+                rrdtype: DERIVE
+                rrdmin: 0
+                aliases: {logcachehitratiobase__pct: null}
+            cycletime: '300'
+            resource: Log Cache Hit Ratio Base
+            strategy: powershell MSSQL AO ADB
+          status:
+            type: Windows Shell
+            eventClass: /Status
+            datapoints:
+              status:
+                rrdtype: GAUGE
+                rrdmin: 0
+            cycletime: '300'
+            resource: '' # Empty for avoiding possible issues
+            # resource: status  # TODO: whether this is still needed for status?
+            strategy: powershell MSSQL AO ADB
 
+        graphs:
+          Transactions:
+            units: transactions
+            miny: 0
+            graphpoints:
+              Active:
+                dpName: ActiveTransactions_ActiveTransactions
+                format: '%7.0lf'
+          Transaction Rates:
+            units: transactions/sec
+            miny: 0
+            graphpoints:
+              Normal:
+                dpName: TransactionsSec_TransactionsSec
+                format: '%7.2lf%s'
+              Replication:
+                dpName: ReplTransRate_ReplTransRate
+                format: '%7.2lf%s'
+          Cache Entries:
+            units: entries
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: CacheEntriesCount_CacheEntriesCount
+                format: '%7.2lf%s'
+              Pinned:
+                dpName: CacheEntriesPinnedCount_CacheEntriesPinnedCount
+                format: '%7.2lf%s'
+          Cache Hit Ratio:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Base:
+                dpName: CacheHitRatioBase_CacheHitRatioBase
+                lineType: DONTDRAW
+              Hit:
+                dpName: CacheHitRatio_CacheHitRatio
+                format: '%7.2lf%%'
+                rpn: Base,/,100,*,0,MAX,100,MIN
+                color: 00cc00
+          Data File Size:
+            units: bytes
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: DataFileSize_DataFileSize
+                format: '%7.2lf%s'
+                rpn: 1024,*
+          Log File Utilization:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Used:
+                dpName: PercentLogUsed_PercentLogUsed
+                format: '%7.2lf%%'
+          Log File Usage:
+            units: bytes
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: LogFileSize_LogFileSize
+                format: '%7.2lf%s'
+                rpn: 1024,*
+                color: '000000'
+              Used:
+                dpName: LogFileUsedSize_LogFileUsedSize
+                lineType: AREA
+                format: '%7.2lf%s'
+                rpn: 1024,*
+                color: 00cc00
+          Log Operation Rates:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Growths:
+                dpName: LogGrowths_LogGrowths
+                format: '%7.2lf%s'
+              Shrinks:
+                dpName: LogShrinks_LogShrinks
+                format: '%7.2lf%s'
+              Truncations:
+                dpName: LogTruncations_LogTruncations
+                format: '%7.2lf%s'
+          Log Flush Latency:
+            units: seconds
+            miny: 0
+            graphpoints:
+              Wait Time:
+                dpName: LogFlushWaitTime_LogFlushWaitTime
+                format: '%7.2lf%s'
+                rpn: 1000,/
+          Log Flush Rates:
+            units: per/sec
+            miny: 0
+            graphpoints:
+              Flushes:
+                dpName: LogFlushesSec_LogFlushesSec
+                format: '%7.2lf%s'
+              Waits:
+                dpName: LogFlushWaitsSec_LogFlushWaitsSec
+                format: '%7.2lf%s'
+          Log Flush Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: LogBytesFlushedSec_LogBytesFlushedSec
+                format: '%7.2lf%s'
+          Log Cache Hit Ratio:
+            units: percent
+            miny: 0
+            maxy: 100
+            graphpoints:
+              Base:
+                dpName: LogCacheHitRatioBase_LogCacheHitRatioBase
+                lineType: DONTDRAW
+              Hit:
+                dpName: LogCacheHitRatio_LogCacheHitRatio
+                format: '%7.2lf%%'
+                rpn: Base,/,100,*,0,MAX,100,MIN
+                color: 00cc00
+          Log Cache Throughput:
+            units: operations/sec
+            miny: 0
+            graphpoints:
+              Reads:
+                dpName: LogCacheReadsSec_LogCacheReadsSec
+                format: '%7.2lf%s'
+          Bulk Copy Rates:
+            units: per/sec
+            miny: 0
+            graphpoints:
+              Rows:
+                dpName: BulkCopyRowsSec_BulkCopyRowsSec
+                format: '%7.2lf%s'
+          Bulk Copy Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Bytes:
+                dpName: BulkCopyThroughputSec_BulkCopyThroughputSec
+                format: '%7.2lf%s'
+          Replication:
+            units: transactions
+            miny: 0
+            graphpoints:
+              Pending:
+                dpName: ReplPendingXacts_ReplPendingXacts
+                format: '%7.2lf%s'
+          Backup and Restore Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Total:
+                dpName: BackupRestoreThroughputSec_BackupRestoreThroughputSec
+                format: '%7.2lf%s'
+          Database Console Commands (DBCC) Throughput:
+            units: bytes/sec
+            base: true
+            miny: 0
+            graphpoints:
+              Logical Scan:
+                dpName: DBCCLogicalScanBytesSec_DBCCLogicalScanBytesSec
+                format: '%7.2lf%s'
+              Shrink Data:
+                dpName: ShrinkDataMovementBytesSec_ShrinkDataMovementBytesSec
+                format: '%7.2lf%s'
 
       Active Directory:
         description: Microsoft Active Directory
