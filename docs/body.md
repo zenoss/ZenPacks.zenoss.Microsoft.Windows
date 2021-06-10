@@ -1844,8 +1844,8 @@ winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 ```
 
 If you see `'HTTP status: 500. Unexpected Response syntax error: line 1, column 0 (--Encrypted Boundary Content-Type...'` events 
-or `'WARNING zen.MicrosoftWindows: receive failure on <device-id>>: syntax error: line 1, column 0'` messages in zenpython logs,
-the value of zWinRMConnectionCloseTime property can be increased.
+or `'WARNING zen.MicrosoftWindows: receive failure on <device-id>>: syntax error: line 1, column 0'` messages in zenpython logs
+or there is a gradual downfall of available RAM, the value of zWinRMConnectionCloseTime property can be increased.
 
 ### Troubleshooting Perfmon Collection
 
@@ -2027,6 +2027,7 @@ Changes
 -   Fix wincommand notification fails because of Kerberos settings not getting passed to zenactiond container (ZPS-5978)
 -   Fix Windows ZP: zenpython krb5.conf is sometimes missing `rdns = false` despite zWinRMKrb5DisableRDNS = True (ZPS-6326)
 -   Fix zWinRMDisableRDNS not correctly handled in zenactiond (ZPS-5995)
+-   Tested with Zenoss Cloud, Zenoss 6.6.0, Zenoss 6.5.0, Analytics and Service Impact 5.5.3
 
 2.9.5
 
