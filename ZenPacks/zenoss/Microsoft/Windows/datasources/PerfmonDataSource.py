@@ -236,13 +236,11 @@ class ComplexLongRunningCommand(object):
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
-
         commands = []
         if num_commands == 0:
             return commands
-        try:
-            conn_info = createConnectionInfo(self.dsconf)
-        except UnauthorizedError as e:
+
+        def sendConnError(e):
             error = "{0}: Windows Perfmon connection info is not available"\
                     " for {0}. Error: {1}".format(self.dsconf.device, e)
             LOG.error(error)
@@ -253,6 +251,14 @@ class ComplexLongRunningCommand(object):
                 'severity': ZenEventClasses.Warning,
                 'summary': 'Windows Perfmon connection info is not available',
                 'message': error})
+
+        try:
+            conn_info = createConnectionInfo(self.dsconf)
+            if not conn_info:
+                sendConnError("No Connection Object")
+                return commands
+        except UnauthorizedError as e:
+            sendConnError(e)
         else:
             # Availability Replica performance counters are placed on other nodes unlike other counters.
             # Need to pick up right Windows node for this type of counters.
