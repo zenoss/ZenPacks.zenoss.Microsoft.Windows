@@ -107,17 +107,22 @@ def createConnectionInfo(device_proxy):
     if hasattr(device_proxy, 'zWinUseWsmanSPN') and device_proxy.zWinUseWsmanSPN:
         service = 'wsman'
 
-    envelope_size = getattr(device_proxy, 'zWinRMEnvelopeSize', 512000)
-    locale = getattr(device_proxy, 'zWinRMLocale', 'en-US')
-    code_page = getattr(device_proxy, 'zWinRSCodePage', 65001)
+    def getWinAttr(device, name, default):
+        value = getattr(device, name, default) if device else default
+        # If property exists on object but not defined, return default instead
+        return value if value != None else default
 
-    include_dir = getattr(device_proxy, 'zWinRMKrb5includedir', None)
-    disable_rdns = getattr(device_proxy, 'kerberos_rdns', False)
+    envelope_size = getWinAttr(device_proxy, 'zWinRMEnvelopeSize', 512000)
+    locale = getWinAttr(device_proxy, 'zWinRMLocale', 'en-US')
+    code_page = getWinAttr(device_proxy, 'zWinRSCodePage', 65001)
 
-    connect_timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
-    connection_close_time = getattr(device_proxy, 'zWinRMConnectionCloseTime', 60)
+    include_dir = getWinAttr(device_proxy, 'zWinRMKrb5includedir', None)
+    disable_rdns = getWinAttr(device_proxy, 'kerberos_rdns', False)
 
-    timeout = getattr(device_proxy, 'zWinRMConnectTimeout', 60)
+    connect_timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    connection_close_time = getWinAttr(device_proxy, 'zWinRMConnectionCloseTime', 60)
+
+    timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
 
     return ConnectionInfo(
         hostname=hostname,
