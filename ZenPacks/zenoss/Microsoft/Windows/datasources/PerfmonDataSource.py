@@ -42,7 +42,7 @@ from ZenPacks.zenoss.PythonCollector.datasources.PythonDataSource import (
     PythonDataSourcePlugin,
 )
 
-from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo
+from ..txwinrm_utils import ConnectionInfoProperties, createConnectionInfo, modify_connection_info
 from ..utils import append_event_datasource_plugin, errorMsgCheck, generateClearAuthEvents
 
 from ..txcoroutine import coroutine
@@ -254,31 +254,11 @@ class ComplexLongRunningCommand(object):
                 'summary': 'Windows Perfmon connection info is not available',
                 'message': error})
         else:
-            # Availability Replica performance counters are placed on other nodes unlike other counters.
-            # Need to pick up right Windows node for this type of counters.
-            replica_perfdata_node = getattr(self.dsconf, 'replica_perfdata_node', None)
-            replica_perfdata_node_ip = self.dsconf.params['replica_perfdata_node_ip']
-            if replica_perfdata_node and replica_perfdata_node_ip:
-                conn_info = conn_info._replace(hostname=replica_perfdata_node)
-                conn_info = conn_info._replace(ipaddress=replica_perfdata_node_ip)
-            # allow for collection from sql clusters where active sql instance
-            # could be running on different node from current host server
-            # ex. sol-win03.solutions-wincluster.loc//SQL1 for MSSQLSERVER
-            # sol-win03.solutions-wincluster.loc//SQL3\TESTINSTANCE1
-            #       for TESTINSTANCE1
-            # standalone ex.
-            #       //SQLHOSTNAME for MSSQLSERVER
-            #       //SQLTEST\TESTINSTANCE1 for TESTINSTANCE1
-            elif getattr(self.dsconf, 'cluster_node_server', None) and\
-                    self.dsconf.params['owner_node_ip']:
-                owner_node, server =\
-                    self.dsconf.cluster_node_server.split('//')
-                if owner_node:
-                    conn_info = conn_info._replace(hostname=owner_node)
-                    conn_info = conn_info._replace(
-                        ipaddress=self.dsconf.params['owner_node_ip'])
-            # Use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
-            conn_info = conn_info._replace(timeout=self.dsconf.zWinRMLongRunningCommandOperationTimeout)
+            # Some components, like Failover SQL Instances and MS SQL Availability Replicas may be placed not
+            # on particular this device (node), but at another. So need to change connection info accordingly.
+            # Also use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+            additional_fields_to_replace = {'timeout': self.dsconf.zWinRMLongRunningCommandOperationTimeout}
+            conn_info = modify_connection_info(conn_info, self.dsconf, additional_fields_to_replace)
             for _ in xrange(num_commands):
                 try:
                     commands.append(LongCommandClient(conn_info))
@@ -296,7 +276,10 @@ class ComplexLongRunningCommand(object):
         """
         deferreds = []
         if self.num_commands != len(command_lines):
+            LOG.debug("Num commands differs for id %s", self.unique_id)
             self.commands = self._create_commands(len(command_lines))
+        else:
+            LOG.debug("Num commands stay the same for id %s", self.unique_id)
 
         for command, command_line in zip(self.commands, command_lines):
             LOG.debug('{}: Starting Perfmon collection script: {}'.format(
@@ -313,6 +296,7 @@ class ComplexLongRunningCommand(object):
         """Stop all started commands."""
         for command in self.commands:
             shell_cmd = self.get_id(command)
+            LOG.debug("Stopping Complex Long Running Command for shell cmd {}".format(shell_cmd))
             yield command.stop(shell_cmd)
             if shell_cmd:
                 self._shells.pop(command)
@@ -473,6 +457,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         Called each collection interval.
         """
+        LOG.debug('Running collect method for id %s and commandline %s', self.unique_id, self.commandlines)
         self.check_for_update(config)
         self._start_counter += 1
         if self.num_commands == 0:
@@ -512,10 +497,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
     def check_for_update(self, config):
         new_conn_info = createConnectionInfo(config.datasources[0])
+
+        # Change connection info according to datasource config
+        # Use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+        additional_fields_to_replace = {'timeout': config.datasources[0].zWinRMLongRunningCommandOperationTimeout}
+        new_conn_info = modify_connection_info(new_conn_info, config.datasources[0], additional_fields_to_replace)
+
         old_conn_info = None
         if self.complex_command and self.complex_command.commands:
             old_conn_info = self.complex_command.commands[0]._conn_info
         if old_conn_info and old_conn_info != new_conn_info:
+            LOG.debug('Re-init config for {} due to changes.'.format(self.unique_id))
             self.__init__(config)
 
     @coroutine
@@ -527,7 +519,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self._start_counter = 0
         shells = []
 
-        LOG.debug("Windows Perfmon starting Get-Counter on %s", self.config.id)
+        LOG.debug("Windows Perfmon starting Get-Counter (PluginStates %s) on %s with id %s and commandline %s",
+                  self.state, self.config.id, self.unique_id, self.commandlines)
         self.state = PluginStates.STARTING
 
         try:
@@ -571,7 +564,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                         'ipAddress': self.config.manageIp})
 
         if self.state != PluginStates.STARTED:
+            LOG.debug("Windows Perfmon is not STARTED in start method for id %s", self.unique_id)
+            yield self.complex_command.stop()
             self.state = PluginStates.STOPPED
+            defer.returnValue(None)
         else:
             PERSISTER.add_event(self.unique_id, self.config.datasources, {
                 'device': self.config.id,
@@ -614,7 +610,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 yield add_timeout(
                     self.data_deferred,
                     self.config.datasources[0].zWinRMLongRunningCommandOperationTimeout)
-            except Exception:
+            except Exception as e:
+                LOG.debug("Exception during waiting for %s Get-Counter data: %s", self.config.id, e)
                 pass
         else:
             self._wait_for_data = True
@@ -626,13 +623,19 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Stop the continuous command."""
         if self.state != PluginStates.STARTED:
             LOG.debug(
-                "Windows Perfmon skipping Get-Counter stop on %s while it's %s",
+                "Windows Perfmon skipping Get-Counter stop on %s while it's %s with id %s and commandline %s",
                 self.config.id,
-                self.state)
+                self.state,
+                self.unique_id,
+                self.commandlines
+            )
 
             defer.returnValue(None)
 
-        LOG.debug("stopping Get-Counter on %s", self.config.id)
+        LOG.debug("stopping Get-Counter on %s with id %s and commandline %s",
+                  self.config.id,
+                  self.unique_id,
+                  self.commandlines)
 
         self.state = PluginStates.STOPPING
 
@@ -668,8 +671,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
                     LOG.log(
                         log_level,
-                        "Windows Perfmon failed to stop Get-Counter on %s: %s",
-                        self.config.id, ex)
+                        "Windows Perfmon failed to stop Get-Counter on %s: %s with id %s",
+                        self.config.id, ex, self.unique_id)
 
         self.state = PluginStates.STOPPED
 
@@ -678,12 +681,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     @coroutine
     def restart(self):
         """Stop then start the long-running command."""
+        LOG.debug("Performing restart for id {}".format(self.unique_id))
         yield self.stop()
         yield self.start()
         defer.returnValue(None)
 
     def receive(self):
         """Receive results from continuous command."""
+        if self.state != PluginStates.STARTED:
+            return
         deferreds = []
         for cmd in self.complex_command.commands:
             if cmd is not None:
@@ -749,7 +755,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
-        LOG.debug("Get-Counter results: {} {}".format(self.config.id, result))
+        LOG.debug("Get-Counter results for id {}: {} {}".format(self.unique_id, self.config.id, result))
         collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
@@ -810,21 +816,25 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         # Log error message and wait for the data.
         if failures and not results:
+            LOG.debug('Calling onReceiveFail for {}'.format(self.unique_id))
             # No need to call onReceiveFail for each command in DeferredList.
             yield self.onReceiveFail(failures[0])
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
+            LOG.debug('Continuing to receive for {}'.format(self.unique_id))
             self.receive()
             self.retry_count = 0
 
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
+            LOG.debug('Checking missing counters for {}'.format(self.unique_id))
             try:
                 yield add_timeout(
                     self.remove_corrupt_counters(),
                     self.config.datasources[0].zWinRMConnectTimeout)
-            except Exception:
+            except Exception as e:
+                LOG.debug('Fail to remove corrupted counters for id {}. Exception {}'.format(self.unique_id, e))
                 pass
             if self.ps_counter_map.keys():
                 yield self.restart()
@@ -836,7 +846,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             self.retry_count = 0
             if self.cycling:
-                LOG.debug('{}: Windows Perfmon Result: {}'.format(self.config.id, result))
+                LOG.debug('{}: Windows Perfmon Result for {}: {}'.format(self.config.id, self.unique_id, result))
                 yield self.restart()
 
         generateClearAuthEvents(self.config, PERSISTER.get_events(self.unique_id))
@@ -1006,6 +1016,8 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 result = yield add_timeout(winrs.run_command(ps_command, ps_script(counter_slice)),
                                            self.config.datasources[0].zWinRMConnectTimeout + 5)
                 if result.stderr:
+                    LOG.debug('Received error checking for corrupt counters for %s: %s', self.unique_id,
+                              result.stderr)
                     yield self.search_corrupt_counters(
                         winrs, counter_slice, corrupt_list)
 
@@ -1016,7 +1028,12 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Remove counters which return an error."""
         LOG.debug('{}: Performing check for corrupt counters'.format(self.config.id))
         dsconf0 = self.config.datasources[0]
-        winrs = SingleCommandClient(createConnectionInfo(dsconf0))
+        conn_info = createConnectionInfo(dsconf0)
+        # Some components, like Failover SQL Instances and MS SQL Availability Replicas may be placed not on particular
+        # this device (node), but at another. So need to change connection info accordingly.
+        conn_info = modify_connection_info(conn_info, dsconf0)
+
+        winrs = SingleCommandClient(conn_info)
 
         counter_list = sorted(
             set(self.ps_counter_map.keys()) - set(CORRUPT_COUNTERS[dsconf0.device]))
