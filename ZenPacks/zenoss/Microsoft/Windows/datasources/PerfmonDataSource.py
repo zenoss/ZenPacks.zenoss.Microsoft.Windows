@@ -296,7 +296,7 @@ class ComplexLongRunningCommand(object):
         """Stop all started commands."""
         for command in self.commands:
             shell_cmd = self.get_id(command)
-            LOG.debug("Stopping Complex Long Running Command for shell cmd {}".format(shell_cmd))
+            LOG.debug("Stopping Complex Long Running Command for shell cmd %s", shell_cmd)
             yield command.stop(shell_cmd)
             if shell_cmd:
                 self._shells.pop(command)
@@ -507,7 +507,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         if self.complex_command and self.complex_command.commands:
             old_conn_info = self.complex_command.commands[0]._conn_info
         if old_conn_info and old_conn_info != new_conn_info:
-            LOG.debug('Re-init config for {} due to changes.'.format(self.unique_id))
+            LOG.debug('Re-init config for %s due to changes.', self.unique_id)
             self.__init__(config)
 
     @coroutine
@@ -681,7 +681,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     @coroutine
     def restart(self):
         """Stop then start the long-running command."""
-        LOG.debug("Performing restart for id {}".format(self.unique_id))
+        LOG.debug("Performing restart for id %s", self.unique_id)
         yield self.stop()
         yield self.start()
         defer.returnValue(None)
@@ -755,7 +755,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         """Group the result of all commands into a single result."""
         failures, results = self._parse_deferred_result(result)
 
-        LOG.debug("Get-Counter results for id {}: {} {}".format(self.unique_id, self.config.id, result))
+        LOG.debug("Get-Counter results for id %s: %s %s", self.unique_id, self.config.id, result)
         collect_time = int(time.time())
 
         # Initialize sample buffer. Start of a new sample.
@@ -816,25 +816,25 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
 
         # Log error message and wait for the data.
         if failures and not results:
-            LOG.debug('Calling onReceiveFail for {}'.format(self.unique_id))
+            LOG.debug('Calling onReceiveFail for %s', self.unique_id)
             # No need to call onReceiveFail for each command in DeferredList.
             yield self.onReceiveFail(failures[0])
 
         # Continue to receive if MaxSamples value has not been reached yet.
         elif self.collected_samples < self.max_samples and results:
-            LOG.debug('Continuing to receive for {}'.format(self.unique_id))
+            LOG.debug('Continuing to receive for %s', self.unique_id)
             self.receive()
             self.retry_count = 0
 
         # In case ZEN-12676/ZEN-11912 are valid issues.
         elif not results and not failures and self.cycling:
-            LOG.debug('Checking missing counters for {}'.format(self.unique_id))
+            LOG.debug('Checking missing counters for %s', self.unique_id)
             try:
                 yield add_timeout(
                     self.remove_corrupt_counters(),
                     self.config.datasources[0].zWinRMConnectTimeout)
             except Exception as e:
-                LOG.debug('Fail to remove corrupted counters for id {}. Exception {}'.format(self.unique_id, e))
+                LOG.debug('Fail to remove corrupted counters for id %s. Exception %s', self.unique_id, e)
                 pass
             if self.ps_counter_map.keys():
                 yield self.restart()
@@ -846,7 +846,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         else:
             self.retry_count = 0
             if self.cycling:
-                LOG.debug('{}: Windows Perfmon Result for {}: {}'.format(self.config.id, self.unique_id, result))
+                LOG.debug('%s: Windows Perfmon Result for %s: %s', self.config.id, self.unique_id, result)
                 yield self.restart()
 
         generateClearAuthEvents(self.config, PERSISTER.get_events(self.unique_id))
