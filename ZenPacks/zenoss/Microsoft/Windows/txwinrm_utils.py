@@ -142,3 +142,42 @@ def createConnectionInfo(device_proxy):
         connect_timeout=connect_timeout,
         connection_close_time=connection_close_time
     )
+
+
+def modify_connection_info(connection_info, datasource_config, data_to_reset=None):
+
+    if not isinstance(connection_info, ConnectionInfo):
+        log.debug('Provided Connection info %s is not with proper type %s, cant modify',
+                  connection_info,
+                  type(connection_info))
+        return connection_info
+
+    # Availability Replica performance counters are placed on other nodes unlike other counters.
+    # Need to pick up right Windows node for this type of counters.
+    replica_perfdata_node = getattr(datasource_config, 'replica_perfdata_node', None)
+    replica_perfdata_node_ip = datasource_config.params['replica_perfdata_node_ip']
+    if replica_perfdata_node and replica_perfdata_node_ip:
+        connection_info = connection_info._replace(hostname=replica_perfdata_node)
+        connection_info = connection_info._replace(ipaddress=replica_perfdata_node_ip)
+    # allow for collection from sql clusters where active sql instance
+    # could be running on different node from current host server
+    # ex. sol-win03.solutions-wincluster.loc//SQL1 for MSSQLSERVER
+    # sol-win03.solutions-wincluster.loc//SQL3\TESTINSTANCE1
+    #       for TESTINSTANCE1
+    # standalone ex.
+    #       //SQLHOSTNAME for MSSQLSERVER
+    #       //SQLTEST\TESTINSTANCE1 for TESTINSTANCE1
+    elif getattr(datasource_config, 'cluster_node_server', None) and \
+            datasource_config.params['owner_node_ip']:
+        owner_node, server = \
+            datasource_config.cluster_node_server.split('//')
+        if owner_node:
+            connection_info = connection_info._replace(hostname=owner_node)
+            connection_info = connection_info._replace(
+                ipaddress=datasource_config.params['owner_node_ip'])
+
+    # Set fields which were provided additionally
+    if isinstance(data_to_reset, dict):
+        connection_info = connection_info._replace(**data_to_reset)
+
+    return connection_info
