@@ -2009,6 +2009,11 @@ Monitoring Templates
 Changes
 -------
 
+3.0.1
+
+-   Fix numerous WinRM connections spawn (ZPS-7726)
+-   Document a new case for zWinRMEnvelopeSize property (ZPS-7787)
+
 3.0.0
 
 -   Add MS SQL Always On Availability Groups (ZPS-7363)
