@@ -1412,6 +1412,11 @@ the max, then a value of 50 should be adequate. The default is 5, which
 will cause problems because Zenoss will open up concurrent requests 
 for a set of Perfmon counters and any other shell based datasource.
 
+Note: Starting from Windows ZenPack v.3.0.0 some monitoring operation were split 
+into separate collection tasks. Hence, the number of WinRM shells may be increased.
+It may need to increase the MaxShellsPerUser to meet the new requirements.
+This is especially applicable for large environments.
+
 Note: If you choose to use Basic authentication it is highly
 recommended that you also configure HTTPS. If you do not use the HTTPS
 protocol your user name and password will be sent over in clear text. If
@@ -1846,6 +1851,9 @@ winrm set winrm/config/service '@{MaxConcurrentOperationsPerUser="4294967295"}'
 If you see `'HTTP status: 500. Unexpected Response syntax error: line 1, column 0 (--Encrypted Boundary Content-Type...'` events 
 or `'WARNING zen.MicrosoftWindows: receive failure on <device-id>>: syntax error: line 1, column 0'` messages in zenpython logs
 or there is a gradual downfall of available RAM, the value of zWinRMConnectionCloseTime property can be increased.
+
+If you see `'HTTP status: 500. The WS-Management service cannot process the request. The maximum number of concurrent shells for this user has been exceeded...'` messages in zenpython logs,
+MaxShellsPerUser should be increased in WinRM configuration.
 
 ### Troubleshooting Perfmon Collection
 
