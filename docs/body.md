@@ -2021,6 +2021,7 @@ Changes
 
 -   Fix numerous WinRM connections spawn (ZPS-7726)
 -   Document a new case for zWinRMEnvelopeSize property (ZPS-7787)
+-   Tested with Zenoss Cloud, Zenoss 6.6.0, Zenoss 6.5.0 and Service Impact 5.5.3
 
 3.0.0
 
