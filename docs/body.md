@@ -1203,8 +1203,8 @@ important.
         setting for MaxEnvelopeSizekb exceeds the default of 512k. Some WMI
         queries return large amounts of data and this envelope size may need to
         be enlarged. A possible symptom of this is seeing an xml parsing error
-        during collection or "Check WMI namespace and DCOM permission" returned
-        from the OperatingSystem modeler plugin.
+        during collection, OperatingSystem modeler plugin timeout or
+        "Check WMI namespace and DCOM permission" returned from it.
 
 -   zWinRMLocale
     :   The locale to use for communicating with a Windows
@@ -1411,6 +1411,11 @@ MaxConcurrentOperationsPerUser. If you do not want to set this value to
 the max, then a value of 50 should be adequate. The default is 5, which 
 will cause problems because Zenoss will open up concurrent requests 
 for a set of Perfmon counters and any other shell based datasource.
+
+Note: Starting from Windows ZenPack v.3.0.0 some monitoring operation were split 
+into separate collection tasks. Hence, the number of WinRM shells may be increased.
+It may need to increase the MaxShellsPerUser to meet the new requirements.
+This is especially applicable for large environments.
 
 Note: If you choose to use Basic authentication it is highly
 recommended that you also configure HTTPS. If you do not use the HTTPS
@@ -1847,6 +1852,9 @@ If you see `'HTTP status: 500. Unexpected Response syntax error: line 1, column 
 or `'WARNING zen.MicrosoftWindows: receive failure on <device-id>>: syntax error: line 1, column 0'` messages in zenpython logs
 or there is a gradual downfall of available RAM, the value of zWinRMConnectionCloseTime property can be increased.
 
+If you see `'HTTP status: 500. The WS-Management service cannot process the request. The maximum number of concurrent shells for this user has been exceeded...'` messages in zenpython logs,
+MaxShellsPerUser should be increased in WinRM configuration.
+
 ### Troubleshooting Perfmon Collection
 
 If you see errors containing text similar to "The term 'New-Object' is not
@@ -2008,6 +2016,12 @@ Monitoring Templates
 
 Changes
 -------
+
+3.0.1
+
+-   Fix numerous WinRM connections spawn (ZPS-7726)
+-   Document a new case for zWinRMEnvelopeSize property (ZPS-7787)
+-   Tested with Zenoss Cloud, Zenoss 6.6.0, Zenoss 6.5.0 and Service Impact 5.5.3
 
 3.0.0
 
