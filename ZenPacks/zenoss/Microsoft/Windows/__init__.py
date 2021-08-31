@@ -149,7 +149,7 @@ class ZenPack(schema.ZenPack):
                                                                          'description': 'Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.',
                                                                          'label': 'Long Running Command Operation Timeout'},
                             'zWinRMConnectionCloseTime': {'type': 'int',
-                                                          'default': 60,
+                                                          'default': 360,
                                                           'description': 'Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.',
                                                           'label': 'WinRM Connection Close Time'},
                             'zSQLAlwaysOnEnabled': {'type': 'boolean',
