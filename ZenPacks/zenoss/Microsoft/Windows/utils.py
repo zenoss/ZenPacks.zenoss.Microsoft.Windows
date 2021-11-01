@@ -18,6 +18,7 @@ import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -1512,3 +1513,33 @@ def get_datetime_string_from_timestamp(timestamp, fmt='%Y/%m/%d %H:%M:%S'):
     if tmstmp > 0:
         result = datetime.fromtimestamp(tmstmp).strftime(fmt)
     return result
+
+
+def get_db_monitored(db_status, ignored_db_statuses):
+    """
+    Define whether Database in statuses, which shouldn't be monitored.
+    :return: Boolean
+    """
+    if db_status:
+        status_name = DB_STATUSES.get(int(db_status)).lower()
+        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
+            return False
+    return True
+
+
+def get_db_om(datasource_config, data):
+    """
+    Fill ObjectMaps for Database.
+    """
+    db_om = ObjectMap()
+    db_om.id = datasource_config.params['instanceid']
+    db_om.title = datasource_config.params['contexttitle']
+    db_om.compname = datasource_config.params['contextcompname']
+    db_om.modname = datasource_config.params['contextmodname']
+    db_om.relname = datasource_config.params['contextrelname']
+
+    for key, value in data.iteritems():
+        if key == 'status':
+            is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
+            setattr(db_om, 'monitor', is_monitored)
+    return db_om
