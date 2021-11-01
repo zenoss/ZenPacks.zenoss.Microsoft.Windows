@@ -77,6 +77,8 @@ zProperties:
     type: lines
   zWinServicesNotModeled:
     type: lines
+  zWinDBStateMonitoringIgnore:
+    type: lines
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
