@@ -68,11 +68,12 @@ RESULTS = dict(clear='Error parsing zDBInstances',
                    recoverymodel='Simple',
                    systemobject='False',
                    title='db0',
-                   version='706'))]
+                   version='706',
+                   is_database_snapshot='False'))]
                )
 
 STDOUT_LINES = [
-    "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple",
+    "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple \tIsDataBaseSnapshot--- False",
     "Name--- rtc_rtc\tDeviceType--- Disk \tPhysicalLocation--- c:\\Backup\\rtc.bak \tStatus---Existing",
     "job_jobname--- syspolicy_purge_history job_enabled--- True job_jobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 job_description--- No description available. job_datecreated--- 6/2/2017 6:13:28 PM job_username--- sa",
     "job_jobname--- job_enabled--- job_jobid--- job_description--- job_datecreated--- job_username--- ",
@@ -356,6 +357,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].systemobject, 'False')
         self.assertEquals(data[4].maps[0].title, 'db0')
         self.assertEquals(data[4].maps[0].version, '706')
+        self.assertEquals(data[4].maps[0].is_database_snapshot, 'False')
 
         # Always On components are disabled by default, so there must be empty object map
         self.assertEquals(data[5].maps, [])
@@ -371,6 +373,7 @@ class TestProcesses(BaseTestCase):
     def test_oms(self):
         self.plugin.log = Mock()
         db_om = self.plugin.get_db_om(StringAttributeObject(),
+                                      self.device,
                                       "instance",
                                       "owner_node",
                                       "sqlserver",
@@ -388,6 +391,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(db_om.primaryfilepath, 'C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA')
         self.assertEquals(db_om.recoverymodel, 'Simple')
         self.assertEquals(db_om.systemobject, 'True')
+        self.assertEquals(db_om.is_database_snapshot, False)
         self.assertEquals(db_om.version, '782')
         self.assertEquals(db_om.title, 'master')
         backup_om = self.plugin.get_backup_om(StringAttributeObject(),
@@ -677,6 +681,7 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(adb0_om.title, u'test_alwayson_db_3')
         self.assertEquals(adb0_om.unigue_id, u'85dc383a-bf7b-4ab7-8cea-cc52919bdb36')
         self.assertEquals(adb0_om.version, 852)
+        self.assertEquals(adb0_om.is_database_snapshot, False)
 
     def test_get_ao_oms(self):
         """
@@ -727,7 +732,7 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.plugin.log = Mock()
         collect_ao_results = ALWAYS_ON_COLLECT_RESULTS
 
-        ao_oms = self.plugin.get_ao_oms(collect_ao_results,
+        ao_oms = self.plugin.get_ao_oms(self.device, collect_ao_results,
                                         Mock())
         self.assertIsInstance(ao_oms, dict)
 
