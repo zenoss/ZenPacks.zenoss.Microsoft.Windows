@@ -352,6 +352,7 @@ class SQLCommander(object):
         "   $adb_inf['lastlogbackupdate'] = (New-TimeSpan -Start $epoch -End $db.LastLogBackupDate).TotalSeconds;"
         "   $adb_inf['systemobject'] = $db.IsSystemObject;"
         "   $adb_inf['recoverymodel'] = $db.DatabaseOptions.RecoveryModel;"
+        "   $adb_inf['is_database_snapshot'] = $db.IsDatabaseSnapshot;"
         "   $adbs.Add($adb_inf) > $null;"
         "  }"
         # Availability Group Listeners
@@ -454,7 +455,8 @@ class WinMSSQL(WinRMPlugin):
     deviceProperties = WinRMPlugin.deviceProperties + (
         'zDBInstances',
         'getDeviceClassName',
-        'zSQLAlwaysOnEnabled'
+        'zSQLAlwaysOnEnabled',
+        'zWinDBSnapshotIgnore'
     )
 
     @staticmethod
@@ -1160,7 +1162,8 @@ class WinMSSQL(WinRMPlugin):
                                     '\"`tPrimaryFilePath---\" $_.PrimaryFilePath,'
                                     '\"`tLastLogBackupDate---\" $_.LastLogBackupDate,'
                                     '\"`tSystemObject---\" $_.IsSystemObject,'
-                                    '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel'
+                                    '\"`tRecoveryModel---\" $_.DatabaseOptions.RecoveryModel,'
+                                    '\"`tIsDataBaseSnapshot---\" $_.IsDatabaseSnapshot'
                                     '};')
 
             # Get SQL Backup Jobs information
@@ -1233,7 +1236,8 @@ class WinMSSQL(WinRMPlugin):
                 for stdout_line in stdout[db_index + 1:backup_index]:
                     if stdout_line == 'assembly load error':
                         break
-                    om_database = self.get_db_om(om_instance,
+                    om_database = self.get_db_om(device,
+                                                 om_instance,
                                                  instance,
                                                  owner_node,
                                                  sqlserver,
@@ -1282,7 +1286,7 @@ class WinMSSQL(WinRMPlugin):
 
         defer.returnValue(maps)
 
-    def get_db_om(self, om_instance, instance, owner_node, sqlserver, stdout_line):
+    def get_db_om(self, device, om_instance, instance, owner_node, sqlserver, stdout_line):
         dbobj = stdout_line
         db = dbobj.split('\t')
         dbdict = {}
@@ -1305,6 +1309,14 @@ class WinMSSQL(WinRMPlugin):
            and (dbdict['lastbackupdate'][:8] != '1/1/0001'):
             lastbackupdate = dbdict['lastbackupdate']
 
+        if dbdict.get('isdatabasesnapshot', False) == u'True':
+            is_database_snapshot = True
+        else:
+            is_database_snapshot = False
+        snapshot_ignore_status = getattr(device, 'zWinDBSnapshotIgnore', False)
+        if is_database_snapshot and snapshot_ignore_status:
+            return None
+
         om_database = None
         if ('id' in dbdict):
             om_database = ObjectMap()
@@ -1324,6 +1336,7 @@ class WinMSSQL(WinRMPlugin):
                 owner_node, sqlserver)
             om_database.systemobject = dbdict['systemobject']
             om_database.recoverymodel = dbdict['recoverymodel']
+            om_database.is_database_snapshot = is_database_snapshot
         return om_database
 
     def get_backup_om(self, om_instance, instance, stdout_line):
@@ -1438,7 +1451,7 @@ class WinMSSQL(WinRMPlugin):
 
         return sql_instance_oms
 
-    def get_ao_oms(self, results, log):
+    def get_ao_oms(self, device, results, log):
 
         ag_relname = 'winsqlavailabilitygroups'
         ag_compname = 'os'
@@ -1572,7 +1585,9 @@ class WinMSSQL(WinRMPlugin):
                 log.warn('Empty owner SQL instance for Availability Database {}. Skipping.'.format(adb_info.get('name'),
                                                                                                    adb_index))
                 continue
-
+            if adb_info.get('is_database_snapshot', False) and getattr(device, 'zWinDBSnapshotIgnore', False):
+                log.info('The database {0} is a Snapshot. Skipping.'.format(adb_info.get('name')))
+                continue
             # add owner SQL Instance related data to databases info dict
             adb_info['adb_owner_id'] = adb_owner_id
             adb_info['sql_hostname_fqdn'] = sql_instances[adb_owner_id].get('sql_hostname_fqdn')
@@ -1683,7 +1698,7 @@ class WinMSSQL(WinRMPlugin):
                 objmaps=dbs))
 
         # Always On components Object maps
-        ao_oms = self.get_ao_oms(results, log)
+        ao_oms = self.get_ao_oms(device, results, log)
         ao_oms = ao_oms.get('oms', [])
         log.debug('Always On components Object maps: {}'.format(ao_oms))
         for map_category in ao_oms:
