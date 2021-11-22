@@ -174,7 +174,7 @@ SQL Instances
 
 SQL Databases
 :   **Attributes:** Name, Owner, Database Status, Synchronization State, Suspended,
-    Cluster Node Server, Last Backup, System Object, Recovery Model, Created On, Always On Unique ID,
+    Cluster Node Server, Last Backup, System Object, Recovery Model, Created On, Always On Unique ID, Database Snapshot
     File Group, Version, Collation, File Path, Last Log Backup, Accessible
 :   **Relationships:** SQL Instance, SQL Availability Group Replica
 
@@ -1098,7 +1098,7 @@ The [Adding a Windows Device](adding-a-windows-device) steps shown above are for
 case of using Windows local authentication. The following configuration
 properties can be used to support monitoring other environments.
 
--   zWinRMUser
+- zWinRMUser
     :   The syntax used for zWinRMUser controls whether Zenoss
 will attempt Windows local authentication or domain (kerberos)
 authentication. If the value of zWinRMUser is *username*, local
@@ -1107,29 +1107,29 @@ Windows authentication will be used. If zWinRMUser is
 zWinKDC and potentially the zWinRMServerName properties become
 important.
 
--   zWinRMPassword
+- zWinRMPassword
     :   Password for user defined by *zWinRMUser*.
 
--   zWinKDC
+- zWinKDC
     :   The zWinKDC property must be set if domain authentication is
         used. It must be the IP address or resolvable name of a valid Windows
         domain controller. To use multiple KDCs, you can enter a comma separated
         list of valid addresses or supply different KDCs across different Device
         Classes. See the Kerberos Tickets section for more information.
 
--   zWinTrustedRealm
+- zWinTrustedRealm
     :   Enter the name of the domain which is trusted by the
         user's domain. This can be a child or other domain which has a trust
         relationship with the user's domain. For example, if zWinRMUser is
         *username@example.com*, and austin.example.com is a child of the
         example domain, enter *austin.example.com* into zWinTrustedRealm.
 
--   zWinTrustedKDC
+- zWinTrustedKDC
     :   This property must be set if zWinTrustedRealm is set.
         It must be the IP address or resolvable name of a valid Windows domain
         controller for the trusted realm.
 
--   zWinRMServerName
+- zWinRMServerName
     :   This property should only be used in conjunction
         with domain authentication when the DNS PTR record for a monitored
         server's managed IP address does not resolve to the name by which the
@@ -1157,11 +1157,11 @@ important.
         kerberos database" errors. See the troubleshooting section on this topic
         for a solution.
 
--   zWinScheme
+- zWinScheme
     :   This must be set to either *http* or *https*. The
         default is *http*.
 
--   zWinUseWsmanSPN
+- zWinUseWsmanSPN
     :   If the HTTP/HTTPS service principals are exclusively
         in use for a particular service account, such as on an IIS server, set
         this option to true to use the WSMAN service principal name. You can use
@@ -1172,22 +1172,22 @@ important.
         principal name” permission for the NETWORK SERVICE account in order for
         the WSMAN service principal name to be used.
 
--   zWinRMPort
+- zWinRMPort
     :   The port on which the Windows server is listening for
         *WinRM* or *WS-Management* connections. The default is *5985*. It
         is uncommon for this to be configured as anything else.
 
--   zWinPerfmonInterval
+- zWinPerfmonInterval
     :   The default interval in seconds at which
         *Windows Perfmon* datapoints will be collected. The default is *300*
         seconds or 5 minutes. It is also possible to override the collection
         interval for individual counters.
 
--   zWinKeyTabFilePath
+- zWinKeyTabFilePath
     :   This property is currently used and reserved for
         future use when keytab files are supported.
 
--   zDBInstances
+- zDBInstances
     :   This setting is only relevant when the
         *zenoss.winrm.WinMSSQL* modeler plugin is enabled. Multiple instances
         can be specified to monitor multiple SQL Server instances per server
@@ -1198,7 +1198,7 @@ important.
         specified.  Microsoft recommends using Windows authentication to
         connect to SQL Server.
 
--   zWinRMEnvelopeSize
+- zWinRMEnvelopeSize
     :   This property is used when the winrm configuration
         setting for MaxEnvelopeSizekb exceeds the default of 512k. Some WMI
         queries return large amounts of data and this envelope size may need to
@@ -1206,12 +1206,12 @@ important.
         during collection, OperatingSystem modeler plugin timeout or
         "Check WMI namespace and DCOM permission" returned from it.
 
--   zWinRMLocale
+- zWinRMLocale
     :   The locale to use for communicating with a Windows
         server. The default is *en-US*. This property is reserved for future
         use.
 
--   zWinRSCodePage
+- zWinRSCodePage
     :   The code page which is in use on the Windows Server
         for the monitoring user account. The default is to use 65001, the
         identifier for unicode. The full list is here:
@@ -1219,7 +1219,7 @@ important.
         To determine the code page in use on a Windows server, run
         `chcp` at a command prompt.
 
--   zWinRMKrb5includedir
+- zWinRMKrb5includedir
     :   Optional directory which contains one or more
         kerberos configuration files. This is useful when extra kerberos options
         are needed, such as disabling reverse dns lookup. See
@@ -1229,39 +1229,46 @@ important.
         the directory contains non-kerberos configuration files, it will be
         ignored.
 
--   zWinRMDisableRDNS
+- zWinRMDisableRDNS
     :   Kerberos always performs a reverse lookup when obtaining a ticket to use the HTTP/HTTPS/WSMAN service principal.  If there are multiple names by which servers are known in your organization, or if you do not want to use reverse lookups, set this value to True.  Because this is a kerberos property, it can only be set one way or another.  You cannot mix and match this value and only the top level value at /Server/Microsoft will be honored.
 
--   zWinRMClusterNodeClass
+- zWinRMClusterNodeClass
     :   Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
 
--   zWinRMKRBErrorThreshold
+- zWinRMKRBErrorThreshold
     :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
 
--   zWindowsRemodelEventClassKeys
+- zWindowsRemodelEventClassKeys
     :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
 
--   zWinRMConnectTimeout
+- zWinRMConnectTimeout
     :   Used to define the time out for establishing a winrm connection.  If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
 
--   zWinServicesModeled
+- zWinServicesModeled
     :   List of regular expressions for services to model.
         If zWinServicesNotModeled is set, we will skip services from it first.
 
--   zWinServicesNotModeled
+- zWinServicesNotModeled
     :   List of regular expressions for services to ignore during modeling process.
 
--   zSQLAlwaysOnEnabled
+- zSQLAlwaysOnEnabled
     :   Set to true to enable modeling and monitoring of MS SQL Always On components.
 
--   zSQLAlwaysOnReplicaPerfdataNode
+- zSQLAlwaysOnReplicaPerfdataNode
     :   Availability Replicas performance data location windows node. Possible values: "local", "separate". Default: "separate"
 
--   zWinRMLongRunningCommandOperationTimeout
+- zWinRMLongRunningCommandOperationTimeout
     :   Operation timeout for Powershell long running command. Default value is slightly greater than zWinPerfmonInterval to allow each step of long running command to finish.
 
--   zWinRMConnectionCloseTime
+- zWinRMConnectionCloseTime
     :   Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.
+
+- zWinDBStateMonitoringIgnore
+    :   MS SQL Database monitoring ignored statuses. Add database statuses in which monitoring request will not be performed for MS SQL Databases.
+
+- zWinDBSnapshotIgnore
+    :   MS SQL Database Snapshots modeling disabled. Set to true to disable modeling and monitoring of MS SQL Database snapshots.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1958,7 +1965,8 @@ Configuration Properties
 :   zSQLAlwaysOnReplicaPerfdataNode
 :   zWinRMLongRunningCommandOperationTimeout
 :   zWinRMConnectionCloseTime
-
+:   zWinDBStateMonitoringIgnore
+:   zWinDBSnapshotIgnore
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -2016,6 +2024,11 @@ Monitoring Templates
 
 Changes
 -------
+
+3.0.2
+
+-   Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
+-   Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
 
 3.0.1
 
