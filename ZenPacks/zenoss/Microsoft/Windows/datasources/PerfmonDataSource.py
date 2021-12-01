@@ -320,6 +320,9 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
     collected_samples = None
     counter_map = None
 
+    ps_lang_mod_msg = "Received \"Cannot create type. Only core types are supported"\
+                      " in ConstrainedLanguage mode.\" Ensure that PowerShell is running in FullLanguage mode "
+
     ps_mod_path_msg = "Received \"The term 'New-Object' is not recognized as the name of a cmdlet,"\
                       " function, script file, or operable program.\"  Validate the default"\
                       " system PSModulePath environment variable."
@@ -486,7 +489,7 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
             evt_summaries = [x.get('summary', '') for x in data['events']]
         except Exception:
             evt_summaries = []
-        if self.ps_mod_path_msg in evt_summaries:
+        if self.ps_lang_mod_msg in evt_summaries or self.ps_mod_path_msg in evt_summaries:
             # don't clear powershell event
             # remove clear event
             for evt in data['events']:
@@ -738,6 +741,15 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                             'severity': ZenEventClasses.Warning,
                             'summary': self.ps_mod_path_msg,
                             'ipAddress': self.config.manageIp})
+                    if 'CannotCreateTypeConstrainedLanguage' in ps_error:
+                        failures.append(Failure(PowerShellError(500, message=ps_error)))
+                        PERSISTER.add_event(self.unique_id, self.config.datasources, {
+                            'device': self.config.id,
+                            'eventClass': '/Status/Winrm',
+                            'eventKey': 'WindowsPerfmonCollection',
+                            'severity': ZenEventClasses.Critical,
+                            'summary': self.ps_lang_mod_msg,
+                            'ipAddress': self.config.manageIp})
 
                 # Leave sample start marker in first command result
                 # to properly report missing counters.
@@ -889,6 +901,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                 logging.DEBUG,
                 "Ignoring powershell error on {} as it does not affect collection: {}"
                 .format(self.config.id, e))
+        elif 'CannotCreateTypeConstrainedLanguage' in e.message:
+            retry, level, msg = (
+                False,
+                logging.FATAL,
+                'Invalid Windows PowerShell language mode: ConstrainedLanguage. '
+                'Please, switch to FullLanguage mode in PowerShell!'
+            )
         elif '500' in e.message:
             if 'decrypt' in e.message:
                 retry, level, msg = (
