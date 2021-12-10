@@ -1063,13 +1063,36 @@ authentication in the Zenoss web interface.
 
 1.  Navigate to the Infrastructure page.
 2.  Select the Server/Microsoft/Windows device class.
-    -   The Windows server must be added to this class or to a child of this class.
+    -   The Windows server **must** be added to this class or to a child of this class.
 3.  Click Details and set the configuration properties for zWinRMUser and zWinRMPassword.
 4.  Click See All.
 5.  Choose *Add Single Device* from the add device button.
 6.  Fill out the form.
     -   *Name or IP* must be resolvable and accessible from the collector server chosen in the *Collector* field.
 7.  Click *ADD*.
+
+Note: Do not add the WinCluster plugin to the */Server/Microsoft/Windows* device class.
+The */Server/Microsoft/Windows* device class uses a python class that is different from the python class
+used in the */Server/Microsoft/Cluster* device class, and they have different relationships.
+
+### Adding a Cluster Device
+
+Use the following steps to start monitoring a Windows server using local
+authentication in the Zenoss web interface.
+
+1. Navigate to the Infrastructure page.
+2. Select the Server/Microsoft/Cluster device class.
+    -   The Windows server **must** be added to this class or to a child of this class.
+3. Click Details and set the configuration properties for zWinRMUser and zWinRMPassword.
+4. Click See All.
+5. Choose *Add Single Device* from the add device button.
+6. Fill out the form.
+    -   *Name or IP* must be resolvable and accessible from the collector server chosen in the *Collector* field.
+7. Click *ADD*.
+
+Note: The cluster nodes will automatically be added to */Server/Microsoft/Windows* class path.
+Once modeled, any cluster nodes associated with the cluster are added to device class */Server/Microsoft/Windows*.
+The **only** three valid modeler plugins for device class */Server/Microsoft/Cluster* are WinCluster, OperatingSystem, and WinMSSQL.
 
 ------------------------------------------------------------------------
 
@@ -1326,6 +1349,10 @@ Use the following steps to model/monitor SQL Server instances:
     is to be used. 
 3.  Enable *zenoss.winrm.WinMSSQL* modeler plugin. 
 4.  Remodel device.
+
+Note: When monitoring MSSQL Enterprise edition using Fail Over mode the WinMSSQL modeler plugin should **only** be on the cluster hostname.
+For Single Server mode the WinMSSQL modeler plugin is installed on the physical node running MSSQL.
+It is not possible to monitor a Fail Over mode from a single host in **/Server/Microsoft/Windows**.
 
 ##### SQL Server Monitoring
 
