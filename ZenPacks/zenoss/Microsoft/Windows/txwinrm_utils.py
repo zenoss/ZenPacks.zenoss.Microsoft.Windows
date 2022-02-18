@@ -74,8 +74,6 @@ def createConnectionInfo(device_proxy):
     if not hostname:
         raise UnauthorizedError("Attempted Windows connection to non-Windows device")
 
-    hostname = getProxyValue(['windows_servername', 'zWinRMServerName', 'manageIp'])
-
     username = getProxyValue(['windows_user', 'zWinRMUser', 'zWinUser'])
     if not username:
         raise UnauthorizedError(
