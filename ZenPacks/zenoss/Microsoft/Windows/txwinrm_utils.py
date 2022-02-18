@@ -85,7 +85,7 @@ def createConnectionInfo(device_proxy):
     if re.match(r'[a-zA-Z0-9][a-zA-Z0-9.]{0,14}\\[^"/\\\[\]:;|=,+*?<>]{1,104}', username):
         raise UnauthorizedError("zWinRMUser must be user@example.com, not DOMAIN\User")
 
-    password = getProxyValue('windows_password', 'zWinRMPassword')
+    password = getProxyValue(['windows_password', 'zWinRMPassword'])
     if not password:
         raise UnauthorizedError("zWinRMPassword or zWinPassword must be configured")
 
@@ -154,7 +154,7 @@ def createConnectionInfo(device_proxy):
         include_dir=include_dir,
         disable_rdns=disable_rdns,
         connect_timeout=connect_timeout,
-        connection_close_time=connection_close_time
+        connection_close_time=connection_close_time,
     )
 
 
