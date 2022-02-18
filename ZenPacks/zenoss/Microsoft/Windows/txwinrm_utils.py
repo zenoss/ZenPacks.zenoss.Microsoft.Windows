@@ -46,6 +46,9 @@ ConnectionInfoProperties = (
     'zWinServicesModeled',
     'zWinServicesNotModeled',
     'snmpSysName',
+    'zWinRMUser',
+    'zWinRMPassword',
+    'zWinRMServerName',
 )
 
 
@@ -56,88 +59,94 @@ def createConnectionInfo(device_proxy):
     found to be invalid.
 
     """
-    if not hasattr(device_proxy, 'windows_servername'):
-        raise UnauthorizedError(
-            "attempted Windows connection to non-Windows device")
+    def getProxyValue(props):
+        if not isinstance(props, list):
+            props = [props]
+        for p in props:
+            if hasattr(device_proxy, p):
+                attr = getattr(device_proxy, p)
+                val = attr() if callable(attr) else attr
+                if val:
+                    return val
+        return ""
 
-    hostname = device_proxy.windows_servername or device_proxy.manageIp
+    hostname = getProxyValue(['windows_servername', 'zWinRMServerName', 'manageIp'])
+    if not hostname:
+        raise UnauthorizedError("Attempted Windows connection to non-Windows device")
 
-    username = device_proxy.windows_user
+    hostname = getProxyValue(['windows_servername', 'zWinRMServerName', 'manageIp'])
+
+    username = getProxyValue(['windows_user', 'zWinRMUser', 'zWinUser'])
     if not username:
-        raise UnauthorizedError("zWinRMUser or zWinUser must be configured")
+        raise UnauthorizedError(
+            "Cannot connect to Windows with an unknown user, zWinRMUser or zWinUser must be configured")
 
     # Warn about old-style usernames of the DOMAIN\User format.
-    pattern = r'[a-zA-Z0-9][a-zA-Z0-9.]{0,14}\\[^"/\\\[\]:;|=,+*?<>]{1,104}'
-    if re.match(pattern, username):
-        raise UnauthorizedError(
-            "zWinRMUser must be user@example.com, not DOMAIN\User")
+    if re.match(r'[a-zA-Z0-9][a-zA-Z0-9.]{0,14}\\[^"/\\\[\]:;|=,+*?<>]{1,104}', username):
+        raise UnauthorizedError("zWinRMUser must be user@example.com, not DOMAIN\User")
 
-    password = device_proxy.windows_password
+    password = getProxyValue('windows_password', 'zWinRMPassword')
     if not password:
-        raise UnauthorizedError(
-            "zWinRMPassword or zWinPassword must be configured")
+        raise UnauthorizedError("zWinRMPassword or zWinPassword must be configured")
 
+    winKDC = getProxyValue(['zWinKDC', 'zWinTrustedKDC'])
     auth_type = 'kerberos' if '@' in username else 'basic'
-    if auth_type == 'kerberos' and not device_proxy.zWinKDC:
-        raise UnauthorizedError(
-            "zWinKDC must be configured for domain authentication")
+    if auth_type == 'kerberos' and not winKDC:
+        raise UnauthorizedError("zWinKDC must be configured for domain authentication")
 
-    scheme = device_proxy.zWinScheme.lower()
+    scheme = getProxyValue('zWinScheme')
+    scheme = scheme if hasattr(scheme, 'lower') else ''
     if scheme not in ('http', 'https'):
-        raise UnauthorizedError(
-            "zWinScheme must be either 'http' or 'https'")
+        raise UnauthorizedError("zWinScheme must be either 'http' or 'https'")
 
-    ok_ports = (5986, 443)
-    if int(device_proxy.zWinRMPort) not in ok_ports and scheme == 'https':
+    try:
+        port = int(getProxyValue('zWinRMPort'))
+        if port not in (5986, 443) and scheme == 'https':
+            raise Exception()
+        if port not in (5985, 80) and scheme == 'http':
+            raise Exception()
+    except Exception:
         raise UnauthorizedError("zWinRMPort must be 5986 or 443 if zWinScheme is https")
 
-    ok_ports = (5985, 80)
-    if int(device_proxy.zWinRMPort) not in ok_ports and scheme == 'http':
-        raise UnauthorizedError("zWinRMPort must be 5985 or 80 if zWinScheme is http")
+    trusted_realm = getProxyValue('zWinTrustedRealm')
+    trusted_kdc = getProxyValue('zWinTrustedKDC')
+    if trusted_realm and not trusted_kdc or not trusted_realm and trusted_kdc:
+        log.debug('zWinTrustedKDC and zWinTrustedRealm must both be populated in order to add a trusted realm.')
 
-    trusted_realm = trusted_kdc = ''
-    if hasattr(device_proxy, 'zWinTrustedRealm') and hasattr(device_proxy, 'zWinTrustedKDC'):
-        trusted_realm = device_proxy.zWinTrustedRealm
-        trusted_kdc = device_proxy.zWinTrustedKDC
-        if device_proxy.zWinTrustedRealm and not device_proxy.zWinTrustedKDC or\
-           not device_proxy.zWinTrustedRealm and device_proxy.zWinTrustedKDC:
-            log.debug('zWinTrustedKDC and zWinTrustedRealm must both be populated in order to add a trusted realm.')
+    useSPN = getProxyValue('zWinUseWsmanSPN')
+    service = 'wsman' if useSPN else scheme
 
-    service = scheme
-    if hasattr(device_proxy, 'zWinUseWsmanSPN') and device_proxy.zWinUseWsmanSPN:
-        service = 'wsman'
+    keyTab = getProxyValue('zWinKeyTabFilePath')
+    manageIp = getProxyValue('manageIp')
 
     def getWinAttr(device, name, default):
         value = getattr(device, name, default) if device else default
         # If property exists on object but not defined, return default instead
         return value if value != None else default
 
-    envelope_size = getWinAttr(device_proxy, 'zWinRMEnvelopeSize', 512000)
-    locale = getWinAttr(device_proxy, 'zWinRMLocale', 'en-US')
-    code_page = getWinAttr(device_proxy, 'zWinRSCodePage', 65001)
-
-    include_dir = getWinAttr(device_proxy, 'zWinRMKrb5includedir', None)
-    disable_rdns = getWinAttr(device_proxy, 'kerberos_rdns', False)
-
-    connect_timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    envelope_size         = getWinAttr(device_proxy, 'zWinRMEnvelopeSize', 512000)
+    locale                = getWinAttr(device_proxy, 'zWinRMLocale', 'en-US')
+    code_page             = getWinAttr(device_proxy, 'zWinRSCodePage', 65001)
+    include_dir           = getWinAttr(device_proxy, 'zWinRMKrb5includedir', None)
+    disable_rdns          = getWinAttr(device_proxy, 'kerberos_rdns', False)
+    connect_timeout       = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
     connection_close_time = getWinAttr(device_proxy, 'zWinRMConnectionCloseTime', 60)
-
-    timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    timeout               = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
 
     return ConnectionInfo(
         hostname=hostname,
         auth_type=auth_type,
         username=username,
         password=password,
-        scheme=device_proxy.zWinScheme,
-        port=int(device_proxy.zWinRMPort),
+        scheme=scheme,
+        port=port,
         connectiontype='Keep-Alive',
-        keytab=device_proxy.zWinKeyTabFilePath,
-        dcip=device_proxy.zWinKDC,
+        keytab=keyTab,
+        dcip=winKDC,
         timeout=timeout,
         trusted_realm=trusted_realm,
         trusted_kdc=trusted_kdc,
-        ipaddress=device_proxy.manageIp,
+        ipaddress=manageIp,
         service=service,
         envelope_size=envelope_size,
         locale=locale,
