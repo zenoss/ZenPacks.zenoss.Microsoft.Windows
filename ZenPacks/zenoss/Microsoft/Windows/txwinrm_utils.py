@@ -14,8 +14,7 @@ from .utils import addLocalLibPath
 addLocalLibPath()
 
 # Requires that addLocalLibPath be called above.
-from txwinrm.collect import ConnectionInfo
-from txwinrm.util import UnauthorizedError
+from txwinrm.util import ConnectionInfo, UnauthorizedError
 
 log = logging.getLogger("zen.MicrosoftWindows")
 
