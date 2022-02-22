@@ -85,7 +85,7 @@ def createConnectionInfo(device_proxy):
 
     password = getProxyValue(['windows_password', 'zWinRMPassword'])
     if not password:
-        raise UnauthorizedError("zWinRMPassword or zWinPassword must be configured")
+        raise UnauthorizedError("zWinRMPassword must be configured")
 
     winKDC = getProxyValue(['zWinKDC', 'zWinTrustedKDC'])
     auth_type = 'kerberos' if '@' in username else 'basic'
@@ -93,7 +93,7 @@ def createConnectionInfo(device_proxy):
         raise UnauthorizedError("zWinKDC must be configured for domain authentication")
 
     scheme = getProxyValue('zWinScheme')
-    scheme = scheme if hasattr(scheme, 'lower') else ''
+    scheme = scheme.lower() if scheme else ''
     if scheme not in ('http', 'https'):
         raise UnauthorizedError("zWinScheme must be either 'http' or 'https'")
 
@@ -104,7 +104,7 @@ def createConnectionInfo(device_proxy):
         if port not in (5985, 80) and scheme == 'http':
             raise Exception()
     except Exception:
-        raise UnauthorizedError("zWinRMPort must be 5986 or 443 if zWinScheme is https")
+        raise UnauthorizedError("zWinRMPort must be 5986 or 443 if zWinScheme is https, or 5985 or 80 for http.")
 
     trusted_realm = getProxyValue('zWinTrustedRealm')
     trusted_kdc = getProxyValue('zWinTrustedKDC')
