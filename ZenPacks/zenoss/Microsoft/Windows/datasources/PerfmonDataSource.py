@@ -263,6 +263,9 @@ class ComplexLongRunningCommand(object):
             # Some components, like Failover SQL Instances and MS SQL Availability Replicas may be placed not
             # on particular this device (node), but at another. So need to change connection info accordingly.
             # Also use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+            if not self.dsconf.zWinRMLongRunningCommandOperationTimeout:
+                self.dsconf.zWinRMLongRunningCommandOperationTimeout = 310
+                LOG.warn("Undefined value for PerfMon ds.conf zWinRMLongRunningCommandOperationTimeout, using default")
             additional_fields_to_replace = {'timeout': self.dsconf.zWinRMLongRunningCommandOperationTimeout}
             conn_info = modify_connection_info(conn_info, self.dsconf, additional_fields_to_replace)
             for _ in xrange(num_commands):

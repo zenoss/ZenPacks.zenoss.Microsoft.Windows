@@ -58,6 +58,8 @@ def createConnectionInfo(device_proxy):
     found to be invalid.
 
     """
+    update_dsconf(device_proxy)
+
     def getProxyValue(props):
         if not isinstance(props, list):
             props = [props]
@@ -189,6 +191,22 @@ def modify_connection_info(connection_info, datasource_config, data_to_reset=Non
 
     # Set fields which were provided additionally
     if isinstance(data_to_reset, dict):
+        for k, v in data_to_reset.iteritems():
+            if not v:
+                log.warn("Updating connection_info.%s to empty value.", k)
         connection_info = connection_info._replace(**data_to_reset)
 
     return connection_info
+
+def update_dsconf(dsconf):
+    if not dsconf:
+        return
+
+    if not getattr(dsconf, 'windows_user', None):
+        setattr(dsconf, 'windows_user', getattr(dsconf, 'zWinRMUser', ''))
+
+    if not getattr(dsconf, 'windows_password', None):
+        setattr(dsconf, 'windows_password', getattr(dsconf, 'zWinRMPassword', ''))
+
+    if not getattr(dsconf, 'windows_servername', None):
+        setattr(dsconf, 'windows_servername', getattr(dsconf, 'zWinRMServerName', ''))
