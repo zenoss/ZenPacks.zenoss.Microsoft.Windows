@@ -208,7 +208,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(object_map_0.compname, 'os')
         self.assertEqual(object_map_0.title, 'TestAG1')
         self.assertEqual(object_map_0.set_winsqlinstance, 'WSC-NODE-02_SQLAON')
-        self.assertEqual(object_map_0.is_clustered_instance, False)
         self.assertEqual(object_map_0.synchronization_health, 'Healthy')
         self.assertEqual(object_map_0.health_check_timeout, 30000)
 
@@ -310,7 +309,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(len(data), 3)
         object_map_1 = data[1]
 
-        self.assertEqual(object_map_1.status, u'Normal')
         self.assertEqual(object_map_1.sync_state, 'Synchronized')
         self.assertEqual(object_map_1.modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase')
         self.assertEqual(object_map_1.relname, 'databases')

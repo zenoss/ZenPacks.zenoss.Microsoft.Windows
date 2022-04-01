@@ -1297,7 +1297,7 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
                     adb_model_results = get_default_properties_value_for_component('WinSQLDatabase')
 
                 # As for Databases - status takes from 'status' RRD datapoint - populate it.
-                status_value = adb_model_results.pop('status')
+                status_value = adb_model_results.get('status', None)
                 parsed_results['values'][dsconf.component]['status'] = lookup_database_status(status_value), 'N'
 
                 adb_om = ObjectMap()
@@ -1311,9 +1311,11 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
 
                 # Events:
                 # DB Status (status), suspended, sync_state
+                adb_events_data = adb_om.__dict__
+                adb_events_data['status'] = status_value
                 adb_events = get_prop_value_events(
                     'WinSQLDatabase',
-                    adb_om.__dict__,
+                    adb_events_data,
                     dict(
                         event_class=get_valid_dsconf(datasources) or "/Status",
                         event_key=dsconf.eventKey,

@@ -1453,7 +1453,7 @@ def fill_adb_om(om, data, prep_id_method):
     if db_name:
         setattr(om, 'title', db_name)
 
-    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
+    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name', 'status')
 
     keys_values_transform = {
         'keys': {
