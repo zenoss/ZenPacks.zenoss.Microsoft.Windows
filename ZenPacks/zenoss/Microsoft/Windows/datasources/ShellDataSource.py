@@ -934,7 +934,7 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
              "   if ($rep_srv_name -ne $server.Name) {continue;}"
              "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
              "   $ar_inf['id'] = $ar_uid;"
-             "   $ar_inf['name'] = $ar.Name;"
+             "   $ar_inf['title'] = $ar.Name;"
              "   $ar_inf['role'] = $ar.Role;"
              "   $ar_inf['state'] = $ar.MemberState;"
              "   $ar_inf['operational_state'] = $ar.OperationalState;"
@@ -1063,7 +1063,7 @@ class PowershellMSSQLAlwaysOnALStrategy(object):
 
              "if ($al -ne $null) {"
              " $dns_name = Get-ClusterParameter -InputObject $al -name DnsName | Select-Object -Property Value;"
-             " $listener_info['name'] = $al.Name;"
+             " $listener_info['title'] = $al.Name;"
              " $listener_info['dns_name'] = $dns_name.Value;"
              " $listener_info['state'] = $al.State.value__;"
 
@@ -1295,6 +1295,11 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
                     # We got empty result for particular Availability Database - seems like it is unreachable.
                     # Need to return set of properties with default values
                     adb_model_results = get_default_properties_value_for_component('WinSQLDatabase')
+
+                # As for Databases - status takes from 'status' RRD datapoint - populate it.
+                status_value = adb_model_results.pop('status')
+                parsed_results['values'][dsconf.component]['status'] = lookup_database_status(status_value), 'N'
+
                 adb_om = ObjectMap()
                 adb_om.id = dsconf.params['instanceid']
                 adb_om.title = adb_title
@@ -1303,10 +1308,6 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
                 adb_om.relname = dsconf.params['contextrelname']
                 adb_om = fill_adb_om(adb_om, adb_model_results, prepId)
                 parsed_results['maps'].append(adb_om)
-
-                # As for Databases - status takes from 'status' RRD datapoint - populate it.
-                status_value = adb_model_results.get('status')
-                parsed_results['values'][dsconf.component]['status'] = lookup_database_status(status_value), 'N'
 
                 # Events:
                 # DB Status (status), suspended, sync_state
