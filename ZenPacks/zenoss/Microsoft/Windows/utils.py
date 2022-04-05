@@ -1000,7 +1000,7 @@ def fill_ag_om(ag_om, ag_data, prep_id_method, sql_instance_data):
             value = lookup_ag_failure_condition_level(value)
         if key == 'cluster_type':
             value = lookup_ag_cluster_type(value)
-        if key == 'primary_replica_server_name':
+        if key in ('primary_replica_server_name', 'is_clustered_instance'):
             continue  # relation to SQL Instance is set below.
         setattr(ag_om, key, value)
 
@@ -1453,7 +1453,7 @@ def fill_adb_om(om, data, prep_id_method):
     if db_name:
         setattr(om, 'title', db_name)
 
-    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
+    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name', 'status')
 
     keys_values_transform = {
         'keys': {
