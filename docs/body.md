@@ -1293,7 +1293,9 @@ important.
     :   MS SQL Database Snapshots modeling disabled. Set to true to disable modeling and monitoring of MS SQL Database snapshots.
 
 - zWinServicesGroupedByClass
-    :   List of regular expressions for Windows services to model with generic Windows Service class.
+    :   List of regular expressions for Windows services to model with generic Windows Service class. Specify class names to set generic Windows Service class names for matching Windows Services.
+        This property should be used when a target Windows device has a lot of Windows Services with rotating name extension - "<service_name>_0123456789bcdef". Each of these services creates separate Windows Service class which could cause ZODB lock.
+        Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class we should specify "CDPUserSvc" in zProperty value.
 
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
@@ -1997,7 +1999,7 @@ Configuration Properties
 :   zWinRMConnectionCloseTime
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
-:   zWinServicesGroupedByClass
+:   zWinServicesSetGenericClass
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -2060,7 +2062,7 @@ Changes
 
 - Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
 - Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
-- Add zWinServicesGroupedByClass property to model Windows Services with generic Windows Service class (ZPS-8115)
+- Add zWinServicesSetGenericClass property for Windows Service classes to model services with generic Windows Service class. (ZPS-8115)
 
 3.0.1
 
