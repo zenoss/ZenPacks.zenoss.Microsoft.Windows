@@ -45,6 +45,7 @@ ConnectionInfoProperties = (
     'zSQLAlwaysOnEnabled',
     'zWinServicesModeled',
     'zWinServicesNotModeled',
+    'zWinServicesGroupedByClass',
     'snmpSysName',
 )
 

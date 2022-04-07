@@ -1292,6 +1292,9 @@ important.
 - zWinDBSnapshotIgnore
     :   MS SQL Database Snapshots modeling disabled. Set to true to disable modeling and monitoring of MS SQL Database snapshots.
 
+- zWinServicesGroupedByClass
+    :   List of regular expressions for Windows services to model with generic Windows Service class.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1994,6 +1997,7 @@ Configuration Properties
 :   zWinRMConnectionCloseTime
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
+:   zWinServicesGroupedByClass
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -2054,8 +2058,9 @@ Changes
 
 3.0.2
 
--   Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
--   Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
+- Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
+- Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
+- Add zWinServicesGroupedByClass property to model Windows Services with generic Windows Service class (ZPS-8115)
 
 3.0.1
 
