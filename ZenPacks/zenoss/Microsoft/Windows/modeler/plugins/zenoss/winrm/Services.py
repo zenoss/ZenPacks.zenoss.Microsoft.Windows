@@ -115,7 +115,5 @@ def truncate_service_class(group_list, service_name, service_caption):
             if re.search(group, service_name):
                 service_class_name = re.search(group, service_name).group(0)
                 service_class_caption = re.sub("(?:.(?!_.*))+$", '', service_caption)
-                return service_class_name, service_class_caption
-        return service_class_name, service_class_caption
-    else:
-        return service_class_name, service_class_caption
+                break
+    return service_class_name, service_class_caption

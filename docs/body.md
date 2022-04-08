@@ -1294,8 +1294,9 @@ important.
 
 - zWinServicesGroupedByClass
     :   List of regular expressions for Windows services to model with generic Windows Service class. Specify class names to set generic Windows Service class names for matching Windows Services.
-        This property should be used when a target Windows device has a lot of Windows Services with rotating name extension - "<service_name>_0123456789bcdef". Each of these services creates separate Windows Service class which could cause ZODB lock.
-        Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class we should specify "CDPUserSvc" in zProperty value.
+        This property should be used when a target Windows device has a lot of Windows Services with rotating name extension - "<service_name>_0123456789bcdef". Each of these services creates separate Windows Service class.
+        Note: The regex is not anchored to the start of the service name. So we should specify correct generic Windows Class in zProperty values for services which Windows Class name should be truncated to specified zProperty value.
+        Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class we should specify "CDPUserSvc" in zProperty values.
 
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as

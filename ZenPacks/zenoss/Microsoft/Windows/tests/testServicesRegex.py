@@ -126,10 +126,21 @@ class TestServicesRegex(BaseTestCase):
         self.assertEqual(service_class_name, 'PimIndexMaintenanceSvc_aeff1234')
         self.assertEqual(service_class_caption, 'Contact Data_aeff1234')
 
+    def test_model_service_grouped_multiple_underscores(self):
+        self.device.zWinServicesNotModeled = []
+        self.device.zWinServicesModeled = []
+        self.device.zWinServicesGroupedByClass = ['Test_Windows_Service']
+        _, _, group_list = validate_modeling_regex(self.device, self.log)
+        service_class_name, service_class_caption = truncate_service_class(group_list,
+                                                                           'Test_Windows_Service_aeff1234',
+                                                                           'Test_Windows_Caption_aeff1234')
+        self.assertEqual(service_class_name, 'Test_Windows_Service')
+        self.assertEqual(service_class_caption, 'Test_Windows_Caption')
+
     def test_model_service_grouped_multiple(self):
         self.device.zWinServicesNotModeled = []
         self.device.zWinServicesModeled = []
-        self.device.zWinServicesGroupedByClass = ['PimIndexMaintenanceSvc', 'CDPUserSvc', 'OneSyncSvc']
+        self.device.zWinServicesGroupedByClass = ['Pim_Index_Maintenance_Svc', 'CDPUserSvc', 'OneSyncSvc']
         _, _, group_list = validate_modeling_regex(self.device, self.log)
         result_dict_grouped = {}
         input_services = {
@@ -138,7 +149,7 @@ class TestServicesRegex(BaseTestCase):
                         'AppServicex': 'AppServicex',
                         'OneSyncSvc_asdb123': 'OneSyncSvc_asdb123',
                         'CDPUserSvc_asd123': 'CDPUserSvc_asd123',
-                        'PimIndexMaintenanceSvc_aeff1234': 'Contact Data_aeff4',
+                        'Pim_Index_Maintenance_Svc_aeff1234': 'Contact_Data_aeff4',
                         '0Service_11a': '0Service Data Data',
                         '00Service_22sd': '00Service_22sd Data Data_22sd',
                         }
@@ -148,7 +159,7 @@ class TestServicesRegex(BaseTestCase):
                             'AppServicex': 'AppServicex',
                             'OneSyncSvc': 'OneSyncSvc',
                             'CDPUserSvc': 'CDPUserSvc',
-                            'PimIndexMaintenanceSvc': 'Contact Data',
+                            'Pim_Index_Maintenance_Svc': 'Contact_Data',
                             '0Service_11a': '0Service Data Data',
                             '00Service_22sd': '00Service_22sd Data Data_22sd',
                             }
