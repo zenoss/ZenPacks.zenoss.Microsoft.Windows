@@ -171,7 +171,10 @@ class ZenPack(schema.ZenPack):
                                                             'label': 'MS SQL Database monitoring ignored statuses'},
                             'zWinDBSnapshotIgnore': {'type': 'boolean',
                                                      'description': 'Set to true to disable modeling and monitoring of MS SQL Database snapshots.',
-                                                     'label': 'MS SQL Database Snapshots modeling disabled'}
+                                                     'label': 'MS SQL Database Snapshots modeling disabled'},
+                            'zWinServicesGroupedByClass': {'type': 'lines',
+                                                     'description': 'List of regular expressions for Windows services to model with generic Windows Service class.',
+                                                     'label': 'Regex expressions to model services with generic class'}
                             }
 
     def install(self, app):

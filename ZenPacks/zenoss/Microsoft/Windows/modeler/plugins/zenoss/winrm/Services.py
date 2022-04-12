@@ -34,18 +34,19 @@ class Services(WinRMPlugin):
             "Modeler %s processing data for device %s",
             self.name(), device.id)
 
-        model_list, ignore_list = validate_modeling_regex(device, log)
+        model_list, ignore_list, group_list = validate_modeling_regex(device, log)
 
         rm = self.relMap()
 
         for service in results.get('Win32_Service', ()):
             if omit_service(model_list, ignore_list, service.Name, log):
                 continue
+            service_class_name, service_class_caption = truncate_service_class(group_list, service.Name, service.Caption)
             om = self.objectMap()
             om.id = self.prepId(service.Name)
             om.serviceName = service.Name
             om.caption = service.Caption
-            om.setServiceClass = {'name': service.Name, 'description': service.Caption}
+            om.setServiceClass = {'name': service_class_name, 'description': service_class_caption}
             om.pathName = service.PathName
             om.serviceType = service.ServiceType
             om.startMode = service.StartMode
@@ -78,7 +79,8 @@ def create_regex_list(device, prop, log):
 def validate_modeling_regex(device, log):
     model_list = create_regex_list(device, 'zWinServicesModeled', log)
     ignore_list = create_regex_list(device, 'zWinServicesNotModeled', log)
-    return model_list, ignore_list
+    group_list = create_regex_list(device, 'zWinServicesGroupedByClass', log)
+    return model_list, ignore_list, group_list
 
 
 def service_in_list(list_, name):
@@ -103,3 +105,15 @@ def omit_service(model_list, ignore_list, service_name, log):
 
     # model all services by default
     return False
+
+
+def truncate_service_class(group_list, service_name, service_caption):
+    service_class_name = service_name
+    service_class_caption = service_caption
+    if group_list:
+        for group in group_list:
+            if re.search(group, service_name):
+                service_class_name = re.search(group, service_name).group(0)
+                service_class_caption = re.sub("(?:.(?!_.*))+$", '', service_caption)
+                break
+    return service_class_name, service_class_caption

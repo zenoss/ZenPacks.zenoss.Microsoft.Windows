@@ -1292,6 +1292,12 @@ important.
 - zWinDBSnapshotIgnore
     :   MS SQL Database Snapshots modeling disabled. Set to true to disable modeling and monitoring of MS SQL Database snapshots.
 
+- zWinServicesGroupedByClass
+    :   List of regular expressions for Windows services to model with generic Windows Service class. Specify class names to set generic Windows Service class names for matching Windows Services.
+        This property should be used when a target Windows device has a lot of Windows Services with rotating name extension - "<service_name>_0123456789bcdef". Each of these services creates separate Windows Service class.
+        Note: The regex is not anchored to the start of the service name. So we should specify correct generic Windows Class in zProperty values for services which Windows Class name should be truncated to specified zProperty value.
+        Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class we should specify "CDPUserSvc" in zProperty values.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -1994,6 +2000,7 @@ Configuration Properties
 :   zWinRMConnectionCloseTime
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
+:   zWinServicesSetGenericClass
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -2054,8 +2061,9 @@ Changes
 
 3.0.2
 
--   Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
--   Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
+- Add zWinDBStateMonitoringIgnore configuration property to disable monitoring of MS SQL databases in specified statuses (ZPS-7867)
+- Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
+- Add zWinServicesSetGenericClass property for Windows Service classes to model services with generic Windows Service class. (ZPS-8115)
 
 3.0.1
 

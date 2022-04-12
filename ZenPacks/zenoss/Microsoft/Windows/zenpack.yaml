@@ -85,6 +85,10 @@ zProperties:
     label: 'MS SQL Database Snapshots modeling disabled'
     description: 'Set to true to disable modeling and monitoring of MS SQL Database snapshots.'
     type: boolean
+  zWinServicesGroupedByClass:
+    label: 'Regex expressions to model services with generic class'
+    description: 'List of regular expressions for Windows Service classes to model services with generic Windows Service class.'
+    type: lines
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
