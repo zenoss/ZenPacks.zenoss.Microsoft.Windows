@@ -990,6 +990,7 @@ def fill_ag_om(ag_om, ag_data, prep_id_method, sql_instance_data):
             setattr(ag_om, 'id', prep_id_method(value))
         if key == 'name':
             setattr(ag_om, 'title', value)
+            continue
         if key == 'synchronization_health':
             value = lookup_ag_synchronization_health(value)
         if key == 'automated_backup_preference':
@@ -1377,6 +1378,7 @@ def fill_ar_om(om, data, prep_id_method, sql_instance_data):
             value = prep_id_method(value)
         if key == 'name':
             setattr(om, 'title', value)
+            continue
         if key == 'role':
             value = lookup_ar_role(value)
         if key == 'state':
@@ -1423,6 +1425,7 @@ def fill_al_om(om, data, prep_id_method):
             value = prep_id_method(value)
         if key == 'name':
             setattr(om, 'title', value)
+            continue
         if key == 'state':
             try:
                 value = int(value)
@@ -1453,7 +1456,7 @@ def fill_adb_om(om, data, prep_id_method):
     if db_name:
         setattr(om, 'title', db_name)
 
-    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name', 'status')
+    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name', 'status', 'name')
 
     keys_values_transform = {
         'keys': {

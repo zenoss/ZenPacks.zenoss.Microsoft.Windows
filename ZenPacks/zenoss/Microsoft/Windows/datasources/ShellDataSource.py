@@ -934,7 +934,7 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
              "   if ($rep_srv_name -ne $server.Name) {continue;}"
              "   $ar_inf = New-Object 'System.Collections.Generic.Dictionary[string, object]';"
              "   $ar_inf['id'] = $ar_uid;"
-             "   $ar_inf['title'] = $ar.Name;"
+             "   $ar_inf['name'] = $ar.Name;"
              "   $ar_inf['role'] = $ar.Role;"
              "   $ar_inf['state'] = $ar.MemberState;"
              "   $ar_inf['operational_state'] = $ar.OperationalState;"
@@ -1063,7 +1063,7 @@ class PowershellMSSQLAlwaysOnALStrategy(object):
 
              "if ($al -ne $null) {"
              " $dns_name = Get-ClusterParameter -InputObject $al -name DnsName | Select-Object -Property Value;"
-             " $listener_info['title'] = $al.Name;"
+             " $listener_info['name'] = $al.Name;"
              " $listener_info['dns_name'] = $dns_name.Value;"
              " $listener_info['state'] = $al.State.value__;"
 
