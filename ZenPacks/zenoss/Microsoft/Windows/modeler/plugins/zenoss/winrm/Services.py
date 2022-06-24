@@ -80,6 +80,7 @@ def validate_modeling_regex(device, log):
     model_list = create_regex_list(device, 'zWinServicesModeled', log)
     ignore_list = create_regex_list(device, 'zWinServicesNotModeled', log)
     group_list = create_regex_list(device, 'zWinServicesGroupedByClass', log)
+    group_list = [group.strip() for group in group_list if group.strip()]
     return model_list, ignore_list, group_list
 
 
