@@ -53,7 +53,7 @@ from ..utils import (
     generateClearAuthEvents, get_dsconf, SqlConnection,
     lookup_databasesummary, lookup_database_status,
     lookup_ag_state, lookup_ag_quorum_state, fill_ag_om, fill_ar_om, fill_al_om, fill_adb_om,
-    get_default_properties_value_for_component, get_prop_value_events)
+    get_default_properties_value_for_component, get_prop_value_events, get_db_om, get_db_monitored)
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
 
@@ -1295,6 +1295,11 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
                     # We got empty result for particular Availability Database - seems like it is unreachable.
                     # Need to return set of properties with default values
                     adb_model_results = get_default_properties_value_for_component('WinSQLDatabase')
+
+                # As for Databases - status takes from 'status' RRD datapoint - populate it.
+                status_value = adb_model_results.get('status', None)
+                parsed_results['values'][dsconf.component]['status'] = lookup_database_status(status_value), 'N'
+
                 adb_om = ObjectMap()
                 adb_om.id = dsconf.params['instanceid']
                 adb_om.title = adb_title
@@ -1304,15 +1309,13 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
                 adb_om = fill_adb_om(adb_om, adb_model_results, prepId)
                 parsed_results['maps'].append(adb_om)
 
-                # As for Databases - status takes from 'status' RRD datapoint - populate it.
-                status_value = adb_model_results.get('status')
-                parsed_results['values'][dsconf.component]['status'] = lookup_database_status(status_value), 'N'
-
                 # Events:
                 # DB Status (status), suspended, sync_state
+                adb_events_data = adb_om.__dict__
+                adb_events_data['status'] = status_value
                 adb_events = get_prop_value_events(
                     'WinSQLDatabase',
-                    adb_om.__dict__,
+                    adb_events_data,
                     dict(
                         event_class=get_valid_dsconf(datasources) or "/Status",
                         event_key=dsconf.eventKey,
@@ -1474,7 +1477,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         availability_group_name = getattr(context, 'availability_group_name', '')
         # Database ID (Index)
         database_index = getattr(context, 'db_id', None)
-
+        # Database Monitoring Ignored Statuses
+        db_ignored_statuses = getattr(context, 'zWinDBStateMonitoringIgnore', [])
         return dict(resource=resource,
                     strategy=datasource.strategy,
                     instancename=instancename,
@@ -1491,7 +1495,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     owner_node_ip=owner_node_ip,
                     winsqlinstance_id=winsqlinstance_id,
                     availability_group_name=availability_group_name,
-                    database_index=database_index)
+                    database_index=database_index,
+                    db_ignored_statuses=db_ignored_statuses)
 
     def getSQLConnection(self, dsconf, conn_info):
         dbinstances = dsconf.zDBInstances
@@ -1545,7 +1550,6 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
         conn_info = createConnectionInfo(dsconf0)
 
         strategy = queryUtility(IStrategy, dsconf0.params['strategy'])
-
         if not strategy:
             raise WindowsShellException(
                 "No strategy chosen for {0}".format(dsconf0.datasource)
@@ -1745,6 +1749,10 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                     component=component
                                 ))
                                 data['values'][dsconf.component]['status'] = status, 'N'
+                                db_om = get_db_om(dsconf, {
+                                    'status': status
+                                })
+                                data['maps'].append(db_om)
                 if not checked_result:
                     msg = 'Error parsing data in {0} strategy for "{1}"'\
                         ' datasource'.format(

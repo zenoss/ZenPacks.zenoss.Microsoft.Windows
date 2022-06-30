@@ -32,15 +32,23 @@ PRIMARYDC = '5'
 BACKUPDC = '4'
 OS_DOMAIN_CONTROLLER = '2'
 
+Win32_DB_COLUMNS = {
+    'sysEnclosure': ['Tag'],
+    'computerSystem': ['Name', 'PrimaryOwnerName', 'Caption', 'Domain', 'DomainRole', 'Model', 'Manufacturer'],
+    'operatingSystem': ['CSName', 'RegisteredUser', 'Caption', 'ProductType', 'SerialNumber', 'Manufacturer',
+                        'TotalVisibleMemorySize', 'TotalVirtualMemorySize', 'CSDVersion'],
+    'clusterInformation': ['Name']
+}
+
 
 class OperatingSystem(WinRMPlugin):
     queries = {
-        'Win32_SystemEnclosure': "SELECT * FROM Win32_SystemEnclosure",
-        'Win32_ComputerSystem': "SELECT * FROM Win32_ComputerSystem",
-        'Win32_OperatingSystem': "SELECT * FROM Win32_OperatingSystem",
+        'Win32_SystemEnclosure': "SELECT %s FROM Win32_SystemEnclosure" % ','.join(Win32_DB_COLUMNS.get('sysEnclosure')),
+        'Win32_ComputerSystem': "SELECT %s FROM Win32_ComputerSystem" % ','.join(Win32_DB_COLUMNS.get('computerSystem')),
+        'Win32_OperatingSystem': "SELECT %s FROM Win32_OperatingSystem" % ','.join(Win32_DB_COLUMNS.get('operatingSystem')),
 
         'MSCluster': {
-            'query': 'SELECT * FROM mscluster_cluster',
+            'query': 'SELECT %s FROM mscluster_cluster' % ','.join(Win32_DB_COLUMNS.get('clusterInformation')),
             'namespace': 'mscluster',
         },
     }

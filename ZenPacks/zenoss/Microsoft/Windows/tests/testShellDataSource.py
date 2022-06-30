@@ -208,7 +208,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(object_map_0.compname, 'os')
         self.assertEqual(object_map_0.title, 'TestAG1')
         self.assertEqual(object_map_0.set_winsqlinstance, 'WSC-NODE-02_SQLAON')
-        self.assertEqual(object_map_0.is_clustered_instance, False)
         self.assertEqual(object_map_0.synchronization_health, 'Healthy')
         self.assertEqual(object_map_0.health_check_timeout, 30000)
 
@@ -250,7 +249,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(object_map_1.id, '106864b6-f741-4b3c-b6be-48daa15ff3d7')
         self.assertEqual(object_map_1.modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityReplica')
         self.assertEqual(object_map_1.compname, 'os/winsqlavailabilitygroups/0b38a4e4-8c30-46e8-873e-7cd1b397bfc1')
-        self.assertEqual(object_map_1.name, u'WSC-NODE-03\\SQLAON')
         self.assertEqual(object_map_1.title, u'WSC-NODE-03\\SQLAON')
         self.assertEqual(object_map_1.operational_state, 'Online')
         self.assertEqual(object_map_1.unigue_id, u'106864b6-f741-4b3c-b6be-48daa15ff3d7')
@@ -283,7 +281,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(object_map_0.modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLAvailabilityListener')
         self.assertEqual(object_map_0.relname, 'winsqlavailabilitylisteners')
         self.assertEqual(object_map_0.compname, 'os/winsqlavailabilitygroups/777c50fd-348e-4686-a622-edd90a4340e1')
-        self.assertEqual(object_map_0.name, u'TestAG1_TestAG_Listener')
         self.assertEqual(object_map_0.state, 'Online')
         self.assertEqual(object_map_0.dns_name, u'TestAG_Listener')
         self.assertEqual(object_map_0.title, u'TestAG1_TestAG_Listener')
@@ -310,7 +307,6 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(len(data), 3)
         object_map_1 = data[1]
 
-        self.assertEqual(object_map_1.status, u'Normal')
         self.assertEqual(object_map_1.sync_state, 'Synchronized')
         self.assertEqual(object_map_1.modname, 'ZenPacks.zenoss.Microsoft.Windows.WinSQLDatabase')
         self.assertEqual(object_map_1.relname, 'databases')
