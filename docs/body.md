@@ -2066,6 +2066,7 @@ Changes
 - Add zWinDBSnapshotIgnore configuration property to disable monitoring of MS SQL database snapshots (ZPS-7824)
 - Fix MSSQL Always incorrect datamaps sending which cause large number of unnecessary datamaps and invalidations (ZPS-8074)
 - Add zWinServicesGroupedByClass property for Windows Service classes to model services with generic Windows Service class. (ZPS-8115)
+- Tested with Zenoss Cloud, Zenoss 6.6.0 and Service Impact 5.5.5
 
 3.0.1
 
