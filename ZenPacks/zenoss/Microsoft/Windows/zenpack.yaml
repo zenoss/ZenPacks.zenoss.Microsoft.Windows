@@ -77,6 +77,18 @@ zProperties:
     type: lines
   zWinServicesNotModeled:
     type: lines
+  zWinDBStateMonitoringIgnore:
+    label: 'MS SQL Database monitoring ignored statuses'
+    description: 'Add database statuses in which monitoring request will not be performed for MS SQL Databases.'
+    type: lines
+  zWinDBSnapshotIgnore:
+    label: 'MS SQL Database Snapshots modeling disabled'
+    description: 'Set to true to disable modeling and monitoring of MS SQL Database snapshots.'
+    type: boolean
+  zWinServicesGroupedByClass:
+    label: 'Regex expressions to model services with generic class'
+    description: 'List of regular expressions for Windows Service classes to model services with generic Windows Service class.'
+    type: lines
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
@@ -754,6 +766,11 @@ classes:
         grid_display: true
         default: n/a
         label: Synchronization State
+      is_database_snapshot:
+        grid_display: false
+        default: false
+        type: boolean
+        label: Database Snapshot
     monitoring_templates: [WinDatabase, WinAODatabase]
     dynamicview_views: [service_view]
     dynamicview_relations:

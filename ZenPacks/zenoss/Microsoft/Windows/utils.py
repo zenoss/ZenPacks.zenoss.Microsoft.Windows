@@ -18,6 +18,7 @@ import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
+from Products.DataCollector.plugins.DataMaps import ObjectMap
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -989,6 +990,7 @@ def fill_ag_om(ag_om, ag_data, prep_id_method, sql_instance_data):
             setattr(ag_om, 'id', prep_id_method(value))
         if key == 'name':
             setattr(ag_om, 'title', value)
+            continue
         if key == 'synchronization_health':
             value = lookup_ag_synchronization_health(value)
         if key == 'automated_backup_preference':
@@ -999,7 +1001,7 @@ def fill_ag_om(ag_om, ag_data, prep_id_method, sql_instance_data):
             value = lookup_ag_failure_condition_level(value)
         if key == 'cluster_type':
             value = lookup_ag_cluster_type(value)
-        if key == 'primary_replica_server_name':
+        if key in ('primary_replica_server_name', 'is_clustered_instance'):
             continue  # relation to SQL Instance is set below.
         setattr(ag_om, key, value)
 
@@ -1376,6 +1378,7 @@ def fill_ar_om(om, data, prep_id_method, sql_instance_data):
             value = prep_id_method(value)
         if key == 'name':
             setattr(om, 'title', value)
+            continue
         if key == 'role':
             value = lookup_ar_role(value)
         if key == 'state':
@@ -1422,6 +1425,7 @@ def fill_al_om(om, data, prep_id_method):
             value = prep_id_method(value)
         if key == 'name':
             setattr(om, 'title', value)
+            continue
         if key == 'state':
             try:
                 value = int(value)
@@ -1452,7 +1456,7 @@ def fill_adb_om(om, data, prep_id_method):
     if db_name:
         setattr(om, 'title', db_name)
 
-    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name')
+    keys_to_skip = ('adb_owner_id', 'sql_hostname_fqdn', 'sql_server_name', 'status', 'name')
 
     keys_values_transform = {
         'keys': {
@@ -1512,3 +1516,33 @@ def get_datetime_string_from_timestamp(timestamp, fmt='%Y/%m/%d %H:%M:%S'):
     if tmstmp > 0:
         result = datetime.fromtimestamp(tmstmp).strftime(fmt)
     return result
+
+
+def get_db_monitored(db_status, ignored_db_statuses):
+    """
+    Define whether Database in statuses, which shouldn't be monitored.
+    :return: Boolean
+    """
+    if db_status:
+        status_name = DB_STATUSES.get(int(db_status)).lower()
+        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
+            return False
+    return True
+
+
+def get_db_om(datasource_config, data):
+    """
+    Fill ObjectMaps for Database.
+    """
+    db_om = ObjectMap()
+    db_om.id = datasource_config.params['instanceid']
+    db_om.title = datasource_config.params['contexttitle']
+    db_om.compname = datasource_config.params['contextcompname']
+    db_om.modname = datasource_config.params['contextmodname']
+    db_om.relname = datasource_config.params['contextrelname']
+
+    for key, value in data.iteritems():
+        if key == 'status':
+            is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
+            setattr(db_om, 'monitor', is_monitored)
+    return db_om

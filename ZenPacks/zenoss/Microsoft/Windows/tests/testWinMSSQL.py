@@ -68,11 +68,12 @@ RESULTS = dict(clear='Error parsing zDBInstances',
                    recoverymodel='Simple',
                    systemobject='False',
                    title='db0',
-                   version='706'))]
+                   version='706',
+                   is_database_snapshot='False'))]
                )
 
 STDOUT_LINES = [
-    "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple",
+    "Name--- [master] \tVersion--- 782 \tIsAccessible--- True \tID--- 1 \tOwner--- sa \tLastBackupDate--- 1/1/0001 12:00:00 AM \tCollation--- SQL_Latin1_General_CP1_CI_AS \tCreateDate--- 4/8/2003 9:13:36 AM \tDefaultFileGroup--- PRIMARY \tPrimaryFilePath--- C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA \tLastLogBackupDate--- 1/1/0001 12:00:00 AM \tSystemObject--- True \tRecoveryModel--- Simple \tIsDataBaseSnapshot--- False",
     "Name--- rtc_rtc\tDeviceType--- Disk \tPhysicalLocation--- c:\\Backup\\rtc.bak \tStatus---Existing",
     "job_jobname--- syspolicy_purge_history job_enabled--- True job_jobid--- 6f8d0472-e19a-4e66-9d23-dcbaa0463571 job_description--- No description available. job_datecreated--- 6/2/2017 6:13:28 PM job_username--- sa",
     "job_jobname--- job_enabled--- job_jobid--- job_description--- job_datecreated--- job_username--- ",
@@ -356,6 +357,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(data[4].maps[0].systemobject, 'False')
         self.assertEquals(data[4].maps[0].title, 'db0')
         self.assertEquals(data[4].maps[0].version, '706')
+        self.assertEquals(data[4].maps[0].is_database_snapshot, 'False')
 
         # Always On components are disabled by default, so there must be empty object map
         self.assertEquals(data[5].maps, [])
@@ -371,6 +373,7 @@ class TestProcesses(BaseTestCase):
     def test_oms(self):
         self.plugin.log = Mock()
         db_om = self.plugin.get_db_om(StringAttributeObject(),
+                                      self.device,
                                       "instance",
                                       "owner_node",
                                       "sqlserver",
@@ -388,6 +391,7 @@ class TestProcesses(BaseTestCase):
         self.assertEquals(db_om.primaryfilepath, 'C:\\Program Files\\Microsoft SQL Server\\MSSQL12.SQLSERVER2014\\MSSQL\\DATA')
         self.assertEquals(db_om.recoverymodel, 'Simple')
         self.assertEquals(db_om.systemobject, 'True')
+        self.assertEquals(db_om.is_database_snapshot, False)
         self.assertEquals(db_om.version, '782')
         self.assertEquals(db_om.title, 'master')
         backup_om = self.plugin.get_backup_om(StringAttributeObject(),
@@ -613,7 +617,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(ag0_om.health_check_timeout, 30000)
         self.assertEquals(ag0_om.id, '777c50fd-348e-4686-a622-edd90a4340e1')
         self.assertEquals(ag0_om.is_distributed, False)
-        self.assertEquals(ag0_om.name, u'TestAG1')
         self.assertEquals(ag0_om.set_winsqlinstance, 'WSC-NODE-02_SQLAON')
         self.assertEquals(ag0_om.title, u'TestAG1')
         self.assertEquals(ag0_om.unigue_id, u'b6040ddd-408b-4fe5-a370-0c7c45358ca7')
@@ -627,7 +630,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(ar0_om.ag_res_id, u'777c50fd-348e-4686-a622-edd90a4340e1')
         self.assertEquals(ar0_om.endpoint_url, u'TCP://wsc-node-03.sol-win.lab:5023')
         self.assertEquals(ar0_om.id, 'd97da9be-1c80-439d-bb19-11bc5c5f5083')
-        self.assertEquals(ar0_om.name, u'WSC-NODE-03\\SQLAON')
         self.assertEquals(ar0_om.replica_server_hostname, u'wsc-node-03')
         self.assertEquals(ar0_om.replica_server_name, u'WSC-NODE-03\\SQLAON')
         self.assertEquals(ar0_om.set_winsqlinstance, 'WSC-NODE-03_SQLAON')
@@ -643,7 +645,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(al0_om.dns_name, u'TestAG')
         self.assertEquals(al0_om.id, 'cf2628b9-d180-46e5-9e56-debf65268cd5')
         self.assertEquals(al0_om.ip_address, u'10.88.123.205')
-        self.assertEquals(al0_om.name, u'TestAG_TestAG')
         self.assertEquals(al0_om.network_mode, 1)
         self.assertEquals(al0_om.state, 'Online')
         self.assertEquals(al0_om.tcp_port, 1433)
@@ -666,7 +667,6 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(adb0_om.isaccessible, True)
         self.assertEquals(adb0_om.lastbackupdate, '2020/12/04 08:40:52')
         self.assertEquals(adb0_om.lastlogbackupdate, '')
-        self.assertEquals(adb0_om.name, u'test_alwayson_db_3')
         self.assertEquals(adb0_om.owner, u'sa')
         self.assertEquals(adb0_om.primaryfilepath, u'C:\\Program Files\\Microsoft SQL Server\\MSSQL13.SQLAON\\MSSQL\\DATA')
         self.assertEquals(adb0_om.recoverymodel, 1)
@@ -677,6 +677,7 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.assertEquals(adb0_om.title, u'test_alwayson_db_3')
         self.assertEquals(adb0_om.unigue_id, u'85dc383a-bf7b-4ab7-8cea-cc52919bdb36')
         self.assertEquals(adb0_om.version, 852)
+        self.assertEquals(adb0_om.is_database_snapshot, False)
 
     def test_get_ao_oms(self):
         """
@@ -727,7 +728,7 @@ class TestAlwaysOnProcesses(BaseTestCase):
         self.plugin.log = Mock()
         collect_ao_results = ALWAYS_ON_COLLECT_RESULTS
 
-        ao_oms = self.plugin.get_ao_oms(collect_ao_results,
+        ao_oms = self.plugin.get_ao_oms(self.device, collect_ao_results,
                                         Mock())
         self.assertIsInstance(ao_oms, dict)
 
