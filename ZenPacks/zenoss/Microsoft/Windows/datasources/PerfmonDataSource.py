@@ -18,6 +18,9 @@ import re
 import logging
 import collections
 import time
+import socket
+
+from contextlib import closing
 
 from twisted.internet import defer, reactor
 from twisted.internet.error import ConnectError, TimeoutError
@@ -368,12 +371,13 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
-            counter = dsconf.params['counter'].decode('utf-8').lower()
-            if counter not in self.counter_map:
-                self.counter_map[counter] = []
-                self.ps_counter_map[counter] = []
-            self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
-            self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
+            counter = dsconf.params.get('counter', '').decode('utf-8').lower()
+            if counter:
+                if counter not in self.counter_map:
+                    self.counter_map[counter] = []
+                    self.ps_counter_map[counter] = []
+                self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
+                self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
 
         self._build_commandlines()
 
@@ -470,11 +474,29 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Called each collection interval.
         """
         LOG.debug('Running collect method for id %s and commandline %s', self.unique_id, self.commandlines)
+
         self.check_for_update(config)
         self._start_counter += 1
+
+        data = self.new_data()
+        ds0 = config.datasources[0]
+        if not isOpen(ds0.manageIp, ds0.zWinRMPort):
+            # nothing to do, return
+            errorMessage = 'Perfmon command(s) did not start'
+            reason = 'WinRMPort - {} is unavailable.'.format(ds0.zWinRMPort)
+            LOG.error("%s: %s: %s", self.config.id, errorMessage, reason)
+            data['events'].append({
+                'device': self.config.id,
+                'eventClass': '/Status/Winrm',
+                'eventKey': 'WindowsPerfmonCollection',
+                'severity': ZenEventClasses.Error,
+                'summary': errorMessage + ': ' + reason,
+                'ipAddress': self.config.manageIp})
+            self.state = PluginStates.STOPPED
+            defer.returnValue(data)
+
         if self.num_commands == 0:
             # nothing to do, return
-            data = self.new_data()
             msg = '{} has no Get-Counter commands to start due to corrupt '\
                   'or missing counters.'.format(config.id)
             data['events'].append({
@@ -1230,6 +1252,15 @@ def format_counters(ps_counters):
 def chunkify(lst, n):
     """Yield successive n-sized chunks from the list."""
     return [lst[i::n] for i in xrange(n)]
+
+
+def isOpen(ip, port):
+    with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+        s.settimeout(5)
+        if s.connect_ex((ip, int(port))) == 0:
+            return True
+        else:
+            return False
 
 
 def format_stdout(stdout_lines):
