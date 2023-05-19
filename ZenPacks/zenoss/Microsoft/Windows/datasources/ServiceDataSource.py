@@ -271,7 +271,7 @@ class ServicePlugin(PythonDataSourcePlugin):
             # Use 'Running' by default
             params['alertifnot'] = 'Running'
         try:
-            params['severity'] = context.failSeverity
+            params['severity'] = context.getFailSeverity()
         except AttributeError:
             # Use Error by default
             params['severity'] = ZenEventClasses.Error
