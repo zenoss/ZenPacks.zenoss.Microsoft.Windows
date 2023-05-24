@@ -1095,6 +1095,16 @@ class DummyAlwaysOnStrategiesResponse(ObjectFromDictProducer):
 
         return result_object
 
+    # added this method to support list of configs for MSSQL Jobs
+    def config_from_list(self,data):
+        result_list=[]
+        for dict in data:
+            config_object=DummyClass()
+            for key, value in dict.iteritems():
+                setattr(config_object, key, value)
+            result_list.append(config_object)
+        return result_list
+
     def get_ao_ag_strategy_response(self):
 
         preprocessing_data = {
@@ -1459,7 +1469,243 @@ class DummyAlwaysOnStrategiesResponse(ObjectFromDictProducer):
         response = self.object_from_dict(preprocessing_data['response_data'])
 
         return config, response
+    
+    def get_mssql_job_strategy_response(self):
+        preprocessing_data = {
+        'config_data': [
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'severity': 0,
+                'device': '10.88.122.91',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': '6aa77e2d-208b-4050-927f-d21b5739ec7e',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': '6aa77e2d-208b-4050-927f-d21b5739ec7e'
+            },
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'severity': 0,
+                'device': '10.88.122.91',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': 'e83c6228-6436-4251-850b-daa3db920a54',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup_1 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': 'e83c6228-6436-4251-850b-daa3db920a54'
+            }
+        ],
+        'manageIp': '10.88.122.91',
+        'id': '10.88.122.91',
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [
+                    u'job: e83c6228-6436-4251-850b-daa3db920a54 |JobName: -- Dell DBA: Diff Backup_1 LITESPEED |IsEnabled: True |LastRunDate: 1/1/0001 12:00:00 AM |LastRunOutcome: Unknown |CurrentRunStatus: Idle',
+                    u'job: 6aa77e2d-208b-4050-927f-d21b5739ec7e |JobName: -- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED |IsEnabled: True |LastRunDate: 1/1/0001 12:00:00 AM |LastRunOutcome: Unknown |CurrentRunStatus: Idle']}}
 
+        # using config_from_list because of the list of datasources   
+        config = self.config_from_list(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
+
+    def get_mssql_job_strategy_response_lastoutcome_failed(self):
+        preprocessing_data = {
+        'config_data': [
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'severity': 3,
+                'device': '10.88.122.91',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': '6aa77e2d-208b-4050-927f-d21b5739ec7e',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': '6aa77e2d-208b-4050-927f-d21b5739ec7e'
+            },
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'severity': 3,
+                'device': '10.88.122.91',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': 'e83c6228-6436-4251-850b-daa3db920a54',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup_1 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': 'e83c6228-6436-4251-850b-daa3db920a54'
+            }
+        ],
+        'manageIp': '10.88.122.91',
+        'id': '10.88.122.91',
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [
+                    u'job: e83c6228-6436-4251-850b-daa3db920a54 |JobName: -- Dell DBA: Diff Backup_1 LITESPEED |IsEnabled: True |LastRunDate: 9/18/2018 2:00:00 AM |LastRunOutcome: Failed |CurrentRunStatus: Idle',
+                    u'job: 6aa77e2d-208b-4050-927f-d21b5739ec7e |JobName: -- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED |IsEnabled: True |LastRunDate: 9/18/2018 2:00:00 AM |LastRunOutcome: Failed |CurrentRunStatus: Idle']}}
+
+        # using config_from_list because of the list of datasources    
+        config = self.config_from_list(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
+    
+    def get_mssql_job_strategy_response_lastoutcome_success(self):
+        preprocessing_data = {
+        'config_data': [
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'severity': 0,
+                'device': '10.88.122.91',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': '6aa77e2d-208b-4050-927f-d21b5739ec7e',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': '6aa77e2d-208b-4050-927f-d21b5739ec7e'
+            },
+            {
+                'cluster_node_server': '//w2019sc-122-01',
+                'eventClass': '',
+                'severity': 0,
+                'device': '10.88.122.91',
+                'eventClassKey': 'winrsCollection MSSQLJob',
+                'summary': 'Everything is working fine',
+                'params': {
+                    'database_index': None,
+                    'winsqlinstance_id': 'w2019sc-122-01',
+                    'resource': '\\status',
+                    'contextrelname': 'jobs',
+                    'script': '',
+                    'instanceid': 'e83c6228-6436-4251-850b-daa3db920a54',
+                    'servername': 'Windows 2019 Standard NODE 01',
+                    'parser': None,
+                    'contexttitle': '-- Dell DBA: Diff Backup_1 LITESPEED',
+                    'contextcompname': 'os/winsqlinstances/w2019sc-122-01',
+                    'strategy': 'powershell MSSQL Job',
+                    'contextmodname': 'ZenPacks.zenoss.Microsoft.Windows.WinSQLJob',
+                    'db_ignored_statuses': [],
+                    'version': '13',
+                    'owner_node_ip': None,
+                    'usePowershell': True,
+                    'instancename': 'w2019sc-122-01',
+                    'availability_group_name': ''
+                },
+                'eventKey': '',
+                'component': 'e83c6228-6436-4251-850b-daa3db920a54'
+            }
+        ],
+        'manageIp': '10.88.122.91',
+        'id': '10.88.122.91',
+            'response_data': {
+                'exit_code': 0,
+                'stderr': [],
+                'stdout': [
+                    u'job: e83c6228-6436-4251-850b-daa3db920a54 |JobName: -- Dell DBA: Diff Backup_1 LITESPEED |IsEnabled: True |LastRunDate: 2/1/2019 3:15:00 PM |LastRunOutcome: Succeeded |CurrentRunStatus: Idle',
+                    u'job: 6aa77e2d-208b-4050-927f-d21b5739ec7e |JobName: -- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED |IsEnabled: True |LastRunDate: 2/1/2019 12:00:00 AM |LastRunOutcome: Succeeded |CurrentRunStatus: Idle']}}
+
+        # using config_from_list because of the list of datasources   
+        config = self.config_from_list(preprocessing_data['config_data'])
+        response = self.object_from_dict(preprocessing_data['response_data'])
+
+        return config, response
 
 def create_ao_device_proxy():
 

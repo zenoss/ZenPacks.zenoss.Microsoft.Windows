@@ -540,7 +540,8 @@ class PowershellMSSQLJobStrategy(object):
         jobs_sqlConnection = []
         jobs_sqlConnection.append("if ($server.JobServer -ne $null) {")
         jobs_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
-        jobs_sqlConnection.append("write-host 'job:'$job.Name")
+        jobs_sqlConnection.append("write-host 'job:'$job.JobID")
+        jobs_sqlConnection.append("'|JobName:'$job.Name")
         jobs_sqlConnection.append("'|IsEnabled:'$job.IsEnabled")
         jobs_sqlConnection.append("'|LastRunDate:'$job.LastRunDate")
         jobs_sqlConnection.append("'|LastRunOutcome:'$job.LastRunOutcome")
@@ -568,19 +569,19 @@ class PowershellMSSQLJobStrategy(object):
 
         # Parse values
         valuemap = {}
-        jobname = 'Unknown'
+        jobid = 'Unknown'
         try:
             for jobline in filter_sql_stdout(result.stdout):
                 for job in jobline.split('|'):
                     key, value = job.split(':', 1)
                     if key.strip() == 'job':
-                        jobname = value.strip()
-                        if jobname not in valuemap:
-                            valuemap[jobname] = {}
+                        jobid = value.strip()
+                        if jobid not in valuemap:
+                            valuemap[jobid] = {}
                     else:
-                        valuemap[jobname][key] = value.strip()
+                        valuemap[jobid][key] = value.strip()
         except ValueError:
-            msg = 'Malformed data received for MSSQL Job {}'.format(jobname)
+            msg = 'Malformed data received for MSSQL Job {}'.format(jobid)
             collectedResults.events.append({
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'winrsCollection MSSQLJob',
@@ -589,9 +590,10 @@ class PowershellMSSQLJobStrategy(object):
                 'device': dsconfs[0].device,
                 'query_results': result.stdout
             })
-
+        
         for dsconf in dsconfs:
-            component = dsconf.params['contexttitle']
+            component_title = dsconf.params['contexttitle']
+            component = dsconf.component
             eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             try:
                 currentstate = {
@@ -599,7 +601,7 @@ class PowershellMSSQLJobStrategy(object):
                     'Failed': dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
-                    component,
+                    component_title,
                     valuemap[component]['LastRunOutcome'],
                     valuemap[component]['LastRunDate'])
                 collectedResults.events.append({
@@ -609,23 +611,23 @@ class PowershellMSSQLJobStrategy(object):
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
-                    'component': dsconf.component})
+                    'component': component})
                 collectedResults.events.append({
                     'severity': ZenEventClasses.Clear,
                     'eventClassKey': 'winrsCollectionMSSQLJob',
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': 'Successful MSSQL Job collection',
                     'device': dsconf.device,
-                    'component': dsconf.component})
+                    'component': component})
             except Exception:
-                msg = 'Missing or no data returned when querying job "{}"'.format(component)
+                msg = 'Missing or no data returned when querying job "{}"'.format(component_title)
                 collectedResults.events.append({
                     'severity': dsconf.severity,
                     'eventClassKey': 'winrsCollectionMSSQLJob',
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
-                    'component': dsconf.component
+                    'component': component
                 })
         return collectedResults
 
