@@ -22,7 +22,8 @@ from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
     ShellDataSourcePlugin, DCDiagStrategy, SqlConnection,
     PowershellMSSQLAlwaysOnAGStrategy, PowershellMSSQLAlwaysOnARStrategy,
-    PowershellMSSQLAlwaysOnALStrategy, PowershellMSSQLAlwaysOnADBStrategy
+    PowershellMSSQLAlwaysOnALStrategy, PowershellMSSQLAlwaysOnADBStrategy,
+    PowershellMSSQLJobStrategy
 )
 
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
@@ -189,6 +190,7 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.ao_ar_strategy = PowershellMSSQLAlwaysOnARStrategy()
         self.ao_al_strategy = PowershellMSSQLAlwaysOnALStrategy()
         self.ao_adb_strategy = PowershellMSSQLAlwaysOnADBStrategy()
+        self.mssql_job_strategy = PowershellMSSQLJobStrategy()
 
         self.data_provider = DummyAlwaysOnStrategiesResponse()
 
@@ -420,6 +422,83 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
 
         # 3. events
         self.check_mssql_ao_adb_events(monitoring_results['events'])
+
+    # MSSQL Job checks
+
+    def check_mssql_job_event_with_escape_characters(self, data):
+        job_event=data[0]
+
+        self.assertEqual(job_event['severity'], 2)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'6aa77e2d-208b-4050-927f-d21b5739ec7e')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED": Unknown at 1/1/0001 12:00:00 AM')
+    
+    def check_mssql_job_event_no_escape_characters(self, data):
+        job_event=data[2]
+
+        self.assertEqual(job_event['severity'], 2)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'e83c6228-6436-4251-850b-daa3db920a54')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup_1 LITESPEED": Unknown at 1/1/0001 12:00:00 AM')
+
+    def test_powershell_mssql_job_parse_result(self):
+
+        config, response = self.data_provider.get_mssql_job_strategy_response()
+        monitoring_results = self.mssql_job_strategy.parse_result(config, response)
+
+        # check one arbitrary element from events list
+        self.check_mssql_job_event_with_escape_characters(monitoring_results.events)
+        self.check_mssql_job_event_no_escape_characters(monitoring_results.events)
+
+    def check_mssql_job_event_with_escape_characters_lastOutcome_failed(self, data):
+        job_event=data[0]
+
+        self.assertEqual(job_event['severity'], 3)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'6aa77e2d-208b-4050-927f-d21b5739ec7e')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED": Failed at 9/18/2018 2:00:00 AM')
+    
+    def check_mssql_job_event_no_escape_characters_lastOutcome_failed(self, data):
+        job_event=data[2]
+
+        self.assertEqual(job_event['severity'], 3)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'e83c6228-6436-4251-850b-daa3db920a54')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup_1 LITESPEED": Failed at 9/18/2018 2:00:00 AM')
+
+    def test_powershell_mssql_job_parse_result_lastOutcome_failed(self):
+        
+        config, response = self.data_provider.get_mssql_job_strategy_response_lastoutcome_failed()
+        monitoring_results = self.mssql_job_strategy.parse_result(config, response)
+
+        # check one arbitrary element from events list
+        self.check_mssql_job_event_with_escape_characters_lastOutcome_failed(monitoring_results.events)
+        self.check_mssql_job_event_no_escape_characters_lastOutcome_failed(monitoring_results.events)
+    
+    def check_mssql_job_event_with_escape_characters_lastOutcome_success(self, data):
+        job_event=data[0]
+
+        self.assertEqual(job_event['severity'], 0)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'6aa77e2d-208b-4050-927f-d21b5739ec7e')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup \xe2\x80\x93 LITESPEED": Succeeded at 2/1/2019 12:00:00 AM')
+
+    def check_mssql_job_event_no_escape_characters_lastOutcome_success(self, data):
+        job_event=data[2]
+
+        self.assertEqual(job_event['severity'], 0)
+        self.assertEqual(job_event['device'],'10.88.122.91')
+        self.assertEqual(job_event['component'],'e83c6228-6436-4251-850b-daa3db920a54')
+        self.assertEqual(job_event['summary'],'LastRunOutcome for job "-- Dell DBA: Diff Backup_1 LITESPEED": Succeeded at 2/1/2019 3:15:00 PM')
+
+    def test_powershell_mssql_job_parse_result_lastOutcome_success(self):
+
+        config, response = self.data_provider.get_mssql_job_strategy_response_lastoutcome_success()
+        monitoring_results = self.mssql_job_strategy.parse_result(config, response)
+
+        # check one arbitrary element from events list
+        self.check_mssql_job_event_with_escape_characters_lastOutcome_success(monitoring_results.events)
+        self.check_mssql_job_event_no_escape_characters_lastOutcome_success(monitoring_results.events)
 
 
 def test_suite():
