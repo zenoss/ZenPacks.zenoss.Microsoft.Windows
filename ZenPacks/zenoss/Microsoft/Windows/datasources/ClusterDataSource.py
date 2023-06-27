@@ -39,7 +39,7 @@ from ..utils import (
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     cluster_disk_state_string, cluster_csv_state_to_disk_map)
 from . import send_to_debug
-
+import time
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
@@ -112,14 +112,20 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.plugin_classname)
+    
+    def __init__(self, config=None):
+        super(ClusterDataSourcePlugin, self).__init__(config=config)
+        self.last_event_ts = {}
 
     @classmethod
     def params(cls, datasource, context):
         cluster = getattr(context, 'cluster', '')
         ownernode = getattr(context, 'ownernode', '')
+        collector_timeout = getattr(context, 'zCollectorClientTimeout', '')
         return dict(contexttitle=context.title,
                     ownernode=ownernode,
-                    cluster=cluster)
+                    cluster=cluster,
+                    collector_timeout = collector_timeout)
 
     def build_command_line(self):
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -274,18 +280,24 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             # if the ownernode has changed for any cluster service,
             # we need to remodel
             if ownernode and dsconf.params['ownernode'] != ownernode.strip():
-                data['events'].append(dict(
-                    eventClassKey='clusterOwnerChange',
-                    eventKey='clusterCollection',
-                    severity=ZenEventClasses.Info,
-                    summary='OwnerNode of cluster {} for cluster service {}'
-                            ' changed to {}'.format(
-                                dsconf.params['cluster'],
-                                name.strip(),
-                                ownernode),
-                    device=config.id,
-                    component=prepId(dsconf.component)
-                ))
+                component_key = (config.id, dsconf.component)
+                last_event_ts = self.last_event_ts.get(component_key, 0) 
+                default_wait_time = (dsconf.params['collector_timeout']*1.5)
+                if time.time()-last_event_ts >= default_wait_time:
+                    last_event_ts = time.time()
+                    data['events'].append(dict(
+                        eventClassKey='clusterOwnerChange',
+                        eventKey='clusterCollection',
+                        severity=ZenEventClasses.Info,
+                        summary='OwnerNode of cluster {} for cluster service {}'
+                                ' changed to {}'.format(
+                                    dsconf.params['cluster'],
+                                    name.strip(),
+                                    ownernode),
+                        device=config.id,
+                        component=prepId(dsconf.component)
+                    ))
+                    self.last_event_ts[component_key] = last_event_ts
 
         # look for any components not returned
         for dsconf in config.datasources:

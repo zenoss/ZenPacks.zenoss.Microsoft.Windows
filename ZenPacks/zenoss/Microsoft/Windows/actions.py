@@ -251,7 +251,7 @@ def schedule_remodel(device, evt=None):
             'agent': getattr(evt, 'agent', ''),
         })
 
-    pattern = re.compile(r'zenmodeler .+? %s( |$)' % device.id)
+    pattern = re.compile(r'zenmodeler.*%s' % device.id)
     for job in dmd.JobManager.getUnfinishedJobs():
         if pattern.search(job.job_description):
             log.info('Model of %s already scheduled', device.id)
