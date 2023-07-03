@@ -16,7 +16,6 @@ import json
 import re
 from xml.parsers.expat import ExpatError
 import xml.dom.minidom
-from xml.dom.ext import PrettyPrint
 from StringIO import StringIO
 from twisted.internet.defer import returnValue
 from zope.component import adapts
@@ -159,7 +158,7 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1) + INSERT_TIME + notime_match.group(2)
                 node.childNodes[0].data = filter_text
-            xml_query = prettify_xml(in_filter_xml)
+            xml_query = in_filter_xml.toprettyxml()
             # undo replacement of single quotes with double
             xml_query = re.sub(r"(\w+)='(\S+)'", r'\1="\2"', xml_query)
             # remove the xml header and replace any "&amp;" with "&"
@@ -180,15 +179,6 @@ def string_to_lines(string):
         return str(string).splitlines()
     log.warn('Could not convert string to lines: %s' % str(string))
     return []
-
-
-def prettify_xml(xml):
-    '''preserve XML formatting'''
-    iostream = StringIO()
-    PrettyPrint(xml, stream=iostream)
-    output = iostream.getvalue()
-    iostream.close()
-    return output
 
 
 class EventLogPlugin(PythonDataSourcePlugin):
