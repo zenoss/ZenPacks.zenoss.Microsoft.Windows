@@ -14,6 +14,8 @@ import Globals
 from itertools import repeat
 from collections import namedtuple
 
+from twisted.internet.defer import inlineCallbacks
+
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock
 from ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource import (
@@ -26,6 +28,14 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource import (
     RequestError
 )
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
+
+CROCHET_AVAILABLE = False
+try:
+    import crochet
+    crochet.setup()
+    CROCHET_AVAILABLE = True
+except ImportError, e:
+    pass
 
 STDOUT = '''  Timestamp                 CounterSamples
   ---------                 --------------
@@ -127,6 +137,8 @@ class TestPerfmonDataSourcePlugin(BaseTestCase):
     def plugin_simplified_init(datasource, config):
         datasource.config = config
         datasource.unique_id = 'test_unigue_id'
+        datasource.commandlines = 'test_command_line'
+        datasource._start_counter = 0
         datasource.network_failures = 0
         datasource.retry_count = 0
         datasource.was_receive_count = 0  # a new property to track how many tomes 'receive' method was called
@@ -162,6 +174,28 @@ class TestPerfmonDataSourcePlugin(BaseTestCase):
             plugin.onReceiveFail(failure)
             self.assertEquals(plugin.retry_count, 1)
             self.assertEquals(plugin.was_receive_count, 1)
+
+    if CROCHET_AVAILABLE:
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.LOG', Mock())
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.isOpen')
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.__init__', plugin_simplified_init)
+        @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.PerfmonDataSource.PerfmonDataSourcePlugin.check_for_update')
+        @crochet.wait_for(timeout=5.0)
+        @inlineCallbacks
+        def test_collect_port_unavailable(self, check_for_update, isOpen):
+            check_for_update.return_value = Mock()
+            isOpen.return_value = False
+
+            config = Mock()
+            config.datasources = [
+                Mock(manageIp='test_ip', zWinRMPort=5985)
+            ]
+            plugin = PerfmonDataSourcePlugin(config)
+            result = yield plugin.collect(config)
+            events = result['events']
+            self.assertEquals(plugin.state, "STOPPED")
+            self.assertEquals(len(events), 1)
+            self.assertEquals(events[0]['summary'], 'Perfmon command(s) did not start: WinRMPort - 5985 is unavailable.')
 
 
 def test_suite():
