@@ -103,6 +103,10 @@ class TestClusterDataSourcePlugin(BaseTestCase):
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource.log', Mock())
     def test_onSuccess(self):
         config = load_pickle_file(self, 'cluster_config')
+        
+        for datasource in config.datasources:
+            datasource.params.update({'collector_timeout':180})
+        
         results = CommandResponse(
             RAW_RESULTS['stdout'],
             RAW_RESULTS['stderr'],
@@ -143,7 +147,8 @@ class TestClusterDataSourcePlugin(BaseTestCase):
                     'eventlog': sentinel.eventlog,
                     'contexttitle': 'device',
                     'ownernode': 'IS-HVDRCL03-H04',
-                    'cluster': 'IS-HVDRCL03.tcy.prv'
+                    'cluster': 'IS-HVDRCL03.tcy.prv',
+                    'collector_timeout': 180
                 },
                 datasource='DataSource',
                 component=component)
