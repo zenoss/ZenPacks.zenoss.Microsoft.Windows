@@ -46,7 +46,7 @@ setup(
     license=LICENSE,
 
     # This is the version spec which indicates what versions of Zenoss
-    # this ZenPack is compatible with
+    # This ZenPack is compatible with
     compatZenossVers=COMPAT_ZENOSS_VERS,
 
     # previousZenPackName is a facility for telling Zenoss that the name
