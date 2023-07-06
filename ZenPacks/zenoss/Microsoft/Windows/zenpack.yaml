@@ -89,6 +89,8 @@ zProperties:
     label: 'Regex expressions to model services with generic class'
     description: 'List of regular expressions for Windows Service classes to model services with generic Windows Service class.'
     type: lines
+    default: ['BcastDVRUserService', 'BluetoothUserService', 'CaptureService', 'CDPUserSvc', 'DevicePickerUserSvc', 'DevicesFlowUserSvc', 'MessagingService', 'OneSyncSvc', 'PimIndexMaintenanceSvc', 'PrintWorkflowUserSvc', 'UnistoreSvc', 'UserDataSvc', 'WpnUserService']
+
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
