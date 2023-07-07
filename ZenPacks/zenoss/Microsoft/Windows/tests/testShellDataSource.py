@@ -23,7 +23,7 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
     ShellDataSourcePlugin, DCDiagStrategy, SqlConnection,
     PowershellMSSQLAlwaysOnAGStrategy, PowershellMSSQLAlwaysOnARStrategy,
     PowershellMSSQLAlwaysOnALStrategy, PowershellMSSQLAlwaysOnADBStrategy,
-    PowershellMSSQLJobStrategy
+    PowershellMSSQLJobStrategy, CustomCommandStrategy
 )
 
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
@@ -191,6 +191,7 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.ao_al_strategy = PowershellMSSQLAlwaysOnALStrategy()
         self.ao_adb_strategy = PowershellMSSQLAlwaysOnADBStrategy()
         self.mssql_job_strategy = PowershellMSSQLJobStrategy()
+        self.custom_command_strategy = CustomCommandStrategy()
 
         self.data_provider = DummyAlwaysOnStrategiesResponse()
 
@@ -500,6 +501,59 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.check_mssql_job_event_with_escape_characters_lastOutcome_success(monitoring_results.events)
         self.check_mssql_job_event_no_escape_characters_lastOutcome_success(monitoring_results.events)
 
+    def check_custom_command_event_nagios_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'TestComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Status')
+        self.assertEqual(custom_command_event['summary'], 'value:2')
+        self.assertEqual(custom_command_event['eventKey'], '')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_nagios_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandNagiosParser')
+        response = self.data_provider.get_custom_command_strategy_response_nagios_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_nagios_parser(monitoring_results.events)
+
+    def check_custom_command_event_cacti_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'ExampleComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Status')
+        self.assertEqual(custom_command_event['summary'], 'Datasource: RabbitMQ/ComponentErrorTest - Code: 2 - Msg: Misuse of shell builtins')
+        self.assertEqual(custom_command_event['eventKey'], '')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_nagios_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandCactiParser')
+        response = self.data_provider.get_custom_command_strategy_response_nagios_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_cacti_parser(monitoring_results.events)
+
+    def check_custom_command_event_json_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'TestComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Win/Shell')
+        self.assertEqual(custom_command_event['summary'], 'Component reached size limit')
+        self.assertEqual(custom_command_event['eventKey'], 'ComponentError')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_json_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandJSONParser')
+        response = self.data_provider.get_custom_command_strategy_response_json_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_json_parser(monitoring_results.events)
 
 def test_suite():
     """Return test suite for this module."""
