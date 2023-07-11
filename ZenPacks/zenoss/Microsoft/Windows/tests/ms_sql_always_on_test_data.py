@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2021-2023, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2021, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -1706,7 +1706,6 @@ class DummyAlwaysOnStrategiesResponse(ObjectFromDictProducer):
         response = self.object_from_dict(preprocessing_data['response_data'])
 
         return config, response
-
 
 def create_ao_device_proxy():
 
