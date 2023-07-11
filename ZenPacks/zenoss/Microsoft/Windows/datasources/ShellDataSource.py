@@ -354,8 +354,8 @@ class CustomCommandStrategy(object):
 
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
-        if dsconf.component is not None and len(dsconf.component):
-            cmd.component = dsconf.component
+        if dsconf.params['component'] is not None and len(dsconf.params['component']):
+            cmd.component = dsconf.params['component']
         else:
             cmd.component = dsconf.params['contextcompname']
 
@@ -1405,6 +1405,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         resource = datasource.talesEval(datasource.resource, context)
+        component = datasource.talesEval(datasource.component, context)
         if not resource.startswith('\\') and \
             datasource.strategy not in ('powershell MSSQL',
                                         'Custom Command',
@@ -1489,6 +1490,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     script=script,
                     parser=parser,
                     usePowershell=datasource.usePowershell,
+                    component=component,
                     contextrelname=contextrelname,
                     contextcompname=contextcompname,
                     contextmodname=contextmodname,

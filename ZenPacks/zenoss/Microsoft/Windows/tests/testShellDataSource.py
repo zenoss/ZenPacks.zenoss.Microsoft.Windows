@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -23,14 +23,14 @@ from ZenPacks.zenoss.Microsoft.Windows.datasources.ShellDataSource import (
     ShellDataSourcePlugin, DCDiagStrategy, SqlConnection,
     PowershellMSSQLAlwaysOnAGStrategy, PowershellMSSQLAlwaysOnARStrategy,
     PowershellMSSQLAlwaysOnALStrategy, PowershellMSSQLAlwaysOnADBStrategy,
-    PowershellMSSQLJobStrategy
+    PowershellMSSQLJobStrategy, CustomCommandStrategy
 )
 
 from ZenPacks.zenoss.Microsoft.Windows.lib.txwinrm.shell import CommandResponse
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle, load_pickle_file
 from ZenPacks.zenoss.Microsoft.Windows.tests.mock import sentinel, patch, Mock, MagicMock
 from ZenPacks.zenoss.Microsoft.Windows.tests.ms_sql_always_on_test_data import DummyAlwaysOnStrategiesResponse
-
+from ZenPacks.zenoss.Microsoft.Windows.tests.custom_command_test_data import DummyCustomCommandStrategyResponse
 
 CROCHET_AVAILABLE = False
 try:
@@ -501,12 +501,75 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.check_mssql_job_event_no_escape_characters_lastOutcome_success(monitoring_results.events)
 
 
+class TestCustomCommandDatasourceStrategy(BaseTestCase):
+
+    def setUp(self):
+        self.custom_command_strategy = CustomCommandStrategy()
+        self.data_provider = DummyCustomCommandStrategyResponse()
+
+    def check_custom_command_event_nagios_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'TestComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Status')
+        self.assertEqual(custom_command_event['summary'], 'value:2')
+        self.assertEqual(custom_command_event['eventKey'], '')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_nagios_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandNagiosParser')
+        response = self.data_provider.get_custom_command_strategy_response_nagios_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_nagios_parser(monitoring_results.events)
+
+    def check_custom_command_event_cacti_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'ExampleComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Status')
+        self.assertEqual(custom_command_event['summary'], 'RabbitMQ has no issues on this node')
+        self.assertEqual(custom_command_event['eventKey'], '')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_cacti_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandCactiParser')
+        response = self.data_provider.get_custom_command_strategy_response_cacti_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_cacti_parser(monitoring_results.events)
+
+    def check_custom_command_event_json_parser(self, data):
+        self.assertEqual(len(data), 2)
+        custom_command_event = data[0]
+
+        self.assertEqual(custom_command_event['component'], 'TestComponent')
+        self.assertEqual(custom_command_event['eventClass'], '/Win/Shell')
+        self.assertEqual(custom_command_event['summary'], 'Component reached size limit')
+        self.assertEqual(custom_command_event['eventKey'], 'ComponentError')
+        self.assertEqual(custom_command_event['device'], '10.88.122.71')
+        self.assertEqual(custom_command_event['severity'], 4)
+
+    def test_powershell_custom_command_parse_result_json_parser(self):
+        config = load_pickle_file(self, 'ShellDataSourceCustomCommandJSONParser')
+        response = self.data_provider.get_custom_command_strategy_response_json_parser()
+        monitoring_results = self.custom_command_strategy.parse_result(config, response)
+
+        self.check_custom_command_event_json_parser(monitoring_results.events)
+
+
+
 def test_suite():
     """Return test suite for this module."""
     from unittest import TestSuite, makeSuite
     suite = TestSuite()
     suite.addTest(makeSuite(TestShellDataSourcePlugin))
     suite.addTest(makeSuite(TestAlwaysOnDatasourceStrategies))
+    suite.addTest(makeSuite(TestCustomCommandDatasourceStrategy))
     return suite
 
 
