@@ -146,6 +146,7 @@ class WinCommandAction(IActionBase):
         if callable(disable_rdns):
             disable_rdns = disable_rdns()
         connect_timeout = getattr(device, 'zWinRMConnectTimeout', 60)
+        port_check_timeout = getattr(device, 'zWinRMPortCheckTimeout', 1)
         return ConnectionInfo(
             hostname=device.windows_servername() or device.manageIp,
             auth_type='kerberos' if '@' in device.zWinRMUser else 'basic',
@@ -165,7 +166,8 @@ class WinCommandAction(IActionBase):
             code_page=code_page,
             include_dir=include_dir,
             disable_rdns=disable_rdns,
-            connect_timeout=connect_timeout)
+            connect_timeout=connect_timeout,
+            port_check_timeout=port_check_timeout)
 
     def _execute_command(self, device, command):
         """
