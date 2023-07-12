@@ -145,6 +145,7 @@ class ZenPack(schema.ZenPack):
                             'zWinRMConnectTimeout': {'type': 'int',
                                                      'description': 'Used to define the time out for a winrm connection.'},
                             'zWinRMPortCheckTimeout': {'type': 'float',
+                                                       'default': 1,
                                                        'description': 'Used to define the time out for WinRM port availability check before connection.',
                                                        'label': 'WinRM port availability check timeout'},
                             'zWinRMLongRunningCommandOperationTimeout': {'type': 'int',

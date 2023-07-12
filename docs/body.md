@@ -1286,6 +1286,9 @@ important.
 - zWinRMConnectionCloseTime
     :   Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.
 
+- zWinRMPortCheckTimeout
+    :   WinRM port availability check timeout. Used to define the timeout for WinRM port availability check before Kerberos connection initialization.
+
 - zWinDBStateMonitoringIgnore
     :   MS SQL Database monitoring ignored statuses. Add database statuses in which monitoring request will not be performed for MS SQL Databases.
 
@@ -1902,7 +1905,7 @@ If you see errors containing text similar to "The term 'New-Object' is not
 recognized as the name of a cmdlet, function, script file, or operable program",
 this could indicate a problem with the loading of Powershell modules. Zenoss
 uses common best practice to execute powershell scripts with the
-[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficency.
+[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficiency.
 Powershell will fall back on the default system PSModulePath in this case.
 You must ensure that the default PSModulePath environment variable is valid.
 
@@ -1917,6 +1920,11 @@ Perfmon datasource python plugin invokes long-running Powershell command. When y
 for which is collected by Perfmon datasource plugin and zenpython debug logs shows 
 `'The WS-Management service cannot complete the operation within the time specified in OperationTimeout'` message, 
 `zWinRMLongRunningCommandOperationTimeout` property value can be increased. This property is applicable only for Perfmon datasource.
+
+If you see an event and log messages containing: `'Perfmon command(s) did not start: Connection Aborted! Reason: WinRM port <port_number> on <host_ip_address> is not available!'`
+on the devices that do not have connectivity issues, you should increase the value of `'zWinRMPortCheckTimeout'`. Keep increasing the value of this zProperty until events
+and errors will be visible only for the devices with real connectivity issues.
+Note: This problem could also affect other Windows ZP datasources and strongly depends on the Zenoss Infrastructure scale.
 
 ### Troubleshooting MSSQL Modeling/Monitoring
 
@@ -1999,9 +2007,10 @@ Configuration Properties
 :   zSQLAlwaysOnReplicaPerfdataNode
 :   zWinRMLongRunningCommandOperationTimeout
 :   zWinRMConnectionCloseTime
+:   zWinRMPortCheckTimeout
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
-:   zWinServicesSetGenericClass
+:   zWinServicesGroupedByClass
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
