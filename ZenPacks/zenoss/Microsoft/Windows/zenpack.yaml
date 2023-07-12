@@ -54,6 +54,11 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zWinRMPortCheckTimeout:
+    label: 'WinRM port availability check timeout'
+    type: float
+    default: 1
+    description: 'Used to define the time out for WinRM port availability check before connection.'
   zWinRMLongRunningCommandOperationTimeout:
     label: 'Long Running Command Operation Timeout'
     type: int

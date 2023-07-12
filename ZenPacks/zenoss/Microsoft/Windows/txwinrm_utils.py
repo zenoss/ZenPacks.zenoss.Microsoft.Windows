@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -11,6 +11,7 @@ import re
 import logging
 
 from .utils import addLocalLibPath
+
 addLocalLibPath()
 
 # Requires that addLocalLibPath be called above.
@@ -41,6 +42,7 @@ ConnectionInfoProperties = (
     'zWinRMConnectTimeout',
     'zWinRMLongRunningCommandOperationTimeout',
     'zWinRMConnectionCloseTime',
+    'zWinRMPortCheckTimeout',
     'zSQLAlwaysOnEnabled',
     'zWinServicesModeled',
     'zWinServicesNotModeled',
@@ -124,14 +126,15 @@ def createConnectionInfo(device_proxy):
         # If property exists on object but not defined, return default instead
         return value if value != None else default
 
-    envelope_size         = getWinAttr(device_proxy, 'zWinRMEnvelopeSize', 512000)
-    locale                = getWinAttr(device_proxy, 'zWinRMLocale', 'en-US')
-    code_page             = getWinAttr(device_proxy, 'zWinRSCodePage', 65001)
-    include_dir           = getWinAttr(device_proxy, 'zWinRMKrb5includedir', None)
-    disable_rdns          = getWinAttr(device_proxy, 'kerberos_rdns', False)
-    connect_timeout       = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    envelope_size = getWinAttr(device_proxy, 'zWinRMEnvelopeSize', 512000)
+    locale = getWinAttr(device_proxy, 'zWinRMLocale', 'en-US')
+    code_page = getWinAttr(device_proxy, 'zWinRSCodePage', 65001)
+    include_dir = getWinAttr(device_proxy, 'zWinRMKrb5includedir', None)
+    disable_rdns = getWinAttr(device_proxy, 'kerberos_rdns', False)
+    connect_timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
     connection_close_time = getWinAttr(device_proxy, 'zWinRMConnectionCloseTime', 60)
-    timeout               = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    timeout = getWinAttr(device_proxy, 'zWinRMConnectTimeout', 60)
+    port_check_timeout = getWinAttr(device_proxy, 'zWinRMPortCheckTimeout', 1)
 
     return ConnectionInfo(
         hostname=hostname,
@@ -154,12 +157,12 @@ def createConnectionInfo(device_proxy):
         include_dir=include_dir,
         disable_rdns=disable_rdns,
         connect_timeout=connect_timeout,
+        port_check_timeout=port_check_timeout,
         connection_close_time=connection_close_time,
     )
 
 
 def modify_connection_info(connection_info, datasource_config, data_to_reset=None):
-
     if not isinstance(connection_info, ConnectionInfo):
         log.debug('Provided Connection info %s is not with proper type %s, cant modify',
                   connection_info,
@@ -198,6 +201,7 @@ def modify_connection_info(connection_info, datasource_config, data_to_reset=Non
         connection_info = connection_info._replace(**data_to_reset)
 
     return connection_info
+
 
 def update_dsconf(dsconf):
     if not dsconf:
