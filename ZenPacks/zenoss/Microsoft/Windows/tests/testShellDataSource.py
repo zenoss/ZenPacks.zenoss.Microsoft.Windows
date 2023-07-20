@@ -197,7 +197,7 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(om.monitor, True)
 
     def test_get_db_om_complex_db_status_ignored(self):
-        self.get_db_om_config.params['db_ignored_statuses'] = ['AutoClosed']
+        self.get_db_om_config.params['db_ignored_statuses'] = ['AutoClosed-Normal']
         data = {'status': 9}
         om = get_db_om(self.get_db_om_config, data)
         self.assertEquals(om.monitor, False)
@@ -294,8 +294,7 @@ class TestAlwaysOnDatasourceStrategies(BaseTestCase):
         self.assertEqual(ar_event['severity'], 0)
         self.assertEqual(ar_event['eventClassKey'], 'AOAvailabilityReplicaPropChange synchronization_health')
         self.assertEqual(ar_event['component'], '8974cff2-f04e-4399-96b5-1f256f632e6d')
-        self.assertEqual(ar_event['summary'],
-                         'Synchronization Health of Availability Replica WSC-NODE-03\\SQLAON is Healthy')
+        self.assertEqual(ar_event['summary'], 'Synchronization Health of Availability Replica WSC-NODE-03\\SQLAON is Healthy')
         self.assertEqual(ar_event['eventKey'], 'synchronization_health change')
         self.assertEqual(ar_event['device'], '10.88.122.130')
         self.assertEqual(ar_event['eventClass'], '/Status')

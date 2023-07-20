@@ -13,12 +13,15 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 import base64
+import logging
 from datetime import datetime
 import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
 from Products.DataCollector.plugins.DataMaps import ObjectMap
+
+log = logging.getLogger("zen.MicrosoftWindows.utils")
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -35,6 +38,7 @@ DB_STATUSES = {
     2: 'EmergencyMode',
     4: 'Inaccessible',
     8: 'Normal',
+    9: 'AutoClosed-Normal',
     16: 'Offline',
     32: 'Recovering',
     64: 'RecoveryPending',
@@ -79,6 +83,7 @@ def lookup_database_status(value):
         'EmergencyMode': 2,
         'Inaccessible': 4,
         'Normal': 8,
+        'AutoClosed-Normal': 9,
         'Offline': 16,
         'Recovering': 32,
         'RecoveryPending': 64,
@@ -1201,8 +1206,7 @@ def get_adb_severities(prop_name, prop_value):
             pass
 
     if isinstance(prop_value, int):
-        max_db_status = max(get_db_bit_statuses(prop_value))
-        prop_value = DB_STATUSES.get(max_db_status)
+        prop_value = DB_STATUSES.get(prop_value)
 
     adb_severities_map = {
         'status': {
@@ -1525,11 +1529,13 @@ def get_db_monitored(db_status, ignored_db_statuses):
     :return: Boolean
     """
     if db_status:
-        db_bit_statuses = get_db_bit_statuses(db_status)
-        for bit_status in db_bit_statuses:
-            status_name = DB_STATUSES.get(int(bit_status)).lower()
-            if status_name in [status.lower().strip() for status in ignored_db_statuses]:
-                return False
+        status_name = DB_STATUSES.get(int(db_status), '').lower()
+        if not status_name:
+            log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
+                        "Skipped check for ignored DB statuses.")
+            return True
+        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
+            return False
     return True
 
 
@@ -1548,13 +1554,3 @@ def get_db_om(datasource_config, data):
             is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
             setattr(db_om, 'monitor', is_monitored)
     return db_om
-
-
-def get_db_bit_statuses(value):
-    statuses = []
-
-    for bit in sorted(DB_STATUSES.keys()):
-        if value & bit:
-            statuses.append(bit)
-
-    return statuses
