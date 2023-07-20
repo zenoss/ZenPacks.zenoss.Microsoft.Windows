@@ -454,7 +454,7 @@ def check_for_network_error(result, config, default_class='/Status/Winrm'):
     if 'Unauthorized' in str_result:
         return 'Unauthorized, check username and password {}'.format(config.id), '/Status'
 
-    msg = 'Failed collection {0} on {1}'.format(
+    msg = 'Failed collection with message: "{0}" on {1}'.format(
         result.value.message, config.id
     )
 
@@ -1201,7 +1201,8 @@ def get_adb_severities(prop_name, prop_value):
             pass
 
     if isinstance(prop_value, int):
-        prop_value = DB_STATUSES.get(prop_value)
+        max_db_status = max(get_db_bit_statuses(prop_value))
+        prop_value = DB_STATUSES.get(max_db_status)
 
     adb_severities_map = {
         'status': {
@@ -1524,9 +1525,11 @@ def get_db_monitored(db_status, ignored_db_statuses):
     :return: Boolean
     """
     if db_status:
-        status_name = DB_STATUSES.get(int(db_status)).lower()
-        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
-            return False
+        db_bit_statuses = get_db_bit_statuses(db_status)
+        for bit_status in db_bit_statuses:
+            status_name = DB_STATUSES.get(int(bit_status)).lower()
+            if status_name in [status.lower().strip() for status in ignored_db_statuses]:
+                return False
     return True
 
 
@@ -1540,9 +1543,18 @@ def get_db_om(datasource_config, data):
     db_om.compname = datasource_config.params['contextcompname']
     db_om.modname = datasource_config.params['contextmodname']
     db_om.relname = datasource_config.params['contextrelname']
-
     for key, value in data.iteritems():
         if key == 'status':
             is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
             setattr(db_om, 'monitor', is_monitored)
     return db_om
+
+
+def get_db_bit_statuses(value):
+    statuses = []
+
+    for bit in sorted(DB_STATUSES.keys()):
+        if value & bit:
+            statuses.append(bit)
+
+    return statuses
