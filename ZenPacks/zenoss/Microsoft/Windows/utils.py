@@ -13,12 +13,15 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 import base64
+import logging
 from datetime import datetime
 import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
 from Products.DataCollector.plugins.DataMaps import ObjectMap
+
+log = logging.getLogger("zen.MicrosoftWindows.utils")
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -35,6 +38,7 @@ DB_STATUSES = {
     2: 'EmergencyMode',
     4: 'Inaccessible',
     8: 'Normal',
+    9: 'AutoClosed-Normal',
     16: 'Offline',
     32: 'Recovering',
     64: 'RecoveryPending',
@@ -79,6 +83,7 @@ def lookup_database_status(value):
         'EmergencyMode': 2,
         'Inaccessible': 4,
         'Normal': 8,
+        'AutoClosed-Normal': 9,
         'Offline': 16,
         'Recovering': 32,
         'RecoveryPending': 64,
@@ -454,7 +459,7 @@ def check_for_network_error(result, config, default_class='/Status/Winrm'):
     if 'Unauthorized' in str_result:
         return 'Unauthorized, check username and password {}'.format(config.id), '/Status'
 
-    msg = 'Failed collection {0} on {1}'.format(
+    msg = 'Failed collection with message: "{0}" on {1}'.format(
         result.value.message, config.id
     )
 
@@ -1524,7 +1529,11 @@ def get_db_monitored(db_status, ignored_db_statuses):
     :return: Boolean
     """
     if db_status:
-        status_name = DB_STATUSES.get(int(db_status)).lower()
+        status_name = DB_STATUSES.get(int(db_status), '').lower()
+        if not status_name:
+            log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
+                        "Skipped check for ignored DB statuses.")
+            return True
         if status_name in [status.lower().strip() for status in ignored_db_statuses]:
             return False
     return True
@@ -1540,7 +1549,6 @@ def get_db_om(datasource_config, data):
     db_om.compname = datasource_config.params['contextcompname']
     db_om.modname = datasource_config.params['contextmodname']
     db_om.relname = datasource_config.params['contextrelname']
-
     for key, value in data.iteritems():
         if key == 'status':
             is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
