@@ -14,7 +14,7 @@ import pprint
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
-from ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource import EventLogPlugin
+from ZenPacks.zenoss.Microsoft.Windows.datasources.EventLogDataSource import EventLogPlugin, EventLogInfo
 from ZenPacks.zenoss.Microsoft.Windows.tests.utils import load_pickle_file
 
 INFO_EXPECTED = {
@@ -46,6 +46,33 @@ CRITICAL_EXPECTED = {
     'summary': u'The last sleep transition was unsuccessful',
     'user': u''}
 
+XML_QUERIES = {
+    'query_utf_8_indent_2': """<?xml version="1.0" encoding="UTF-8"?>
+                               <QueryList>
+                                 <Query Id="0" Path="Application">
+                                   <Select Path="Application">
+                                     *[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]] and (Level=1  or Level=2)]]
+                                   </Select>
+                                 </Query>
+                               </QueryList>""",
+    'query_utf_8_indent_4': """<?xml version="1.0" encoding="UTF-8"?>
+                               <QueryList>
+                                         <Query Id="0" Path="Application">
+                                                 <Select Path="Application">
+                                                 *[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]] and (Level=1  or Level=2)]]
+                                                 </Select>
+                                         </Query>
+                               </QueryList>""",
+    'query_default_indent_4': """<?xml version="1.0"?>
+                                <QueryList>
+                                        <Query Id="0" Path="Application">
+                                                <Select Path="Application">
+                                                *[System[TimeCreated[timediff(@SystemTime) &lt;= {time}]]] and (Level=1  or Level=2)]]
+                                                </Select>
+                                        </Query>
+                                </QueryList>"""
+}
+
 
 class TestDataSourcePlugin(BaseTestCase):
     def test_onSuccess(self):
@@ -67,6 +94,12 @@ class TestDataSourcePlugin(BaseTestCase):
         results.stdout[1] = results.stdout[1].replace('"EntryType": "Information"', '"EntryType": "Invalid"')
         res = plugin.onSuccess(results, config)
         self.assertEquals(res['events'][0]['severity'], 2)
+
+    def test_get_query(self):
+        info = EventLogInfo(dataSource=Mock(query=None))
+        for key, query in XML_QUERIES.iteritems():
+            info.set_query(query)
+            self.assertTrue(info.get_query())
 
 
 def test_suite():
