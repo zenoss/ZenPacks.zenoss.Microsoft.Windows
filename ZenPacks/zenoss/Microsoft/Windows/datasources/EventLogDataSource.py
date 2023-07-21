@@ -148,7 +148,7 @@ class EventLogInfo(InfoBase):
                 self._object.query = value
                 return
             for node in in_filter_xml.getElementsByTagName('Select'):
-                filter_text = node.childNodes[0].data
+                filter_text = node.childNodes[0].data.strip()
                 time_match = re.match('(.*TimeCreated)(\[.*?\])(.*)', filter_text)
                 if time_match:
                     # easy to replace with our time filter
@@ -158,12 +158,12 @@ class EventLogInfo(InfoBase):
                     notime_match = re.match('(\*\[System\[)(.*)', filter_text)
                     filter_text = notime_match.group(1) + INSERT_TIME + notime_match.group(2)
                 node.childNodes[0].data = filter_text
-            xml_query = in_filter_xml.toprettyxml()
+            xml_query = in_filter_xml.toprettyxml(indent='  ')
             # undo replacement of single quotes with double
             xml_query = re.sub(r"(\w+)='(\S+)'", r'\1="\2"', xml_query)
             # remove the xml header and replace any "&amp;" with "&"
-            header = '<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n'
-            xml_query = xml_query.replace(header, '').replace('&amp;', '&')
+            xml_header_pattern = re.compile(r'<\?xml\s+version="1\.0"(?:\s+encoding="UTF-8")?\s*\?>\n')
+            xml_query = re.sub(xml_header_pattern, '', xml_query).replace('&amp;', '&')
             self._object.query = xml_query
 
     def get_query(self):
