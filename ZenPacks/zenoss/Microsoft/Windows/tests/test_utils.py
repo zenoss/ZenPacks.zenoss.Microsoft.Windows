@@ -11,7 +11,7 @@ from ZenPacks.zenoss.Microsoft.Windows.tests.utils import ItemBuilder
 
 from Products.ZenTestCase.BaseTestCase import BaseTestCase
 
-from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText, get_processNameAndArgs
+from ZenPacks.zenoss.Microsoft.Windows.utils import get_processText, get_processNameAndArgs, get_sql_instance_original_name
 
 
 process_wmi_data = {
@@ -73,3 +73,38 @@ class TestUtils(BaseTestCase):
                 self.assertEquals(args, expected_args)
             else:
                 self.assertEquals(args, '')
+
+    def test_get_sql_instance_original_name_default(self):
+        """Test get SQL Instance original name with a default behavior."""
+        instance_name = 'MSSQLSERVER'
+        instance_hostname = 'hostname_1'
+        instance_original_name = get_sql_instance_original_name(instance_name, instance_hostname)
+        self.assertEquals(instance_original_name, 'MSSQLSERVER')
+
+    def test_get_sql_instance_original_name_empty_instance_hostname(self):
+        """Test get SQL Instance original name with an empty instance hostname."""
+        instance_name = 'MSSQLSERVER'
+        instance_hostname = None
+        instance_original_name = get_sql_instance_original_name(instance_name, instance_hostname)
+        self.assertEquals(instance_original_name, 'MSSQLSERVER')
+
+    def test_get_sql_instance_original_name_empty_all_data(self):
+        """Test get SQL Instance original name with an empty instance name and instance hostname."""
+        instance_name = None
+        instance_hostname = None
+        instance_original_name = get_sql_instance_original_name(instance_name, instance_hostname)
+        self.assertEquals(instance_original_name, None)
+
+
+def test_suite():
+    """Return test suite for this module."""
+    from unittest import TestSuite, makeSuite
+    suite = TestSuite()
+    suite.addTest(makeSuite(TestUtils))
+    return suite
+
+
+if __name__ == "__main__":
+    from zope.testrunner.runner import Runner
+    runner = Runner(found_suites=[test_suite()])
+    runner.run()
