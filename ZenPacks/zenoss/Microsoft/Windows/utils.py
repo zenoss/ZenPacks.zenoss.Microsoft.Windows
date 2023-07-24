@@ -1527,14 +1527,14 @@ def get_db_monitored(db_status, ignored_db_statuses):
     Define whether Database in statuses, which shouldn't be monitored.
     :return: Boolean
     """
+    ignored_db_status_names = (status.lower().strip() for status in ignored_db_statuses)
     if db_status:
-        db_bit_statuses = get_db_bit_statuses(db_status)
-        for bit_status in db_bit_statuses:
+        for bit_status in get_db_bit_statuses(db_status):
             status_name = DB_STATUSES.get(int(bit_status), '').lower()
             if not status_name:
                 log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
                             "Skipped check for ignored DB statuses.".format(db_status))
-            if status_name in [status.lower().strip() for status in ignored_db_statuses]:
+            if status_name in ignored_db_status_names:
                 return False
     return True
 
