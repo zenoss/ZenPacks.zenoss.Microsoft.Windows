@@ -831,7 +831,7 @@ def get_sql_instance_original_name(instance_name, instance_hostname):
     """
     instance_original_name = instance_name
 
-    if not isinstance(instance_name, basestring) and not isinstance(instance_hostname, basestring):
+    if not isinstance(instance_name, basestring) or not isinstance(instance_hostname, basestring):
         return instance_original_name
 
     if instance_name.lower().strip() == instance_hostname.lower().strip():
