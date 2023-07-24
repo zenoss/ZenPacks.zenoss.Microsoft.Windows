@@ -38,7 +38,6 @@ DB_STATUSES = {
     2: 'EmergencyMode',
     4: 'Inaccessible',
     8: 'Normal',
-    9: 'AutoClosed-Normal',
     16: 'Offline',
     32: 'Recovering',
     64: 'RecoveryPending',
@@ -83,7 +82,6 @@ def lookup_database_status(value):
         'EmergencyMode': 2,
         'Inaccessible': 4,
         'Normal': 8,
-        'AutoClosed-Normal': 9,
         'Offline': 16,
         'Recovering': 32,
         'RecoveryPending': 64,
@@ -1206,7 +1204,8 @@ def get_adb_severities(prop_name, prop_value):
             pass
 
     if isinstance(prop_value, int):
-        prop_value = DB_STATUSES.get(prop_value)
+        max_db_status = max(get_db_bit_statuses(prop_value))
+        prop_value = DB_STATUSES.get(max_db_status)
 
     adb_severities_map = {
         'status': {
@@ -1528,14 +1527,15 @@ def get_db_monitored(db_status, ignored_db_statuses):
     Define whether Database in statuses, which shouldn't be monitored.
     :return: Boolean
     """
+    ignored_db_status_names = (status.lower().strip() for status in ignored_db_statuses)
     if db_status:
-        status_name = DB_STATUSES.get(int(db_status), '').lower()
-        if not status_name:
-            log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
-                        "Skipped check for ignored DB statuses.")
-            return True
-        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
-            return False
+        for bit_status in get_db_bit_statuses(db_status):
+            status_name = DB_STATUSES.get(int(bit_status), '').lower()
+            if not status_name:
+                log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
+                            "Skipped check for ignored DB statuses.".format(db_status))
+            if status_name in ignored_db_status_names:
+                return False
     return True
 
 
@@ -1554,3 +1554,13 @@ def get_db_om(datasource_config, data):
             is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
             setattr(db_om, 'monitor', is_monitored)
     return db_om
+
+
+def get_db_bit_statuses(value):
+    statuses = []
+
+    for bit in sorted(DB_STATUSES.keys()):
+        if value & bit:
+            statuses.append(bit)
+
+    return statuses

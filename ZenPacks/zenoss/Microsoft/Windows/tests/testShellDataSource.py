@@ -197,8 +197,12 @@ class TestShellDataSourcePlugin(BaseTestCase):
         self.assertEquals(om.monitor, True)
 
     def test_get_db_om_complex_db_status_ignored(self):
-        self.get_db_om_config.params['db_ignored_statuses'] = ['AutoClosed-Normal']
+        self.get_db_om_config.params['db_ignored_statuses'] = ['AutoClosed', 'Normal']
         data = {'status': 9}
+        om = get_db_om(self.get_db_om_config, data)
+        self.assertEquals(om.monitor, False)
+        self.get_db_om_config.params['db_ignored_statuses'] = ['AutoClosed', 'Offline']
+        data = {'status': 17}
         om = get_db_om(self.get_db_om_config, data)
         self.assertEquals(om.monitor, False)
 
