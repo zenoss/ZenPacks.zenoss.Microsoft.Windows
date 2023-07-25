@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2019, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -229,6 +229,7 @@ def getSQLAssembly(version=None):
     ASSEMBLY_2016 = 'Version=13.0.0.0'
     ASSEMBLY_2017 = 'Version=14.0.0.0'
     ASSEMBLY_2019 = 'Version=15.0.0.0'
+    ASSEMBLY_2022 = 'Version=16.0.0.0'
 
     MSSQL2005_CONNECTION_INFO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Connection,
@@ -265,13 +266,19 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2019,
         ASSEMBLY)
 
+    MSSQL2022_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2022,
+        ASSEMBLY)
+
     MSSQL_CONNECTION_INFO = {9: MSSQL2005_CONNECTION_INFO,
                              10: MSSQL2008_CONNECTION_INFO,
                              11: MSSQL2012_CONNECTION_INFO,
                              12: MSSQL2014_CONNECTION_INFO,
                              13: MSSQL2016_CONNECTION_INFO,
                              14: MSSQL2017_CONNECTION_INFO,
-                             15: MSSQL2019_CONNECTION_INFO}
+                             15: MSSQL2019_CONNECTION_INFO,
+                             16: MSSQL2022_CONNECTION_INFO}
 
     MSSQL2005_SMO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Smo,
@@ -308,18 +315,27 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2019,
         ASSEMBLY)
 
+    MSSQL2022_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2022,
+        ASSEMBLY)
+
     MSSQL_SMO = {9: MSSQL2005_SMO,
                  10: MSSQL2008_SMO,
                  11: MSSQL2012_SMO,
                  12: MSSQL2014_SMO,
                  13: MSSQL2016_SMO,
                  14: MSSQL2017_SMO,
-                 15: MSSQL2019_SMO}
+                 15: MSSQL2019_SMO,
+                 16: MSSQL2022_SMO}
 
     ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
 
     sqlConnection = []
-    if version not in [9, 10, 11, 12, 13, 14, 15]:
+    if version not in [9, 10, 11, 12, 13, 14, 15, 16]:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2022_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2019_CONNECTION_INFO)
         sqlConnection.append("}catch{")
@@ -342,8 +358,11 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_CONNECTION_INFO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}}}}}")
+        sqlConnection.append("}}}}}}}}")
 
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2022_SMO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2019_SMO)
         sqlConnection.append("}catch{")
@@ -366,7 +385,7 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_SMO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append('}}}}}}}')
+        sqlConnection.append('}}}}}}}}')
     else:
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL_CONNECTION_INFO.get(version))
