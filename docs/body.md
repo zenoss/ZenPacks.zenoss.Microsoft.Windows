@@ -1935,6 +1935,9 @@ our queries to model and monitor the databases can execute in a timely manner.
 
 ## Zenoss Analytics
 
+**NOTE: These steps are applicable only for Zenoss Analytics 5.x.x.**
+**In Analytics 6.0.0, any third-party reporting tool can be used to generate reports.**
+
 This ZenPack provides additional support for Zenoss Analytics. Perform
 the following steps to install extra reporting resources into Zenoss
 Analytics after installing the ZenPack.
