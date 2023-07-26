@@ -1046,7 +1046,7 @@ Note: An Administrator level user can be denied local logon and remote desktop a
 
 If using an LPU account, it is the responsibility of the Windows and network administrators of your organization to ensure that the above permissions are understood, in place, and maintained.
 
-Note: To configure and give all the permissions to LPU users we need to run the LPU script. It is recommended to run the LPU script from a SYSTEM account. To run this script correctly the SYSTEM account must have "Change Permission" or this script should be executed under the "Administrator: user.
+Note: To configure and give all the permissions to LPU users we need to run the LPU script. It is recommended to run the LPU script from a "SYSTEM" account. To run this script correctly the SYSTEM account must have "Change Permission" or this script should be executed under the "Administrator" user.
 Otherwise, you will receive an "Access is denied" error during LPU script execution, and not all Windows Services will be discovered by Windows ZenPack.
 
 ### Port Requirements
