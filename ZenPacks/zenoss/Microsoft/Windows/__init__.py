@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2019, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -178,7 +178,10 @@ class ZenPack(schema.ZenPack):
                                                      'label': 'MS SQL Database Snapshots modeling disabled'},
                             'zWinServicesGroupedByClass': {'type': 'lines',
                                                      'description': 'List of regular expressions for Windows services to model with generic Windows Service class.',
-                                                     'label': 'Regex expressions to model services with generic class'}
+                                                     'label': 'Regex expressions to model services with generic class'},
+                            'zWinClusterResourcesMonitoringDisabled': {'type': 'boolean',
+                                                                       'description': 'Set to true to disable monitoring for Windows Cluster Resources if their corresponding Windows Service startup type is "Disabled".',
+                                                                       'label': 'Windows Cluster Resource monitoring disabling according to its corresponding Windows Service startup type'}
                             }
 
     def install(self, app):
