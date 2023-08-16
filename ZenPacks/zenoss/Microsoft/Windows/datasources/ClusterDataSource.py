@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2018, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -13,7 +13,7 @@ A datasource that queries cluster object status.
 See Products.ZenModel.ZenPack._getClassesByPath() to understand how this class
 gets discovered as a datasource type in Zenoss.
 """
-
+import time
 import logging
 from traceback import format_exc
 
@@ -39,7 +39,7 @@ from ..utils import (
     save, errorMsgCheck, generateClearAuthEvents, get_dsconf,
     cluster_disk_state_string, cluster_csv_state_to_disk_map)
 from . import send_to_debug
-import time
+
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
@@ -104,6 +104,10 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
     proxy_attributes = ConnectionInfoProperties
 
+    def __init__(self, config=None):
+        super(ClusterDataSourcePlugin, self).__init__(config=config)
+        self.last_event_ts = {}
+
     @classmethod
     def config_key(cls, datasource, context):
         """
@@ -112,20 +116,22 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
         return (context.device().id,
                 datasource.getCycleTime(context),
                 datasource.plugin_classname)
-    
-    def __init__(self, config=None):
-        super(ClusterDataSourcePlugin, self).__init__(config=config)
-        self.last_event_ts = {}
 
     @classmethod
     def params(cls, datasource, context):
         cluster = getattr(context, 'cluster', '')
         ownernode = getattr(context, 'ownernode', '')
-        collector_timeout = getattr(context, 'zCollectorClientTimeout', '')
+        is_winservice_disabled = getattr(context, 'is_winservice_disabled', None)
+        if is_winservice_disabled:
+            disable_monitoring = is_winservice_disabled()
+        else:
+            disable_monitoring = False
+        collector_timeout = getattr(context, 'zCollectorClientTimeout', 180)
         return dict(contexttitle=context.title,
                     ownernode=ownernode,
                     cluster=cluster,
-                    collector_timeout = collector_timeout)
+                    collector_timeout=collector_timeout,
+                    disable_monitoring=disable_monitoring)
 
     def build_command_line(self):
         pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
@@ -236,6 +242,15 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                     result, config.id))
                 continue
             comp = prepId(comp)
+            dsconf = get_dsconf(
+                config.datasources, str(comp), param='contexttitle')
+            if dsconf is None:
+                # component probably not modeled, see ZEN-23142
+                continue
+            if dsconf.params.get('disable_monitoring', False):
+                # component's corresponding Windows Service is disabled
+                # and zWinClusterResourcesMonitoringDisabled is True
+                continue
             try:
                 # specific for cluster disk component
                 data['values'][comp]['state'] = int(state)
@@ -252,11 +267,6 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
             except Exception:
                 # handles all other cases
                 data['values'][comp]['state'] = cluster_state_value(state), 'N'
-            dsconf = get_dsconf(
-                config.datasources, str(comp), param='contexttitle')
-            if dsconf is None:
-                # component probably not modeled, see ZEN-23142
-                continue
             severity = {
                 'Online': ZenEventClasses.Clear,
                 'Up': ZenEventClasses.Clear,
@@ -276,24 +286,22 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 device=config.id,
                 component=prepId(dsconf.component)
             ))
-
             # if the ownernode has changed for any cluster service,
             # we need to remodel
             if ownernode and dsconf.params['ownernode'] != ownernode.strip():
                 component_key = (config.id, dsconf.component)
-                last_event_ts = self.last_event_ts.get(component_key, 0) 
-                default_wait_time = (dsconf.params['collector_timeout']*1.5)
-                if time.time()-last_event_ts >= default_wait_time:
+                last_event_ts = self.last_event_ts.get(component_key, 0)
+                default_wait_time = (dsconf.params['collector_timeout'] * 1.5)
+                if time.time() - last_event_ts >= default_wait_time:
                     last_event_ts = time.time()
                     data['events'].append(dict(
                         eventClassKey='clusterOwnerChange',
                         eventKey='clusterCollection',
                         severity=ZenEventClasses.Info,
-                        summary='OwnerNode of cluster {} for cluster service {}'
-                                ' changed to {}'.format(
-                                    dsconf.params['cluster'],
-                                    name.strip(),
-                                    ownernode),
+                        summary='OwnerNode of cluster {} for cluster service {} changed to {}'.format(
+                                dsconf.params['cluster'],
+                                name.strip(),
+                                ownernode),
                         device=config.id,
                         component=prepId(dsconf.component)
                     ))
@@ -301,7 +309,7 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
 
         # look for any components not returned
         for dsconf in config.datasources:
-            if dsconf.component not in data['values']:
+            if dsconf.component not in data['values'] and not dsconf.params.get('disable_monitoring'):
                 # no state returned for component
                 log.debug('No state value for cluster component {}'.format(dsconf.component))
                 data['events'].append(dict(

@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -89,6 +89,10 @@ class WinCluster(WinRMPlugin):
         clusternode = yield cmd.run_command(
             "get-clusternode | foreach {%s};" % pipejoin(
                 '$_.Name $_.NodeWeight $_.DynamicWeight $_.Id $_.State')
+        )
+
+        generic_services = yield cmd.run_command(
+            "Get-ClusterResource | Where-Object { $_.ResourceType.Name -eq 'Generic Service' } | foreach { $_.Name + '|' + (Get-ClusterParameter -InputObject $_ -Name 'ServiceName').Value }"
         )
 
         disk_properties = pipejoin(
@@ -187,6 +191,7 @@ class WinCluster(WinRMPlugin):
                     log.warning('Unable to resolve hostname {0}'.format(node_name))
                     continue
 
+        maps['generic_services'] = generic_services.stdout
         maps['nodes'] = nodes
         maps['nodes_data'] = clusternode.stdout
         maps['clusterdisk'] = clusterdisk.stdout
@@ -245,19 +250,25 @@ class WinCluster(WinRMPlugin):
         # Cluster Application and Services
 
         # This section is for ClusterResrouce class
+        gen_service_dict = {}
+        for generic_service in results['generic_services']:
+            generic_service_line = generic_service.split("|")
+            gen_service_dict[generic_service_line[0]] = generic_service_line[1]
         for app in applications:
             appline = app.split("|")
             app_ownergroup = appline[1]
 
             if app_ownergroup in ownergroups:
+                app_title = appline[0]
                 app_om = ObjectMap()
                 app_om.id = self.prepId('res-{0}'.format(appline[0]))
-                app_om.title = appline[0]
+                app_om.title = app_title
                 app_om.ownernode = appline[2]
                 app_om.description = appline[4]
                 app_om.ownergroup = app_ownergroup
                 app_om.cluster = appline[5]
                 app_om.domain = results['domain']
+                app_om.winservice = gen_service_dict[app_title] if app_title in gen_service_dict.keys() else None
 
                 groupid = ownergroups[app_om.ownergroup]
 

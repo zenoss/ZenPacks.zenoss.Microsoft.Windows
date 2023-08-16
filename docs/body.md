@@ -1305,6 +1305,11 @@ important.
         Note: The regex is not anchored to the start of the service name. So we have to specify the correct generic Windows Class in zProperty values for services whose Windows Class name should be truncated to specific zProperty value.
         Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class "CDPUserSvc" we should specify "CDPUserSvc" in zProperty values.
 
+- zWinClusterResourcesMonitoringDisabled
+    :   Windows Cluster Resource monitoring disabling according to its corresponding Windows Service startup type.
+        Set to true to disable monitoring for Windows Cluster Resources if their corresponding Windows Service startup type is "Disabled".
+        To resume monitoring for these Windows Cluster Resource set the value to false and remodel the device manually or wait for the next remodeling cycle.
+
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
 well as tools for sending/receiving data. Therefore if either HyperV or
@@ -2017,6 +2022,7 @@ Configuration Properties
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
 :   zWinServicesGroupedByClass
+:   zWinClusterResourcesMonitoringDisabled
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 

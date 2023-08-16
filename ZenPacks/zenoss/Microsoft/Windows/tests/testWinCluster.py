@@ -2,7 +2,7 @@
 
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2014-2018, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2014-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -40,6 +40,7 @@ class TestProcesses(BaseTestCase):
             "====",
             "title0|title0|node0|state0|description0|cluster1"
         ]
+        self.results['generic_services'] = []
 
     def test_process(self):
         data = self.plugin.process(self.device, self.results, Mock())
