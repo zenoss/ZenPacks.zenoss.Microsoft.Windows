@@ -261,7 +261,7 @@ class WinCluster(WinRMPlugin):
             if app_ownergroup in ownergroups:
                 app_title = appline[0]
                 app_om = ObjectMap()
-                app_om.id = self.prepId('res-{0}'.format(appline[0]))
+                app_om.id = self.prepId('res-{0}'.format(app_title))
                 app_om.title = app_title
                 app_om.ownernode = appline[2]
                 app_om.description = appline[4]
