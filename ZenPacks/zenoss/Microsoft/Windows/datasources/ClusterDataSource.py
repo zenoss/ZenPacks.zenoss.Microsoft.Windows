@@ -273,7 +273,8 @@ class ClusterDataSourcePlugin(PythonDataSourcePlugin):
                 'Down': ZenEventClasses.Critical,
                 'Offline': ZenEventClasses.Critical,
                 'PartialOnline': ZenEventClasses.Error,
-                'Failed': ZenEventClasses.Critical
+                'Failed': ZenEventClasses.Critical,
+                'Paused': ZenEventClasses.Warning,
             }.get(state, ZenEventClasses.Info)
 
             data['events'].append(dict(
