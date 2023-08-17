@@ -523,7 +523,9 @@ def cluster_state_string(state):
             1: 'Up',
             2: 'Offline',
             3: 'PartialOnline',
-            4: 'Failed'}.get(state, 'Unknown')
+            4: 'Failed',
+            5: 'Paused',
+            6: 'Down'}.get(state, 'Unknown')
 
 
 def cluster_state_value(state):
@@ -531,7 +533,9 @@ def cluster_state_value(state):
             'Up': 1,
             'Offline': 2,
             'PartialOnline': 3,
-            'Failed': 4}.get(state, 5)
+            'Failed': 4,
+            'Paused': 5,
+            'Down': 6}.get(state, 7)
 
 
 def cluster_disk_state_string(state):
