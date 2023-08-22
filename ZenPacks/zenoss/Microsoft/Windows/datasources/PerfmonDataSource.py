@@ -375,6 +375,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
                     self.ps_counter_map[counter] = []
                 self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
                 self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
+            else:
+                LOG.warn("Error during extraction counter from a datasource - {} for the component - {}. "
+                         "Check counter configuration on the device - {}.".format(dsconf.datasource, dsconf.component,
+                                                                                  self.config.id))
 
         self._build_commandlines()
 
