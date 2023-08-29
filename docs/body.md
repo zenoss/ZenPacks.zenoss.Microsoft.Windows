@@ -1327,6 +1327,7 @@ Supported SQL Server versions
 :   SQL Server 2016
 :   SQL Server 2017
 :   SQL Server 2019
+:   SQL Server 2022
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
@@ -1655,24 +1656,26 @@ one or more of the explicitly mentioned entities.
 #### Service Impact Relationships
 
 The Windows server impacts the following:
--   File Systems 
--   Processes 
--   Network Routes
--   Processors 
--   Interfaces
--   Cluster Services 
--   Cluster Nodes 
--   Cluster Networks 
--   Windows Services 
--   HyperV 
--   SQL Server instances 
--   IIS Sites 
--   Hard Disks
+- File Systems 
+- Processes 
+- Network Routes
+- Processors 
+- Interfaces
+- Cluster Services 
+- Cluster Nodes 
+- Cluster Networks 
+- Windows Services 
+- HyperV 
+- SQL Server instances 
+- IIS Sites 
+- Hard Disks
 
--   Cluster Services impact Cluster Resources.
--   Cluster Interfaces and Disks impact Cluster Nodes.
--   Hard Disks impact File Systems.
--   SQL Server Instances impact SQL Databases, Backups, and Jobs.
+- Cluster Services impact Cluster Resources.
+- Cluster Interfaces and Disks impact Cluster Nodes.
+- Hard Disks impact File Systems.
+- SQL Server Instances impact SQL Databases, Backups, Jobs, SQL Availability Replicas, SQL Availability Groups.
+- SQL Availability Groups impact SQL Availability Replicas and SQL Availability Listeners.
+- SQL Availability Replicas impact SQL Databases.
 
 ## Troubleshooting
 
@@ -2069,7 +2072,8 @@ Changes
 - Fixed honoring zFailSeverity property that is set at the Windows Service class level (ZPS-8544)
 - Improve txwinrm Kerberos authentication performance for the devices with unavailable WinRM port (ZPS-8622)
 - Added a log message when misconfigured counter is in the Perfmon datasource collection (ZPS-8666)
-- Tested with Zenoss Cloud, Zenoss 6.7.0 and Service Impact 5.6.0
+- Windows 2008 will no longer be supported
+- Tested with Zenoss Cloud, Zenoss 6.7.0, Service Impact 5.6.0 and Analytic 6.0.0
 
 3.0.2
 
