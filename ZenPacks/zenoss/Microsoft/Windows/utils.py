@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2016-2019, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2016-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -13,12 +13,15 @@ Basic utilities that doesn't cause any Zope stuff to be imported.
 
 import json
 import base64
+import logging
 from datetime import datetime
 import collections
 from Products.AdvancedQuery import In
 from Products.ZenEvents import ZenEventClasses
 from Products.Zuul.interfaces import ICatalogTool
 from Products.DataCollector.plugins.DataMaps import ObjectMap
+
+log = logging.getLogger("zen.MicrosoftWindows.utils")
 
 APP_POOL_STATUSES = {
     1: 'Uninitialized',
@@ -226,6 +229,7 @@ def getSQLAssembly(version=None):
     ASSEMBLY_2016 = 'Version=13.0.0.0'
     ASSEMBLY_2017 = 'Version=14.0.0.0'
     ASSEMBLY_2019 = 'Version=15.0.0.0'
+    ASSEMBLY_2022 = 'Version=16.0.0.0'
 
     MSSQL2005_CONNECTION_INFO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Connection,
@@ -262,13 +266,19 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2019,
         ASSEMBLY)
 
+    MSSQL2022_CONNECTION_INFO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Connection,
+        ASSEMBLY_2022,
+        ASSEMBLY)
+
     MSSQL_CONNECTION_INFO = {9: MSSQL2005_CONNECTION_INFO,
                              10: MSSQL2008_CONNECTION_INFO,
                              11: MSSQL2012_CONNECTION_INFO,
                              12: MSSQL2014_CONNECTION_INFO,
                              13: MSSQL2016_CONNECTION_INFO,
                              14: MSSQL2017_CONNECTION_INFO,
-                             15: MSSQL2019_CONNECTION_INFO}
+                             15: MSSQL2019_CONNECTION_INFO,
+                             16: MSSQL2022_CONNECTION_INFO}
 
     MSSQL2005_SMO = '{0}, {1}, {2}'.format(
         ASSEMBLY_Smo,
@@ -305,18 +315,27 @@ def getSQLAssembly(version=None):
         ASSEMBLY_2019,
         ASSEMBLY)
 
+    MSSQL2022_SMO = '{0}, {1}, {2} -EA Stop'.format(
+        ASSEMBLY_Smo,
+        ASSEMBLY_2022,
+        ASSEMBLY)
+
     MSSQL_SMO = {9: MSSQL2005_SMO,
                  10: MSSQL2008_SMO,
                  11: MSSQL2012_SMO,
                  12: MSSQL2014_SMO,
                  13: MSSQL2016_SMO,
                  14: MSSQL2017_SMO,
-                 15: MSSQL2019_SMO}
+                 15: MSSQL2019_SMO,
+                 16: MSSQL2022_SMO}
 
     ASSEMBLY_LOAD_ERROR = "write-host 'assembly load error'"
 
     sqlConnection = []
-    if version not in [9, 10, 11, 12, 13, 14, 15]:
+    if version not in [9, 10, 11, 12, 13, 14, 15, 16]:
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2022_CONNECTION_INFO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2019_CONNECTION_INFO)
         sqlConnection.append("}catch{")
@@ -339,8 +358,11 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_CONNECTION_INFO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append("}}}}}}}")
+        sqlConnection.append("}}}}}}}}")
 
+        sqlConnection.append("try{")
+        sqlConnection.append(MSSQL2022_SMO)
+        sqlConnection.append("}catch{")
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL2019_SMO)
         sqlConnection.append("}catch{")
@@ -363,7 +385,7 @@ def getSQLAssembly(version=None):
         sqlConnection.append(MSSQL2005_SMO)
         sqlConnection.append("}catch{")
         sqlConnection.append(ASSEMBLY_LOAD_ERROR)
-        sqlConnection.append('}}}}}}}')
+        sqlConnection.append('}}}}}}}}')
     else:
         sqlConnection.append("try{")
         sqlConnection.append(MSSQL_CONNECTION_INFO.get(version))
@@ -454,7 +476,7 @@ def check_for_network_error(result, config, default_class='/Status/Winrm'):
     if 'Unauthorized' in str_result:
         return 'Unauthorized, check username and password {}'.format(config.id), '/Status'
 
-    msg = 'Failed collection {0} on {1}'.format(
+    msg = 'Failed collection with message: "{0}" on {1}'.format(
         result.value.message, config.id
     )
 
@@ -501,7 +523,9 @@ def cluster_state_string(state):
             1: 'Up',
             2: 'Offline',
             3: 'PartialOnline',
-            4: 'Failed'}.get(state, 'Unknown')
+            4: 'Failed',
+            5: 'Paused',
+            6: 'Down'}.get(state, 'Unknown')
 
 
 def cluster_state_value(state):
@@ -509,7 +533,9 @@ def cluster_state_value(state):
             'Up': 1,
             'Offline': 2,
             'PartialOnline': 3,
-            'Failed': 4}.get(state, 5)
+            'Failed': 4,
+            'Paused': 5,
+            'Down': 6}.get(state, 7)
 
 
 def cluster_disk_state_string(state):
@@ -826,7 +852,7 @@ def get_sql_instance_original_name(instance_name, instance_hostname):
     """
     instance_original_name = instance_name
 
-    if not isinstance(instance_name, basestring) and not isinstance(instance_hostname, basestring):
+    if not isinstance(instance_name, basestring) or not isinstance(instance_hostname, basestring):
         return instance_original_name
 
     if instance_name.lower().strip() == instance_hostname.lower().strip():
@@ -1201,7 +1227,8 @@ def get_adb_severities(prop_name, prop_value):
             pass
 
     if isinstance(prop_value, int):
-        prop_value = DB_STATUSES.get(prop_value)
+        max_db_status = max(get_db_bit_statuses(prop_value))
+        prop_value = DB_STATUSES.get(max_db_status)
 
     adb_severities_map = {
         'status': {
@@ -1523,10 +1550,15 @@ def get_db_monitored(db_status, ignored_db_statuses):
     Define whether Database in statuses, which shouldn't be monitored.
     :return: Boolean
     """
+    ignored_db_status_names = (status.lower().strip() for status in ignored_db_statuses)
     if db_status:
-        status_name = DB_STATUSES.get(int(db_status)).lower()
-        if status_name in [status.lower().strip() for status in ignored_db_statuses]:
-            return False
+        for bit_status in get_db_bit_statuses(db_status):
+            status_name = DB_STATUSES.get(int(bit_status), '').lower()
+            if not status_name:
+                log.warning("The status code - [{}] does not match any status that is known to ZenPack. "
+                            "Skipped check for ignored DB statuses.".format(db_status))
+            if status_name in ignored_db_status_names:
+                return False
     return True
 
 
@@ -1540,9 +1572,18 @@ def get_db_om(datasource_config, data):
     db_om.compname = datasource_config.params['contextcompname']
     db_om.modname = datasource_config.params['contextmodname']
     db_om.relname = datasource_config.params['contextrelname']
-
     for key, value in data.iteritems():
         if key == 'status':
             is_monitored = get_db_monitored(value, datasource_config.params.get('db_ignored_statuses', []))
             setattr(db_om, 'monitor', is_monitored)
     return db_om
+
+
+def get_db_bit_statuses(value):
+    statuses = []
+
+    for bit in sorted(DB_STATUSES.keys()):
+        if value & bit:
+            statuses.append(bit)
+
+    return statuses

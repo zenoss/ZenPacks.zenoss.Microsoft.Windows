@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2015-2018, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2015-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -45,8 +45,8 @@ RAW_RESULTS = {
         u'0f58359e-f0d9-4a96-a697-5213a4edfb9a|Online|Available Storage|win2016-kdc-01',
         u'aa35b386-5182-4cf2-a99f-670788c11347|Failed|Cluster Group|win2016-node-01',
         u'109d14aa-234b-453b-b099-1a621cc59601|Online|SQL Server (CINSTANCE01)|win2016-node-02',
-        u'node-2|Up',
-        u'node-1|Up',
+        u'node-2|Paused',
+        u'node-1|Down',
         u'node-4|Up',
         u'be4033dc-1f74-477f-9f07-3780e1782250|Up',
         u'ac103502-487e-4406-8ec7-e1e0ac6944cd|Up',
@@ -70,11 +70,10 @@ RESULTS = {
     'res-SQL Server Analysis Services CEIP (CINSTANCE01)': 'Online',
     'res-SQL Server CEIP (CINSTANCE01)': 'Online',
     'res-Virtual Machine Cluster WMI': 'Failed',
-    '0f58359e-f0d9-4a96-a697-5213a4edfb9a': 'Online',
     'aa35b386-5182-4cf2-a99f-670788c11347': 'Failed',
     '109d14aa-234b-453b-b099-1a621cc59601': 'Online',
-    'node-2': 'Up',
-    'node-1': 'Up',
+    'node-2': 'Paused',
+    'node-1': 'Down',
     'node-4': 'Up',
     'be4033dc-1f74-477f-9f07-3780e1782250': 'Up',
     'ac103502-487e-4406-8ec7-e1e0ac6944cd': 'Up',
@@ -99,35 +98,79 @@ class TestClusterDataSourcePlugin(BaseTestCase):
 
     def setUp(self):
         self.plugin = ClusterDataSourcePlugin()
+        self.plugin.last_event_ts = {}
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource.log', Mock())
     def test_onSuccess(self):
         config = load_pickle_file(self, 'cluster_config')
+
+        for datasource in config.datasources:
+            datasource.params.update({'collector_timeout': 180})
+            datasource.params.update({'disable_monitoring': False})
+
         results = CommandResponse(
             RAW_RESULTS['stdout'],
             RAW_RESULTS['stderr'],
             RAW_RESULTS['exit_code'])
         data = self.plugin.onSuccess(results, config)
-        self.assertEquals(len(data['values']), 25)
+        self.assertEquals(len(data['values']), 24)
         for comp, value in RESULTS.iteritems():
             try:
                 num = int(value)
                 value = cluster_disk_state_string(num)
                 self.assertEquals(data['values'][comp]['state'], num)
             except Exception:
-                self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value), 'found {}'.format(value))
+                self.assertEquals(data['values'][comp]['state'][0], cluster_state_value(value),
+                                  'found {}'.format(value))
         self.assertEquals(len(data['events']), 28)
         # 24989663232 is the freespace in the pickle file
         self.assertEquals(data['values']['860caaf4-595a-44e6-be70-285a9bb3733d']['freespace'], 24254611456)
 
         # test for ownerchange events
         results.stdout[11] = results.stdout[11].replace('win2016-node-01', 'win2016-node-02')
+        self.plugin.last_event_ts = {}
         data = self.plugin.onSuccess(results, config)
         self.assertEquals(len(data['events']), 29)
         results.stdout[11] = results.stdout[11].replace('win2016-node-02', 'win2016-node-01')
         results.stdout[12] = results.stdout[12].replace('win2016-node-02', 'win2016-node-01')
+        self.plugin.last_event_ts = {}
         data = self.plugin.onSuccess(results, config)
         self.assertEquals(len(data['events']), 29)
+
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource.log', Mock())
+    def test_onSuccess_monitor_false_all(self):
+        config = load_pickle_file(self, 'cluster_config')
+
+        for datasource in config.datasources:
+            datasource.params.update({'collector_timeout': 180})
+            datasource.params.update({'disable_monitoring': True})
+
+        results = CommandResponse(
+            RAW_RESULTS['stdout'],
+            RAW_RESULTS['stderr'],
+            RAW_RESULTS['exit_code'])
+        data = self.plugin.onSuccess(results, config)
+        self.assertEquals(len(data['events']), 4)
+        self.assertEquals(len(data['values']), 0)
+
+    @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource.log', Mock())
+    def test_onSuccess_monitor_false_sample(self):
+        config = load_pickle_file(self, 'cluster_config')
+
+        i = 1
+        for datasource in config.datasources:
+            datasource.params.update({'collector_timeout': 180})
+            datasource.params.update({'disable_monitoring': True}) if i <= 10 else datasource.params.update(
+                {'disable_monitoring': False})
+            i += 1
+
+        results = CommandResponse(
+            RAW_RESULTS['stdout'],
+            RAW_RESULTS['stderr'],
+            RAW_RESULTS['exit_code'])
+        data = self.plugin.onSuccess(results, config)
+        self.assertEquals(len(data['events']), 18)
+        self.assertEquals(len(data['values']), 14)
 
     @patch('ZenPacks.zenoss.Microsoft.Windows.datasources.ClusterDataSource.log', Mock())
     def test_143596(self):
@@ -143,7 +186,9 @@ class TestClusterDataSourcePlugin(BaseTestCase):
                     'eventlog': sentinel.eventlog,
                     'contexttitle': 'device',
                     'ownernode': 'IS-HVDRCL03-H04',
-                    'cluster': 'IS-HVDRCL03.tcy.prv'
+                    'cluster': 'IS-HVDRCL03.tcy.prv',
+                    'collector_timeout': 180,
+                    'disable_monitoring': False
                 },
                 datasource='DataSource',
                 component=component)
@@ -173,5 +218,6 @@ def test_suite():
 
 if __name__ == "__main__":
     from zope.testrunner.runner import Runner
+
     runner = Runner(found_suites=[test_suite()])
     runner.run()

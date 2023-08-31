@@ -236,13 +236,11 @@ class ComplexLongRunningCommand(object):
     def _create_commands(self, num_commands):
         """Create initial set of commands according to the number supplied."""
         self.num_commands = num_commands
-
         commands = []
         if num_commands == 0:
             return commands
-        try:
-            conn_info = createConnectionInfo(self.dsconf)
-        except UnauthorizedError as e:
+
+        def sendConnError(e):
             error = "{0}: Windows Perfmon connection info is not available"\
                     " for {0}. Error: {1}".format(self.dsconf.device, e)
             LOG.error(error)
@@ -253,10 +251,21 @@ class ComplexLongRunningCommand(object):
                 'severity': ZenEventClasses.Warning,
                 'summary': 'Windows Perfmon connection info is not available',
                 'message': error})
+
+        try:
+            conn_info = createConnectionInfo(self.dsconf)
+            if not conn_info:
+                sendConnError("No Connection Object")
+                return commands
+        except UnauthorizedError as e:
+            sendConnError(e)
         else:
             # Some components, like Failover SQL Instances and MS SQL Availability Replicas may be placed not
             # on particular this device (node), but at another. So need to change connection info accordingly.
             # Also use zWinRMLongRunningCommandOperationTimeout for LongCommandClient
+            if not self.dsconf.zWinRMLongRunningCommandOperationTimeout:
+                self.dsconf.zWinRMLongRunningCommandOperationTimeout = 310
+                LOG.warn("Undefined value for PerfMon ds.conf zWinRMLongRunningCommandOperationTimeout, using default")
             additional_fields_to_replace = {'timeout': self.dsconf.zWinRMLongRunningCommandOperationTimeout}
             conn_info = modify_connection_info(conn_info, self.dsconf, additional_fields_to_replace)
             for _ in xrange(num_commands):
@@ -359,12 +368,17 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         self.counter_map = {}
         self.ps_counter_map = {}
         for dsconf in self.config.datasources:
-            counter = dsconf.params['counter'].decode('utf-8').lower()
-            if counter not in self.counter_map:
-                self.counter_map[counter] = []
-                self.ps_counter_map[counter] = []
-            self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
-            self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
+            counter = dsconf.params.get('counter', '').decode('utf-8').lower()
+            if counter:
+                if counter not in self.counter_map:
+                    self.counter_map[counter] = []
+                    self.ps_counter_map[counter] = []
+                self.counter_map[counter].append((dsconf.component, dsconf.datasource, dsconf.eventClass))
+                self.ps_counter_map[counter].append((dsconf.component, dsconf.datasource))
+            else:
+                LOG.warn("Error during extraction counter from a datasource - {} for the component - {}. "
+                         "Check counter configuration on the device - {}.".format(dsconf.datasource, dsconf.component,
+                                                                                  self.config.id))
 
         self._build_commandlines()
 
@@ -461,8 +475,10 @@ class PerfmonDataSourcePlugin(PythonDataSourcePlugin):
         Called each collection interval.
         """
         LOG.debug('Running collect method for id %s and commandline %s', self.unique_id, self.commandlines)
+
         self.check_for_update(config)
         self._start_counter += 1
+
         if self.num_commands == 0:
             # nothing to do, return
             data = self.new_data()

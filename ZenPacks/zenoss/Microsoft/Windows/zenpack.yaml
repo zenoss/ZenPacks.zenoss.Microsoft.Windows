@@ -54,6 +54,11 @@ zProperties:
   zWinRMConnectTimeout:
     type: int
     default: 60
+  zWinRMPortCheckTimeout:
+    label: 'WinRM port availability check timeout'
+    type: float
+    default: 1
+    description: 'Used to define the time out for WinRM port availability check before connection.'
   zWinRMLongRunningCommandOperationTimeout:
     label: 'Long Running Command Operation Timeout'
     type: int
@@ -89,6 +94,13 @@ zProperties:
     label: 'Regex expressions to model services with generic class'
     description: 'List of regular expressions for Windows Service classes to model services with generic Windows Service class.'
     type: lines
+    default: ['BcastDVRUserService', 'BluetoothUserService', 'CaptureService', 'CDPUserSvc', 'DevicePickerUserSvc', 'DevicesFlowUserSvc', 'MessagingService', 'OneSyncSvc', 'PimIndexMaintenanceSvc', 'PrintWorkflowUserSvc', 'UnistoreSvc', 'UserDataSvc', 'WpnUserService']
+  zWinClusterResourcesMonitoringDisabled:
+    label: 'Windows Cluster Resource monitoring disabling according to its corresponding Windows Service startup type'
+    description: 'Set to true to disable monitoring for Windows Cluster Resources if their corresponding Windows Service startup type is "Disabled".'
+    type: boolean
+    default: false
+
 
 class_relationships:
   - ZenPacks.zenoss.Microsoft.Windows.OperatingSystem.OperatingSystem(winservices) 1:MC (os)WinService
@@ -232,6 +244,14 @@ classes:
       cluster:
         label: Cluster
         grid_display: false
+      is_winservice_disabled:
+        type: boolean
+        label: Is WinService Disabled
+        grid_display: false
+        api_only: true
+        api_backendtype: method
+      winservice:
+        display: False
     monitoring_templates: [ClusterResource]
     dynamicview_views: [service_view]
     dynamicview_relations:

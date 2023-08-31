@@ -13,7 +13,20 @@ Monitoring is performed using the Windows Remote Management (WinRM) and
 Windows Remote Shell (WinRS) to collect Windows Management
 Instrumentation (WMI) and Perfmon data.
 
-This ZenPack supersedes the earlier ZenPack named
-`ZenPacks.zenoss.WindowsMonitor`. If you have `ZenPacks.zenoss.WindowsMonitor`
-installed on your system, please read the [Transitioning from
-WindowsMonitor](#transitioning-from-windowsmonitor) section below.
+**Applications Monitored**
+
+-   Microsoft SQL Server
+-   Microsoft Cluster Services
+-   Microsoft Windows (2022, 2019, 2016, 2012 Server)
+-   Microsoft IIS
+-   Microsoft Active Directory
+-   Microsoft Exchange
+
+The features added by this ZenPack can be summarized as follows. They
+are each detailed further below.
+
+-   Initial discovery and periodic remodeling of relevant components.
+-   Performance monitoring.
+-   Event management.
+-   Custom commands.
+-   Service monitoring.

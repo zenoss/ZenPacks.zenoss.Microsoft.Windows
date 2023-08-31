@@ -63,9 +63,9 @@ The following components will be automatically discovered through the
 Windows server address, username and password you provide. The
 properties and relationships will be periodically updated by modeling.
 
-[![][Windows_device2.png]][Windows_device2.png]
+[![][Windows_device.png]][Windows_device.png]
 
-[![][Windows_graphs2.png]][Windows_graphs2.png]
+[![][Windows_graphs.png]][Windows_graphs.png]
 
 Server (Device)
 :   **Attributes:** Name, Contact, Description, Serial
@@ -97,12 +97,12 @@ Hard Disks
 
 File Systems
 
-[![][Windows_filesystem2.png]][Windows_filesystem2.png]
+[![][Windows_filesystem.png]][Windows_filesystem.png]
 :   **Attributes:** Mount Point, Status, Storage Device, Type,
     Block Size, Total Blocks, Total Bytes, Maximum Name Length
 :   **Relationships:** Device, Hard Disks
 
-[![][Windows_interfaces2.png]][Windows_interfaces2.png]
+[![][Windows_interfaces.png]][Windows_interfaces.png]
 
 Interfaces
 :   **Attributes:** Name, Description, MAC Address, MTU, Speed,
@@ -128,7 +128,7 @@ Services
 :   **Attributes:** Name, Display Name, Start Mode, Account
 :   **Relationships:** Device
 
-[![][Windows_services2.png]][Windows_services2.png]
+[![][Windows_services.png]][Windows_services.png]
 
 Cluster Services
 :   **Attributes:** Name, Core Group, Owner Node, State,
@@ -152,7 +152,7 @@ Cluster Disks
     Partition Number, Capacity, Free Space, State
 :   **Relationships:** Cluster Nodes
 
-Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid.  We will therefore show free space as N/A.  Disk number will not be discovered on Windows 2008 servers because the Powershell Storage Module is not available.
+Note: If a cluster disk has not been allocated, there are no partitions, so the representation of free space is invalid. We will therefore show free space as N/A. Disk number will not be discovered on Windows 2008 servers because the Powershell Storage Module is not available.
 
 Cluster Interfaces
 :   **Attributes:** Name, Owner Node, Network, IP
@@ -212,11 +212,11 @@ SQL Availability Group Listener
 
 Note: MS SQL Always On components only supported at `/Server/Microsoft/Cluster` level when WinMSSQL modeller plugin is added, and the value of `zSQLAlwaysOnEnabled` property set to `True`.
 
-Note: In order to get most info about Replicas and Availability Databases it needs to set a 'possible nodes' for Availability Group resource.
+Note: To get most info about Replicas and Availability Databases it needs to set a 'possible nodes' for Availability Group resource.
 In this case collection will be performed per each checked node from possible nodes list. However, even one node is sufficient for the collection.
-In order to do this:
+To do this:
 -   Run `'Failover Cluster Manager'`;
--   Select the Role which correspond to particular Always On Availability Group;
+-   Select the Role which corresponds to particular Always On Availability Group;
 -   Select `'SQL Server Availability Group'` resource type for this resource;
 -   Pick `'Advanced Policies'` tab and check `'Possible Owners'`.
 
@@ -409,7 +409,7 @@ SQL Server Instance - WinDBInstance template
 :   \\SQLServer:Buffer Manager\\Checkpoint Pages/Sec
 :   \\SQLServer:Locks(\_Total)\\Number of Deadlocks/sec
 
-Note: For a named instance, the counter instance will be `\MSSQL$INSTANCE_NAME`.  To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\${here/perfmon_instance}\counter name`.  During modeling, the plugin will assign the correct counter name.
+Note: For a named instance, the counter instance will be `\MSSQL$INSTANCE_NAME`. To add custom SQL Server instance counters, create a Windows Perfmon datasource and datapoint with matching names and specify the counter as `\${here/perfmon_instance}\counter name`. During modeling, the plugin will assign the correct counter name.
 
 We show the following graphs for an instance:
 
@@ -476,7 +476,7 @@ Events
 :   'EmergencyMode', 'Suspect', 'Inaccessible' will send a critical event
 :   'Shutdown', 'RecoveryPending', 'Restoring', 'Recovering', 'Standby', 'AutoClosed', 'Offline' will send Info events
 
-Status can be multiple items from above.  For example, taking a database offline will set the status to 'Offline, AutoClosed'.  Transforms can be applied in the WinDatabaseStatus event mapping under /Status.  You can raise/lower the severity of the status, or drop it altogether.
+Status can be multiple items from above. For example, taking a database offline will set the status to 'Offline, AutoClosed'. Transforms can be applied in the WinDatabaseStatus event mapping under /Status. You can raise/lower the severity of the status, or drop it altogether.
 
 For example, to raise the severity of the Offline status:
 
@@ -486,7 +486,7 @@ if 'Offline' in evt.summary:
 ```
 
 Note: Database status is discovered in the same PowerShell script as the
-database counters.  While it is possible to use a different cycle time for
+database counters. While it is possible to use a different cycle time for
 status, we advise against that as it will add extra load onto the target
 device and could inadvertently skew memory/cpu usage.
 
@@ -604,7 +604,7 @@ filter will be used:
 
 `{time}` will automatically be replaced by the number of milliseconds since the last query.
 
-Note: The max age field is only used the first time that the datasource is run.  Subsequent queries will only look at events that have occurred since the last time this datasource was run.   We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource executed.  If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
+Note: The max age field is only used the first time that the datasource is run. Subsequent queries will only look at events that have occurred since the last time this datasource was run. We write a timestamp to the registry location HKCU:\\SOFTWARE\\zenoss\\logs\\<datasource name> to know when the last time the datasource executed. If you are testing a datasource and would like to reset this time, then simply remove the string value with your datasource name in the registry hive, \\SOFTWARE\\zenoss\\logs\\, for your user under HKEY_USERS.
 
 Note: The script to search for events and return relevant data is
 approximately 3700 characters. Due to the Windows 8192 character limit
@@ -905,7 +905,7 @@ the time of the next model.
 
 Note: During the time that the indexing of Windows Services job takes,
 any particular Windows Service could potentially still be monitored
-using a different datasource.  Because of this, it is possible to see
+using a different datasource. Because of this, it is possible to see
 status event(s) using both the old and new severity.
 
 Note: The Windows Service datasource no longer depends on the
@@ -975,14 +975,14 @@ System Kerberos RPM
 :   The operating system's kerberos RPM must be installed. See the [Installing Kerberos Dependency](#installing-kerberos-dependency) section for details.
 
 Note: During ZenPack installation, two jobs may be created, depending on
-which version is already installed.  The first is a mandatory job that resets
-the python class types of existing Windows devices and components.  This job
-will run if upgrading to v2.7.0 or above.  The second is a job to remove
-incompatible Windows Services.  This second job will run if upgrading to v2.7.2
-or above.  It is recommended to either stop zenjobs before installing or
+which version is already installed. The first is a mandatory job that resets
+the python class types of existing Windows devices and components. This job
+will run if upgrading to v2.7.0 or above. The second is a job to remove
+incompatible Windows Services. This second job will run if upgrading to v2.7.2
+or above. It is recommended to either stop zenjobs before installing or
 to wait until the job finishes before restarting Zenoss. If you restart
 before the job finishes, you may need to Abort and/or Delete the job
-after the restart.  It is also possible to manually run this job by importing
+after the restart. It is also possible to manually run this job by importing
 it into zendmd and adding it to the JobManager.
 
 ```python
@@ -1046,6 +1046,9 @@ Note: An Administrator level user can be denied local logon and remote desktop a
 
 If using an LPU account, it is the responsibility of the Windows and network administrators of your organization to ensure that the above permissions are understood, in place, and maintained.
 
+Note: To configure and give all the permissions to LPU users we need to run the LPU script. It is recommended to run the LPU script from a "SYSTEM" account. To run this script correctly the SYSTEM account must have "Change Permission" or this script should be executed under the "Administrator" user.
+Otherwise, you will receive an "Access is denied" error during LPU script execution, and not all Windows Services will be discovered by Windows ZenPack.
+
 ### Port Requirements
 
 The ZenPack communicates with a Windows device over port 5985 for HTTP
@@ -1108,7 +1111,7 @@ win2008-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 Win2012-1d.example.com zWinRMUser="Administrator", zWinRMPassword="password"
 ```
 
-You can then load the Windows servers into Zenoss Core or Resource
+Then you can load the Windows servers into Zenoss Core or Resource
 Manager as devices with the following command.
 
 ```
@@ -1218,7 +1221,7 @@ important.
         Fill in the user and password to use SQL authentication. Leave the user
         and password blank to use Windows authentication. The default
         *MSSQLSERVER* credentials will be used for all instances not
-        specified.  Microsoft recommends using Windows authentication to
+        specified. Microsoft recommends using Windows authentication to
         connect to SQL Server.
 
 - zWinRMEnvelopeSize
@@ -1253,19 +1256,19 @@ important.
         ignored.
 
 - zWinRMDisableRDNS
-    :   Kerberos always performs a reverse lookup when obtaining a ticket to use the HTTP/HTTPS/WSMAN service principal.  If there are multiple names by which servers are known in your organization, or if you do not want to use reverse lookups, set this value to True.  Because this is a kerberos property, it can only be set one way or another.  You cannot mix and match this value and only the top level value at /Server/Microsoft will be honored.
+    :   Kerberos always performs a reverse lookup when obtaining a ticket to use the HTTP/HTTPS/WSMAN service principal. If there are multiple names by which servers are known in your organization, or if you do not want to use reverse lookups, set this value to True. Because this is a kerberos property, it can only be set one way or another. You cannot mix and match this value and only the top level value at /Server/Microsoft will be honored.
 
 - zWinRMClusterNodeClass
-    :   Path under which to create cluster nodes.  If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property.  The default is /Server/Microsoft/Windows
+    :   Path under which to create cluster nodes. If you need to add cluster nodes to a specific class under the /Server/Microsoft/Windows device class, specify it with this property. The default is /Server/Microsoft/Windows
 
 - zWinRMKRBErrorThreshold
-    :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms.  The default value is 1, which will always send an event on the first occurrence of an error.  You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
+    :  Having a poor network connection can cause erroneous kerberos error events to be sent which could cause confusion or false alarms. The default value is 1, which will always send an event on the first occurrence of an error. You can increase this value to send an event only when there have been x amount of occurrences of an error during collection, where x denotes the threshold number.
 
 - zWindowsRemodelEventClassKeys
-    :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device.  See the ClusterOwnerChange mapping in the /Status event class for example usage.
+    :   Use in conjunction with schedule_remodel in ZenPacks.zenoss.Microsoft.Windows.actions to initiate a remodel of a Windows or Cluster Device. See the ClusterOwnerChange mapping in the /Status event class for example usage.
 
 - zWinRMConnectTimeout
-    :   Used to define the time out for establishing a winrm connection.  If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
+    :   Used to define the time out for establishing a winrm connection. If you are seeing failing tasks stay in a RUNNING state, you can decrease this number so that the initial attempt to connect to a device times out sooner.
 
 - zWinServicesModeled
     :   List of regular expressions for services to model.
@@ -1286,6 +1289,9 @@ important.
 - zWinRMConnectionCloseTime
     :   Time when WinRM connections exist before it being closed. Needed for existing GSS client to decrypt leftover encrypted requests. Used only for domain (Kerberos) authentication.
 
+- zWinRMPortCheckTimeout
+    :   WinRM port availability check timeout. Used to define the timeout for WinRM port availability check before Kerberos connection initialization.
+
 - zWinDBStateMonitoringIgnore
     :   MS SQL Database monitoring ignored statuses. Add database statuses in which monitoring request will not be performed for MS SQL Databases.
 
@@ -1295,9 +1301,15 @@ important.
 - zWinServicesGroupedByClass
     :   List of regular expressions for Windows services to model with generic Windows Service class. Specify class names to set generic Windows Service class names for matching Windows Services.
         This property appropriate use case is when a target Windows device has a lot of Windows Services with rotating name extension - "<service_name>_0123456789bcdef". 
-        In this case each Windows service creates a separate Windows Service class. So we can group these services by Windows Service generic class. This grouping will create only one Windows Service CLass for each service group.
+        In this case each Windows service creates a separate Windows Service class. So we can group these services by Windows Service generic class. This grouping will create only one Windows Service Class for each service group.
         Note: The regex is not anchored to the start of the service name. So we have to specify the correct generic Windows Class in zProperty values for services whose Windows Class name should be truncated to specific zProperty value.
         Example: In order to model all "CDPUserSvc_*" Windows Services under one generic Windows Service class "CDPUserSvc" we should specify "CDPUserSvc" in zProperty values.
+
+- zWinClusterResourcesMonitoringDisabled
+    :   Windows Cluster Resource monitoring disabling according to its corresponding Windows Service startup type.
+        Set to true to disable monitoring for Windows Cluster Resources if their corresponding Windows Service startup type is "Disabled".
+        To resume monitoring for these Windows Cluster Resource set the value to false and remodel the device manually or wait for the next remodeling cycle.
+        **Note:** You need to remodel cluster and node devices if "Startup Type" property of Windows Service was changed on the Windows device side.
 
 
 Note: HyperV and MicrosoftWindows ZenPacks share krb5.conf file as
@@ -1310,20 +1322,19 @@ another device as well.
 ### Configuring MSSQL Server Modeling/Monitoring
 
 Supported SQL Server versions
-:   SQL Server 2008 *
-:   SQL Server 2008 R2 *
 :   SQL Server 2012
 :   SQL Server 2014
 :   SQL Server 2016
 :   SQL Server 2017
 :   SQL Server 2019
+:   SQL Server 2022
 
 Note: In order to properly monitor SQL Server, the Client Tools SDK must be installed for each version of SQL Server installed on your Windows servers.
 
-* - Microsoft will be ending extended [support](https://www.microsoft.com/en-us/sql-server/sql-server-2008) for SQL Server 2008 and 2008 R2 on 7/9/2019.  Please take appropriate action to monitor a supported version.
+* - Microsoft will be ending extended [support](https://learn.microsoft.com/en-us/troubleshoot/sql/general/end-support-sql-server-2008) for SQL Server 2008 and 2008 R2 on 7/9/2019. Please take appropriate action to monitor a supported version.
 
 ##### Support for SQL Server and Windows Authentication: 
-*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank.  Microsoft prefers this authentication method.
+*   Windows Authentication: In *zDBInstances* property specify only SQL instances names, leave user and password fields blank. Microsoft prefers this authentication method.
 *   SQL Server Authentication: In *zDBInstances* property provide user name and password for each SQL instance.
 *   Specifying authentication per instance is no longer required with version 2.4.2 and above. We will use the credentials specified for the MSSQLSERVER instance by default.
 *   For instances which contain hundreds of databases, you may need to increase zCollectorClientTimeout as this process may take a few minutes or more to complete.
@@ -1396,7 +1407,7 @@ Use the following steps to set up a notification:
     triggering event clears. 
 6.  Submit changes.
 
-Note: For Zenoss 5.x and up, all wincommands will run in the zenactiond container, which is located on the master host.  The master may or may not have the same dns lookup capabilities as the collector(s).  If using the `winrs` command with kerberos authentication, be sure to set the remote hostname to the FQDN of the device and use the `--ipaddress` option of winrs to specify the IP address of the device.
+Note: For Zenoss 5.x and up, all wincommands will run in the zenactiond container, which is located on the master host. The master may or may not have the same dns lookup capabilities as the collector(s).  If using the `winrs` command with kerberos authentication, be sure to set the remote hostname to the FQDN of the device and use the `--ipaddress` option of winrs to specify the IP address of the device.
 
 For more information please refer to
 [Working with Triggers and Notifications](http://community.zenoss.org/docs/DOC-10690)
@@ -1445,7 +1456,7 @@ Basic Authentication (Windows default is Kerberos see note below for more inform
 -   winrm s winrm/config/service/auth '@{Basic="true"}'
 -   winrm s winrm/config/service '@{AllowUnencrypted="true"}'
 
-Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server.  It should be between 5-15 minutes.  The winrshost.exe process is the remote shell on a Windows Server.
+Note: The IdleTimeout/Shell Timeout is the time, in milliseconds, to keep an idle remote shell alive on a Windows Server. It should be between 5-15 minutes. The winrshost.exe process is the remote shell on a Windows Server.
 
 Note: The above instructions use the max values for
 MaxConcurrentOperationsPerUser. If you do not want to set this value to 
@@ -1479,7 +1490,7 @@ Microsoft Active Directory environment the AD Server is also the KDC.
 The zWinKDC value must be set to the IP address of the AD Server and the
 collector must be able to send TCP/IP packets to this server. Once this
 is set your zWinRMUserName must be a FQDN such as someone@example.com and
-the zWinRMPassword must be set correctly for this user account.  The 
+the zWinRMPassword must be set correctly for this user account. The 
 domain name MUST be the name of the domain, not an alias for the domain.
 
 Note: In order to use a single domain user in a child domain or other
@@ -1507,50 +1518,23 @@ c:\>setspn -l hostname1
 If you do not see a record with HTTPS/ at the beginning of the hostname
 you can create the record, but this is not typically necessary as
 Windows will use the HOST/ record as the default for most built in
-services.  You can also use the zWinUseWsmanSPN property so that zenoss
-will use the WSMAN service principal.  The WSMAN spn is created by
+services. You can also use the zWinUseWsmanSPN property so that zenoss
+will use the WSMAN service principal. The WSMAN spn is created by
 running *winrm quickconfig*.
 
 ```
 c:\>setspn -s HTTPS/hostname1.zenoss.com hostname1
 ```
 
-Transitioning from WindowsMonitor
----------------------------------
-
-If you are installing this ZenPack on an existing Zenoss system or
-upgrading from an earlier Zenoss version you may have a ZenPack named
-*ZenPacks.zenoss.WindowsMonitor* already installed on your system. You
-can check this by navigating to Advanced -> ZenPacks.
-
-This ZenPack functionally supersedes *ZenPacks.zenoss.WindowsMonitor*
-for Windows platforms that support WinRM, but does not automatically
-migrate monitoring of your Microsoft Windows resources when installed.
-The ZenPacks can coexist gracefully to allow you time to manually
-transition monitoring to the newer ZenPack with better capabilities.
-
-1.  Navigate to the Infrastructure page.
-2.  Expand the Server/Windows/WMI device class.
-3.  Single-click to select a Windows device.
-4.  Click the delete (*-*) button in the bottom-left.
-5.  Click OK to confirm deleting the Windows device.
-6.  Add the device back using the [Adding a Windows Device](#adding-a-windows-device) instructions above. Be sure to select the /Server/Microsoft/Windows device class and not the /Server/Windows/WMI device class.
-7.  Repeat steps 3-6 for each Windows device.
-
-
-Note: It is also possible to drag and drop selected Windows devices
-from one class to another. You will need to remodel the devices after
-the move.
-
 ## Limitations of Current Release
 
 The current release is known to have the following limitations.
 
--   Non-Cluster components are no longer valid on a Cluster device.  
+-   Non-Cluster components are no longer valid on a Cluster device.
     Cluster devices should only use the OperatingSystem, WinCluster, 
     and WinMSSQL modeler plugins because the nodes of a cluster may 
     have differing components such as Interfaces, FileSystems and 
-    Processors.  If you have upgraded from a version previous to 2.5.0, 
+    Processors. If you have upgraded from a version previous to 2.5.0, 
     and you still have the following components you should remove 
     them from your Cluster device:  Interfaces/WindowsInterfaces, 
     FileSystems, Processors, Services/Windows Services, Processes.
@@ -1564,11 +1548,11 @@ The current release is known to have the following limitations.
     monitoring templates will still apply. Any services that were
     manually selected to be monitored will not. See the section on
     [Configuring Service Monitoring](#configuring-service-monitoring).
--   The current release of this ZenPack uses the ZenPack SDK.  Some
+-   The current release of this ZenPack uses the ZenPack SDK. Some
     component classes have changed from pre-2.6.x versions of the ZenPack.
     During installation, the ZenPack will create a job that will update
     the Windows Devices and Components class types used by the SDK.
-    Depending on your Zenoss instance resources, this job could take a very long time to complete.  If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:
+    Depending on your Zenoss instance resources, this job could take a very long time to complete. If the job, ResetClassTypes, was not added during installation, it can be added manually using zendmd:
 
 ```
 In [1]: from ZenPacks.zenoss.Microsoft.Windows.jobs import ResetClassTypes
@@ -1578,10 +1562,10 @@ In [2]: dmd.JobManager.addJob(ResetClassTypes)
 In [3]: commit()
 ```
 
--   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log.  This is expected and is a known defect in ZenPackLib.
+-   When removing a Windows device or the Microsoft.Windows ZenPack, you may see errors in the event.log. This is expected and is a known defect in ZenPackLib.
 -   If upgrading from a version prior to 2.6.3 to 2.7.x, you may not be able to view your Windows services until the device is remodeled.
 -   Use of double quotes in Write-Host string arguments inside Windows Shell Custom Command datasources coupled with Nagios parser may lead to 'Custom Command Error' Critical events and 'No output from COMMAND plugin' messages in zenpython logs
--   You may see warnings of a catalog consistency check during install/upgrade.  This is a known issue in ZenPackLib.
+-   You may see warnings of a catalog consistency check during install/upgrade. This is a known issue in ZenPackLib.
 -   If you see duplicated Software items or Software items with manufacturer wrongly set to 'Unknown', please delete these items at Infrastructure -> Manufacturers page.
 -   The WinCommand notification action is in the process of being deprecated.
 -   Availability Replicas for particular Availability Group might disappear if all SQL Instances for this Availability Group will be stopped or unreachable.
@@ -1657,9 +1641,9 @@ are valid when entering them into the zWinKDC property.
 
 #### Viewing Kerberos Tickets
 
-The ZenPack uses individual credential cache files in order to support multiple users across multiple domains.  The caches are located in the \$ZENHOME/var/krb5c/ directory.  The caches for individual users are located in separate files based on the user name.  Use `klist -c <filename>` to view the tickets in the file.
+The ZenPack uses individual credential cache files in order to support multiple users across multiple domains. The caches are located in the \$ZENHOME/var/krb5c/ directory. The caches for individual users are located in separate files based on the user name. Use `klist -c <filename>` to view the tickets in the file.
 
-While monitoring, we will renew the main kerberos ticket granting ticket 5 minutes before it is set to expire.  This will ensure that you receive no "The referenced context has expired" events or errors and will have no collection interruptions due to this error.
+While monitoring, we will renew the main kerberos ticket granting ticket 5 minutes before it is set to expire. This will ensure that you receive no "The referenced context has expired" events or errors and will have no collection interruptions due to this error.
 
 ## Service Impact
 
@@ -1672,24 +1656,26 @@ one or more of the explicitly mentioned entities.
 #### Service Impact Relationships
 
 The Windows server impacts the following:
--   File Systems 
--   Processes 
--   Network Routes
--   Processors 
--   Interfaces
--   Cluster Services 
--   Cluster Nodes 
--   Cluster Networks 
--   Windows Services 
--   HyperV 
--   SQL Server instances 
--   IIS Sites 
--   Hard Disks
+- File Systems 
+- Processes 
+- Network Routes
+- Processors 
+- Interfaces
+- Cluster Services 
+- Cluster Nodes 
+- Cluster Networks 
+- Windows Services 
+- HyperV 
+- SQL Server instances 
+- IIS Sites 
+- Hard Disks
 
--   Cluster Services impact Cluster Resources.
--   Cluster Interfaces and Disks impact Cluster Nodes.
--   Hard Disks impact File Systems.
--   SQL Server Instances impact SQL Databases, Backups, and Jobs.
+- Cluster Services impact Cluster Resources.
+- Cluster Interfaces and Disks impact Cluster Nodes.
+- Hard Disks impact File Systems.
+- SQL Server Instances impact SQL Databases, Backups, Jobs, SQL Availability Replicas, SQL Availability Groups.
+- SQL Availability Groups impact SQL Availability Replicas and SQL Availability Listeners.
+- SQL Availability Replicas impact SQL Databases.
 
 ## Troubleshooting
 
@@ -1711,8 +1697,7 @@ forum specific to Windows monitoring).
 If you see 100% CPU usage on a domain controller and your forest
 functional level is Windows 2003 or Windows 2008, you could be missing
 the WinRMRemoteWMIUsers__ security group. Adding this group to your
-domain should fix this problem. It is a known error from Microsoft,
-[kb 3118385](https://support.microsoft.com/en-us/kb/3118385).
+domain should fix this problem.
 
 ### Troubleshooting Kerberos Error Messages
 
@@ -1731,7 +1716,7 @@ domain should fix this problem. It is a known error from Microsoft,
     environment.
 
 -   One solution is to disable reverse DNS lookups for kerberos. This can be
-    achieved by setting the zWinRMDisableRDNS property to True.  If you use
+    achieved by setting the zWinRMDisableRDNS property to True. If you use
     this option, you *MUST* only set it in at the /Server/Microsoft device class level.
 
 -   You should also ensure that the correct name is returned for lookups.
@@ -1739,7 +1724,7 @@ domain should fix this problem. It is a known error from Microsoft,
 -   If you see "Attempted to get ticket for HTTP@X.X.X.X" where X.X.X.X is an ip
     address, then try using the [zWinRMServerName](#configuration-options).
     To know the exact name by which Active Directory knows this device, you can use
-    `setspn -L <hostname>`.  This will produce a list of service principals with the
+    `setspn -L <hostname>`. This will produce a list of service principals with the
     FQDN of the device.
 
 `Preauthentication failed while getting initial credentials.`
@@ -1755,7 +1740,7 @@ domain should fix this problem. It is a known error from Microsoft,
 
 `Message stream modified`
 
--   This indicates that Windows was unable to decrypt the kerberos encrypted payload.  This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account.  For example, many IIS servers will do this.  To fix this, set the zWinUseWsmanSPN property.
+-   This indicates that Windows was unable to decrypt the kerberos encrypted payload. This will typically occur if the HTTP and/or HTTPS service principal is dedicated to a specific service account. For example, many IIS servers will do this. To fix this, set the zWinUseWsmanSPN property.
 
 ### Troubleshooting Kerberos Authentication with Wireshark
 
@@ -1830,12 +1815,12 @@ If monitoring for one or more services is enabled/disabled on a device and it sh
 The first step in troubleshooting any monitoring issues is to scan the
 zenpython log for errors.
 
-If you see OperationTimeout errors in the zenpython log, this is normal.  
+If you see OperationTimeout errors in the zenpython log, this is normal.
 The reason for this is that we run the Get-Counter PowerShell cmdlet 
-over the course of two polling cycles and pull 2 samples by default.  
-There is a 60 second timeout when attempting to receive data.  If the 
+over the course of two polling cycles and pull 2 samples by default.
+There is a 60 second timeout when attempting to receive data. If the 
 receive request does not finish within 60 seconds, you will see an 
-OperationTimeout.  You can decrease zWinPerfmonInterval to a lower 
+OperationTimeout. You can decrease zWinPerfmonInterval to a lower 
 value, which will pull samples more frequently.
 
 Other timeout issues on a domain could involve having a large Kerberos
@@ -1902,12 +1887,12 @@ If you see errors containing text similar to "The term 'New-Object' is not
 recognized as the name of a cmdlet, function, script file, or operable program",
 this could indicate a problem with the loading of Powershell modules. Zenoss
 uses common best practice to execute powershell scripts with the
-[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficency.
+[-NoProfile](http://www.powertheshell.com/bp_noprofile/) option for efficiency.
 Powershell will fall back on the default system PSModulePath in this case.
 You must ensure that the default PSModulePath environment variable is valid.
 
 One common problem seen is a UNC (Universal Naming Convention) path in the default
-system PSModulePath.  If there is a UNC path in the default system path, no
+system PSModulePath. If there is a UNC path in the default system path, no
 modules will load due to [double-hopping](https://blogs.msdn.microsoft.com/knowledgecast/2007/01/31/the-double-hop-problem/).
 Because no modules were loaded, even the most basic powershell cmdlets will not run.
 To fix this, simply remove the UNC path from the default system PSModulePath
@@ -1918,14 +1903,22 @@ for which is collected by Perfmon datasource plugin and zenpython debug logs sho
 `'The WS-Management service cannot complete the operation within the time specified in OperationTimeout'` message, 
 `zWinRMLongRunningCommandOperationTimeout` property value can be increased. This property is applicable only for Perfmon datasource.
 
+If you see an event and log messages containing: `'Perfmon command(s) did not start: Connection Aborted! Reason: WinRM port <port_number> on <host_ip_address> is not available!'`
+on the devices that do not have connectivity issues, you should increase the value of `'zWinRMPortCheckTimeout'`. Keep increasing the value of this zProperty until events
+and errors will be visible only for the devices with real connectivity issues.
+Note: This problem could also affect other Windows ZP datasources and strongly depends on the Zenoss Infrastructure scale.
+
 ### Troubleshooting MSSQL Modeling/Monitoring
 
 If you are seeing modeling timeout or datasources not running and have a large
 number of databases in your SQL Server Instance, check to see if the databases
-have Auto Close set to True.  If so, then consider turning off Auto Close so that
+have Auto Close set to True. If so, then consider turning off Auto Close so that
 our queries to model and monitor the databases can execute in a timely manner.
 
 ## Zenoss Analytics
+
+**NOTE: These steps are applicable only for Zenoss Analytics 5.x.x.**
+**In Analytics 6.0.0, any third-party reporting tool can be used to generate reports.**
 
 This ZenPack provides additional support for Zenoss Analytics. Perform
 the following steps to install extra reporting resources into Zenoss
@@ -1999,9 +1992,11 @@ Configuration Properties
 :   zSQLAlwaysOnReplicaPerfdataNode
 :   zWinRMLongRunningCommandOperationTimeout
 :   zWinRMConnectionCloseTime
+:   zWinRMPortCheckTimeout
 :   zWinDBStateMonitoringIgnore
 :   zWinDBSnapshotIgnore
-:   zWinServicesSetGenericClass
+:   zWinServicesGroupedByClass
+:   zWinClusterResourcesMonitoringDisabled
 
 Modeler Plugins 
 :   zenoss.winrm.CPUs 
@@ -2059,6 +2054,26 @@ Monitoring Templates
 
 Changes
 -------
+
+3.1.0
+
+- Fixed CPU/Memory increasing on Windows target device (ZPS-3171)
+- Changed SQL Jobs event mapping by Job ID and not by Job Name (ZPS-5264)
+- Fixed pattern matching on Windows Cluster Remodel Action (ZPS-7883)
+- Fixed "'NoneType' object has no attribute 'lower'" errors during Always On components modelling (ZPS-7967)
+- Fixed Windows Collection fails with error "User timeout caused connection failure" (ZPS-8015)
+- Remove dependency on obsolete PyXML package and make ZP compatible with Ubuntu 22.04 (ZPS-8277)
+- Added support for Windows Server 2022 and SQL Server 2022 (ZPS-8387)
+- Added disabled Cluster Resources detection during modeling and disabled its modelling (ZPS-8412)
+- Added missing default Per User Services to zWinServicesGroupedByClass (ZPS-8441)
+- Fixed component field appearance in events for Custom Datasource (ZPS-8505)
+- Added "Remote Management Users" group to Windows lpu script needs for 2016+ servers (ZPS-8530)
+- Added processing of all complex database statuses (ZPS-8540)
+- Fixed honoring zFailSeverity property that is set at the Windows Service class level (ZPS-8544)
+- Improve txwinrm Kerberos authentication performance for the devices with unavailable WinRM port (ZPS-8622)
+- Added a log message when misconfigured counter is in the Perfmon datasource collection (ZPS-8666)
+- Windows 2008 will no longer be supported
+- Tested with Zenoss Cloud, Zenoss 6.7.0, Service Impact 5.6.0 and Analytic 6.0.0
 
 3.0.2
 

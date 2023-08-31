@@ -3,7 +3,7 @@
 # or saved.  Do not modify them directly here.
 # NB: PACKAGES is deprecated
 NAME = "ZenPacks.zenoss.Microsoft.Windows"
-VERSION = "3.0.2"
+VERSION = "3.1.0"
 AUTHOR = "Zenoss"
 LICENSE = ""
 NAMESPACE_PACKAGES = ['ZenPacks', 'ZenPacks.zenoss', 'ZenPacks.zenoss.Microsoft']
@@ -46,7 +46,7 @@ setup(
     license=LICENSE,
 
     # This is the version spec which indicates what versions of Zenoss
-    # this ZenPack is compatible with
+    # This ZenPack is compatible with
     compatZenossVers=COMPAT_ZENOSS_VERS,
 
     # previousZenPackName is a facility for telling Zenoss that the name

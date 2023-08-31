@@ -1,6 +1,6 @@
 ##############################################################################
 #
-# Copyright (C) Zenoss, Inc. 2013-2017, all rights reserved.
+# Copyright (C) Zenoss, Inc. 2013-2023, all rights reserved.
 #
 # This content is made available according to terms specified in
 # License.zenoss under the directory where your Zenoss product is installed.
@@ -57,11 +57,9 @@ from ..utils import (
 from EventLogDataSource import string_to_lines
 from . import send_to_debug
 
-
 # Requires that txwinrm_utils is already imported.
 from txwinrm.util import RequestError
 from txwinrm.WinRMClient import SingleCommandClient
-
 
 log = logging.getLogger("zen.MicrosoftWindows")
 ZENPACKID = 'ZenPacks.zenoss.Microsoft.Windows'
@@ -84,7 +82,9 @@ gsm = getGlobalSiteManager()
 
 
 class WindowsShellException(Exception):
-    '''Exception class to catch known exceptions '''
+    """
+    Exception class to catch known exceptions
+    """
 
 
 class ShellResult(object):
@@ -116,8 +116,7 @@ class ShellDataSource(PythonDataSource):
     )
     sourcetypes = (WINRS_SOURCETYPE,)
     sourcetype = sourcetypes[0]
-    plugin_classname = ZENPACKID + \
-        '.datasources.ShellDataSource.ShellDataSourcePlugin'
+    plugin_classname = ZENPACKID + '.datasources.ShellDataSource.ShellDataSourcePlugin'
 
 
 class IShellDataSourceInfo(IRRDDataSourceInfo):
@@ -169,6 +168,7 @@ class ParsedResults(ParsedResults):
     Shell version of ParsedResults. Includes the 'maps' list to automatically apply
     modeling maps.
     """
+
     def __init__(self):
         self.maps = []
         super(ParsedResults, self).__init__()
@@ -239,6 +239,7 @@ class DCDiagStrategy(object):
             for ds in config.datasources:
                 if ds.params['resource'] == test_name:
                     return ds
+
         # ZPS-1146: Correctly join output to avoid situations when test name
         # jumps to next line:
         # ......................... <COMP-NAME> failed test\n<TEST-NAME>
@@ -315,9 +316,9 @@ class DCDiagStrategy(object):
             # tests.
             # BUT don't join them if current line also starts with dots (that's
             # going to be another test result)
-            if last_ln.startswith('........') and not ln.startswith('........')\
+            if last_ln.startswith('........') and not ln.startswith('........') \
                     and any('failed test {}'.format(test) in joined_ln
-                            for test in self.run_tests)\
+                            for test in self.run_tests) \
                     and any(test in ln for test in self.run_tests):
                 cleaned_lines[-1] = joined_ln
             else:
@@ -337,8 +338,7 @@ class CustomCommandStrategy(object):
         if not usePowershell:
             return script, None
         script = script.replace('"', r'\"')
-        pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT ' \
-                    '-Command'
+        pscommand = 'powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command'
         return pscommand, '"{}{}"'.format(BUFFER_SIZE, script)
 
     def parse_result(self, config, result):
@@ -354,8 +354,8 @@ class CustomCommandStrategy(object):
 
         cmd.ds = dsconf.datasource
         cmd.device = dsconf.params['servername']
-        if dsconf.component is not None and len(dsconf.component):
-            cmd.component = dsconf.component
+        if dsconf.params['component'] is not None and len(dsconf.params['component']):
+            cmd.component = dsconf.params['component']
         else:
             cmd.component = dsconf.params['contextcompname']
 
@@ -436,8 +436,7 @@ class PowershellMSSQLStrategy(object):
     key = 'PowershellMSSQL'
 
     def build_command_line(self, sqlConnection):
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command "
 
         # We should not be running this per database.  Bad performance problems when there are
         # a lot of databases.  Run script per instance
@@ -485,10 +484,8 @@ class PowershellMSSQLStrategy(object):
             for dsconf in dsconfs:
                 dsconf.params['counter'] = dsconf
             counters = dsconf.params['counter']
-            log.debug(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
+            log.debug('Non-zero exit code ({0}) for counters, {1}, on {2}'.format(result.exit_code, counters,
+                                                                                  dsconf.device))
             return
 
         # Parse values
@@ -534,13 +531,13 @@ class PowershellMSSQLJobStrategy(object):
     key = 'MSSQLJob'
 
     def build_command_line(self, sqlConnection):
-        pscommand = "powershell -NoLogo -NonInteractive -NoProfile " \
-            "-OutputFormat TEXT -Command "
+        pscommand = "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command "
 
         jobs_sqlConnection = []
         jobs_sqlConnection.append("if ($server.JobServer -ne $null) {")
         jobs_sqlConnection.append("foreach ($job in $server.JobServer.Jobs) {")
-        jobs_sqlConnection.append("write-host 'job:'$job.Name")
+        jobs_sqlConnection.append("write-host 'job:'$job.JobID")
+        jobs_sqlConnection.append("'|JobName:'$job.Name")
         jobs_sqlConnection.append("'|IsEnabled:'$job.IsEnabled")
         jobs_sqlConnection.append("'|LastRunDate:'$job.LastRunDate")
         jobs_sqlConnection.append("'|LastRunOutcome:'$job.LastRunOutcome")
@@ -560,28 +557,26 @@ class PowershellMSSQLJobStrategy(object):
             log.debug('MSSQL error: {0}' + ''.join(result.stderr))
 
         if result.exit_code != 0:
-            log.info(
-                'Non-zero exit code ({}) for job query status on {}'
-                .format(
-                    result.exit_code, dsconfs[0].device))
+            log.info('Non-zero exit code ({}) for job query status on {}'.format(result.exit_code, dsconfs[0].device))
             return collectedResults
 
         # Parse values
         valuemap = {}
-        jobname = 'Unknown'
+        jobid = 'Unknown'
         try:
             for jobline in filter_sql_stdout(result.stdout):
                 for job in jobline.split('|'):
                     key, value = job.split(':', 1)
                     if key.strip() == 'job':
-                        jobname = value.strip()
-                        if jobname not in valuemap:
-                            valuemap[jobname] = {}
+                        jobid = value.strip()
+                        if jobid not in valuemap:
+                            valuemap[jobid] = {}
                     else:
-                        valuemap[jobname][key] = value.strip()
+                        valuemap[jobid][key] = value.strip()
         except ValueError:
-            msg = 'Malformed data received for MSSQL Job {}'.format(jobname)
+            msg = 'Malformed data received for MSSQL Job {}'.format(jobid)
             collectedResults.events.append({
+                'eventClass': dsconfs[0].eventClass if dsconfs[0].eventClass else "/Status",
                 'severity': ZenEventClasses.Error,
                 'eventClassKey': 'winrsCollection MSSQLJob',
                 'eventKey': dsconfs[0].eventKey if dsconfs[0].eventKey else self.key,
@@ -591,7 +586,8 @@ class PowershellMSSQLJobStrategy(object):
             })
 
         for dsconf in dsconfs:
-            component = dsconf.params['contexttitle']
+            component_title = dsconf.params['contexttitle']
+            component = dsconf.component
             eventClass = dsconf.eventClass if dsconf.eventClass else "/Status"
             try:
                 currentstate = {
@@ -599,7 +595,7 @@ class PowershellMSSQLJobStrategy(object):
                     'Failed': dsconf.severity
                 }.get(valuemap[component]['LastRunOutcome'], ZenEventClasses.Info)
                 msg = 'LastRunOutcome for job "{}": {} at {}'.format(
-                    component,
+                    component_title,
                     valuemap[component]['LastRunOutcome'],
                     valuemap[component]['LastRunDate'])
                 collectedResults.events.append({
@@ -609,23 +605,24 @@ class PowershellMSSQLJobStrategy(object):
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
-                    'component': dsconf.component})
+                    'component': component})
                 collectedResults.events.append({
                     'severity': ZenEventClasses.Clear,
                     'eventClassKey': 'winrsCollectionMSSQLJob',
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': 'Successful MSSQL Job collection',
                     'device': dsconf.device,
-                    'component': dsconf.component})
+                    'component': component})
             except Exception:
-                msg = 'Missing or no data returned when querying job "{}"'.format(component)
+                msg = 'Missing or no data returned when querying job "{}"'.format(component_title)
                 collectedResults.events.append({
+                    'eventClass': eventClass,
                     'severity': dsconf.severity,
                     'eventClassKey': 'winrsCollectionMSSQLJob',
                     'eventKey': dsconf.eventKey if dsconf.eventKey else self.key,
                     'summary': msg,
                     'device': dsconf.device,
-                    'component': dsconf.component
+                    'component': component
                 })
         return collectedResults
 
@@ -639,8 +636,7 @@ class PowershellMSSQLInstanceStrategy(object):
     key = 'MSSQLInstance'
 
     def build_command_line(self, instance):
-        pscommand = "powershell -NoLogo -NonInteractive " \
-            "-OutputFormat TEXT -Command "
+        pscommand = "powershell -NoLogo -NonInteractive -OutputFormat TEXT -Command "
 
         psInstanceCommands = []
         psInstanceCommands.append(BUFFER_SIZE)
@@ -654,10 +650,8 @@ class PowershellMSSQLInstanceStrategy(object):
     def parse_result(self, dsconfs, result):
         if result.exit_code != 0:
             counters = [dsconf.params['resource'] for dsconf in dsconfs]
-            log.info(
-                'Non-zero exit code ({0}) for counters, {1}, on {2}'
-                .format(
-                    result.exit_code, counters, dsconf.device))
+            log.info('Non-zero exit code ({0}) for counters, {1}, on {2}'.format(result.exit_code, counters,
+                                                                                 dsconf.device))
             return
 
         # Parse values
@@ -694,8 +688,7 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
 
     @staticmethod
     def build_command_line(sql_connection, ag_names):
-        ps_command = "powershell -NoLogo -NonInteractive " \
-            "-OutputFormat TEXT -Command "
+        ps_command = "powershell -NoLogo -NonInteractive -OutputFormat TEXT -Command "
 
         ps_ao_ag_script = \
             ("$res = New-Object 'system.collections.generic.dictionary[string, object]';"
@@ -774,10 +767,8 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
         log.debug('MSSQL AO AG results: {}'.format('\n'.join(result.stdout)))
 
         if result.exit_code != 0:
-            log.debug(
-                'Non-zero exit code ({0}) for MSSQL AO AG on {1}'
-                .format(
-                    result.exit_code, datasources[0].cluster_node_server))
+            log.debug('Non-zero exit code ({0}) for MSSQL AO AG on {1}'.format(result.exit_code,
+                                                                               datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -834,14 +825,12 @@ class PowershellMSSQLAlwaysOnAGStrategy(object):
             if primary_repliaca_sql_instance_id and \
                     dsconf.params['winsqlinstance_id'] and \
                     primary_repliaca_sql_instance_id != dsconf.params['winsqlinstance_id']:
-
                 parsed_results['events'].append(dict(
                     eventClassKey='alwaysOnPrimaryReplicaInstanceChange',
                     eventKey='winrsCollection',
                     severity=ZenEventClasses.Info,
                     summary='Primary replica SQL Instance for Availability Group {} changed to {}'.format(
-                                dsconf.params['contexttitle'],
-                                ag_info_maps.get('primary_replica_server_name'), ''),
+                        dsconf.params['contexttitle'], ag_info_maps.get('primary_replica_server_name'), ''),
                     device=config.id,
                     component=dsconf.component
                 ))
@@ -895,8 +884,7 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
 
     @staticmethod
     def build_command_line(sql_connection, ag_names):
-        ps_command = "powershell -NoLogo -NonInteractive " \
-                     "-OutputFormat TEXT -Command "
+        ps_command = "powershell -NoLogo -NonInteractive -OutputFormat TEXT -Command "
 
         ps_ao_ar_script = \
             ("$res = New-Object 'system.collections.generic.dictionary[string, object]';"
@@ -971,9 +959,8 @@ class PowershellMSSQLAlwaysOnARStrategy(object):
         log.debug('MSSQL AO AR results: {}'.format('\n'.join(result.stdout)))
 
         if result.exit_code != 0:
-            log.debug(
-                'Non-zero exit code ({0}) for MSSQL AO AR on {1}'.format(
-                    result.exit_code, datasources[0].cluster_node_server))
+            log.debug('Non-zero exit code ({0}) for MSSQL AO AR on {1}'.format(result.exit_code,
+                                                                               datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -1042,8 +1029,7 @@ class PowershellMSSQLAlwaysOnALStrategy(object):
 
     @staticmethod
     def build_command_line(listener_id):
-        ps_command = "powershell -NoLogo -NonInteractive " \
-                     "-OutputFormat TEXT -Command "
+        ps_command = "powershell -NoLogo -NonInteractive -OutputFormat TEXT -Command "
 
         ps_ao_al_script = \
             ("Import-Module FailoverClusters;"
@@ -1100,9 +1086,7 @@ class PowershellMSSQLAlwaysOnALStrategy(object):
         log.debug('MSSQL AO AL results: {}'.format('\n'.join(result.stdout)))
 
         if result.exit_code != 0:
-            log.debug(
-                'Non-zero exit code ({0}) for MSSQL AO AL with ID {1}'.format(
-                    result.exit_code, al_id))
+            log.debug('Non-zero exit code ({0}) for MSSQL AO AL with ID {1}'.format(result.exit_code, al_id))
             return parsed_results
 
         # Parse values
@@ -1161,8 +1145,7 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
 
     @staticmethod
     def build_command_line(sql_connection, adb_indices, counters):
-        ps_command = "powershell -NoLogo -NonInteractive " \
-                     "-OutputFormat TEXT -Command "
+        ps_command = "powershell -NoLogo -NonInteractive -OutputFormat TEXT -Command "
 
         ps_adb_script = (
             # Need to SMO object instead T-SQL, because sys.Databases doesn't have State while SMO has.
@@ -1260,9 +1243,8 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
         log.debug('MSSQL AO ADB results: {}'.format('\n'.join(result.stdout)))
 
         if result.exit_code != 0:
-            log.debug(
-                'Non-zero exit code ({0}) for MSSQL AO ADB on {1}'.format(
-                    result.exit_code, datasources[0].cluster_node_server))
+            log.debug('Non-zero exit code ({0}) for MSSQL AO ADB on {1}'.format(result.exit_code,
+                                                                                datasources[0].cluster_node_server))
             return parsed_results
 
         # Parse values
@@ -1339,7 +1321,7 @@ class PowershellMSSQLAlwaysOnADBStrategy(object):
             dp_value = adb_perf_results.get(dp_key)
             if dp_value is not None and len(dsconf.points) > 0:
                 # datasource has 1 datapoint
-                parsed_results['values'][dsconf.component][dsconf.points[0].id] = dp_value,\
+                parsed_results['values'][dsconf.component][dsconf.points[0].id] = dp_value, \
                                                                                   int(time.mktime(time.localtime()))
 
         log.debug('MSSQL Availability Databases performance results: {}'.format(parsed_results))
@@ -1351,7 +1333,6 @@ gsm.registerUtility(PowershellMSSQLAlwaysOnADBStrategy(), IStrategy, 'powershell
 
 
 class ShellDataSourcePlugin(PythonDataSourcePlugin):
-
     proxy_attributes = ConnectionInfoProperties + (
         'sqlhostname',
         'cluster_node_server'
@@ -1403,16 +1384,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
     @classmethod
     def params(cls, datasource, context):
         resource = datasource.talesEval(datasource.resource, context)
-        if not resource.startswith('\\') and \
-            datasource.strategy not in ('powershell MSSQL',
-                                        'Custom Command',
-                                        'DCDiag',
-                                        'powershell MSSQL Instance',
-                                        'powershell MSSQL Job,'
-                                        'powershell MSSQL AO AG',
-                                        'powershell MSSQL AO AR',
-                                        'powershell AO AL',
-                                        'powershell MSSQL AO ADB'):
+        component = datasource.talesEval(datasource.component, context)
+        if not resource.startswith('\\') and datasource.strategy not in AVAILABLE_STRATEGIES:
             resource = '\\' + resource
         if safe_hasattr(context, 'perfmonInstance') and context.perfmonInstance is not None:
             resource = context.perfmonInstance + resource
@@ -1487,6 +1460,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     script=script,
                     parser=parser,
                     usePowershell=datasource.usePowershell,
+                    component=component,
                     contextrelname=contextrelname,
                     contextcompname=contextcompname,
                     contextmodname=contextmodname,
@@ -1566,8 +1540,7 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                     cmd_line_input = 'MSSQLSERVER'
                 else:
                     cmd_line_input = dsconf0.params['instancename']  # instancename represents native SQL Instance name.
-            if dsconf.params['strategy'] == 'powershell MSSQL' or\
-                    dsconf.params['strategy'] == 'powershell MSSQL Job':
+            if dsconf.params['strategy'] == 'powershell MSSQL' or dsconf.params['strategy'] == 'powershell MSSQL Job':
                 conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
 
             if dsconf0.params['strategy'] == 'powershell MSSQL AO AG':
@@ -1583,7 +1556,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                             if dsconf.params['availability_group_name']]
                 command_line, script = strategy.build_command_line(cmd_line_input, ag_nemes)
             elif dsconf.params['strategy'] == 'powershell MSSQL AO ADB':
-                conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)  # TODO: revise whether this is still needed.
+                # TODO: revise whether this is still needed.
+                conn_info = conn_info._replace(timeout=dsconf0.cycletime - 5)
                 # DB Indices
                 db_indices = {dsconf.params['database_index']
                               for dsconf in config.datasources
@@ -1601,7 +1575,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
             command_line, script = strategy.build_command_line(script, usePowershell)
         elif dsconf0.params['strategy'] == 'DCDiag':
             testparms = [dsconf.params['script'] for dsconf in config.datasources if dsconf.params['script']]
-            command_line = strategy.build_command_line(counters, testparms, dsconf0.windows_user, dsconf0.windows_password)
+            command_line = strategy.build_command_line(counters, testparms, dsconf0.windows_user,
+                                                       dsconf0.windows_password)
             conn_info = conn_info._replace(timeout=180)
             script = None
         else:
@@ -1696,8 +1671,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                 checked_result = False
                 for dsconf, value, timestamp in strategy.parse_result(dsconfs, result):
                     checked_result = True
-                    if dsconf.datasource != 'status' or\
-                       (dsconf.datasource == 'status' and strategy.key != "PowershellMSSQL"):
+                    if dsconf.datasource != 'status' or (dsconf.datasource == 'status'
+                                                         and strategy.key != "PowershellMSSQL"):
                         data['values'][dsconf.component][dsconf.datasource] = value, timestamp
                 if strategy.key == 'PowershellMSSQL':
                     # get db status only if status datasource is being one of our dsconfs
@@ -1754,11 +1729,8 @@ class ShellDataSourcePlugin(PythonDataSourcePlugin):
                                 })
                                 data['maps'].append(db_om)
                 if not checked_result:
-                    msg = 'Error parsing data in {0} strategy for "{1}"'\
-                        ' datasource'.format(
-                            dsconf0.params['strategy'],
-                            dsconf0.datasource,
-                        )
+                    msg = 'Error parsing data in {0} strategy for "{1}" datasource'.format(dsconf0.params['strategy'],
+                                                                                           dsconf0.datasource)
                     severity = ZenEventClasses.Warning
 
         if strategy.key == "PowershellMSSQL" or strategy.key == "MSSQLAlwaysOnADB":
@@ -1884,8 +1856,7 @@ def parse_stdout(result, check_stderr=False):
 
 
 def pscommand():
-    return "powershell -NoLogo -NonInteractive -NoProfile " \
-        "-OutputFormat TEXT -Command "
+    return "powershell -NoLogo -NonInteractive -NoProfile -OutputFormat TEXT -Command "
 
 
 def get_script(datasource, context):
