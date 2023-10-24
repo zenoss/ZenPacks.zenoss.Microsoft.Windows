@@ -24,13 +24,16 @@ from ZenPacks.zenoss.Microsoft.Windows.Device import Device
 from ZenPacks.zenoss.Microsoft.Windows.ClusterDevice import ClusterDevice
 
 
-SERVICES_TO_ADD = ["BcastDVRUserService", "BluetoothUserService", "CaptureService", "CDPUserSvc", "DevicePickerUserSvc",
-                   "DevicesFlowUserSvc", "MessagingService", "OneSyncSvc", "PimIndexMaintenanceSvc",
-                   "PrintWorkflowUserSvc", "UnistoreSvc", "UserDataSvc", "WpnUserService"]
+SERVICES_TO_ADD = ["BcastDVRUserService", "BluetoothUserService", "CDPUserSvc"
+                   "CaptureService", "ConsentUxUserSvc",
+                   "CredentialEnrollmentManagerUserSvc", "DevicePickerUserSvc",
+                   "DevicesFlowUserSvc", "MessagingService", "OneSyncSvc", 
+                   "PimIndexMaintenanceSvc", "PrintWorkflowUserSvc", "UdkUserSvc",
+                   "UnistoreSvc", "UserDataSvc", "WpnUserService", "cbdhsvc"]
 
 
 class UpdatezWinServicesGroupedByClass(ZenPackMigration):
-    version = Version(3, 1, 0)
+    version = Version(3, 2, 0)
 
     def migrate(self, pack):
         log.info("Setting new default values %s to zWinServicesGroupedByClass", SERVICES_TO_ADD)
