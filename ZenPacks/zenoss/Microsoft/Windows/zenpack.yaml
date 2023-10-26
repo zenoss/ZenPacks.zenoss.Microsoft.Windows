@@ -94,7 +94,7 @@ zProperties:
     label: 'Regex expressions to model services with generic class'
     description: 'List of regular expressions for Windows Service classes to model services with generic Windows Service class.'
     type: lines
-    default: ['BcastDVRUserService', 'BluetoothUserService', 'CaptureService', 'CDPUserSvc', 'DevicePickerUserSvc', 'DevicesFlowUserSvc', 'MessagingService', 'OneSyncSvc', 'PimIndexMaintenanceSvc', 'PrintWorkflowUserSvc', 'UnistoreSvc', 'UserDataSvc', 'WpnUserService']
+    default: ['BcastDVRUserService', 'BluetoothUserService', 'CaptureService', 'CDPUserSvc', 'ConsentUxUserSvc', 'CredentialEnrollmentManagerUserSvc', 'DevicePickerUserSvc', 'DevicesFlowUserSvc', 'MessagingService', 'OneSyncSvc', 'PimIndexMaintenanceSvc', 'PrintWorkflowUserSvc', 'UdkUserSvc', 'UnistoreSvc', 'UserDataSvc', 'WpnUserService', 'cbdhsvc']
   zWinClusterResourcesMonitoringDisabled:
     label: 'Windows Cluster Resource monitoring disabling according to its corresponding Windows Service startup type'
     description: 'Set to true to disable monitoring for Windows Cluster Resources if their corresponding Windows Service startup type is "Disabled".'
