@@ -64,8 +64,10 @@ class WinSQLDatabase(schema.WinSQLDatabase):
 
         rrd_templates = super(WinSQLDatabase, self).getRRDTemplates()
         if rrd_templates:
-            for tempalte in rrd_templates:
-                if tempalte.id == template_name:
-                    return [tempalte]
+            templates = []
+            for template in rrd_templates:
+                if template.id.startswith(template_name):
+                    templates.append(template)
+            return templates
 
         return []
