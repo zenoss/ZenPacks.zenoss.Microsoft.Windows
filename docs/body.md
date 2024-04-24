@@ -1078,7 +1078,7 @@ Note: Do not add the WinCluster plugin to the */Server/Microsoft/Windows* device
 The */Server/Microsoft/Windows* device class uses a python class that is different from the python class
 used in the */Server/Microsoft/Cluster* device class, and they have different relationships.
 During the addition of the Cluster node, if this node is associated with the Cluster, it will automatically
-detect and discover the Cluster device.
+detect and discover the Cluster device to */Server/Microsoft/Cluster* device class.
 
 ### Adding a Cluster Device
 
