@@ -1077,6 +1077,8 @@ authentication in the Zenoss web interface.
 Note: Do not add the WinCluster plugin to the */Server/Microsoft/Windows* device class.
 The */Server/Microsoft/Windows* device class uses a python class that is different from the python class
 used in the */Server/Microsoft/Cluster* device class, and they have different relationships.
+During the addition of the Cluster node, if this node is associated with the Cluster, it will automatically
+detect and discover the Cluster device in */Server/Microsoft/Cluster* device class.
 
 ### Adding a Cluster Device
 
@@ -1093,8 +1095,8 @@ authentication in the Zenoss web interface.
     -   *Name or IP* must be resolvable and accessible from the collector server chosen in the *Collector* field.
 7. Click *ADD*.
 
-Note: The cluster nodes will automatically be added to */Server/Microsoft/Windows* class path.
-Once modeled, any cluster nodes associated with the cluster are added to device class */Server/Microsoft/Windows*.
+Note: The Сluster nodes will automatically be added to */Server/Microsoft/Windows* class path during the Cluster device discovering.
+Once modeled, any Сluster nodes associated with the Сluster are added to device class */Server/Microsoft/Windows*.
 The **only** three valid modeler plugins for device class */Server/Microsoft/Cluster* are WinCluster, OperatingSystem, and WinMSSQL.
 
 ------------------------------------------------------------------------
