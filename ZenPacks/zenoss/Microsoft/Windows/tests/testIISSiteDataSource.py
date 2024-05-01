@@ -63,7 +63,8 @@ class TestIISSiteDataSourcePlugin(BaseTestCase):
 
         config = MagicMock(
             id='127.0.0.1',
-            datasources=[MagicMock(params={'eventlog': sentinel.eventlog})],
+            datasources=[MagicMock(params={'eventlog': sentinel.eventlog}, zWinRMKRBErrorThreshold=0), ],
+
         )
 
         for err in winrm_errors:
