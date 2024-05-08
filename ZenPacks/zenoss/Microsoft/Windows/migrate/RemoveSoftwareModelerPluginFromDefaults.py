@@ -19,9 +19,9 @@ class RemoveSoftwareModelerPluginFromDefaults(ZenPackMigration):
     # Note version setting.
     version = Version(3, 1, 1)
 
-    def get_objects(self, pack):
+    def get_objects(self, dmd):
         objects = []
-        dcObject = pack.dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
+        dcObject = dmd.Devices.getOrganizer('/Server/Microsoft/Windows')
         objects.append(dcObject)
         objects.extend(dcObject.getOverriddenObjects("zCollectorPlugins", showDevices=True))
         for ob in objects:
