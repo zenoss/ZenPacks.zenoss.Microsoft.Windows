@@ -34,6 +34,6 @@ class RemoveSoftwareModelerPluginFromDefaults(ZenPackMigration):
                 if 'zenoss.winrm.Software' in zCollectorPlugins:
                     zCollectorPlugins.remove('zenoss.winrm.Software')
                     ob.setZenProperty('zCollectorPlugins', zCollectorPlugins)
-            log.info("Successfully removed ‘zenoss.winrm.Software’ modeler plugin from the defaults.")
+            log.info("Successfully removed 'zenoss.winrm.Software' modeler plugin from the defaults.")
         except Exception as e:
-            log.warning("Failed to remove ‘zenoss.winrm.Software’ modeler plugin with a message - {}".format(e))
+            log.warning("Failed to remove 'zenoss.winrm.Software' modeler plugin with a message - {}".format(e))
