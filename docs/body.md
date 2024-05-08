@@ -2057,10 +2057,11 @@ Monitoring Templates
 Changes
 -------
 
-3.1.2
+3.1.1
 
 - Make Microsoft.Windows ZenPack compatible with Ubuntu-based CZ 7.2.0 (ZPS-8850)
 - Fix device deletion during "Reindex windows services" job execution (ZPS-8862)
+- Remove the Software modeler plugin from the default selection for /Server/Microsoft/Windows (ZPS-8911)
 - Tested with Zenoss Cloud, Zenoss 6.7.0, Service Impact 5.6.0 and Analytic 6.0.0
 
 3.1.0
