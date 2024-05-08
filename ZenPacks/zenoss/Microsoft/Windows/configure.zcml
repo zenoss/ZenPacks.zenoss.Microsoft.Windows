@@ -5,6 +5,9 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
+    <!-- Include the zenjobs job definitions. -->
+    <include file="jobs.zcml"/>
+
     <subscriber handler=".handlers.onServiceDataSourceMoved" />
 
 	<!-- components -->

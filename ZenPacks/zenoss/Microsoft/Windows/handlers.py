@@ -42,7 +42,7 @@ def onServiceDataSourceMoved(ob, event):
 
         if dmd and not temporary:
             for job in dmd.JobManager.getPendingJobs():
-                if job.type == ReindexWinServices.getJobType():
+                if getattr(job, 'name') == "ZenPacks.zenoss.Microsoft.Windows.jobs.ReindexWinServices":
                     log.debug('handler: ReindexWinServices already pending')
                     return
 
