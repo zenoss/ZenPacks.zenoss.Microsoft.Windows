@@ -7,7 +7,7 @@ device_classes:
     protocol: WinRM
     zProperties:
       zPythonClass: ZenPacks.zenoss.Microsoft.Windows.Device
-      zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.Software, zenoss.winrm.HardDisks]
+      zCollectorPlugins: [zenoss.winrm.OperatingSystem, zenoss.winrm.CPUs, zenoss.winrm.FileSystems, zenoss.winrm.Interfaces, zenoss.winrm.Services, zenoss.winrm.Processes, zenoss.winrm.HardDisks]
       zDeviceTemplates: [Device, Active Directory, IIS, MSExchange2010IS]
   /Server/Microsoft/Cluster:
     remove: true
